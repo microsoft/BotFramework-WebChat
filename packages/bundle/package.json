@@ -39,6 +39,8 @@
     "botframework-webchat-core": "0.0.0-0",
     "core-js": "^3.1.4",
     "eslint": "^5.16.0",
+    "isomorphic-react": "^0.0.0-0",
+    "isomorphic-react-dom": "^0.0.0-0",
     "markdown-it": "^8.4.2",
     "markdown-it-for-inline": "^0.1.1",
     "memoize-one": "^5.0.2",

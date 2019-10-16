@@ -29,5 +29,11 @@ module.exports = {
     libraryTarget: 'umd',
     path: resolve(__dirname, 'dist')
   },
-  plugins: [new Visualizer()]
+  plugins: [new Visualizer()],
+  resolve: {
+    alias: {
+      react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
+      'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
+    }
+  }
 };
