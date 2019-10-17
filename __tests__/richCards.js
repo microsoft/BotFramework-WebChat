@@ -1,3 +1,4 @@
+import { Condition } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
@@ -18,6 +19,16 @@ test('audio card', async () => {
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
+
+  await driver.wait(
+    new Condition('for audio to finish loading', driver =>
+      driver.executeScript(() => {
+        const audioElement = document.querySelector('audio');
+
+        return audioElement && audioElement.readyState === 4;
+      })
+    )
+  );
 
   const base64PNG = await driver.takeScreenshot();
 

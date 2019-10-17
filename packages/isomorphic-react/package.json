@@ -19,7 +19,7 @@
     "@babel/core": "7.6.0",
     "@babel/preset-env": "7.6.0",
     "concurrently": "4.1.2",
-    "eslint": "6.3.0",
+    "eslint": "^5.16.0",
     "eslint-plugin-prettier": "3.1.0",
     "prettier": "1.18.2",
     "webpack": "4.40.1",
