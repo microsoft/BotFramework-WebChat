@@ -1,7 +1,7 @@
 module.exports = {
   twemoji: {
     parse: function(text) {
-      return twemoji.parse(text)
+      return typeof twemoji !== 'undefined' ? twemoji.parse(text) : text
     }
   }
 }
