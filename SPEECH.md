@@ -50,7 +50,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Abort recognition</td>
+      <td>Click microphone button again to abort recognition</td>
       <td><center>4.6</center></td>
       <td><center>4.6</center></td>
       <td><center>4.6</center></td>
@@ -185,7 +185,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Interrupt synthesis</td>
+      <td>Interrupt synthesis when clicking on microphone button</td>
       <td><center>4.6</center></td>
       <td><center>4.6</center></td>
       <td><center>4.6</center></td>
@@ -194,7 +194,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Activity with multiple attachments</td>
+      <td>Synthesize activity with multiple attachments</td>
       <td><center>✔</center></td>
       <td><center>✔</center></td>
       <td><center>✔</center></td>
