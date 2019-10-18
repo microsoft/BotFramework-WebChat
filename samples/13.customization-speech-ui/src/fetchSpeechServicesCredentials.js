@@ -32,5 +32,5 @@ async function fetchCredentials() {
   return fetchPromise;
 }
 
-export default fetchCredentials
-export { region, token }
+export default fetchCredentials;
+export { region, token };
