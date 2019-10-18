@@ -6,6 +6,213 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 > Sample code in this article is optimized for modern browsers. You may need to use a [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) (e.g. [Babel](https://babeljs.io/)) to target a broader range of browsers.
 
+## Support matrix
+
+<table>
+  <thead>
+    <tr>
+      <td></td>
+      <td></td>
+      <td><center>Chrome/Edge/Firefox<br />on desktop</center></td>
+      <td><center>Chrome<br />on Android</center></td>
+      <td><center>Safari<br />on Mac OS and iOS</center></td>
+      <td><center>Web View<br />on iOS</center></td>
+      <td><center>Web View<br />on Android</center></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>STT</td>
+      <td>Basic recognition</td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td><a href="#custom-speech">Custom speech</a></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td><a href="#text-normalization-options">Text normalization options</a></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Abort recognition</td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Interims</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Dynamic priming</td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Reference grammar ID</td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Select language</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td><a href="#using-input-hint">Input hint <code>expecting</code></a></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❌ *3</nobr></center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Selecting input device</td>
+      <td><center><nobr>❌ *4</nobr></center></td>
+      <td><center><nobr>❌ *4</nobr></center></td>
+      <td><center><nobr>❌ *4</nobr></center></td>
+      <td><center><nobr>❌ *1</nobr></center></td>
+      <td><center><nobr>❌ *4</nobr></center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Basic synthesis using text</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td><a href="#using-speech-synthesis-markup-language">Speech Synthesis Markup Language</a></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td><a href="#custom-voice">Custom voice</a></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Stripping text from Markdown</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Override using "speak" property</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Adaptive Cards using "speak" property</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Interrupt synthesis</td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center>4.6</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>4.6</center></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Activity with multiple attachments</td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center>✔</center></td>
+      <td><center><nobr>❓ *2</nobr></center></td>
+      <td><center>✔</center></td>
+    </tr>
+  </tbody>
+</table>
+
+Notes:
+
+1. Web View on iOS is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
+2. As speech recognition is not working, speech synthesis is not tested
+3. On Safari, user gesture is always required for opening microphone. Web Chat cannot programmatically open microphone when we receive an expecting input hint
+   - https://github.com/WebAudio/web-audio-api/issues/790
+4. Web Chat currently do not support selecting different device for audio recording
+   - https://github.com/microsoft/BotFramework-WebChat/issues/2481
+
 ## Requirements
 
 In order to use the speech functionality in Web Chat, the browser needs to provide minimal media capabilities, including recording from microphone and playing audio clips.
