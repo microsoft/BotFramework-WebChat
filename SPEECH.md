@@ -24,20 +24,20 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Basic recognition</td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#custom-speech">Custom speech</a></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -51,11 +51,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Click microphone button again to abort recognition</td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -69,20 +69,20 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Dynamic priming</td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Reference grammar ID</td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -132,29 +132,29 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#custom-voice">Custom voice</a></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -186,11 +186,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td>Interrupt synthesis when clicking on microphone button</td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>4.6</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>TTS</td>
