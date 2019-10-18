@@ -45,9 +45,9 @@ This will create a new Azure Storage for temporary storage of user uploads.
 1. Save the account name and key
    1. Select "Access keys"
    1. Copy "Storage account name" and save it to both `/bot/.env` and `/web/.env`
-      - `AZURE_STORAGE_ACCOUNT_NAME=youraccountname`
+      -  `AZURE_STORAGE_ACCOUNT_NAME=youraccountname`
    1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/web/.env`
-      - `AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d`
+      -  `AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d`
 1. Create a new blob container named "userupload"
    1. Select "Blobs"
    1. Click "+ Container"
@@ -99,10 +99,10 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 # Things to try out
 
-- Type anything to the bot, it should reply and ask you to upload files
-- Upload a file
-   - It should response with the file size of each file you uploaded
-   - In your Azure Storage container, you will see the uploaded files
+-  Type anything to the bot, it should reply and ask you to upload files
+-  Upload a file
+   -  It should response with the file size of each file you uploaded
+   -  In your Azure Storage container, you will see the uploaded files
 
 # Code
 

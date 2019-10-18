@@ -6,8 +6,8 @@
   "dependencies": {
     "botframework-webchat": "~4.5.1",
     "classnames": "^2.2.6",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
     "react-redux": "^5.1.1",
     "react-scripts": "^3.0.1",
     "redux": "^4.0.4"

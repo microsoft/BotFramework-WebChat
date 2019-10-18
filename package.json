@@ -69,19 +69,19 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run --scope=botframework-webchat* --stream build",
+    "build": "lerna run --scope=botframework-webchat* --scope=isomorphic* --stream build",
     "build:sample": "lerna run --scope=sample-* --stream build",
     "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "eslint": "lerna run --scope=botframework-webchat* --parallel --stream eslint",
+    "eslint": "lerna run --scope=botframework-webchat* --scope=isomorphic* --parallel --stream eslint",
     "lerna-publish": "lerna publish",
-    "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
+    "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=isomorphic* --scope=playground --stream prepublishOnly",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
     "start:docker": "npm run build && docker-compose up --build",
     "start:playground": "cd packages/playground && npm run start",
     "test": "jest --no-cache",
     "test:all": "lerna run --parallel --stream test",
-    "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
+    "watch": "lerna run --parallel --scope=botframework-webchat* --scope=isomorphic* --stream watch"
   },
   "devDependencies": {
     "@azure/storage-blob": "^10.3.0",
@@ -105,8 +105,8 @@
     "lerna": "^3.15.0",
     "lint-staged": "^9.2.0",
     "prettier": "^1.18.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
     "selenium-webdriver": "^4.0.0-alpha.4",
     "serve-handler": "^6.1.0"
   }

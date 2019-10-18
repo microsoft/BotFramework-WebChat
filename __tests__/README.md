@@ -16,8 +16,8 @@ Automated testing in Web Chat is using multiple open-source technologies.
 
 -  Install Docker
 -  On Windows, set environment variable `COMPOSE_CONVERT_WINDOWS_PATHS=1`
--   `npm run start:docker`
-- In a separate terminal, run:
+-  `npm run start:docker`
+-  In a separate terminal, run:
 -  `npm test`
 
 ### Running tests under local box

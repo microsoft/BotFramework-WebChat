@@ -32,6 +32,9 @@ Timestamp.propTypes = {
   }).isRequired,
   className: PropTypes.string,
   styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      timestampFormat: PropTypes.any.isRequired
+    }).isRequired,
     timestamp: PropTypes.any.isRequired
   }).isRequired
 };

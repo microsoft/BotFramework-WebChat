@@ -46,7 +46,8 @@ UploadAttachment.propTypes = {
   }).isRequired,
   language: PropTypes.string.isRequired,
   styleSet: PropTypes.shape({
-    downloadAttachment: PropTypes.any.isRequired
+    downloadAttachment: PropTypes.any.isRequired,
+    uploadAttachment: PropTypes.any.isRequired
   }).isRequired
 };
 

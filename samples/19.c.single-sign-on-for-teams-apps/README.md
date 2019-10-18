@@ -16,9 +16,9 @@ This sample is a simplified and reduced version of the sample "[Single sign-on d
 
 -  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages browsed through an embedded and limited web browser inside Microsoft Teams
    -  **Tab apps are supported on desktop client only.** Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
-      - See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
+      -  See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
    -  OAuth sign-in popup is controlled by Microsoft Teams
-      - See "[Authenticate a user in a Microsoft Teams tab](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/authentication/auth-tab-AAD)" for more information
+      -  See "[Authenticate a user in a Microsoft Teams tab](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/authentication/auth-tab-AAD)" for more information
 -  We will only allow an authenticated user access to the page and the bot
 -  Since we only allow authenticated access
    -  We no longer have UI buttons for sign-in and sign-out, and only use plain HTML instead of a React app
@@ -47,8 +47,8 @@ Since Microsoft Teams only supports `https://` addresses, we will be using ngrok
 1. Download [ngrok](https://ngrok.com/)
 1. Run `ngrok http 5000`
 1. Write down the Microsoft Teams app tunnel URL in this step
-   - In the steps below, we will refer this URL as https://a1b2c3d4.ngrok.io/
-   - You should replace it with the tunnel URL you obtained from this step
+   -  In the steps below, we will refer this URL as https://a1b2c3d4.ngrok.io/
+   -  You should replace it with the tunnel URL you obtained from this step
 
 ## Clone the code
 
@@ -122,7 +122,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
       1. For "Name", enter "My Company"
       1. For "Entity ID", enter "webchat"
       1. For "Content URL", enter `https://a1b2c3d4.ngrok.io/`
-         - This URL will be based on the ngrok tunnel you create in "[Start ngrok tunnel](#start-ngrok-tunnel)" section
+         -  This URL will be based on the ngrok tunnel you create in "[Start ngrok tunnel](#start-ngrok-tunnel)" section
       1. Click "Save" button
 1. Under "Test and distribute" of "Finish" section
    1. Click "Install" button

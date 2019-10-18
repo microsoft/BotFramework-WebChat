@@ -51,15 +51,17 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 ## Completed code
 
 ```js
-window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-  selectVoice: (voices, activity) =>
-    activity.locale === 'zh-HK'
-    ? voices.find(({ name }) => /TracyRUS/iu.test(name))
-    : voices.find(({ name }) => /JessaNeural/iu.test(name))
-      || voices.find(({ name }) => /Jessa/iu.test(name)),
-  webSpeechPonyfillFactory
-}, document.getElementById('webchat'));
+window.WebChat.renderWebChat(
+   {
+      directLine: window.WebChat.createDirectLine({ token }),
+      selectVoice: (voices, activity) =>
+         activity.locale === 'zh-HK'
+            ? voices.find(({ name }) => /TracyRUS/iu.test(name))
+            : voices.find(({ name }) => /JessaNeural/iu.test(name)) || voices.find(({ name }) => /Jessa/iu.test(name)),
+      webSpeechPonyfillFactory
+   },
+   document.getElementById('webchat')
+);
 ```
 
 # Further reading

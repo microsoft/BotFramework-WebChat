@@ -14,11 +14,11 @@ Internet Explorer 11 does not meet the basic requirements for both speech recogn
 
 ### Speech-to-text requirements
 
-- Browser must [support WebRTC API][WebRTC API support]
-   - Available on most modern browsers on desktop and mobile platform
-   - WebRTC will not work on third-party apps or browsers on iOS
-- Web page must be hosted over HTTPS
-- User must explicitly grant permission for microphone access
+-  Browser must [support WebRTC API][webrtc api support]
+   -  Available on most modern browsers on desktop and mobile platform
+   -  WebRTC will not work on third-party apps or browsers on iOS
+-  Web page must be hosted over HTTPS
+-  User must explicitly grant permission for microphone access
 
 #### Special considerations for iOS
 
@@ -28,12 +28,12 @@ Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. 
 
 ### Text-to-speech requirements
 
-- Browser must [support Web Audio API][Web Audio API support]
-   - Available on all modern browsers on desktop and mobile platform
+-  Browser must [support Web Audio API][web audio api support]
+   -  Available on all modern browsers on desktop and mobile platform
 
 #### Special considerations for Safari on Mac OS and iOS
 
-Safari requires additional permission granted *implicitly* by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
+Safari requires additional permission granted _implicitly_ by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
 
 When the user taps on the microphone button for the first time, Web Chat will play a very short and silent audio clip. This will enable Web Chat to play any audio clip synthesized from bot messages.
 
@@ -47,35 +47,40 @@ To use Cognitive Services in Web Chat, you will need to add minimal setup code t
 
 ### Setting up your Azure subscription
 
-You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page][Try Cognitive Services] to obtain a subscription key.
+You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page][try cognitive services] to obtain a subscription key.
 
-To prevent exposing your subscription key, you should build/host a server that uses your subscription key to generate authorization tokens, and only send the authorization token to the client. You can find more information about authorization tokens on the [Cognitive Services Authentication documentation][Authenticate requests to Azure Cognitive Services]. *Never use subscription keys to access your Azure resources in a production environment.*
+To prevent exposing your subscription key, you should build/host a server that uses your subscription key to generate authorization tokens, and only send the authorization token to the client. You can find more information about authorization tokens on the [Cognitive Services Authentication documentation][authenticate requests to azure cognitive services]. _Never use subscription keys to access your Azure resources in a production environment._
 
 > To use [new voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region or [other supported regions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions#standard-and-neural-voices).
 
 ### Integrating Web Chat into your page
 
-This integration code is excerpted from the sample named ["Integrating with Cognitive Services Speech Services"][Sample: Integrating with Cognitive Services Speech Services].
+This integration code is excerpted from the sample named ["Integrating with Cognitive Services Speech Services"][sample: integrating with cognitive services speech services].
 
-> To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production environment.
+> To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should _always use authorization token_ for production environment.
 
 ```js
 const {
-  createCognitiveServicesSpeechServicesPonyfillFactory,
-  createDirectLine,
-  renderWebChat
+   createCognitiveServicesSpeechServicesPonyfillFactory,
+   createDirectLine,
+   renderWebChat
 } = window.WebChat;
 
-renderWebChat({
-  directLine: createDirectLine({
-    secret: 'YOUR_DIRECT_LINE_SECRET'
-  }),
-  language: 'en-US',
-  webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-    region: 'YOUR_REGION',
-    subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
-  })
-}, document.getElementById('webchat'));
+renderWebChat(
+   {
+      directLine: createDirectLine({
+         secret: 'YOUR_DIRECT_LINE_SECRET'
+      }),
+      language: 'en-US',
+      webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory(
+         {
+            region: 'YOUR_REGION',
+            subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+         }
+      )
+   },
+   document.getElementById('webchat')
+);
 ```
 
 After adding the ponyfill factory, you should be able to see the microphone button in Web Chat, which indicates that speech is enabled.
@@ -84,16 +89,16 @@ After adding the ponyfill factory, you should be able to see the microphone butt
 
 These features are for improving the overall user experience while using speech in Web Chat.
 
-- [Using Speech Synthesis Markup Language](#using-speech-synthesis-markup-language)
-- [Using input hint](#using-input-hint)
-- [Selecting voice](#selecting-voice)
-- [Custom Speech](#custom-speech)
-- [Custom Voice](#custom-voice)
-- [Text-to-speech audio format](#text-to-speech-audio-format)
-- [Text normalization options](#text-normalization-options)
-- [Disabling telemetry](#disabling-telemetry)
-- [Using authorization token](#using-authorization-token)
-- [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
+-  [Using Speech Synthesis Markup Language](#using-speech-synthesis-markup-language)
+-  [Using input hint](#using-input-hint)
+-  [Selecting voice](#selecting-voice)
+-  [Custom Speech](#custom-speech)
+-  [Custom Voice](#custom-voice)
+-  [Text-to-speech audio format](#text-to-speech-audio-format)
+-  [Text normalization options](#text-normalization-options)
+-  [Disabling telemetry](#disabling-telemetry)
+-  [Using authorization token](#using-authorization-token)
+-  [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
 
 ### Using Speech Synthesis Markup Language
 
@@ -129,7 +134,7 @@ The bot can set input hint when sending activity to the user to indicate whether
 -  `"acceptingInput"`: Web Chat will do nothing after the bot's message is spoken
 -  `"ignoringInput"`: Web Chat will explicitly close the microphone
 
-For more details, please follow this article on [adding input hints to messages][Add input hints to messages].
+For more details, please follow this article on [adding input hints to messages][add input hints to messages].
 
 #### Input hint behavior before 4.5.0
 
@@ -145,11 +150,11 @@ Different voices can be selected based on the synthesizing activity.
 
 By default, we will use the following order to determine which voice to use. If available, we prioritize deep neural network-based voices over traditional voices.
 
-- Locale specified in the activity
-- Display language of Web Chat
-- Browser language
-- English (US)
-- The first available voice
+-  Locale specified in the activity
+-  Display language of Web Chat
+-  Browser language
+-  English (US)
+-  The first available voice
 
 In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese (zh-HK), we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
 
@@ -183,7 +188,7 @@ In the following code, voice is selected based on the language of the synthesizi
 
 Custom Speech is a trained recognition model that improves recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademark words or the name of a person.
 
-First, you need to set up a Custom Speech project. Please follow the article on [creating a new Custom Speech project][What is Custom Speech].
+First, you need to set up a Custom Speech project. Please follow the article on [creating a new Custom Speech project][what is custom speech].
 
 After your Custom Speech project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save your "Endpoint ID".
 
@@ -207,7 +212,7 @@ You will then need to modify your integration code as below.
 
 Custom Voice is a trained synthesis model for providing your user with an unique synthesized voice when performing text-to-speech.
 
-First, you need to set up a Custom Voice project. Please follow the article on [creating a new Custom Voice project][Get started with Custom Voice].
+First, you need to set up a Custom Voice project. Please follow the article on [creating a new Custom Voice project][get started with custom voice].
 
 After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and the value of "deploymentId" inside the "Endpoint URL" field.
 
@@ -322,7 +327,7 @@ This sample uses a subscription key for simplicity. If you need to use authoriza
   }, document.getElementById('webchat'));
 ```
 
-The function `fetchAuthorizationToken` will be called *every time* a token is needed. For simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
+The function `fetchAuthorizationToken` will be called _every time_ a token is needed. For simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
 
 ### Using two subscription keys for speech-to-text and text-to-speech
 
@@ -364,27 +369,27 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 
 > Note: it is correct that `speechSynthesis` is in camel-casing, while others are in Pascal-casing.
 
-Using this approach, you can also combine two polyfills of different types. For example, speech recognition powered by Cognitive Services with browser-supported speech synthesis. You can refer to our Web Chat sample [on hybrid speech][Sample: Using hybrid speech engine] to learn more.
+Using this approach, you can also combine two polyfills of different types. For example, speech recognition powered by Cognitive Services with browser-supported speech synthesis. You can refer to our Web Chat sample [on hybrid speech][sample: using hybrid speech engine] to learn more.
 
 ## Related articles
 
-- [Try Cognitive Services]
-- [List of browsers which support Web Audio API][Web Audio API support]
-- [List of browsers which support WebRTC API][WebRTC API Support]
-- [Speech Synthesis Markup Language (SSML)][Speech Synthesis Markup Language]
-- [Add input hints to messages]
-- [Get started with Custom Voice]
-- [What is Custom Speech]
-- [Sample: Integrating with Cognitive Services Speech Services]
-- [Sample: Using hybrid speech engine]
+-  [Try Cognitive Services]
+-  [List of browsers which support Web Audio API][web audio api support]
+-  [List of browsers which support WebRTC API][webrtc api support]
+-  [Speech Synthesis Markup Language (SSML)][speech synthesis markup language]
+-  [Add input hints to messages]
+-  [Get started with Custom Voice]
+-  [What is Custom Speech]
+-  [Sample: Integrating with Cognitive Services Speech Services]
+-  [Sample: Using hybrid speech engine]
 
-[Authenticate requests to Azure Cognitive Services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
-[Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
-[Sample: Integrating with Cognitive Services Speech Services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
-[Sample: Using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
-[Speech Synthesis Markup Language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
-[Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
-[Web Audio API support]: https://caniuse.com/#feat=audio-api
-[WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
-[What is Custom Speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
-[Add input hints to messages]: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-input-hints?view=azure-bot-service-4.0
+[authenticate requests to azure cognitive services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
+[get started with custom voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
+[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
+[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
+[speech synthesis markup language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
+[try cognitive services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
+[web audio api support]: https://caniuse.com/#feat=audio-api
+[webrtc api support]: https://caniuse.com/#feat=rtcpeerconnection
+[what is custom speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
+[add input hints to messages]: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-input-hints?view=azure-bot-service-4.0

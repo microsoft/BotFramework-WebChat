@@ -1,6 +1,8 @@
+import { By, until } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
+import mediaBuffered from './setup/conditions/mediaBuffered.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
@@ -18,6 +20,10 @@ test('audio card', async () => {
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
+
+  const audioElement = await driver.findElement(By.css('audio'));
+
+  await driver.wait(mediaBuffered(audioElement));
 
   const base64PNG = await driver.takeScreenshot();
 

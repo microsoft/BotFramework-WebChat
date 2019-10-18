@@ -6,8 +6,8 @@
   "dependencies": {
     "botframework-webchat": "~4.5.1",
     "memoize-one": "^5.0.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
     "react-scripts": "^3.0.1"
   },
   "scripts": {

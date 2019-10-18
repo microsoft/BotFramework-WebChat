@@ -1,0 +1,29 @@
+{
+  "name": "isomorphic-react-dom",
+  "version": "0.0.0-0",
+  "description": "",
+  "main": "dist/react.js",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:babel && npm run build:webpack -- --config webpack-development.config.js",
+    "build:babel": "babel --out-dir lib src",
+    "build:webpack": "webpack",
+    "eslint": "eslint src/**/*.js",
+    "prepublishOnly": "npm run build:babel && npm run build:webpack",
+    "start": "concurrently --kill-others --names \"babel,webpack\" \"npm run build:babel -- --watch\" \"npm run build:webpack -- --watch\"",
+    "watch": "npm start"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "7.6.0",
+    "@babel/core": "7.6.0",
+    "@babel/preset-env": "7.6.0",
+    "concurrently": "4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-prettier": "3.1.0",
+    "prettier": "1.18.2",
+    "webpack": "4.40.1",
+    "webpack-cli": "3.3.8"
+  }
+}

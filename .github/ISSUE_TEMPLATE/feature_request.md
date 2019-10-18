@@ -4,7 +4,6 @@ about: Suggest an idea for this project
 title: ''
 labels: Enhancement, Pending, customer-reported, Bot Services
 assignees: ''
-
 ---
 
 <!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->

@@ -188,6 +188,12 @@ StackedLayout.propTypes = {
   children: PropTypes.any,
   language: PropTypes.string.isRequired,
   styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      bubbleNubSize: PropTypes.number.isRequired,
+      bubbleFromUserNubSize: PropTypes.number.isRequired,
+      botAvatarInitials: PropTypes.string,
+      userAvatarInitials: PropTypes.string
+    }).isRequired,
     stackedLayout: PropTypes.any.isRequired
   }).isRequired,
   timestampClassName: PropTypes.string

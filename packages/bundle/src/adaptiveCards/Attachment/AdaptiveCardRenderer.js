@@ -12,7 +12,7 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-class AdaptiveCardRenderer extends React.PureComponent {
+class AdaptiveCardRenderer extends React.Component {
   constructor(props) {
     super(props);
 

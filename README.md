@@ -140,13 +140,13 @@ You can use Cognitive Services Speech Services to add bi-directional speech func
 
 Web Chat is designed to be customizable without forking the source code. The table below outlines what kind of customizations you can achieve when you are importing Web Chat in different ways. This list is not exhaustive.
 
-|                               | CDN bundle | React    |
+|                               | CDN bundle |  React   |
 | ----------------------------- | :--------: | :------: |
-| Change colors                 | &#10004;   | &#10004; |
-| Change sizes                  | &#10004;   | &#10004; |
-| Update/replace CSS styles     | &#10004;   | &#10004; |
-| Listen to events              | &#10004;   | &#10004; |
-| Interact with hosting webpage | &#10004;   | &#10004; |
+| Change colors                 |  &#10004;  | &#10004; |
+| Change sizes                  |  &#10004;  | &#10004; |
+| Update/replace CSS styles     |  &#10004;  | &#10004; |
+| Listen to events              |  &#10004;  | &#10004; |
+| Interact with hosting webpage |  &#10004;  | &#10004; |
 | Custom render activities      |            | &#10004; |
 | Custom render attachments     |            | &#10004; |
 | Add new UI components         |            | &#10004; |
@@ -155,6 +155,7 @@ Web Chat is designed to be customizable without forking the source code. The tab
 See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
 
 ## Supported Activity Types on the Web Chat Client
+
 Please refer to [`ACTIVITYTYPES.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/ACTIVITYTYPES.md) for list of Web Chat supported activity types.
 
 ## Speech changes in Web Chat 4.5
@@ -248,7 +249,6 @@ Please note, however:
 -  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
 -  Web Chat has no plan to support samples for IE11 (ES5).
    -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
-
 
 # How to connect client app to bot
 

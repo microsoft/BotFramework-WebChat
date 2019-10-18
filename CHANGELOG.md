@@ -21,8 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
-- Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
-- Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
 
 ### Breaking changes
 
@@ -30,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182) and PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
+-  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182) and PR [#2308](https://github.com/microsoft/BotFramework-WebChat/pull/2308)
    -  [`@babel/*@7.5.4`](https://www.npmjs.com/package/@babel/core)
    -  [`jest@24.8.0`](https://www.npmjs.com/package/jest)
    -  [`lerna@3.15.0`](https://www.npmjs.com/package/lerna)
@@ -41,22 +39,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `*`: Bumps Docker container for headless Chrome to `selenium/standalone-chrome:3.141.59-radium`, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
 -  `*`: Moves from [`babel-plugin-version-transform`](https://www.npmjs.com/package/babel-plugin-version-transform) to [`babel-plugin-transform-inline-environment-variables`](https://www.npmjs.com/package/babel-plugin-transform-inline-environment-variables), by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
 -  `*`: Bumps ESLint and related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2185](https://github.com/microsoft/BotFramework-WebChat/pull/2185)
-   - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
-   - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
+   -  [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
+   -  [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
 -  `*`: Bumps React, Redux and their related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2184](https://github.com/microsoft/BotFramework-WebChat/pull/2184)
-   - [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
-   - [`react-redux@5.1.1`](https://www.npmjs.com/package/react-redux)
-   - [`react@16.8.6`](https://www.npmjs.com/package/react)
-   - [`redux@4.0.4`](https://www.npmjs.com/package/redux)
-   - Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
+   -  [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
+   -  [`react-redux@5.1.1`](https://www.npmjs.com/package/react-redux)
+   -  [`react@16.8.6`](https://www.npmjs.com/package/react)
+   -  [`redux@4.0.4`](https://www.npmjs.com/package/redux)
+   -  Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
 -  `*`: Bumps `lodash-*`(https://www.npmjs.com/package/lodash), by [@compulim](https://github.com/compulim), in PR [#2199](https://github.com/microsoft/BotFramework-WebChat/pull/2199)
-   - [`lodash@4.17.14`](https://www.npmjs.com/package/lodash)
-   - [`lodash.mergewith@4.6.2`](https://www.npmjs.com/package/lodash.mergewith)
-   - [`lodash.template@4.5.0`](https://www.npmjs.com/package/lodash.template)
-   - [`lodash.templatesettings@4.2.0`](https://www.npmjs.com/package/lodash.template)
-   - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
-   - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
-   - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
+   -  [`lodash@4.17.14`](https://www.npmjs.com/package/lodash)
+   -  [`lodash.mergewith@4.6.2`](https://www.npmjs.com/package/lodash.mergewith)
+   -  [`lodash.template@4.5.0`](https://www.npmjs.com/package/lodash.template)
+   -  [`lodash.templatesettings@4.2.0`](https://www.npmjs.com/package/lodash.template)
+   -  [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
+   -  [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
+   -  [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
 -  Bumps [`web-speech-cognitive-services@4.0.1-master.6b2b9e3`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246), PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274), and PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 -  Fix for React hooks constraints: both app and component must share the same reference of [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom), in PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
    -  `/`: Install [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) to `devDependencies`
@@ -65,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `playground`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies`
    -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 -  Moved the typing indicator to the send box and removed the typing indicator logic from the sagas, by [@tdurnford](https://github.com/tdurnford), in PR [#2321](https://github.com/microsoft/BotFramework-WebChat/pull/2321)
--  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
+-  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/microsoft/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 -  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 
@@ -91,6 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2360](https://github.com/microsoft/BotFramework-WebChat/issues/2360). Timestamp should update on language change, by [@compulim](https://github.com/compulim) in PR [#2414](https://github.com/microsoft/BotFramework-WebChat/pull/2414)
 -  Fix [#2428](https://github.com/microsoft/BotFramework-WebChat/issues/2428). Should interrupt speech synthesis after microphone button is clicked, by [@compulim](https://github.com/compulim) in PR [#2429](https://github.com/microsoft/BotFramework-WebChat/pull/2429)
 -  Fix [#2435](https://github.com/microsoft/BotFramework-WebChat/issues/2435). Fix microphone button getting stuck on voice-triggered expecting input hint without a speech synthesis engine, by [@compulim](https://github.com/compulim) in PR [#2445](https://github.com/microsoft/BotFramework-WebChat/pull/2445)
+-  Fix [#2472](https://github.com/microsoft/BotFramework-WebChat/issues/2472). Update samples to use repo's version of React, by [@corinagum](https://github.com/corinagum) in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478)
 
 ### Added
 
@@ -102,6 +101,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
 -  Fix [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
 -  Added full screen capability to `IFRAME` in the `YouTubeContent` and `VimeoContent` components by [@tdurnford](https://github.com/tdurnford) in PR [#2399](https://github.com/microsoft/BotFramework-WebChat/pull/2399)
+-  Fix [#2461](https://github.com/Microsoft/BotFramework-WebChat/issues/2461), added `isomorphic-react` and `isomorphic-react-dom` packages, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478)
+-  Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
+-  Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
 
 ### Samples
 
@@ -114,8 +116,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  `bundle`: Bumped DirectLineJS to support metadata when uploading attachments, in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
-   - [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
-   - Removed DirectLineJS as a dev dependency for `component` because it was not referenced
+   -  [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
+   -  Removed DirectLineJS as a dev dependency for `component` because it was not referenced
 
 ### Fixed
 
@@ -126,11 +128,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Make thumbnails when uploading GIF/JPEG/PNG and store it in `channelData.attachmentThumbnails`, by [@compulim](https://github.com/compulim), in PR [#2206](https://github.com/microsoft/BotFramework-WebChat/pull/2206), requires modern browsers with following features:
-   - [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
-   - [`createImageBitmap`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
-   - [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
-   - [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
-      - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
+   -  [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
+   -  [`createImageBitmap`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
+   -  [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
+   -  [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
+      -  Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
 -  Render thumbnail for image attachments using `activity.attachments[].thumbnailUrl`, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
 
 ## [4.5.2] - 2019-08-07
@@ -348,7 +350,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  [Docker-based](https://github.com/SeleniumHQ/docker-selenium) automated testing using headless Chrome and [Web Driver](https://npmjs.com/packages/selenium-webdriver)
    -  Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
    -  Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
-   -  Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
+   -  Test report is hosted on [Coveralls](https://coveralls.io/github/microsoft/BotFramework-WebChat)
 -  Added French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/microsoft/BotFramework-WebChat/pull/1327)
 -  Fix [#1344](https://github.com/microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/microsoft/BotFramework-WebChat/pull/1447)
    -  If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
