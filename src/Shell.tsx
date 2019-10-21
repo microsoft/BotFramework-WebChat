@@ -12,6 +12,7 @@ interface Props {
     strings: Strings,
     listeningState: ListeningState,
     showUploadButton: boolean
+    disableInput: boolean
 
     onChangeText: (inputText: string) => void
 
@@ -92,7 +93,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         const className = classList(
             'wc-console',
             this.props.inputText.length > 0 && 'has-text',
-            this.props.showUploadButton && 'has-upload-button'
+            this.props.showUploadButton && 'has-upload-button',
+            this.props.disableInput && 'disable-input'
         );
 
         const showMicButton = this.props.listeningState !== ListeningState.STOPPED || (Speech.SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
@@ -150,6 +152,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         onKeyPress={ e => this.onKeyPress(e) }
                         onFocus={ () => this.onTextInputFocus() }
                         placeholder={ placeholder }
+                        disabled={ this.props.disableInput }
                         aria-label={ this.props.inputText ? null : placeholder }
                         aria-live="polite"
                     />
@@ -191,6 +194,7 @@ export const Shell = connect(
         // passed down to ShellContainer
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
+        disableInput: state.format.disableInput,
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
@@ -208,6 +212,7 @@ export const Shell = connect(
         // from stateProps
         inputText: stateProps.inputText,
         showUploadButton: stateProps.showUploadButton,
+        disableInput: stateProps.disableInput,
         strings: stateProps.strings,
         listeningState: stateProps.listeningState,
         // from dispatchProps

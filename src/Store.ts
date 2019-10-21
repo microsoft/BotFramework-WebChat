@@ -154,6 +154,8 @@ export interface FormatState {
     chatTitle: boolean | string,
     locale: string,
     showUploadButton: boolean,
+    disableInput: boolean,
+    disableInputWhenNotNeeded: boolean
     strings: Strings,
     carouselMargin: number
 }
@@ -170,6 +172,12 @@ export type FormatAction = {
 } | {
     type: 'Toggle_Upload_Button',
     showUploadButton: boolean
+} | {
+    type: 'Toggle_Disable_Input',
+    disableInput: boolean
+} | {
+    type: 'Toggle_Disable_Input_When_Not_Needed',
+    disableInputWhenNotNeeded: boolean
 }
 
 export const format: Reducer<FormatState> = (
@@ -177,6 +185,8 @@ export const format: Reducer<FormatState> = (
         chatTitle: true,
         locale: 'en-us',
         showUploadButton: true,
+        disableInput: false,
+        disableInputWhenNotNeeded: false,
         strings: defaultStrings,
         carouselMargin: undefined
     },
@@ -203,6 +213,16 @@ export const format: Reducer<FormatState> = (
             return {
                 ...state,
                 showUploadButton: action.showUploadButton
+            };
+        case 'Toggle_Disable_Input':
+            return {
+                ...state,
+                disableInput: action.disableInput
+            };
+        case 'Toggle_Disable_Input_When_Not_Needed':
+            return {
+                ...state,
+                disableInputWhenNotNeeded: action.disableInputWhenNotNeeded
             };
         default:
             return state;
@@ -607,7 +627,13 @@ const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store
 const showUploadBasedOnInputHint: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Receive_Message')
     .map(action => ({ type: 'Toggle_Upload_Button', showUploadButton: action.activity.inputHint === 'expectingUpload' } as FormatAction))
-    
+
+// FEEDYOU disable/hide input prompt only when last message's inputHint=='ignoringInput'
+const disableInputBasedOnInputHint: Epic<ChatActions, ChatState> = (action$, store) => 
+    action$.ofType('Receive_Message')
+    .filter(action => (action.activity as Message) && store.getState().format.disableInputWhenNotNeeded)
+    .map(action => ({ type: 'Toggle_Disable_Input', disableInput: action.activity.inputHint === 'ignoringInput' } as FormatAction))
+
 const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType(
         'Update_Input',
@@ -732,6 +758,7 @@ export const createStore = () =>
             speakSSMLEpic,
             speakOnMessageReceivedEpic,
             showUploadBasedOnInputHint,
+            disableInputBasedOnInputHint,
             startListeningEpic,
             stopListeningEpic,
             stopSpeakingEpic,
