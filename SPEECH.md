@@ -13,200 +13,200 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td></td>
       <td></td>
-      <td><center>Chrome/Edge<br />and Firefox<br />on desktop</center></td>
-      <td><center>Chrome<br />on Android</center></td>
-      <td><center>Safari<br />on macOS/iOS</center></td>
-      <td><center><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></center></td>
-      <td><center><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></center></td>
+      <td colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</td>
+      <td colspan="2">Chrome<br />on Android</td>
+      <td colspan="2">Safari<br />on macOS/iOS</td>
+      <td colspan="2"><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></td>
+      <td colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></td>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>STT</td>
       <td>Basic recognition</td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#custom-speech">Custom Speech</a></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#text-normalization-options">Text normalization options</a></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Click microphone button again to abort recognition</td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Interims</td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Dynamic priming</td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Reference grammar ID</td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select language</td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#using-input-hint">Input hint</a></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center><nobr>❌ *3</nobr></center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔ 4.5</center></td>
+      <td>✔</td><td>4.5</td>
+      <td>✔</td><td>4.5</td>
+      <td>❌</td><td>*3</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.5</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select input device</td>
-      <td><center><nobr>❌ *4</nobr></center></td>
-      <td><center><nobr>❌ *4</nobr></center></td>
-      <td><center><nobr>❌ *4</nobr></center></td>
-      <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center><nobr>❌ *4</nobr></center></td>
+      <td>❌</td><td>*4</td>
+      <td>❌</td><td>*4</td>
+      <td>❌</td><td>*4</td>
+      <td>❌</td><td>*1</td>
+      <td>❌</td><td>*4</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Basic synthesis using text</td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.2</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#using-speech-synthesis-markup-language">Speech Synthesis Markup Language</a></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#custom-voice">Custom voice</a></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Stripping text from Markdown</td>
-      <td><center>✔ 4.5</center></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.5</center></td>
+      <td>✔</td><td>4.5</td>
+      <td>✔</td><td>4.5</td>
+      <td>✔</td><td>4.5</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.5</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Override using "speak" property</td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.2</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Adaptive Cards using "speak" property</td>
-      <td><center>✔ 4.5</center></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center>✔ 4.5</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.5</center></td>
+      <td>✔</td><td>4.5</td>
+      <td>✔</td><td>4.5</td>
+      <td>✔</td><td>4.5</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.5</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Interrupt synthesis when clicking on microphone button</td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center>✔ 4.6</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.6</center></td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Synthesize activity with multiple attachments</td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center>✔ 4.2</center></td>
-      <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔ 4.2</center></td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>✔</td><td>4.2</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.2</td>
     </tr>
   </tbody>
 </table>
 
 Notes:
 
-1. Web View on iOS is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
+1. [Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. As speech recognition is not working, speech synthesis is not tested
 3. On Safari, user gesture is always required for opening microphone. Web Chat cannot programmatically open microphone when we receive an expecting input hint
    - https://github.com/WebAudio/web-audio-api/issues/790
