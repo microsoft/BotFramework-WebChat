@@ -11,13 +11,13 @@ We assume you have already set up a bot and have Web Chat running on a page.
 <table>
   <thead>
     <tr>
-      <td></td>
-      <td></td>
-      <td colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</td>
-      <td colspan="2">Chrome<br />on Android</td>
-      <td colspan="2">Safari<br />on macOS/iOS</td>
-      <td colspan="2"><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></td>
-      <td colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></td>
+      <th></th>
+      <th></th>
+      <th colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</th>
+      <th colspan="2">Chrome<br />on Android</th>
+      <th colspan="2">Safari<br />on macOS/iOS</th>
+      <th colspan="2"><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></th>
+      <th colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></th>
     </tr>
   </thead>
   <tbody>
@@ -47,15 +47,6 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <td>✔</td><td>4.2</td>
       <td>❌</td><td>*1</td>
       <td>✔</td><td>4.2</td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Click microphone button again to abort recognition</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
@@ -110,6 +101,15 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <td>❌</td><td>*4</td>
       <td>❌</td><td>*1</td>
       <td>❌</td><td>*4</td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Abort recognition by clicking microphone button</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❌</td><td>*1</td>
+      <td>✔</td><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -185,21 +185,21 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Interrupt synthesis when clicking on microphone button</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
-    </tr>
-    <tr>
-      <td>TTS</td>
       <td>Synthesize activity with multiple attachments</td>
       <td>✔</td><td>4.2</td>
       <td>✔</td><td>4.2</td>
       <td>✔</td><td>4.2</td>
       <td>❓</td><td>*2</td>
       <td>✔</td><td>4.2</td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Interrupt synthesis when clicking on microphone button (<a href="https://github.com/microsoft/BotFramework-WebChat/issues/2428">Bug</a>) (<a href="https://github.com/microsoft/BotFramework-WebChat/pull/2429">PR</a>)</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>✔</td><td>4.6</td>
+      <td>❓</td><td>*2</td>
+      <td>✔</td><td>4.6</td>
     </tr>
   </tbody>
 </table>
