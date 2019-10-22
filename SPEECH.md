@@ -27,7 +27,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -36,7 +36,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -45,7 +45,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
     <tr>
@@ -54,7 +54,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -63,7 +63,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
     <tr>
@@ -72,7 +72,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -81,7 +81,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -90,7 +90,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
     <tr>
@@ -98,18 +98,18 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <td><a href="#using-input-hint">Input hint</a></td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❌</th><td><sup>*3</sup></td>
-      <th>❌</th><td><sup>*1</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.5</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select input device</td>
-      <th>❌</th><td><sup>*4</sup></td>
-      <th>❌</th><td><sup>*4</sup></td>
-      <th>❌</th><td><sup>*4</sup></td>
-      <th>❌</th><td><sup>*1</sup></td>
-      <th>❌</th><td><sup>*4</sup></td>
+      <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -117,7 +117,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
     <tr>
@@ -126,7 +126,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -135,7 +135,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -144,7 +144,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -153,7 +153,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -162,7 +162,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.5</td>
     </tr>
     <tr>
@@ -171,7 +171,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
     <tr>
@@ -180,7 +180,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.5</td>
     </tr>
     <tr>
@@ -189,7 +189,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
     </tr>
     <tr>
@@ -198,13 +198,13 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><sup>*2</sup></td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
     </tr>
   </tbody>
 </table>
 
-Notes:
+### Notes
 
 1. [Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. As speech recognition is not working, speech synthesis is not tested
