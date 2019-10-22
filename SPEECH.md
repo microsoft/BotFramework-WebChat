@@ -16,8 +16,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</th>
       <th colspan="2">Chrome<br />on Android</th>
       <th colspan="2">Safari<br />on macOS/iOS</th>
-      <th colspan="2"><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></th>
       <th colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></th>
+      <th colspan="2"><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></th>
     </tr>
   </thead>
   <tbody>
@@ -27,8 +27,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -36,8 +36,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -45,8 +45,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -54,8 +54,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -63,8 +63,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -72,8 +72,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -81,8 +81,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -90,8 +90,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -99,8 +99,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
       <th>❌</th><td><a href="#notes"><sup>*3</sup></a></td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>✔</th><td>4.5</td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -108,8 +108,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
       <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
       <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
-      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
       <th>❌</th><td><a href="#notes"><sup>*4</sup></a></td>
+      <th>❌</th><td><a href="#notes"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -117,8 +117,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -126,8 +126,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -135,8 +135,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -144,8 +144,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -153,8 +153,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -162,8 +162,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.5</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -171,8 +171,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -180,8 +180,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.5</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -189,8 +189,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.6</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.6</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -198,8 +198,8 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
-      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
       <th>✔</th><td>4.2</td>
+      <th>❓</th><td><a href="#notes"><sup>*2</sup></a></td>
     </tr>
   </tbody>
 </table>
