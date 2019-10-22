@@ -13,11 +13,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td></td>
       <td></td>
-      <td><center>Chrome/Edge/Firefox<br />on desktop</center></td>
+      <td><center>Chrome/Edge<br />and Firefox<br />on desktop</center></td>
       <td><center>Chrome<br />on Android</center></td>
-      <td><center>Safari<br />on Mac OS and iOS</center></td>
-      <td><center>Web View<br />on iOS</center></td>
-      <td><center>Web View<br />on Android</center></td>
+      <td><center>Safari<br />on macOS/iOS</center></td>
+      <td><center><a href="https://developer.apple.com/documentation/webkit/wkwebview">Web View<br />on iOS</a></center></td>
+      <td><center><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></center></td>
     </tr>
   </thead>
   <tbody>
@@ -32,7 +32,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td><a href="#custom-speech">Custom speech</a></td>
+      <td><a href="#custom-speech">Custom Speech</a></td>
       <td><center>✔ 4.6</center></td>
       <td><center>✔ 4.6</center></td>
       <td><center>✔ 4.6</center></td>
@@ -42,11 +42,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td><a href="#text-normalization-options">Text normalization options</a></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -60,11 +60,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Interims</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
     <tr>
       <td>STT</td>
@@ -87,24 +87,24 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Select language</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
     <tr>
       <td>STT</td>
-      <td><a href="#using-input-hint">Input hint <code>expecting</code></a></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><a href="#using-input-hint">Input hint</a></td>
+      <td><center>✔ 4.5</center></td>
+      <td><center>✔ 4.5</center></td>
       <td><center><nobr>❌ *3</nobr></center></td>
       <td><center><nobr>❌ *1</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.5</center></td>
     </tr>
     <tr>
       <td>STT</td>
-      <td>Selecting input device</td>
+      <td>Select input device</td>
       <td><center><nobr>❌ *4</nobr></center></td>
       <td><center><nobr>❌ *4</nobr></center></td>
       <td><center><nobr>❌ *4</nobr></center></td>
@@ -114,20 +114,20 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td>Basic synthesis using text</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#using-speech-synthesis-markup-language">Speech Synthesis Markup Language</a></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
+      <td><center>✔ 4.6</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.6</center></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -159,29 +159,29 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td>Stripping text from Markdown</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.5</center></td>
+      <td><center>✔ 4.5</center></td>
+      <td><center>✔ 4.5</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.5</center></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Override using "speak" property</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Adaptive Cards using "speak" property</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.5</center></td>
+      <td><center>✔ 4.5</center></td>
+      <td><center>✔ 4.5</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.5</center></td>
     </tr>
     <tr>
       <td>TTS</td>
@@ -195,11 +195,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td>Synthesize activity with multiple attachments</td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
+      <td><center>✔ 4.2</center></td>
       <td><center><nobr>❓ *2</nobr></center></td>
-      <td><center>✔</center></td>
+      <td><center>✔ 4.2</center></td>
     </tr>
   </tbody>
 </table>
@@ -210,8 +210,10 @@ Notes:
 2. As speech recognition is not working, speech synthesis is not tested
 3. On Safari, user gesture is always required for opening microphone. Web Chat cannot programmatically open microphone when we receive an expecting input hint
    - https://github.com/WebAudio/web-audio-api/issues/790
+   - We are planning to unblock by changing UX, https://github.com/microsoft/BotFramework-WebChat/issues/2211
 4. Web Chat currently do not support selecting different device for audio recording
    - https://github.com/microsoft/BotFramework-WebChat/issues/2481
+   - Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
 
 ## Requirements
 
@@ -238,7 +240,7 @@ Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. 
 -  Browser must [support Web Audio API][web audio api support]
    -  Available on all modern browsers on desktop and mobile platform
 
-#### Special considerations for Safari on Mac OS and iOS
+#### Special considerations for Safari on macOS and iOS
 
 Safari requires additional permission granted _implicitly_ by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
 
@@ -340,6 +342,8 @@ The bot can set input hint when sending activity to the user to indicate whether
 -  `"expectingInput"`: Web Chat will open the microphone after the bot's message is spoken and the last message was sent through microphone
 -  `"acceptingInput"`: Web Chat will do nothing after the bot's message is spoken
 -  `"ignoringInput"`: Web Chat will explicitly close the microphone
+
+> Note: `expectingInput` is currently not working on Safari on both macOS and iOS.
 
 For more details, please follow this article on [adding input hints to messages][add input hints to messages].
 
