@@ -24,182 +24,182 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Basic recognition</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#custom-speech">Custom Speech</a></td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#text-normalization-options">Text normalization options</a></td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Interims</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Dynamic priming</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Reference grammar ID</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select language</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#using-input-hint">Input hint</a></td>
-      <td>✔</td><td>4.5</td>
-      <td>✔</td><td>4.5</td>
-      <td>❌</td><td>*3</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>❌</th><td>*3</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.5</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select input device</td>
-      <td>❌</td><td>*4</td>
-      <td>❌</td><td>*4</td>
-      <td>❌</td><td>*4</td>
-      <td>❌</td><td>*1</td>
-      <td>❌</td><td>*4</td>
+      <th>❌</th><td>*4</td>
+      <th>❌</th><td>*4</td>
+      <th>❌</th><td>*4</td>
+      <th>❌</th><td>*1</td>
+      <th>❌</th><td>*4</td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Abort recognition by clicking microphone button</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❌</td><td>*1</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❌</th><td>*1</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Basic synthesis using text</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#using-speech-synthesis-markup-language">Speech Synthesis Markup Language</a></td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#custom-voice">Custom voice</a></td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.6</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Stripping text from Markdown</td>
-      <td>✔</td><td>4.5</td>
-      <td>✔</td><td>4.5</td>
-      <td>✔</td><td>4.5</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.5</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Override using "speak" property</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Adaptive Cards using "speak" property</td>
-      <td>✔</td><td>4.5</td>
-      <td>✔</td><td>4.5</td>
-      <td>✔</td><td>4.5</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>✔</th><td>4.5</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.5</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Synthesize activity with multiple attachments</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>✔</td><td>4.2</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.2</td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Interrupt synthesis when clicking on microphone button (<a href="https://github.com/microsoft/BotFramework-WebChat/issues/2428">Bug</a>) (<a href="https://github.com/microsoft/BotFramework-WebChat/pull/2429">PR</a>)</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>✔</td><td>4.6</td>
-      <td>❓</td><td>*2</td>
-      <td>✔</td><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.6</td>
+      <th>❓</th><td>*2</td>
+      <th>✔</th><td>4.6</td>
     </tr>
   </tbody>
 </table>
