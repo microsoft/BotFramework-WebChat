@@ -1,6 +1,7 @@
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
+  audioConfig,
   authorizationToken,
   enableTelemetry,
   region,
@@ -16,6 +17,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
 
   return ({ referenceGrammarID }) => {
     const ponyfill = createPonyfill({
+      audioConfig,
       authorizationToken,
       enableTelemetry,
       referenceGrammars: [`luis/${referenceGrammarID}-PRODUCTION`],
