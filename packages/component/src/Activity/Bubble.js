@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -18,22 +20,89 @@ const ROOT_CSS = css({
   }
 });
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => (
-  <div
-    aria-hidden={ariaHidden}
-    className={classNames(
-      ROOT_CSS + '',
-      styleSet.bubble + '',
-      { 'from-user': fromUser, webchat__bubble_has_nub: nub },
-      className + '' || ''
-    )}
-  >
-    <div className="webchat__bubble__content">{children}</div>
-    {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-      <div className="webchat__bubble__nub" />
-    )}
-  </div>
-);
+function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
+  if (!nubSize) {
+    return false;
+  }
+
+  const halfNubSize = nubSize / 2;
+  const halfStrokeWidth = strokeWidth / 2;
+
+  // Horizontally mirror the nub if it is from user
+  const horizontalTransform =
+    side === 'bot' ? '' : `translate(${halfNubSize} 0) scale(-1 1) translate(${-halfNubSize} 0)`;
+
+  // Vertically mirror the nub if it is up-side-down
+  const verticalTransform = upSideDown ? `translate(0 ${halfNubSize}) scale(1 -1) translate(0 ${-halfNubSize})` : '';
+
+  const p1 = [nubSize, halfStrokeWidth].join(' ');
+  const p2 = [strokeWidth, halfStrokeWidth].join(' ');
+  const p3 = [nubSize + strokeWidth, nubSize + halfStrokeWidth].join(' ');
+
+  return (
+    <svg
+      className="webchat__bubble__nub"
+      version="1.1"
+      viewBox={`0 0 ${nubSize} ${nubSize}`}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g transform={`${horizontalTransform} ${verticalTransform}`}>
+        <path d={`M${p1} L${p2} L${p3}`} />
+      </g>
+    </svg>
+  );
+}
+
+function isPositive(value) {
+  return 1 / value >= 0;
+}
+
+const Bubble = ({
+  'aria-hidden': ariaHidden,
+  children,
+  className,
+  fromUser,
+  nub,
+  styleSet: { bubble: bubbleCSS, options: styleOptions }
+}) => {
+  const {
+    bubbleBorderWidth,
+    bubbleFromUserBorderWidth,
+    bubbleFromUserNubSize,
+    bubbleNubSize,
+    bubbleNubOffset,
+    bubbleFromUserNubOffset
+  } = styleOptions;
+
+  const { borderWidth, nubOffset, nubSize, side } = fromUser
+    ? {
+        borderWidth: bubbleFromUserBorderWidth,
+        nubOffset: bubbleFromUserNubOffset,
+        nubSize: bubbleFromUserNubSize,
+        side: 'user'
+      }
+    : {
+        borderWidth: bubbleBorderWidth,
+        nubOffset: bubbleNubOffset,
+        nubSize: bubbleNubSize,
+        side: 'bot'
+      };
+
+  return (
+    <div
+      aria-hidden={ariaHidden}
+      className={classNames(
+        ROOT_CSS + '',
+        bubbleCSS + '',
+        { 'from-user': fromUser, webchat__bubble_has_nub: nub },
+        className + '' || ''
+      )}
+    >
+      <div className="webchat__bubble__content">{children}</div>
+      {nub && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
+    </div>
+  );
+};
 
 Bubble.defaultProps = {
   'aria-hidden': false,
@@ -52,8 +121,12 @@ Bubble.propTypes = {
   styleSet: PropTypes.shape({
     bubble: PropTypes.any.isRequired,
     options: PropTypes.shape({
-      bubbleNubSize: PropTypes.number.isRequired,
-      bubbleFromUserNubSize: PropTypes.number.isRequired
+      bubbleBorderWidth: PropTypes.number.isRequired,
+      bubbleFromUserBorderWidth: PropTypes.number.isRequired,
+      bubbleFromUserNubOffset: PropTypes.number.isRequired,
+      bubbleFromUserNubSize: PropTypes.number.isRequired,
+      bubbleNubOffset: PropTypes.number.isRequired,
+      bubbleNubSize: PropTypes.number.isRequired
     }).isRequired
   }).isRequired
 };

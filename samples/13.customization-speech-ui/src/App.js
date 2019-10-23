@@ -8,7 +8,10 @@ import React, { Component } from 'react';
 
 import CustomDictationInterims from './CustomDictationInterims';
 import CustomMicrophoneButton from './CustomMicrophoneButton';
-import fetchSpeechServicesToken from './fetchSpeechServicesToken';
+import {
+  region as fetchSpeechServicesRegion,
+  token as fetchSpeechServicesToken
+} from './fetchSpeechServicesCredentials';
 import LastBotActivity from './LastBotActivity';
 
 const { Composer } = Components;
@@ -27,9 +30,8 @@ export default class App extends Component {
     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
     const { token } = await res.json();
     const webSpeechPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
-      // TODO: [P3] Fetch token should be able to return different region
       authorizationToken: fetchSpeechServicesToken,
-      region: 'westus'
+      region: await fetchSpeechServicesRegion()
     });
 
     this.setState(() => ({

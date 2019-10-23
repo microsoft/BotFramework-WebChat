@@ -13,6 +13,7 @@ import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
 import isDictating from './isDictating';
 import pingBot from './pingBot';
+import playMediaToCompletion from './playMediaToCompletion';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
@@ -48,6 +49,7 @@ export default function pageObjects(driver) {
       getStore,
       isDictating,
       pingBot,
+      playMediaToCompletion,
       putSpeechRecognitionResult,
       sendFile,
       sendMessageViaMicrophone,

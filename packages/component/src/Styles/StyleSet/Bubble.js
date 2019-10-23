@@ -1,33 +1,7 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
-
-import Color from 'color';
-
-function acuteNubSVG(nubSize = 10, backgroundColor, color, strokeWidth = 1, side = 'bot', upSideDown = false) {
-  const halfNubSize = nubSize / 2;
-  const halfStrokeWidth = strokeWidth / 2;
-  const horizontalTransform =
-    side === 'bot' ? '' : `translate(${halfNubSize} 0) scale(-1 1) translate(${-halfNubSize} 0)`;
-  const verticalTransform = upSideDown ? `translate(0 ${halfNubSize}) scale(1 -1) translate(0 ${-halfNubSize})` : '';
-
-  const p1 = [nubSize, halfStrokeWidth].join(' ');
-  const p2 = [strokeWidth, halfStrokeWidth].join(' ');
-  const p3 = [nubSize + strokeWidth, nubSize + halfStrokeWidth].join(' ');
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${nubSize} ${nubSize}"><g transform="${horizontalTransform} ${verticalTransform}"><path d="M${p1} L${p2} L${p3}" fill="${Color(
-    (backgroundColor || '').toLowerCase()
-  )
-    .rgb()
-    .string()}" stroke="${Color((color || '').toLowerCase())
-    .rgb()
-    .string()}" stroke-width="${strokeWidth}px" /></g></svg>`;
-}
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 
 function isPositive(value) {
   return 1 / value >= 0;
-}
-
-function svgToDataURI(svg) {
-  return `data:image/svg+xml;utf8,${svg.replace(/"/gu, "'")}`;
 }
 
 export default function createBubbleStyle({
@@ -51,37 +25,8 @@ export default function createBubbleStyle({
   messageActivityWordBreak,
   paddingRegular
 }) {
-  if (bubbleFromUserNubOffset === 'top') {
-    bubbleFromUserNubOffset = 0;
-  } else if (typeof bubbleFromUserNubOffset !== 'number') {
-    bubbleFromUserNubOffset = -0;
-  }
-
-  if (bubbleNubOffset === 'top') {
-    bubbleNubOffset = 0;
-  } else if (typeof bubbleNubOffset !== 'number') {
-    bubbleNubOffset = -0;
-  }
-
   const botNubUpSideDown = !isPositive(bubbleNubOffset);
   const userNubUpSideDown = !isPositive(bubbleFromUserNubOffset);
-
-  const botNubSVG = acuteNubSVG(
-    bubbleNubSize,
-    bubbleBackground,
-    bubbleBorderColor,
-    bubbleBorderWidth,
-    'bot',
-    botNubUpSideDown
-  );
-  const userNubSVG = acuteNubSVG(
-    bubbleFromUserNubSize,
-    bubbleFromUserBackground,
-    bubbleFromUserBorderColor,
-    bubbleFromUserBorderWidth,
-    'user',
-    userNubUpSideDown
-  );
 
   const botNubCornerRadius = Math.min(bubbleBorderRadius, Math.abs(bubbleNubOffset));
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
@@ -89,6 +34,11 @@ export default function createBubbleStyle({
   return {
     '& > .webchat__bubble__content': {
       wordBreak: messageActivityWordBreak
+    },
+
+    '& > .webchat__bubble__nub': {
+      overflow: 'hidden', // This style is for IE11 because it don't respect SVG viewport
+      position: 'absolute'
     },
 
     '&:not(.from-user)': {
@@ -113,12 +63,17 @@ export default function createBubbleStyle({
       },
 
       '& > .webchat__bubble__nub': {
-        backgroundImage: `url("${svgToDataURI(botNubSVG).replace(/"/gu, "'")}")`,
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
         left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
         top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
-        width: bubbleNubSize
+        width: bubbleNubSize,
+
+        '& > g > path': {
+          fill: bubbleBackground,
+          stroke: bubbleBorderColor,
+          strokeWidth: bubbleBorderWidth
+        }
       }
     },
 
@@ -144,12 +99,17 @@ export default function createBubbleStyle({
       },
 
       '& > .webchat__bubble__nub': {
-        backgroundImage: `url("${svgToDataURI(userNubSVG).replace(/"/gu, "'")}")`,
         height: bubbleFromUserNubSize,
         right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
         top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
-        width: bubbleFromUserNubSize
+        width: bubbleFromUserNubSize,
+
+        '& > g > path': {
+          fill: bubbleFromUserBackground,
+          stroke: bubbleFromUserBorderColor,
+          strokeWidth: bubbleFromUserBorderWidth
+        }
       }
     }
   };

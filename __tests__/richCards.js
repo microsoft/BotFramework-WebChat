@@ -24,6 +24,7 @@ test('audio card', async () => {
   const audioElement = await driver.findElement(By.css('audio'));
 
   await driver.wait(mediaBuffered(audioElement));
+  await pageObjects.playMediaToCompletion(audioElement);
 
   const base64PNG = await driver.takeScreenshot();
 
