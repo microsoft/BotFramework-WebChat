@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fix [#2157](https://github.com/Microsoft/BotFramework-WebChat/issues/2157), added `emitTypingIndicator` action and dispatcher, by [@compulim](https://github.com/compulim), in PR [#2413](https://github.com/microsoft/BotFramework-WebChat/pull/2413)
 -  Fix [#2307](https://github.com/Microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/Microsoft/BotFramework-WebChat/pull/2332)
--  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/Microsoft/BotFramework-WebChat/pull/2137)
+-  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/microsoft/BotFramework-WebChat/pull/2137) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -  Fix [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
