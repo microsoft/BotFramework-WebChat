@@ -21,10 +21,18 @@ const ROOT_CSS = css({
 });
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
+  if (!nubSize) {
+    return false;
+  }
+
   const halfNubSize = nubSize / 2;
   const halfStrokeWidth = strokeWidth / 2;
+
+  // Horizontally mirror the nub if it is from user
   const horizontalTransform =
     side === 'bot' ? '' : `translate(${halfNubSize} 0) scale(-1 1) translate(${-halfNubSize} 0)`;
+
+  // Vertically mirror the nub if it is up-side-down
   const verticalTransform = upSideDown ? `translate(0 ${halfNubSize}) scale(1 -1) translate(0 ${-halfNubSize})` : '';
 
   const p1 = [nubSize, halfStrokeWidth].join(' ');
@@ -66,6 +74,20 @@ const Bubble = ({
     bubbleFromUserNubOffset
   } = styleOptions;
 
+  const { borderWidth, nubOffset, nubSize, side } = fromUser
+    ? {
+        borderWidth: bubbleFromUserBorderWidth,
+        nubOffset: bubbleFromUserNubOffset,
+        nubSize: bubbleFromUserNubSize,
+        side: 'user'
+      }
+    : {
+        borderWidth: bubbleBorderWidth,
+        nubOffset: bubbleNubOffset,
+        nubSize: bubbleNubSize,
+        side: 'bot'
+      };
+
   return (
     <div
       aria-hidden={ariaHidden}
@@ -77,11 +99,7 @@ const Bubble = ({
       )}
     >
       <div className="webchat__bubble__content">{children}</div>
-      {nub &&
-        !!(fromUser ? styleOptions.bubbleFromUserNubSize : styleOptions.bubbleNubSize) &&
-        (fromUser
-          ? acuteNubSVG(bubbleFromUserNubSize, bubbleFromUserBorderWidth, 'user', !isPositive(bubbleFromUserNubOffset))
-          : acuteNubSVG(bubbleNubSize, bubbleBorderWidth, 'bot', !isPositive(bubbleNubOffset)))}
+      {nub && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
     </div>
   );
 };
