@@ -207,11 +207,11 @@ We assume you have already set up a bot and have Web Chat running on a page.
 ### Notes
 
 1. [Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
-2. As speech recognition is not working, speech synthesis is not tested
-3. On Safari, user gesture is always required for opening microphone. Web Chat cannot programmatically open microphone when we receive an expecting input hint
+2. As speech recognition is not working (see above), speech synthesis is not tested
+3. On Safari, user gesture is always required for opening the microphone. Web Chat is unable to programmatically open the microphone when we receive an expecting input hint
    - https://github.com/WebAudio/web-audio-api/issues/790
    - We are planning to unblock by changing UX, https://github.com/microsoft/BotFramework-WebChat/issues/2211
-4. Web Chat currently do not support selecting different device for audio recording
+4. Web Chat currently does not support selecting a different device for audio recording
    - https://github.com/microsoft/BotFramework-WebChat/issues/2481
    - Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
 
@@ -343,7 +343,7 @@ The bot can set input hint when sending activity to the user to indicate whether
 -  `"acceptingInput"`: Web Chat will do nothing after the bot's message is spoken
 -  `"ignoringInput"`: Web Chat will explicitly close the microphone
 
-> Note: `expectingInput` is currently not working on Safari on both macOS and iOS.
+> Note: `expectingInput` is currently not working on Safari for both macOS and iOS.
 
 For more details, please follow this article on [adding input hints to messages][add input hints to messages].
 
