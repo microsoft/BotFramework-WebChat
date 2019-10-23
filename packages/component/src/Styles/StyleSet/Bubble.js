@@ -78,7 +78,13 @@ export default function createBubbleStyle({
         height: bubbleNubSize,
         left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
         top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
-        width: bubbleNubSize
+        width: bubbleNubSize,
+
+        '& > g > path': {
+          fill: bubbleBackground,
+          stroke: bubbleBorderColor,
+          strokeWidth: bubbleBorderWidth
+        }
       }
     },
 
@@ -108,7 +114,13 @@ export default function createBubbleStyle({
         right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
         top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
-        width: bubbleFromUserNubSize
+        width: bubbleFromUserNubSize,
+
+        '& > g > path': {
+          fill: bubbleFromUserBackground,
+          stroke: bubbleFromUserBorderColor,
+          strokeWidth: bubbleFromUserBorderWidth
+        }
       }
     }
   };

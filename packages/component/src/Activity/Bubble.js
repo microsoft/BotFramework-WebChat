@@ -18,7 +18,7 @@ const ROOT_CSS = css({
   }
 });
 
-function acuteNubSVG(nubSize, backgroundColor, color, strokeWidth, side, upSideDown = false) {
+function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
   const halfNubSize = nubSize / 2;
   const halfStrokeWidth = strokeWidth / 2;
   const horizontalTransform =
@@ -37,7 +37,7 @@ function acuteNubSVG(nubSize, backgroundColor, color, strokeWidth, side, upSideD
       xmlns="http://www.w3.org/2000/svg"
     >
       <g transform={`${horizontalTransform} ${verticalTransform}`}>
-        <path d={`M${p1} L${p2} L${p3}`} fill={backgroundColor} stroke={color} strokeWidth={strokeWidth} />
+        <path d={`M${p1} L${p2} L${p3}`} />
       </g>
     </svg>
   );
@@ -49,11 +49,7 @@ function isPositive(value) {
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => {
   const {
-    bubbleBackground,
-    bubbleBorderColor,
     bubbleBorderWidth,
-    bubbleFromUserBackground,
-    bubbleFromUserBorderColor,
     bubbleFromUserBorderWidth,
     bubbleFromUserNubOffset,
     bubbleFromUserNubSize,
@@ -75,22 +71,8 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub,
       {nub &&
         !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) &&
         (fromUser
-          ? acuteNubSVG(
-              bubbleFromUserNubSize,
-              bubbleFromUserBackground,
-              bubbleFromUserBorderColor,
-              bubbleFromUserBorderWidth,
-              'user',
-              !isPositive(bubbleFromUserNubOffset)
-            )
-          : acuteNubSVG(
-              bubbleNubSize,
-              bubbleBackground,
-              bubbleBorderColor,
-              bubbleBorderWidth,
-              'bot',
-              !isPositive(bubbleNubOffset)
-            ))}
+          ? acuteNubSVG(bubbleFromUserNubSize, bubbleFromUserBorderWidth, 'user', !isPositive(bubbleFromUserNubOffset))
+          : acuteNubSVG(bubbleNubSize, bubbleBorderWidth, 'bot', !isPositive(bubbleNubOffset)))}
     </div>
   );
 };
