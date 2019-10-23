@@ -37,6 +37,7 @@ export default function createBubbleStyle({
     },
 
     '& > .webchat__bubble__nub': {
+      overflow: 'hidden', // This style is for IE11 because it don't respect SVG viewport
       position: 'absolute'
     },
 
