@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 
 function isPositive(value) {
   return 1 / value >= 0;
@@ -25,18 +25,6 @@ export default function createBubbleStyle({
   messageActivityWordBreak,
   paddingRegular
 }) {
-  if (bubbleFromUserNubOffset === 'top') {
-    bubbleFromUserNubOffset = 0;
-  } else if (typeof bubbleFromUserNubOffset !== 'number') {
-    bubbleFromUserNubOffset = -0;
-  }
-
-  if (bubbleNubOffset === 'top') {
-    bubbleNubOffset = 0;
-  } else if (typeof bubbleNubOffset !== 'number') {
-    bubbleNubOffset = -0;
-  }
-
   const botNubUpSideDown = !isPositive(bubbleNubOffset);
   const userNubUpSideDown = !isPositive(bubbleFromUserNubOffset);
 

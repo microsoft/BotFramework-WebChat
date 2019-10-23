@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -47,29 +49,36 @@ function isPositive(value) {
   return 1 / value >= 0;
 }
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => {
+const Bubble = ({
+  'aria-hidden': ariaHidden,
+  children,
+  className,
+  fromUser,
+  nub,
+  styleSet: { bubble: bubbleCSS, options: styleOptions }
+}) => {
   const {
     bubbleBorderWidth,
     bubbleFromUserBorderWidth,
-    bubbleFromUserNubOffset,
     bubbleFromUserNubSize,
+    bubbleNubSize,
     bubbleNubOffset,
-    bubbleNubSize
-  } = styleSet.options;
+    bubbleFromUserNubOffset
+  } = styleOptions;
 
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
-        styleSet.bubble + '',
+        bubbleCSS + '',
         { 'from-user': fromUser, webchat__bubble_has_nub: nub },
         className + '' || ''
       )}
     >
       <div className="webchat__bubble__content">{children}</div>
       {nub &&
-        !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) &&
+        !!(fromUser ? styleOptions.bubbleFromUserNubSize : styleOptions.bubbleNubSize) &&
         (fromUser
           ? acuteNubSVG(bubbleFromUserNubSize, bubbleFromUserBorderWidth, 'user', !isPositive(bubbleFromUserNubOffset))
           : acuteNubSVG(bubbleNubSize, bubbleBorderWidth, 'bot', !isPositive(bubbleNubOffset)))}
@@ -94,8 +103,12 @@ Bubble.propTypes = {
   styleSet: PropTypes.shape({
     bubble: PropTypes.any.isRequired,
     options: PropTypes.shape({
-      bubbleNubSize: PropTypes.number.isRequired,
-      bubbleFromUserNubSize: PropTypes.number.isRequired
+      bubbleBorderWidth: PropTypes.number.isRequired,
+      bubbleFromUserBorderWidth: PropTypes.number.isRequired,
+      bubbleFromUserNubOffset: PropTypes.number.isRequired,
+      bubbleFromUserNubSize: PropTypes.number.isRequired,
+      bubbleNubOffset: PropTypes.number.isRequired,
+      bubbleNubSize: PropTypes.number.isRequired
     }).isRequired
   }).isRequired
 };
