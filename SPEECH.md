@@ -242,7 +242,7 @@ Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. 
 
 #### Special considerations for Safari on macOS and iOS
 
-Safari requires additional permission granted _implicitly_ by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
+Safari requires additional permission granted _explicitly_ by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
 
 When the user taps on the microphone button for the first time, Web Chat will play a very short and silent audio clip. This will enable Web Chat to play any audio clip synthesized from bot messages.
 
