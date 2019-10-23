@@ -68,7 +68,14 @@ export default function createStyleSet(options) {
   // Keep this list flat (no nested style) and serializable (no functions)
 
   // TODO: [P4] Deprecate this code after bump to v5
-  const { bubbleBorder, bubbleFromUserBorder, suggestedActionBorder, suggestedActionDisabledBorder } = options;
+  const {
+    bubbleBorder,
+    bubbleFromUserBorder,
+    bubbleFromUserNubOffset,
+    bubbleNubOffset,
+    suggestedActionBorder,
+    suggestedActionDisabledBorder
+  } = options;
 
   if (bubbleBorder) {
     console.warn(
@@ -148,6 +155,18 @@ export default function createStyleSet(options) {
     if (PIXEL_UNIT_PATTERN.test(width)) {
       options.suggestedActionDisabledBorderWidth = parseInt(width, 10);
     }
+  }
+
+  if (bubbleFromUserNubOffset === 'top') {
+    options.bubbleFromUserNubOffset = 0;
+  } else if (typeof bubbleFromUserNubOffset !== 'number') {
+    options.bubbleFromUserNubOffset = -0;
+  }
+
+  if (bubbleNubOffset === 'top') {
+    options.bubbleNubOffset = 0;
+  } else if (typeof bubbleNubOffset !== 'number') {
+    options.bubbleNubOffset = -0;
   }
 
   return {

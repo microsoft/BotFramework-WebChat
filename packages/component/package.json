@@ -47,7 +47,6 @@
     "botframework-webchat-core": "0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
-    "color": "^3.1.1",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.13.0",
     "glamor": "^2.20.40",
