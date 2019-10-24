@@ -503,5 +503,5 @@ function getReferrerUserData() {
 }
 
 function getLocaleUserData(locale?: string) {
-    return locale ? {locale} : {}
+    return locale ? {locale: locale.replace(/-.*/,'')} : {}
 }
