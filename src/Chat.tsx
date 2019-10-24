@@ -217,6 +217,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                                 ...(this.props.userData || {}),
                                 ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {}),
                                 ...getGoogleAnalyticsUserData(),
+                                ...getLocaleUserData(this.props.locale),
                                 ...getReferrerUserData()
                             }
                         }
@@ -499,4 +500,8 @@ function getGoogleAnalyticsUserData() {
 
 function getReferrerUserData() {
     return {referrerUrl: window.location.href}
+}
+
+function getLocaleUserData(locale?: string) {
+    return locale ? {locale} : {}
 }
