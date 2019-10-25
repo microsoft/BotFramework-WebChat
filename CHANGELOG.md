@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 <!-- ### Added
--  Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Resolve [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
 ## [Unreleased]
@@ -94,18 +94,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Fix [#2157](https://github.com/Microsoft/BotFramework-WebChat/issues/2157), added `emitTypingIndicator` action and dispatcher, by [@compulim](https://github.com/compulim), in PR [#2413](https://github.com/microsoft/BotFramework-WebChat/pull/2413)
--  Fix [#2307](https://github.com/Microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/Microsoft/BotFramework-WebChat/pull/2332)
+-  Resolve [#2157](https://github.com/Microsoft/BotFramework-WebChat/issues/2157), added `emitTypingIndicator` action and dispatcher, by [@compulim](https://github.com/compulim), in PR [#2413](https://github.com/microsoft/BotFramework-WebChat/pull/2413)
+-  Resolve [#2307](https://github.com/Microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/Microsoft/BotFramework-WebChat/pull/2332)
 -  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/microsoft/BotFramework-WebChat/pull/2137) and PR [#2487](https://github.com/microsoft/BotFramework-WebChat/pull/2487)
--  Fix [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
+-  Resolve [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
--  Fix [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
+-  Resolve [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
 -  Added full screen capability to `IFRAME` in the `YouTubeContent` and `VimeoContent` components by [@tdurnford](https://github.com/tdurnford) in PR [#2399](https://github.com/microsoft/BotFramework-WebChat/pull/2399)
--  Fix [#2461](https://github.com/Microsoft/BotFramework-WebChat/issues/2461), added `isomorphic-react` and `isomorphic-react-dom` packages, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478) and PR [#2486](https://github.com/microsoft/BotFramework-WebChat/pull/2486)
+-  Resolve [#2461](https://github.com/Microsoft/BotFramework-WebChat/issues/2461), added `isomorphic-react` and `isomorphic-react-dom` packages, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478) and PR [#2486](https://github.com/microsoft/BotFramework-WebChat/pull/2486)
 -  Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
 -  Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
--  Fixed [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481). Support alternative audio input source by adding `audioConfig` prop to `createCognitiveServicesSpeechServicesPonyfillFactory`, by [@corinagum](https://github.com/corinagum), in PR [#2491](https://github.com/microsoft/BotFramework-WebChat/pull/2491)
+-  Resolve [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481). Support alternative audio input source by adding `audioConfig` prop to `createCognitiveServicesSpeechServicesPonyfillFactory`, by [@corinagum](https://github.com/corinagum), in PR [#2491](https://github.com/microsoft/BotFramework-WebChat/pull/2491)
 
 ### Samples
 
@@ -251,14 +251,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Fix [#1383](https://github.com/microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/microsoft/BotFramework-WebChat/pull/1491)
+-  Resolve [#1383](https://github.com/microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/microsoft/BotFramework-WebChat/pull/1491)
 -  Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/microsoft/BotFramework-WebChat/pull/1486)
 -  Added ability to style sendbox background and text color, thru `styleOptions.sendBoxBackground` and `styleOptions.sendBoxTextColor`, in PR [#1575](https://github.com/microsoft/BotFramework-WebChat/pull/1575)
 -  `core`: Added `sendEvent`, in PR [#1286](https://github.com/microsoft/BotFramework-WebChat/pull/1286)
 -  `core`: Added `CONNECT_FULFILLING` action to workaround `redux-saga` [design decision](https://github.com/redux-saga/redux-saga/issues/1651), in PR [#1286](https://github.com/microsoft/BotFramework-WebChat/pull/1286)
 -  `component`: Added missing Spanish (es-ES) by [@schgressive](https://github.com/schgressive) in PR [#1615](https://github.com/microsoft/BotFramework-WebChat/pull/1615)
 -  Added missing Spanish (es-ES) by [@schgressive](https://github.com/schgressive) in PR [#1615](https://github.com/microsoft/BotFramework-WebChat/pull/1615)
--  Fix [#1602](https://github.com/microsoft/BotFramework-WebChat/issues/1602). Fix suggested actions regression of buttons, by [@corinagum](https://github.com/corinagum) in PR [#1616](https://github.com/microsoft/BotFramework-WebChat/pull/1616)
+-  Resolve [#1602](https://github.com/microsoft/BotFramework-WebChat/issues/1602). Fix suggested actions regression of buttons, by [@corinagum](https://github.com/corinagum) in PR [#1616](https://github.com/microsoft/BotFramework-WebChat/pull/1616)
 -  `component`: Allow font family and adaptive cards text color to be set via styleOptions, by [@a-b-r-o-w-n](https://github.com/a-b-r-o-w-n), in PR [#1670](https://github.com/microsoft/BotFramework-WebChat/pull/1670)
 -  `component`: Add fallback logic to browser which do not support `window.Intl`, by [@compulim](https://github.com/compulim), in PR [#1696](https://github.com/microsoft/BotFramework-WebChat/pull/1696)
 -  `*`: Added `username` back to activity, fixed [#1321](https://github.com/microsoft/BotFramework-WebChat/issues/1321), by [@compulim](https://github.com/compulim), in PR [#1682](https://github.com/microsoft/BotFramework-DirectLineJS/pull/1682)
@@ -354,7 +354,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
    -  Test report is hosted on [Coveralls](https://coveralls.io/github/microsoft/BotFramework-WebChat)
 -  Added French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/microsoft/BotFramework-WebChat/pull/1327)
--  Fix [#1344](https://github.com/microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/microsoft/BotFramework-WebChat/pull/1447)
+-  Resolve [#1344](https://github.com/microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/microsoft/BotFramework-WebChat/pull/1447)
    -  If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
    -  If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
    -  If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
