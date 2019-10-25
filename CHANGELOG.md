@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/microsoft/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 -  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
--  Bumping dependencies, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumping dependencies, by [@compulim](https://github.com/compulim), in PR [#2500](https://github.com/microsoft/BotFramework-WebChat/pull/2500)
    -  `*`: [`web-speech-cognitive-services@5.0.1`](https://www.npmjs.com/package/web-speech-cognitive-services)
    -  `bundle`: [`botframework-directlinejs@0.11.6`](https://www.npmjs.com/package/botframework-directlinejs)
    -  `component`: [`react-film@1.3.0`](https://www.npmjs.com/package/react-film)
