@@ -20,6 +20,7 @@ import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import sendTextToClipboard from './sendTextToClipboard';
 import startSpeechSynthesize from './startSpeechSynthesize';
+import switchToYouTubeIFRAME from './switchToYouTubeIFRAME';
 import typeOnSendBox from './typeOnSendBox';
 import updateProps from './updateProps';
 
@@ -56,6 +57,7 @@ export default function pageObjects(driver) {
       sendMessageViaSendBox,
       sendTextToClipboard,
       startSpeechSynthesize,
+      switchToYouTubeIFRAME,
       typeOnSendBox,
       updateProps
     },
