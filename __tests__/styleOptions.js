@@ -1,6 +1,7 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -33,6 +34,25 @@ describe('style options', () => {
     });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('hide scroll to bottom button', async () => {
+    const { driver, pageObjects } = await setupWebDriver();
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('markdown', { waitForSend: true });
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(scrollToBottomCompleted(), timeouts.ui);
+
+    await driver.executeScript(() => {
+      document.querySelector('[role="log"] > *').scrollTop = 0;
+    }, timeouts.ui);
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+    await pageObjects.updateProps({ styleOptions: { hideScrollToEndButton: true } });
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
