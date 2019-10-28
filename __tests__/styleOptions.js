@@ -46,9 +46,7 @@ describe('style options', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(scrollToBottomCompleted(), timeouts.ui);
 
-    await driver.executeScript(() => {
-      document.querySelector('[role="log"] > *').scrollTop = 0;
-    }, timeouts.ui);
+    await pageObjects.scrollToTop();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 

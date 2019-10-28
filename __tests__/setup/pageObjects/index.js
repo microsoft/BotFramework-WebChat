@@ -15,6 +15,7 @@ import isDictating from './isDictating';
 import pingBot from './pingBot';
 import playMediaToCompletion from './playMediaToCompletion';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
+import scrollToTop from './scrollToTop';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
@@ -52,6 +53,7 @@ export default function pageObjects(driver) {
       pingBot,
       playMediaToCompletion,
       putSpeechRecognitionResult,
+      scrollToTop,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,

@@ -86,6 +86,10 @@ describe('type focus sink', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
+    // For reliability reason, we are scrolling to top before focus
+    // This will make sure the "New messages" button show up
+    await pageObjects.scrollToTop();
+
     await driver.executeScript(() => document.querySelector('input[placeholder="Name"]').focus());
     await driver
       .actions()
