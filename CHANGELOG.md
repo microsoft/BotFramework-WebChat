@@ -66,6 +66,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/microsoft/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 -  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
+-  Bumping dependencies, by [@compulim](https://github.com/compulim), in PR [#2500](https://github.com/microsoft/BotFramework-WebChat/pull/2500)
+   -  `*`: [`web-speech-cognitive-services@5.0.1`](https://www.npmjs.com/package/web-speech-cognitive-services)
+   -  `bundle`: [`botframework-directlinejs@0.11.6`](https://www.npmjs.com/package/botframework-directlinejs)
+   -  `component`: [`react-film@1.3.0`](https://www.npmjs.com/package/react-film)
 
 ### Fixed
 
@@ -91,6 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2435](https://github.com/microsoft/BotFramework-WebChat/issues/2435). Fix microphone button getting stuck on voice-triggered expecting input hint without a speech synthesis engine, by [@compulim](https://github.com/compulim) in PR [#2445](https://github.com/microsoft/BotFramework-WebChat/pull/2445)
 -  Fixes [#2472](https://github.com/microsoft/BotFramework-WebChat/issues/2472). Update samples to use repo's version of React, by [@corinagum](https://github.com/corinagum) in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478)
 -  Fixes [#2473](https://github.com/microsoft/BotFramework-WebChat/issues/2473). Fix samples 13 using wrong region for Speech Services credentials, by [@compulim](https://github.com/compulim) in PR [#2482](https://github.com/microsoft/BotFramework-WebChat/pull/2482)
+-  Fixes [#2420](https://github.com/microsoft/BotFramework-WebChat/issues/2420). Fix saga error should not result in an unhandled exception, by [@compulim](https://github.com/compulim) in PR [#2421](https://github.com/microsoft/BotFramework-WebChat/pull/2421)
 
 ### Added
 
