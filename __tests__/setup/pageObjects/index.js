@@ -15,11 +15,13 @@ import isDictating from './isDictating';
 import pingBot from './pingBot';
 import playMediaToCompletion from './playMediaToCompletion';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
+import scrollToTop from './scrollToTop';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import sendTextToClipboard from './sendTextToClipboard';
 import startSpeechSynthesize from './startSpeechSynthesize';
+import switchToYouTubeIFRAME from './switchToYouTubeIFRAME';
 import typeOnSendBox from './typeOnSendBox';
 import updateProps from './updateProps';
 
@@ -51,11 +53,13 @@ export default function pageObjects(driver) {
       pingBot,
       playMediaToCompletion,
       putSpeechRecognitionResult,
+      scrollToTop,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
       sendTextToClipboard,
       startSpeechSynthesize,
+      switchToYouTubeIFRAME,
       typeOnSendBox,
       updateProps
     },
