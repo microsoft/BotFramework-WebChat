@@ -47,9 +47,11 @@ class AdaptiveCardRenderer extends React.Component {
         children: [element]
       } = current;
 
-      [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
-        input.disabled = disabled;
-      });
+      if (element) {
+        [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
+          input.disabled = disabled;
+        });
+      }
     }
   }
 
