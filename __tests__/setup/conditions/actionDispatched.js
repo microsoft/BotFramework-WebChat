@@ -15,13 +15,7 @@ export default function actionDispatched(predicateOrType) {
             // Filter out payload on DIRECT_LINE/CONNECT* because the content is not stringifiable
 
             if (/^DIRECT_LINE\/CONNECT/.test(action.type)) {
-              return {
-                ...action,
-                payload: {
-                  ...action.payload,
-                  directLine: {}
-                }
-              };
+              action.payload.directLine = {};
             }
 
             return action;
