@@ -67,8 +67,8 @@ export default {
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: `Lähetys epäonnistui, {Retry}.`,
   SLOW_CONNECTION_NOTIFICATION: 'Yhteyden muodostaminen kestää kauemmin kuin yleensä.',
-  'Botti sanoi jotain': botSaidSomething,
-  'Käyttäjä sanoi jotain': userSaidSomething,
+  'Bot said something': botSaidSomething,
+  'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,
   // The following two errors make more sence in English than Finnish
   'Adaptive Card parse error': 'Adaptive Card parse error',
