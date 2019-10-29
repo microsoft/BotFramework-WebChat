@@ -12,7 +12,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | de-de         | @matmuenzel                                                |
 | el-gr         | @qdoop                                                     |
 | es-es         | @SantiEspada, @ckgrafico, @renrous, @axelsrz, @munozemilio |
-| fi-fi         | @jsur                                                      |
+| fi-fi         | @jsur, @sk91swd                                            |
 | fr-fr         | @meulta, @tao1                                             |
 | hu-hu         |                                                            |
 | it-it         | Maurizio Moriconi, @Andrea-Orimoto, @AntoT84               |
