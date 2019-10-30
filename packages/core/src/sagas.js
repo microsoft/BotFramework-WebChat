@@ -15,6 +15,7 @@ import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga
 import sendPostBackToPostActivitySaga from './sagas/sendPostBackToPostActivitySaga';
 import sendTypingIndicatorOnSetSendBoxSaga from './sagas/sendTypingIndicatorOnSetSendBoxSaga';
 import speakActivityAndStartDictateOnIncomingActivityFromOthersSaga from './sagas/speakActivityAndStartDictateOnIncomingActivityFromOthersSaga';
+import startDictateOnSpeakCompleteSaga from './sagas/startDictateOnSpeakCompleteSaga';
 import startSpeakActivityOnPostActivitySaga from './sagas/startSpeakActivityOnPostActivitySaga';
 import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
@@ -38,6 +39,7 @@ export default function* sagas() {
   yield fork(sendPostBackToPostActivitySaga);
   yield fork(sendTypingIndicatorOnSetSendBoxSaga);
   yield fork(speakActivityAndStartDictateOnIncomingActivityFromOthersSaga);
+  yield fork(startDictateOnSpeakCompleteSaga);
   yield fork(startSpeakActivityOnPostActivitySaga);
   yield fork(stopDictateOnCardActionSaga);
   yield fork(stopSpeakingActivityOnInputSaga);

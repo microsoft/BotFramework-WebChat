@@ -9,26 +9,6 @@ const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const PrefixedAudioContext = window.AudioContext || window.webkitAudioContext;
-
-// The result of this check is asynchronous and it will fail on user interaction requirement.
-async function canOpenMicrophone() {
-  const audioContext = new PrefixedAudioContext();
-
-  try {
-    if (audioContext.state === 'suspended') {
-      return await Promise.race([
-        audioContext.resume().then(() => true),
-        new Promise(resolve => setImmediate(resolve)).then(() => false)
-      ]);
-    }
-
-    return true;
-  } finally {
-    await audioContext.close();
-  }
-}
-
 const Dictation = ({
   dictateState,
   disabled,
@@ -82,24 +62,6 @@ const Dictation = ({
     onError && onError(event);
   }, [dictateState, onError, setDictateState, stopDictate]);
 
-  const shouldStart = !disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities;
-
-  // We need to check if the browser allow us to do open microphone.
-  // In Safari, it block microphone access if the code was not executed based on user interaction.
-
-  // Since the check call is asynchronous, the result will always fail the user interaction requirement.
-  // Thus, we can never open microphone after we receive the check result.
-  // Instead, we will both open microphone and check the result. If the result is negative, we will close the microphone.
-
-  // TODO: [P3] Investigate if a resumed AudioContext instance is kept across multiple session, can we workaround Safari's restrictions.
-  useMemo(async () => {
-    if (shouldStart) {
-      const canStart = await canOpenMicrophone();
-
-      !canStart && stopDictate();
-    }
-  }, [shouldStart, stopDictate]);
-
   return (
     <DictateComposer
       lang={language}
@@ -108,7 +70,7 @@ const Dictation = ({
       onProgress={handleDictating}
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
-      started={shouldStart}
+      started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
     />
   );
 };

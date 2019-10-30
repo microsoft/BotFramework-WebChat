@@ -1,3 +1,4 @@
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
@@ -14,6 +15,27 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   console.warn(
     'Web Chat: Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/microsoft/BotFramework-WebChat/issues/.'
   );
+
+  // HACK: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
+  //       In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
+  //       And on next recognition, they will re-use the AudioContext object.
+  if (!audioConfig) {
+    audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    // audioConfig.privSource.privContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    const source = audioConfig.privSource;
+
+    // This piece of code is adopted from microsoft-cognitiveservices-speech-sdk/common.browser/MicAudioSource.ts.
+    // Instead of closing the AudioContext, it will just suspend it. And the next time it is needed, it will be resumed (by the original code).
+    source.destroyAudioContext = () => {
+      if (!source.privContext) {
+        return;
+      }
+
+      source.privRecorder.releaseMediaResources(source.privContext);
+      source.privContext.state === 'running' && source.privContext.suspend();
+    };
+  }
 
   return ({ referenceGrammarID }) => {
     const ponyfill = createPonyfill({
