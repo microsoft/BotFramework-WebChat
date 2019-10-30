@@ -238,23 +238,36 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 }
 
 export const FileUploadCard = connect(
-    (state: ChatState) => ({
-        // passed down to MessagePaneView
-        locale:                                                                                                                                                                                                                                                                                                                          state.format.locale,
-        inputDisabled: state.shell.inputDisabled,
-        user: state.connection.user
-    }), {
-        fileSelected:                                                                                                                                                                                                                                                                                                                          (inputStatus: boolean) => ({type:                                                                                                                                                                                                                                                                                                                          'Select_File', payload: inputStatus}),
-        sendMessage,
-        updateInput: (disable: boolean, placeholder: string) => ({ type:                                                                                                                                                                                                                                                                                                                          'Update_Input', placeholder, disable, source: 'text' } as ChatActions),
-        sendFiles
-    }, (stateProps: any, dispatchProps: any, ownProps: any): FileUploadProps => ({
-        node:                                                                                                                                                                                                                                                                                                                          ownProps.node,
-        inputDisabled: stateProps.inputDisabled,
-        updateInput: dispatchProps.updateInput,
-        fileSelected: dispatchProps.fileSelected,
-        sendMessage: (text: any) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
-        sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
-        gid: ownProps.gid
-    })
+  (state: ChatState) => ({
+    // passed down to MessagePaneView
+    locale: state.format.locale,
+    inputDisabled: state.shell.inputDisabled,
+    user: state.connection.user
+  }),
+  {
+    fileSelected: (inputStatus: boolean) => ({
+      type: 'Select_File',
+      payload: inputStatus
+    }),
+    sendMessage,
+    updateInput: (disable: boolean, placeholder: string) =>
+      ({
+        type: 'Update_Input',
+        placeholder,
+        disable,
+        source: 'text'
+      } as ChatActions),
+    sendFiles
+  },
+  (stateProps: any, dispatchProps: any, ownProps: any): FileUploadProps => ({
+    node: ownProps.node,
+    inputDisabled: stateProps.inputDisabled,
+    updateInput: dispatchProps.updateInput,
+    fileSelected: dispatchProps.fileSelected,
+    sendMessage: (text: any) =>
+      dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+    sendFiles: (files: FileList) =>
+      dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
+    gid: ownProps.gid
+  })
 )(FileUpload);

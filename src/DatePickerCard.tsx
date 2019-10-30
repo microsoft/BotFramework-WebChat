@@ -23,6 +23,7 @@ interface DatePickerProps {
     gid: string;
     directLine?: DirectLineOptions;
     conversationId: string;
+    updateInput: (disable: boolean, placeholder: string) => void;
 }
 
 export interface MessageWithDate extends Message {
@@ -97,7 +98,15 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     componentDidMount() {
+        this.props.updateInput(
+            true,
+            'Please select Date, or skip above.'
+        );
         this.getAvailableTimes( moment(), true );
+    }
+
+    componentWillUnmount() {
+        this.props.updateInput(false, null);
     }
 
     /** Setting the availabilities and excluded times for provide date */
@@ -295,7 +304,13 @@ export const DatePickerCard = connect(
         };
     }, {
         selectDate: (date: moment.Moment) => ({ type: 'Select_Date', date: date.format('DD MMM YYYY') } as ChatActions),
-        submitDate: () => ({ type: 'Submit_Date' } as ChatActions),
+        updateInput: (disable: boolean, placeholder: string) =>
+          ({
+              type: 'Update_Input',
+              placeholder,
+              disable,
+              source: 'text'
+          } as ChatActions),
         // only used to create helper functions below
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): DatePickerProps => {
@@ -306,6 +321,7 @@ export const DatePickerCard = connect(
             // from dispatchProps
             selectDate: dispatchProps.selectDate,
             submitDate: dispatchProps.submitDate,
+            updateInput: dispatchProps.updateInput,
             sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
             gid: ownProps.gid,
             directLine: ownProps.directLine,
