@@ -22,7 +22,7 @@ To run this sample, follow steps below:
 There are two packages in this [monorepo](https://en.wikipedia.org/wiki/Monorepo):
 
 - `app`: the hosting app, created using [`create-react-app`](https://github.com/facebook/create-react-app)
-   - Requires on `react@16.0.0` and `react-dom@16.0.0`
+   - Requires `react@16.0.0` and `react-dom@16.0.0`
 - `chat-component`: the chat component, which will render Web Chat
    - Requires `react@16.8.6` and `react-dom@16.8.6`
 
