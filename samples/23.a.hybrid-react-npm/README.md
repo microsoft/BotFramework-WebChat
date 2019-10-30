@@ -148,6 +148,9 @@ In this approach, we isolated the DOM element from the React DOM tree. And use a
 There are several key limitations to this approach:
 
 - Increased memory usage and bundle size
+- React Context cannot be passed between two DOM trees
+   - It is doable, but will require two different context classes/objects and wire them up manually
+   - This also includes `<Provider>` and `connect()` HOC in `react-redux`
 - [React-based customizations](https://github.com/microsoft/botframework-webchat#customize-web-chat-ui) added to Web Chat will still requires React 16.8.6 or up
    - For example, activity and attachment middleware will be required to use the newer React
 - Introduce new package and could increase unnecessary fragmentation in your codebase
