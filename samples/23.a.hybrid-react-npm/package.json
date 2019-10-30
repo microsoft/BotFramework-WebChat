@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "postinstall": "lerna bootstrap",
+    "start": "lerna run build --scope=chat-component && lerna run start --parallel --stream"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.5.1"
+  }
+}
