@@ -24,10 +24,10 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Basic recognition</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
