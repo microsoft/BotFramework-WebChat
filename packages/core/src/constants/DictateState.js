@@ -1,6 +1,7 @@
 const IDLE = 0;
-const STARTING = 1;
-const DICTATING = 2;
-const STOPPING = 3;
+const WILL_START = 1;
+const STARTING = 2;
+const DICTATING = 3;
+const STOPPING = 4;
 
-export { DICTATING, IDLE, STARTING, STOPPING };
+export { DICTATING, IDLE, STARTING, STOPPING, WILL_START };

@@ -1,10 +1,11 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import { WILL_START } from '../constants/DictateState';
 import markActivity from '../actions/markActivity';
+import setDictateState from '../actions/setDictateState';
 import shouldSpeakIncomingActivitySelector from '../selectors/shouldSpeakIncomingActivity';
 import speakableActivity from '../definitions/speakableActivity';
-import startDictate from '../actions/startDictate';
 import stopDictate from '../actions/stopDictate';
 import whileConnected from './effects/whileConnected';
 
@@ -25,7 +26,7 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
     }
 
     if (shouldSpeak && activity.inputHint === 'expectingInput') {
-      yield put(startDictate());
+      yield put(setDictateState(WILL_START));
     } else if (activity.inputHint === 'ignoringInput') {
       yield put(stopDictate());
     }

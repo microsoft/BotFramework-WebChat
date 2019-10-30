@@ -198,7 +198,13 @@ const Composer = ({
   }, [dispatch, patchedSendTypingIndicator]);
 
   useEffect(() => {
-    dispatch(createConnectAction({ directLine, userID, username }));
+    dispatch(
+      createConnectAction({
+        directLine,
+        userID,
+        username
+      })
+    );
 
     return () => {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()

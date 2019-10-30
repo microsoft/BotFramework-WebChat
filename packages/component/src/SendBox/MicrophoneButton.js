@@ -56,7 +56,9 @@ const connectMicrophoneButton = (...selectors) => {
       webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
     }) => ({
       click: () => {
-        if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+        if (dictateState === DictateState.WILL_START) {
+          stopSpeakingActivity();
+        } else if (dictateState === DictateState.DICTATING) {
           stopDictate();
           setSendBox(dictateInterims.join(' '));
         } else {
@@ -67,7 +69,7 @@ const connectMicrophoneButton = (...selectors) => {
         primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
       },
       dictating: dictateState === DictateState.DICTATING,
-      disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
+      disabled: disabled || (dictateState === DictateState.STARTING && dictateState === DictateState.STOPPING),
       language
     }),
     ...selectors
