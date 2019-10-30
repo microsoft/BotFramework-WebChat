@@ -1,0 +1,27 @@
+section {
+  border: solid 1px #DDD;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+  overflow: hidden;
+}
+
+header {
+  background-color: #EEE;
+  padding: 10px;
+}
+
+.react-container:not(.webchat) {
+  padding: 20px;
+}
+
+.command-bar {
+  padding-bottom: 20px;
+}
+
+.command-bar > :not(:first-child) {
+  margin-left: 20px;
+}
+
+.webchat {
+  height: 400px;
+}
