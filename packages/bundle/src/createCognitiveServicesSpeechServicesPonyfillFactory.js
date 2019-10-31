@@ -21,7 +21,6 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   //       And on next recognition, they will re-use the AudioContext object.
   if (!audioConfig) {
     audioConfig = AudioConfig.fromDefaultMicrophoneInput();
-    // audioConfig.privSource.privContext = new (window.AudioContext || window.webkitAudioContext)();
 
     const source = audioConfig.privSource;
 
