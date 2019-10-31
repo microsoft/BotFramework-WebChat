@@ -1,4 +1,4 @@
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/es2015/src/sdk/Audio/AudioConfig';
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
@@ -21,6 +21,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   //       And on next recognition, they will re-use the AudioContext object.
   if (!audioConfig) {
     audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    // audioConfig.privSource.privContext = new (window.AudioContext || window.webkitAudioContext)();
 
     const source = audioConfig.privSource;
 
