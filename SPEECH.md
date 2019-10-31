@@ -98,17 +98,17 @@ We assume you have already set up a bot and have Web Chat running on a page.
       <td><a href="#using-input-hint">Input hint</a></td>
       <th>✔</th><td>4.5</td>
       <th>✔</th><td>4.5</td>
-      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>✔</th><td>4.6</td>
       <th>✔</th><td>4.5</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select input device</td>
-      <th>❌</th><td><a href="#notes-4"><sup>*4</sup></a></td>
-      <th>❌</th><td><a href="#notes-4"><sup>*4</sup></a></td>
-      <th>❌</th><td><a href="#notes-4"><sup>*4</sup></a></td>
-      <th>❌</th><td><a href="#notes-4"><sup>*4</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
@@ -208,10 +208,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 1. <a name="notes-1"></a>[Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. <a name="notes-2"></a>As speech recognition is not working (see above), speech synthesis is not tested
-3. <a name="notes-3"></a>On Safari, user gesture is always required for opening the microphone. Web Chat is unable to programmatically open the microphone when we receive an expecting input hint
-   -  https://github.com/WebAudio/web-audio-api/issues/790
-   -  We are planning to unblock by changing UX, https://github.com/microsoft/BotFramework-WebChat/issues/2211
-4. <a name="notes-4"></a>Web Chat currently does not support selecting a different device for audio recording
+3. <a name="notes-3"></a>Web Chat currently does not support selecting a different device for audio recording
    -  https://github.com/microsoft/BotFramework-WebChat/issues/2481
    -  Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
 
