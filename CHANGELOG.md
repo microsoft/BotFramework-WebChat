@@ -100,6 +100,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2516](https://github.com/microsoft/BotFramework-WebChat/issues/2516). Disable microphone input for `expecting` input hint on Safari, by [@compulim](https://github.com/compulim) in PR [#2517](https://github.com/microsoft/BotFramework-WebChat/pull/2517) and PR [#2520](https://github.com/microsoft/BotFramework-WebChat/pull/2520)
 -  Fixes [#2518](https://github.com/microsoft/BotFramework-WebChat/issues/2518). Synthesis of bot activities with input hint expecting, should be interruptible, by [@compulim](https://github.com/compulim) in PR [#2520](https://github.com/microsoft/BotFramework-WebChat/pull/2520)
 -  Fixes [#2519](https://github.com/microsoft/BotFramework-WebChat/issues/2519). On Safari, microphone should turn on after synthesis of bot activities with input hint expecting, by [@compulim](https://github.com/compulim) in PR [#2520](https://github.com/microsoft/BotFramework-WebChat/pull/2520)
+-  Fixes [#2521](https://github.com/microsoft/BotFramework-WebChat/issues/2521). `webchat-es5.js` should not contains non-ES5 code and must be loadable by IE11, by [@compulim](https://github.com/compulim) in PR [#2522](https://github.com/microsoft/BotFramework-WebChat/pull/2522)
 
 ### Added
 
