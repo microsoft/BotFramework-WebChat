@@ -99,7 +99,7 @@ const DEFAULT_OPTIONS = {
   suggestedActionBorder: undefined, // split into 3, null
   suggestedActionBorderColor: undefined, // defaults to accent
   suggestedActionBorderStyle: 'solid',
-  suggestedActionBoarderWidth: 2,
+  suggestedActionBorderWidth: 2,
   suggestedActionBorderRadius: 0,
   suggestedActionImageHeight: 20,
   suggestedActionTextColor: null,
