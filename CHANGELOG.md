@@ -28,7 +28,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - Development dependencies
       - Root package
          - `@azure/storage-blob@12.0.0`
+         - `@babel/plugin-proposal-class-properties@7.5.5`
+         - `@babel/plugin-proposal-object-rest-spread@7.6.2`
+         - `@babel/plugin-transform-runtime@7.6.2`
+         - `@babel/preset-env@7.6.3`
+         - `@babel/preset-react@7.6.3`
+         - `@babel/preset-typescript@7.6.0`
+         - `@babel/runtime@7.6.3`
          - `babel-jest@24.9.0`
+         - `core-js@3.3.6`
          - `coveralls@3.0.7`
          - `husky@3.0.9`
          - `jest-image-snapshot@2.11.0`
