@@ -97,6 +97,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          - `@babel/runtime@7.6.3`
          - `core-js@3.3.6`
 
+### Samples
+
+-  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/17.b.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
+
 ## [4.6.0] - 2019-10-30
 
 ### Breaking changes
