@@ -28,13 +28,25 @@ test('video', async () => {
 
   await pageObjects.switchToYouTubeIFRAME();
 
+  // Play the video
   await clickButton(driver, By.css('button[aria-label="Play"]'));
+
+  // Wait until the video complete buffered and start playing
+  await driver.sleep(5000);
+
+  // Pause the video
   await clickButton(driver, By.css('button[aria-label="Pause (k)"]'));
+
+  // Rewind for 10 seconds
+  await driver
+    .actions()
+    .sendKeys('j')
+    .perform();
 
   // Hide the spinner animation
   await driver.executeScript(() => document.querySelector('.ytp-spinner').remove());
 
-  // Wait for YouTube play/pause button animation to complete
+  // Wait for YouTube play/pause/rewind animation to complete
   await driver.sleep(1000);
 
   const base64PNG = await driver.takeScreenshot();
