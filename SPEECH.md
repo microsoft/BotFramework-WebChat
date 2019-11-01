@@ -208,9 +208,9 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 1. <a name="notes-1"></a>[Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. <a name="notes-2"></a>As speech recognition is not working (see above), speech synthesis is not tested
-3. <a name="notes-3"></a>Web Chat currently does not support selecting a different device for audio recording
-   -  https://github.com/microsoft/BotFramework-WebChat/issues/2481
+3. <a name="notes-3"></a>Cognitive Services currently has a bug on selecting a different device for audio recording
    -  Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
+   -  Tracking bug at https://github.com/microsoft/BotFramework-WebChat/issues/2481
 
 ## Requirements
 
