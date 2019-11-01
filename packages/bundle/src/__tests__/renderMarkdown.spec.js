@@ -39,7 +39,7 @@ describe('renderMarkdown', () => {
   it('should render code correctly', () => {
     const options = { markdownRespectCRLF: true };
     expect(renderMarkdown(`\`\`\`\n${JSON.stringify({ hello: 'World!' }, null, 2)}\n\`\`\``, options)).toBe(
-      '<pre><code>{\n  "hello": "World!"\n}\n</code></pre>\n'
+      '<pre><code>{\n  &quot;hello&quot;: &quot;World!&quot;\n}\n</code></pre>\n'
     );
   });
 
