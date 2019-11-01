@@ -8,6 +8,7 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useActivities from './hooks/useActivities';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -58,13 +59,13 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
 
 const BasicTranscript = ({
   activityRenderer,
-  activities,
   attachmentRenderer,
   className,
   groupTimestamp,
   styleSet,
   webSpeechPonyfill
 }) => {
+  const [activities] = useActivities();
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.

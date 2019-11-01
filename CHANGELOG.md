@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#2565](https://github.com/microsoft/BotFramework-WebChat/issues/2565). Fixed Adaptive Card host config should generate from style options with default options merged, by [@compulim](https://github.com/compulim) in PR [#2566](https://github.com/microsoft/BotFramework-WebChat/pull/2566)
 
+### Added
+
+-  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customziation, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in the following PRs:
+   -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxDictationStarted`
+
+### Fixed
+
 ### Changed
 
 - Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)
