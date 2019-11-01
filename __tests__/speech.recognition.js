@@ -1,4 +1,5 @@
 import { timeouts } from './constants.json';
+
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import negateCondition from './setup/conditions/negate';
 import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
