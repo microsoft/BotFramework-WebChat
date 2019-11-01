@@ -12,6 +12,14 @@ This repository contains code for the Bot Framework Web Chat component. The Bot 
 
 This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
 
+## Upgrading to 4.6.0
+
+Starting from Web Chat 4.6.0, we requires React 16.8.6 or up.
+
+Although we recommend that you upgrade your host app at your earliest convenience, we understand that host app may need some time before its React dependencies are updated, especially in regards to huge applications.
+
+If your app is not ready for React 16.8.6 yet, you can follow [this sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/23.a.hybrid-react-npm) to dual-host React in your app.
+
 ## Migrating from Web Chat v3 to v4
 
 There are three possible paths that migration might take when migrating from v3 to v4. First, please compare your beginning scenario:
