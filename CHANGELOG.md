@@ -80,7 +80,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          - `simple-update-in@2.1.1`
       - `bundle`
          - `@babel/runtime@7.6.3`
-         - `adaptivecards@1.2.3`
          - `core-js@3.3.6`
          - `markdown-it@10.0.0`
          - `memoize-one@5.1.1`
