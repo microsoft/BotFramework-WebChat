@@ -15,6 +15,7 @@ const ROOT_CSS = css({
 
 const CarouselLayout = ({ activity, children, timestampClassName }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
+
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
 
