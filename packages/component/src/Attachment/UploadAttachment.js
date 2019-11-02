@@ -44,8 +44,7 @@ UploadAttachment.propTypes = {
   }).isRequired,
   attachment: PropTypes.shape({
     name: PropTypes.string.isRequired
-  }).isRequired,
-  language: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default UploadAttachment;

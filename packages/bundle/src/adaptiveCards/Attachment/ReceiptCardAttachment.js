@@ -94,7 +94,7 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
 
       return builder.card;
     }
-  }, [adaptiveCards, content, styleOptions]);
+  }, [adaptiveCards, content, styleOptions, taxText, totalText, vatText]);
 
   return (
     <AdaptiveCardRenderer

@@ -13,6 +13,11 @@ const DownloadAttachment = ({
 }) => {
   const [{ downloadAttachment: downloadAttachmentStyleSet }] = useStyleSet();
   const downloadLabel = useLocalize('Download file');
+
+  const attachmentIndex = attachments.indexOf(attachment);
+  const size = attachmentSizes[attachmentIndex];
+  const formattedSize = typeof size === 'number' && format(size);
+
   const downloadFileWithFileSizeLabel = useLocalize(
     'DownloadFileWithFileSize',
     downloadLabel,
@@ -20,9 +25,6 @@ const DownloadAttachment = ({
     formattedSize
   );
 
-  const attachmentIndex = attachments.indexOf(attachment);
-  const size = attachmentSizes[attachmentIndex];
-  const formattedSize = typeof size === 'number' && format(size);
   return (
     <React.Fragment>
       <ScreenReaderText text={downloadFileWithFileSizeLabel} />
