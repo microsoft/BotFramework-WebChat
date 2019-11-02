@@ -146,11 +146,9 @@ BasicTranscript.propTypes = {
   })
 };
 
-export default connectToWebChat(
-  ({ activityRenderer, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
-    activityRenderer,
-    attachmentRenderer,
-    groupTimestamp,
-    webSpeechPonyfill
-  })
-)(BasicTranscript);
+export default connectToWebChat(({ activityRenderer, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+  activityRenderer,
+  attachmentRenderer,
+  groupTimestamp,
+  webSpeechPonyfill
+}))(BasicTranscript);
