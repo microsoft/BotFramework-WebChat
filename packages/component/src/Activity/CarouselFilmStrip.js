@@ -189,7 +189,7 @@ WebChatCarouselFilmStrip.propTypes = {
   timestampClassName: PropTypes.string
 };
 
-const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language, styleSet }) => ({
+const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language }) => ({
   avatarInitials,
   language
 }))(WebChatCarouselFilmStrip);

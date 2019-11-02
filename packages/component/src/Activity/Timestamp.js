@@ -7,7 +7,7 @@ import RelativeTime from '../Utils/RelativeTime';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
-const Timestamp = ({ activity: { timestamp }, className, styleSet }) => {
+const Timestamp = ({ activity: { timestamp }, className }) => {
   const [{ timestampFormat }] = useStyleOptions();
   const [{ timestamp: timestampStyleSet }] = useStyleSet();
 

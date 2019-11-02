@@ -17,6 +17,7 @@ const AdaptiveCardRenderer = ({
   adaptiveCard,
   adaptiveCardHostConfig,
   disabled,
+  language,
   performCardAction,
   renderMarkdown,
   tapAction

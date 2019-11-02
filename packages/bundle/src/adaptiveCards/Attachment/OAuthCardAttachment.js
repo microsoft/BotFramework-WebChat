@@ -8,16 +8,18 @@ import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 const { useStyleOptions } = hooks;
 
 const OAuthCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
+  const [styleOptions] = useStyleOptions();
+
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, useStyleOptions);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommonHeaders(content);
       builder.addButtons((content || {}).buttons, true);
 
       return builder.card;
     }
-  }, [adaptiveCards, content, useStyleOptions]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
 };
@@ -29,9 +31,6 @@ OAuthCardAttachment.propTypes = {
     content: PropTypes.shape({
       buttons: PropTypes.array
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 

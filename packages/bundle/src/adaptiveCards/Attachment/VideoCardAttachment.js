@@ -13,8 +13,7 @@ const VideoCardAttachment = ({
   adaptiveCardHostConfig,
   adaptiveCards,
   attachment,
-  attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
-  styleSet
+  attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {}
 }) => {
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 
@@ -52,10 +51,6 @@ VideoCardAttachment.propTypes = {
         })
       )
     })
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    audioCardAttachment: PropTypes.any.isRequired,
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 
