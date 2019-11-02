@@ -72,7 +72,7 @@ BasicSendBox.defaultProps = {
 
 BasicSendBox.propTypes = {
   className: PropTypes.string,
-  dictationStarted: PropTypes.bool.isRequired,
+  dictateState: PropTypes.bool.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
       hideUploadButton: PropTypes.bool.isRequired
@@ -89,7 +89,7 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
-export default connectToWebChat(({ activities, dictateState, styleSet, webSpeechPonyfill }) => ({
+export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
   dictateState,
   styleSet,
   webSpeechPonyfill
