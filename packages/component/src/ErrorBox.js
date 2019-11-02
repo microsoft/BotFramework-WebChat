@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from './Localization/Localize';
-import connectToWebChat from './connectToWebChat';
 import ScreenReaderText from './ScreenReaderText';
+import useLocalize from './hooks/useLocalize';
 import useStyleSet from './hooks/useStyleSet';
 
-const ErrorBox = ({ children, language, message }) => {
+const ErrorBox = ({ children, message }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
+  const errorMessageText = useLocalize('ErrorMessage');
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={localize('ErrorMessage', language)} />
+      <ScreenReaderText text={errorMessageText} />
       <div className={errorBoxStyleSet}>
         <div>{message}</div>
         <div>{children}</div>
@@ -27,8 +27,7 @@ ErrorBox.defaultProps = {
 
 ErrorBox.propTypes = {
   children: PropTypes.any,
-  language: PropTypes.string.isRequired,
   message: PropTypes.string
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(ErrorBox);
+export default ErrorBox;

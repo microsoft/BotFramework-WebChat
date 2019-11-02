@@ -4,9 +4,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -16,15 +15,14 @@ const ROOT_CSS = css({
 
 const UploadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
-  attachment,
-  language
+  attachment
 }) => {
   const [{ uploadAttachment: uploadAttachmentStyleSet }] = useStyleSet();
 
   const attachmentIndex = attachments.indexOf(attachment);
   const size = attachmentSizes[attachmentIndex];
   const formattedSize = typeof size === 'number' && format(size);
-  const uploadFileWithFileSizeLabel = localize('UploadFileWithFileSize', language, attachment.name, formattedSize);
+  const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', attachment.name, formattedSize);
 
   return (
     <React.Fragment>
@@ -50,4 +48,4 @@ UploadAttachment.propTypes = {
   language: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(UploadAttachment);
+export default UploadAttachment;

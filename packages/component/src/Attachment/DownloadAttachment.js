@@ -2,30 +2,27 @@ import { format } from 'bytes';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const DownloadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
-  attachment,
-  language
+  attachment
 }) => {
   const [{ downloadAttachment: downloadAttachmentStyleSet }] = useStyleSet();
-
-  const attachmentIndex = attachments.indexOf(attachment);
-  const downloadLabel = localize('Download file', language);
-  const size = attachmentSizes[attachmentIndex];
-  const formattedSize = typeof size === 'number' && format(size);
-  const downloadFileWithFileSizeLabel = localize(
+  const downloadLabel = useLocalize('Download file');
+  const downloadFileWithFileSizeLabel = useLocalize(
     'DownloadFileWithFileSize',
-    language,
     downloadLabel,
     attachment.name,
     formattedSize
   );
+
+  const attachmentIndex = attachments.indexOf(attachment);
+  const size = attachmentSizes[attachmentIndex];
+  const formattedSize = typeof size === 'number' && format(size);
   return (
     <React.Fragment>
       <ScreenReaderText text={downloadFileWithFileSizeLabel} />
@@ -53,8 +50,7 @@ DownloadAttachment.propTypes = {
   attachment: PropTypes.shape({
     contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
-  }).isRequired,
-  language: PropTypes.string.isRequired
+  }).isRequired
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(DownloadAttachment);
+export default DownloadAttachment;
