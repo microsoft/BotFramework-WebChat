@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
 import useStyleSet from '../hooks/useStyleSet';
 
