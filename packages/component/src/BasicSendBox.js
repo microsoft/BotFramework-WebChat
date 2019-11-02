@@ -29,6 +29,11 @@ const DICTATION_INTERIMS_CSS = css({ flex: 10000 });
 const MICROPHONE_BUTTON_CSS = css({ flex: 1 });
 const TEXT_BOX_CSS = css({ flex: 10000 });
 
+// TODO: [P3] We should consider exposing core/src/definitions and use it instead
+function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
+  return !!speak;
+}
+
 function useSendBoxDictationStarted(dictateState) {
   const [activities] = useActivities();
 
@@ -83,11 +88,6 @@ BasicSendBox.propTypes = {
     SpeechRecognition: PropTypes.any
   })
 };
-
-// TODO: [P3] We should consider exposing core/src/definitions and use it instead
-function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
-  return !!speak;
-}
 
 export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
   dictateState,

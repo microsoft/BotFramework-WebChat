@@ -138,7 +138,6 @@ BasicTranscript.defaultProps = {
 };
 
 BasicTranscript.propTypes = {
-  activities: PropTypes.array.isRequired,
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string,
@@ -157,8 +156,7 @@ BasicTranscript.propTypes = {
 };
 
 export default connectToWebChat(
-  ({ activities, activityRenderer, attachmentRenderer, groupTimestamp, styleSet, webSpeechPonyfill }) => ({
-    activities,
+  ({ activityRenderer, attachmentRenderer, groupTimestamp, styleSet, webSpeechPonyfill }) => ({
     activityRenderer,
     attachmentRenderer,
     groupTimestamp,
