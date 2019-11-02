@@ -5,7 +5,7 @@ import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
@@ -87,14 +87,6 @@ const connectStackedLayout = (...selectors) =>
 const StackedLayout = ({ activity, avatarInitials, children, timestampClassName }) => {
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
-
-  const botAriaLabel = useLocalize('Bot said something', avatarInitials, plainText);
-  const userAriaLabel = useLocalize('User said something', avatarInitials, plainText);
-  const botRoleLabel = useLocalize('BotSent');
-  const userRoleLabel = useLocalize('UserSent');
-
-  const ariaLabel = useMemo(() => (fromUser ? userAriaLabel : botAriaLabel), [botAriaLabel, fromUser, userAriaLabel]);
-  const roleLabel = useMemo(() => (fromUser ? botRoleLabel : userRoleLabel), [botRoleLabel, fromUser, userRoleLabel]);
 
   const {
     attachments = [],
