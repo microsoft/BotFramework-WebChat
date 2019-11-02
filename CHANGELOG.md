@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customization, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in the following PRs:
+-  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customization, by [@compulim](https://github.com/compulim), in the following PRs:
    -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxDictationStarted`
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
