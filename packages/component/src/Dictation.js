@@ -6,7 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 import connectToWebChat from './connectToWebChat';
 
 import useActivities from './hooks/useActivities';
-import useLanguage from './hooks/useLangage';
+import useLanguage from './hooks/useLanguage';
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
