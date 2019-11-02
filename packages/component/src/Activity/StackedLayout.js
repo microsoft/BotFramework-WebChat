@@ -88,6 +88,14 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
 
+  const botAriaLabel = useLocalize('Bot said something', avatarInitials, plainText);
+  const userAriaLabel = useLocalize('User said something', avatarInitials, plainText);
+  const botRoleLabel = useLocalize('BotSent');
+  const userRoleLabel = useLocalize('UserSent');
+
+  const ariaLabel = useMemo(() => (fromUser ? userAriaLabel : botAriaLabel), [botAriaLabel, fromUser, userAriaLabel]);
+  const roleLabel = useMemo(() => (fromUser ? botRoleLabel : userRoleLabel), [botRoleLabel, fromUser, userRoleLabel]);
+
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
