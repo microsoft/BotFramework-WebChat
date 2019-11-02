@@ -72,7 +72,7 @@ BasicSendBox.defaultProps = {
 
 BasicSendBox.propTypes = {
   className: PropTypes.string,
-  dictateState: PropTypes.bool.isRequired,
+  dictateState: PropTypes.number.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
       hideUploadButton: PropTypes.bool.isRequired
