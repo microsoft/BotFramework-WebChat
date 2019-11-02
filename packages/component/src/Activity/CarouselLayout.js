@@ -18,6 +18,9 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
 
+  const leftLabel = useLocalize('Left');
+  const rightLabel = useLocalize('Right');
+
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (
