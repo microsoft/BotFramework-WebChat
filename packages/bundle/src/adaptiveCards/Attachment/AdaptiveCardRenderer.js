@@ -13,6 +13,55 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
+function disableInputElements(element) {
+  const hyperlinks = element.querySelectorAll('a');
+  const inputs = element.querySelectorAll('button, input, select, textarea');
+
+  const disabledHandler = event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+  };
+
+  [].forEach.call(inputs, input => {
+    input.disabled = true;
+  });
+
+  [].forEach.call(hyperlinks, hyperlink => {
+    hyperlink.addEventListener('click', disabledHandler);
+  });
+}
+
+function restoreInputValues(element, inputValues) {
+  const inputs = element.querySelectorAll('input, select, textarea');
+
+  [].forEach.call(inputs, (input, index) => {
+    const value = inputValues[index];
+
+    if (typeof value !== 'undefined') {
+      const { tagName, type } = input;
+
+      if (tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) {
+        input.checked = value;
+      } else {
+        input.value = value;
+      }
+    }
+  });
+}
+
+function saveInputValues(element) {
+  const inputs = element.querySelectorAll('input, select, textarea');
+
+  return [].map.call(inputs, ({ checked, tagName, type, value }) => {
+    if (tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) {
+      return checked;
+    }
+
+    return value;
+  });
+}
+
 const AdaptiveCardRenderer = ({
   adaptiveCard,
   adaptiveCardHostConfig,
@@ -25,6 +74,7 @@ const AdaptiveCardRenderer = ({
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [error, setError] = useState();
   const contentRef = useRef();
+  const inputValuesRef = useRef([]);
 
   const handleClick = useCallback(
     ({ target }) => {
@@ -128,22 +178,8 @@ const AdaptiveCardRenderer = ({
 
       error && setError(null);
 
-      if (disabled) {
-        const hyperlinks = element.querySelectorAll('a');
-        const inputs = element.querySelectorAll('button, input, select, textarea');
-
-        [].forEach.call(inputs, input => {
-          input.disabled = true;
-        });
-
-        [].forEach.call(hyperlinks, hyperlink => {
-          hyperlink.addEventListener('click', event => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            event.stopPropagation();
-          });
-        });
-      }
+      disabled && disableInputElements(element);
+      restoreInputValues(element, inputValuesRef.current);
 
       const [firstChild] = current.children;
 
@@ -152,6 +188,10 @@ const AdaptiveCardRenderer = ({
       } else {
         current.appendChild(element);
       }
+
+      return () => {
+        inputValuesRef.current = saveInputValues(element);
+      };
     }
   }, [adaptiveCard, adaptiveCardHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdown]);
 
