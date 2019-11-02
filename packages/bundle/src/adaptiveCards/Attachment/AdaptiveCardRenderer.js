@@ -2,7 +2,7 @@
 
 import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Components, connectToWebChat, getTabIndex, hooks, localize } from 'botframework-webchat-component';
 
@@ -17,7 +17,7 @@ const AdaptiveCardRenderer = ({
   adaptiveCard,
   adaptiveCardHostConfig,
   disabled,
-  onCardAction,
+  performCardAction,
   renderMarkdown,
   tapAction
 }) => {
@@ -34,11 +34,11 @@ const AdaptiveCardRenderer = ({
         // If the user is clicking on something that is already clickable, do not allow them to click the card.
         // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
         if (typeof tabIndex !== 'number' || tabIndex < 0) {
-          tapAction && onCardAction(tapAction);
+          tapAction && performCardAction(tapAction);
         }
       }
     },
-    [disabled, onCardAction, tapAction]
+    [disabled, performCardAction, tapAction]
   );
 
   const handleExecuteAction = useCallback(
@@ -51,7 +51,7 @@ const AdaptiveCardRenderer = ({
       const actionTypeName = action.getJsonTypeName();
 
       if (actionTypeName === 'Action.OpenUrl') {
-        onCardAction({
+        performCardAction({
           type: 'openUrl',
           value: action.url
         });
@@ -63,9 +63,9 @@ const AdaptiveCardRenderer = ({
             const { cardAction } = actionData;
             const { displayText, type, value } = cardAction;
 
-            onCardAction({ displayText, type, value });
+            performCardAction({ displayText, type, value });
           } else {
-            onCardAction({
+            performCardAction({
               type: typeof action.data === 'string' ? 'imBack' : 'postBack',
               value: action.data
             });
@@ -81,11 +81,6 @@ const AdaptiveCardRenderer = ({
 
   useLayoutEffect(() => {
     const { current } = contentRef;
-
-    const {
-      props: { adaptiveCard, adaptiveCardHostConfig, renderMarkdown },
-      state: { error }
-    } = this;
 
     if (current && adaptiveCard) {
       // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
@@ -173,7 +168,7 @@ AdaptiveCardRenderer.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
-  onCardAction: PropTypes.func.isRequired,
+  performCardAction: PropTypes.func.isRequired,
   renderMarkdown: PropTypes.func.isRequired,
   tapAction: PropTypes.shape({
     type: PropTypes.string.isRequired,
@@ -189,7 +184,7 @@ AdaptiveCardRenderer.defaultProps = {
 export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, tapAction }) => ({
   disabled,
   language,
-  onCardAction,
+  performCardAction: onCardAction,
   renderMarkdown,
   tapAction
 }))(AdaptiveCardRenderer);
