@@ -61,14 +61,16 @@ function isPositive(value) {
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
 
-  const {
-    bubbleBorderWidth,
-    bubbleFromUserBorderWidth,
-    bubbleFromUserNubSize,
-    bubbleNubSize,
-    bubbleNubOffset,
-    bubbleFromUserNubOffset
-  } = useStyleOptions();
+  const [
+    {
+      bubbleBorderWidth,
+      bubbleFromUserBorderWidth,
+      bubbleFromUserNubSize,
+      bubbleNubSize,
+      bubbleNubOffset,
+      bubbleFromUserNubOffset
+    }
+  ] = useStyleOptions();
 
   const { borderWidth, nubOffset, nubSize, side } = fromUser
     ? {
