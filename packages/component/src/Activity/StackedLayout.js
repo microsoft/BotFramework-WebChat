@@ -122,6 +122,8 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
 
   const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
 
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+
   return (
     <div
       className={classNames(ROOT_CSS + '', stackedLayoutStyleSet + '', {

@@ -8,6 +8,7 @@ import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 const { useLocalize, useStyleOptions } = hooks;
+const { useStyleOptions } = hooks;
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
