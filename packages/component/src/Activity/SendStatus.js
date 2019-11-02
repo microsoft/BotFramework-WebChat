@@ -73,10 +73,7 @@ SendStatus.propTypes = {
     })
   }).isRequired,
   language: PropTypes.string.isRequired,
-  retrySend: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    sendStatus: PropTypes.any.isRequired
-  }).isRequired
+  retrySend: PropTypes.func.isRequired
 };
 
 export default connectSendStatus()(SendStatus);
