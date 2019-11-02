@@ -14,6 +14,8 @@ import TextBox from './SendBox/TextBox';
 import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 import useActivities from './hooks/useActivities';
+import useStyleOptions from './hooks/useStyleOptions';
+import useStyleSet from './hooks/useStyleSet';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -43,16 +45,18 @@ function useSendBoxDictationStarted(dictateState) {
   ];
 }
 
-const BasicSendBox = ({ className, dictateState, styleSet, webSpeechPonyfill }) => {
+const BasicSendBox = ({ className, dictateState, webSpeechPonyfill }) => {
   const [dictationStarted] = useSendBoxDictationStarted(dictateState);
+  const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
+  const [{ hideUploadButton }] = useStyleOptions();
 
   return (
-    <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
+    <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
       <TypingIndicator />
       <ConnectivityStatus />
       <SuggestedActions />
       <div className="main">
-        {!styleSet.options.hideUploadButton && <UploadButton />}
+        {!hideUploadButton && <UploadButton />}
         {dictationStarted ? (
           <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
         ) : (
@@ -78,20 +82,13 @@ BasicSendBox.defaultProps = {
 BasicSendBox.propTypes = {
   className: PropTypes.string,
   dictateState: PropTypes.number.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      hideUploadButton: PropTypes.bool.isRequired
-    }).isRequired,
-    sendBox: PropTypes.any.isRequired
-  }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
     SpeechRecognition: PropTypes.any
   })
 };
 
-export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
+export default connectToWebChat(({ dictateState, webSpeechPonyfill }) => ({
   dictateState,
-  styleSet,
   webSpeechPonyfill
 }))(BasicSendBox);
 

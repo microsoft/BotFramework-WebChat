@@ -1,20 +1,24 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, styleSet: { options } }) => {
+const { useStyleOptions } = hooks;
+
+const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
+  const [styleOptions] = useStyleOptions();
+
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommon(content);
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer
@@ -32,8 +36,7 @@ CommonCard.propTypes = {
     content: PropTypes.shape({
       tap: PropTypes.any
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.any.isRequired
+  }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(CommonCard);
+export default CommonCard;

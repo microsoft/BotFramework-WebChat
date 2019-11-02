@@ -6,13 +6,15 @@ import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useStyleSet from '../hooks/useStyleSet';
 
 const DownloadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
   attachment,
-  language,
-  styleSet
+  language
 }) => {
+  const [{ downloadAttachment: downloadAttachmentStyleSet }] = useStyleSet();
+
   const attachmentIndex = attachments.indexOf(attachment);
   const downloadLabel = localize('Download file', language);
   const size = attachmentSizes[attachmentIndex];
@@ -27,7 +29,7 @@ const DownloadAttachment = ({
   return (
     <React.Fragment>
       <ScreenReaderText text={downloadFileWithFileSizeLabel} />
-      <div aria-hidden={true} className={styleSet.downloadAttachment}>
+      <div aria-hidden={true} className={downloadAttachmentStyleSet}>
         <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
           {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden necessary */}
           <div aria-hidden={true} className="details">
@@ -52,10 +54,7 @@ DownloadAttachment.propTypes = {
     contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    downloadAttachment: PropTypes.any.isRequired
-  }).isRequired
+  language: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(DownloadAttachment);
+export default connectToWebChat(({ language }) => ({ language }))(DownloadAttachment);

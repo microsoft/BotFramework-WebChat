@@ -1,28 +1,25 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 75] }] */
 
-import { connectToWebChat, localize } from 'botframework-webchat-component';
+import { connectToWebChat, hooks, localize } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useStyleOptions } = hooks;
+
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-const ReceiptCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment: { content },
-  language,
-  styleSet: { options }
-}) => {
+const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, language }) => {
+  const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+    const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
     const { buttons, facts, items, tax, title, total, vat } = content;
-    const { richCardWrapTitle } = options;
+    const { richCardWrapTitle } = styleOptions;
 
     if (content) {
       builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
@@ -105,7 +102,7 @@ const ReceiptCardAttachment = ({
 
       return builder.card;
     }
-  }, [adaptiveCards, content, language, options]);
+  }, [adaptiveCards, content, language, styleOptions]);
 
   return (
     <AdaptiveCardRenderer
@@ -146,10 +143,7 @@ ReceiptCardAttachment.propTypes = {
       vat: PropTypes.string
     }).isRequired
   }).isRequired,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired
-  }).isRequired
+  language: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(ReceiptCardAttachment);
+export default connectToWebChat(({ language }) => ({ language }))(ReceiptCardAttachment);

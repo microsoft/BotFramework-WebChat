@@ -1,19 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
-const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src, styleSet }) => (
-  <video
-    aria-label={alt}
-    autoPlay={autoPlay}
-    className={styleSet.videoContent}
-    controls={true}
-    loop={loop}
-    poster={poster}
-    src={src}
-  />
-);
+const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src }) => {
+  const [{ videoContent: videoContentStyleSet }] = useStyleSet();
+
+  return (
+    <video
+      aria-label={alt}
+      autoPlay={autoPlay}
+      className={videoContentStyleSet}
+      controls={true}
+      loop={loop}
+      poster={poster}
+      src={src}
+    />
+  );
+};
 
 HTMLVideoContent.defaultProps = {
   alt: '',
@@ -27,10 +31,7 @@ HTMLVideoContent.propTypes = {
   autoPlay: PropTypes.bool,
   loop: PropTypes.bool,
   poster: PropTypes.string,
-  src: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    videoContent: PropTypes.any.isRequired
-  }).isRequired
+  src: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(HTMLVideoContent);
+export default HTMLVideoContent;

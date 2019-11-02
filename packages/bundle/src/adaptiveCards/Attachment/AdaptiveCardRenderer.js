@@ -2,114 +2,87 @@
 
 import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 
-import { Components, connectToWebChat, getTabIndex, localize } from 'botframework-webchat-component';
+import { Components, connectToWebChat, getTabIndex, hooks, localize } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
+const { useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-class AdaptiveCardRenderer extends React.Component {
-  constructor(props) {
-    super(props);
+const AdaptiveCardRenderer = ({
+  adaptiveCard,
+  adaptiveCardHostConfig,
+  disabled,
+  onCardAction,
+  renderMarkdown,
+  tapAction
+}) => {
+  const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
+  const [error, setError] = useState();
+  const contentRef = useRef();
 
-    this.handleClick = this.handleClick.bind(this);
-    this.handleExecuteAction = this.handleExecuteAction.bind(this);
+  const handleClick = useCallback(
+    ({ target }) => {
+      // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
+      if (!disabled) {
+        const tabIndex = getTabIndex(target);
 
-    this.contentRef = React.createRef();
-
-    this.state = {
-      error: null
-    };
-  }
-
-  componentDidMount() {
-    this.renderCard();
-    this.refreshDisabled();
-  }
-
-  componentDidUpdate({ adaptiveCard: prevAdaptiveCard, disabled: prevDisabled }) {
-    const { adaptiveCard, disabled } = this.props;
-
-    prevAdaptiveCard !== adaptiveCard && this.renderCard();
-    !prevDisabled !== !disabled && this.refreshDisabled();
-  }
-
-  refreshDisabled() {
-    const { disabled } = this.props;
-    const { current } = this.contentRef;
-
-    if (current) {
-      const {
-        children: [element]
-      } = current;
-
-      if (element) {
-        [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
-          input.disabled = disabled;
-        });
-      }
-    }
-  }
-
-  handleClick({ target }) {
-    const { disabled, onCardAction, tapAction } = this.props;
-
-    // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
-    if (!disabled) {
-      const tabIndex = getTabIndex(target);
-
-      // If the user is clicking on something that is already clickable, do not allow them to click the card.
-      // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
-      if (typeof tabIndex !== 'number' || tabIndex < 0) {
-        tapAction && onCardAction(tapAction);
-      }
-    }
-  }
-
-  handleExecuteAction(action) {
-    const { disabled, onCardAction } = this.props;
-
-    // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
-    if (disabled) {
-      return;
-    }
-
-    const actionTypeName = action.getJsonTypeName();
-
-    if (actionTypeName === 'Action.OpenUrl') {
-      onCardAction({
-        type: 'openUrl',
-        value: action.url
-      });
-    } else if (actionTypeName === 'Action.Submit') {
-      if (typeof action.data !== 'undefined') {
-        const { data: actionData } = action;
-
-        if (actionData && actionData.__isBotFrameworkCardAction) {
-          const { cardAction } = actionData;
-          const { displayText, type, value } = cardAction;
-
-          onCardAction({ displayText, type, value });
-        } else {
-          onCardAction({
-            type: typeof action.data === 'string' ? 'imBack' : 'postBack',
-            value: action.data
-          });
+        // If the user is clicking on something that is already clickable, do not allow them to click the card.
+        // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
+        if (typeof tabIndex !== 'number' || tabIndex < 0) {
+          tapAction && onCardAction(tapAction);
         }
       }
-    } else {
-      console.error(`Web Chat: received unknown action from Adaptive Cards`);
-      console.error(action);
-    }
-  }
+    },
+    [disabled, onCardAction, tapAction]
+  );
 
-  renderCard() {
+  const handleExecuteAction = useCallback(
+    action => {
+      // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
+      if (disabled) {
+        return;
+      }
+
+      const actionTypeName = action.getJsonTypeName();
+
+      if (actionTypeName === 'Action.OpenUrl') {
+        onCardAction({
+          type: 'openUrl',
+          value: action.url
+        });
+      } else if (actionTypeName === 'Action.Submit') {
+        if (typeof action.data !== 'undefined') {
+          const { data: actionData } = action;
+
+          if (actionData && actionData.__isBotFrameworkCardAction) {
+            const { cardAction } = actionData;
+            const { displayText, type, value } = cardAction;
+
+            onCardAction({ displayText, type, value });
+          } else {
+            onCardAction({
+              type: typeof action.data === 'string' ? 'imBack' : 'postBack',
+              value: action.data
+            });
+          }
+        }
+      } else {
+        console.error(`Web Chat: received unknown action from Adaptive Cards`);
+        console.error(action);
+      }
+    },
+    [disabled, performCardAction]
+  );
+
+  useLayoutEffect(() => {
+    const { current } = contentRef;
+
     const {
-      contentRef: { current },
       props: { adaptiveCard, adaptiveCardHostConfig, renderMarkdown },
       state: { error }
     } = this;
@@ -128,7 +101,7 @@ class AdaptiveCardRenderer extends React.Component {
         }
       };
 
-      adaptiveCard.onExecuteAction = this.handleExecuteAction;
+      adaptiveCard.onExecuteAction = handleExecuteAction;
 
       if (adaptiveCardHostConfig) {
         adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig)
@@ -141,7 +114,8 @@ class AdaptiveCardRenderer extends React.Component {
       if (failures.length) {
         // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
         const errors = failures.reduce((items, { errors }) => [...items, ...errors], []);
-        return this.setState(() => ({ error: errors }));
+
+        return setError(errors);
       }
 
       let element;
@@ -149,26 +123,31 @@ class AdaptiveCardRenderer extends React.Component {
       try {
         element = adaptiveCard.render();
       } catch (error) {
-        return this.setState(() => ({ error }));
+        return setError(error);
       }
 
       if (!element) {
-        return this.setState(() => ({ error: 'Adaptive Card rendered as empty element' }));
+        return setError('Adaptive Card rendered as empty element');
       }
 
-      error && this.setState(() => ({ error: null }));
+      error && setError(null);
 
-      [].forEach.call(element.querySelectorAll('a'), hyperlink => {
-        hyperlink.addEventListener('click', event => {
-          const { disabled } = this.props;
+      if (disabled) {
+        const hyperlinks = element.querySelectorAll('a');
+        const inputs = element.querySelectorAll('button, input, select, textarea');
 
-          if (disabled) {
+        [].forEach.call(inputs, input => {
+          input.disabled = true;
+        });
+
+        [].forEach.call(hyperlinks, hyperlink => {
+          hyperlink.addEventListener('click', event => {
             event.preventDefault();
             event.stopImmediatePropagation();
             event.stopPropagation();
-          }
+          });
         });
-      });
+      }
 
       const [firstChild] = current.children;
 
@@ -178,23 +157,16 @@ class AdaptiveCardRenderer extends React.Component {
         current.appendChild(element);
       }
     }
-  }
+  }, [adaptiveCard, adaptiveCardHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdown]);
 
-  render() {
-    const {
-      props: { language, styleSet },
-      state: { error }
-    } = this;
-
-    return error ? (
-      <ErrorBox message={localize('Adaptive Card render error', language)}>
-        <pre>{JSON.stringify(error, null, 2)}</pre>
-      </ErrorBox>
-    ) : (
-      <div className={styleSet.adaptiveCardRenderer} onClick={this.handleClick} ref={this.contentRef} />
-    );
-  }
-}
+  return error ? (
+    <ErrorBox message={localize('Adaptive Card render error', language)}>
+      <pre>{JSON.stringify(error, null, 2)}</pre>
+    </ErrorBox>
+  ) : (
+    <div className={adaptiveCardRendererStyleSet} onClick={handleClick} ref={contentRef} />
+  );
+};
 
 AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
@@ -203,9 +175,6 @@ AdaptiveCardRenderer.propTypes = {
   language: PropTypes.string.isRequired,
   onCardAction: PropTypes.func.isRequired,
   renderMarkdown: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    adaptiveCardRenderer: PropTypes.any.isRequired
-  }).isRequired,
   tapAction: PropTypes.shape({
     type: PropTypes.string.isRequired,
     value: PropTypes.string
@@ -217,11 +186,10 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, styleSet, tapAction }) => ({
+export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, tapAction }) => ({
   disabled,
   language,
   onCardAction,
   renderMarkdown,
-  styleSet,
   tapAction
 }))(AdaptiveCardRenderer);

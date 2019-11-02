@@ -7,11 +7,15 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
 
-const ScrollToEndButton = ({ className, scrollToEnd, styleSet }) => (
-  <button className={classNames(styleSet.scrollToEndButton + '', className + '')} onClick={scrollToEnd} type="button">
-    <Localize text="New messages" />
-  </button>
-);
+const ScrollToEndButton = ({ className, scrollToEnd }) => {
+  const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
+
+  return (
+    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={scrollToEnd} type="button">
+      <Localize text="New messages" />
+    </button>
+  );
+};
 
 ScrollToEndButton.defaultProps = {
   className: ''
@@ -25,9 +29,7 @@ ScrollToEndButton.propTypes = {
   }).isRequired
 };
 
-const WebChatConnectedScrollToEndButton = connectToWebChat(({ scrollToEnd, styleSet }) => ({ scrollToEnd, styleSet }))(
-  ScrollToEndButton
-);
+const WebChatConnectedScrollToEndButton = connectToWebChat(({ scrollToEnd }) => ({ scrollToEnd }))(ScrollToEndButton);
 
 const ConnectedScrollToEndButton = props => (
   <ScrollToBottomStateContext.Consumer>
