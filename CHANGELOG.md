@@ -22,11 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Changed
+### Breaking changes
 
-- `bundle`: Webpack will now use `webpack-stats-plugin` instead of `webpack-visualizer-plugin`, by [@compulim](https://github.com/compulim) in PR [#2584](https://github.com/microsoft/BotFramework-WebChat/pull/2584)
-   - This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
-   - To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
+- `adaptiveCardHostConfig` is being renamed to `adaptiveCardsHostConfig`
+   - If you are using the deprecated `adaptiveCardHostConfig`, we will rename it automatically
 
 ### Fixed
 
@@ -42,6 +41,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
    -  PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX): `useStyleOptions`, `useStyleSet`
+   -  PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX): `useAdaptiveCards*`, `useRenderMarkdownAsHTML`
+- Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Fixed
 
@@ -121,6 +122,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  `core-js@3.3.6`
 -  `component`: Bumps [`adaptivecards@1.2.3`](https://npmjs.com/package/adaptivecards), by [@corinagum](https://github.com/corinagum) in PR [#2523](https://github.com/microsoft/BotFramework-WebChat/pull/2532)
 -  Bumps Chrome in Docker to 78.0.3904.70, by [@spyip](https://github.com/spyip) in PR [#2545](https://github.com/microsoft/BotFramework-WebChat/pull/2545)
+-  `bundle`: Webpack will now use `webpack-stats-plugin` instead of `webpack-visualizer-plugin`, by [@compulim](https://github.com/compulim) in PR [#2584](https://github.com/microsoft/BotFramework-WebChat/pull/2584)
+   -  This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
+   -  To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
 
 ### Samples
 

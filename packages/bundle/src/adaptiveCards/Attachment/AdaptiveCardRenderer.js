@@ -6,8 +6,10 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Components, connectToWebChat, getTabIndex, hooks } from 'botframework-webchat-component';
 
+import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
+
 const { ErrorBox } = Components;
-const { useLocalize, useStyleSet } = hooks;
+const { useLocalize, useRenderMarkdownAsHTML, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -62,16 +64,11 @@ function saveInputValues(element) {
   });
 }
 
-const AdaptiveCardRenderer = ({
-  adaptiveCard,
-  adaptiveCardHostConfig,
-  disabled,
-  performCardAction,
-  renderMarkdown,
-  tapAction
-}) => {
+const AdaptiveCardRenderer = ({ adaptiveCard, disabled, performCardAction, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
+  const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const errorMessage = useLocalize('Adaptive Card render error');
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
   const [error, setError] = useState();
   const contentRef = useRef();
@@ -137,23 +134,23 @@ const AdaptiveCardRenderer = ({
     if (current && adaptiveCard) {
       // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
 
-      // TODO: [P3] Checks if we could make the "renderMarkdown" per card
+      // TODO: [P3] Checks if we could make the "renderMarkdownAsHTML" per card
       //       This could be limitations from Adaptive Cards package
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
 
       adaptiveCard.constructor.onProcessMarkdown = (text, result) => {
-        if (renderMarkdown) {
-          result.outputHtml = renderMarkdown(text);
+        if (renderMarkdownAsHTML) {
+          result.outputHtml = renderMarkdownAsHTML(text);
           result.didProcess = true;
         }
       };
 
       adaptiveCard.onExecuteAction = handleExecuteAction;
 
-      if (adaptiveCardHostConfig) {
-        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig)
-          ? new HostConfig(adaptiveCardHostConfig)
-          : adaptiveCardHostConfig;
+      if (adaptiveCardsHostConfig) {
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardsHostConfig)
+          ? new HostConfig(adaptiveCardsHostConfig)
+          : adaptiveCardsHostConfig;
       }
 
       const { failures } = adaptiveCard.validateProperties();
@@ -194,7 +191,7 @@ const AdaptiveCardRenderer = ({
         inputValuesRef.current = saveInputValues(element);
       };
     }
-  }, [adaptiveCard, adaptiveCardHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdown]);
+  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdownAsHTML]);
 
   return error ? (
     <ErrorBox message={errorMessage}>
@@ -207,10 +204,8 @@ const AdaptiveCardRenderer = ({
 
 AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
   performCardAction: PropTypes.func.isRequired,
-  renderMarkdown: PropTypes.func.isRequired,
   tapAction: PropTypes.shape({
     type: PropTypes.string.isRequired,
     value: PropTypes.string
@@ -222,9 +217,8 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ disabled, onCardAction, renderMarkdown, tapAction }) => ({
+export default connectToWebChat(({ disabled, onCardAction, tapAction }) => ({
   disabled,
   performCardAction: onCardAction,
-  renderMarkdown,
   tapAction
 }))(AdaptiveCardRenderer);

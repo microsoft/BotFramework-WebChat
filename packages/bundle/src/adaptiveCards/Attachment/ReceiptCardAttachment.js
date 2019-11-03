@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useLocalize, useStyleOptions } = hooks;
 const { useStyleOptions } = hooks;
@@ -14,15 +15,16 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
+const ReceiptCardAttachment = ({ attachment: { content } }) => {
+  const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const taxText = useLocalize('Tax');
   const totalText = useLocalize('Total');
   const vatText = useLocalize('VAT');
 
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
-    const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
+    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
+    const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCardsPackage;
     const { buttons, facts, items, tax, title, total, vat } = content;
     const { richCardWrapTitle } = styleOptions;
 
@@ -95,20 +97,12 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
 
       return builder.card;
     }
-  }, [adaptiveCards, content, styleOptions, taxText, totalText, vatText]);
+  }, [adaptiveCardsPackage, content, styleOptions, taxText, totalText, vatText]);
 
-  return (
-    <AdaptiveCardRenderer
-      adaptiveCard={builtCard}
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      tapAction={content && content.tap}
-    />
-  );
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };
 
 ReceiptCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       buttons: PropTypes.array,
