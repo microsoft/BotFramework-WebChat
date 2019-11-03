@@ -8,7 +8,7 @@ import useLocalizeDate from '../hooks/useLocalizeDate';
 
 const AbsoluteTime = ({ value }) => {
   const localizedTime = useLocalizeDate(value);
-  const text = useLocalize('SentAt', language) + localizedTime;
+  const text = useLocalize('SentAt') + localizedTime;
 
   return (
     <React.Fragment>
@@ -19,7 +19,6 @@ const AbsoluteTime = ({ value }) => {
 };
 
 AbsoluteTime.propTypes = {
-  language: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired
 };
 

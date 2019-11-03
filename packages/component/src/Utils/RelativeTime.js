@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import Timer from './Timer';
-import useLanguage from '../hooks/useLanguage';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
@@ -22,7 +21,6 @@ function nextTimer(origin) {
 }
 
 const RelativeTime = ({ value }) => {
-  const [language] = useLanguage();
   const localizedAbsoluteTime = useLocalize('SentAt') + useLocalizeDate(value);
 
   const text = useLocalize('X minutes ago', value);
@@ -30,7 +28,7 @@ const RelativeTime = ({ value }) => {
 
   const handleInterval = useCallback(() => {
     setTimer(nextTimer(value));
-  }, [language, value]);
+  }, [setTimer, value]);
 
   return (
     <React.Fragment>

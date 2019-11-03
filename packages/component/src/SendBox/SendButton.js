@@ -4,6 +4,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
+import useLocalize from '../hooks/useLocalize';
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(

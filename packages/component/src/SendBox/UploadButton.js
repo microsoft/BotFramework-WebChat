@@ -81,7 +81,7 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = ({ disabled, language, sendFiles }) => {
+const UploadButton = ({ disabled, sendFiles }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const uploadFileString = useLocalize('Upload file');
 
@@ -128,7 +128,6 @@ UploadButton.defaultProps = {
 
 UploadButton.propTypes = {
   disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
   sendFiles: PropTypes.func.isRequired
 };
 
