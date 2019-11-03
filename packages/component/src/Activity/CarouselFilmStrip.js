@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
@@ -98,6 +98,9 @@ const WebChatCarouselFilmStrip = ({
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
 
+  const botRoleLabel = useLocalize('BotSent');
+  const userRoleLabel = useLocalize('UserSent');
+
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
@@ -110,10 +113,7 @@ const WebChatCarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
-  const botRoleLabel = useLocalize('BotSent');
-  const userRoleLabel = useLocalize('UserSent');
-
-  const roleLabel = useMemo(() => (fromUser ? userRoleLabel : botRoleLabel), [botRoleLabel, fromUser, userRoleLabel]);
+  const roleLabel = fromUser ? userRoleLabel : botRoleLabel;
 
   return (
     <div
