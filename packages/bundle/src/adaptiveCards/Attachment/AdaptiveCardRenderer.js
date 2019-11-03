@@ -192,7 +192,16 @@ const AdaptiveCardRenderer = ({ adaptiveCard, disabled, performCardAction, tapAc
         inputValuesRef.current = saveInputValues(element);
       };
     }
-  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdownAsHTML]);
+  }, [
+    adaptiveCard,
+    adaptiveCardsHostConfig,
+    contentRef,
+    disabled,
+    error,
+    handleExecuteAction,
+    HostConfig,
+    renderMarkdownAsHTML
+  ]);
 
   return error ? (
     <ErrorBox message={errorMessage}>
