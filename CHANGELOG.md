@@ -1,4 +1,4 @@
-# Changelog
+E# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -97,6 +97,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          - `@babel/runtime@7.6.3`
          - `core-js@3.3.6`
 -  `component`: Bumps [`adaptivecards@1.2.3`](https://npmjs.com/package/adaptivecards), by [@corinagum](https://github.com/corinagum) in PR [#2523](https://github.com/microsoft/BotFramework-WebChat/pull/2532)
+-  Bumps Chrome in Docker to 78.0.3904.70, by [@spyip](https://github.com/spyip) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.6.0] - 2019-10-31
 
