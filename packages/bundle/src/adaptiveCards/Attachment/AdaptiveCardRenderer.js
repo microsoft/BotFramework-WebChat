@@ -1,12 +1,12 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 2] }] */
 
-import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Components, connectToWebChat, getTabIndex, hooks } from 'botframework-webchat-component';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { ErrorBox } = Components;
 const { useLocalize, useRenderMarkdownAsHTML, useStyleSet } = hooks;
@@ -66,6 +66,7 @@ function saveInputValues(element) {
 
 const AdaptiveCardRenderer = ({ adaptiveCard, disabled, performCardAction, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
+  const [{ HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const errorMessage = useLocalize('Adaptive Card render error');
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
