@@ -5,7 +5,7 @@ import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
@@ -107,12 +107,12 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
 
-  const roleLabel = useMemo(() => (fromUser ? botRoleLabel : userRoleLabel), [botRoleLabel, fromUser, userRoleLabel]);
+  const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
 
   const botAriaLabel = useLocalize('Bot said something', avatarInitials, plainText);
   const userAriaLabel = useLocalize('User said something', avatarInitials, plainText);
 
-  const ariaLabel = useMemo(() => (fromUser ? userAriaLabel : botAriaLabel), [botAriaLabel, fromUser, userAriaLabel]);
+  const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
 
   return (
     <div
