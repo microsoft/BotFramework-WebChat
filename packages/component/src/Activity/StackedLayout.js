@@ -5,7 +5,7 @@ import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
