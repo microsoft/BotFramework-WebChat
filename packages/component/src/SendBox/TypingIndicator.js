@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
+import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
-const TypingIndicator = ({ language, lastTypingAt }) => {
+const TypingIndicator = ({ lastTypingAt }) => {
   const [{ typingAnimationDuration }] = useStyleOptions();
   const [{ typingIndicator }] = useStyleSet();
+  const animationAriaLabel = useLocalize('TypingIndicator');
 
   const [showTyping, setShowTyping] = useState(false);
 
@@ -31,15 +32,14 @@ const TypingIndicator = ({ language, lastTypingAt }) => {
   return (
     showTyping && (
       <div className={typingIndicator}>
-        <TypingAnimation aria-label={localize('TypingIndicator', language)} />
+        <TypingAnimation aria-label={animationAriaLabel} />
       </div>
     )
   );
 };
 
 TypingIndicator.propTypes = {
-  language: PropTypes.string.isRequired,
   lastTypingAt: PropTypes.any.isRequired
 };
 
-export default connectToWebChat(({ lastTypingAt, language }) => ({ lastTypingAt, language }))(TypingIndicator);
+export default connectToWebChat(({ lastTypingAt }) => ({ lastTypingAt }))(TypingIndicator);

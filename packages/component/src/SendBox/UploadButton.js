@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
-import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -83,8 +83,9 @@ const connectUploadButton = (...selectors) =>
 
 const UploadButton = ({ disabled, language, sendFiles }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const uploadFileString = useLocalize('Upload file');
+
   const inputRef = useRef();
-  const uploadFileString = localize('Upload file', language);
   const { current } = inputRef;
 
   const handleClick = useCallback(() => {
