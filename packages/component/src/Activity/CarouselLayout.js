@@ -16,6 +16,7 @@ const ROOT_CSS = css({
 
 const CarouselLayout = ({ activity, children, language, timestampClassName }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
+
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (

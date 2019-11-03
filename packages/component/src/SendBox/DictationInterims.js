@@ -9,6 +9,7 @@ import { Constants } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
@@ -29,28 +30,31 @@ const connectDictationInterims = (...selectors) =>
     ...selectors
   );
 
-const DictationInterims = ({ className, dictateInterims = [], dictateState, styleSet }) =>
-  dictateState === STARTING || dictateState === STOPPING ? (
-    <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'status')}>
+const DictationInterims = ({ className, dictateInterims = [], dictateState }) => {
+  const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
+
+  return dictateState === STARTING || dictateState === STOPPING ? (
+    <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
       {dictateState === STARTING && <Localize text="Starting&hellip;" />}
     </p>
   ) : (
     dictateState === DICTATING &&
-    (dictateInterims.length ? (
-      <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'dictating')}>
-        {dictateInterims.map((interim, index) => (
-          <span key={index}>
-            {interim}
-            &nbsp;
-          </span>
-        ))}
-      </p>
-    ) : (
-      <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'status')}>
-        <Localize text="Listening&hellip;" />
-      </p>
-    ))
+      (dictateInterims.length ? (
+        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'dictating')}>
+          {dictateInterims.map((interim, index) => (
+            <span key={index}>
+              {interim}
+              &nbsp;
+            </span>
+          ))}
+        </p>
+      ) : (
+        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
+          <Localize text="Listening&hellip;" />
+        </p>
+      ))
   );
+};
 
 DictationInterims.defaultProps = {
   className: ''
@@ -59,15 +63,12 @@ DictationInterims.defaultProps = {
 DictationInterims.propTypes = {
   className: PropTypes.string,
   dictateInterims: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dictateState: PropTypes.number.isRequired,
-  styleSet: PropTypes.shape({
-    dictationInterims: PropTypes.any.isRequired
-  }).isRequired
+  dictateState: PropTypes.number.isRequired
 };
 
 // TODO: [P3] After speech started, when clicking on the transcript, it should
 //       stop the dictation and allow the user to type-correct the transcript
 
-export default connectDictationInterims(({ styleSet }) => ({ styleSet }))(DictationInterims);
+export default connectDictationInterims()(DictationInterims);
 
 export { connectDictationInterims };

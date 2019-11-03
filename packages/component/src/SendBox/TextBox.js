@@ -6,6 +6,8 @@ import React from 'react';
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -53,16 +55,16 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit, styleSet, value }) => {
+const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit, value }) => {
+  const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+
   const typeYourMessageString = localize('Type your message', language);
   const sendBoxString = localize('Sendbox', language);
-  const {
-    options: { sendBoxTextWrap }
-  } = styleSet;
 
   return (
     <form
-      className={classNames(ROOT_CSS + '', styleSet.sendBoxTextArea + '', styleSet.sendBoxTextBox + '', className + '')}
+      className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
       onSubmit={onSubmit}
     >
       {
@@ -115,16 +117,9 @@ TextBox.propTypes = {
   onChange: PropTypes.func.isRequired,
   onKeyPress: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      sendBoxTextWrap: PropTypes.bool.isRequired
-    }).isRequired,
-    sendBoxTextArea: PropTypes.any.isRequired,
-    sendBoxTextBox: PropTypes.any.isRequired
-  }).isRequired,
   value: PropTypes.string
 };
 
-export default connectSendTextBox(({ styleSet }) => ({ styleSet }))(TextBox);
+export default connectSendTextBox()(TextBox);
 
 export { connectSendTextBox };

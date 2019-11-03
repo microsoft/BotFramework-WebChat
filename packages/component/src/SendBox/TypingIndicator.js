@@ -4,15 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
-const TypingIndicator = ({
-  language,
-  lastTypingAt,
-  styleSet: {
-    options: { typingAnimationDuration },
-    typingIndicator
-  }
-}) => {
+const TypingIndicator = ({ language, lastTypingAt }) => {
+  const [{ typingAnimationDuration }] = useStyleOptions();
+  const [{ typingIndicator }] = useStyleSet();
+
   const [showTyping, setShowTyping] = useState(false);
 
   useEffect(() => {
@@ -41,15 +39,7 @@ const TypingIndicator = ({
 
 TypingIndicator.propTypes = {
   language: PropTypes.string.isRequired,
-  lastTypingAt: PropTypes.any.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      typingAnimationDuration: PropTypes.number
-    }).isRequired,
-    typingIndicator: PropTypes.any.isRequired
-  }).isRequired
+  lastTypingAt: PropTypes.any.isRequired
 };
 
-export default connectToWebChat(({ lastTypingAt, language, styleSet }) => ({ lastTypingAt, language, styleSet }))(
-  TypingIndicator
-);
+export default connectToWebChat(({ lastTypingAt, language }) => ({ lastTypingAt, language }))(TypingIndicator);
