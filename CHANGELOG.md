@@ -96,12 +96,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       - `embed`
          - `@babel/runtime@7.6.3`
          - `core-js@3.3.6`
+-  `component`: Bumps [`adaptivecards@1.2.3`](https://npmjs.com/package/adaptivecards), by [@corinagum](https://github.com/corinagum) in PR [#2523](https://github.com/microsoft/BotFramework-WebChat/pull/2532)
 
 ### Samples
 
 -  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/17.b.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
 
-## [4.6.0] - 2019-10-30
+## [4.6.0] - 2019-10-31
 
 ### Breaking changes
 
