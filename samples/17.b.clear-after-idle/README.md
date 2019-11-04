@@ -18,16 +18,15 @@ This sample shows how to replace Web Chat's store to clear the conversation.
 
 # Things to try out
 
--  Send a message to the bot - this will start the timer in the upper right corner. When the timer expires, Web Chat will restart the conversation.
--  Either send another message to the bot to restart the timer or let the timer expire which will make the conversation restart.
+-  Send a message to the bot and let the timer expire - this will start a new conversation.
+-  Send a message to the bot and send another one before the timer expires - this will keep the conversation active.
 
 # Code
 
 > Jump to [completed code](#completed-code) to see the end-result `App.js`, `Timer.js`, and `useTimer.js`.
 
 ## Overview
-
-In this sample, once the user has sat idle for 30 seconds, we will be replacing the Web Chat store to clear the conversation history and start a new conversation with the bot. Note, when the store is replaced, Web Chat dispatches a `DIRECT_LINE/DISCONNECT` action so we will need to re-initialize our Direct Line connection. In this sample we will simply request a new token; however, it is possible to reuse the old one.
+This sample demonstrates how to clear the conversation data and start a new conversation with the user after the user has sat idle for a set period of time. Sending a message to the bot will start the timer in the upper right hand corner and subsequent messages will reset the timer and keep the conversation active. When the timer expires, a new token is requested to start a new conversation and the store is replaced to reset the conversation data in Web Chat. Note, when the store is replaced, Web Chat dispatches a `DIRECT_LINE/DISCONNECT` action so we will need to re-initialize our Direct Line object.
 
 ## Completed Code
 
