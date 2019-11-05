@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  `component`: Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
+-  `component`: Fixes [#2331](https://github.com/microsoft/BotFramework-WebChat/issues/2331). Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
 
 ### Changed
 
