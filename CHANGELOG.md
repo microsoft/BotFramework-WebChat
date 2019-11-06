@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#2565](https://github.com/microsoft/BotFramework-WebChat/issues/2565). Fixed Adaptive Card host config should generate from style options with default options merged, by [@compulim](https://github.com/compulim) in PR [#2566](https://github.com/microsoft/BotFramework-WebChat/pull/2566)
+
 ### Changed
 
 - Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)

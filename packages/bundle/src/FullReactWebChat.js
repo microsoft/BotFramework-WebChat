@@ -51,7 +51,7 @@ class FullReactWebChat extends React.Component {
         attachmentMiddleware={this.createAttachmentMiddleware(
           adaptiveCardHostConfig,
           attachmentMiddleware,
-          styleOptions,
+          memoizedStyleSet.options,
           memoizedRenderMarkdown
         )}
         renderMarkdown={memoizedRenderMarkdown}
