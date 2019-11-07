@@ -1,16 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../../connectToWebChat';
+import useStyleSet from '../../hooks/useStyleSet';
 
-const SpinnerAnimation = ({ styleSet }) => <div className={styleSet.spinnerAnimation} />;
+const SpinnerAnimation = () => {
+  const [{ spinnerAnimation: spinnerAnimationStyleSet }] = useStyleSet();
 
-SpinnerAnimation.propTypes = {
-  styleSet: PropTypes.shape({
-    spinnerAnimation: PropTypes.any.isRequired
-  }).isRequired
+  return <div className={spinnerAnimationStyleSet} />;
 };
 
-const ConnectedSpinnerAnimation = connectToWebChat(({ styleSet }) => ({ styleSet }))(SpinnerAnimation);
-
-export default ConnectedSpinnerAnimation;
+export default SpinnerAnimation;

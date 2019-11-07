@@ -1,23 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../../connectToWebChat';
 import ScreenReaderText from '../../ScreenReaderText';
+import useStyleSet from '../../hooks/useStyleSet';
 
-const TypingAnimation = ({ 'aria-label': ariaLabel, styleSet }) => (
-  <React.Fragment>
-    <ScreenReaderText text={ariaLabel} />
-    <div aria-hidden={true} className={styleSet.typingAnimation} />
-  </React.Fragment>
-);
+const TypingAnimation = ({ 'aria-label': ariaLabel }) => {
+  const [{ typingAnimation: typingAnimationStyleSet }] = useStyleSet();
 
-TypingAnimation.propTypes = {
-  'aria-label': PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    typingAnimation: PropTypes.any.isRequired
-  }).isRequired
+  return (
+    <React.Fragment>
+      <ScreenReaderText text={ariaLabel} />
+      <div aria-hidden={true} className={typingAnimationStyleSet} />
+    </React.Fragment>
+  );
 };
 
-const ConnectedTypingAnimation = connectToWebChat(({ styleSet }) => ({ styleSet }))(TypingAnimation);
+TypingAnimation.propTypes = {
+  'aria-label': PropTypes.string.isRequired
+};
 
-export default ConnectedTypingAnimation;
+export default TypingAnimation;

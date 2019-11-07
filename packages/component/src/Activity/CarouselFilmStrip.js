@@ -16,6 +16,8 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -92,9 +94,11 @@ const WebChatCarouselFilmStrip = ({
   itemContainerRef,
   language,
   scrollableRef,
-  styleSet,
   timestampClassName
 }) => {
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
+  const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
+
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
@@ -105,11 +109,11 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '', {
+      className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
         webchat__carousel_indented_content: avatarInitials && !indented
       })}
       ref={scrollableRef}
@@ -182,20 +186,12 @@ WebChatCarouselFilmStrip.propTypes = {
   itemContainerRef: PropTypes.any.isRequired,
   language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
-  styleSet: PropTypes.shape({
-    carouselFilmStrip: PropTypes.any.isRequired,
-    options: PropTypes.shape({
-      bubbleFromUserNubSize: PropTypes.number.isRequired,
-      bubbleNubSize: PropTypes.number.isRequired
-    }).isRequired
-  }).isRequired,
   timestampClassName: PropTypes.string
 };
 
-const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language, styleSet }) => ({
+const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language }) => ({
   avatarInitials,
-  language,
-  styleSet
+  language
 }))(WebChatCarouselFilmStrip);
 
 const CarouselFilmStrip = props => (

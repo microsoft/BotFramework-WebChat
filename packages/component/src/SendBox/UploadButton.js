@@ -8,6 +8,7 @@ import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -80,7 +81,8 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
+const UploadButton = ({ disabled, language, sendFiles }) => {
+  const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const inputRef = useRef();
   const uploadFileString = localize('Upload file', language);
   const { current } = inputRef;
@@ -101,7 +103,7 @@ const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.uploadButton + '')}>
+    <div className={classNames(ROOT_CSS + '', uploadButtonStyleSet + '')}>
       <input
         aria-hidden="true"
         disabled={disabled}
@@ -126,19 +128,9 @@ UploadButton.defaultProps = {
 UploadButton.propTypes = {
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
-  sendFiles: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      enableUploadThumbnail: PropTypes.bool.isRequired,
-      uploadThumbnailContentType: PropTypes.string.isRequired,
-      uploadThumbnailHeight: PropTypes.number.isRequired,
-      uploadThumbnailQuality: PropTypes.number.isRequired,
-      uploadThumbnailWidth: PropTypes.number.isRequired
-    }).isRequired,
-    uploadButton: PropTypes.any.isRequired
-  }).isRequired
+  sendFiles: PropTypes.func.isRequired
 };
 
-export default connectUploadButton(({ styleSet }) => ({ styleSet }))(UploadButton);
+export default connectUploadButton()(UploadButton);
 
 export { connectUploadButton };

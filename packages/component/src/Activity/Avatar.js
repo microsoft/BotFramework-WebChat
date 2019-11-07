@@ -4,6 +4,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useStyleSet from '../hooks/useStyleSet';
 
 const connectAvatar = (...selectors) =>
   connectToWebChat(
@@ -24,16 +25,21 @@ const connectAvatar = (...selectors) =>
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser, styleSet }) =>
-  !!(avatarImage || avatarInitials) && (
-    <div
-      aria-hidden={ariaHidden}
-      className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
-    >
-      {avatarInitials}
-      {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
-    </div>
+const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser }) => {
+  const [{ avatar: avatarStyleSet }] = useStyleSet();
+
+  return (
+    !!(avatarImage || avatarInitials) && (
+      <div
+        aria-hidden={ariaHidden}
+        className={classNames(avatarStyleSet + '', { 'from-user': fromUser }, className + '')}
+      >
+        {avatarInitials}
+        {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
+      </div>
+    )
   );
+};
 
 Avatar.defaultProps = {
   'aria-hidden': false,
@@ -48,12 +54,9 @@ Avatar.propTypes = {
   avatarImage: PropTypes.string,
   avatarInitials: PropTypes.string,
   className: PropTypes.string,
-  fromUser: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    avatar: PropTypes.any.isRequired
-  }).isRequired
+  fromUser: PropTypes.bool
 };
 
-export default connectAvatar(({ styleSet }) => ({ styleSet }))(Avatar);
+export default connectAvatar()(Avatar);
 
 export { connectAvatar };

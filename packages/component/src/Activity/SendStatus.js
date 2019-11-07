@@ -5,6 +5,7 @@ import React from 'react';
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }
@@ -27,7 +28,9 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity: { channelData: { state } = {} }, language, retrySend, styleSet }) => {
+const SendStatus = ({ activity: { channelData: { state } = {} }, language, retrySend }) => {
+  const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
+
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
   const localizedSending = localize('Sending', language);
@@ -38,7 +41,7 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
   return (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
-      <span aria-hidden={true} className={styleSet.sendStatus}>
+      <span aria-hidden={true} className={sendStatusStyleSet}>
         {state === SENDING ? (
           localizedSending
         ) : state === SEND_FAILED ? (
@@ -70,12 +73,9 @@ SendStatus.propTypes = {
     })
   }).isRequired,
   language: PropTypes.string.isRequired,
-  retrySend: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    sendStatus: PropTypes.any.isRequired
-  }).isRequired
+  retrySend: PropTypes.func.isRequired
 };
 
-export default connectSendStatus(({ styleSet }) => ({ styleSet }))(SendStatus);
+export default connectSendStatus()(SendStatus);
 
 export { connectSendStatus };

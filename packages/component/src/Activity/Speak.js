@@ -4,6 +4,7 @@ import Say from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
+import useStyleOptions from '../hooks/useStyleOptions';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
@@ -19,7 +20,9 @@ const connectSpeakActivity = (...selectors) =>
     ...selectors
   );
 
-const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
+const Speak = ({ activity, markAsSpoken, selectVoice }) => {
+  const [{ showSpokenText }] = useStyleOptions();
+
   if (!activity) {
     return false;
   }
@@ -39,7 +42,7 @@ const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
   return (
     <React.Fragment>
       <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
-      {!!styleSet.options.showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
+      {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
     </React.Fragment>
   );
 };
@@ -58,14 +61,9 @@ Speak.propTypes = {
     text: PropTypes.string
   }).isRequired,
   markAsSpoken: PropTypes.func.isRequired,
-  selectVoice: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      showSpokenText: PropTypes.bool.isRequired
-    }).isRequired
-  }).isRequired
+  selectVoice: PropTypes.func.isRequired
 };
 
-export default connectSpeakActivity(({ styleSet }) => ({ styleSet }))(Speak);
+export default connectSpeakActivity()(Speak);
 
 export { connectSpeakActivity };

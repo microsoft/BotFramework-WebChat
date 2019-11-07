@@ -7,6 +7,8 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
@@ -29,27 +31,33 @@ const connectSuggestedActions = (...selectors) =>
     ...selectors
   );
 
-const SuggestedActions = ({ className, styleSet, suggestedActions = [] }) =>
-  !!suggestedActions.length && (
-    <BasicFilm
-      autoCenter={false}
-      className={classNames(styleSet.suggestedActions + '', className + '')}
-      showDots={false}
-      styleSet={styleSet.options.suggestedActionsStyleSet}
-    >
-      {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
-        <SuggestedAction
-          buttonText={suggestedActionText({ displayText, title, type, value })}
-          displayText={displayText}
-          image={image}
-          key={index}
-          text={text}
-          type={type}
-          value={value}
-        />
-      ))}
-    </BasicFilm>
+const SuggestedActions = ({ className, suggestedActions = [] }) => {
+  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const [{ suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+
+  return (
+    !!suggestedActions.length && (
+      <BasicFilm
+        autoCenter={false}
+        className={classNames(suggestedActionsStyleSet + '', className + '')}
+        showDots={false}
+        styleSet={suggestedActionsStyleSetForReactFilm}
+      >
+        {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
+          <SuggestedAction
+            buttonText={suggestedActionText({ displayText, title, type, value })}
+            displayText={displayText}
+            image={image}
+            key={index}
+            text={text}
+            type={type}
+            value={value}
+          />
+        ))}
+      </BasicFilm>
+    )
   );
+};
 
 SuggestedActions.defaultProps = {
   className: ''
@@ -57,12 +65,6 @@ SuggestedActions.defaultProps = {
 
 SuggestedActions.propTypes = {
   className: PropTypes.string,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      suggestedActionsStyleSet: PropTypes.any.isRequired
-    }).isRequired,
-    suggestedActions: PropTypes.any.isRequired
-  }).isRequired,
   suggestedActions: PropTypes.arrayOf(
     PropTypes.shape({
       displayText: PropTypes.string,
@@ -75,6 +77,6 @@ SuggestedActions.propTypes = {
   ).isRequired
 };
 
-export default connectSuggestedActions(({ styleSet }) => ({ styleSet }))(SuggestedActions);
+export default connectSuggestedActions()(SuggestedActions);
 
 export { connectSuggestedActions };

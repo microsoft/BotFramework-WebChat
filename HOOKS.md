@@ -8,7 +8,7 @@ To enable Web Chat API, all UI components must be located under the [`<Composer>
 
 React Hooks will make your code cleaner and shorter, and also greatly improve readability.
 
-Web Chat expose our APIs through React Hooks. This API surface enables us to freely move stuff behind the scene, introduce new APIs, and a safe way to deprecate APIs. It will also make us easier to shuffle work between our internal Redux store and React Context.
+Web Chat expose our APIs through React Hooks. This API surface enables us to freely move stuff behind the scene, introduce new APIs, and a safe way to deprecate APIs. It will also make it easier to shuffle work between our internal Redux store and React Context.
 
 ## Two types of hooks
 
@@ -16,8 +16,8 @@ We design our hooks largely with two basic shapes:
 
 - Actions, these are functions that you can call at any time to perform a side-effect
 - Properties, these are getter function with an optional setter
-   - This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setter could be optional
-   - If the value changed, React will call your render function again
+   - This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setters are optional
+   - If the value is changed, React will call your render function again
 
 ### Actions
 
@@ -130,7 +130,7 @@ useAvatarForBot(): [{
 
 This function will return the image and initials of the bot. Both image and initials are optional and can be falsy.
 
-To set the avatar for bot, use style options.
+To set the avatar for the bot, use style options.
 
 ## `useAvatarForUser`
 
@@ -143,7 +143,7 @@ useAvatarForUser(): [{
 
 This function will return the image and initials of the user. Both image and initials are optional and can be falsy.
 
-To set the avatar for user, use style options.
+To set the avatar for the user, use style options.
 
 ## `useConnectivityStatus`
 
@@ -263,7 +263,7 @@ This property is computed on every incoming activity.
 useLocalize(identifier: string) => string
 ```
 
-This function will return a localized string represented by the identifier. It honor the language settings from `useLanguage` hook.
+This function will return a localized string represented by the identifier. It honors the language settings from `useLanguage` hook.
 
 To modify this value, change the props passed to Web Chat.
 
@@ -296,7 +296,7 @@ usePostActivity(): (activity: Activity) => void
 
 When called, this function will post the activity on behalf of the user, to the bot.
 
-You can use this function to send any type of activities to the bot. We highly recommend you send the following type of activities only:
+You can use this function to send any type of activities to the bot, but we highly recommend you send the following type of activities only:
 
 - `event`
 - `message`
@@ -336,7 +336,7 @@ useRenderAttachment(): ({
 }) => React.Element
 ```
 
-This function is for rendering attachment into React element. The caller will need to pass `activity` and `attachment`. This function is a composition of `attachmentRendererMiddleware`, which is passed as a prop.
+This function is for rendering attachments into React element. The caller will need to pass `activity` and `attachment` as parameters. This function is a composition of `attachmentRendererMiddleware`, which is passed as a prop.
 
 ```js
 () => next => { activity, attachment } => next({ activity, attachment })
@@ -391,9 +391,9 @@ useSendFiles(): (files: (Blob | File)[]) => void
 When called, this function will send a message activity with one or more [File](https://developer.mozilla.org/en-US/docs/Web/API/File) attachments to the bot, including these operations:
 
 - Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
-- Generate thumbnail and will use Web Worker and offscreen canvas if supported
+- Generate thumbnail and will use a Web Worker and a offscreen canvas if supported
 
-If you are using `ArrayBuffer`, you can use `FileReader` to convert it into a blob before calling [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL).
+If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a blob before calling [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL).
 
 ## `useSendMessage`
 
@@ -403,7 +403,7 @@ useSendMessage(): (text: string, method: string) => void
 
 When called, this function will send a text message activity to the bot.
 
-You can optionally include the input method the text message is collected. Currently, if specified, only `speech` is supported.
+You can optionally include the input method how the text message was collected. Currently, if specified, only `speech` is supported.
 
 ## `useSendMessageBack`
 
@@ -503,7 +503,7 @@ The suggested actions is computed from the last message activity sent from the b
 useTimeoutForSend(): [number]
 ```
 
-This function will return the interval before a sending activity is considered fail. The interval is represented in milliseconds. Due to network partitioning problem, activity that failed to send could eventually successfully deliver to the bot.
+This function will return the interval before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problem, an activity that has failed to send could eventually be successfully delivered to the bot.
 
 To modify this value, change the props passed to Web Chat.
 
@@ -577,7 +577,7 @@ When called, this function will toggle microphone open or close.
 useMicrophoneButtonDisabled(): () => void
 ```
 
-This function will return whether the microphone button is disabled. This is more than `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
+This function will return whether the microphone button is disabled. This is different from `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
 
 This value can be partly controllable through Web Chat props.
 
@@ -636,7 +636,7 @@ useTypingIndicatorVisible(): [boolean]
 
 This function will return whether the typing indicator should be visible or not. This function is time-sensitive, means, the value could varies based on the clock.
 
-This function derive the visibility of the typing indicator by:
+This function derives the visibility of the typing indicator by:
 
 - `typingAnimationDuration` value specified in style options, in milliseconds
 - Values from the `useLastTypingAt` hook

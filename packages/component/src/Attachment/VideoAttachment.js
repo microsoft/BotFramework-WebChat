@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 import VideoContent from './VideoContent';
 
 const ROOT_CSS = css({
@@ -11,20 +11,21 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-const VideoAttachment = ({ attachment, styleSet }) => (
-  <div className={classNames(ROOT_CSS + '', styleSet.videoAttachment + '')}>
-    <VideoContent alt={attachment.name} src={attachment.contentUrl} />
-  </div>
-);
+const VideoAttachment = ({ attachment }) => {
+  const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
+
+  return (
+    <div className={classNames(ROOT_CSS + '', videoAttachmentStyleSet + '')}>
+      <VideoContent alt={attachment.name} src={attachment.contentUrl} />
+    </div>
+  );
+};
 
 VideoAttachment.propTypes = {
   attachment: PropTypes.shape({
     contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    videoAttachment: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VideoAttachment);
+export default VideoAttachment;
