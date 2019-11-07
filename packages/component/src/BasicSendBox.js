@@ -13,6 +13,7 @@ import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
 import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
+import useActivities from './hooks/useActivities';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -28,28 +29,46 @@ const DICTATION_INTERIMS_CSS = css({ flex: 10000 });
 const MICROPHONE_BUTTON_CSS = css({ flex: 1 });
 const TEXT_BOX_CSS = css({ flex: 10000 });
 
-const BasicSendBox = ({ className, dictationStarted, styleSet, webSpeechPonyfill }) => (
-  <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
-    <TypingIndicator />
-    <ConnectivityStatus />
-    <SuggestedActions />
-    <div className="main">
-      {!styleSet.options.hideUploadButton && <UploadButton />}
-      {dictationStarted ? (
-        <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
-      ) : (
-        <TextBox className={TEXT_BOX_CSS + ''} />
-      )}
-      <div>
-        {(webSpeechPonyfill || {}).SpeechRecognition ? (
-          <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} />
+// TODO: [P3] We should consider exposing core/src/definitions and use it instead
+function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
+  return !!speak;
+}
+
+function useSendBoxDictationStarted(dictateState) {
+  const [activities] = useActivities();
+
+  return [
+    (dictateState === STARTING || dictateState === DICTATING) &&
+      !activities.filter(activityIsSpeakingOrQueuedToSpeak).length
+  ];
+}
+
+const BasicSendBox = ({ className, dictateState, styleSet, webSpeechPonyfill }) => {
+  const [dictationStarted] = useSendBoxDictationStarted(dictateState);
+
+  return (
+    <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
+      <TypingIndicator />
+      <ConnectivityStatus />
+      <SuggestedActions />
+      <div className="main">
+        {!styleSet.options.hideUploadButton && <UploadButton />}
+        {dictationStarted ? (
+          <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
         ) : (
-          <SendButton />
+          <TextBox className={TEXT_BOX_CSS + ''} />
         )}
+        <div>
+          {(webSpeechPonyfill || {}).SpeechRecognition ? (
+            <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} />
+          ) : (
+            <SendButton />
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 BasicSendBox.defaultProps = {
   className: '',
@@ -58,7 +77,7 @@ BasicSendBox.defaultProps = {
 
 BasicSendBox.propTypes = {
   className: PropTypes.string,
-  dictationStarted: PropTypes.bool.isRequired,
+  dictateState: PropTypes.number.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
       hideUploadButton: PropTypes.bool.isRequired
@@ -70,15 +89,10 @@ BasicSendBox.propTypes = {
   })
 };
 
-// TODO: [P3] We should consider exposing core/src/definitions and use it instead
-function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
-  return !!speak;
-}
-
-export default connectToWebChat(({ activities, dictateState, styleSet, webSpeechPonyfill }) => ({
-  dictationStarted:
-    (dictateState === STARTING || dictateState === DICTATING) &&
-    !activities.filter(activityIsSpeakingOrQueuedToSpeak).length,
+export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
+  dictateState,
   styleSet,
   webSpeechPonyfill
 }))(BasicSendBox);
+
+export { useSendBoxDictationStarted };
