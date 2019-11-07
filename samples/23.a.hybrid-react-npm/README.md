@@ -21,10 +21,10 @@ To run this sample, follow steps below:
 
 There are two packages in this [monorepo](https://en.wikipedia.org/wiki/Monorepo):
 
-- `app`: the hosting app, created using [`create-react-app`](https://github.com/facebook/create-react-app)
-   - Requires `react@16.0.0` and `react-dom@16.0.0`
-- `chat-component`: the chat component, which will render Web Chat
-   - Requires `react@16.8.6` and `react-dom@16.8.6`
+-  `app`: the hosting app, created using [`create-react-app`](https://github.com/facebook/create-react-app)
+   -  Requires `react@16.0.0` and `react-dom@16.0.0`
+-  `chat-component`: the chat component, which will render Web Chat
+   -  Requires `react@16.8.6` and `react-dom@16.8.6`
 
 The hosting app will create an [isolated DOM element](https://reactjs.org/docs/integrating-with-other-libraries.html) and pass it to the `chat-component` package. The chat component will control the rendering of the DOM element, while the hosting app controls the lifetime.
 
@@ -38,9 +38,9 @@ In `chat-component` package, we created an entrypoint for rendering a React comp
 import { render, unmountComponentAtNode } from 'react-dom';
 
 function renderChatComponent(props, node) {
-  render(<ChatComponent {...props} />, node);
+   render(<ChatComponent {...props} />, node);
 
-  return () => unmountComponentAtNode(node);
+   return () => unmountComponentAtNode(node);
 }
 ```
 
@@ -52,17 +52,15 @@ In the host application, we created a new component called `<ChatComponentWrappe
 
 ```jsx
 class ChatComponentWrapper extends React.Component {
-  constructor(props) {
-    super(props);
+   constructor(props) {
+      super(props);
 
-    this.saveChatComponentRef = ref => this.chatComponentRef = ref;
-  }
+      this.saveChatComponentRef = ref => (this.chatComponentRef = ref);
+   }
 
-  render() {
-    return (
-      <div ref={ this.saveChatComponentRef } />
-    );
-  }
+   render() {
+      return <div ref={this.saveChatComponentRef} />;
+   }
 }
 ```
 
@@ -147,18 +145,18 @@ In this approach, we isolated the DOM element from the React DOM tree. Then we u
 
 There are several key limitations to this approach:
 
-- Increased memory usage and bundle size
-- Only `props` can be passed between two DOM trees; React Context cannot be passed between them without extra work
-   - It is doable, but will require two different context objects and they must be wired up manually
-   - This includes `<Provider>` and `connect()` HOC in `react-redux`
-- [React-based customizations](https://github.com/microsoft/botframework-webchat#customize-web-chat-ui) added to Web Chat will still require React 16.8.6 or up
-   - For example, activity and attachment middleware require the newer version of React
-- Introducing new package(s), which could increase unnecessary fragmentation in your codebase
-- The rendering processes between two DOM trees are asynchronous and not guaranteed to complete at the same time
+-  Increased memory usage and bundle size
+-  Only `props` can be passed between two DOM trees; React Context cannot be passed between them without extra work
+   -  It is doable, but will require two different context objects and they must be wired up manually
+   -  This includes `<Provider>` and `connect()` HOC in `react-redux`
+-  [React-based customizations](https://github.com/microsoft/botframework-webchat#customize-web-chat-ui) added to Web Chat will still require React 16.8.6 or up
+   -  For example, activity and attachment middleware require the newer version of React
+-  Introducing new package(s), which could increase unnecessary fragmentation in your codebase
+-  The rendering processes between two DOM trees are asynchronous and not guaranteed to complete at the same time
 
 # Further reading
 
-- [Web Chat: Customize Web Chat UI](https://github.com/microsoft/botframework-webchat#customize-web-chat-ui)
-- [React: Rules of Hooks](https://reactjs.org/docs/hooks-rules.html)
-- [React: Integrating with Other Libraries](https://reactjs.org/docs/integrating-with-other-libraries.html)
-- [React: Invalid Hook Call Warning](https://reactjs.org/warnings/invalid-hook-call-warning.html)
+-  [Web Chat: Customize Web Chat UI](https://github.com/microsoft/botframework-webchat#customize-web-chat-ui)
+-  [React: Rules of Hooks](https://reactjs.org/docs/hooks-rules.html)
+-  [React: Integrating with Other Libraries](https://reactjs.org/docs/integrating-with-other-libraries.html)
+-  [React: Invalid Hook Call Warning](https://reactjs.org/warnings/invalid-hook-call-warning.html)
