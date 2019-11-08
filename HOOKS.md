@@ -14,10 +14,10 @@ Web Chat expose our APIs through React Hooks. This API surface enables us to fre
 
 We design our hooks largely with two basic shapes:
 
-- Actions, these are functions that you can call at any time to perform a side-effect
-- Properties, these are getter function with an optional setter
-   - This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setters are optional
-   - If the value is changed, React will call your render function again
+-  Actions, these are functions that you can call at any time to perform a side-effect
+-  Properties, these are getter function with an optional setter
+   -  This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setters are optional
+   -  If the value is changed, React will call your render function again
 
 ### Actions
 
@@ -36,7 +36,7 @@ All properties follow [React State Hook pattern](https://reactjs.org/docs/hooks-
 ```js
 const [sendBoxValue, setSendBoxValue] = useSendBoxValue();
 
-console.log(`The send box value is "${ sendBoxValue }".`);
+console.log(`The send box value is "${sendBoxValue}".`);
 
 setSendBoxValue('Hello, World!');
 ```
@@ -47,49 +47,49 @@ setSendBoxValue('Hello, World!');
 
 Following is the list of hooks supported by Web Chat API.
 
-- [`useActivities`](#useactivities)
-- [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
-- [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
-- [`useAvatarForBot`](#useavatarforbot)
-- [`useAvatarForUser`](#useavatarforuser)
-- [`useConnectivityStatus`](#useconnectivitystatus)
-- [`useDictateInterims`](#usedictateinterims)
-- [`useDictateState`](#usedictatestate)
-- [`useDisabled`](#usedisabled)
-- [`useEmitTypingIndicator`](#useemittypingindicator)
-- [`useFocusSendBox`](#usefocussendbox)
-- [`useGrammars`](#usegrammars)
-- [`useGroupTimestamp`](#usegrouptimestamp)
-- [`useLanguage`](#uselanguage)
-- [`useLastTypingAt`](#uselasttypingat)
-- [`useLocalize`](#uselocalize)
-- [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
-- [`usePerformCardAction`](#useperformcardaction)
-- [`usePostActivity`](#usepostactivity)
-- [`useReferenceGrammarID`](#usereferencegrammarid)
-- [`useRenderActivity`](#useRenderActivity)
-- [`useRenderAttachment`](#useRenderAttachment)
-- [`useRenderMarkdownAsHTML`](#useRenderMarkdownAsHTML)
-- [`useScrollToEnd`](#usescrolltoend)
-- [`useSendBoxValue`](#usesendboxvalue)
-- [`useSendEvent`](#usesendevent)
-- [`useSendFiles`](#usesendfiles)
-- [`useSendMessage`](#usesendmessage)
-- [`useSendMessageBack`](#usesendmessageback)
-- [`useSendPostBack`](#usesendpostback)
-- [`useSendTypingIndicator`](#usesendtypingindicator)
-- [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
-- [`useStartDictate`](#usestartdictate)
-- [`useStopDictate`](#usestopdictate)
-- [`useStyleOptions`](#usestyleoptions)
-- [`useStyleSet`](#usestyleset)
-- [`useSubmitSendBox`](#usesubmitsendbox)
-- [`useSuggestedActions`](#usesuggestedactions)
-- [`useTimeoutForSend`](#usetimeoutforsend)
-- [`useUserID`](#useuserid)
-- [`useUsername`](#useusername)
-- [`useVoiceSelector`](#usevoiceselector)
-- [`useWebSpeechPonyfill`](#usewebspeechponyfill)
+-  [`useActivities`](#useactivities)
+-  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
+-  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
+-  [`useAvatarForBot`](#useavatarforbot)
+-  [`useAvatarForUser`](#useavatarforuser)
+-  [`useConnectivityStatus`](#useconnectivitystatus)
+-  [`useDictateInterims`](#usedictateinterims)
+-  [`useDictateState`](#usedictatestate)
+-  [`useDisabled`](#usedisabled)
+-  [`useEmitTypingIndicator`](#useemittypingindicator)
+-  [`useFocusSendBox`](#usefocussendbox)
+-  [`useGrammars`](#usegrammars)
+-  [`useGroupTimestamp`](#usegrouptimestamp)
+-  [`useLanguage`](#uselanguage)
+-  [`useLastTypingAt`](#uselasttypingat)
+-  [`useLocalize`](#uselocalize)
+-  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
+-  [`usePerformCardAction`](#useperformcardaction)
+-  [`usePostActivity`](#usepostactivity)
+-  [`useReferenceGrammarID`](#usereferencegrammarid)
+-  [`useRenderActivity`](#useRenderActivity)
+-  [`useRenderAttachment`](#useRenderAttachment)
+-  [`useRenderMarkdownAsHTML`](#useRenderMarkdownAsHTML)
+-  [`useScrollToEnd`](#usescrolltoend)
+-  [`useSendBoxValue`](#usesendboxvalue)
+-  [`useSendEvent`](#usesendevent)
+-  [`useSendFiles`](#usesendfiles)
+-  [`useSendMessage`](#usesendmessage)
+-  [`useSendMessageBack`](#usesendmessageback)
+-  [`useSendPostBack`](#usesendpostback)
+-  [`useSendTypingIndicator`](#usesendtypingindicator)
+-  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
+-  [`useStartDictate`](#usestartdictate)
+-  [`useStopDictate`](#usestopdictate)
+-  [`useStyleOptions`](#usestyleoptions)
+-  [`useStyleSet`](#usestyleset)
+-  [`useSubmitSendBox`](#usesubmitsendbox)
+-  [`useSuggestedActions`](#usesuggestedactions)
+-  [`useTimeoutForSend`](#usetimeoutforsend)
+-  [`useUserID`](#useuserid)
+-  [`useUsername`](#useusername)
+-  [`useVoiceSelector`](#usevoiceselector)
+-  [`useWebSpeechPonyfill`](#usewebspeechponyfill)
 
 ## `useActivities`
 
@@ -153,14 +153,14 @@ useConnectivityStatus(): [string]
 
 This function will return the connectivity status of:
 
-- `connected`: Connected
-- `connectingslow`: Still connecting, not connected
-- `error`: Connection error
-- `notconnected`: Not connected
-- `reconnected`: Reconnected after interruption
-- `reconnecting`: Reconnecting after interruption
-- `sagaerror`: Errors on JavaScript side
-- `uninitialized`: Never connect and not connecting
+-  `connected`: Connected
+-  `connectingslow`: Still connecting, not connected
+-  `error`: Connection error
+-  `notconnected`: Not connected
+-  `reconnected`: Reconnected after interruption
+-  `reconnecting`: Reconnecting after interruption
+-  `sagaerror`: Errors on JavaScript side
+-  `uninitialized`: Never connect and not connecting
 
 ## `useDictateInterims`
 
@@ -180,10 +180,10 @@ useDictateState(): [string]
 
 This function will return the dictate state of:
 
-- `0`: Idle
-- `1`: Starting
-- `2`: Dictating
-- `3`: Stopping
+-  `0`: Idle
+-  `1`: Starting
+-  `2`: Dictating
+-  `3`: Stopping
 
 To control dictate state, use [`useStartDictate`](#usestartdictate) and [`useStopDictate`](#usestopdictate) hooks.
 
@@ -298,9 +298,9 @@ When called, this function will post the activity on behalf of the user, to the 
 
 You can use this function to send any type of activities to the bot, but we highly recommend you send the following type of activities only:
 
-- `event`
-- `message`
-- `typing`
+-  `event`
+-  `message`
+-  `typing`
 
 ## `useReferenceGrammarID`
 
@@ -390,8 +390,8 @@ useSendFiles(): (files: (Blob | File)[]) => void
 
 When called, this function will send a message activity with one or more [File](https://developer.mozilla.org/en-US/docs/Web/API/File) attachments to the bot, including these operations:
 
-- Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
-- Generate thumbnail and will use a Web Worker and a offscreen canvas if supported
+-  Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
+-  Generate thumbnail and will use a Web Worker and a offscreen canvas if supported
 
 If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a blob before calling [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL).
 
@@ -560,8 +560,8 @@ These are hooks specific provide specific user experience.
 
 These are hooks that are specific for the microphone button.
 
-- [`useMicrophoneButtonClick`](#usemicrophonebuttonclick)
-- [`useMicrophoneButtonDisabled`](#usemicrophonebuttondisabled)
+-  [`useMicrophoneButtonClick`](#usemicrophonebuttonclick)
+-  [`useMicrophoneButtonDisabled`](#usemicrophonebuttondisabled)
 
 ### `useMicrophoneButtonClick`
 
@@ -585,7 +585,7 @@ This value can be partly controllable through Web Chat props.
 
 These are hooks that are specific for the send box.
 
-- [`useSendBoxDictationStarted`](#usesendboxdictationstarted)
+-  [`useSendBoxDictationStarted`](#usesendboxdictationstarted)
 
 ### `useSendBoxDictationStarted`
 
@@ -599,8 +599,8 @@ This function will return whether the speech-to-text has been started or not.
 
 These are hooks that are specific to the text box in the send box.
 
-- [`useTextBoxSubmit`](#usetextboxsubmit)
-- [`useTextBoxValue`](#usetextboxvalue)
+-  [`useTextBoxSubmit`](#usetextboxsubmit)
+-  [`useTextBoxValue`](#usetextboxvalue)
 
 ### `useTextBoxSubmit`
 
@@ -626,7 +626,7 @@ The setter function will call the setter of [`useSendBoxValue`](#usesendboxvalue
 
 These are hooks that are specific to the typing indicator.
 
-- [`useTypingIndicatorVisible`](#usetypingindicatorvisible)
+-  [`useTypingIndicatorVisible`](#usetypingindicatorvisible)
 
 ### `useTypingIndicatorVisible`
 
@@ -638,5 +638,5 @@ This function will return whether the typing indicator should be visible or not.
 
 This function derives the visibility of the typing indicator by:
 
-- `typingAnimationDuration` value specified in style options, in milliseconds
-- Values from the `useLastTypingAt` hook
+-  `typingAnimationDuration` value specified in style options, in milliseconds
+-  Values from the `useLastTypingAt` hook
