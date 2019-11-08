@@ -12,10 +12,6 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
-  console.warn(
-    'Web Chat: Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/microsoft/BotFramework-WebChat/issues/.'
-  );
-
   // HACK: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
   //       In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
   //       And on next recognition, they will re-use the AudioContext object.
