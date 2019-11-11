@@ -151,7 +151,7 @@ To set the avatar for the user, change the props passed to Web Chat via style op
 useConnectivityStatus(): [string]
 ```
 
-This function will return the connectivity status of Web Chat to Direct Line:
+This function will return the Direct Line connectivity status:
 
 -  `connected`: Connected
 -  `connectingslow`: Connecting is incomplete and more than 15 seconds have passed
@@ -170,7 +170,7 @@ useDictateInterims(): [string[][]]
 
 This function will return active interims processed from a dictation event.
 
-The first array represents separate sentences. The second array represents potential ambiguities or alternatives for the same sentence.
+The first array represents separate sentences while the second array represents potential ambiguities or alternatives for the same sentence.
 
 ## `useDictateState`
 
@@ -178,7 +178,7 @@ The first array represents separate sentences. The second array represents poten
 useDictateState(): [string]
 ```
 
-This function will return a dictate state of one of the following:
+This function will return one of the following dictation states:
 
 -  `0`: Idle
 -  `1`: Starting
@@ -325,7 +325,7 @@ useRenderActivity(): ({
 }) => React.Element
 ```
 
-This function is for rendering an activity inside a React element. The caller will need to pass `activity`, `timestampClassName`, and a render function for attachment. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+This function is for rendering an activity inside a React element. The caller will need to pass `activity`, `timestampClassName`, and a render function for the attachment. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
@@ -616,7 +616,7 @@ useTextBoxSubmit(): (setFocus: boolean) => void
 
 This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom and, optionally, set focus to the send box.
 
-The focus is useful for a phone scenario, where the virtual keyboard will only be shown when a text box is focused.
+The focus is useful for a phone scenario where the virtual keyboard will only be shown when a text box is focused.
 
 ### `useTextBoxValue`
 
