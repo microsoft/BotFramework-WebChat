@@ -180,11 +180,11 @@ useDictateState(): [string]
 
 This function will return one of the following dictation states:
 
--  `IDLE`: Recognition engine is idle, not recognizing
+-  `IDLE`: Recognition engine is idle; not recognizing
 -  `WILL_START`: Will start recognition after synthesis completed
--  `STARTING`: Recognition engine is starting, not accepting any inputs
+-  `STARTING`: Recognition engine is starting; not accepting any inputs
 -  `DICTATING`: Recognition engine is accepting input
--  `STOPPING`: Recognition engine is stopping, not accepting any inputs
+-  `STOPPING`: Recognition engine is stopping; not accepting any inputs
 
 > Please refer to `Constants.DictateState` in `botframework-webchat-core` for up-to-date details.
 
@@ -222,7 +222,7 @@ When called, this function will send focus to the send box.
 useGrammars(): [string[]]
 ```
 
-This function will return grammars for speech-to-text. Grammars is a list of words to suggests the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same pronounciations, e.g. Bellevue vs. Bellview vs. Bellvue.
+This function will return grammars for speech-to-text. Grammars is a list of words provided by the implementer for the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same or similar pronunciations, e.g. Bellevue vs. Bellview vs. Bellvue.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
