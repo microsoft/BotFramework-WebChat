@@ -107,7 +107,7 @@ useAdaptiveCardsHostConfig(): [AdaptiveCards.HostConfig]
 
 This function is only available in full bundle. The function will return the Adaptive Cards Host Config used for styling Adaptive Cards.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useAdaptiveCardsPackage`
 
@@ -117,7 +117,7 @@ useAdaptiveCardsPackage(): [AdaptiveCards]
 
 This function is only available in full bundle. The function will return the Adaptive Cards package used for building and rendering Adaptive Cards.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useAvatarForBot`
 
@@ -195,7 +195,7 @@ useDisabled(): [boolean]
 
 This function will return whether the UI should be disabled or not. All interactable UI components should honor this value.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useEmitTypingIndicator`
 
@@ -221,7 +221,7 @@ useGrammars(): [string[]]
 
 This function will return the grammars for speech-to-text.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useGroupTimestamp`
 
@@ -243,7 +243,7 @@ useLanguage(): [string]
 
 This function will return the language of the UI. All UI components should honor this value.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useLastTypingAt`
 
@@ -265,7 +265,7 @@ useLocalize(identifier: string) => string
 
 This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useMarkActivityAsSpoken`
 
@@ -356,7 +356,7 @@ const renderMarkdown = useRenderMarkdown();
 renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
 ```
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useScrollToEnd`
 
@@ -429,7 +429,7 @@ useSendTypingIndicator(): [boolean]
 
 This function will return whether the typing indicator will be sent to the bot when the send box value is being modified.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useShouldSpeakIncomingActivity`
 
@@ -480,7 +480,7 @@ useStyleSet(): [StyleSet]
 
 This function will return the style set.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useSubmitSendBox`
 
@@ -511,7 +511,7 @@ useTimeoutForSend(): [number]
 
 This function will return the interval of time paused before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problems, activities that fail to send may eventually be successfully delivered to the bot.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useUserID`
 
@@ -521,7 +521,7 @@ useUserID(): [string]
 
 This function will return the user ID.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useUsername`
 
@@ -531,7 +531,7 @@ useUsername(): [string]
 
 This function will return the username.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useVoiceSelector`
 
@@ -541,7 +541,7 @@ useVoiceSelector(activity: Activity): (voices: SpeechSynthesisVoice[]) => Speech
 
 This function will return a function that can be called to select the voice for a specific activity.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 ## `useWebSpeechPonyfill`
 
@@ -556,7 +556,7 @@ useWebSpeechPonyfill(): [{
 
 This function will return the ponyfill for the Web Speech API.
 
-To modify this value, change the props passed to Web Chat via style options.
+To modify this value, change the value in the style options prop passed to Web Chat.
 
 # Component-specific hooks
 
