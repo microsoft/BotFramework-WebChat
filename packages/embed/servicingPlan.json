@@ -7,8 +7,8 @@
     },
     "4": {
       "redirects": [
-        ["feature:nextminor", "4.5"],
-        ["*", "4.5"]
+        ["feature:nextminor", "4.3"],
+        ["*", "4.3"]
       ]
     },
     "4.1": {
