@@ -470,7 +470,7 @@ This function will return the style options. UI components should honor the styl
 
 The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
 
-To modify the value of `styleOptions` state, change the props you pass to Web Chat via style options.
+To modify the value of `styleOptions` state, change the props you pass to Web Chat.
 
 ## `useStyleSet`
 
