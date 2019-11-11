@@ -24,3 +24,10 @@ test('getter should return default language if not set in props', async () => {
 
   expect(groupTimestamp).toMatchInlineSnapshot(`"en-US"`);
 });
+
+test('setter should be undefined', async () => {
+  const { pageObjects } = await setupWebDriver();
+  const [_, setLanguage] = await pageObjects.runHook('useLanguage');
+
+  expect(setLanguage).toBeUndefined();
+});
