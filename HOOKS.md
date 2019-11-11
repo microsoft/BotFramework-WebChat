@@ -180,10 +180,13 @@ useDictateState(): [string]
 
 This function will return one of the following dictation states:
 
--  `0`: Idle
--  `1`: Starting
--  `2`: Dictating
--  `3`: Stopping
+-  `IDLE`: Recognition engine is idle, not recognizing
+-  `WILL_START`: Will start recognition after synthesis completed
+-  `STARTING`: Recognition engine is starting, not accepting any inputs
+-  `DICTATING`: Recognition engine is accepting input
+-  `STOPPING`: Recognition engine is stopping, not accepting any inputs
+
+> Please refer to `Constants.DictateState` in `botframework-webchat-core` for up-to-date details.
 
 To control dictate state, use the [`useStartDictate`](#usestartdictate) and [`useStopDictate`](#usestopdictate) hooks.
 
@@ -219,7 +222,7 @@ When called, this function will send focus to the send box.
 useGrammars(): [string[]]
 ```
 
-This function will return the grammars for speech-to-text.
+This function will return grammars for speech-to-text. Grammars is a list of words to suggests the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same pronounciations, e.g. Bellevue vs. Bellview vs. Bellvue.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -287,6 +290,8 @@ usePerformCardAction(): ({
 ```
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
+
+List of supported card action types can be found in this [Direct Line Activity card action schema](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#type-1).
 
 ## `usePostActivity`
 
