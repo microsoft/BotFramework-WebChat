@@ -159,14 +159,25 @@
 
         const activityMiddleware = () => next => card => {
           const { activity } = card;
+
           if (activity.type === 'event' && activity.name === 'hook') {
             return children => React.createElement(() => {
               const { args, name, reject, resolve } = activity.value;
+
               try {
-                resolve(window.WebChat.hooks[name](args));
+                const hookFn = window.WebChat.hooks[name];
+
+                if (!hookFn) {
+                  console.log(`No hooks named "${ name }" were found. Valid hooks are:`, Object.keys(window.WebChat.hooks).sort());
+
+                  throw new Error(`No hooks named "${ name }" were found.`);
+                }
+
+                resolve(hookFn(args));
               } catch (err) {
                 reject(err);
               }
+
               return false;
             });
           }
