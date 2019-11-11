@@ -76,7 +76,7 @@
     "typescript": "^3.6.4",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "webpack-stats-plugin": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^16.8.6",
