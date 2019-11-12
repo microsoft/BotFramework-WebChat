@@ -39,7 +39,7 @@ const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayT
 
     // TODO: Use the following line when setSuggestedActions hook is merged
     // type === 'openUrl' && setSuggestedActions([]);
-  }, [displayText, performCardAction, text, type, value]);
+  }, [clearSuggestedActions, displayText, performCardAction, text, type, value]);
 
   return (
     <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
@@ -64,6 +64,7 @@ SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
   clearSuggestedActions: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  displayText: PropTypes.string,
   image: PropTypes.string,
   text: PropTypes.string,
   type: PropTypes.string,
