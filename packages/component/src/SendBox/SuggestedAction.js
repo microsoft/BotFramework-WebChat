@@ -1,9 +1,10 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
 
 const SUGGESTED_ACTION_CSS = css({
@@ -28,12 +29,18 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, click, disabled, image }) => {
+const SuggestedAction = ({ buttonText, disabled, displayText, image, text, type, value }) => {
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const performCardAction = usePerformCardAction();
+
+  const handleClick = useCallback(() => {
+    performCardAction({ displayText, text, type, value });
+    type === 'openUrl' && setSuggestedActions([]);
+  }, [displayText, performCardAction, setSuggestedActions, text, type, value]);
 
   return (
     <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
-      <button disabled={disabled} onClick={click} type="button">
+      <button disabled={disabled} onClick={handleClick} type="button">
         {image && <img src={image} />}
         <nobr>{buttonText}</nobr>
       </button>
@@ -43,14 +50,20 @@ const SuggestedAction = ({ buttonText, click, disabled, image }) => {
 
 SuggestedAction.defaultProps = {
   disabled: false,
-  image: ''
+  displayText: '',
+  image: '',
+  text: '',
+  type: '',
+  value: undefined
 };
 
 SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
-  click: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  image: PropTypes.string
+  image: PropTypes.string,
+  text: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.any
 };
 
 export default connectSuggestedAction()(SuggestedAction);
