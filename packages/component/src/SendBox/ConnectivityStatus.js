@@ -178,3 +178,5 @@ const ConnectivityStatus = () => {
 };
 
 export default ConnectivityStatus;
+
+export { connectConnectivityStatus };
