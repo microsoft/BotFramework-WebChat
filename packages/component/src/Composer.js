@@ -250,8 +250,8 @@ const Composer = ({
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
-  //       This context should have all stuff that is not in the Redux store
-  //       That means, stuff that are not interested in other type of UIs
+  //       This context should consist of members that are not in the Redux store
+  //       i.e. members that are not interested in other types of UIs
   const context = useMemo(
     () => ({
       ...cardActionContext,

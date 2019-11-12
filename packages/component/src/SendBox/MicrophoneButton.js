@@ -8,10 +8,10 @@ import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const { DictateState } = Constants;
@@ -77,19 +77,21 @@ const connectMicrophoneButton = (...selectors) => {
   );
 };
 
-const MicrophoneButton = ({ className, click, dictating, disabled, language }) => {
+const MicrophoneButton = ({ className, click, dictating, disabled }) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+  const iconButtonAltText = useLocalize('Speak');
+  const screenReaderText = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
   return (
     <div
       aria-controls="webchatSendBoxMicrophoneButton"
       className={classNames(microphoneButtonStyleSet + '', ROOT_CSS + '', className + '', { dictating })}
     >
-      <IconButton alt={localize('Speak', language)} disabled={disabled} onClick={click}>
+      <IconButton alt={iconButtonAltText} disabled={disabled} onClick={click}>
         <MicrophoneIcon />
       </IconButton>
       <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
-        {localize(dictating ? 'Microphone on' : 'Microphone off', language)}
+        {screenReaderText}
       </div>
     </div>
   );
@@ -105,8 +107,7 @@ MicrophoneButton.propTypes = {
   className: PropTypes.string,
   click: PropTypes.func.isRequired,
   dictating: PropTypes.bool,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired
+  disabled: PropTypes.bool
 };
 
 export default connectMicrophoneButton()(MicrophoneButton);

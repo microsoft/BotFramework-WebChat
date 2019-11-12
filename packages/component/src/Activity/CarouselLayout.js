@@ -4,9 +4,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import CarouselFilmStrip from './CarouselFilmStrip';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -14,8 +13,10 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, language, timestampClassName }) => {
+const CarouselLayout = ({ activity, children, timestampClassName }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
+  const leftLabel = useLocalize('Left');
+  const rightLabel = useLocalize('Right');
 
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
@@ -30,14 +31,14 @@ const CarouselLayout = ({ activity, children, language, timestampClassName }) =>
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
                 <Flipper
-                  aria-label={localize('Left', language)}
+                  aria-label={leftLabel}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
                   mode="left"
                 >
                   <div className="button">{'<'}</div>
                 </Flipper>
                 <Flipper
-                  aria-label={localize('Right', language)}
+                  aria-label={rightLabel}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
                   mode="right"
                 >
@@ -60,8 +61,7 @@ CarouselLayout.defaultProps = {
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  language: PropTypes.string.isRequired,
   timestampClassName: PropTypes.string
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(CarouselLayout);
+export default CarouselLayout;

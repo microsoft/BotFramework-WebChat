@@ -2,9 +2,9 @@ import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -28,14 +28,16 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity: { channelData: { state } = {} }, language, retrySend }) => {
+const SendStatus = ({ activity: { channelData: { state } = {} }, retrySend }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
 
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
-  const localizedSending = localize('Sending', language);
-  const localizedSendStatus = localize('SendStatus', language);
-  const sendFailedText = localize('SEND_FAILED_KEY', language);
+  const localizedSending = useLocalize('Sending');
+  const localizedSendStatus = useLocalize('SendStatus');
+  const retryText = useLocalize('Retry');
+  const sendFailedText = useLocalize('SEND_FAILED_KEY');
+
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
 
   return (
@@ -49,7 +51,7 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
             <React.Fragment>
               {sendFailedText.substr(0, sendFailedRetryMatch.index)}
               <button onClick={retrySend} type="button">
-                {localize('Retry', language)}
+                {retryText}
               </button>
               {sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length)}
             </React.Fragment>
@@ -72,7 +74,6 @@ SendStatus.propTypes = {
       state: PropTypes.string
     })
   }).isRequired,
-  language: PropTypes.string.isRequired,
   retrySend: PropTypes.func.isRequired
 };
 

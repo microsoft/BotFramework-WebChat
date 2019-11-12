@@ -20,8 +20,9 @@ test('getter should get styleSet from props', async () => {
         `);
 });
 
-test('setter should throw exception', async () => {
+test('setter should be falsy', async () => {
   const { pageObjects } = await setupWebDriver();
+  const [_, setStyleSet] = await pageObjects.runHook('useStyleSet');
 
-  await expect(pageObjects.runHook('useStyleSet', [], result => result[1]())).rejects.toThrow();
+  expect(setStyleSet).toBeFalsy();
 });

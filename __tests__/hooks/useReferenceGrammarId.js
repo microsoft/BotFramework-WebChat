@@ -25,8 +25,9 @@ test('getter should return reference grammar ID', async () => {
   expect(referenceGrammarID).toBe('12345678-1234-5678-abcd-12345678abcd');
 });
 
-test('setter should throw exception', async () => {
+test('setter should be falsy', async () => {
   const { pageObjects } = await setupWebDriver();
+  const [_, setReferenceGrammarID] = await pageObjects.runHook('useReferenceGrammarID');
 
-  await expect(pageObjects.runHook('useReferenceGrammarID', [], result => result[1]())).rejects.toThrow();
+  expect(setReferenceGrammarID).toBeFalsy();
 });

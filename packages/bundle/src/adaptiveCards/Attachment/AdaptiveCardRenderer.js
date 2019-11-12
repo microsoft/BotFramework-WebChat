@@ -4,10 +4,10 @@ import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { Components, connectToWebChat, getTabIndex, hooks, localize } from 'botframework-webchat-component';
+import { Components, connectToWebChat, getTabIndex, hooks } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
-const { useStyleSet } = hooks;
+const { useLocalize, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -66,12 +66,13 @@ const AdaptiveCardRenderer = ({
   adaptiveCard,
   adaptiveCardHostConfig,
   disabled,
-  language,
   performCardAction,
   renderMarkdown,
   tapAction
 }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
+  const errorMessage = useLocalize('Adaptive Card render error');
+
   const [error, setError] = useState();
   const contentRef = useRef();
   const inputValuesRef = useRef([]);
@@ -196,7 +197,7 @@ const AdaptiveCardRenderer = ({
   }, [adaptiveCard, adaptiveCardHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdown]);
 
   return error ? (
-    <ErrorBox message={localize('Adaptive Card render error', language)}>
+    <ErrorBox message={errorMessage}>
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (
@@ -208,7 +209,6 @@ AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
   adaptiveCardHostConfig: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
   performCardAction: PropTypes.func.isRequired,
   renderMarkdown: PropTypes.func.isRequired,
   tapAction: PropTypes.shape({
@@ -222,9 +222,8 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, tapAction }) => ({
+export default connectToWebChat(({ disabled, onCardAction, renderMarkdown, tapAction }) => ({
   disabled,
-  language,
   performCardAction: onCardAction,
   renderMarkdown,
   tapAction

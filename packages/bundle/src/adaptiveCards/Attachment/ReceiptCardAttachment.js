@@ -1,20 +1,24 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 75] }] */
 
-import { connectToWebChat, hooks, localize } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-const { useStyleOptions } = hooks;
+const { useLocalize, useStyleOptions } = hooks;
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, language }) => {
+const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
   const [styleOptions] = useStyleOptions();
+  const taxText = useLocalize('Tax');
+  const totalText = useLocalize('Total');
+  const vatText = useLocalize('VAT');
+
   const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
@@ -64,33 +68,21 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
       if (!nullOrUndefined(vat)) {
         const vatCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(
-          localize('VAT', language),
-          { size: TextSize.Medium, weight: TextWeight.Bolder },
-          vatCol[0]
-        );
+        builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
         builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
       }
 
       if (!nullOrUndefined(tax)) {
         const taxCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(
-          localize('Tax', language),
-          { size: TextSize.Medium, weight: TextWeight.Bolder },
-          taxCol[0]
-        );
+        builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
         builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
       }
 
       if (!nullOrUndefined(total)) {
         const totalCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(
-          localize('Total', language),
-          { size: TextSize.Medium, weight: TextWeight.Bolder },
-          totalCol[0]
-        );
+        builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
         builder.addTextBlock(
           total,
           { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder },
@@ -102,7 +94,7 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
 
       return builder.card;
     }
-  }, [adaptiveCards, content, language, styleOptions]);
+  }, [adaptiveCards, content, styleOptions, taxText, totalText, vatText]);
 
   return (
     <AdaptiveCardRenderer
@@ -142,8 +134,7 @@ ReceiptCardAttachment.propTypes = {
       total: PropTypes.string,
       vat: PropTypes.string
     }).isRequired
-  }).isRequired,
-  language: PropTypes.string.isRequired
+  }).isRequired
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(ReceiptCardAttachment);
+export default ReceiptCardAttachment;

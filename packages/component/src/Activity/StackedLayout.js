@@ -9,7 +9,6 @@ import React from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
-import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -17,6 +16,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -84,7 +84,7 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, avatarInitials, children, language, timestampClassName }) => {
+const StackedLayout = ({ activity, avatarInitials, children, timestampClassName }) => {
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
 
@@ -102,13 +102,17 @@ const StackedLayout = ({ activity, avatarInitials, children, language, timestamp
   const plainText = remark()
     .use(stripMarkdown)
     .processSync(text);
-  const ariaLabel = localize(
-    fromUser ? 'User said something' : 'Bot said something',
-    language,
-    avatarInitials,
-    plainText
-  );
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+
+  const botRoleLabel = useLocalize('BotSent');
+  const userRoleLabel = useLocalize('UserSent');
+
+  const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
+
+  const botAriaLabel = useLocalize('Bot said something', avatarInitials, plainText);
+  const userAriaLabel = useLocalize('User said something', avatarInitials, plainText);
+
+  const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
 
   return (
     <div
@@ -144,7 +148,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, timestamp
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
-            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={roleLabel} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
@@ -187,13 +191,11 @@ StackedLayout.propTypes = {
   }).isRequired,
   avatarInitials: PropTypes.string.isRequired,
   children: PropTypes.any,
-  language: PropTypes.string.isRequired,
   timestampClassName: PropTypes.string
 };
 
-export default connectStackedLayout(({ avatarInitials, language }) => ({
-  avatarInitials,
-  language
+export default connectStackedLayout(({ avatarInitials }) => ({
+  avatarInitials
 }))(StackedLayout);
 
 export { connectStackedLayout };

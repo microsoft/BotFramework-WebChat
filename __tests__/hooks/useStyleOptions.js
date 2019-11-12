@@ -14,8 +14,9 @@ test('getter should get styleOptions from props', async () => {
   );
 });
 
-test('setter should throw exception', async () => {
+test('setter should be falsy', async () => {
   const { pageObjects } = await setupWebDriver();
+  const [_, setStyleOptions] = await pageObjects.runHook('useStyleOptions');
 
-  await expect(pageObjects.runHook('useStyleOptions', [], result => result[1]())).rejects.toThrow();
+  expect(setStyleOptions).toBeFalsy();
 });
