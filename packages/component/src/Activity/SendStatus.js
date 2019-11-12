@@ -29,7 +29,7 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity }) => {
+const SendStatus = ({ activity, focusSendBox }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const postActivity = usePostActivity();
 
@@ -91,9 +91,10 @@ SendStatus.propTypes = {
     channelData: PropTypes.shape({
       state: PropTypes.string
     })
-  }).isRequired
+  }).isRequired,
+  focusSendBox: PropTypes.func.isRequired
 };
 
-export default connectSendStatus()(SendStatus);
+export default connectSendStatus(({ focusSendBox }) => ({ focusSendBox }))(SendStatus);
 
 export { connectSendStatus };
