@@ -8,6 +8,8 @@ import connectToWebChat from './connectToWebChat';
 import useActivities from './hooks/useActivities';
 import useDisabled from './hooks/useDisabled';
 import useLanguage from './hooks/useLanguage';
+import useSendBoxValue from './hooks/useSendBoxValue';
+import useSubmitSendBox from './hooks/useSubmitSendBox';
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
@@ -20,15 +22,15 @@ const Dictation = ({
   sendTypingIndicator,
   setDictateInterims,
   setDictateState,
-  setSendBox,
   startSpeakingActivity,
   stopDictate,
-  submitSendBox,
   webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
 }) => {
+  const [, setSendBox] = useSendBoxValue();
   const [activities] = useActivities();
   const [disabled] = useDisabled();
   const [language] = useLanguage();
+  const submitSendBox = useSubmitSendBox();
 
   const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
     activities
@@ -96,10 +98,8 @@ Dictation.propTypes = {
   sendTypingIndicator: PropTypes.bool.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
-  setSendBox: PropTypes.func.isRequired,
   startSpeakingActivity: PropTypes.func.isRequired,
   stopDictate: PropTypes.func.isRequired,
-  submitSendBox: PropTypes.func.isRequired,
   webSpeechPonyfill: PropTypes.shape({
     SpeechGrammarList: PropTypes.any.isRequired,
     SpeechRecognition: PropTypes.any.isRequired
@@ -114,10 +114,8 @@ export default connectToWebChat(
     sendTypingIndicator,
     setDictateInterims,
     setDictateState,
-    setSendBox,
     startSpeakingActivity,
     stopDictate,
-    submitSendBox,
     webSpeechPonyfill
   }) => ({
     dictateState,
@@ -126,10 +124,8 @@ export default connectToWebChat(
     sendTypingIndicator,
     setDictateInterims,
     setDictateState,
-    setSendBox,
     startSpeakingActivity,
     stopDictate,
-    submitSendBox,
     webSpeechPonyfill
   })
 )(Dictation);
