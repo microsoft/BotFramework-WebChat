@@ -79,7 +79,37 @@ setStore(createStore(
  If the user stops participating in the conversation and the timer expires, we will replace the store to clear the conversation data. However, when the store is replaced, Web Chat dispatches a `'DIRECT_LINE/DISCONNECT'`, so we also need to request a new token. The `initConversation` method handles both replacing the custom store and requesting a new Direct Line token to start a new conversation with the bot. This function is passed to the `useTimer` hook so the conversation will be restarted when the timer expires. 
 
  ```javascript
-  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
+ const initConversation = useCallback(() => {
+  setStore(
+    createStore({}, ({ dispatch }) => next => action => {
+      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+        dispatch({
+          type: 'WEB_CHAT/SEND_EVENT',
+          payload: {
+            name: 'webchat/join',
+            value: { language: window.navigator.language }
+          }
+        });
+      } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+        // Reset the timer when the user sends an activity
+        setTimeRemaining(TIME_INTERVAL);
+      }
+
+      return next(action);
+    })
+  );
+
+  (async function() {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
+
+    setDirectLine(createDirectLine({ token }));
+  })().catch(error => console.log(error));
+}, [setStore, setDirectLine]);
+
+useEffect(initConversation, []);
+
+const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
  ```
 
 ## Completed Code
