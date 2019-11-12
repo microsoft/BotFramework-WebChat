@@ -9,6 +9,7 @@ import useActivities from './hooks/useActivities';
 import useDisabled from './hooks/useDisabled';
 import useLanguage from './hooks/useLanguage';
 import useSendBoxValue from './hooks/useSendBoxValue';
+import useSendTypingIndicator from './hooks/useSendTypingIndicator';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
 
 const {
@@ -19,7 +20,6 @@ const Dictation = ({
   dictateState,
   emitTypingIndicator,
   onError,
-  sendTypingIndicator,
   setDictateInterims,
   setDictateState,
   startSpeakingActivity,
@@ -30,6 +30,7 @@ const Dictation = ({
   const [activities] = useActivities();
   const [disabled] = useDisabled();
   const [language] = useLanguage();
+  const [sendTypingIndicator] = useSendTypingIndicator();
   const submitSendBox = useSubmitSendBox();
 
   const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
@@ -95,7 +96,6 @@ Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   emitTypingIndicator: PropTypes.func.isRequired,
   onError: PropTypes.func,
-  sendTypingIndicator: PropTypes.bool.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
   startSpeakingActivity: PropTypes.func.isRequired,
@@ -111,7 +111,6 @@ export default connectToWebChat(
     dictateState,
     emitTypingIndicator,
     postActivity,
-    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     startSpeakingActivity,
@@ -121,7 +120,6 @@ export default connectToWebChat(
     dictateState,
     emitTypingIndicator,
     postActivity,
-    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     startSpeakingActivity,
