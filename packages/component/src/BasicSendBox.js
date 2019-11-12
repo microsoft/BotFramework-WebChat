@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ConnectivityStatus from './SendBox/ConnectivityStatus';
-import connectToWebChat from './connectToWebChat';
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
@@ -14,8 +13,10 @@ import TextBox from './SendBox/TextBox';
 import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 import useActivities from './hooks/useActivities';
+import useDictateState from './hooks/useDictateState';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -36,8 +37,9 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
-function useSendBoxDictationStarted(dictateState) {
+function useSendBoxDictationStarted() {
   const [activities] = useActivities();
+  const [dictateState] = useDictateState();
 
   return [
     (dictateState === STARTING || dictateState === DICTATING) &&
@@ -45,10 +47,11 @@ function useSendBoxDictationStarted(dictateState) {
   ];
 }
 
-const BasicSendBox = ({ className, dictateState, webSpeechPonyfill }) => {
-  const [dictationStarted] = useSendBoxDictationStarted(dictateState);
-  const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
+const BasicSendBox = ({ className }) => {
   const [{ hideUploadButton }] = useStyleOptions();
+  const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
+  const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
+  const [dictationStarted] = useSendBoxDictationStarted();
 
   return (
     <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
@@ -62,34 +65,20 @@ const BasicSendBox = ({ className, dictateState, webSpeechPonyfill }) => {
         ) : (
           <TextBox className={TEXT_BOX_CSS + ''} />
         )}
-        <div>
-          {(webSpeechPonyfill || {}).SpeechRecognition ? (
-            <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} />
-          ) : (
-            <SendButton />
-          )}
-        </div>
+        <div>{SpeechRecognition ? <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} /> : <SendButton />}</div>
       </div>
     </div>
   );
 };
 
 BasicSendBox.defaultProps = {
-  className: '',
-  webSpeechPonyfill: undefined
+  className: ''
 };
 
 BasicSendBox.propTypes = {
-  className: PropTypes.string,
-  dictateState: PropTypes.number.isRequired,
-  webSpeechPonyfill: PropTypes.shape({
-    SpeechRecognition: PropTypes.any
-  })
+  className: PropTypes.string
 };
 
-export default connectToWebChat(({ dictateState, webSpeechPonyfill }) => ({
-  dictateState,
-  webSpeechPonyfill
-}))(BasicSendBox);
+export default BasicSendBox;
 
 export { useSendBoxDictationStarted };
