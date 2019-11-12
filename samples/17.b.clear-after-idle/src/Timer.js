@@ -1,11 +1,7 @@
 import React from 'react';
 
-import useTimer from './utils/useTimer';
-
-export default function Timer({ onComplete, setTimeRemaining, timeRemaining }) {
+export default function Timer({ timeRemaining }) {
   const ms = timeRemaining || 0;
-
-  useTimer(timeRemaining, onComplete, setTimeRemaining);
 
   return (
     <div className="timer">

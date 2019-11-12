@@ -3,38 +3,33 @@ import ReactWebChat, { createDirectLine, createStore } from 'botframework-webcha
 
 import './App.css';
 import Timer from './Timer';
+import useTimer from './utils/useTimer';
 
 const TIME_INTERVAL = 30000;
 
 function App() {
   const [directLine, setDirectLine] = useState(createDirectLine({}));
   const [store, setStore] = useState();
-  const [timeRemaining, setTimeRemaining] = useState();
-
-  const storeMiddleware = useCallback(
-    ({ dispatch }) => next => action => {
-      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-        dispatch({
-          type: 'WEB_CHAT/SEND_EVENT',
-          payload: {
-            name: 'webchat/join',
-            value: { language: window.navigator.language }
-          }
-        });
-      }
-
-      if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-        // Reset the timer when the user sends an activity
-        setTimeRemaining(TIME_INTERVAL);
-      }
-
-      return next(action);
-    },
-    [setTimeRemaining]
-  );
 
   const initConversation = useCallback(() => {
-    setStore(createStore({}, storeMiddleware));
+    setStore(
+      createStore({}, ({ dispatch }) => next => action => {
+        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+          dispatch({
+            type: 'WEB_CHAT/SEND_EVENT',
+            payload: {
+              name: 'webchat/join',
+              value: { language: window.navigator.language }
+            }
+          });
+        } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+          // Reset the timer when the user sends an activity
+          setTimeRemaining(TIME_INTERVAL);
+        }
+
+        return next(action);
+      })
+    );
 
     (async function() {
       // In this demo, we are using Direct Line token from MockBot.
@@ -47,20 +42,15 @@ function App() {
 
       setDirectLine(createDirectLine({ token }));
     })().catch(error => console.log(error));
-  }, [setStore, setDirectLine, setTimeRemaining, storeMiddleware]);
+  }, [setStore, setDirectLine]);
 
-  const restartConversation = useCallback(() => {
-    alert('Restarting Conversation');
-    initConversation();
-  }, [initConversation]);
+  useEffect(initConversation, []);
 
-  useEffect(() => {
-    initConversation();
-  }, []);
+  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
 
   return (
     <div className="App">
-      <Timer onComplete={restartConversation} setTimeRemaining={setTimeRemaining} timeRemaining={timeRemaining} />
+      <Timer timeRemaining={timeRemaining} />
       <ReactWebChat className="chat" directLine={directLine} store={store} />
     </div>
   );

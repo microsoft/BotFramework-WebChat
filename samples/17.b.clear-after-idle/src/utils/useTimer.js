@@ -1,15 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function useTimer(timeRemaining, fn, setTimeRemaining, step = 1000) {
+export default function useTimer(fn, step = 1000) {
+  const [timeRemaining, setTimeRemaining] = useState();
+
   useEffect(() => {
     let timeout;
     if (timeRemaining > 0) {
       timeout = setTimeout(() => setTimeRemaining(ms => (ms > step ? ms - step : 0)), step);
     } else if (timeRemaining === 0) {
-      fn();
       setTimeRemaining();
+      fn();
     }
 
     return () => clearTimeout(timeout);
   }, [fn, timeRemaining, setTimeRemaining, step]);
+
+  return [timeRemaining, setTimeRemaining];
 }
