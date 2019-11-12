@@ -14,9 +14,9 @@ import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
 import useSetDictateState from './hooks/internal/useSetDictateState';
 import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
-import useStopDictate from './useStopDictate';
+import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
-import useWebSpeechPonyfill from './useWebSpeechPonyfill';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
