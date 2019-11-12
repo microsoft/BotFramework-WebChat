@@ -9,6 +9,8 @@ import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize';
 import useLocalizeDate from './useLocalizeDate';
 import usePerformCardAction from './usePerformCardAction';
+import useConnectivityStatus from './useConnectivityStatus';
+import useGroupTimestamp from './useGroupTimestamp';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
@@ -23,6 +25,9 @@ import useSendTypingIndicator from './useSendTypingIndicator';
 import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
+import useTimeoutForSend from './useTimeoutForSend';
+import useUserID from './useUserID';
+import useUsername from './useUsername';
 
 import { useSendBoxDictationStarted } from '../BasicSendBox';
 import { useTextBoxSubmit } from '../SendBox/TextBox';
@@ -35,6 +40,8 @@ export {
   useDisabled,
   useEmitTypingIndicator,
   useFocusSendBox,
+  useConnectivityStatus,
+  useGroupTimestamp,
   useLanguage,
   useLastTypingAt,
   useLocalize,
@@ -56,5 +63,8 @@ export {
   useStyleSet,
   useSubmitSendBox,
   useTextBoxSubmit,
+  useTimeoutForSend,
   useTypingIndicatorVisible
+  useUserID,
+  useUsername
 };

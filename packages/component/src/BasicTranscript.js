@@ -9,6 +9,7 @@ import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -59,10 +60,11 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, groupTimestamp, webSpeechPonyfill }) => {
-  const [activities] = useActivities();
+const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, webSpeechPonyfill }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
+  const [activities] = useActivities();
+  const [groupTimestamp] = useGroupTimestamp();
 
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
@@ -131,7 +133,6 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, grou
 
 BasicTranscript.defaultProps = {
   className: '',
-  groupTimestamp: true,
   webSpeechPonyfill: undefined
 };
 
@@ -139,16 +140,14 @@ BasicTranscript.propTypes = {
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string,
-  groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
   webSpeechPonyfill: PropTypes.shape({
     speechSynthesis: PropTypes.any,
     SpeechSynthesisUtterance: PropTypes.any
   })
 };
 
-export default connectToWebChat(({ activityRenderer, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+export default connectToWebChat(({ activityRenderer, attachmentRenderer, webSpeechPonyfill }) => ({
   activityRenderer,
   attachmentRenderer,
-  groupTimestamp,
   webSpeechPonyfill
 }))(BasicTranscript);
