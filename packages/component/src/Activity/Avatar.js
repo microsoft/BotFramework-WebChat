@@ -4,6 +4,8 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
 
 const connectAvatar = (...selectors) =>
@@ -25,17 +27,21 @@ const connectAvatar = (...selectors) =>
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser }) => {
+const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+  const [botAvatar] = useAvatarForBot();
+  const [userAvatar] = useAvatarForUser();
   const [{ avatar: avatarStyleSet }] = useStyleSet();
 
+  const { image, initials } = fromUser ? userAvatar : botAvatar;
+
   return (
-    !!(avatarImage || avatarInitials) && (
+    !!(image || initials) && (
       <div
         aria-hidden={ariaHidden}
         className={classNames(avatarStyleSet + '', { 'from-user': fromUser }, className + '')}
       >
-        {avatarInitials}
-        {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
+        {initials}
+        {!!image && <CroppedImage alt="" className="image" height="100%" src={image} width="100%" />}
       </div>
     )
   );
@@ -43,20 +49,16 @@ const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, classN
 
 Avatar.defaultProps = {
   'aria-hidden': false,
-  avatarImage: '',
-  avatarInitials: '',
   className: '',
   fromUser: false
 };
 
 Avatar.propTypes = {
   'aria-hidden': PropTypes.bool,
-  avatarImage: PropTypes.string,
-  avatarInitials: PropTypes.string,
   className: PropTypes.string,
   fromUser: PropTypes.bool
 };
 
-export default connectAvatar()(Avatar);
+export default Avatar;
 
 export { connectAvatar };
