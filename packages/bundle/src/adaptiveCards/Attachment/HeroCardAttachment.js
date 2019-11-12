@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-const HeroCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment: { content } = {},
-  styleSet: { options }
-}) => {
+const { useStyleOptions } = hooks;
+
+const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
+  const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+    const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
     if (content) {
       (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
@@ -21,7 +19,7 @@ const HeroCardAttachment = ({
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer
@@ -45,4 +43,4 @@ HeroCardAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(HeroCardAttachment);
+export default HeroCardAttachment;

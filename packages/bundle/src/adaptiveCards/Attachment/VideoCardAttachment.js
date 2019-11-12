@@ -3,29 +3,37 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Components, connectToWebChat } from 'botframework-webchat-component';
+import { Components, hooks } from 'botframework-webchat-component';
 import CommonCard from './CommonCard';
 
+const { useStyleSet } = hooks;
 const { VideoContent } = Components;
 
 const VideoCardAttachment = ({
   adaptiveCardHostConfig,
   adaptiveCards,
   attachment,
-  attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
-  styleSet
-}) => (
-  <div className={styleSet.audioCardAttachment}>
-    <ul className="media-list">
-      {media.map(({ url }, index) => (
-        <li key={index}>
-          <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
-        </li>
-      ))}
-    </ul>
-    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
-  </div>
-);
+  attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {}
+}) => {
+  const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
+
+  return (
+    <div className={audioCardAttachmentStyleSet}>
+      <ul className="media-list">
+        {media.map(({ url }, index) => (
+          <li key={index}>
+            <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+          </li>
+        ))}
+      </ul>
+      <CommonCard
+        adaptiveCardHostConfig={adaptiveCardHostConfig}
+        adaptiveCards={adaptiveCards}
+        attachment={attachment}
+      />
+    </div>
+  );
+};
 
 VideoCardAttachment.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,
@@ -43,11 +51,7 @@ VideoCardAttachment.propTypes = {
         })
       )
     })
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    audioCardAttachment: PropTypes.any.isRequired,
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VideoCardAttachment);
+export default VideoCardAttachment;

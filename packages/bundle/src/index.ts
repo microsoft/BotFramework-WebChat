@@ -3,7 +3,7 @@
 
 export * from './index-minimal';
 
-import { version } from './index-minimal';
+import { hooks, version } from './index-minimal';
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
@@ -29,6 +29,7 @@ export {
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createStyleSet,
+  hooks,
   renderMarkdown,
   renderWebChat
 };
@@ -39,6 +40,7 @@ window['WebChat'] = {
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
   createStyleSet,
+  hooks,
   ReactWebChat,
   renderMarkdown,
   renderWebChat

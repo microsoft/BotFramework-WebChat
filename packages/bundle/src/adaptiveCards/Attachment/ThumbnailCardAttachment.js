@@ -3,22 +3,20 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-const ThumbnailCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment: { content } = {},
-  styleSet: { options }
-}) => {
+const { useStyleOptions } = hooks;
+
+const ThumbnailCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
+  const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
       const { TextSize, TextWeight } = adaptiveCards;
       const { buttons, images, subtitle, text, title } = content;
-      const { richCardWrapTitle } = options;
+      const { richCardWrapTitle } = styleOptions;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
@@ -39,7 +37,7 @@ const ThumbnailCardAttachment = ({
       }
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer
@@ -67,10 +65,7 @@ ThumbnailCardAttachment.propTypes = {
       text: PropTypes.string,
       title: PropTypes.string
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ThumbnailCardAttachment);
+export default ThumbnailCardAttachment;

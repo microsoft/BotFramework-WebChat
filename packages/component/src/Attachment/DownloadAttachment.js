@@ -2,32 +2,33 @@ import { format } from 'bytes';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
+import useStyleSet from '../hooks/useStyleSet';
 
 const DownloadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
-  attachment,
-  language,
-  styleSet
+  attachment
 }) => {
+  const [{ downloadAttachment: downloadAttachmentStyleSet }] = useStyleSet();
+  const downloadLabel = useLocalize('Download file');
+
   const attachmentIndex = attachments.indexOf(attachment);
-  const downloadLabel = localize('Download file', language);
   const size = attachmentSizes[attachmentIndex];
   const formattedSize = typeof size === 'number' && format(size);
-  const downloadFileWithFileSizeLabel = localize(
+
+  const downloadFileWithFileSizeLabel = useLocalize(
     'DownloadFileWithFileSize',
-    language,
     downloadLabel,
     attachment.name,
     formattedSize
   );
+
   return (
     <React.Fragment>
       <ScreenReaderText text={downloadFileWithFileSizeLabel} />
-      <div aria-hidden={true} className={styleSet.downloadAttachment}>
+      <div aria-hidden={true} className={downloadAttachmentStyleSet}>
         <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
           {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden necessary */}
           <div aria-hidden={true} className="details">
@@ -51,11 +52,7 @@ DownloadAttachment.propTypes = {
   attachment: PropTypes.shape({
     contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
-  }).isRequired,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    downloadAttachment: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(DownloadAttachment);
+export default DownloadAttachment;

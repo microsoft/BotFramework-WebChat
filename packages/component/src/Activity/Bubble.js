@@ -5,7 +5,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   position: 'relative',
@@ -57,22 +58,19 @@ function isPositive(value) {
   return 1 / value >= 0;
 }
 
-const Bubble = ({
-  'aria-hidden': ariaHidden,
-  children,
-  className,
-  fromUser,
-  nub,
-  styleSet: { bubble: bubbleCSS, options: styleOptions }
-}) => {
-  const {
-    bubbleBorderWidth,
-    bubbleFromUserBorderWidth,
-    bubbleFromUserNubSize,
-    bubbleNubSize,
-    bubbleNubOffset,
-    bubbleFromUserNubOffset
-  } = styleOptions;
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+  const [{ bubble: bubbleStyleSet }] = useStyleSet();
+
+  const [
+    {
+      bubbleBorderWidth,
+      bubbleFromUserBorderWidth,
+      bubbleFromUserNubSize,
+      bubbleNubSize,
+      bubbleNubOffset,
+      bubbleFromUserNubOffset
+    }
+  ] = useStyleOptions();
 
   const { borderWidth, nubOffset, nubSize, side } = fromUser
     ? {
@@ -93,7 +91,7 @@ const Bubble = ({
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
-        bubbleCSS + '',
+        bubbleStyleSet + '',
         { 'from-user': fromUser, webchat__bubble_has_nub: nub },
         className + '' || ''
       )}
@@ -117,18 +115,7 @@ Bubble.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,
-  nub: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    bubble: PropTypes.any.isRequired,
-    options: PropTypes.shape({
-      bubbleBorderWidth: PropTypes.number.isRequired,
-      bubbleFromUserBorderWidth: PropTypes.number.isRequired,
-      bubbleFromUserNubOffset: PropTypes.number.isRequired,
-      bubbleFromUserNubSize: PropTypes.number.isRequired,
-      bubbleNubOffset: PropTypes.number.isRequired,
-      bubbleNubSize: PropTypes.number.isRequired
-    }).isRequired
-  }).isRequired
+  nub: PropTypes.bool
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Bubble);
+export default Bubble;

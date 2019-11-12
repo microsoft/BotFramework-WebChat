@@ -8,7 +8,6 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -16,6 +15,9 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useLocalize from '../hooks/useLocalize';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -90,11 +92,15 @@ const WebChatCarouselFilmStrip = ({
   children,
   className,
   itemContainerRef,
-  language,
   scrollableRef,
-  styleSet,
   timestampClassName
 }) => {
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
+  const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
+
+  const botRoleLabel = useLocalize('BotSent');
+  const userRoleLabel = useLocalize('UserSent');
+
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
@@ -105,11 +111,13 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+
+  const roleLabel = fromUser ? userRoleLabel : botRoleLabel;
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '', {
+      className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
         webchat__carousel_indented_content: avatarInitials && !indented
       })}
       ref={scrollableRef}
@@ -118,7 +126,7 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={roleLabel} />
             <Bubble className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
@@ -134,7 +142,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+              <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
@@ -180,22 +188,12 @@ WebChatCarouselFilmStrip.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
-  styleSet: PropTypes.shape({
-    carouselFilmStrip: PropTypes.any.isRequired,
-    options: PropTypes.shape({
-      bubbleFromUserNubSize: PropTypes.number.isRequired,
-      bubbleNubSize: PropTypes.number.isRequired
-    }).isRequired
-  }).isRequired,
   timestampClassName: PropTypes.string
 };
 
-const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language, styleSet }) => ({
-  avatarInitials,
-  language,
-  styleSet
+const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials }) => ({
+  avatarInitials
 }))(WebChatCarouselFilmStrip);
 
 const CarouselFilmStrip = props => (

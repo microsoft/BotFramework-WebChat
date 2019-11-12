@@ -24,79 +24,101 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)
-   - Development dependencies
-      - Root package
-         - `@azure/storage-blob@12.0.0`
-         - `@babel/plugin-proposal-class-properties@7.5.5`
-         - `@babel/plugin-proposal-object-rest-spread@7.6.2`
-         - `@babel/plugin-transform-runtime@7.6.2`
-         - `@babel/preset-env@7.6.3`
-         - `@babel/preset-react@7.6.3`
-         - `@babel/preset-typescript@7.6.0`
-         - `@babel/runtime@7.6.3`
-         - `babel-jest@24.9.0`
-         - `core-js@3.3.6`
-         - `coveralls@3.0.7`
-         - `husky@3.0.9`
-         - `jest-image-snapshot@2.11.0`
-         - `jest@24.9.0`
-         - `lerna@3.18.3`
-         - `lint-staged@9.4.2`
-         - `selenium-webdriver@4.0.0-alpha.5`
-         - `serve-handler@6.1.2`
-      - Other packages
-         - `@babel/cli@7.6.4`
-         - `@babel/core@7.6.4`
-         - `@babel/plugin-proposal-class-properties@7.5.5`
-         - `@babel/plugin-proposal-object-rest-spread@7.6.2`
-         - `@babel/plugin-transform-runtime@7.6.2`
-         - `@babel/preset-env@7.6.3`
-         - `@babel/preset-react@7.6.3`
-         - `@babel/preset-typescript@7.6.0`
-         - `@types/node@12.12.3`
-         - `@types/react@16.9.11`
-         - `@typescript-eslint/eslint-plugin@2.6.0`
-         - `@typescript-eslint/parser@2.6.0`
-         - `babel-plugin-istanbul@5.2.0`
-         - `concurrently@5.0.0`
-         - `copy-webpack-plugin@5.0.4`
-         - `eslint-plugin-prettier@3.1.1`
-         - `eslint-plugin-react-hooks@2.2.0`
-         - `eslint-plugin-react@7.16.0`
-         - `eslint@6.6.0`
-         - `http-proxy-middleware@0.20.0`
-         - `jest@24.9.0`
-         - `terser-webpack-plugin@2.2.1`
-         - `typescript@3.6.4`
-         - `webpack-cli@3.3.10`
-         - `webpack@4.41.2`
-   - Production dependencies
-      - `core`
-         - `@babel/runtime@7.6.3`
-         - `jsonwebtoken@8.5.1`
-         - `math-random`
-         - `redux-saga@1.1.1`
-         - `simple-update-in@2.1.1`
-      - `bundle`
-         - `@babel/runtime@7.6.3`
-         - `core-js@3.3.6`
-         - `markdown-it@10.0.0`
-         - `memoize-one@5.1.1`
-         - `sanitize-html@1.19.0`
-         - `url-search-params-polyfill@7.0.0`
-      - `component`
-         - `bytes@3.1.0`
-         - `memoize-one@5.1.1`
-         - `react-redux@7.1.1`
-         - `remark@11.0.1`
-         - `sanitize-html@1.20.1`
-         - `simple-update-in@2.1.1`
-         - `strip-markdown@3.1.1`
-      - `embed`
-         - `@babel/runtime@7.6.3`
-         - `core-js@3.3.6`
+- `bundle`: Webpack will now use `webpack-stats-plugin` instead of `webpack-visualizer-plugin`, by [@compulim](https://github.com/compulim) in PR [#2584](https://github.com/microsoft/BotFramework-WebChat/pull/2584)
+   - This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
+   - To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
+
+### Fixed
+
+-  Fixes [#2565](https://github.com/microsoft/BotFramework-WebChat/issues/2565). Fixed Adaptive Card host config should generate from style options with default options merged, by [@compulim](https://github.com/compulim) in PR [#2566](https://github.com/microsoft/BotFramework-WebChat/pull/2566
+-  Resolves [#2337](https://github.com/microsoft/BotFramework-WebChat/issues/2337). Remove Cognitive Services Preview warning, by [@corinagum](https://github.com/corinagum) in PR [#2578](https://github.com/microsoft/BotFramework-WebChat/pull/2578)
+-  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). De-bump remark and strip-markdown, by [@corinagum](https://github.com/corinagum) in PR [#2576](https://github.com/microsoft/BotFramework-WebChat/pull/2576)
+
+### Added
+
+-  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customziation, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in the following PRs:
+   -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxDictationStarted`
+   -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
+   -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
+
+### Fixed
+
+### Changed
+
+-  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)
+   -  Development dependencies
+      -  Root package
+         -  `@azure/storage-blob@12.0.0`
+         -  `@babel/plugin-proposal-class-properties@7.5.5`
+         -  `@babel/plugin-proposal-object-rest-spread@7.6.2`
+         -  `@babel/plugin-transform-runtime@7.6.2`
+         -  `@babel/preset-env@7.6.3`
+         -  `@babel/preset-react@7.6.3`
+         -  `@babel/preset-typescript@7.6.0`
+         -  `@babel/runtime@7.6.3`
+         -  `babel-jest@24.9.0`
+         -  `core-js@3.3.6`
+         -  `coveralls@3.0.7`
+         -  `husky@3.0.9`
+         -  `jest-image-snapshot@2.11.0`
+         -  `jest@24.9.0`
+         -  `lerna@3.18.3`
+         -  `lint-staged@9.4.2`
+         -  `selenium-webdriver@4.0.0-alpha.5`
+         -  `serve-handler@6.1.2`
+      -  Other packages
+         -  `@babel/cli@7.6.4`
+         -  `@babel/core@7.6.4`
+         -  `@babel/plugin-proposal-class-properties@7.5.5`
+         -  `@babel/plugin-proposal-object-rest-spread@7.6.2`
+         -  `@babel/plugin-transform-runtime@7.6.2`
+         -  `@babel/preset-env@7.6.3`
+         -  `@babel/preset-react@7.6.3`
+         -  `@babel/preset-typescript@7.6.0`
+         -  `@types/node@12.12.3`
+         -  `@types/react@16.9.11`
+         -  `@typescript-eslint/eslint-plugin@2.6.0`
+         -  `@typescript-eslint/parser@2.6.0`
+         -  `babel-plugin-istanbul@5.2.0`
+         -  `concurrently@5.0.0`
+         -  `copy-webpack-plugin@5.0.4`
+         -  `eslint-plugin-prettier@3.1.1`
+         -  `eslint-plugin-react-hooks@2.2.0`
+         -  `eslint-plugin-react@7.16.0`
+         -  `eslint@6.6.0`
+         -  `http-proxy-middleware@0.20.0`
+         -  `jest@24.9.0`
+         -  `terser-webpack-plugin@2.2.1`
+         -  `typescript@3.6.4`
+         -  `webpack-cli@3.3.10`
+         -  `webpack@4.41.2`
+   -  Production dependencies
+      -  `core`
+         -  `@babel/runtime@7.6.3`
+         -  `jsonwebtoken@8.5.1`
+         -  `math-random`
+         -  `redux-saga@1.1.1`
+         -  `simple-update-in@2.1.1`
+      -  `bundle`
+         -  `@babel/runtime@7.6.3`
+         -  `core-js@3.3.6`
+         -  `markdown-it@10.0.0`
+         -  `memoize-one@5.1.1`
+         -  `sanitize-html@1.19.0`
+         -  `url-search-params-polyfill@7.0.0`
+      -  `component`
+         -  `bytes@3.1.0`
+         -  `memoize-one@5.1.1`
+         -  `react-redux@7.1.1`
+         -  `remark@11.0.1`
+         -  `sanitize-html@1.20.1`
+         -  `simple-update-in@2.1.1`
+         -  `strip-markdown@3.1.1`
+      -  `embed`
+         -  `@babel/runtime@7.6.3`
+         -  `core-js@3.3.6`
 -  `component`: Bumps [`adaptivecards@1.2.3`](https://npmjs.com/package/adaptivecards), by [@corinagum](https://github.com/corinagum) in PR [#2523](https://github.com/microsoft/BotFramework-WebChat/pull/2532)
+-  Bumps Chrome in Docker to 78.0.3904.70, by [@spyip](https://github.com/spyip) in PR [#2545](https://github.com/microsoft/BotFramework-WebChat/pull/2545)
 
 ### Samples
 

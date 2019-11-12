@@ -8,6 +8,9 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useActivities from './hooks/useActivities';
+import useStyleOptions from './hooks/useStyleOptions';
+import useStyleSet from './hooks/useStyleSet';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -56,15 +59,11 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({
-  activityRenderer,
-  activities,
-  attachmentRenderer,
-  className,
-  groupTimestamp,
-  styleSet,
-  webSpeechPonyfill
-}) => {
+const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, groupTimestamp, webSpeechPonyfill }) => {
+  const [activities] = useActivities();
+  const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
+  const [{ hideScrollToEndButton }] = useStyleOptions();
+
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
@@ -99,14 +98,14 @@ const BasicTranscript = ({
             aria-atomic="false"
             aria-live="polite"
             aria-relevant="additions text"
-            className={classNames(LIST_CSS + '', styleSet.activities + '')}
+            className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
             role="list"
           >
             {activityElements.map(({ activity, element }, index) => (
               <li
                 // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75
                 aria-label=" "
-                className={classNames(styleSet.activity + '', {
+                className={classNames(activityStyleSet + '', {
                   // Hide timestamp if same timestamp group with the next activity
                   'hide-timestamp': sameTimestampGroup(
                     activity,
@@ -125,7 +124,7 @@ const BasicTranscript = ({
           </ul>
         </SayComposer>
       </ScrollToBottomPanel>
-      {!styleSet.options.hideScrollToEndButton && <ScrollToEndButton />}
+      {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>
   );
 };
@@ -137,31 +136,19 @@ BasicTranscript.defaultProps = {
 };
 
 BasicTranscript.propTypes = {
-  activities: PropTypes.array.isRequired,
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
-  styleSet: PropTypes.shape({
-    activities: PropTypes.any.isRequired,
-    activity: PropTypes.any.isRequired,
-    options: PropTypes.shape({
-      hideScrollToEndButton: PropTypes.bool.isRequired
-    }).isRequired
-  }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
     speechSynthesis: PropTypes.any,
     SpeechSynthesisUtterance: PropTypes.any
   })
 };
 
-export default connectToWebChat(
-  ({ activities, activityRenderer, attachmentRenderer, groupTimestamp, styleSet, webSpeechPonyfill }) => ({
-    activities,
-    activityRenderer,
-    attachmentRenderer,
-    groupTimestamp,
-    styleSet,
-    webSpeechPonyfill
-  })
-)(BasicTranscript);
+export default connectToWebChat(({ activityRenderer, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+  activityRenderer,
+  attachmentRenderer,
+  groupTimestamp,
+  webSpeechPonyfill
+}))(BasicTranscript);

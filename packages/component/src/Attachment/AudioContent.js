@@ -1,19 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
-const AudioContent = ({ alt, autoPlay, loop, poster, src, styleSet }) => (
-  <audio
-    aria-label={alt}
-    autoPlay={autoPlay}
-    className={styleSet.audioContent}
-    controls={true}
-    loop={loop}
-    poster={poster}
-    src={src}
-  />
-);
+const AudioContent = ({ alt, autoPlay, loop, poster, src }) => {
+  const [{ audioContent: audioContentStyleSet }] = useStyleSet();
+
+  return (
+    <audio
+      aria-label={alt}
+      autoPlay={autoPlay}
+      className={audioContentStyleSet}
+      controls={true}
+      loop={loop}
+      poster={poster}
+      src={src}
+    />
+  );
+};
 
 AudioContent.defaultProps = {
   alt: '',
@@ -27,10 +31,7 @@ AudioContent.propTypes = {
   autoPlay: PropTypes.bool,
   loop: PropTypes.bool,
   poster: PropTypes.string,
-  src: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    audioContent: PropTypes.any.isRequired
-  }).isRequired
+  src: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(AudioContent);
+export default AudioContent;
