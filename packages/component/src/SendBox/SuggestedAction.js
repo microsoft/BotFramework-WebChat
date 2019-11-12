@@ -29,13 +29,16 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, disabled, displayText, image, text, type, value }) => {
+const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayText, image, text, type, value }) => {
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const performCardAction = usePerformCardAction();
 
   const handleClick = useCallback(() => {
     performCardAction({ displayText, text, type, value });
-    type === 'openUrl' && setSuggestedActions([]);
+    type === 'openUrl' && clearSuggestedActions();
+
+    // TODO: Use the following line when setSuggestedActions hook is merged
+    // type === 'openUrl' && setSuggestedActions([]);
   }, [displayText, performCardAction, setSuggestedActions, text, type, value]);
 
   return (
@@ -59,6 +62,7 @@ SuggestedAction.defaultProps = {
 
 SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
+  clearSuggestedActions: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   image: PropTypes.string,
   text: PropTypes.string,
@@ -66,6 +70,6 @@ SuggestedAction.propTypes = {
   value: PropTypes.any
 };
 
-export default connectSuggestedAction()(SuggestedAction);
+export default connectSuggestedAction(({ clearSuggestedActions }) => ({ clearSuggestedActions }))(SuggestedAction);
 
 export { connectSuggestedAction };
