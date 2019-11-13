@@ -8,9 +8,6 @@ jest.mock('botframework-directlinejs', () => {
   return { DirectLine };
 });
 
-// We did not explicitly include React in package.json, thus, it is loading React 0.14.9.
-jest.mock('react', () => ({ createContext: () => {} }));
-
 import * as WebChatFull from '../index';
 import * as WebChatMinimal from '../index-minimal';
 import * as WebChatES5 from '../index-es5';
