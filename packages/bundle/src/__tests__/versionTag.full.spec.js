@@ -1,6 +1,3 @@
-// We did not explicitly include React in package.json, thus, it is loading React 0.14.9.
-jest.mock('react', () => ({ createContext: () => {} }));
-
 process.env.npm_package_version = '0.0.0-test';
 
 describe('loading Web Chat', () => {
