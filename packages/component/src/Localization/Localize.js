@@ -1,9 +1,10 @@
 // Localize is designed to be elaboratively return multiple results and possibly exceeding complexity requirement
 /* eslint complexity: "off" */
 
+import connectToWebChat from '../connectToWebChat';
 import getLocaleString from './getLocaleString';
-import useLocalize from '../hooks/useLocalize';
 
+import arEG from './ar-EG';
 import bgBG from './bg-BG';
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -33,7 +34,9 @@ import zhYUE from './zh-YUE';
 function normalizeLanguage(language) {
   language = language.toLowerCase();
 
-  if (language.startsWith('bg')) {
+  if (language.startsWith('ar')) {
+    return 'ar-EG';
+  } else if (language.startsWith('bg')) {
     return 'bg-BG';
   } else if (language.startsWith('cs')) {
     return 'cs-CZ';
@@ -88,6 +91,8 @@ function normalizeLanguage(language) {
 
 function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
+    case 'ar-EG':
+      return arEG;
     case 'bg-BG':
       return bgBG;
     case 'cs-CZ':
@@ -152,6 +157,8 @@ function localize(text, language, ...args) {
   return string || text;
 }
 
-export default ({ args, text }) => useLocalize(text, ...(args || []));
+export default connectToWebChat(({ language }) => ({ language }))(({ args, language, text }) =>
+  localize(text, language, ...(args || []))
+);
 
 export { getLocaleString, localize };
