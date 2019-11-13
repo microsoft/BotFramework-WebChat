@@ -1,0 +1,22 @@
+.App {
+  height: 100%;
+  width: 100%;
+
+  flex-direction: column;
+  display: flex;
+}
+
+.chat {
+  flex: 1;
+}
+
+.timer {
+  color: #767676;
+  font: 'Calibri', 'Helvetica Neue', Arial, sans-serif;
+  padding: 0 20px;
+  text-align: right;
+}
+
+.timer-red {
+  color: red;
+}
