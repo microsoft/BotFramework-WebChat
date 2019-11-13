@@ -60,13 +60,8 @@ const FullReactWebChat = ({
   return (
     <AdaptiveCardsContext.Provider value={adaptiveCardsContext}>
       <BasicWebChat
-        attachmentMiddleware={this.createAttachmentMiddleware(
-          adaptiveCardHostConfig,
-          attachmentMiddleware,
-          memoizedStyleSet.options,
-          memoizedRenderMarkdown
-        )}
-        renderMarkdown={memoizedRenderMarkdown}
+        attachmentMiddleware={patchedAttachmentMiddleware}
+        renderMarkdown={patchedRenderMarkdown}
         styleOptions={styleOptions}
         styleSet={patchedStyleSet}
         {...otherProps}
