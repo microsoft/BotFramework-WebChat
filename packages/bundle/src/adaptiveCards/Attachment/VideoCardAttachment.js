@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Components, hooks } from 'botframework-webchat-component';
+
 import CommonCard from './CommonCard';
 
 const { useStyleSet } = hooks;
 const { VideoContent } = Components;
 
 const VideoCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
   attachment,
   attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {}
 }) => {
@@ -26,18 +25,12 @@ const VideoCardAttachment = ({
           </li>
         ))}
       </ul>
-      <CommonCard
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        adaptiveCards={adaptiveCards}
-        attachment={attachment}
-      />
+      <CommonCard attachment={attachment} />
     </div>
   );
 };
 
 VideoCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       autoloop: PropTypes.bool,
