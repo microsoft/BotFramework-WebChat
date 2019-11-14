@@ -77,11 +77,14 @@
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=isomorphic* --scope=playground --stream prepublishOnly",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
+    "start": "npm run build && lerna run --parallel --scope=botframework-webchat* --scope=isomorphic* --stream watch",
     "start:docker": "npm run build && docker-compose up --build",
     "start:playground": "cd packages/playground && npm run start",
+    "tableflip": "npm run tableflip:start && lerna clean --yes --concurrency 2 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
+    "tableflip:end": "echo ┬──┬ ノ( ゜-゜ノ) Tableflip complete. Now run npm start",
+    "tableflip:start": "echo (╯ರ ~ ರ）╯︵ ┻━┻ Begin tableflip.",
     "test": "jest --no-cache",
-    "test:all": "lerna run --parallel --stream test",
-    "watch": "lerna run --parallel --scope=botframework-webchat* --scope=isomorphic* --stream watch"
+    "test:all": "lerna run --parallel --stream test"
   },
   "devDependencies": {
     "@azure/storage-blob": "^12.0.0",
