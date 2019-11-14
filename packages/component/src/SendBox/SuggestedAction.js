@@ -9,11 +9,13 @@ import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
 
 const SUGGESTED_ACTION_CSS = css({
-  display: 'inline-block',
+  display: 'flex',
+  flexDirection: 'column',
   whiteSpace: 'initial',
 
   '& > button': {
-    display: 'flex'
+    display: 'flex',
+    overflow: 'hidden'
   }
 });
 
