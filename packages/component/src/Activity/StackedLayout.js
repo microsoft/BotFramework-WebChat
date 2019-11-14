@@ -16,6 +16,8 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -84,7 +86,9 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, avatarInitials, children, timestampClassName }) => {
+const StackedLayout = ({ activity, children, timestampClassName }) => {
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const [{ initials: userInitials }] = useAvatarForUser();
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
 
@@ -98,6 +102,7 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
+  const initials = fromUser ? userInitials : botInitials;
   const showSendStatus = state === SENDING || state === SEND_FAILED;
   const plainText = remark()
     .use(stripMarkdown)
@@ -109,8 +114,8 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
 
   const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
 
-  const botAriaLabel = useLocalize('Bot said something', avatarInitials, plainText);
-  const userAriaLabel = useLocalize('User said something', avatarInitials, plainText);
+  const botAriaLabel = useLocalize('Bot said something', initials, plainText);
+  const userAriaLabel = useLocalize('User said something', initials, plainText);
 
   const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
 
@@ -120,10 +125,10 @@ const StackedLayout = ({ activity, avatarInitials, children, timestampClassName 
         'from-user': fromUser,
         webchat__stacked_extra_left_indent: fromUser && !botAvatarInitials && bubbleNubSize,
         webchat__stacked_extra_right_indent: !fromUser && !userAvatarInitials && bubbleFromUserNubSize,
-        webchat__stacked_indented_content: avatarInitials && !indented
+        webchat__stacked_indented_content: initials && !indented
       })}
     >
-      {!avatarInitials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
+      {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (
@@ -189,13 +194,10 @@ StackedLayout.propTypes = {
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
-  avatarInitials: PropTypes.string.isRequired,
   children: PropTypes.any,
   timestampClassName: PropTypes.string
 };
 
-export default connectStackedLayout(({ avatarInitials }) => ({
-  avatarInitials
-}))(StackedLayout);
+export default StackedLayout;
 
 export { connectStackedLayout };

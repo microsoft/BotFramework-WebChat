@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
    -  PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543): `useAdaptiveCardsHostConfig`, `useAdaptiveCardsPackage`, `useRenderMarkdownAsHTML`
 - Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
+   -  PR [#2544](https://github.com/microsoft/BotFramework-WebChat/pull/2544): `useAvatarForBot`, `useAvatarForUser`
 
 ### Fixed
 
