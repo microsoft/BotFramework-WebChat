@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import scrollToBottomButtonVisible from './setup/conditions/scrollToBottomButtonVisible';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -47,6 +48,8 @@ test('clicking "New messages" button should scroll to end and stick to bottom', 
   await driver.executeScript(() => {
     document.querySelector('[role="log"] > *').scrollTop = 0;
   });
+
+  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 

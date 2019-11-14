@@ -10,8 +10,6 @@ const { AudioContent } = Components;
 const { useStyleSet } = hooks;
 
 const AudioCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
   attachment,
   attachment: {
     content: { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = {}
@@ -28,18 +26,12 @@ const AudioCardAttachment = ({
           </li>
         ))}
       </ul>
-      <CommonCard
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        adaptiveCards={adaptiveCards}
-        attachment={attachment}
-      />
+      <CommonCard attachment={attachment} />
     </div>
   );
 };
 
 AudioCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       autostart: PropTypes.bool,

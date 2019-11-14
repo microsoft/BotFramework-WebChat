@@ -6,23 +6,17 @@ import CommonCard from './CommonCard';
 
 const { useStyleSet } = hooks;
 
-const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment }) => {
+const SignInCardAttachment = ({ attachment }) => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>
-      <CommonCard
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        adaptiveCards={adaptiveCards}
-        attachment={attachment}
-      />
+      <CommonCard attachment={attachment} />
     </div>
   );
 };
 
 SignInCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.any.isRequired
 };
 
