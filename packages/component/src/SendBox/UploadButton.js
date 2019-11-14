@@ -8,6 +8,7 @@ import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 import useLocalize from '../hooks/useLocalize';
+import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -81,8 +82,10 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = ({ disabled, sendFiles }) => {
+const UploadButton = ({ disabled }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const sendFiles = useSendFiles();
+
   const uploadFileString = useLocalize('Upload file');
 
   const inputRef = useRef();
@@ -127,8 +130,7 @@ UploadButton.defaultProps = {
 };
 
 UploadButton.propTypes = {
-  disabled: PropTypes.bool,
-  sendFiles: PropTypes.func.isRequired
+  disabled: PropTypes.bool
 };
 
 export default connectUploadButton()(UploadButton);
