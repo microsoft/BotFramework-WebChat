@@ -27,14 +27,10 @@ const AdaptiveCardAttachment = ({ attachment: { content } }) => {
       // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       AdaptiveCard.onParseError = error => errors.push(error);
 
-      if (typeof content !== 'object') {
-        content = {};
-      }
-
       card.parse(
         stripSubmitAction({
           version: '1.0',
-          ...content
+          ...(typeof content === 'object' ? content : {})
         })
       );
 

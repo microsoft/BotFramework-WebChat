@@ -24,14 +24,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Breaking changes
 
-- `adaptiveCardHostConfig` is being renamed to `adaptiveCardsHostConfig`
-   - If you are using the deprecated `adaptiveCardHostConfig`, we will rename it automatically
+-  `adaptiveCardHostConfig` is being renamed to `adaptiveCardsHostConfig`
+   -  If you are using the deprecated `adaptiveCardHostConfig`, we will rename it automatically
 
 ### Fixed
 
 -  Fixes [#2565](https://github.com/microsoft/BotFramework-WebChat/issues/2565). Fixed Adaptive Card host config should generate from style options with default options merged, by [@compulim](https://github.com/compulim) in PR [#2566](https://github.com/microsoft/BotFramework-WebChat/pull/2566
 -  Resolves [#2337](https://github.com/microsoft/BotFramework-WebChat/issues/2337). Remove Cognitive Services Preview warning, by [@corinagum](https://github.com/corinagum) in PR [#2578](https://github.com/microsoft/BotFramework-WebChat/pull/2578)
--  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). De-bump remark and strip-markdown, by [@corinagum](https://github.com/corinagum) in PR [#2576](https://github.com/microsoft/BotFramework-WebChat/pull/2576)
+-  Fixes [#2559](https://github.com/microsoft/BotFramework-WebChat/issues/2559). De-bump remark and strip-markdown, by [@corinagum](https://github.com/corinagum) in PR [#2576](https://github.com/microsoft/BotFramework-WebChat/pull/2576)
 -  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). Adds check to ensure Adaptive Card's content is an Object, by [@tdurnford](https://github.com/tdurnford) in PR [#2590](https://github.com/microsoft/BotFramework-WebChat/pull/2590)
 
 ### Added
@@ -41,8 +41,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
    -  PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543): `useAdaptiveCardsHostConfig`, `useAdaptiveCardsPackage`, `useRenderMarkdownAsHTML`
-- Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
+-  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
    -  PR [#2544](https://github.com/microsoft/BotFramework-WebChat/pull/2544): `useAvatarForBot`, `useAvatarForUser`
+   -  PR [#2547](https://github.com/microsoft/BotFramework-WebChat/pull/2547): `useEmitTypingIndicator`, `usePeformCardAction`, `usePostActivity`, `useSendEvent`, `useSendFiles`, `useSendMessage`, `useSendMessageBack`, `useSendPostBack`
+-  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 
 ### Fixed
 

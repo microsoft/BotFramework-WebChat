@@ -9,7 +9,7 @@ import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { ErrorBox } = Components;
-const { useLocalize, useRenderMarkdownAsHTML, useStyleSet } = hooks;
+const { useLocalize, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -64,11 +64,12 @@ function saveInputValues(element) {
   });
 }
 
-const AdaptiveCardRenderer = ({ adaptiveCard, disabled, performCardAction, tapAction }) => {
+const AdaptiveCardRenderer = ({ adaptiveCard, disabled, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const errorMessage = useLocalize('Adaptive Card render error');
+  const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
   const [error, setError] = useState();
@@ -215,7 +216,6 @@ const AdaptiveCardRenderer = ({ adaptiveCard, disabled, performCardAction, tapAc
 AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
-  performCardAction: PropTypes.func.isRequired,
   tapAction: PropTypes.shape({
     type: PropTypes.string.isRequired,
     value: PropTypes.string
@@ -227,8 +227,7 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ disabled, onCardAction, tapAction }) => ({
+export default connectToWebChat(({ disabled, tapAction }) => ({
   disabled,
-  performCardAction: onCardAction,
   tapAction
 }))(AdaptiveCardRenderer);
