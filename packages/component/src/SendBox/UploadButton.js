@@ -1,6 +1,5 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import AttachmentIcon from './Assets/AttachmentIcon';

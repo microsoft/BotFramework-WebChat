@@ -30,7 +30,7 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayText, image, text, type, value }) => {
+const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image, text, type, value }) => {
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const performCardAction = usePerformCardAction();
