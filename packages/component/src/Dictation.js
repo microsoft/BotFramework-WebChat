@@ -6,6 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 import connectToWebChat from './connectToWebChat';
 
 import useActivities from './hooks/useActivities';
+import useDisabled from './hooks/useDisabled';
 import useLanguage from './hooks/useLanguage';
 
 const {
@@ -14,7 +15,6 @@ const {
 
 const Dictation = ({
   dictateState,
-  disabled,
   emitTypingIndicator,
   onError,
   sendTypingIndicator,
@@ -27,6 +27,7 @@ const Dictation = ({
   webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
 }) => {
   const [activities] = useActivities();
+  const [disabled] = useDisabled();
   const [language] = useLanguage();
 
   const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
@@ -84,14 +85,12 @@ const Dictation = ({
 };
 
 Dictation.defaultProps = {
-  disabled: false,
   onError: undefined,
   webSpeechPonyfill: undefined
 };
 
 Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
-  disabled: PropTypes.bool,
   emitTypingIndicator: PropTypes.func.isRequired,
   onError: PropTypes.func,
   sendTypingIndicator: PropTypes.bool.isRequired,
@@ -110,7 +109,6 @@ Dictation.propTypes = {
 export default connectToWebChat(
   ({
     dictateState,
-    disabled,
     emitTypingIndicator,
     postActivity,
     sendTypingIndicator,
@@ -123,7 +121,6 @@ export default connectToWebChat(
     webSpeechPonyfill
   }) => ({
     dictateState,
-    disabled,
     emitTypingIndicator,
     postActivity,
     sendTypingIndicator,

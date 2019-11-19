@@ -1,12 +1,12 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
+import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
@@ -82,8 +82,9 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = ({ disabled }) => {
+const UploadButton = () => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
   const sendFiles = useSendFiles();
 
   const uploadFileString = useLocalize('Upload file');
@@ -125,14 +126,6 @@ const UploadButton = ({ disabled }) => {
   );
 };
 
-UploadButton.defaultProps = {
-  disabled: false
-};
-
-UploadButton.propTypes = {
-  disabled: PropTypes.bool
-};
-
-export default connectUploadButton()(UploadButton);
+export default UploadButton;
 
 export { connectUploadButton };

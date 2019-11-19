@@ -11,6 +11,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -77,8 +78,9 @@ const connectMicrophoneButton = (...selectors) => {
   );
 };
 
-const MicrophoneButton = ({ className, click, dictating, disabled }) => {
+const MicrophoneButton = ({ className, click, dictating }) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
   const iconButtonAltText = useLocalize('Speak');
   const screenReaderText = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
@@ -99,15 +101,13 @@ const MicrophoneButton = ({ className, click, dictating, disabled }) => {
 
 MicrophoneButton.defaultProps = {
   className: '',
-  dictating: false,
-  disabled: false
+  dictating: false
 };
 
 MicrophoneButton.propTypes = {
   className: PropTypes.string,
   click: PropTypes.func.isRequired,
-  dictating: PropTypes.bool,
-  disabled: PropTypes.bool
+  dictating: PropTypes.bool
 };
 
 export default connectMicrophoneButton()(MicrophoneButton);
