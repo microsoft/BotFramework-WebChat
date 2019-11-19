@@ -71,6 +71,14 @@ const BasicTranscript = ({ className }) => {
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
 
+  const patchedWebSpeechPonyfill = useMemo(
+    () => ({
+      speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
+      SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
+    }),
+    [bypassSpeechSynthesis, BypassSpeechSynthesisUtterance, speechSynthesis, SpeechSynthesisUtterance]
+  );
+
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
   // After we know which activities will show up, we can compute which activity will show timestamps.
@@ -115,11 +123,7 @@ const BasicTranscript = ({ className }) => {
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
-        <SayComposer
-          // These are props for passing in Web Speech ponyfill, where speech synthesis requires these two class/object to be ponyfilled.
-          speechSynthesis={speechSynthesis || bypassSpeechSynthesis}
-          speechSynthesisUtterance={SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance}
-        >
+        <SayComposer ponyfill={patchedWebSpeechPonyfill}>
           <ul
             aria-atomic="false"
             aria-live="polite"
