@@ -6,9 +6,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useLocalize from '../hooks/useLocalize';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
@@ -34,28 +36,34 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+  const SAContent = useLocalize('SuggestedActionsContent');
+  const SAEmpty = useLocalize('SuggestedActionsEmpty');
+  const SAContainer = useLocalize('SuggestedActionsContainer') + (suggestedActions.length ? SAContent : SAEmpty);
 
   return (
-    !!suggestedActions.length && (
-      <BasicFilm
-        autoCenter={false}
-        className={classNames(suggestedActionsStyleSet + '', className + '')}
-        showDots={false}
-        styleSet={suggestedActionsStyleSetForReactFilm}
-      >
-        {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
-          <SuggestedAction
-            buttonText={suggestedActionText({ displayText, title, type, value })}
-            displayText={displayText}
-            image={image}
-            key={index}
-            text={text}
-            type={type}
-            value={value}
-          />
-        ))}
-      </BasicFilm>
-    )
+    <div aria-label=" " aria-live="polite" role="status">
+      <ScreenReaderText text={SAContainer} />
+      {!!suggestedActions.length && (
+        <BasicFilm
+          autoCenter={false}
+          className={classNames(suggestedActionsStyleSet + '', className + '')}
+          showDots={false}
+          styleSet={suggestedActionsStyleSetForReactFilm}
+        >
+          {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
+            <SuggestedAction
+              buttonText={suggestedActionText({ displayText, title, type, value })}
+              displayText={displayText}
+              image={image}
+              key={index}
+              text={text}
+              type={type}
+              value={value}
+            />
+          ))}
+        </BasicFilm>
+      )}
+    </div>
   );
 };
 

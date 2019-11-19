@@ -42,7 +42,7 @@ const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayT
   }, [clearSuggestedActions, displayText, performCardAction, text, type, value]);
 
   return (
-    <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
+    <div aria-live="polite" className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
       <button disabled={disabled} onClick={handleClick} type="button">
         {image && <img src={image} />}
         <nobr>{buttonText}</nobr>
