@@ -76,7 +76,7 @@ const BasicTranscript = ({ className }) => {
       speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
       SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
     }),
-    [bypassSpeechSynthesis, BypassSpeechSynthesisUtterance, speechSynthesis, SpeechSynthesisUtterance]
+    [speechSynthesis, SpeechSynthesisUtterance]
   );
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
