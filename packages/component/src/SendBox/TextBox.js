@@ -5,6 +5,7 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import connectToWebChat from '../connectToWebChat';
+import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -55,9 +56,10 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-const TextBox = ({ className, disabled, onChange, onKeyPress, onSubmit, value }) => {
+const TextBox = ({ className, onChange, onKeyPress, onSubmit, value }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
   const sendBoxString = useLocalize('Sendbox');
   const typeYourMessageString = useLocalize('Type your message');
 
@@ -105,13 +107,11 @@ const TextBox = ({ className, disabled, onChange, onKeyPress, onSubmit, value })
 
 TextBox.defaultProps = {
   className: '',
-  disabled: false,
   value: ''
 };
 
 TextBox.propTypes = {
   className: PropTypes.string,
-  disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   onKeyPress: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
