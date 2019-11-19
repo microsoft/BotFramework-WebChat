@@ -5,6 +5,8 @@ import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import remark from 'remark';
+import stripMarkdown from 'strip-markdown';
 
 import { Constants } from 'botframework-webchat-core';
 
@@ -114,10 +116,12 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
+  const strippedActivityDisplayText = remark()
+    .use(stripMarkdown)
+    .processSync(activityDisplayText);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
   const roleLabel = fromUser ? userRoleLabel : botRoleLabel;
-
   return (
     <div
       className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
@@ -129,8 +133,8 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <ScreenReaderText text={roleLabel} />
-            <Bubble className="bubble" fromUser={fromUser} nub={true}>
+            <ScreenReaderText text={roleLabel + ' ' + strippedActivityDisplayText} />
+            <Bubble aria-hidden="true" className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {
@@ -144,7 +148,8 @@ const WebChatCarouselFilmStrip = ({
         )}
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
-            <li key={index}>
+            // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
+            <li aria-label=" " key={index}>
               <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}

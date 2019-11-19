@@ -103,7 +103,7 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, grou
           >
             {activityElements.map(({ activity, element }, index) => (
               <li
-                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75
+                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
                 aria-label=" "
                 className={classNames(activityStyleSet + '', {
                   // Hide timestamp if same timestamp group with the next activity

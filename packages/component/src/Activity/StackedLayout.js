@@ -21,6 +21,7 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import { calculateAbsoluteTime } from '../Utils/AbsoluteTime';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -97,7 +98,8 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
     from: { role } = {},
     text,
-    textFormat
+    textFormat,
+    timestamp
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
@@ -117,7 +119,11 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const botAriaLabel = useLocalize('Bot said something', initials, plainText);
   const userAriaLabel = useLocalize('User said something', initials, plainText);
 
-  const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
+  const sentAtTimestamp = calculateAbsoluteTime(timestamp);
+
+  const someoneSaidString = (fromUser ? userAriaLabel : botAriaLabel).trim();
+
+  const ariaLabel = someoneSaidString + (someoneSaidString.endsWith('.') ? '' : '.') + ' ' + sentAtTimestamp;
 
   return (
     <div
@@ -146,7 +152,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
             <div className="filler" />
           </div>
         )}
-        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
+        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44 */}
         {attachments.map((attachment, index) => (
           <div
             aria-label=" "
@@ -163,7 +169,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (
-            <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
+            <Timestamp aria-hidden={true} activity={activity} className={classNames('timestamp', timestampClassName)} />
           )}
           <div className="filler" />
         </div>
