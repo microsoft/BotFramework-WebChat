@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import useDisabled from '../hooks/useDisabled';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -29,8 +30,9 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayText, image, text, type, value }) => {
+const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image, text, type, value }) => {
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
   const performCardAction = usePerformCardAction();
 
   const handleClick = useCallback(() => {
@@ -52,7 +54,6 @@ const SuggestedAction = ({ buttonText, clearSuggestedActions, disabled, displayT
 };
 
 SuggestedAction.defaultProps = {
-  disabled: false,
   displayText: '',
   image: '',
   text: '',
@@ -63,7 +64,6 @@ SuggestedAction.defaultProps = {
 SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
   clearSuggestedActions: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
   displayText: PropTypes.string,
   image: PropTypes.string,
   text: PropTypes.string,
