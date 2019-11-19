@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
 import React, { useCallback, useMemo } from 'react';
-import Say from 'react-say';
-=======
-import React from 'react';
 import Say, { SayUtterance } from 'react-say';
->>>>>>> Indicate a speech-related post activity
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
@@ -37,7 +32,7 @@ const Speak = ({ activity }) => {
   }, [activity, markActivityAsSpoken]);
 
   const singleLine = useMemo(() => {
-    const { attachments = [], channelData: { utterance } = {}, speak, text } = activity;
+    const { attachments = [], channelData: { speechSynthesisUtterance } = {}, speak, text } = activity;
 
     return (
       !!activity &&
@@ -55,8 +50,8 @@ const Speak = ({ activity }) => {
   return (
     !!activity && (
       <React.Fragment>
-        {utterance ? (
-          <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={utterance} />
+        {speechSynthesisUtterance ? (
+          <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={speechSynthesisUtterance} />
         ) : (
           <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
         )}
@@ -76,6 +71,9 @@ Speak.propTypes = {
         title: PropTypes.string
       })
     ),
+    channelData: PropTypes.shape({
+      speechSynthesisUtterance: PropTypes.any
+    }),
     speak: PropTypes.string,
     text: PropTypes.string
   }).isRequired
