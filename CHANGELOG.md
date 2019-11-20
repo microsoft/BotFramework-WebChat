@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2337](https://github.com/microsoft/BotFramework-WebChat/issues/2337). Remove Cognitive Services Preview warning, by [@corinagum](https://github.com/corinagum) in PR [#2578](https://github.com/microsoft/BotFramework-WebChat/pull/2578)
 -  Fixes [#2559](https://github.com/microsoft/BotFramework-WebChat/issues/2559). De-bump remark and strip-markdown, by [@corinagum](https://github.com/corinagum) in PR [#2576](https://github.com/microsoft/BotFramework-WebChat/pull/2576)
 -  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). Adds check to ensure Adaptive Card's content is an Object, by [@tdurnford](https://github.com/tdurnford) in PR [#2590](https://github.com/microsoft/BotFramework-WebChat/pull/2590)
+-  Fixes [#1780](https://github.com/microsoft/BotFramework-WebChat/issues/1780), [#2277](https://github.com/microsoft/BotFramework-WebChat/issues/2277), and [#2285](https://github.com/microsoft/BotFramework-WebChat/issues/2285). Make Suggested Actions accessible, Fix Markdown card in carousel being read multiple times, and label widgets of Connectivity Status and Suggested Actions containers, by [@corinagum](https://github.com/corinagum) in PR [#2613](https://github.com/microsoft/BotFramework-WebChat/pull/2613)
 
 ### Added
 

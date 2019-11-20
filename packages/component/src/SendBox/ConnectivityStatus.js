@@ -66,75 +66,77 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
   const interruptedConnectionText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
   const renderErrorNotificationText = useLocalize('RENDER_ERROR_NOTIFICATION');
   const slowConnectionText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
+  const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
 
   const renderConnectingSlow = useCallback(
     () => (
       <React.Fragment>
-        <ScreenReaderText text={slowConnectionText} />
+        <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
         <div aria-hidden={true} className={warningNotificationStyleSet}>
           <WarningNotificationIcon />
           {slowConnectionText}
         </div>
       </React.Fragment>
     ),
-    [slowConnectionText, warningNotificationStyleSet]
+    [connectivityStatusLabelText, slowConnectionText, warningNotificationStyleSet]
   );
 
   const renderNotConnected = useCallback(
     () => (
       <React.Fragment>
-        <ScreenReaderText text={failedConnectionText} />
+        <ScreenReaderText text={connectivityStatusLabelText + failedConnectionText} />
         <div aria-hidden={true} className={errorNotificationStyleSet}>
           <ErrorNotificationIcon />
           {failedConnectionText}
         </div>
       </React.Fragment>
     ),
-    [errorNotificationStyleSet, failedConnectionText]
+    [connectivityStatusLabelText, errorNotificationStyleSet, failedConnectionText]
   );
 
   const renderUninitialized = useCallback(
     () => (
       <React.Fragment>
-        <ScreenReaderText text={initialConnectionText} />
+        <ScreenReaderText text={connectivityStatusLabelText + initialConnectionText} />
         <div aria-hidden={true} className={connectivityNotificationStyleSet}>
           <SpinnerAnimation />
           {initialConnectionText}
         </div>
       </React.Fragment>
     ),
-    [connectivityNotificationStyleSet, initialConnectionText]
+    [connectivityNotificationStyleSet, connectivityStatusLabelText, initialConnectionText]
   );
 
   const renderReconnecting = useCallback(
     () => (
       <React.Fragment>
-        <ScreenReaderText text={interruptedConnectionText} />
+        <ScreenReaderText text={connectivityStatusLabelText + interruptedConnectionText} />
         <div aria-hidden={true} className={connectivityNotificationStyleSet}>
           <SpinnerAnimation />
           {interruptedConnectionText}
         </div>
       </React.Fragment>
     ),
-    [connectivityNotificationStyleSet, interruptedConnectionText]
+    [connectivityNotificationStyleSet, connectivityStatusLabelText, interruptedConnectionText]
   );
 
   const renderSagaError = useCallback(
     () => (
       <React.Fragment>
-        <ScreenReaderText text={renderErrorNotificationText} />
-        <div className={errorNotificationStyleSet}>
+        <ScreenReaderText text={connectivityStatusLabelText + renderErrorNotificationText} />
+        <div aria-hidden={true} className={errorNotificationStyleSet}>
           <ErrorNotificationIcon />
           {renderErrorNotificationText}
         </div>
       </React.Fragment>
     ),
-    [errorNotificationStyleSet, renderErrorNotificationText]
+    [connectivityStatusLabelText, errorNotificationStyleSet, renderErrorNotificationText]
   );
 
-  const renderEmptyStatus = useCallback(() => <ScreenReaderText text={connectedNotificationText} />, [
-    connectedNotificationText
-  ]);
+  const renderEmptyStatus = useCallback(
+    () => <ScreenReaderText text={connectivityStatusLabelText + connectedNotificationText} />,
+    [connectedNotificationText, connectivityStatusLabelText]
+  );
 
   const renderStatus = useCallback(() => {
     if (connectivityStatus === 'connectingslow') {
@@ -161,7 +163,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
   ]);
 
   return (
-    <div aria-atomic="false" aria-live="polite" role="status">
+    <div aria-label=" " role="status">
       <DebouncedConnectivityStatus
         interval={
           connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : CONNECTIVITY_STATUS_DEBOUNCE

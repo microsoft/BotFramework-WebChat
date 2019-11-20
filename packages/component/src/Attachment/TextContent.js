@@ -1,10 +1,12 @@
-// The content rendered here is sanitized.
 /* eslint react/no-danger: "off" */
 /* eslint react/no-array-index-key: "off" */
+
+// The content rendered here is sanitized.
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
@@ -13,10 +15,11 @@ import useStyleSet from '../hooks/useStyleSet';
 const TextContent = ({ contentType, text }) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const [{ textContent: textContentStyleSet }] = useStyleSet();
+  const strippedText = remarkStripMarkdown(text).contents;
 
   return contentType === 'text/markdown' && renderMarkdownAsHTML ? (
     <React.Fragment>
-      <ScreenReaderText text={text} />
+      <ScreenReaderText text={strippedText} />
       <div
         aria-hidden={true}
         className={classNames('markdown', textContentStyleSet + '')}
@@ -26,7 +29,7 @@ const TextContent = ({ contentType, text }) => {
   ) : (
     (text || '').split('\n').map((line, index) => (
       <React.Fragment key={index}>
-        <ScreenReaderText text={text} />
+        <ScreenReaderText text={remarkStripMarkdown(line.trim()).contents} />
         <p aria-hidden={true} className={classNames('plain', textContentStyleSet + '')}>
           {line.trim()}
         </p>

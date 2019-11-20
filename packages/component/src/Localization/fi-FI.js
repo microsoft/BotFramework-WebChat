@@ -50,7 +50,7 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
   return `Lataa tiedosto ${fileName}, koko: ${size}`;
 }
 
-function uploadFileWithFileSize(fileName, size) {
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
   return `${fileName}, koko: ${size}`;
 }
 
