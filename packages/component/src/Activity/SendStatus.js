@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import usePostActivity from '../hooks/usePostActivity';
 import useStyleSet from '../hooks/useStyleSet';
@@ -29,8 +30,9 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity, focusSendBox }) => {
+const SendStatus = ({ activity }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
+  const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
 
   // TODO: [P4] Currently, this is the only place which use a templated string
@@ -91,10 +93,9 @@ SendStatus.propTypes = {
     channelData: PropTypes.shape({
       state: PropTypes.string
     })
-  }).isRequired,
-  focusSendBox: PropTypes.func.isRequired
+  }).isRequired
 };
 
-export default connectSendStatus(({ focusSendBox }) => ({ focusSendBox }))(SendStatus);
+export default SendStatus;
 
 export { connectSendStatus };
