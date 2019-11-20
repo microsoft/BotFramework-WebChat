@@ -47,7 +47,7 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
 }
 
 function uploadFileWithFileSize(uploadFileText, fileName, size) {
-  return `サイズ${size} のファイル${fileName}を${uploadFileText}する　`;
+  return `サイズ${size} のファイル${fileName}を${uploadFileText}する`;
 }
 
 function userSaidSomething(avatarInitials, text) {

@@ -20,7 +20,7 @@ const UploadAttachment = ({
   const [{ uploadAttachment: uploadAttachmentStyleSet }] = useStyleSet();
 
   const attachmentIndex = attachments.indexOf(attachment);
-  const uploadLabel = localize('Upload file');
+  const uploadLabel = useLocalize('Upload file');
   const size = attachmentSizes[attachmentIndex];
   const formattedSize = typeof size === 'number' && format(size);
   const uploadFileWithFileSizeLabel = useLocalize(
