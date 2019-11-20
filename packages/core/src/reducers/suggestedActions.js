@@ -7,7 +7,7 @@ export default function suggestedActions(state = DEFAULT_STATE, { payload = {}, 
   switch (type) {
     case SET_SUGGESTED_ACTIONS:
       if ((payload.suggestedActions || []).length) {
-        state = [].slice.call(payload.suggestedActions || []);
+        state = [].slice.call(payload.suggestedActions);
       } else {
         state = DEFAULT_STATE;
       }

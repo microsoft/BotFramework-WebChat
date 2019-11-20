@@ -36,13 +36,15 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
-  const SAContent = useLocalize('SuggestedActionsContent');
-  const SAEmpty = useLocalize('SuggestedActionsEmpty');
-  const SAContainer = useLocalize('SuggestedActionsContainer') + (suggestedActions.length ? SAContent : SAEmpty);
+  const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
+  const suggestedActionsEmptyText = useLocalize('SuggestedActionsEmpty');
+  const suggestedActionsContainerText =
+    useLocalize('SuggestedActionsContainer') +
+    (suggestedActions.length ? suggestedActionsContentText : suggestedActionsEmptyText);
 
   return (
     <div aria-label=" " aria-live="polite" role="status">
-      <ScreenReaderText text={SAContainer} />
+      <ScreenReaderText text={suggestedActionsContainerText} />
       {!!suggestedActions.length && (
         <BasicFilm
           autoCenter={false}
