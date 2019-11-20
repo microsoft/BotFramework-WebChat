@@ -39,11 +39,11 @@ function botSaidSomething(avatarInitials, text) {
 
 function downloadFileWithFileSize(downloadFileText, fileName, size) {
   // Full text should read: "Download file <filename> of size <filesize>"
-  return `'${downloadFileText}' ${fileName} of size ${size}`;
+  return `${downloadFileText} '${fileName}' of size ${size}`;
 }
 
-function uploadFileWithFileSize(fileName, size) {
-  return `'${fileName}' of size ${size}`;
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
+  return `${uploadFileText} '${fileName}' of size ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {

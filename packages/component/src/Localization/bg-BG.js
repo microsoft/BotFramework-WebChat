@@ -42,7 +42,7 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
   return `${downloadFileText} ${fileName} с размер ${size}`;
 }
 
-function uploadFileWithFileSize(fileName, size) {
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
   return `${fileName} с рамер ${size}`;
 }
 

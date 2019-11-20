@@ -50,7 +50,7 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
   return `${downloadFileText} ${fileName} di dimensione ${size}`;
 }
 
-function uploadFileWithFileSize(fileName, size) {
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
   return `${fileName} di dimensione ${size}`;
 }
 

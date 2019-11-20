@@ -41,14 +41,24 @@ function botSaidSomething(avatarInitials, text) {
   return `ボット${avatarInitials}は${text}と言いました`;
 }
 
+function downloadFileWithFileSize(downloadFileText, fileName, size) {
+  // Full text should read: "Download file <filename> of size <filesize>"
+  return `サイズ${size}のファイル${fileName}を${downloadFileText}する`;
+}
+
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
+  return `サイズ${size} のファイル${fileName}を${uploadFileText}する　`;
+}
+
 function userSaidSomething(avatarInitials, text) {
   return `ユーザー ${avatarInitials}は${text}と言いました`;
 }
 
 export default {
+  CONNECTED_NOTIFICATION: '接続しました。',
   FAILED_CONNECTION_NOTIFICATION: '接続できませんでした。',
-  INITIAL_CONNECTION_NOTIFICATION: '接続中...',
-  INTERRUPTED_CONNECTION_NOTIFICATION: 'ネットワーク中断しました。 再接続中...',
+  INITIAL_CONNECTION_NOTIFICATION: '接続中…',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'ネットワーク中断しました。 再接続中…',
   RENDER_ERROR_NOTIFICATION:
     'レンダリングエラーが発生しました。コンソールを確認するか、ボットの開発者に連絡してください。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
@@ -59,8 +69,12 @@ export default {
   'X minutes ago': xMinutesAgo,
   'Adaptive Card parse error': 'Adaptive Cardの解析エラー',
   'Adaptive Card render error': 'Adaptive Cardのレンダリングエラー',
+  BotSent: 'ボットが送った：',
   Chat: 'チャット',
   'Download file': 'ダウンロード',
+  ConnectivityStatus: '接続状態：',
+  DownloadFileWithFileSize: downloadFileWithFileSize,
+  ErrorMessage: 'Error message',
   'Microphone off': 'マイクオン',
   'Microphone on': 'マイクオフ',
   Left: '左',
@@ -71,10 +85,16 @@ export default {
   SendBox: 'テキストボックス',
   Sending: '送信中',
   Speak: '話してください',
+  SuggestedActionsContainer: 'Suggested Actions コンテンツ：',
+  SuggestedActionsContent: '有り',
+  SuggestedActionsEmpty: '無し',
   'Starting…': 'スタート…',
   Tax: '税',
   Total: '合計',
   'Type your message': 'メッセージを入力してください',
-  'Upload file': 'ファイルをアップロード',
+  TypingIndicator: 'タイピングインジケーターの表示',
+  'Upload file': 'アップロード',
+  UploadFileWithFileSize: uploadFileWithFileSize,
+  UserSent: 'ユーザーが送った：',
   VAT: '消費税'
 };
