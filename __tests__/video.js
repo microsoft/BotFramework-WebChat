@@ -43,11 +43,15 @@ test('video', async () => {
     .sendKeys('j')
     .perform();
 
-  // Hide the spinner animation
-  await driver.executeScript(() => document.querySelector('.ytp-spinner').remove());
-
   // Wait for YouTube play/pause/rewind animation to complete
   await driver.sleep(1000);
+
+  // Hide the spinner animation
+  await driver.executeScript(() => {
+    const spinner = document.querySelector('.ytp-spinner');
+
+    spinner && spinner.remove();
+  });
 
   const base64PNG = await driver.takeScreenshot();
 

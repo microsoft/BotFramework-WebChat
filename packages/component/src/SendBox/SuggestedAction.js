@@ -1,9 +1,12 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import useDisabled from '../hooks/useDisabled';
+import usePerformCardAction from '../hooks/usePerformCardAction';
+import useStyleSet from '../hooks/useStyleSet';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
@@ -27,30 +30,47 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, click, disabled, image, styleSet }) => (
-  <div className={classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS + '')}>
-    <button disabled={disabled} onClick={click} type="button">
-      {image && <img src={image} />}
-      <nobr>{buttonText}</nobr>
-    </button>
-  </div>
-);
+const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image, text, type, value }) => {
+  const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
+  const performCardAction = usePerformCardAction();
+
+  const handleClick = useCallback(() => {
+    performCardAction({ displayText, text, type, value });
+    type === 'openUrl' && clearSuggestedActions();
+
+    // TODO: Use the following line when setSuggestedActions hook is merged
+    // type === 'openUrl' && setSuggestedActions([]);
+  }, [clearSuggestedActions, displayText, performCardAction, text, type, value]);
+
+  return (
+    <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
+      <button disabled={disabled} onClick={handleClick} type="button">
+        {image && <img src={image} />}
+        <nobr>{buttonText}</nobr>
+      </button>
+    </div>
+  );
+};
 
 SuggestedAction.defaultProps = {
-  disabled: false,
-  image: ''
+  displayText: '',
+  image: '',
+  text: '',
+  type: '',
+  value: undefined
 };
 
 SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
-  click: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
+  clearSuggestedActions: PropTypes.func.isRequired,
+  displayText: PropTypes.string,
   image: PropTypes.string,
-  styleSet: PropTypes.shape({
-    suggestedAction: PropTypes.any.isRequired
-  }).isRequired
+  text: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.any
 };
 
-export default connectSuggestedAction(({ styleSet }) => ({ styleSet }))(SuggestedAction);
+export default connectSuggestedAction(({ clearSuggestedActions }) => ({ clearSuggestedActions }))(SuggestedAction);
 
 export { connectSuggestedAction };

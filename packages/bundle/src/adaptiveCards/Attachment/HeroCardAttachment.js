@@ -1,18 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
+
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const HeroCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment: { content } = {},
-  styleSet: { options }
-}) => {
+const { useStyleOptions } = hooks;
+
+const HeroCardAttachment = ({ attachment: { content } = {} }) => {
+  const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
+  const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
 
     if (content) {
       (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
@@ -21,20 +22,12 @@ const HeroCardAttachment = ({
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCardsPackage, content, styleOptions]);
 
-  return (
-    <AdaptiveCardRenderer
-      adaptiveCard={builtCard}
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      tapAction={content && content.tap}
-    />
-  );
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };
 
 HeroCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       tap: PropTypes.any
@@ -45,4 +38,4 @@ HeroCardAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(HeroCardAttachment);
+export default HeroCardAttachment;

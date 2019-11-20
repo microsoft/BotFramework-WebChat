@@ -9,7 +9,6 @@ import React from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
-import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -17,6 +16,11 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
+import useLocalize from '../hooks/useLocalize';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -82,7 +86,12 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, avatarInitials, children, language, styleSet, timestampClassName }) => {
+const StackedLayout = ({ activity, children, timestampClassName }) => {
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const [{ initials: userInitials }] = useAvatarForUser();
+  const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
+  const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
+
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
@@ -93,32 +102,33 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
+  const initials = fromUser ? userInitials : botInitials;
   const showSendStatus = state === SENDING || state === SEND_FAILED;
   const plainText = remark()
     .use(stripMarkdown)
     .processSync(text);
-  const ariaLabel = localize(
-    fromUser ? 'User said something' : 'Bot said something',
-    language,
-    avatarInitials,
-    plainText
-  );
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+
+  const botRoleLabel = useLocalize('BotSent');
+  const userRoleLabel = useLocalize('UserSent');
+
+  const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
+
+  const botAriaLabel = useLocalize('Bot said something', initials, plainText);
+  const userAriaLabel = useLocalize('User said something', initials, plainText);
+
+  const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
+      className={classNames(ROOT_CSS + '', stackedLayoutStyleSet + '', {
         'from-user': fromUser,
-        webchat__stacked_extra_left_indent:
-          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
-        webchat__stacked_extra_right_indent:
-          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
-        webchat__stacked_indented_content: avatarInitials && !indented
+        webchat__stacked_extra_left_indent: fromUser && !botAvatarInitials && bubbleNubSize,
+        webchat__stacked_extra_right_indent: !fromUser && !userAvatarInitials && bubbleFromUserNubSize,
+        webchat__stacked_indented_content: initials && !indented
       })}
     >
-      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-        <div className="avatar" />
-      )}
+      {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (
@@ -143,7 +153,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
-            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={roleLabel} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
@@ -184,25 +194,10 @@ StackedLayout.propTypes = {
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
-  avatarInitials: PropTypes.string.isRequired,
   children: PropTypes.any,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      bubbleNubSize: PropTypes.number.isRequired,
-      bubbleFromUserNubSize: PropTypes.number.isRequired,
-      botAvatarInitials: PropTypes.string,
-      userAvatarInitials: PropTypes.string
-    }).isRequired,
-    stackedLayout: PropTypes.any.isRequired
-  }).isRequired,
   timestampClassName: PropTypes.string
 };
 
-export default connectStackedLayout(({ avatarInitials, language, styleSet }) => ({
-  avatarInitials,
-  language,
-  styleSet
-}))(StackedLayout);
+export default StackedLayout;
 
 export { connectStackedLayout };

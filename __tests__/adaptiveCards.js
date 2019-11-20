@@ -47,6 +47,26 @@ test('breakfast card with custom host config', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
+test('breakfast card with custom style options', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        bubbleTextColor: '#FF0000'
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card breakfast', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
 test('disable card inputs', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
@@ -58,16 +78,29 @@ test('disable card inputs', async () => {
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   await driver.executeScript(() => {
-    document.querySelector('.ac-input input[type="checkbox"]').checked = true;
+    document.querySelector('.ac-adaptiveCard input[type="checkbox"]').checked = true;
+    document.querySelector('.ac-adaptiveCard input[type="date"]').value = '2019-11-01';
+    document.querySelector('.ac-adaptiveCard input[type="radio"]').checked = true;
+    document.querySelector('.ac-adaptiveCard input[type="text"]').value = 'William';
+    document.querySelector('.ac-adaptiveCard input[type="time"]').value = '12:34';
+    document.querySelector('.ac-adaptiveCard select').value = '1';
+    document.querySelector('.ac-adaptiveCard textarea').value = 'One Redmond Way, Redmond, WA';
   });
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ disabled: true });
 
+  // Click "Submit" button should have no effect
+  await driver.executeScript(() => {
+    document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
+  });
+
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ disabled: false });
+
+  // Click "Submit" button should send values to the bot
   await driver.executeScript(() => {
     document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
   });

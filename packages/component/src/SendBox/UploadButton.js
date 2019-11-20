@@ -1,13 +1,15 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
-import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
+import useDisabled from '../hooks/useDisabled';
+import useLocalize from '../hooks/useLocalize';
+import useSendFiles from '../hooks/useSendFiles';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -80,9 +82,14 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
+const UploadButton = () => {
+  const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
+  const sendFiles = useSendFiles();
+
+  const uploadFileString = useLocalize('Upload file');
+
   const inputRef = useRef();
-  const uploadFileString = localize('Upload file', language);
   const { current } = inputRef;
 
   const handleClick = useCallback(() => {
@@ -101,7 +108,7 @@ const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.uploadButton + '')}>
+    <div className={classNames(ROOT_CSS + '', uploadButtonStyleSet + '')}>
       <input
         aria-hidden="true"
         disabled={disabled}
@@ -119,26 +126,6 @@ const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
   );
 };
 
-UploadButton.defaultProps = {
-  disabled: false
-};
-
-UploadButton.propTypes = {
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  sendFiles: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      enableUploadThumbnail: PropTypes.bool.isRequired,
-      uploadThumbnailContentType: PropTypes.string.isRequired,
-      uploadThumbnailHeight: PropTypes.number.isRequired,
-      uploadThumbnailQuality: PropTypes.number.isRequired,
-      uploadThumbnailWidth: PropTypes.number.isRequired
-    }).isRequired,
-    uploadButton: PropTypes.any.isRequired
-  }).isRequired
-};
-
-export default connectUploadButton(({ styleSet }) => ({ styleSet }))(UploadButton);
+export default UploadButton;
 
 export { connectUploadButton };

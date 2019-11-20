@@ -3,22 +3,23 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
+
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const ThumbnailCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment: { content } = {},
-  styleSet: { options }
-}) => {
+const { useStyleOptions } = hooks;
+
+const ThumbnailCardAttachment = ({ attachment: { content } = {} }) => {
+  const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
+  const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
-      const { TextSize, TextWeight } = adaptiveCards;
+      const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
+      const { TextSize, TextWeight } = adaptiveCardsPackage;
       const { buttons, images, subtitle, text, title } = content;
-      const { richCardWrapTitle } = options;
+      const { richCardWrapTitle } = styleOptions;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
@@ -39,20 +40,12 @@ const ThumbnailCardAttachment = ({
       }
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCardsPackage, content, styleOptions]);
 
-  return (
-    <AdaptiveCardRenderer
-      adaptiveCard={builtCard}
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      tapAction={content && content.tap}
-    />
-  );
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };
 
 ThumbnailCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       buttons: PropTypes.array,
@@ -67,10 +60,7 @@ ThumbnailCardAttachment.propTypes = {
       text: PropTypes.string,
       title: PropTypes.string
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ThumbnailCardAttachment);
+export default ThumbnailCardAttachment;

@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -15,18 +15,19 @@ const ROOT_CSS = css({
 
 const UploadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
-  attachment,
-  language,
-  styleSet
+  attachment
 }) => {
+  const [{ uploadAttachment: uploadAttachmentStyleSet }] = useStyleSet();
+
   const attachmentIndex = attachments.indexOf(attachment);
   const size = attachmentSizes[attachmentIndex];
   const formattedSize = typeof size === 'number' && format(size);
-  const uploadFileWithFileSizeLabel = localize('UploadFileWithFileSize', language, attachment.name, formattedSize);
+  const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', attachment.name, formattedSize);
+
   return (
     <React.Fragment>
       <ScreenReaderText text={uploadFileWithFileSizeLabel} />
-      <div aria-hidden={true} className={classNames(ROOT_CSS + '', styleSet.uploadAttachment + '')}>
+      <div aria-hidden={true} className={classNames(ROOT_CSS + '', uploadAttachmentStyleSet + '')}>
         <div className="name">{attachment.name}</div>
         <div className="size">{formattedSize}</div>
       </div>
@@ -43,12 +44,7 @@ UploadAttachment.propTypes = {
   }).isRequired,
   attachment: PropTypes.shape({
     name: PropTypes.string.isRequired
-  }).isRequired,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    downloadAttachment: PropTypes.any.isRequired,
-    uploadAttachment: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(UploadAttachment);
+export default UploadAttachment;

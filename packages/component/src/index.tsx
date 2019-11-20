@@ -29,12 +29,14 @@ import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
 import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
-import Context from './Context';
+import Context from './WebChatUIContext';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+
+import * as hooks from './hooks/index';
 
 const version = process.env.npm_package_version;
 
@@ -93,6 +95,7 @@ export {
   createStyleSet,
   defaultStyleOptions,
   getTabIndex,
+  hooks,
   localize,
   version
 };

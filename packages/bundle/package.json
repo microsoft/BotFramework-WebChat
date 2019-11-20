@@ -24,7 +24,7 @@
     "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx? --ignore-pattern __tests__",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel && webpack-cli",
     "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run watch:babel\" \"npm run watch:typecheck\" \"npm run watch:webpack\"",
     "watch:babel": "npm run build:babel-instrumented -- --watch",
@@ -76,7 +76,7 @@
     "typescript": "^3.6.4",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "webpack-stats-plugin": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^16.8.6",

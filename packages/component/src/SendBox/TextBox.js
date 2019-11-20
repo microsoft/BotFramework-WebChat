@@ -1,11 +1,18 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
-import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import useDisabled from '../hooks/useDisabled';
+import useFocusSendBox from '../hooks/useFocusSendBox';
+import useLocalize from '../hooks/useLocalize';
+import useScrollToEnd from '../hooks/useScrollToEnd';
+import useSendBoxValue from '../hooks/useSendBoxValue';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
+import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -53,17 +60,80 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit, styleSet, value }) => {
-  const typeYourMessageString = localize('Type your message', language);
-  const sendBoxString = localize('Sendbox', language);
-  const {
-    options: { sendBoxTextWrap }
-  } = styleSet;
+function useTextBoxSubmit(setFocus) {
+  const [sendBoxValue] = useSendBoxValue();
+  const focusSendBox = useFocusSendBox();
+  const scrollToEnd = useScrollToEnd();
+  const submitSendBox = useSubmitSendBox();
+
+  return useCallback(() => {
+    if (sendBoxValue) {
+      scrollToEnd();
+      submitSendBox();
+      setFocus && focusSendBox();
+    }
+  }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
+}
+
+// TODO: [P1] Hook is temporarily not exporting until fully implemented
+function useTextBoxValue({ stopDictate }) {
+  const [value, setSendBox] = useSendBoxValue();
+
+  // TODO: [P1] Temporarily using non-hook version
+  // const stopDictate = useStopDictate();
+
+  const setter = useCallback(
+    value => {
+      setSendBox(value);
+      stopDictate();
+    },
+    [setSendBox, stopDictate]
+  );
+
+  return [value, setter];
+}
+
+const TextBox = ({ className, stopDictate }) => {
+  const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const [disabled] = useDisabled();
+  const [textBoxValue, setTextBoxValue] = useTextBoxValue({ stopDictate });
+
+  const submitTextBox = useTextBoxSubmit();
+  const sendBoxString = useLocalize('Sendbox');
+  const typeYourMessageString = useLocalize('Type your message');
+
+  const handleChange = useCallback(({ target: { value } }) => setTextBoxValue(value), [setTextBoxValue]);
+
+  const handleKeyPress = useCallback(
+    event => {
+      const { key, shiftKey } = event;
+
+      if (key === 'Enter' && !shiftKey) {
+        event.preventDefault();
+
+        // If text box is submitted, focus on the send box
+        submitTextBox(true);
+      }
+    },
+    [submitTextBox]
+  );
+
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault();
+
+      // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
+      // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
+      submitTextBox();
+    },
+    [submitTextBox]
+  );
 
   return (
     <form
-      className={classNames(ROOT_CSS + '', styleSet.sendBoxTextArea + '', styleSet.sendBoxTextBox + '', className + '')}
-      onSubmit={onSubmit}
+      className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
+      onSubmit={handleSubmit}
     >
       {
         <TypeFocusSinkContext.Consumer>
@@ -73,11 +143,11 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
                 aria-label={sendBoxString}
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
-                onChange={onChange}
+                onChange={handleChange}
                 placeholder={typeYourMessageString}
                 ref={sendFocusRef}
                 type="text"
-                value={value}
+                value={textBoxValue}
               />
             ) : (
               <div>
@@ -85,14 +155,14 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
                   aria-label={sendBoxString}
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
-                  onChange={onChange}
-                  onKeyPress={onKeyPress}
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
                   placeholder={typeYourMessageString}
                   ref={sendFocusRef}
                   rows="1"
-                  value={value}
+                  value={textBoxValue}
                 />
-                <div>{value + '\n'}</div>
+                <div>{textBoxValue + '\n'}</div>
               </div>
             )
           }
@@ -103,28 +173,17 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
 };
 
 TextBox.defaultProps = {
-  className: '',
-  disabled: false,
-  value: ''
+  className: ''
 };
 
 TextBox.propTypes = {
   className: PropTypes.string,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onKeyPress: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      sendBoxTextWrap: PropTypes.bool.isRequired
-    }).isRequired,
-    sendBoxTextArea: PropTypes.any.isRequired,
-    sendBoxTextBox: PropTypes.any.isRequired
-  }).isRequired,
-  value: PropTypes.string
+  stopDictate: PropTypes.func.isRequired
 };
 
-export default connectSendTextBox(({ styleSet }) => ({ styleSet }))(TextBox);
+export default connectToWebChat(({ stopDictate }) => ({ stopDictate }))(TextBox);
 
-export { connectSendTextBox };
+// TODO: [P1] Export useTextBoxValue when it is fully implemented
+// export { connectSendTextBox, useTextBoxSubmit, useTextBoxValue };
+
+export { connectSendTextBox, useTextBoxSubmit };

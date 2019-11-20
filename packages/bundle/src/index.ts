@@ -3,7 +3,7 @@
 
 export * from './index-minimal';
 
-import { version } from './index-minimal';
+import { hooks, version } from './index-minimal';
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
@@ -12,6 +12,8 @@ import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCar
 import defaultCreateDirectLine from './createDirectLine';
 import ReactWebChat from './FullReactWebChat';
 import renderMarkdown from './renderMarkdown';
+import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';
+import useAdaptiveCardsPackage from './adaptiveCards/hooks/useAdaptiveCardsPackage';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -23,12 +25,19 @@ export const createDirectLine = options => {
   return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
+const patchedHooks = {
+  ...hooks,
+  useAdaptiveCardsHostConfig,
+  useAdaptiveCardsPackage
+};
+
 export default ReactWebChat;
 
 export {
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createStyleSet,
+  patchedHooks as hooks,
   renderMarkdown,
   renderWebChat
 };
@@ -39,6 +48,7 @@ window['WebChat'] = {
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
   createStyleSet,
+  hooks: patchedHooks,
   ReactWebChat,
   renderMarkdown,
   renderWebChat

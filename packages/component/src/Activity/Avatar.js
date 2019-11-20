@@ -4,6 +4,9 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
+import useStyleSet from '../hooks/useStyleSet';
 
 const connectAvatar = (...selectors) =>
   connectToWebChat(
@@ -24,36 +27,38 @@ const connectAvatar = (...selectors) =>
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser, styleSet }) =>
-  !!(avatarImage || avatarInitials) && (
-    <div
-      aria-hidden={ariaHidden}
-      className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
-    >
-      {avatarInitials}
-      {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
-    </div>
+const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+  const [botAvatar] = useAvatarForBot();
+  const [userAvatar] = useAvatarForUser();
+  const [{ avatar: avatarStyleSet }] = useStyleSet();
+
+  const { image, initials } = fromUser ? userAvatar : botAvatar;
+
+  return (
+    !!(image || initials) && (
+      <div
+        aria-hidden={ariaHidden}
+        className={classNames(avatarStyleSet + '', { 'from-user': fromUser }, className + '')}
+      >
+        {initials}
+        {!!image && <CroppedImage alt="" className="image" height="100%" src={image} width="100%" />}
+      </div>
+    )
   );
+};
 
 Avatar.defaultProps = {
   'aria-hidden': false,
-  avatarImage: '',
-  avatarInitials: '',
   className: '',
   fromUser: false
 };
 
 Avatar.propTypes = {
   'aria-hidden': PropTypes.bool,
-  avatarImage: PropTypes.string,
-  avatarInitials: PropTypes.string,
   className: PropTypes.string,
-  fromUser: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    avatar: PropTypes.any.isRequired
-  }).isRequired
+  fromUser: PropTypes.bool
 };
 
-export default connectAvatar(({ styleSet }) => ({ styleSet }))(Avatar);
+export default Avatar;
 
 export { connectAvatar };
