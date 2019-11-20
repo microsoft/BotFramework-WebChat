@@ -1,6 +1,8 @@
-// The content rendered here is sanitized.
+/* eslint-disable no-sync */
 /* eslint react/no-danger: "off" */
 /* eslint react/no-array-index-key: "off" */
+
+// The content rendered here is sanitized.
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';

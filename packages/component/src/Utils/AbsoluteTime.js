@@ -6,20 +6,20 @@ import ScreenReaderText from '../ScreenReaderText';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
-const calculateAbsoluteTime = value => {
+const CalculateAbsoluteTime = value => {
   const localizedTime = useLocalizeDate(value);
-  const absTime = useLocalize('SentAt') + localizedTime;
 
-  return absTime;
+  return localizedTime;
 };
 
 const AbsoluteTime = ({ value }) => {
-  const absTime = calculateAbsoluteTime(value);
+  const absTime = CalculateAbsoluteTime(value);
+  const sentAtAbsTime = useLocalize('SentAt') + absTime;
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={absTime} />
-      <span aria-hidden={true}>{localizedTime}</span>
+      <ScreenReaderText text={sentAtAbsTime} />
+      <span aria-hidden={true}>{absTime}</span>
     </React.Fragment>
   );
 };
@@ -29,4 +29,4 @@ AbsoluteTime.propTypes = {
 };
 
 export default AbsoluteTime;
-export { calculateAbsoluteTime };
+export { CalculateAbsoluteTime };

@@ -52,6 +52,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
         >
           {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
             <SuggestedAction
+              ariaHidden={true}
               buttonText={suggestedActionText({ displayText, title, type, value })}
               displayText={displayText}
               image={image}

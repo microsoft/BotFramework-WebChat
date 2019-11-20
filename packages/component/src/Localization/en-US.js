@@ -39,11 +39,11 @@ function botSaidSomething(avatarInitials, text) {
 
 function downloadFileWithFileSize(downloadFileText, fileName, size) {
   // Full text should read: "Download file <filename> of size <filesize>"
-  return `${downloadFileText} ${fileName} of size ${size}`;
+  return `'${downloadFileText}' ${fileName} of size ${size}`;
 }
 
 function uploadFileWithFileSize(fileName, size) {
-  return `${fileName} of size ${size}`;
+  return `'${fileName}' of size ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {
@@ -84,10 +84,10 @@ export default {
   Sending: 'Sending',
   SendStatus: 'Send status: ',
   SentAt: 'Sent at: ',
+  Speak: 'Speak',
   SuggestedActionsContainer: 'Suggested Actions container: ',
   SuggestedActionsContent: 'has content',
   SuggestedActionsEmpty: 'is empty',
-  Speak: 'Speak',
   'Starting…': 'Starting…',
   Tax: 'Tax',
   Total: 'Total',

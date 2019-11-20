@@ -3,27 +3,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import * as browser from '../lib/Utils/detectBrowser';
-// let bgC;
-// if (browser.edgeUWP) {
-//   bgC = 'blue';
-// } else if (browser.chrome) {
-//   bgC = 'red';
-// } else if (browser.firefox) {
-//   bgC = 'orange';
-// } else if (browser.safari) {
-//   bgC = 'silver';
-// } else {
-//   bgC = 'pink';
-// }
 
 const ROOT_CSS = css({
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
-  // remove:
-  // fontFamily: 'sans-serif',
-  // backgroundColor: bgC,
-  // color: 'black',
-  // padding: '2px',
-  // original:
   color: 'transparent',
   height: 1,
   overflow: 'hidden',

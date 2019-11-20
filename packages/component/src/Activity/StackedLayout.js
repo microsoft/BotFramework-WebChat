@@ -21,7 +21,7 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import { calculateAbsoluteTime } from '../Utils/AbsoluteTime';
+import { CalculateAbsoluteTime } from '../Utils/AbsoluteTime';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -119,7 +119,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const botAriaLabel = useLocalize('Bot said something', initials, plainText);
   const userAriaLabel = useLocalize('User said something', initials, plainText);
 
-  const sentAtTimestamp = calculateAbsoluteTime(timestamp);
+  const sentAtTimestamp = useLocalize('SentAt') + CalculateAbsoluteTime(timestamp);
 
   const someoneSaidString = (fromUser ? userAriaLabel : botAriaLabel).trim();
 
@@ -169,7 +169,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (
-            <Timestamp aria-hidden={true} activity={activity} className={classNames('timestamp', timestampClassName)} />
+            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
           )}
           <div className="filler" />
         </div>

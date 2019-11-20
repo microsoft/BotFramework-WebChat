@@ -79,7 +79,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [slowConnectionText, warningNotificationStyleSet]
+    [connectivityStatusLabelText, slowConnectionText, warningNotificationStyleSet]
   );
 
   const renderNotConnected = useCallback(
@@ -92,7 +92,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [errorNotificationStyleSet, failedConnectionText]
+    [connectivityStatusLabelText, errorNotificationStyleSet, failedConnectionText]
   );
 
   const renderUninitialized = useCallback(
@@ -105,7 +105,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [connectivityNotificationStyleSet, initialConnectionText]
+    [connectivityStatusLabelText, connectivityNotificationStyleSet, initialConnectionText]
   );
 
   const renderReconnecting = useCallback(
@@ -118,7 +118,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [connectivityNotificationStyleSet, interruptedConnectionText]
+    [connectivityStatusLabelText, connectivityNotificationStyleSet, interruptedConnectionText]
   );
 
   const renderSagaError = useCallback(
@@ -131,12 +131,12 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [errorNotificationStyleSet, renderErrorNotificationText]
+    [connectivityStatusLabelText, errorNotificationStyleSet, renderErrorNotificationText]
   );
 
   const renderEmptyStatus = useCallback(
     () => <ScreenReaderText text={connectivityStatusLabelText + connectedNotificationText} />,
-    [connectedNotificationText]
+    [connectedNotificationText, connectivityStatusLabelText]
   );
 
   const renderStatus = useCallback(() => {

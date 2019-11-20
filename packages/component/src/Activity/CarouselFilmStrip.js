@@ -1,3 +1,4 @@
+/* eslint-disable no-sync */
 /* eslint react/no-array-index-key: "off" */
 
 import { css } from 'glamor';
