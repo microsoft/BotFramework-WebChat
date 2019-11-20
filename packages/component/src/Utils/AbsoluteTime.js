@@ -13,7 +13,7 @@ const CalculateAbsoluteTime = value => {
 };
 
 const AbsoluteTime = ({ value }) => {
-  const absTime = CalculateAbsoluteTime(value);
+  const absTime = useLocalizeDate(value);
   const sentAtAbsTime = useLocalize('SentAt') + absTime;
 
   return (
