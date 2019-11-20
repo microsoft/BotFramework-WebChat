@@ -1,45 +1,52 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
+import useLastTypingAt from '../hooks/useLastTypingAt';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
-const TypingIndicator = ({ lastTypingAt }) => {
-  const [{ typingAnimationDuration }] = useStyleOptions();
-  const [{ typingIndicator }] = useStyleSet();
-  const animationAriaLabel = useLocalize('TypingIndicator');
+function useTypingIndicatorVisible() {
+  const [lastTypingAt] = useLastTypingAt();
 
-  const [showTyping, setShowTyping] = useState(false);
+  const [{ typingAnimationDuration }] = useStyleOptions();
+
+  const last = Math.max(Object.values(lastTypingAt));
+  const typingAnimationTimeRemaining = last ? Math.max(0, typingAnimationDuration - Date.now() + last) : 0;
+
+  const [value, setValue] = useState(typingAnimationTimeRemaining > 0);
 
   useEffect(() => {
     let timeout;
-    const last = Math.max(Object.values(lastTypingAt));
-    const typingAnimationTimeRemaining = typingAnimationDuration - Date.now() + last;
 
-    if (last && typingAnimationTimeRemaining > 0) {
-      setShowTyping(true);
-      timeout = setTimeout(() => setShowTyping(false), typingAnimationTimeRemaining);
+    if (typingAnimationTimeRemaining > 0) {
+      setValue(true);
+      timeout = setTimeout(() => setValue(false), typingAnimationTimeRemaining);
     } else {
-      setShowTyping(false);
+      setValue(false);
     }
 
     return () => clearTimeout(timeout);
-  }, [lastTypingAt, typingAnimationDuration]);
+  }, [typingAnimationTimeRemaining]);
+
+  return [value];
+}
+
+const TypingIndicator = () => {
+  const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
+  const [showTyping] = useTypingIndicatorVisible();
+
+  const animationAriaLabel = useLocalize('TypingIndicator');
 
   return (
     showTyping && (
-      <div className={typingIndicator}>
+      <div className={typingIndicatorStyleSet}>
         <TypingAnimation aria-label={animationAriaLabel} />
       </div>
     )
   );
 };
 
-TypingIndicator.propTypes = {
-  lastTypingAt: PropTypes.any.isRequired
-};
+export default TypingIndicator;
 
-export default connectToWebChat(({ lastTypingAt }) => ({ lastTypingAt }))(TypingIndicator);
+export { useTypingIndicatorVisible };
