@@ -105,7 +105,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [connectivityStatusLabelText, connectivityNotificationStyleSet, initialConnectionText]
+    [connectivityNotificationStyleSet, connectivityStatusLabelText, initialConnectionText]
   );
 
   const renderReconnecting = useCallback(
@@ -118,7 +118,7 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
         </div>
       </React.Fragment>
     ),
-    [connectivityStatusLabelText, connectivityNotificationStyleSet, interruptedConnectionText]
+    [connectivityNotificationStyleSet, connectivityStatusLabelText, interruptedConnectionText]
   );
 
   const renderSagaError = useCallback(

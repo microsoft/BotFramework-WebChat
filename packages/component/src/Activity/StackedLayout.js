@@ -21,7 +21,7 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import { CalculateAbsoluteTime } from '../Utils/AbsoluteTime';
+import useLocalizeDate from '../hooks/useLocalizeDate';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
