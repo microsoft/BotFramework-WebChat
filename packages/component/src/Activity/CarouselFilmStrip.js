@@ -1,4 +1,3 @@
-/* eslint-disable no-sync */
 /* eslint react/no-array-index-key: "off" */
 
 import { css } from 'glamor';
@@ -6,8 +5,7 @@ import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import remark from 'remark';
-import stripMarkdown from 'strip-markdown';
+import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import { Constants } from 'botframework-webchat-core';
 
@@ -117,9 +115,7 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
-  const strippedActivityDisplayText = remark()
-    .use(stripMarkdown)
-    .processSync(activityDisplayText);
+  const strippedActivityDisplayText = remarkStripMarkdown(activityDisplayText);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
   const roleLabel = fromUser ? userRoleLabel : botRoleLabel;

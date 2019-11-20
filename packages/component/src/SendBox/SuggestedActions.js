@@ -8,9 +8,9 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
+import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import useLocalize from '../hooks/useLocalize';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {

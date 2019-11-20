@@ -66,7 +66,6 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
   const interruptedConnectionText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
   const renderErrorNotificationText = useLocalize('RENDER_ERROR_NOTIFICATION');
   const slowConnectionText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
-
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
 
   const renderConnectingSlow = useCallback(

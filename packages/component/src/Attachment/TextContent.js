@@ -1,4 +1,3 @@
-/* eslint-disable no-sync */
 /* eslint react/no-danger: "off" */
 /* eslint react/no-array-index-key: "off" */
 
@@ -7,8 +6,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import remark from 'remark';
-import stripMarkdown from 'strip-markdown';
+import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
@@ -17,9 +15,7 @@ import useStyleSet from '../hooks/useStyleSet';
 const TextContent = ({ contentType, text }) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const [{ textContent: textContentStyleSet }] = useStyleSet();
-  const strippedText = remark()
-    .use(stripMarkdown)
-    .processSync(text).contents;
+  const strippedText = remarkStripMarkdown(text).contents;
 
   return contentType === 'text/markdown' && renderMarkdownAsHTML ? (
     <React.Fragment>
@@ -33,13 +29,7 @@ const TextContent = ({ contentType, text }) => {
   ) : (
     (text || '').split('\n').map((line, index) => (
       <React.Fragment key={index}>
-        <ScreenReaderText
-          text={
-            remark()
-              .use(stripMarkdown)
-              .processSync(line.trim()).contents
-          }
-        />
+        <ScreenReaderText text={remarkStripMarkdown(line.trim()).contents} />
         <p aria-hidden={true} className={classNames('plain', textContentStyleSet + '')}>
           {line.trim()}
         </p>

@@ -6,14 +6,8 @@ import ScreenReaderText from '../ScreenReaderText';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
-const CalculateAbsoluteTime = value => {
-  const localizedTime = useLocalizeDate(value);
-
-  return localizedTime;
-};
-
 const AbsoluteTime = ({ value }) => {
-  const absTime = CalculateAbsoluteTime(value);
+  const absTime = useLocalizeDate(value);
   const sentAtAbsTime = useLocalize('SentAt') + absTime;
 
   return (
@@ -29,4 +23,3 @@ AbsoluteTime.propTypes = {
 };
 
 export default AbsoluteTime;
-export { CalculateAbsoluteTime };
