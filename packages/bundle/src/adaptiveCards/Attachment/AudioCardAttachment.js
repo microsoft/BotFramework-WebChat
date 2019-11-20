@@ -21,7 +21,8 @@ const AudioCardAttachment = ({
     <div className={audioCardAttachmentStyleSet}>
       <ul className="media-list">
         {media.map(({ url }, index) => (
-          <li key={index}>
+          // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
+          <li aria-label=" " key={index}>
             <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
           </li>
         ))}

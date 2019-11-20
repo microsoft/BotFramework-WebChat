@@ -30,7 +30,16 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image, text, type, value }) => {
+const SuggestedAction = ({
+  'aria-hidden': ariaHidden,
+  buttonText,
+  clearSuggestedActions,
+  displayText,
+  image,
+  text,
+  type,
+  value
+}) => {
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const performCardAction = usePerformCardAction();
@@ -44,7 +53,7 @@ const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image
   }, [clearSuggestedActions, displayText, performCardAction, text, type, value]);
 
   return (
-    <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
+    <div aria-hidden={ariaHidden} className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
       <button disabled={disabled} onClick={handleClick} type="button">
         {image && <img src={image} />}
         <nobr>{buttonText}</nobr>
@@ -54,6 +63,7 @@ const SuggestedAction = ({ buttonText, clearSuggestedActions, displayText, image
 };
 
 SuggestedAction.defaultProps = {
+  'aria-hidden': false,
   displayText: '',
   image: '',
   text: '',
@@ -62,6 +72,7 @@ SuggestedAction.defaultProps = {
 };
 
 SuggestedAction.propTypes = {
+  'aria-hidden': PropTypes.bool,
   buttonText: PropTypes.string.isRequired,
   clearSuggestedActions: PropTypes.func.isRequired,
   displayText: PropTypes.string,

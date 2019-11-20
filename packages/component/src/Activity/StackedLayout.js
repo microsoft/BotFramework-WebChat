@@ -1,13 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
-/* eslint-disable no-sync */
 
 import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import remark from 'remark';
-import stripMarkdown from 'strip-markdown';
+import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import Avatar from './Avatar';
 import Bubble from './Bubble';
@@ -19,6 +17,7 @@ import Timestamp from './Timestamp';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
+import useLocalizeDate from '../hooks/useLocalizeDate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -97,16 +96,15 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
     from: { role } = {},
     text,
-    textFormat
+    textFormat,
+    timestamp
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
   const initials = fromUser ? userInitials : botInitials;
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const plainText = remark()
-    .use(stripMarkdown)
-    .processSync(text);
+  const plainText = remarkStripMarkdown(text);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
   const botRoleLabel = useLocalize('BotSent');
@@ -116,8 +114,11 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
 
   const botAriaLabel = useLocalize('Bot said something', initials, plainText);
   const userAriaLabel = useLocalize('User said something', initials, plainText);
+  const sentAtTimestamp = useLocalize('SentAt') + useLocalizeDate(timestamp);
 
-  const ariaLabel = fromUser ? userAriaLabel : botAriaLabel;
+  const someoneSaidString = (fromUser ? userAriaLabel : botAriaLabel).trim();
+
+  const ariaLabel = someoneSaidString + (someoneSaidString.endsWith('.') ? '' : '.') + ' ' + sentAtTimestamp;
 
   return (
     <div
@@ -146,8 +147,8 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
             <div className="filler" />
           </div>
         )}
-        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
         {attachments.map((attachment, index) => (
+          // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
           <div
             aria-label=" "
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
@@ -163,7 +164,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (
-            <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
+            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
           )}
           <div className="filler" />
         </div>
