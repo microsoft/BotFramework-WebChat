@@ -81,7 +81,7 @@ export default {
   'Microphone off': 'الميكروفون مغلق',
   'Microphone on': 'الميكروفون قيد التشغيل',
   Left: 'يسار',
-  'Listening…': 'يستمع ...',
+  'Listening…': 'يستمع…',
   'New messages': 'رسائل جديدة',
   Retry: 'إعادة المحاولة',
   Right: 'يمين',
