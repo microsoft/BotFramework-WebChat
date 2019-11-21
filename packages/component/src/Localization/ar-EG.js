@@ -91,7 +91,7 @@ export default {
   SendStatus: 'ارسل الحالة: ',
   SentAt: 'أرسل: ',
   Speak: 'تكلم',
-  'Starting…': 'يبدأ...',
+  'Starting…': 'يبدأ…',
   Tax: 'ضريبة',
   Total: 'المجموع',
   'Type your message': 'اكتب رسالتك',
