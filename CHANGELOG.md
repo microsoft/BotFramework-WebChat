@@ -42,12 +42,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
    -  PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543): `useAdaptiveCardsHostConfig`, `useAdaptiveCardsPackage`, `useRenderMarkdownAsHTML`
--  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
    -  PR [#2544](https://github.com/microsoft/BotFramework-WebChat/pull/2544): `useAvatarForBot`, `useAvatarForUser`
    -  PR [#2547](https://github.com/microsoft/BotFramework-WebChat/pull/2547): `useEmitTypingIndicator`, `usePeformCardAction`, `usePostActivity`, `useSendEvent`, `useSendFiles`, `useSendMessage`, `useSendMessageBack`, `useSendPostBack`
    -  PR [#2548](https://github.com/microsoft/BotFramework-WebChat/pull/2548): `useDisabled`
+   -  PR [#2549](https://github.com/microsoft/BotFramework-WebChat/pull/2549): `useSuggestedActions`
    -  PR [#2551](https://github.com/microsoft/BotFramework-WebChat/pull/2551): `useLastTypingAt`, `useSendTypingIndicator`, `useTypingIndicator`
    -  PR [#2552](https://github.com/microsoft/BotFramework-WebChat/pull/2552): `useFocusSendBox`, `useScrollToEnd`, `useSendBoxValue`, `useSubmitSendBox`, `useTextBoxSubmit`, `useTextBoxValue`
+-  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  `component`: Fixes [#2331](https://github.com/microsoft/BotFramework-WebChat/issues/2331). Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
 
