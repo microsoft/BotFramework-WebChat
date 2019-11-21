@@ -47,9 +47,9 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
   return `تحميل ملف ${fileName} بحجم ${size}`;
 }
 
-function uploadFileWithFileSize(fileName, size) {
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
   // return `${fileName} of size ${size}`;
-  return `${fileName} بحجم ${size}`;
+  return `${uploadFileText} ${fileName} بحجم ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {

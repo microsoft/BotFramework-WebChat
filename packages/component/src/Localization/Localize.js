@@ -2,6 +2,7 @@
 /* eslint complexity: "off" */
 
 import getLocaleString from './getLocaleString';
+import useLocalize from '../hooks/useLocalize';
 
 import arEG from './ar-EG';
 import bgBG from './bg-BG';
