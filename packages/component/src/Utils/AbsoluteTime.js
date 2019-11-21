@@ -7,13 +7,13 @@ import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
 const AbsoluteTime = ({ value }) => {
-  const localizedTime = useLocalizeDate(value);
-  const text = useLocalize('SentAt') + localizedTime;
+  const absTime = useLocalizeDate(value);
+  const sentAtAbsTime = useLocalize('SentAt') + absTime;
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={text} />
-      <span aria-hidden={true}>{localizedTime}</span>
+      <ScreenReaderText text={sentAtAbsTime} />
+      <span aria-hidden={true}>{absTime}</span>
     </React.Fragment>
   );
 };

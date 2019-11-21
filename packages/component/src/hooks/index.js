@@ -5,6 +5,7 @@ import useDisabled from './useDisabled';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocusSendBox from './useFocusSendBox';
 import useLanguage from './useLanguage';
+import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize';
 import useLocalizeDate from './useLocalizeDate';
 import usePerformCardAction from './usePerformCardAction';
@@ -18,12 +19,14 @@ import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
+import useSendTypingIndicator from './useSendTypingIndicator';
 import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 
 import { useSendBoxDictationStarted } from '../BasicSendBox';
 import { useTextBoxSubmit } from '../SendBox/TextBox';
+import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
 
 export {
   useActivities,
@@ -33,6 +36,7 @@ export {
   useEmitTypingIndicator,
   useFocusSendBox,
   useLanguage,
+  useLastTypingAt,
   useLocalize,
   useLocalizeDate,
   usePerformCardAction,
@@ -47,8 +51,10 @@ export {
   useSendMessage,
   useSendMessageBack,
   useSendPostBack,
+  useSendTypingIndicator,
   useStyleOptions,
   useStyleSet,
   useSubmitSendBox,
-  useTextBoxSubmit
+  useTextBoxSubmit,
+  useTypingIndicatorVisible
 };
