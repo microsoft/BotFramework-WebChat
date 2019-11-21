@@ -157,6 +157,5 @@ function localize(text, language, ...args) {
 }
 
 export default ({ args, text }) => useLocalize(text, ...(args || []));
-  localize(text, language, ...(args || []))
 
 export { getLocaleString, localize };
