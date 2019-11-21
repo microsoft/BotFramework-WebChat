@@ -61,7 +61,7 @@ export default {
   CONNECTED_NOTIFICATION: 'متصل',
   FAILED_CONNECTION_NOTIFICATION: 'غير قادر على الاتصال.',
   INITIAL_CONNECTION_NOTIFICATION: 'يتم التوصيل…',
-  INTERRUPTED_CONNECTION_NOTIFICATION: 'حدث انقطاع في الشبكة. إعادة التوصيل ...',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'حدث انقطاع في الشبكة. إعادة التوصيل…',
   RENDER_ERROR_NOTIFICATION: 'خطأ في التقديم. يرجى التحقق من وحدة التحكم أو الاتصال بمطور البوت.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: `{Retry}. فشل في الإرسال.`,
