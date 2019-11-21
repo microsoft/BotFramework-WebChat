@@ -2,6 +2,8 @@
   "cleanUrls": false,
   "redirects": [
     { "source": "/", "destination": "samples/index.html" },
+    { "source": "/directlinespeech.development.js", "destination": "packages/directlinespeech/dist/directlinespeech.development.js" },
+    { "source": "/directlinespeech.production.min.js", "destination": "packages/directlinespeech/dist/directlinespeech.production.min.js" },
     { "source": "/webchat.js", "destination": "packages/bundle/dist/webchat.js" },
     { "source": "/webchat-es5.js", "destination": "packages/bundle/dist/webchat-es5.js" },
     { "source": "/webchat-minimal.js", "destination": "packages/bundle/dist/webchat-minimal.js" }

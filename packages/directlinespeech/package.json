@@ -1,0 +1,59 @@
+{
+  "name": "botframework-directlinespeech-sdk",
+  "version": "0.0.0-0",
+  "description": "Direct Line Speech SDK",
+  "files": [
+    "dist/**/*",
+    "lib/**/*"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel --ignore **/*.spec.js,**/*.test.js --out-dir lib src",
+    "build:webpack": "webpack --config webpack-development.config.js",
+    "eslint": "eslint src/**/*.js --ignore-pattern *.spec.js --ignore-pattern *.test.js --ignore-pattern __tests__",
+    "prepublishOnly": "npm run eslint && npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
+    "prepublishOnly:babel": "npm run build:babel",
+    "prepublishOnly:webpack": "webpack",
+    "start": "concurrently --kill-others --names \"babel,serve,webpack\" \"npm run start:babel\" \"npm run start:serve\" \"npm run start:webpack\"",
+    "start:babel": "npm run build:babel -- --watch",
+    "start:serve": "serve",
+    "start:webpack": "npm run build:webpack -- --watch",
+    "test": "jest",
+    "watch": "npm start"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "concurrently": "^4.1.2",
+    "core-js": "^3.2.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "global-agent": "^2.1.2",
+    "jest": "^24.9.0",
+    "node-fetch": "^2.6.0",
+    "prettier": "^1.18.2",
+    "serve": "^11.1.0",
+    "simple-update-in": "^2.1.1",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-stats-plugin": "^0.3.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.2",
+    "abort-controller": "^3.0.0",
+    "base64-arraybuffer": "^0.2.0",
+    "event-as-promise": "^1.0.5",
+    "microsoft-cognitiveservices-speech-sdk": "file:external/microsoft-cognitiveservices-speech-sdk-1.6.0-alpha.0.1.tgz",
+    "p-defer": "^3.0.0",
+    "web-speech-cognitive-services": "^5.0.2-master.e85a10c"
+  }
+}

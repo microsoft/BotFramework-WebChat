@@ -35,6 +35,7 @@
     "@babel/runtime": "^7.6.3",
     "adaptivecards": "1.2.3",
     "botframework-directlinejs": "^0.11.6",
+    "botframework-directlinespeech-sdk": "^0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "core-js": "^3.3.6",

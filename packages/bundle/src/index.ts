@@ -10,6 +10,7 @@ import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdapt
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
 import createStyleSet from './createFullStyleSet';
+import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import defaultCreateDirectLine from './createDirectLine';
 import FullComposer from './FullComposer';
 import ReactWebChat from './FullReactWebChat';
@@ -57,6 +58,7 @@ window['WebChat'] = {
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
+  createDirectLineSpeechAdapters,
   createStyleSet,
   hooks: patchedHooks,
   ReactWebChat,

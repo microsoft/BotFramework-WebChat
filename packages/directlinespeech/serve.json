@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "public/index.html"
+    },
+    {
+      "source": "directlinespeech.development.js",
+      "destination": "dist/directlinespeech.development.js"
+    },
+    {
+      "source": "directlinespeech.production.min.js",
+      "destination": "dist/directlinespeech.production.min.js"
+    }
+  ]
+}
