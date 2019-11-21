@@ -15,6 +15,7 @@ import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
 import { ConnectionStatus } from 'botframework-directlinejs';
 
+declare const fbq: Function;
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
@@ -48,6 +49,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private botConnection: IBotConnection;
 
     private activitySubscription: Subscription;
+    private fbPixelEventsSubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -251,6 +253,10 @@ export class Chat extends React.Component<ChatProps, {}> {
             sendPostBack(botConnection, "start over", {}, this.props.user, this.props.locale)
         })
         
+        this.fbPixelEventsSubscription = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "facebook-pixel-track-event")
+            .subscribe((activity: any) => trackFacebookPixelEvent(activity.value))
+
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
         if (!this.props.directLine || !this.props.directLine.conversationId) {
@@ -302,6 +308,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     componentWillUnmount() {
+        this.fbPixelEventsSubscription.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
@@ -504,4 +511,9 @@ function getReferrerUserData() {
 
 function getLocaleUserData(locale?: string) {
     return locale ? {locale: locale.replace(/-.*/,'')} : {}
+}
+
+function trackFacebookPixelEvent(eventName: string) {
+    console.log('Tracking FB Pixel custom event ' + eventName)
+    typeof fbq === 'function' && fbq('trackCustom', eventName);
 }
