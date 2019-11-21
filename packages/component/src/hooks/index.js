@@ -64,7 +64,7 @@ export {
   useSubmitSendBox,
   useTextBoxSubmit,
   useTimeoutForSend,
-  useTypingIndicatorVisible
+  useTypingIndicatorVisible,
   useUserID,
   useUsername
 };
