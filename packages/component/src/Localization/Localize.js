@@ -156,7 +156,7 @@ function localize(text, language, ...args) {
   return string || text;
 }
 
-export default connectToWebChat(({ language }) => ({ language }))(({ args, language, text }) =>
+export default ({ args, text }) => useLocalize(text, ...(args || []));
   localize(text, language, ...(args || []))
 );
 
