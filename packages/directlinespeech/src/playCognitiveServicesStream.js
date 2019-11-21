@@ -1,4 +1,9 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [8, 16, 32, 128, 1000, 32768, 2147483648] }] */
+/* eslint no-await-in-loop: "off" */
+/* eslint prefer-destructuring: "off" */
+
 import cognitiveServicesPromiseToESPromise from './cognitiveServicesPromiseToESPromise';
+import createDeferred from 'p-defer';
 
 function createBufferSource(audioContext, { channels, samplesPerSec }, channelInterleavedAudioData) {
   const bufferSource = audioContext.createBufferSource();
@@ -41,60 +46,57 @@ function formatAudioDataArrayBufferToFloatArray({ bitsPerSample }, arrayBuffer) 
       return formatTypedBitArrayToFloatArray(new Int32Array(arrayBuffer), 2147483648);
 
     default:
-      throw new InvalidOperationError('Only WAVE_FORMAT_PCM (8/16/32 bps) format supported at this time');
+      throw new Error('Only WAVE_FORMAT_PCM (8/16/32 bps) format supported at this time');
   }
 }
 
-export default function playCognitiveServicesStream(
+export default async function playCognitiveServicesStream(
   audioContext,
   audioFormat,
   streamReader,
   { signal = { aborted: false } } = {}
 ) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let currentTime;
-      let lastBufferSource;
+  let lastBufferSource;
 
-      const read = () => cognitiveServicesPromiseToESPromise(streamReader.read());
+  const read = () => cognitiveServicesPromiseToESPromise(streamReader.read());
 
-      if (signal.aborted) {
-        throw new Error('aborted');
-      }
+  if (signal.aborted) {
+    throw new Error('aborted');
+  }
 
-      for (
-        let chunk = await read(), maxChunks = 0;
-        !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
-        chunk = await read(), maxChunks++
-      ) {
-        if (signal.aborted) {
-          break;
-        }
-
-        const audioData = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
-        const bufferSource = createBufferSource(audioContext, audioFormat, audioData);
-        const { duration } = bufferSource.buffer;
-
-        if (!currentTime) {
-          currentTime = audioContext.currentTime;
-        }
-
-        bufferSource.connect(audioContext.destination);
-        bufferSource.start(currentTime);
-
-        lastBufferSource = bufferSource;
-        currentTime += duration;
-      }
-
-      if (signal.aborted) {
-        throw new Error('aborted');
-      } else if (lastBufferSource) {
-        lastBufferSource.onended = () => resolve();
-      } else {
-        resolve();
-      }
-    } catch (error) {
-      reject(error);
+  for (
+    let chunk = await read(), currentTime, maxChunks = 0;
+    !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
+    chunk = await read(), maxChunks++
+  ) {
+    if (signal.aborted) {
+      break;
     }
-  });
+
+    const audioData = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
+    const bufferSource = createBufferSource(audioContext, audioFormat, audioData);
+    const { duration } = bufferSource.buffer;
+
+    if (!currentTime) {
+      currentTime = audioContext.currentTime;
+    }
+
+    bufferSource.connect(audioContext.destination);
+    bufferSource.start(currentTime);
+
+    lastBufferSource = bufferSource;
+    currentTime += duration;
+  }
+
+  if (signal.aborted) {
+    throw new Error('aborted');
+  }
+
+  if (lastBufferSource) {
+    const { promise, resolve } = createDeferred();
+
+    lastBufferSource.onended = resolve;
+
+    await promise;
+  }
 }

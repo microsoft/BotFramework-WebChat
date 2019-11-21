@@ -1,3 +1,5 @@
+/* global process */
+
 import createAdapters from './createAdapters';
 
 export { createAdapters };

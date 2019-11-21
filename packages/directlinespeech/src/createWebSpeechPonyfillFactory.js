@@ -1,3 +1,5 @@
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["cancel", "getVoices", "speak"] }] */
+
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services/lib/SpeechServices/SpeechToText';
 import AbortController from 'abort-controller';

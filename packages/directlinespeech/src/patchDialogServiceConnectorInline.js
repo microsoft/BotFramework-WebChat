@@ -28,8 +28,8 @@ export default function patchDialogServiceConnectorInline(dialogServiceConnector
 
           return result;
         }),
-        patchFunction(reject, null, result => {
-          lastRecognitionDeferred.reject(result);
+        patchFunction(reject, null, error => {
+          lastRecognitionDeferred.reject(error);
 
           return error;
         }),
@@ -41,7 +41,9 @@ export default function patchDialogServiceConnectorInline(dialogServiceConnector
   // TODO: startContinuousRecognitionAsync is not working yet, use listenOnceAsync instead.
   dialogServiceConnector.startContinuousRecognitionAsync = (resolve, reject) => {
     dialogServiceConnector.listenOnceAsync(
-      () => {},
+      () => {
+        // We will resolve the Promise in a setTimeout.
+      },
       err => {
         resolve = null;
         reject && reject(err);

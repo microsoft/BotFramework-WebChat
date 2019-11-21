@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 36] }] */
+
 import Observable from 'core-js/features/observable';
 
 import shareObservable from './shareObservable';
@@ -23,7 +25,7 @@ export default class DirectLineSpeech {
         connectionStatusObserver.next(1);
         connectionStatusObserver.next(2);
 
-        return () => {};
+        // return () => {};
       })
     );
 
@@ -31,7 +33,7 @@ export default class DirectLineSpeech {
       new Observable(observer => {
         connectionStatusObserver = observer;
 
-        return () => {};
+        // return () => {};
       })
     );
 

@@ -1,3 +1,5 @@
+/* global Observable */
+
 export default function shareObservable(observable) {
   let observers = [];
   let subscription;

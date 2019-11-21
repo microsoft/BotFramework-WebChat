@@ -10,8 +10,8 @@ export default function createTaskQueue() {
     push: fn => {
       const cancelDeferred = createDeferred();
       const resultDeferred = createDeferred();
+      const entry = { promise: resultDeferred.promise };
       let abort;
-      let entry = { promise: resultDeferred.promise };
 
       const cancel = (entry.cancel = () => {
         // Override the "fn" so we don't call the actual "fn" later.
@@ -42,7 +42,10 @@ export default function createTaskQueue() {
       const currentPromise = (lastEntry && lastEntry.promise) || Promise.resolve();
 
       queueWithCurrent.push(entry);
-      currentPromise.catch(() => {}).then(start);
+
+      // Regardless the current task succeeded or not, we will process the next task.
+      // The current task failed will not block the next task.
+      currentPromise.then(start, start);
 
       return {
         cancel,
