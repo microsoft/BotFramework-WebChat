@@ -1,7 +1,6 @@
 // Localize is designed to be elaboratively return multiple results and possibly exceeding complexity requirement
 /* eslint complexity: "off" */
 
-import connectToWebChat from '../connectToWebChat';
 import getLocaleString from './getLocaleString';
 
 import arEG from './ar-EG';
