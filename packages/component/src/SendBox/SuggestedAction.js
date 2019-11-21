@@ -31,24 +31,11 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({
-  'aria-hidden': ariaHidden,
-  buttonText,
-  displayText,
-  image,
-  text,
-  type,
-  value
-}) => {
+const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const performCardAction = usePerformCardAction();
-
-  const handleClick = useCallback(() => {
-    performCardAction({ displayText, text, type, value });
-    type === 'openUrl' && setSuggestedActions([]);
-  }, [displayText, performCardAction, setSuggestedActions, text, type, value]);
 
   const handleClick = useCallback(() => {
     performCardAction({ displayText, text, type, value });
