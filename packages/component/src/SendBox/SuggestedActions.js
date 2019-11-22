@@ -79,17 +79,15 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   return (
     <div aria-label=" " aria-live="polite" role="status">
       <ScreenReaderText text={suggestedActionsContainerText} />
-      {!!suggestedActions.length && (
-        <BasicFilm
-          autoCenter={false}
-          className={classNames(suggestedActionsStyleSet + '', className + '')}
-          flipperBlurFocusOnClick={true}
-          showDots={false}
-          styleSet={suggestedActionsStyleSetForReactFilm}
-        >
-          {children}
-        </BasicFilm>
-      )}
+      <BasicFilm
+        autoCenter={false}
+        className={classNames(suggestedActionsStyleSet + '', className + '')}
+        flipperBlurFocusOnClick={true}
+        showDots={false}
+        styleSet={suggestedActionsStyleSetForReactFilm}
+      >
+        {children}
+      </BasicFilm>
     </div>
   );
 };
