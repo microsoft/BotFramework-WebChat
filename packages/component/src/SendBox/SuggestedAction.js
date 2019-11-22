@@ -5,8 +5,10 @@ import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
+import useFocusSendBox from '../hooks/useFocusSendBox';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
+import useSuggestedActions from '../hooks/useSuggestedActions';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'flex',
@@ -32,27 +34,18 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({
-  'aria-hidden': ariaHidden,
-  buttonText,
-  clearSuggestedActions,
-  displayText,
-  image,
-  text,
-  type,
-  value
-}) => {
+const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
+  const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
+  const focusSendBox = useFocusSendBox();
   const performCardAction = usePerformCardAction();
 
   const handleClick = useCallback(() => {
     performCardAction({ displayText, text, type, value });
-    type === 'openUrl' && clearSuggestedActions();
-
-    // TODO: Use the following line when setSuggestedActions hook is merged
-    // type === 'openUrl' && setSuggestedActions([]);
-  }, [clearSuggestedActions, displayText, performCardAction, text, type, value]);
+    type === 'openUrl' && setSuggestedActions([]);
+    focusSendBox();
+  }, [displayText, focusSendBox, performCardAction, setSuggestedActions, text, type, value]);
 
   return (
     <div aria-hidden={ariaHidden} className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
@@ -76,7 +69,6 @@ SuggestedAction.defaultProps = {
 SuggestedAction.propTypes = {
   'aria-hidden': PropTypes.bool,
   buttonText: PropTypes.string.isRequired,
-  clearSuggestedActions: PropTypes.func.isRequired,
   displayText: PropTypes.string,
   image: PropTypes.string,
   text: PropTypes.string,
@@ -84,6 +76,6 @@ SuggestedAction.propTypes = {
   value: PropTypes.any
 };
 
-export default connectSuggestedAction(({ clearSuggestedActions }) => ({ clearSuggestedActions }))(SuggestedAction);
+export default SuggestedAction;
 
 export { connectSuggestedAction };
