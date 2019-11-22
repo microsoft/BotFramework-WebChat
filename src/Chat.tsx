@@ -33,6 +33,8 @@ export interface ChatProps {
     sendTyping?: boolean;
     showUploadButton?: boolean;
     formatOptions?: FormatOptions;
+    themeColor?: string;
+    logoUrl?: string;
     resize?: 'none' | 'window' | 'detect';
 }
 
@@ -310,6 +312,28 @@ export class Chat extends React.Component<ChatProps, State> {
                         });
 
                         const { bot_display_options } = res.data;
+
+                        if (bot_display_options && bot_display_options.display_title) {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Chat_Title',
+                                chatTitle: bot_display_options.display_title
+                            });
+                        }
+
+                        if (bot_display_options && bot_display_options.color) {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Theme_Color',
+                                themeColor: bot_display_options.color
+                            });
+                        }
+
+                        if (bot_display_options && bot_display_options.logo_url) {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Logo_Img',
+                                logoUrl: bot_display_options.logo_url
+                            });
+                        }
+
                         if (!isMobile && bot_display_options && bot_display_options.open_on_load) {
                             this.toggle();
                         }
@@ -454,11 +478,14 @@ export class Chat extends React.Component<ChatProps, State> {
                                 <div className="wc-header">
                                     <img
                                         className="wc-header--logo"
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot-header-default-v1.1.2.png"
+                                        src={state.format.logoUrl ?
+                                            state.format.logoUrl :
+                                            'https://s3.amazonaws.com/com.gideon.static.dev/chatbot-header-default-v1.1.2.png'
+                                        }
                                       />
                                       <div className="wc-header--attourney-logo-container"/>
 
-                                  <span>Gideon</span>
+                                  <span>{typeof state.format.chatTitle === 'string' ? state.format.chatTitle : 'Gideon' }</span>
 
                                     <img
                                         className="wc-header--close"

@@ -1,4 +1,5 @@
 import { User } from 'botframework-directlinejs';
+import * as color from 'color';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { classList } from './Chat';
@@ -14,9 +15,8 @@ interface Props {
     listeningState: ListeningState;
     showUploadButton: boolean;
     inputDisabled: boolean;
-
+    themeColor: string;
     onChangeText: (inputText: string) => void;
-
     sendMessage: (inputText: string) => void;
     sendFiles: (files: FileList) => void;
     stopListening: () => void;
@@ -99,6 +99,13 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         // Override
         const showUploadButton = false;
 
+        let wcBorderStyles;
+        if (this.props.themeColor) {
+            wcBorderStyles = {
+                backgroundImage: `linear-gradient(90deg, ${this.props.themeColor}, ${color(this.props.themeColor).lighten(0.5)})`
+            };
+        }
+
         const className = classList(
             'wc-console',
             this.props.inputDisabled && 'wc-console__disabled',
@@ -123,7 +130,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         const placeholder = this.props.listeningState === ListeningState.STARTED ? this.props.strings.listeningIndicator : this.props.placeholder;
 
         return (
-            <div className={ className }>
+            <div className={ className } >
+                <div className="wc-border" style={wcBorderStyles} />
                 {
                     showUploadButton &&
                         <label
@@ -215,7 +223,8 @@ export const Shell = connect(
         // only used to create helper functions below
         locale: state.format.locale,
         user: state.connection.user,
-        listeningState: state.shell.listeningState
+        listeningState: state.shell.listeningState,
+        themeColor: state.format.themeColor
     }), {
         // passed down to ShellContainer
         onChangeText: (input: string) => ({ type: 'Update_Input', input, source: 'text' } as ChatActions),
@@ -232,6 +241,7 @@ export const Shell = connect(
         inputDisabled: stateProps.inputDisabled,
         strings: stateProps.strings,
         listeningState: stateProps.listeningState,
+        themeColor: stateProps.themeColor,
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions

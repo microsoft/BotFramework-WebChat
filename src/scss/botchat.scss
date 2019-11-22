@@ -813,8 +813,7 @@
         transition: background-color .4s;
 
 
-        &::before {
-          content: '';
+        .wc-border {
           display: block;
           height: 2px;
           width: 100%;
