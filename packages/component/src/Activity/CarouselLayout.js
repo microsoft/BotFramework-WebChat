@@ -33,6 +33,7 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
               <React.Fragment>
                 <Flipper
                   aria-label={leftLabel}
+                  blurFocusOnClick
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
                   mode="left"
                 >
@@ -40,6 +41,7 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
                 </Flipper>
                 <Flipper
                   aria-label={rightLabel}
+                  blurFocusOnClick
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
                   mode="right"
                 >
