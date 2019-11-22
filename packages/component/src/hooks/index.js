@@ -25,6 +25,7 @@ import useSendTypingIndicator from './useSendTypingIndicator';
 import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
+import useSuggestedActions from './useSuggestedActions';
 import useTimeoutForSend from './useTimeoutForSend';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
@@ -62,6 +63,7 @@ export {
   useStyleOptions,
   useStyleSet,
   useSubmitSendBox,
+  useSuggestedActions,
   useTextBoxSubmit,
   useTimeoutForSend,
   useTypingIndicatorVisible,
