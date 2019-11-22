@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). Adds check to ensure Adaptive Card's content is an Object, by [@tdurnford](https://github.com/tdurnford) in PR [#2590](https://github.com/microsoft/BotFramework-WebChat/pull/2590)
 -  Fixes [#1780](https://github.com/microsoft/BotFramework-WebChat/issues/1780), [#2277](https://github.com/microsoft/BotFramework-WebChat/issues/2277), and [#2285](https://github.com/microsoft/BotFramework-WebChat/issues/2285). Make Suggested Actions accessible, Fix Markdown card in carousel being read multiple times, and label widgets of Connectivity Status and Suggested Actions containers, by [@corinagum](https://github.com/corinagum) in PR [#2613](https://github.com/microsoft/BotFramework-WebChat/pull/2613)
 -  Fixes [#2608](https://github.com/microsoft/BotFramework-WebChat/issues/2608). Focus will return to sendbox after clicking New Messages or a Suggested Actions button, by [@corinagum](https://github.com/corinagum) in PR [#2628](https://github.com/microsoft/BotFramework-WebChat/pull/2628)
+-  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
 
 ### Added
 
@@ -132,6 +133,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `bundle`: Webpack will now use `webpack-stats-plugin` instead of `webpack-visualizer-plugin`, by [@compulim](https://github.com/compulim) in PR [#2584](https://github.com/microsoft/BotFramework-WebChat/pull/2584)
    -  This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
    -  To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
+-  `component`: Bumps [`react-film@1.3.1-master.3877c72`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
 
 ### Samples
 
