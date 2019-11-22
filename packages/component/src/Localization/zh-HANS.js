@@ -50,6 +50,7 @@ function userSaidSomething(avatarInitials, text) {
 }
 
 export default {
+  CONNECTED_NOTIFICATION: '已接驳',
   FAILED_CONNECTION_NOTIFICATION: '接驳失败。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   INITIAL_CONNECTION_NOTIFICATION: '接驳中…',
@@ -62,6 +63,7 @@ export default {
   'X minutes ago': xMinutesAgo,
   'Adaptive Card parse error': 'Adaptive Card 解析失败',
   'Adaptive Card render error': 'Adaptive Card render 失败',
+  BotSent: '机械人已发送：',
   Chat: '聊天',
   'Download file': '下载文件',
   'Microphone off': '关掉麦克风',
@@ -72,12 +74,20 @@ export default {
   Retry: '重试',
   Right: '右',
   Send: '发送',
+  SendBox: '对话框',
   Sending: '正在发送',
+  SendStatus: '发送状态: ',
   Speak: '发言',
+  SuggestedActionsContainer: '建议按钮: ',
+  SuggestedActionsContent: '有内容',
+  SuggestedActionsEmpty: '空白',
   'Starting…': '开始中…',
+  TypingIndicator: 'Showing typing indicator',
   Tax: '税',
   Total: '共计',
-  'Type your message': '输入你的消息',
+  'Type your message': '请输入您的讯息',
   'Upload file': '上传文件',
+  UploadFileWithFileSize: uploadFileWithFileSize,
+  UserSent: '用户已发送: ',
   VAT: '消费税'
 };
