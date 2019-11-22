@@ -92,7 +92,7 @@ export default function({
 
         // Catching the error to prevent uncaught promise error due to cancellation.
         result.catch(error => {
-          if (!/^cancelled/i.test(error.message)) {
+          if (!/^cancelled/iu.test(error.message)) {
             throw error;
           }
         });
