@@ -1,4 +1,5 @@
 /* eslint no-empty-pattern: "off" */
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 export default function createSuggestedActionsStyle({ paddingRegular, suggestedActionLayout }) {
   if (suggestedActionLayout === 'stacked') {

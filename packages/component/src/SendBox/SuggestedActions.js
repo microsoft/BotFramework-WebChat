@@ -67,11 +67,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
 
   if (suggestedActionLayout === 'stacked') {
     return (
-      <div
-        aria-label=" "
-        aria-live="polite"
-        role="status"
-      >
+      <div aria-label=" " aria-live="polite" role="status">
         <ScreenReaderText text={suggestedActionsContainerText} />
         <div className={classNames(suggestedActionsStyleSet + '', SUGGESTED_ACTION_STACKED_CSS + '', className + '')}>
           {children}
