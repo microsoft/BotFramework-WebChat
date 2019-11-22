@@ -11,11 +11,13 @@ import useStyleSet from '../hooks/useStyleSet';
 import useSuggestedActions from '../hooks/useSuggestedActions';
 
 const SUGGESTED_ACTION_CSS = css({
-  display: 'inline-block',
+  display: 'flex',
+  flexDirection: 'column',
   whiteSpace: 'initial',
 
   '& > button': {
-    display: 'flex'
+    display: 'flex',
+    overflow: 'hidden'
   }
 });
 
