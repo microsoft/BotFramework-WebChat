@@ -3,7 +3,7 @@
 import Observable from 'core-js/features/observable';
 
 import shareObservable from './shareObservable';
-import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
+import { fromAudioStream as createUtteranceFromAudioStream } from './SpeechSynthesisAudioStreamUtterance';
 
 function randomActivityId() {
   return Math.random()
@@ -39,7 +39,8 @@ export default class DirectLineSpeech {
 
     dialogServiceConnector.activityReceived = (_, { activity, audioStream }) => {
       // console.groupCollapsed('dialogServiceConnector.activityReceived');
-      // console.log(activity, audioStream);
+      // console.log('activity', activity);
+      // console.log('audioStream', audioStream);
       // console.groupEnd();
 
       try {
@@ -48,7 +49,7 @@ export default class DirectLineSpeech {
             ...activity,
             channelData: {
               ...activity.channelData,
-              ...(audioStream ? { speechSynthesisUtterance: new SpeechSynthesisAudioStreamUtterance(audioStream) } : {})
+              ...(audioStream ? { speechSynthesisUtterance: createUtteranceFromAudioStream(audioStream) } : {})
             },
             from: {
               ...activity.from,
