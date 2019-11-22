@@ -39,13 +39,13 @@ export default function createTaskQueue() {
       };
 
       const lastEntry = queueWithCurrent[queueWithCurrent.length - 1];
-      const currentPromise = (lastEntry && lastEntry.promise) || Promise.resolve();
+      const lastPromise = (lastEntry && lastEntry.promise) || Promise.resolve();
 
       queueWithCurrent.push(entry);
 
-      // Regardless the current task succeeded or not, we will process the next task.
-      // The current task failed will not block the next task.
-      currentPromise.then(start, start);
+      // After the last promise resolved/rejected, we will start this task.
+      // We will start even if the last promise rejected.
+      lastPromise.then(start, start);
 
       return {
         cancel,

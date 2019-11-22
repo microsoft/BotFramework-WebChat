@@ -1,9 +1,9 @@
+import hasResolved from 'has-resolved';
+
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 
-let audioContext;
-
-beforeEach(() => {
-  audioContext = {
+function createMockAudioContext(autoEndCount = Infinity) {
+  const audioContext = {
     connectedNodes: [],
     createBuffer(channels, frames, samplesPerSec) {
       const channelData = new Array(channels).fill(new Array(frames));
@@ -27,11 +27,15 @@ beforeEach(() => {
         start(time) {
           bufferSource.startAtTime = time;
 
-          setTimeout(() => {
-            bufferSource.onended && bufferSource.onended();
-          }, 0);
+          autoEndCount-- > 0 &&
+            setTimeout(() => {
+              bufferSource.onended && bufferSource.onended();
+            }, 0);
         },
-        startAtTime: NaN
+        startAtTime: NaN,
+        stop() {
+          bufferSource.stopped = true;
+        }
       };
 
       return bufferSource;
@@ -43,7 +47,9 @@ beforeEach(() => {
       }
     }
   };
-});
+
+  return audioContext;
+}
 
 function createStreamReader(chunks) {
   return {
@@ -71,6 +77,7 @@ function createStreamReader(chunks) {
 }
 
 test('should play 16-bit chunked stream to AudioContext', async () => {
+  const audioContext = createMockAudioContext();
   const chunks = [new Uint8Array([0, 0]).buffer, new Uint8Array([0, 128]).buffer];
 
   await playCognitiveServicesStream(
@@ -109,4 +116,52 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
       },
     ]
   `);
+});
+
+test('should stop when abort is called after all buffer queued', async () => {
+  const audioContext = createMockAudioContext(1);
+  const chunks = [new Uint8Array([0, 0]).buffer, new Uint8Array([0, 128]).buffer];
+  const abortController = new AbortController();
+
+  const promise = playCognitiveServicesStream(
+    audioContext,
+    {
+      bitsPerSample: 16,
+      channels: 1,
+      samplesPerSec: 16000
+    },
+    createStreamReader(chunks),
+    { signal: abortController.signal }
+  );
+
+  abortController.abort();
+
+  await expect(promise).rejects.toThrow('abort');
+
+  expect(audioContext.connectedNodes.every(bufferSource => bufferSource.stopped)).toBeTruthy();
+});
+
+test('should stop when abort is called before first buffer is queued', async () => {
+  const audioContext = createMockAudioContext();
+  const abortController = new AbortController();
+  const read = jest.fn(() => ({
+    on() {}
+  }));
+
+  const playPromise = playCognitiveServicesStream(
+    audioContext,
+    {
+      bitsPerSample: 16,
+      channels: 1,
+      samplesPerSec: 16000
+    },
+    { read },
+    { signal: abortController.signal }
+  );
+
+  await expect(hasResolved(playPromise)).resolves.toBeFalsy();
+
+  abortController.abort();
+
+  await expect(playPromise).rejects.toThrow('aborted');
 });

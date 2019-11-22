@@ -50,53 +50,73 @@ function formatAudioDataArrayBufferToFloatArray({ bitsPerSample }, arrayBuffer) 
   }
 }
 
+function abortToReject(signal) {
+  return new Promise((_, reject) => {
+    signal.onabort = () => reject(new Error('aborted'));
+  });
+}
+
 export default async function playCognitiveServicesStream(
   audioContext,
   audioFormat,
   streamReader,
-  { signal = { aborted: false } } = {}
+  { signal = {} } = {}
 ) {
-  let lastBufferSource;
+  const queuedBufferSourceNodes = [];
 
-  const read = () => cognitiveServicesPromiseToESPromise(streamReader.read());
+  try {
+    const abortPromise = abortToReject(signal);
+    let lastBufferSource;
 
-  if (signal.aborted) {
-    throw new Error('aborted');
-  }
+    const read = () =>
+      Promise.race([
+        // Abort will gracefully end the queue, we will check signal.aborted later to throw abort exception.
+        abortPromise.catch(() => ({ isEnd: true })),
+        cognitiveServicesPromiseToESPromise(streamReader.read())
+      ]);
 
-  for (
-    let chunk = await read(), currentTime, maxChunks = 0;
-    !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
-    chunk = await read(), maxChunks++
-  ) {
     if (signal.aborted) {
-      break;
+      throw new Error('aborted');
     }
 
-    const audioData = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
-    const bufferSource = createBufferSource(audioContext, audioFormat, audioData);
-    const { duration } = bufferSource.buffer;
+    for (
+      let chunk = await read(), currentTime, maxChunks = 0;
+      !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
+      chunk = await read(), maxChunks++
+    ) {
+      if (signal.aborted) {
+        break;
+      }
 
-    if (!currentTime) {
-      currentTime = audioContext.currentTime;
+      const audioData = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
+      const bufferSource = createBufferSource(audioContext, audioFormat, audioData);
+      const { duration } = bufferSource.buffer;
+
+      if (!currentTime) {
+        currentTime = audioContext.currentTime;
+      }
+
+      bufferSource.connect(audioContext.destination);
+      bufferSource.start(currentTime);
+
+      queuedBufferSourceNodes.push(bufferSource);
+
+      lastBufferSource = bufferSource;
+      currentTime += duration;
     }
 
-    bufferSource.connect(audioContext.destination);
-    bufferSource.start(currentTime);
+    if (signal.aborted) {
+      throw new Error('aborted');
+    }
 
-    lastBufferSource = bufferSource;
-    currentTime += duration;
-  }
+    if (lastBufferSource) {
+      const { promise, resolve } = createDeferred();
 
-  if (signal.aborted) {
-    throw new Error('aborted');
-  }
+      lastBufferSource.onended = resolve;
 
-  if (lastBufferSource) {
-    const { promise, resolve } = createDeferred();
-
-    lastBufferSource.onended = resolve;
-
-    await promise;
+      await Promise.race([abortPromise, promise]);
+    }
+  } finally {
+    queuedBufferSourceNodes.forEach(node => node.stop());
   }
 }

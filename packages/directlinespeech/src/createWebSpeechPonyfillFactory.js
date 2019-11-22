@@ -61,11 +61,12 @@ export default function({
       }
 
       speak(utterance) {
-        push(() => {
-          const { abort, signal } = new AbortController();
+        const { result } = push(() => {
+          const controller = new AbortController();
+          const { signal } = controller;
 
           return {
-            abort,
+            abort: controller.abort.bind(controller),
             result: (async () => {
               utterance.dispatchEvent(new Event('start'));
 
@@ -78,12 +79,22 @@ export default function({
                   await playWhiteNoise(audioContext);
                 }
               } catch (error) {
-                utterance.dispatchEvent(createErrorEvent(error));
+                // Either dispatch "end" or "error" event, but not both
+                if (error.message !== 'aborted') {
+                  return utterance.dispatchEvent(createErrorEvent(error));
+                }
               }
 
               utterance.dispatchEvent(new Event('end'));
             })()
           };
+        });
+
+        // Catching the error to prevent uncaught promise error due to cancellation.
+        result.catch(error => {
+          if (!/^cancelled/i.test(error.message)) {
+            throw error;
+          }
         });
       }
     }
