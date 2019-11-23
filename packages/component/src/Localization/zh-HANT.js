@@ -45,6 +45,14 @@ function botSaidSomething(avatarInitials, text) {
   return `Bot ${avatarInitials} 說：${text}`;
 }
 
+function downloadFileWithFileSize(downloadFileText, fileName, size) {
+  return `${downloadFileText} '${fileName}' 檔案大小 ${size}`;
+}
+
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
+  return `${uploadFileText} '${fileName}' 檔案大小 ${size}`;
+}
+
 function userSaidSomething(avatarInitials, text) {
   return `使用者 ${avatarInitials} 說：${text}`;
 }
