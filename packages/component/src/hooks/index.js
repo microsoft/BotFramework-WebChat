@@ -23,6 +23,7 @@ import useSendTypingIndicator from './useSendTypingIndicator';
 import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
+import useSuggestedActions from './useSuggestedActions';
 
 import { useSendBoxDictationStarted } from '../BasicSendBox';
 import { useTextBoxSubmit } from '../SendBox/TextBox';
@@ -55,6 +56,7 @@ export {
   useStyleOptions,
   useStyleSet,
   useSubmitSendBox,
+  useSuggestedActions,
   useTextBoxSubmit,
   useTypingIndicatorVisible
 };
