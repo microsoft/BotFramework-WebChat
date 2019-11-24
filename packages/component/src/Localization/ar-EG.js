@@ -37,23 +37,19 @@ function xMinutesAgo(dateStr) {
 }
 
 function botSaidSomething(avatarInitials, text) {
-  // return `Bot ${avatarInitials} said, ${text}`;
   return `البوت ${avatarInitials} قال, ${text}`;
 }
 
 function downloadFileWithFileSize(downloadFileText, fileName, size) {
   // Full text should read: "Download file <filename> of size <filesize>"
-  // return `${downloadFileText} ${fileName} of size ${size}`;
-  return `تحميل ملف ${fileName} بحجم ${size}`;
+  return `تحميل ملف ${downloadFileText} ${fileName} بحجم ${size}`;
 }
 
 function uploadFileWithFileSize(uploadFileText, fileName, size) {
-  // return `${fileName} of size ${size}`;
   return `${uploadFileText} ${fileName} بحجم ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {
-  // return `User ${avatarInitials} said, ${text}`;
   return `المستخدم ${avatarInitials} قال, ${text}`;
 }
 
