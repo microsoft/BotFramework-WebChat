@@ -15,6 +15,7 @@ import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
+import useSendBoxValue from '../hooks/useSendBoxValue';
 import useStartDictate from '../hooks/useStartDictate';
 import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';

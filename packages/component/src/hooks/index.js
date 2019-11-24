@@ -17,7 +17,6 @@ import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
-import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
@@ -31,8 +30,6 @@ import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
 import useStopDictate from './useStopDictate';
 import useStyleOptions from './useStyleOptions';
-import useStyleOptions from './useStyleOptions';
-import useStyleSet from './useStyleSet';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
@@ -83,8 +80,6 @@ export {
   useStartDictate,
   useStopDictate,
   useStyleOptions,
-  useStyleOptions,
-  useStyleSet,
   useStyleSet,
   useSubmitSendBox,
   useSuggestedActions,
@@ -92,7 +87,7 @@ export {
   useTimeoutForSend,
   useTypingIndicatorVisible,
   useUserID,
-  useUsername
+  useUsername,
   useVoiceSelector,
   useWebSpeechPonyfill
 };

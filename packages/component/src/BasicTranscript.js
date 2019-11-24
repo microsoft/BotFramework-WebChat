@@ -143,5 +143,5 @@ BasicTranscript.propTypes = {
 
 export default connectToWebChat(({ activityRenderer, attachmentRenderer }) => ({
   activityRenderer,
-  attachmentRenderer,
+  attachmentRenderer
 }))(BasicTranscript);
