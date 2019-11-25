@@ -9,8 +9,10 @@ import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -59,12 +61,12 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, groupTimestamp, webSpeechPonyfill }) => {
-  const [activities] = useActivities();
+const BasicTranscript = ({ activityRenderer, attachmentRenderer, className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
-
-  const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
+  const [activities] = useActivities();
+  const [groupTimestamp] = useGroupTimestamp();
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
@@ -130,25 +132,16 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, grou
 };
 
 BasicTranscript.defaultProps = {
-  className: '',
-  groupTimestamp: true,
-  webSpeechPonyfill: undefined
+  className: ''
 };
 
 BasicTranscript.propTypes = {
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
-  webSpeechPonyfill: PropTypes.shape({
-    speechSynthesis: PropTypes.any,
-    SpeechSynthesisUtterance: PropTypes.any
-  })
+  className: PropTypes.string
 };
 
-export default connectToWebChat(({ activityRenderer, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+export default connectToWebChat(({ activityRenderer, attachmentRenderer }) => ({
   activityRenderer,
-  attachmentRenderer,
-  groupTimestamp,
-  webSpeechPonyfill
+  attachmentRenderer
 }))(BasicTranscript);
