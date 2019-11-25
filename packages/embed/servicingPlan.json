@@ -74,6 +74,7 @@
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.5.0/webchat-es5.js", "sha384-/M4oPG+VlpZL01utq9MY14kpKhyNE15YbwpAT1S0xZ3xSZ/3Oxb/4JiwIFtMIY/V"]
       ],
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-10-31.",
       "private": true,
       "versionFamily": "4"
     },
@@ -81,12 +82,26 @@
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.5.1/webchat-es5.js", "sha384-JOzj0JSwWru2fPTe/o3PBeiTRzCyiieUknHSfuhqZdPt7VpYQVePXJ592CYnqZ35"]
       ],
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-10-31.",
       "private": true,
       "versionFamily": "4"
     },
     "4.5.2": {
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.5.2/webchat-es5.js", "sha384-RuI30YtVKhqBwl6O6R0Fvc2Wyi9AymHK1VHrf9WAYCjJoFLX79s+nrOMMQRdxtbM"]
+      ],
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-10-31.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.6": {
+      "redirects": [
+        ["*", "4.6.0"]
+      ]
+    },
+    "4.6.0": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.6.0/webchat-es5.js", "sha384-ma13AI3QeruijNQ/ustpc3WpM3I2Ik6B+vzlq7KDiMujPuH7Fn9uKgW5W4zl8wpx"]
       ],
       "private": true,
       "versionFamily": "4"
