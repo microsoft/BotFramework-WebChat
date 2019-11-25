@@ -9,6 +9,8 @@ import { Constants } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
+import useDictateInterims from '../hooks/useDictateInterims';
+import useDictateState from '../hooks/useDictateState';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -30,7 +32,9 @@ const connectDictationInterims = (...selectors) =>
     ...selectors
   );
 
-const DictationInterims = ({ className, dictateInterims = [], dictateState }) => {
+const DictationInterims = ({ className }) => {
+  const [dictateInterims] = useDictateInterims();
+  const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
 
   return dictateState === STARTING || dictateState === STOPPING ? (
@@ -61,14 +65,12 @@ DictationInterims.defaultProps = {
 };
 
 DictationInterims.propTypes = {
-  className: PropTypes.string,
-  dictateInterims: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dictateState: PropTypes.number.isRequired
+  className: PropTypes.string
 };
 
 // TODO: [P3] After speech started, when clicking on the transcript, it should
 //       stop the dictation and allow the user to type-correct the transcript
 
-export default connectDictationInterims()(DictationInterims);
+export default DictationInterims;
 
 export { connectDictationInterims };
