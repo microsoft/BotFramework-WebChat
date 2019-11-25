@@ -28,6 +28,8 @@ To use the embed page, you will need the site secret from your Azure Bot Service
 
 **For production use, we strongly prefer you to use token instead of secret.** Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token out of secret.
 
+With a token (instead of a secret), your `<iframe>` will look like the following:
+
 ```html
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?t=your-site-token"></iframe>
 ```
@@ -70,7 +72,7 @@ There are two public surfaces we need to test:
 -  Embed page, i.e. https://webchat.botframework.com/embed/your-bot-id
 -  Azure Portal "Test in Web Chat" blade
 
-#### Testing the embed page
+<!-- #### Testing the embed page
 
 In order to test your local build, you can use Fiddler to modify the traffic to serve the Gemini page locally.
 
@@ -106,7 +108,7 @@ if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id?fea
 }
 ```
 
-This code snippet will intercept requests to the original embed page and forward it to the new Gemini embed page.
+This code snippet will intercept requests to the original embed page and forward it to the new Gemini embed page. -->
 
 ## FAQs
 
@@ -128,11 +130,11 @@ Web Chat: Selecting version "default" -> "4" -> "4.3" -> "4.3.0".
 
 In the above code, the version specifier is not specified. Web Chat is using the "default" version, which forwards to major version 4, then minor version 4.3, then patch version 4.3.0. You can select version by appending the URL query parameter `v` with the version number. For example, if you prefer 4.3, you should append `&v=4.3` to the URL.
 
-### Why I am not seeing Web Chat v4 on my page?
+<!-- ### Why I am not seeing Web Chat v4 on my page?
 
 Look at the console log on your web page by pressing <kbd>F12</kbd> to see view the version of Web Chat.
 
-If you don't see the above line, this probably means that the new Gemini page has not completely rolled out. If your bot is using Gemini, the URL will be https://webchat.botframework.com/embed/your-bot-id/gemini. If your bot is not in, it will not have `/gemini` appended.
+If you don't see the above line, this probably means that the new Gemini page has not completely rolled out. If your bot is using Gemini, the URL will be https://webchat.botframework.com/embed/your-bot-id/gemini. If your bot is not in, it will not have `/gemini` appended. -->
 
 ### I want to go back to previous versions of Web Chat
 
