@@ -26,7 +26,7 @@ test('should not focus send box after clicking on send button', async () => {
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
-test('should not focus send box after clicking on suggested actions', async () => {
+test('SHOULD focus send box after clicking on suggested actions', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
@@ -36,7 +36,7 @@ test('should not focus send box after clicking on suggested actions', async () =
 
   await pageObjects.clickSuggestedActionButton(0);
 
-  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeTruthy();
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
