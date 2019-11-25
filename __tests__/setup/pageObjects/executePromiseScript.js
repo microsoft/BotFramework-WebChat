@@ -3,6 +3,7 @@
 // This function will use executeAsyncScript to run a Promise function in an async fashion.
 
 export default async function executePromiseScript(driver, fn, ...args) {
+  // The executeAsyncScript will turn "undefined" into "null".
   const { error, result } = await driver.executeAsyncScript(
     (fn, args, callback) => {
       eval(`(${fn})`)

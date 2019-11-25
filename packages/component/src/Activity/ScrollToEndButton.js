@@ -2,18 +2,25 @@ import { StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bott
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import Localize from '../Localization/Localize';
+import useFocusSendBox from '../hooks/useFocusSendBox';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ScrollToEndButton = ({ className }) => {
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
+  const focusSendBox = useFocusSendBox();
   const scrollToEnd = useScrollToEnd();
 
+  const handleClick = useCallback(() => {
+    scrollToEnd();
+    focusSendBox();
+  }, [focusSendBox, scrollToEnd]);
+
   return (
-    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={scrollToEnd} type="button">
+    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={handleClick} type="button">
       <Localize text="New messages" />
     </button>
   );
