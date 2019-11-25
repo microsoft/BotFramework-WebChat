@@ -46,11 +46,20 @@ function botSaidSomething(avatarInitials, text) {
   return `Bot ${avatarInitials} 話：${text}`;
 }
 
+function downloadFileWithFileSize(downloadFileText, fileName, size) {
+  return `${downloadFileText} '${fileName}' 檔案大小 ${size}`;
+}
+
+function uploadFileWithFileSize(uploadFileText, fileName, size) {
+  return `${uploadFileText} '${fileName}' 檔案大小 ${size}`;
+}
+
 function userSaidSomething(avatarInitials, text) {
   return `用家 ${avatarInitials} 話：${text}`;
 }
 
 export default {
+  CONNECTED_NOTIFICATION: '接駁到',
   FAILED_CONNECTION_NOTIFICATION: '接駁唔倒。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   INITIAL_CONNECTION_NOTIFICATION: '接駁緊…',
@@ -63,8 +72,12 @@ export default {
   'X minutes ago': xMinutesAgo,
   'Adaptive Card parse error': 'Adaptive Card 解析出事',
   'Adaptive Card render error': 'Adaptive Card render 出事',
+  BotSent: '機械人傳送咗：',
   Chat: '傾偈',
   'Download file': '下載檔案',
+  ConnectivityStatus: '接駁情況：',
+  DownloadFileWithFileSize: downloadFileWithFileSize,
+  ErrorMessage: '錯嘅信息',
   'Microphone off': '閂咪',
   'Microphone on': '開咪',
   Left: '左',
@@ -72,7 +85,13 @@ export default {
   'New messages': '新訊息',
   Retry: '再嚟一次',
   Right: '右',
+  SendBox: '對話框',
   Sending: '而家傳送緊',
+  SendStatus: '傳送情況：',
+  SentAt: '送出嘅時間：',
+  SuggestedActionsContainer: '建議㩒嘅掣：',
+  SuggestedActionsContent: '有内容',
+  SuggestedActionsEmpty: '無内容',
   'Starting…': '開始緊…',
   Tax: '稅',
   Total: '總共',
@@ -80,5 +99,8 @@ export default {
   Send: '傳送',
   Speak: '講嘢',
   'Upload file': '上載檔案',
-  'Type your message': '請打你嘅訊息'
+  'Type your message': '輸入你嘅訊息',
+  TypingIndicator: '對方打緊字',
+  UploadFileWithFileSize: uploadFileWithFileSize,
+  UserSent: '用戶傳送咗：'
 };
