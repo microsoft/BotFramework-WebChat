@@ -15,29 +15,8 @@ export default function({
   audioConfig = AudioConfig.fromDefaultMicrophoneInput(),
   enableTelemetry,
   recognizer,
-  speechRecognitionEndpointId,
-  speechSynthesisDeploymentId,
-  speechSynthesisOutputFormat,
   textNormalization
 }) {
-  if (speechRecognitionEndpointId) {
-    console.warn(
-      'botframework-directlinespeech: Custom Speech is currently not supported, ignoring speechRecognitionEndpointId.'
-    );
-  }
-
-  if (speechSynthesisDeploymentId) {
-    console.warn(
-      'botframework-directlinespeech: Custom Voice is currently not supported, ignoring speechSynthesisDeploymentId.'
-    );
-  }
-
-  if (speechSynthesisOutputFormat) {
-    console.warn(
-      'botframework-directlinespeech: Custom Voice is currently not supported, ignoring speechSynthesisOutputFormat.'
-    );
-  }
-
   return () => {
     const { SpeechGrammarList, SpeechRecognition } = createSpeechRecognitionPonyfillFromRecognizer({
       audioConfig,
