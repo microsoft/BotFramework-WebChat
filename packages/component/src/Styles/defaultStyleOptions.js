@@ -98,11 +98,9 @@ const DEFAULT_OPTIONS = {
   suggestedActionBackground: 'White',
   suggestedActionBorder: undefined, // split into 3, null
   suggestedActionBorderColor: undefined, // defaults to accent
+  suggestedActionBorderRadius: 0,
   suggestedActionBorderStyle: 'solid',
   suggestedActionBorderWidth: 2,
-  suggestedActionBorderRadius: 0,
-  suggestedActionImageHeight: 20,
-  suggestedActionTextColor: null,
   suggestedActionDisabledBackground: undefined, // defaults to suggestedActionBackground
   suggestedActionDisabledBorder: null,
   suggestedActionDisabledBorderColor: '#E6E6E6',
@@ -110,6 +108,9 @@ const DEFAULT_OPTIONS = {
   suggestedActionDisabledBorderWidth: 2,
   suggestedActionDisabledTextColor: undefined, // defaults to subtle
   suggestedActionHeight: 40,
+  suggestedActionImageHeight: 20,
+  suggestedActionLayout: 'carousel', // either "carousel" or "stacked"
+  suggestedActionTextColor: null,
 
   // Timestamp
   timestampColor: undefined, // defaults to subtle
