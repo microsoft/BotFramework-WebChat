@@ -21,10 +21,10 @@ export default function createSuggestedActionStyle({
   subtle
 }) {
   return {
-    paddingBottom: paddingRegular,
+    paddingBottom: paddingRegular / 2,
     paddingLeft: paddingRegular / 2,
     paddingRight: paddingRegular / 2,
-    paddingTop: paddingRegular,
+    paddingTop: paddingRegular / 2,
 
     '& > button': {
       alignItems: 'center',
@@ -32,6 +32,7 @@ export default function createSuggestedActionStyle({
       fontFamily: primaryFont,
       fontSize: 'inherit',
       height: suggestedActionHeight,
+      justifyContent: 'center',
       paddingLeft: paddingWide,
       paddingRight: paddingWide,
 
@@ -54,6 +55,11 @@ export default function createSuggestedActionStyle({
       '& > img': {
         height: suggestedActionImageHeight,
         paddingRight: paddingRegular
+      },
+
+      '& > nobr': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
       }
     }
   };

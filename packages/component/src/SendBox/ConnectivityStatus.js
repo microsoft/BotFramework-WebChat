@@ -5,6 +5,7 @@ import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
+import useConnectivityStatus from '../hooks/useConnectivityStatus';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
@@ -51,7 +52,8 @@ DebouncedConnectivityStatus.propTypes = {
 const connectConnectivityStatus = (...selectors) =>
   connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
 
-const ConnectivityStatus = ({ connectivityStatus }) => {
+const ConnectivityStatus = () => {
+  const [connectivityStatus] = useConnectivityStatus();
   const [
     {
       connectivityNotification: connectivityNotificationStyleSet,
@@ -175,8 +177,6 @@ const ConnectivityStatus = ({ connectivityStatus }) => {
   );
 };
 
-ConnectivityStatus.propTypes = {
-  connectivityStatus: PropTypes.string.isRequired
-};
+export default ConnectivityStatus;
 
-export default connectConnectivityStatus()(ConnectivityStatus);
+export { connectConnectivityStatus };

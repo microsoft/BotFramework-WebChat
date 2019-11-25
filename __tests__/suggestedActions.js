@@ -28,6 +28,22 @@ describe('suggested-actions command', () => {
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
+  test('should show correctly formatted buttons when suggested actions are displayed as stacked', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: { styleOptions: { suggestedActionLayout: 'stacked' } }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+    await driver.wait(suggestedActionsShown(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), 2000);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
   test('should show response from bot and no text from user on imback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
@@ -162,6 +178,25 @@ describe('suggested-actions command', () => {
 
   test('should show suggested actions with larger images', async () => {
     const styleOptions = { suggestedActionHeight: 80, suggestedActionImageHeight: 60 };
+    const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
+
+    await driver.wait(suggestedActionsShown(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), 2000);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show suggested actions with larger images as stacked', async () => {
+    const styleOptions = {
+      suggestedActionHeight: 80,
+      suggestedActionImageHeight: 60,
+      suggestedActionLayout: 'stacked'
+    };
     const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
 
     await driver.wait(uiConnected(), timeouts.directLine);

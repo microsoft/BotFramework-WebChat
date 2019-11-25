@@ -6,31 +6,34 @@ import React, { useCallback, useMemo } from 'react';
 import connectToWebChat from './connectToWebChat';
 
 import useActivities from './hooks/useActivities';
+import useDictateInterims from './hooks/useDictateInterims';
+import useDictateState from './hooks/useDictateState';
 import useDisabled from './hooks/useDisabled';
 import useLanguage from './hooks/useLanguage';
 import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
+import useSetDictateState from './hooks/internal/useSetDictateState';
+import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
+import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const Dictation = ({
-  dictateState,
-  emitTypingIndicator,
-  onError,
-  setDictateInterims,
-  setDictateState,
-  startSpeakingActivity,
-  stopDictate,
-  webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
-}) => {
+const Dictation = ({ emitTypingIndicator, onError }) => {
+  const [, setDictateInterims] = useDictateInterims();
   const [, setSendBox] = useSendBoxValue();
+  const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
+  const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
+  const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
   const [language] = useLanguage();
   const [sendTypingIndicator] = useSendTypingIndicator();
+  const setDictateState = useSetDictateState();
+  const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
 
   const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
@@ -47,11 +50,19 @@ const Dictation = ({
         if (transcript) {
           setSendBox(transcript);
           submitSendBox('speech');
-          startSpeakingActivity();
+          setShouldSpeakIncomingActivity(true);
         }
       }
     },
-    [dictateState, setDictateInterims, setDictateState, stopDictate, setSendBox, submitSendBox, startSpeakingActivity]
+    [
+      dictateState,
+      setDictateInterims,
+      setDictateState,
+      stopDictate,
+      setSendBox,
+      submitSendBox,
+      setShouldSpeakIncomingActivity
+    ]
   );
 
   const handleDictating = useCallback(
@@ -88,42 +99,14 @@ const Dictation = ({
 };
 
 Dictation.defaultProps = {
-  onError: undefined,
-  webSpeechPonyfill: undefined
+  onError: undefined
 };
 
 Dictation.propTypes = {
-  dictateState: PropTypes.number.isRequired,
   emitTypingIndicator: PropTypes.func.isRequired,
-  onError: PropTypes.func,
-  setDictateInterims: PropTypes.func.isRequired,
-  setDictateState: PropTypes.func.isRequired,
-  startSpeakingActivity: PropTypes.func.isRequired,
-  stopDictate: PropTypes.func.isRequired,
-  webSpeechPonyfill: PropTypes.shape({
-    SpeechGrammarList: PropTypes.any.isRequired,
-    SpeechRecognition: PropTypes.any.isRequired
-  })
+  onError: PropTypes.func
 };
 
-export default connectToWebChat(
-  ({
-    dictateState,
-    emitTypingIndicator,
-    postActivity,
-    setDictateInterims,
-    setDictateState,
-    startSpeakingActivity,
-    stopDictate,
-    webSpeechPonyfill
-  }) => ({
-    dictateState,
-    emitTypingIndicator,
-    postActivity,
-    setDictateInterims,
-    setDictateState,
-    startSpeakingActivity,
-    stopDictate,
-    webSpeechPonyfill
-  })
-)(Dictation);
+export default connectToWebChat(({ emitTypingIndicator }) => ({
+  emitTypingIndicator
+}))(Dictation);
