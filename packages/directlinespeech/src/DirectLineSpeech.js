@@ -24,16 +24,12 @@ export default class DirectLineSpeech {
         connectionStatusObserver.next(0);
         connectionStatusObserver.next(1);
         connectionStatusObserver.next(2);
-
-        // return () => {};
       })
     );
 
     this.connectionStatus$ = shareObservable(
       new Observable(observer => {
         connectionStatusObserver = observer;
-
-        // return () => {};
       })
     );
 
@@ -75,12 +71,20 @@ export default class DirectLineSpeech {
     // console.log(activity);
     // console.groupEnd();
 
+    // Currently, Web Chat set user ID on all outgoing activities.
+    // As Direct Line Speech maintains its own user ID, Web Chat should not set the user ID.
+    // TODO: [P2] We should move user ID into options of DirectLineJS, instead of Web Chat.
+    activity = {
+      ...activity,
+      from: { role: 'user' }
+    };
+
     try {
       // TODO: [P1] Direct Line Speech server currently do not ack the outgoing activities with any activity ID or timestamp.
       const pseudoActivityId = randomActivityId();
       const isSpeech = !!(activity.channelData && activity.channelData.speech);
 
-      // Do not send the activity if it was from speech
+      // Do not send the activity if it was from speech.
       if (!isSpeech) {
         this.dialogServiceConnector.sendActivityAsync(activity);
       }
@@ -91,8 +95,6 @@ export default class DirectLineSpeech {
           id: pseudoActivityId,
           timestamp: new Date().toISOString()
         });
-
-      this._lastRecognizedEventTimestamp = null;
 
       return Observable.of(pseudoActivityId);
     } catch (err) {
