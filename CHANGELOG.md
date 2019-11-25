@@ -58,8 +58,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Adds `suggestedActionLayout` to `defaultStyleOptions`, by [@spyip](https://github.com/spyip), in PR [#2596](https://github.com/microsoft/BotFramework-WebChat/pull/2596)
 -  Resolves [#2331](https://github.com/microsoft/BotFramework-WebChat/issues/2331). Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
 
-### Fixed
-
 ### Changed
 
 -  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)

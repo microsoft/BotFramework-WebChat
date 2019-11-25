@@ -53,6 +53,8 @@ const BasicSendBox = ({ className }) => {
   const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [dictationStarted] = useSendBoxDictationStarted();
 
+  const supportSpeechRecognition = !!SpeechRecognition;
+
   return (
     <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
       <TypingIndicator />
@@ -65,7 +67,9 @@ const BasicSendBox = ({ className }) => {
         ) : (
           <TextBox className={TEXT_BOX_CSS + ''} />
         )}
-        <div>{SpeechRecognition ? <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} /> : <SendButton />}</div>
+        <div>
+          {supportSpeechRecognition ? <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} /> : <SendButton />}
+        </div>
       </div>
     </div>
   );

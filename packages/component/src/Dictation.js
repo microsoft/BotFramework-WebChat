@@ -50,7 +50,7 @@ const Dictation = ({ emitTypingIndicator, onError }) => {
         if (transcript) {
           setSendBox(transcript);
           submitSendBox('speech');
-          setShouldSpeakIncomingActivity();
+          setShouldSpeakIncomingActivity(true);
         }
       }
     },

@@ -20,15 +20,16 @@ test('getter should return dictate state', async () => {
 
   await pageObjects.clickMicrophoneButton();
 
-  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`1`);
+  // Dictate state "1" is for "automatic turning on microphone after current synthesis completed".
+  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`2`);
 
   await pageObjects.putSpeechRecognitionResult('recognizing', 'Hello');
 
-  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`2`);
+  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`3`);
 
   await pageObjects.clickMicrophoneButton();
 
-  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`3`);
+  expect((await pageObjects.runHook('useDictateState'))[0]).toMatchInlineSnapshot(`4`);
 });
 
 test('setter should throw exception', async () => {

@@ -1,4 +1,5 @@
 import { timeouts } from '../constants.json';
+import executePromiseScript from '../setup/pageObjects/executePromiseScript.js';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -20,9 +21,10 @@ test('getter should return webSpeechPonyfill from props', async () => {
 test('getter should return undefined if not set in props', async () => {
   const { pageObjects } = await setupWebDriver();
 
+  // Although useWebSpeechPonyfill return [undefined], runHook/executeAsyncScript turned it into [null].
   await expect(
     pageObjects.runHook('useWebSpeechPonyfill', [], webSpeechPonyfill => webSpeechPonyfill[0])
-  ).resolves.toBeUndefined();
+  ).resolves.toBeNull();
 });
 
 test('setter should throw exception', async () => {
