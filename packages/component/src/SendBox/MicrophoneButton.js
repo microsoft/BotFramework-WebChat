@@ -146,10 +146,10 @@ const MicrophoneButton = ({ className }) => {
   const click = useMicrophoneButtonClick();
   const [dictateState] = useDictateState();
 
+  const dictating = dictateState === DictateState.DICTATING;
+
   const iconButtonAltText = useLocalize('Speak');
   const screenReaderText = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
-
-  const dictating = dictateState === DictateState.DICTATING;
 
   return (
     <div
