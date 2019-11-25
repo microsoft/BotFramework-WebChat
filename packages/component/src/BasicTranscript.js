@@ -12,6 +12,7 @@ import useActivities from './hooks/useActivities';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -60,13 +61,12 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, webSpeechPonyfill }) => {
+const BasicTranscript = ({ activityRenderer, attachmentRenderer, className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
   const [groupTimestamp] = useGroupTimestamp();
-
-  const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
@@ -132,22 +132,16 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, webS
 };
 
 BasicTranscript.defaultProps = {
-  className: '',
-  webSpeechPonyfill: undefined
+  className: ''
 };
 
 BasicTranscript.propTypes = {
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  webSpeechPonyfill: PropTypes.shape({
-    speechSynthesis: PropTypes.any,
-    SpeechSynthesisUtterance: PropTypes.any
-  })
+  className: PropTypes.string
 };
 
-export default connectToWebChat(({ activityRenderer, attachmentRenderer, webSpeechPonyfill }) => ({
+export default connectToWebChat(({ activityRenderer, attachmentRenderer }) => ({
   activityRenderer,
-  attachmentRenderer,
-  webSpeechPonyfill
+  attachmentRenderer
 }))(BasicTranscript);

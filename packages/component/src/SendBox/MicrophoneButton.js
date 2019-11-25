@@ -6,14 +6,21 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useDictateInterims from '../hooks/useDictateInterims';
+import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
+import useSendBoxValue from '../hooks/useSendBoxValue';
+import useShouldSpeakIncomingActivity from '../hooks/useShouldSpeakIncomingActivity';
+import useStartDictate from '../hooks/useStartDictate';
+import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';
+import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 
 const { DictateState } = Constants;
 
@@ -78,9 +85,69 @@ const connectMicrophoneButton = (...selectors) => {
   );
 };
 
-const MicrophoneButton = ({ className, click, dictating }) => {
-  const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+const useMicrophoneButtonClick = () => {
+  const [, setSendBox] = useSendBoxValue();
+  const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
+  const [dictateInterims] = useDictateInterims();
+  const [dictateState] = useDictateState();
+  const startDictate = useStartDictate();
+  const stopDictate = useStopDictate();
+
+  const [primeSpeechSynthesis] = useState(() =>
+    memoize((speechSynthesis, SpeechSynthesisUtterance) => {
+      if (speechSynthesis && SpeechSynthesisUtterance) {
+        const utterance = new SpeechSynthesisUtterance('');
+
+        [utterance.voice] = speechSynthesis.getVoices();
+        speechSynthesis.speak(utterance);
+      }
+    })
+  );
+
+  // TODO: [P2] We should revisit this function later
+  //       The click() logic seems local to the component, but may not be generalized across all implementations.
+  return useCallback(() => {
+    if (dictateState === DictateState.WILL_START) {
+      setShouldSpeakIncomingActivity(false);
+    } else if (dictateState === DictateState.DICTATING) {
+      stopDictate();
+      setSendBox(dictateInterims.join(' '));
+    } else {
+      setShouldSpeakIncomingActivity(false);
+      startDictate();
+    }
+
+    primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
+  }, [
+    dictateInterims,
+    dictateState,
+    primeSpeechSynthesis,
+    setSendBox,
+    setShouldSpeakIncomingActivity,
+    speechSynthesis,
+    SpeechSynthesisUtterance,
+    startDictate,
+    stopDictate
+  ]);
+};
+
+// TODO: [P1] We temporarily not exporting this hook because it requires legacy HOC code
+function useMicrophoneButtonDisabled() {
+  const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
+
+  return [disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING];
+}
+
+const MicrophoneButton = ({ className }) => {
+  const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+  const [disabled] = useMicrophoneButtonDisabled();
+  const click = useMicrophoneButtonClick();
+  const [dictateState] = useDictateState();
+
+  const dictating = dictateState === DictateState.DICTATING;
+
   const iconButtonAltText = useLocalize('Speak');
   const screenReaderText = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
@@ -100,16 +167,13 @@ const MicrophoneButton = ({ className, click, dictating }) => {
 };
 
 MicrophoneButton.defaultProps = {
-  className: '',
-  dictating: false
+  className: ''
 };
 
 MicrophoneButton.propTypes = {
-  className: PropTypes.string,
-  click: PropTypes.func.isRequired,
-  dictating: PropTypes.bool
+  className: PropTypes.string
 };
 
-export default connectMicrophoneButton()(MicrophoneButton);
+export default MicrophoneButton;
 
-export { connectMicrophoneButton };
+export { connectMicrophoneButton, useMicrophoneButtonClick, useMicrophoneButtonDisabled };

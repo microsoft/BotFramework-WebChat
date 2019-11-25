@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Say from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
+import useMarkActivityAsSpoken from '../hooks/useMarkActivityAsSpoken';
 import useStyleOptions from '../hooks/useStyleOptions';
+import useVoiceSelector from '../hooks/useVoiceSelector';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
@@ -20,30 +22,38 @@ const connectSpeakActivity = (...selectors) =>
     ...selectors
   );
 
-const Speak = ({ activity, markAsSpoken, selectVoice }) => {
+const Speak = ({ activity }) => {
   const [{ showSpokenText }] = useStyleOptions();
+  const markActivityAsSpoken = useMarkActivityAsSpoken();
+  const selectVoice = useVoiceSelector(activity);
 
-  if (!activity) {
-    return false;
-  }
+  const markAsSpoken = useCallback(() => {
+    markActivityAsSpoken(activity);
+  }, [activity, markActivityAsSpoken]);
 
-  const { attachments = [], speak, text } = activity;
+  const singleLine = useMemo(() => {
+    const { attachments = [], speak, text } = activity;
 
-  const lines = [speak || text];
-
-  attachments.forEach(({ content: { speak } = {}, contentType }) => {
-    if (contentType === 'application/vnd.microsoft.card.adaptive') {
-      lines.push(speak);
-    }
-  });
-
-  const singleLine = lines.filter(line => line).join('\r\n');
+    return (
+      !!activity &&
+      [
+        speak || text,
+        ...attachments
+          .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
+          .map(({ content: { speak } = {} }) => speak)
+      ]
+        .filter(line => line)
+        .join('\r\n')
+    );
+  }, [activity]);
 
   return (
-    <React.Fragment>
-      <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
-      {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
-    </React.Fragment>
+    !!activity && (
+      <React.Fragment>
+        <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
+        {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
+      </React.Fragment>
+    )
   );
 };
 
@@ -59,11 +69,9 @@ Speak.propTypes = {
     ),
     speak: PropTypes.string,
     text: PropTypes.string
-  }).isRequired,
-  markAsSpoken: PropTypes.func.isRequired,
-  selectVoice: PropTypes.func.isRequired
+  }).isRequired
 };
 
-export default connectSpeakActivity()(Speak);
+export default Speak;
 
 export { connectSpeakActivity };
