@@ -105,7 +105,6 @@ Dictation.defaultProps = {
 };
 
 Dictation.propTypes = {
-  emitTypingIndicator: PropTypes.func.isRequired,
   onError: PropTypes.func
 };
 
