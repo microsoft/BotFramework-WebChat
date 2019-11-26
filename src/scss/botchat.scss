@@ -367,14 +367,14 @@
         width: $floatingHeight;
         height: $floatingHeight;
         margin: 0 auto;
-        background-color: white;
+        background-color: $gideon-logo-yellow;
         border-radius: 80px;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         z-index: 1000;
 
         $difference: 6px;
 
-        img {
+        svg {
             z-index: 1001;
             position: relative;
             top: -2px;
