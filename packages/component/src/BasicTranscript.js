@@ -3,13 +3,14 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
+import useRenderActivity from './hooks/useRenderActivity';
+import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
@@ -61,31 +62,57 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({ activityRenderer, attachmentRenderer, className }) => {
+const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
   const [groupTimestamp] = useGroupTimestamp();
-  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
+  const renderAttachment = useRenderAttachment();
+  const renderActivity = useRenderActivity(renderAttachment);
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
   // After we know which activities will show up, we can compute which activity will show timestamps.
   // If the activity does not render, it will not be spoken if text-to-speech is enabled.
-  const activityElements = activities.reduce((activityElements, activity) => {
-    const element = activityRenderer({
-      activity,
-      timestampClassName: 'transcript-timestamp'
-    })(({ attachment }) => attachmentRenderer({ activity, attachment }));
+  const activityElements = useMemo(
+    () =>
+      activities.reduce((activityElements, activity) => {
+        const element = renderActivity({
+          activity,
+          timestampClassName: 'transcript-timestamp'
+        });
 
-    element &&
-      activityElements.push({
-        activity,
-        element
-      });
+        element &&
+          activityElements.push({
+            activity,
+            element,
+            key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
 
-    return activityElements;
-  }, []);
+            // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+            shouldSpeak: activity.channelData && activity.channelData.speak
+          });
+
+        return activityElements;
+      }, []),
+    [activities, renderActivity]
+  );
+
+  const activityElements2 = useMemo(
+    () =>
+      activityElements.map((activityElement, index) => {
+        const { activity } = activityElement;
+        const nextActivityElement = activityElements[index + 1];
+        const { activity: nextActivity } = nextActivityElement || {};
+
+        return {
+          ...activityElement,
+          // Hide timestamp if same timestamp group with the next activity
+          timestampVisible: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
+        };
+      }),
+    [activityElements, groupTimestamp]
+  );
 
   return (
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
@@ -103,24 +130,20 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className }) =>
             className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
             role="list"
           >
-            {activityElements.map(({ activity, element }, index) => (
+            {activityElements2.map(({ activity, element, key, timestampVisible, shouldSpeak }) => (
               <li
                 // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
                 aria-label=" "
                 className={classNames(activityStyleSet + '', {
                   // Hide timestamp if same timestamp group with the next activity
-                  'hide-timestamp': sameTimestampGroup(
-                    activity,
-                    (activityElements[index + 1] || {}).activity,
-                    groupTimestamp
-                  )
+                  'hide-timestamp': !timestampVisible
                 })}
-                key={(activity.channelData && activity.channelData.clientActivityID) || activity.id || index}
+                key={key}
                 role="listitem"
               >
                 {element}
                 {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+                shouldSpeak && <SpeakActivity activity={activity} />}
               </li>
             ))}
           </ul>
@@ -136,12 +159,7 @@ BasicTranscript.defaultProps = {
 };
 
 BasicTranscript.propTypes = {
-  activityRenderer: PropTypes.func.isRequired,
-  attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string
 };
 
-export default connectToWebChat(({ activityRenderer, attachmentRenderer }) => ({
-  activityRenderer,
-  attachmentRenderer
-}))(BasicTranscript);
+export default BasicTranscript;
