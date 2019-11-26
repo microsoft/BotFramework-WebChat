@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 
 import { useSelector } from '../WebChatReduxContext';
 import WebChatUIContext from '../WebChatUIContext';
@@ -9,12 +9,15 @@ export default function useSuggestedActions() {
 
   return [
     value,
-    value => {
-      if (value && value.length) {
-        throw new Error('SuggestedActions cannot be set to values other than empty.');
-      }
+    useCallback(
+      value => {
+        if (value && value.length) {
+          throw new Error('SuggestedActions cannot be set to values other than empty.');
+        }
 
-      clearSuggestedActions();
-    }
+        clearSuggestedActions();
+      },
+      [clearSuggestedActions]
+    )
   ];
 }
