@@ -8,9 +8,9 @@ import React from 'react';
 import { Constants } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
-import Localize from '../Localization/Localize';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -37,9 +37,12 @@ const DictationInterims = ({ className }) => {
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
 
+  const listeningText = useLocalize('Listening\u2026');
+  const startingText = useLocalize('Starting\u2026');
+
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
-      {dictateState === STARTING && <Localize text="Starting&hellip;" />}
+      {dictateState === STARTING && startingText}
     </p>
   ) : (
     dictateState === DICTATING &&
@@ -54,7 +57,7 @@ const DictationInterims = ({ className }) => {
         </p>
       ) : (
         <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
-          <Localize text="Listening&hellip;" />
+          {listeningText}
         </p>
       ))
   );

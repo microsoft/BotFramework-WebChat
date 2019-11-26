@@ -226,6 +226,4 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ tapAction }) => ({
-  tapAction
-}))(AdaptiveCardRenderer);
+export default AdaptiveCardRenderer;

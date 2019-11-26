@@ -10,6 +10,7 @@ import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
+import useStopDictate from '../hooks/useStopDictate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
@@ -75,12 +76,9 @@ function useTextBoxSubmit(setFocus) {
   }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
 }
 
-// TODO: [P1] Hook is temporarily not exporting until fully implemented
-function useTextBoxValue({ stopDictate }) {
+function useTextBoxValue() {
   const [value, setSendBox] = useSendBoxValue();
-
-  // TODO: [P1] Temporarily using non-hook version
-  // const stopDictate = useStopDictate();
+  const stopDictate = useStopDictate();
 
   const setter = useCallback(
     value => {
@@ -93,11 +91,11 @@ function useTextBoxValue({ stopDictate }) {
   return [value, setter];
 }
 
-const TextBox = ({ className, stopDictate }) => {
+const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
-  const [textBoxValue, setTextBoxValue] = useTextBoxValue({ stopDictate });
+  const [textBoxValue, setTextBoxValue] = useTextBoxValue();
 
   const submitTextBox = useTextBoxSubmit();
   const sendBoxString = useLocalize('Sendbox');
@@ -177,13 +175,9 @@ TextBox.defaultProps = {
 };
 
 TextBox.propTypes = {
-  className: PropTypes.string,
-  stopDictate: PropTypes.func.isRequired
+  className: PropTypes.string
 };
 
-export default connectToWebChat(({ stopDictate }) => ({ stopDictate }))(TextBox);
+export default TextBox;
 
-// TODO: [P1] Export useTextBoxValue when it is fully implemented
-// export { connectSendTextBox, useTextBoxSubmit, useTextBoxValue };
-
-export { connectSendTextBox, useTextBoxSubmit };
+export { connectSendTextBox, useTextBoxSubmit, useTextBoxValue };

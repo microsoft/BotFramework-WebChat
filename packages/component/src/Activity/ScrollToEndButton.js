@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import Localize from '../Localization/Localize';
 import useFocusSendBox from '../hooks/useFocusSendBox';
+import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -21,7 +21,7 @@ const ScrollToEndButton = ({ className }) => {
 
   return (
     <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={handleClick} type="button">
-      <Localize text="New messages" />
+      {useLocalize('New messages')}
     </button>
   );
 };
@@ -31,10 +31,7 @@ ScrollToEndButton.defaultProps = {
 };
 
 ScrollToEndButton.propTypes = {
-  className: PropTypes.string,
-  styleSet: PropTypes.shape({
-    scrollToEndButton: PropTypes.any.isRequired
-  }).isRequired
+  className: PropTypes.string
 };
 
 const ConnectedScrollToEndButton = props => (

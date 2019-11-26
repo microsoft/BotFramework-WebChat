@@ -37,7 +37,7 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
-function useSendBoxDictationStarted() {
+function useSendBoxSpeechInterimsVisible() {
   const [activities] = useActivities();
   const [dictateState] = useDictateState();
 
@@ -51,7 +51,7 @@ const BasicSendBox = ({ className }) => {
   const [{ hideUploadButton }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
-  const [dictationStarted] = useSendBoxDictationStarted();
+  const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
   const supportSpeechRecognition = !!SpeechRecognition;
 
@@ -62,7 +62,7 @@ const BasicSendBox = ({ className }) => {
       <SuggestedActions />
       <div className="main">
         {!hideUploadButton && <UploadButton />}
-        {dictationStarted ? (
+        {speechInterimsVisible ? (
           <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
         ) : (
           <TextBox className={TEXT_BOX_CSS + ''} />
@@ -85,4 +85,4 @@ BasicSendBox.propTypes = {
 
 export default BasicSendBox;
 
-export { useSendBoxDictationStarted };
+export { useSendBoxSpeechInterimsVisible };

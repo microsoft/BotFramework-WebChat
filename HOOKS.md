@@ -596,15 +596,15 @@ This value can be partly controllable through Web Chat props.
 
 These are hooks that are specific for the send box.
 
--  [`useSendBoxDictationStarted`](#usesendboxdictationstarted)
+-  [`useSendBoxSpeechInterimsVisible`](#usesendboxspeechinterimsvisible)
 
-### `useSendBoxDictationStarted`
+### `useSendBoxSpeechInterimsVisible`
 
 ```js
-useSendBoxDictationStarted(): [boolean]
+useSendBoxSpeechInterimsVisible(): [boolean]
 ```
 
-This function will return whether speech-to-text detection has been started or not.
+This function will return whether the send box should show speech interims.
 
 ## `TextBox`
 

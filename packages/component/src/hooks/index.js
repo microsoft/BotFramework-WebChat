@@ -40,8 +40,8 @@ import useVoiceSelector from './useVoiceSelector';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
-import { useSendBoxDictationStarted } from '../BasicSendBox';
-import { useTextBoxSubmit } from '../SendBox/TextBox';
+import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
+import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
 
 export {
@@ -68,7 +68,7 @@ export {
   useReferenceGrammarID,
   useRenderMarkdownAsHTML,
   useScrollToEnd,
-  useSendBoxDictationStarted,
+  useSendBoxSpeechInterimsVisible,
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
@@ -84,6 +84,7 @@ export {
   useSubmitSendBox,
   useSuggestedActions,
   useTextBoxSubmit,
+  useTextBoxValue,
   useTimeoutForSend,
   useTypingIndicatorVisible,
   useUserID,
