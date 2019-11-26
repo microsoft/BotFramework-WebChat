@@ -18,7 +18,7 @@ import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderActivity from './useRenderActivity';
-import useRenderAttachment from './useRenderActivity';
+import useRenderAttachment from './useRenderAttachment';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';

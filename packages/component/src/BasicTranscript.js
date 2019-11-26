@@ -77,7 +77,7 @@ const BasicTranscript = ({ className }) => {
   // If the activity does not render, it will not be spoken if text-to-speech is enabled.
   const activityElements = useMemo(
     () =>
-      activities.reduce((activityElements, activity) => {
+      activities.reduce((activityElements, activity, index) => {
         const element = renderActivity({
           activity,
           timestampClassName: 'transcript-timestamp'

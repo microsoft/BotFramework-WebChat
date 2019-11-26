@@ -16,6 +16,6 @@ export default function useRenderActivity(renderAttachment) {
           ...renderAttachmentArgs
         })
       ),
-    [renderAttachment]
+    [activityRenderer, renderAttachment]
   );
 }
