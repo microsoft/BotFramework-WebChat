@@ -9,6 +9,7 @@ import useActivities from './hooks/useActivities';
 import useDictateInterims from './hooks/useDictateInterims';
 import useDictateState from './hooks/useDictateState';
 import useDisabled from './hooks/useDisabled';
+import useEmitTypingIndicator from './hooks/useEmitTypingIndicator';
 import useLanguage from './hooks/useLanguage';
 import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
@@ -22,7 +23,7 @@ const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const Dictation = ({ emitTypingIndicator, onError }) => {
+const Dictation = ({ onError }) => {
   const [, setDictateInterims] = useDictateInterims();
   const [, setSendBox] = useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
@@ -32,6 +33,7 @@ const Dictation = ({ emitTypingIndicator, onError }) => {
   const [disabled] = useDisabled();
   const [language] = useLanguage();
   const [sendTypingIndicator] = useSendTypingIndicator();
+  const emitTypingIndicator = useEmitTypingIndicator();
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
@@ -107,6 +109,4 @@ Dictation.propTypes = {
   onError: PropTypes.func
 };
 
-export default connectToWebChat(({ emitTypingIndicator }) => ({
-  emitTypingIndicator
-}))(Dictation);
+export default Dictation;
