@@ -18,7 +18,11 @@ assignees: ''
 ## Version
 
 <!-- What version of Web Chat are you using? Are you using the CDN? NPM package? Or embedding Web Chat to your site via `<iframe>`? -->
-<!-- The fastest way to find your Web Chat version is by checking the meta tag on your deployed site. -->
+
+To determine what version of Web Chat you are running, open your browser's development tools, and paste the following line of code into the console.
+`[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
+
+Please copy paste the result into this section.
 
 ## Describe the bug
 

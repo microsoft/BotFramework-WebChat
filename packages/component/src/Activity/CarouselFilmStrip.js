@@ -131,7 +131,7 @@ const WebChatCarouselFilmStrip = ({
         {!!activityDisplayText && (
           <div className="message">
             <ScreenReaderText text={roleLabel + ' ' + strippedActivityDisplayText} />
-            <Bubble aria-hidden="true" className="bubble" fromUser={fromUser} nub={true}>
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {

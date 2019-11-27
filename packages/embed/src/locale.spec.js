@@ -1,5 +1,9 @@
 import { normalize, toAzureLocale } from './locale';
 
+test('Normalizing "ar.ar-eg"', () => {
+  expect(normalize('ar.ar-eg')).toBe('ar-EG');
+});
+
 test('Normalizing "en.en-us"', () => {
   expect(normalize('en.en-us')).toBe('en-US');
 });
