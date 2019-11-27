@@ -19,24 +19,23 @@ assignees: ''
 
 <!-- What version of Web Chat are you using? Are you using the CDN? NPM package? Or embedding Web Chat to your site via `<iframe>`? -->
 
-To determine what version of Web Chat you are running, open your browser's development tools, and paste the following line of code into the console.
-`[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
-
-Please copy paste the result into this section.
+> To determine what version of Web Chat you are running, open your browser's development tools, and paste the following line of code into the console.
+>
+> `[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
+>
+> If you are using Web Chat outside of a browser, please specify your hosting environment. For example, React Native on iOS, Cordova on Android, SharePoint, PowerApps, etc.
 
 ## Describe the bug
 
 <!-- Give a clear and concise description of what the bug is. -->
 <!-- Please be sure to add screenshots of the console errors in your browser, if there are any -->
 
-## To Reproduce
-
-Steps to reproduce the behavior:
+## Steps to reproduce
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Click on '....'
+1. Scroll down to '....'
+1. See error
 
 ## Expected behavior
 
