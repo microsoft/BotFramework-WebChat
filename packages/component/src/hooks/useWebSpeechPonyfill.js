@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useWebSpeechPonyfill() {
-  return [useContext(WebChatUIContext).webSpeechPonyfill];
+  return [useWebChatUIContext().webSpeechPonyfill];
 }

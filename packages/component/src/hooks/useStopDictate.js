@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useStopDictate() {
-  return useContext(WebChatUIContext).stopDictate;
+  return useWebChatUIContext().stopDictate;
 }

@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useUserID() {
-  return [useContext(WebChatUIContext).userID];
+  return [useWebChatUIContext().userID];
 }

@@ -1,11 +1,11 @@
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 
 import { useSelector } from '../WebChatReduxContext';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useSuggestedActions() {
   const value = useSelector(({ suggestedActions }) => suggestedActions);
-  const { clearSuggestedActions } = useContext(WebChatUIContext);
+  const { clearSuggestedActions } = useWebChatUIContext();
 
   return [
     value,
