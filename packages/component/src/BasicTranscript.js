@@ -77,36 +77,33 @@ const BasicTranscript = ({ className }) => {
   // If the activity does not render, it will not be spoken if text-to-speech is enabled.
   const activityElements = useMemo(
     () =>
-      activities.reduce((activityElements, activity, index) => {
+      activities.reduce((activityElements, activity) => {
         const element = renderActivity({
           activity,
           timestampClassName: 'transcript-timestamp'
         });
 
-        element &&
-          activityElements.push({
-            activity,
-            element,
-            key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
-
-            // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-            shouldSpeak: activity.channelData && activity.channelData.speak
-          });
+        element && activityElements.push({ activity, element });
 
         return activityElements;
       }, []),
     [activities, renderActivity]
   );
 
-  const activityElements2 = useMemo(
+  const activityElementsWithMetadata = useMemo(
     () =>
       activityElements.map((activityElement, index) => {
         const { activity } = activityElement;
-        const nextActivityElement = activityElements[index + 1];
-        const { activity: nextActivity } = nextActivityElement || {};
+        const { activity: nextActivity } = activityElements[index + 1] || {};
 
         return {
           ...activityElement,
+
+          key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
+
+          // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+          shouldSpeak: activity.channelData && activity.channelData.speak,
+
           // Hide timestamp if same timestamp group with the next activity
           timestampVisible: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
         };
@@ -130,7 +127,7 @@ const BasicTranscript = ({ className }) => {
             className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
             role="list"
           >
-            {activityElements2.map(({ activity, element, key, timestampVisible, shouldSpeak }) => (
+            {activityElementsWithMetadata.map(({ activity, element, key, timestampVisible, shouldSpeak }) => (
               <li
                 // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
                 aria-label=" "
@@ -142,7 +139,6 @@ const BasicTranscript = ({ className }) => {
                 role="listitem"
               >
                 {element}
-                {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
                 shouldSpeak && <SpeakActivity activity={activity} />}
               </li>
             ))}
