@@ -331,7 +331,7 @@ useRenderActivity(
 }) => React.Element
 ```
 
-This function is for rendering an activity and its attachments inside a React element. Because of the parent-child, the caller will need to pass a render function for attachment to create a render function for activity. When rendering activity, the caller will need to pass `activity` and `timestampClassName`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `timestampClassName`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
