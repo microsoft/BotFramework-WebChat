@@ -17,6 +17,13 @@ import { ConnectionStatus } from 'botframework-directlinejs';
 
 declare const fbq: Function;
 
+interface GaEvent {    
+    eventCategory: string
+    eventAction:string
+    eventLabel?: string
+    eventValue?: string
+}
+
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
     chatTitle?: boolean | string,
@@ -50,6 +57,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private activitySubscription: Subscription;
     private fbPixelEventsSubscription: Subscription;
+    private gaEventsSubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -218,7 +226,6 @@ export class Chat extends React.Component<ChatProps, {}> {
                             userData: {
                                 ...(this.props.userData || {}),
                                 ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {}),
-                                ...getGoogleAnalyticsUserData(),
                                 ...getLocaleUserData(this.props.locale),
                                 ...getReferrerUserData()
                             }
@@ -256,6 +263,10 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.fbPixelEventsSubscription = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "facebook-pixel-track-event")
             .subscribe((activity: any) => trackFacebookPixelEvent(activity.value))
+
+        this.gaEventsSubscription = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "google-analytics-track-event")
+            .subscribe((activity: any) => trackGaEvent(JSON.parse(activity.value)))
 
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
@@ -309,6 +320,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     componentWillUnmount() {
         this.fbPixelEventsSubscription.unsubscribe();
+        this.gaEventsSubscription.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
@@ -516,4 +528,9 @@ function getLocaleUserData(locale?: string) {
 function trackFacebookPixelEvent(eventName: string) {
     console.log('Tracking FB Pixel custom event ' + eventName)
     typeof fbq === 'function' && fbq('trackCustom', eventName);
+}
+
+function trackGaEvent(event: GaEvent) {
+    console.log('Tracking GA custom event ga("'+event.eventCategory+'", "'+event.eventAction+'", '+(event.eventLabel || 'undefined')+', '+(event.eventValue ? parseInt(event.eventValue) : 'undefined')+')', event)
+    typeof ga === 'function' && ga(event.eventCategory, event.eventAction, event.eventLabel || undefined, event.eventValue ? parseInt(event.eventValue) : undefined)
 }
