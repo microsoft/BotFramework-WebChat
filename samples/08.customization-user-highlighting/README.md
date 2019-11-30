@@ -30,33 +30,30 @@ We'll start by using the [host with React sample](../03.a.host-with-react) as ou
 
 First, let's style our new containers using glamor. The container for activities from the bot will have a solid red line on the left side of the `<div>`, and activities from the user will have a green line on the right.
 
-```diff
-+ const { css } = window.Glamor;
+```css
+.highlightedActivity--bot {
+  border-left-color: Red;
+  border-left-style: solid;
+  border-left-width: 5px;
+  margin-left: 8px;
+}
 
-+ const HIGHLIGHT_FROM_BOT_CSS = css({
-+   borderLeftColor: 'Red',
-+   borderLeftStyle: 'solid',
-+   borderLeftWidth: 5,
-+   marginLeft: 8
-+ });
-
-+ const HIGHLIGHT_FROM_USER_CSS = css({
-+   borderRightColor: 'Green',
-+   borderRightStyle: 'solid',
-+   borderRightWidth: 5,
-+   marginRight: 8
-+ });
+.highlightedActivity--user {
+  border-right-color: Green;
+  border-right-style: solid;
+  border-right-width: 5px;
+  margin-right: 8px;
+}
 ```
 
 Next, create the `activityMiddleware` which will be passed into the bot. We will return the content of the activity with a new wrapper that will display our new classes when the correct criterion are met.
 
 ```js
 const activityMiddleware = () => next => card => {
-  return (
-    children =>
-      <div>
-        <!-- content here -->
-      </div>
+  return children => (
+    <div>
+      <!-- content here -->
+    </div>
   );
 };
 ```
@@ -64,27 +61,27 @@ const activityMiddleware = () => next => card => {
 Since we know we want to filter by the role value in the activity, we will use a ternary statement to differentiate between `'user'` and the bot. That check should look be: `card.activity.from.role`
 
 ```diff
-const activityMiddleware = () => next => card => {
-  return (
-    children =>
-+     <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
+  const activityMiddleware = () => next => card => {
+    return children => (
+-     <div>
++     <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>
         <!-- content here -->
       </div>
-  );
-};
+    );
+  };
 ```
 
-`{ next(card)(children) }` indicates the middleware can pass to the next renderer. The subsequent results of those middleware calls will be what is displayed inside the `<div>`. Make sure to add this into `activityMiddleware` like so:
+`{next(card)(children)}` indicates the middleware can pass to the next renderer. The subsequent results of those middleware calls will be what is displayed inside the `<div>`. Make sure to add this into `activityMiddleware` like so:
 
 ```diff
-const activityMiddleware = () => next => card => {
-  return (
-    children =>
-      <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
-+       { next(card)(children) }
+  const activityMiddleware = () => next => card => {
+    return children => (
+      <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>
+-       <!-- content here -->
++       {next(card)(children)}
       </div>
-  );
-};
+    );
+  };
 ```
 
 Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
@@ -92,8 +89,9 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 ## Completed code
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
+  <!DOCTYPE html>
+  <html lang="en-US">
+
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
 
@@ -105,15 +103,34 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
+      html,
+      body {
+        height: 100%
+      }
+
       body { margin: 0 }
 
       #webchat {
         height: 100%;
         width: 100%;
       }
+
++     .highlightedActivity--bot {
++       border-left-color: Red;
++       border-left-style: solid;
++       border-left-width: 5px;
++       margin-left: 8px;
++     }
++
++     .highlightedActivity--user {
++       border-right-color: Green;
++       border-right-style: solid;
++       border-right-width: 5px;
++       margin-right: 8px;
++     }
     </style>
   </head>
+
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
@@ -125,30 +142,14 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-+       const { css } = window.Glamor;
-
-+       const HIGHLIGHT_FROM_BOT_CSS = css({
-+         borderLeftColor: 'Red',
-+         borderLeftStyle: 'solid',
-+         borderLeftWidth: 5,
-+         marginLeft: 8
-+       });
-
-+       const HIGHLIGHT_FROM_USER_CSS = css({
-+         borderRightColor: 'Green',
-+         borderRightStyle: 'solid',
-+         borderRightWidth: 5,
-+         marginRight: 8
-+       });
-
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
 +       const activityMiddleware = () => next => card => {
 +         return (
 +           children =>
-+             <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
-+               { next(card)(children) }
++             <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>
++               {next(card)(children)}
 +             </div>
 +         );
 +       };
@@ -165,8 +166,8 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
       })().catch(err => console.error(err));
     </script>
   </body>
-</html>
 
+  </html>
 ```
 
 # Further reading
