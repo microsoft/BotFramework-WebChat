@@ -25,308 +25,313 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
 
-First we will build a class-based React component called `PasswordInputActivity`. This component will have a state object with `code` and `submitted` values, set to an empty string and false, respectively.
+In this sample, we will build a new React component that will be show when we receive an event activity from the bot named `passwordInput`. It will show a password box. When the user press <kbd>ENTER</kbd> to submit the box, we will send a post back activity back to the bot.
 
-This component will also have two helper methods, called `handleCodeChange` and `handleSubmit`. The first will record the 2FA code changes into `state.code`, and the second will submit the altered code via `postBack` when the submit button is clicked.
-
-This component will render a simple form that asks the user to input their 2-Factor Authentication code.
+Let's start by building the React component called `PasswordInputActivity`.
+This component will render a simple form that asks the user to input their Two-Factor Authentication code.
 
 ```jsx
-class PasswordInputActivity extends React.Component {
-   constructor(props) {
-      super(props);
+const PasswordInputActivity = () => {
+   return (
+      <form>
+         <labe >
+            <span>Please input your 2FA code</span>
+            <input
+               autoFocus={true}
+               type="password"
+            />
+         </label>
+      </form>
+   );
+};
+}
+```
 
-      this.handleCodeChange = this.handleCodeChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
+Next, build our CSS and apply class names to our component.
 
-      this.state = {
-         code: '',
-         submitted: false
-      };
-   }
+```css
+.passwordInput {
+   background-color: Red;
+   border-radius: 3px;
+   color: White;
+   display: flex;
+   font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+   margin: 10px;
+   padding: 5px;
+}
 
-   handleCodeChange({ target: { value: code } }) {
-      this.setState(() => ({ code }));
-   }
+.passwordInput .passwordInput__box {
+   display: flex;
+   flex: 1;
+}
 
-   handleSubmit(event) {
-      event.preventDefault();
+.passwordInput .passwordInput__label {
+   padding: 10px;
+}
 
-      this.props.sendPostBack({ code: this.state.code });
-      this.setState(() => ({ submitted: true }));
-   }
+.passwordInput .passwordInput__input {
+   border: 0px;
+   border-radius: 3px;
+   flex: 1;
+   letter-spacing: .5em;
+   outline: 0;
+   padding: 0 10px;
+   width: 100%;
+}
 
-   render() {
-      const {
-         state: { code, submitted }
-      } = this;
+.passwordInput .passwordInput__input:disabled {
+   background-color: rgba(255, 255, 255, .5);
+   color: White;
+}
+```
+
+Then, apply the style sheet to our React component.
+
+```diff
+   return (
+-     <form>
++     <form className="passwordInput">
+-        <label>
++        <label className="passwordInput__box">
+-           <span>Please input your 2FA code</span>
++           <span className="passwordInput__label">Please input your 2FA code</span>
+            <input
+               autoFocus={true}
++              className="passwordInput__input"
+               type="password"
+            />
+         </label>
+      </form>
+   );
+```
+
+Then, add business logic to the component:
+
+- When the user type on the password box, save the code.
+- When the user press <kbd>ENTER</kbd> on the password box, submit the code and disable the password box.
+
+This component will have a state object with `code` and `submitted` values, initially set to an empty string and `false`, respectively. `code` will store the  code, and `submitted` will store a boolean value to indicate whether the code has been submitted or not. If the code has been submitted, disable the input box to prevent resubmission.
+
+This component will have two callback functions, called `handleCodeChange` and `handleSubmit`. The former will be called when the code has changed, it will save the value into `code` state. The latter will be called when the form is submitted (user press <kbd>ENTER</kbd> on the password box). It will submit the code via `sendPostBack`, and disable itself to prevent resubmission by updating `submitted` to `true`.
+
+The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostBack` function.
+
+```diff
+-  const { ReactWebChat } = window.WebChat;
++  const { hooks: { useSendPostBack }, ReactWebChat } = window.WebChat;
++  const { useCallback, useState } = window.React;
+
+   const PasswordInputActivity = () => {
++     const [code, setCode] = useState('');
++     const [submitted, setSubmitted] = useState(false);
++     const sendPostBack = useSendPostBack();
++
++     const handleCodeChange = useCallback(({ target: { value } }) => {
++        setCode(value);
++     }, [setCode]);
++
++     const handleSubmit = useCallback(event => {
++        event.preventDefault();
++
++        sendPostBack({ code });
++        setSubmitted(true);
++     }, [sendPostBack, setSubmitted]);
 
       return (
-         <form onSubmit={this.handleSubmit}>
-            <label>
-               <span>Please input your 2FA code</span>
+-        <form className="passwordInput">
++        <form className="passwordInput" onSubmit={handleSubmit}>
+            <label className="passwordInput__box">
+               <span className="passwordInput__label">Please input your 2FA code</   span>
                <input
                   autoFocus={true}
-                  disabled={submitted}
-                  onChange={this.handleCodeChange}
+                  className="passwordInput__input"
++                 disabled={submitted}
++                 onChange={handleCodeChange}
                   type="password"
-                  value={code}
++                 value={code}
                />
             </label>
          </form>
       );
-   }
-}
+   };
 ```
 
-This next step is not required. Let's build a wrapper container around ActivityWithFeedback that will strip props to only contain `sendPostBack`.
+Finally, set up `activityMiddleware` to add the `<PasswordInputActivity />` component to the `passwordInput` event activities.
 
-```jsx
-const ConnectedPasswordInputActivity = connectToWebChat(({ sendPostBack }) => ({
-   sendPostBack
-}))(props => <PasswordInputActivity {...props} />);
-```
-
-Next we will build our CSS and apply class names to our component.
-
-```js
-const { css } = window.Glamor;
-
-const PASSWORD_INPUT_CSS = css({
-   backgroundColor: 'Red',
-   borderRadius: 3,
-   color: 'White',
-   display: 'flex',
-   margin: 10,
-   padding: 5,
-
-   '& > label': {
-      display: 'flex',
-      flex: 1,
-      fontFamily: "Calibri, 'Helvetica Neue', Arial, sans-serif",
-
-      '& > span': {
-         padding: 10
-      },
-
-      '& > input': {
-         border: 0,
-         borderRadius: 3,
-         flex: 1,
-         letterSpacing: '.5em',
-         outline: 0,
-         padding: '0 10px',
-         width: '100%',
-
-         '&:disabled': {
-            backgroundColor: 'rgba(255, 255, 255, .5)',
-            color: 'White'
-         }
-      }
-   }
-});
-```
-
-Add the `PASSWORD_INPUT_CSS` class to the `jsx`:
+When the bot send an event activity with the name `passwordInput`, show the `<PasswordInputActivity>` component instead.
 
 ```diff
-return (
-  <form
-+   className={ PASSWORD_INPUT_CSS }
-    onSubmit={ this.handleSubmit }
-  >
-    <label>
-      <span>Please input your 2FA code</span>
-      <input
-        autoFocus={ true }
-        disabled={ submitted }
-        onChange={ this.handleCodeChange }
-        type="password"
-        value={ code }
-      />
-    </label>
-  </form>
-);
-```
++  const activityMiddleware = () => next => card => {
++     const {
++        activity: { name, type }
++     } = card;
++
++     if (type === 'event' && name === 'passwordInput') {
++        return () => <PasswordInputActivity />;
++     } else {
++        return next(card);
++     }
++  };
 
-Finally, set up `activityMiddleware` to add the `<ConnectedPasswordInputActivity />` component to `passwordInput` event activities.
-
-```jsx
-const activityMiddleware = () => next => card => {
-   const {
-      activity: { name, type }
-   } = card;
-
-   if (type === 'event' && name === 'passwordInput') {
-      return () => <ConnectedPasswordInputActivity />;
-   } else {
-      return next(card);
-   }
-};
-```
-
-Then, add the `activityMiddlware` to the Web Chat render, and that's it.
-
-```diff
-window.ReactDOM.render(
-  <ReactWebChat
-+   activityMiddleware={ activityMiddleware }
-    directLine={ window.WebChat.createDirectLine({ token }) }
-  />,
-  document.getElementById('webchat')
-);
+   window.ReactDOM.render(
+     <ReactWebChat
++      activityMiddleware={ activityMiddleware }
+       directLine={ window.WebChat.createDirectLine({ token }) }
+     />,
+     document.getElementById('webchat')
+   );
 ```
 
 ## Completed code
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Password input activity</title>
+   <!DOCTYPE html>
+   <html lang="en-US">
 
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
-    <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
+   <head>
+      <title>Web Chat: Password input activity</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      <!--
+         For simplicity and code clarity, we are using Babel and React from unpkg.com.
+      -->
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></   script>
+      <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></   script>
+      <!--
+         This CDN points to the latest official release of Web Chat. If you need to    test against Web Chat's latest bits, please refer to pointing to Web Chat's    MyGet feed:
+         https://github.com/microsoft/   BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+      -->
+      <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/   webchat.js"></script> -->
+      <script src="/webchat.js"></script>
+      <style>
+         html,
+         body {
+            height: 100%;
+         }
+         body {
+            margin: 0;
+         }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script type="text/babel">
-      (async function () {
-        'use strict';
+         #webchat {
+            height: 100%;
+            width: 100%;
+         }
 
-        const { connectToWebChat, ReactWebChat } = window.WebChat;
-+       const { css } = window.Glamor;
++        .passwordInput {
++           background-color: Red;
++           border-radius: 3px;
++           color: White;
++           display: flex;
++           font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
++           margin: 10px;
++           padding: 5px;
++        }
++
++        .passwordInput .passwordInput__box {
++           display: flex;
++           flex: 1;
++        }
++
++        .passwordInput .passwordInput__label {
++           padding: 10px;
++        }
++
++        .passwordInput .passwordInput__input {
++           border: 0px;
++           border-radius: 3px;
++           flex: 1;
++           letter-spacing: .5em;
++           outline: 0;
++           padding: 0 10px;
++           width: 100%;
++        }
++
++        .passwordInput .passwordInput__input:disabled {
++           background-color: rgba(255, 255, 255, .5);
++           color: White;
++        }
+      </style>
+   </head>
 
-+       const PASSWORD_INPUT_CSS = css({
-+         backgroundColor: 'Red',
-+         borderRadius: 3,
-+         color: 'White',
-+         display: 'flex',
-+         margin: 10,
-+         padding: 5,
+   <body>
+      <div id="webchat" role="main"></div>
+      <script type="text/babel">
+         (async function() {
+            'use strict';
 
-+         '& > label': {
-+           display: 'flex',
-+           flex: 1,
-+           fontFamily: 'Calibri, \'Helvetica Neue\', Arial, sans-serif',
++           const { hooks: { useSendPostBack }, ReactWebChat } = window.WebChat;
++           const { useCallback, useState } = window.React;
 
-+           '& > span': {
-+             padding: 10
-+           },
-
-+           '& > input': {
-+             border: 0,
-+             borderRadius: 3,
-+             flex: 1,
-+             letterSpacing: '.5em',
-+             outline: 0,
-+             padding: '0 10px',
-+             width: '100%',
-
-+             '&:disabled': {
-+               backgroundColor: 'rgba(255, 255, 255, .5)',
-+               color: 'White'
-+             }
-+           }
-+         }
-+       });
-
-+       class PasswordInputActivity extends React.Component {
-+         constructor(props) {
-+           super(props);
-
-+           this.handleCodeChange = this.handleCodeChange.bind(this);
-+           this.handleSubmit = this.handleSubmit.bind(this);
-
-+           this.state = {
-+             code: '',
-+             submitted: false
++           const PasswordInputActivity = () => {
++              const [code, setCode] = useState('');
++              const [submitted, setSubmitted] = useState(false);
++              const sendPostBack = useSendPostBack();
++
++              const handleCodeChange = useCallback(({ target: { value } }) => {
++                 setCode(value);
++              }, [setCode]);
++
++              const handleSubmit = useCallback(event => {
++                 event.preventDefault();
++
++                 sendPostBack({ code });
++                 setSubmitted(true);
++              }, [sendPostBack, setSubmitted]);
++
++              return (
++                 <form className="passwordInput" onSubmit={handleSubmit}>
++                    <label className="passwordInput__box">
++                       <span className="passwordInput__label">Please input your 2FA    code</span>
++                       <input
++                          autoFocus={true}
++                          className="passwordInput__input"
++                          disabled={submitted}
++                          onChange={handleCodeChange}
++                          type="password"
++                          value={code}
++                       />
++                    </label>
++                 </form>
++              );
 +           };
-+         }
 
-+         handleCodeChange({ target: { value: code } }) {
-+           this.setState(() => ({ code }));
-+         }
+            const res = await fetch('https://webchat-mockbot.azurewebsites.net/   directline/token', { method: 'POST' });
+            const { token } = await res.json();
++           const store = createStore();
++           const activityMiddleware = () => next => card => {
++              const {
++                 activity: { name, type }
++              } = card;
++
++              if (type === 'event' && name === 'passwordInput') {
++                 return () => <PasswordInputActivity />;
++              } else {
++                 return next(card);
++              }
++           };
 
-+         handleSubmit(event) {
-+           event.preventDefault();
+            window.ReactDOM.render(
+               <ReactWebChat
++                 activityMiddleware={activityMiddleware}
+                  directLine={window.WebChat.createDirectLine({ token })}
++                 store={store}
+               />,
+               document.getElementById('webchat')
+            );
 
-+           this.props.sendPostBack({ code: this.state.code });
-+           this.setState(() => ({ submitted: true }));
-+         }
++           store.dispatch({
++              type: 'WEB_CHAT/SET_SEND_BOX',
++              payload: { text: 'sample:password-input' }
++           });
 
-+         render() {
-+           const { state: { code, submitted } } = this;
+            document.querySelector('#webchat > *').focus();
+         })().catch(err => console.error(err));
+      </script>
+   </body>
 
-+           return (
-+             <form
-+               className={ PASSWORD_INPUT_CSS }
-+               onSubmit={ this.handleSubmit }
-+             >
-+               <label>
-+                 <span>Please input your 2FA code</span>
-+                 <input
-+                   autoFocus={ true }
-+                   disabled={ submitted }
-+                   onChange={ this.handleCodeChange }
-+                   type="password"
-+                   value={ code }
-+                 />
-+               </label>
-+             </form>
-+           );
-+         }
-+       }
-
-+       const ConnectedPasswordInputActivity = connectToWebChat(
-+         ({ sendPostBack }) => ({ sendPostBack })
-+       )(props => <PasswordInputActivity { ...props } />)
-
-       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
-+       const activityMiddleware = () => next => card => {
-+         const { activity: { name, type } } = card;
-
-+         if (type === 'event' && name === 'passwordInput') {
-+           return () => <ConnectedPasswordInputActivity />;
-+         } else {
-+           return next(card);
-+         }
-+       };
-
-        window.ReactDOM.render(
-          <ReactWebChat
-+           activityMiddleware={ activityMiddleware }
-            directLine={ window.WebChat.createDirectLine({ token }) }
-          />,
-          document.getElementById('webchat')
-        );
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_SEND_BOX',
-          payload: { text: 'sample:password-input' }
-        });
-
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
-
+   </html>
 ```
 
 # Further reading
