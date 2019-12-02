@@ -1,9 +1,19 @@
-import { useContext } from 'react';
+import { hooks } from 'botframework-webchat-component';
+import { useMemo } from 'react';
 
-import AdaptiveCardsContext from '../AdaptiveCardsContext';
+import createDefaultAdaptiveCardHostConfig from '../Styles/adaptiveCardHostConfig';
+import useAdaptiveCardsContext from './internal/useAdaptiveCardsContext';
+
+const { useStyleOptions } = hooks;
 
 export default function useAdaptiveCardsHostConfig() {
-  const { hostConfig } = useContext(AdaptiveCardsContext);
+  const { hostConfigFromProps } = useAdaptiveCardsContext();
+  const [styleOptions] = useStyleOptions();
 
-  return [hostConfig];
+  const patchedHostConfig = useMemo(() => hostConfigFromProps || createDefaultAdaptiveCardHostConfig(styleOptions), [
+    hostConfigFromProps,
+    styleOptions
+  ]);
+
+  return [patchedHostConfig];
 }

@@ -127,12 +127,14 @@ export default class BasicWebChat extends React.Component {
 }
 
 BasicWebChat.defaultProps = {
+  ...Composer.defaultProps,
   activityMiddleware: undefined,
   attachmentMiddleware: undefined,
   className: ''
 };
 
 BasicWebChat.propTypes = {
+  ...Composer.propTypes,
   activityMiddleware: PropTypes.func,
   attachmentMiddleware: PropTypes.func,
   className: PropTypes.string
