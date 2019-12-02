@@ -45,6 +45,12 @@ export default async function create({
     );
   }
 
+  if (typeof enableTelemetry !== 'undefined') {
+    console.warn(
+      'botframework-directlinespeech: Telemetry options is not supported yet. Please refer to Cognitive Services documentation for details.'
+    );
+  }
+
   if (!region || typeof region !== 'string') {
     throw new Error('"fetchCredentials" must return "region" as a non-empty string.');
   }
