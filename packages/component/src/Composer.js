@@ -224,7 +224,7 @@ const Composer = ({
 
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
-    [createStyleSet, extraStyleSet, patchedStyleOptions, styleSet]
+    [extraStyleSet, patchedStyleOptions, styleSet]
   );
 
   const hoistedDispatchers = useMemo(
