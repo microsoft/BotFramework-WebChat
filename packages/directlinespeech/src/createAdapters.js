@@ -8,6 +8,9 @@ import {
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
+import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
+
+const TOKEN_RENEWAL_INTERVAL = 120000;
 
 export default async function create({
   audioConfig,
@@ -25,14 +28,25 @@ export default async function create({
   userID,
   username
 }) {
-  const { authorizationToken, region, subscriptionKey } = await fetchCredentials();
-
-  if ((!authorizationToken && !subscriptionKey) || (authorizationToken && subscriptionKey)) {
-    throw new Error('"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" only.');
+  if (!fetchCredentials) {
+    throw new Error('"fetchCredentials" must be specified.');
   }
 
-  if (!region) {
-    throw new Error('"fetchCredentials" must return "region".');
+  const { authorizationToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(fetchCredentials);
+
+  if (
+    (!authorizationToken && !subscriptionKey) ||
+    (authorizationToken && subscriptionKey) ||
+    (authorizationToken && typeof authorizationToken !== 'string') ||
+    (subscriptionKey && typeof subscriptionKey !== 'string')
+  ) {
+    throw new Error(
+      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only.'
+    );
+  }
+
+  if (!region || typeof region !== 'string') {
+    throw new Error('"fetchCredentials" must return "region" as a non-empty string.');
   }
 
   if (speechRecognitionEndpointId) {
@@ -69,8 +83,6 @@ export default async function create({
 
   if (authorizationToken) {
     config = BotFrameworkConfig.fromAuthorizationToken(authorizationToken, region);
-
-    // TODO: Renew token
   } else {
     config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
   }
@@ -98,6 +110,33 @@ export default async function create({
   const dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
 
   dialogServiceConnector.connect();
+
+  // Renew token
+  if (authorizationToken) {
+    const interval = setInterval(async () => {
+      // If the connector has been disposed, we should stop renewing the token.
+      // TODO: We should use a public implementation if Speech SDK has one.
+      if (dialogServiceConnector.privIsDisposed) {
+        clearInterval(interval);
+      }
+
+      const { authorizationToken, region: nextRegion } = await fetchCredentials();
+
+      if (!authorizationToken) {
+        return console.warn(
+          'botframework-directlinespeech-sdk: Renew token failed because "fetchCredentials" call returned no authorization token.'
+        );
+      }
+
+      if (region !== nextRegion) {
+        return console.warn(
+          'botframework-directlinespeech-sdk: Region change is not supported for renewed token. Authorization token is not renewed.'
+        );
+      }
+
+      dialogServiceConnector.authorizationToken = authorizationToken;
+    }, TOKEN_RENEWAL_INTERVAL);
+  }
 
   const directLine = new DirectLineSpeech({ dialogServiceConnector });
 
