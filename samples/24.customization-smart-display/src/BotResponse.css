@@ -1,0 +1,35 @@
+.App-BotResponse {
+  height: 100vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+}
+
+.App-BotResponse-Activity {
+  background-color: White;
+  border-radius: 2vmin;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  color: Black;
+  font-size: 4vmin;
+  margin: 4vmin 4vmin 0;
+  padding: 2vmin 3vmin 2vmin;
+}
+
+.App-BotResponse-Attachments {
+  list-style-type: none;
+  margin: 0;
+  zoom: 2;
+}
+
+.App-BotResponse-Attachments .App-BotResponse-Attachment {
+  background-color: White;
+  border-radius: 1vmin;
+  box-shadow: 0 0 1vmin rgba(0, 0, 0, .5);
+  margin: 2vmin 0 2vmin 2vmin;
+  width: 30vmin;
+}
+
+.App-BotResponse-Attachments li:last-child {
+  padding-right: 2vmin;
+}
