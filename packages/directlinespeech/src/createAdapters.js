@@ -9,31 +9,30 @@ import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
 
-export default function create({
+export default async function create({
   audioConfig,
   audioContext,
   enableTelemetry,
+  fetchCredentials,
   speechRecognitionEndpointId,
   speechRecognitionLanguage = (typeof window !== 'undefined' &&
     typeof window.navigator !== 'undefined' &&
     window.navigator.language) ||
     'en-US',
-  speechServicesAuthorizationToken,
-  speechServicesRegion,
-  speechServicesSubscriptionKey,
   speechSynthesisDeploymentId,
   speechSynthesisOutputFormat,
   textNormalization,
   userID,
   username
 }) {
-  if (
-    (!speechServicesAuthorizationToken && !speechServicesSubscriptionKey) ||
-    (speechServicesAuthorizationToken && speechServicesSubscriptionKey)
-  ) {
-    throw new Error(
-      'You must specify either "speechServicesAuthorizationToken" or "speechServicesSubscriptionKey" only.'
-    );
+  const { authorizationToken, region, subscriptionKey } = await fetchCredentials();
+
+  if ((!authorizationToken && !subscriptionKey) || (authorizationToken && subscriptionKey)) {
+    throw new Error('"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" only.');
+  }
+
+  if (!region) {
+    throw new Error('"fetchCredentials" must return "region".');
   }
 
   if (speechRecognitionEndpointId) {
@@ -68,10 +67,12 @@ export default function create({
 
   let config;
 
-  if (speechServicesAuthorizationToken) {
-    config = BotFrameworkConfig.fromAuthorizationToken(speechServicesAuthorizationToken, speechServicesRegion);
+  if (authorizationToken) {
+    config = BotFrameworkConfig.fromAuthorizationToken(authorizationToken, region);
+
+    // TODO: Renew token
   } else {
-    config = BotFrameworkConfig.fromSubscription(speechServicesSubscriptionKey, speechServicesRegion);
+    config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
   }
 
   // Supported options can be found in DialogConnectorFactory.js.
