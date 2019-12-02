@@ -20,7 +20,7 @@ const FullReactWebChat = props => {
 
   return (
     <AdaptiveCardsComposer
-      adaptiveCardsHostConfig={adaptiveCardsHostConfig}
+      adaptiveCardsHostConfig={adaptiveCardHostConfig || adaptiveCardsHostConfig}
       adaptiveCardsPackage={adaptiveCardsPackage}
     >
       <BasicWebChat {...otherProps} {...composerProps} />
