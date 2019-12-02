@@ -3,8 +3,8 @@ import {
   FunctionContext as ScrollToBottomFunctionContext
 } from 'react-scroll-to-bottom';
 
-import { Provider } from 'react-redux';
 import { css } from 'glamor';
+import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
@@ -113,13 +113,11 @@ function createFocusSendBoxContext({ sendBoxRef }) {
 }
 
 // TODO: [P3] Take this deprecation code out when releasing on or after 2019 December 11
-function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ...props }) {
-  // This code will take out "botAvatarInitials" and "userAvatarInitials" from props
-
-  let { styleOptions } = props;
+function patchStyleOptionsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }) {
+  let patchedStyleOptions = { ...styleOptions };
 
   if (botAvatarInitials) {
-    styleOptions = { ...styleOptions, botAvatarInitials };
+    patchedStyleOptions = { ...patchedStyleOptions, botAvatarInitials };
 
     console.warn(
       'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
@@ -127,17 +125,14 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   }
 
   if (userAvatarInitials) {
-    styleOptions = { ...styleOptions, userAvatarInitials };
+    patchedStyleOptions = { ...patchedStyleOptions, userAvatarInitials };
 
     console.warn(
       'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
     );
   }
 
-  return {
-    ...props,
-    styleOptions
-  };
+  return patchedStyleOptions;
 }
 
 const Composer = ({
@@ -148,6 +143,7 @@ const Composer = ({
   children,
   directLine,
   disabled,
+  extraStyleSet,
   grammars,
   groupTimestamp,
   locale,
@@ -183,7 +179,7 @@ const Composer = ({
   }, [sendTyping, sendTypingIndicator]);
 
   const patchedStyleOptions = useMemo(
-    () => patchPropsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
+    () => patchStyleOptionsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
     [botAvatarInitials, styleOptions, userAvatarInitials]
   );
 
@@ -226,10 +222,10 @@ const Composer = ({
 
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
-  const patchedStyleSet = useMemo(() => styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions)), [
-    patchedStyleOptions,
-    styleSet
-  ]);
+  const patchedStyleSet = useMemo(
+    () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
+    [createStyleSet, extraStyleSet, patchedStyleOptions, styleSet]
+  );
 
   const hoistedDispatchers = useMemo(
     () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher(...args))),
@@ -344,10 +340,11 @@ Composer.defaultProps = {
   cardActionMiddleware: undefined,
   children: undefined,
   disabled: false,
+  extraStyleSet: undefined,
   grammars: [],
   groupTimestamp: true,
   locale: window.navigator.language || 'en-US',
-  renderMarkdown: text => text,
+  renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
   sendTimeout: 20000,
@@ -381,6 +378,7 @@ Composer.propTypes = {
     token: PropTypes.string
   }).isRequired,
   disabled: PropTypes.bool,
+  extraStyleSet: PropTypes.any,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,

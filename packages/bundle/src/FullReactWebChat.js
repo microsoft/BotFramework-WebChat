@@ -1,12 +1,10 @@
-import * as defaultAdaptiveCardsPackage from 'adaptivecards';
 import BasicWebChat, { concatMiddleware } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo } from 'react';
 
-import AdaptiveCardsContext from './adaptiveCards/AdaptiveCardsContext';
-import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardMiddleware';
-import createDefaultAdaptiveCardHostConfig from './adaptiveCards/Styles/adaptiveCardHostConfig';
-import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
+import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
+import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
+import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
 import defaultRenderMarkdown from './renderMarkdown';
 
 // Add additional props to <WebChat>, so it support additional features
@@ -17,7 +15,6 @@ const FullReactWebChat = ({
   attachmentMiddleware,
   renderMarkdown,
   styleOptions,
-  styleSet,
   ...otherProps
 }) => {
   useEffect(() => {
@@ -27,67 +24,46 @@ const FullReactWebChat = ({
       );
   }, [adaptiveCardHostConfig]);
 
-  const patchedStyleSet = useMemo(() => styleSet || createStyleSet(styleOptions), [styleOptions, styleSet]);
-  const { options: patchedStyleOptions } = patchedStyleSet;
-
-  const patchedAdaptiveCardsHostConfig = useMemo(
-    () => adaptiveCardsHostConfig || adaptiveCardHostConfig || createDefaultAdaptiveCardHostConfig(patchedStyleOptions),
-    [adaptiveCardHostConfig, adaptiveCardsHostConfig, patchedStyleOptions]
-  );
-
-  const patchedAdaptiveCardsPackage = useMemo(() => adaptiveCardsPackage || defaultAdaptiveCardsPackage, [
-    adaptiveCardsPackage
-  ]);
-
-  const patchedRenderMarkdown = useMemo(
-    () => renderMarkdown || (markdown => defaultRenderMarkdown(markdown, patchedStyleOptions)),
-    [renderMarkdown, patchedStyleOptions]
-  );
-
   const patchedAttachmentMiddleware = useMemo(
     () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
     [attachmentMiddleware]
   );
 
-  const adaptiveCardsContext = useMemo(
-    () => ({
-      adaptiveCardsPackage: patchedAdaptiveCardsPackage,
-      hostConfig: patchedAdaptiveCardsHostConfig
-    }),
-    [patchedAdaptiveCardsHostConfig, patchedAdaptiveCardsPackage]
-  );
+  const extraStyleSet = useMemo(() => createAdaptiveCardsStyleSet(styleOptions), [styleOptions]);
 
   return (
-    <AdaptiveCardsContext.Provider value={adaptiveCardsContext}>
+    <AdaptiveCardsComposer
+      adaptiveCardsHostConfig={adaptiveCardsHostConfig}
+      adaptiveCardsPackage={adaptiveCardsPackage}
+    >
       <BasicWebChat
         attachmentMiddleware={patchedAttachmentMiddleware}
-        renderMarkdown={patchedRenderMarkdown}
-        styleOptions={styleOptions}
-        styleSet={patchedStyleSet}
+        extraStyleSet={extraStyleSet}
+        renderMarkdown={renderMarkdown || defaultRenderMarkdown}
         {...otherProps}
       />
-    </AdaptiveCardsContext.Provider>
+    </AdaptiveCardsComposer>
   );
 };
 
 FullReactWebChat.defaultProps = {
+  ...BasicWebChat.defaultProps,
   adaptiveCardHostConfig: undefined,
   adaptiveCardsHostConfig: undefined,
   adaptiveCardsPackage: undefined,
   attachmentMiddleware: undefined,
   renderMarkdown: undefined,
-  styleOptions: undefined,
-  styleSet: undefined
+  styleOptions: undefined
 };
 
 FullReactWebChat.propTypes = {
+  ...BasicWebChat.propTypes,
   adaptiveCardHostConfig: PropTypes.any,
   adaptiveCardsHostConfig: PropTypes.any,
   adaptiveCardsPackage: PropTypes.any,
   attachmentMiddleware: PropTypes.func,
   renderMarkdown: PropTypes.func,
-  styleOptions: PropTypes.any,
-  styleSet: PropTypes.any
+  styleOptions: PropTypes.any
 };
 
 export default FullReactWebChat;

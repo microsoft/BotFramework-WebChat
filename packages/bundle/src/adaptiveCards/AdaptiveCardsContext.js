@@ -1,8 +1,5 @@
 import { createContext } from 'react';
 
-const AdaptiveCardHostConfigContext = createContext({
-  adaptiveCardsPackage: undefined,
-  hostConfig: undefined
-});
+const AdaptiveCardHostConfigContext = createContext();
 
 export default AdaptiveCardHostConfigContext;

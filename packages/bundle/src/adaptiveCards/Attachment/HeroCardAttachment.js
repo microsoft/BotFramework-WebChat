@@ -32,9 +32,6 @@ HeroCardAttachment.propTypes = {
     content: PropTypes.shape({
       tap: PropTypes.any
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired
   }).isRequired
 };
 
