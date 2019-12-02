@@ -1,22 +1,14 @@
-import BasicWebChat, { concatMiddleware } from 'botframework-webchat-component';
+import BasicWebChat from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
-import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
-import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
-import defaultRenderMarkdown from './renderMarkdown';
+import useComposerProps from './useComposerProps';
 
 // Add additional props to <WebChat>, so it support additional features
-const FullReactWebChat = ({
-  adaptiveCardHostConfig,
-  adaptiveCardsHostConfig,
-  adaptiveCardsPackage,
-  attachmentMiddleware,
-  renderMarkdown,
-  styleOptions,
-  ...otherProps
-}) => {
+const FullReactWebChat = props => {
+  const { adaptiveCardHostConfig, adaptiveCardsHostConfig, adaptiveCardsPackage, ...otherProps } = props;
+
   useEffect(() => {
     adaptiveCardHostConfig &&
       console.warn(
@@ -24,24 +16,14 @@ const FullReactWebChat = ({
       );
   }, [adaptiveCardHostConfig]);
 
-  const patchedAttachmentMiddleware = useMemo(
-    () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
-    [attachmentMiddleware]
-  );
-
-  const extraStyleSet = useMemo(() => createAdaptiveCardsStyleSet(styleOptions), [styleOptions]);
+  const composerProps = useComposerProps(props);
 
   return (
     <AdaptiveCardsComposer
       adaptiveCardsHostConfig={adaptiveCardsHostConfig}
       adaptiveCardsPackage={adaptiveCardsPackage}
     >
-      <BasicWebChat
-        attachmentMiddleware={patchedAttachmentMiddleware}
-        extraStyleSet={extraStyleSet}
-        renderMarkdown={renderMarkdown || defaultRenderMarkdown}
-        {...otherProps}
-      />
+      <BasicWebChat {...otherProps} {...composerProps} />
     </AdaptiveCardsComposer>
   );
 };
@@ -51,9 +33,7 @@ FullReactWebChat.defaultProps = {
   adaptiveCardHostConfig: undefined,
   adaptiveCardsHostConfig: undefined,
   adaptiveCardsPackage: undefined,
-  attachmentMiddleware: undefined,
-  renderMarkdown: undefined,
-  styleOptions: undefined
+  renderMarkdown: undefined
 };
 
 FullReactWebChat.propTypes = {
@@ -61,9 +41,7 @@ FullReactWebChat.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
   adaptiveCardsHostConfig: PropTypes.any,
   adaptiveCardsPackage: PropTypes.any,
-  attachmentMiddleware: PropTypes.func,
-  renderMarkdown: PropTypes.func,
-  styleOptions: PropTypes.any
+  renderMarkdown: PropTypes.func
 };
 
 export default FullReactWebChat;

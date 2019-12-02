@@ -1,23 +1,23 @@
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import { Components } from 'botframework-webchat-component';
 
-import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
+import useComposerProps from './useComposerProps';
 
 const { Composer } = Components;
 
-const FullComposer = ({ adaptiveCardsHostConfig, adaptiveCardsPackage, children, styleOptions, ...otherProps }) => {
-  const extraStyleSet = useMemo(() => createAdaptiveCardsStyleSet(styleOptions), [styleOptions]);
+const FullComposer = props => {
+  const { adaptiveCardsHostConfig, adaptiveCardsPackage, children, ...otherProps } = props;
+  const composerProps = useComposerProps(props);
 
   return (
     <AdaptiveCardsComposer
       adaptiveCardsHostConfig={adaptiveCardsHostConfig}
       adaptiveCardsPackage={adaptiveCardsPackage}
-      styleOptions={styleOptions}
     >
-      <Composer extraStyleSet={extraStyleSet} styleOptions={styleOptions} {...otherProps}>
+      <Composer {...otherProps} {...composerProps}>
         {children}
       </Composer>
     </AdaptiveCardsComposer>
@@ -25,19 +25,17 @@ const FullComposer = ({ adaptiveCardsHostConfig, adaptiveCardsPackage, children,
 };
 
 FullComposer.defaultProps = {
+  ...Composer.defaultProps,
   adaptiveCardsHostConfig: undefined,
   adaptiveCardsPackage: undefined,
-  children: undefined,
-  styleOptions: undefined,
-  ...Composer.defaultProps
+  children: undefined
 };
 
 FullComposer.propTypes = {
+  ...Composer.propTypes,
   adaptiveCardsHostConfig: PropTypes.any,
   adaptiveCardsPackage: PropTypes.any,
-  children: PropTypes.any,
-  styleOptions: PropTypes.any,
-  ...Composer.propTypes
+  children: PropTypes.any
 };
 
 export default FullComposer;
