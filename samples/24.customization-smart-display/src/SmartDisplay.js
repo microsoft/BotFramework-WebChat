@@ -1,5 +1,3 @@
-import './SmartDisplay.css';
-
 import React, { useCallback, useState } from 'react';
 
 import BlurLens from './BlurLens';
