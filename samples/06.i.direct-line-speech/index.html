@@ -28,18 +28,59 @@
     <div id="webchat" role="main"></div>
     <script>
       (async function() {
-        // In this demo, we are using Direct Line token from MockBot.
+        // In this demo, we are using Direct Line Speech token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-        const res = await fetch('https://webchat-waterbottle.azurewebsites.net/token/speechservices', { method: 'GET' });
-        const { region, token } = await res.json();
-        const adapters = window.WebChat.createDirectLineSpeechAdapters({
-          speechServicesAuthorizationToken: token,
-          speechServicesRegion: region
+        const TOKEN_EXPIRE_AFTER = 300000;
+
+        // This function will fetch speech token from a server.
+        // In our server, we call Cognitive Services to exchange subscription key into authorization token.
+        // Visit https://docs.microsoft.com/en-us/azure/cognitive-services/authentication for more details.
+        const fetchCredentials = async () => {
+          const res = await fetch('https://webchat-waterbottle.azurewebsites.net/token/speechservices', {
+            method: 'GET'
+          });
+
+          if (!res.ok) {
+            throw new Error('Failed to fetch authorization token and region.');
+          }
+
+          const { region, token: authorizationToken } = await res.json();
+
+          return { authorizationToken, region };
+        };
+
+        // This function will create a memoized fetchCredentials function and reduce the call to the function.
+        // The memoized result is time-sensitive and will be invalidated after 5 minutes (specified in TOKEN_EXPIRE_AFTER).
+        const createMemoizedFetchCredentials = () => {
+          let lastFetch = 0;
+          let lastPromise;
+
+          return () => {
+            const now = Date.now();
+
+            if (!lastPromise || now - lastFetch > TOKEN_EXPIRE_AFTER) {
+              lastFetch = now;
+              lastPromise = fetchCredentials().catch(error => {
+                lastPromise = null;
+
+                return Promise.reject(error);
+              });
+            }
+
+            return lastPromise;
+          };
+        };
+
+        // Create a set of adapters for Web Chat to use with Direct Line Speech channel.
+        // Please refer to /packages/directlinespeech/src/createAdapters.js for list of supported options.
+        const adapters = await window.DirectLineSpeech.createAdapters({
+          fetchCredentials: createMemoizedFetchCredentials()
         });
 
+        // Pass the set of adapters to Web Chat.
         window.WebChat.renderWebChat(
           {
             ...adapters
