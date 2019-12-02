@@ -139,7 +139,7 @@ const BasicTranscript = ({ className }) => {
                 role="listitem"
               >
                 {element}
-                shouldSpeak && <SpeakActivity activity={activity} />}
+                {shouldSpeak && <SpeakActivity activity={activity} />}
               </li>
             ))}
           </ul>
