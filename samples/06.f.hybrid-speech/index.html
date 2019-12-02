@@ -32,9 +32,9 @@
       // The async function created will hold expiration information about the token and will return cached token when possible.
       function createFetchSpeechServicesCredentials() {
         let expireAfter = 0;
-        let lastResult = {};
+        let lastPromise;
 
-        return async () => {
+        return () => {
           // Fetch a new token if the existing one is expiring.
           // The following article mentioned the token is only valid for 10 minutes.
           // We will invalidate the token after 5 minutes.
@@ -45,11 +45,15 @@
               { method: 'POST' }
             );
 
-            lastResult = await speechServicesTokenRes.json();
             expireAfter = Date.now() + 300000;
+            lastPromise = speechServicesTokenRes.json().catch(err => {
+              lastPromise = null;
+
+              return Promise.reject(err);
+            });
           }
 
-          return lastResult;
+          return lastPromise;
         };
       }
 
