@@ -93,6 +93,8 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
                   return observableToPromise(directLine.getSessionId()).then(
                     sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
                   );
+                } else {
+                  console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
                 }
 
                 return value;
@@ -339,7 +341,7 @@ Composer.propTypes = {
       subscribe: PropTypes.func.isRequired
     }).isRequired,
     end: PropTypes.func,
-    getSessionId: PropTypes.func.isRequired,
+    getSessionId: PropTypes.func,
     postActivity: PropTypes.func.isRequired,
     referenceGrammarID: PropTypes.string,
     token: PropTypes.string
