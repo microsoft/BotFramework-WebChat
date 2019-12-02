@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2552](https://github.com/microsoft/BotFramework-WebChat/pull/2552): `useFocusSendBox`, `useScrollToEnd`, `useSendBoxValue`, `useSubmitSendBox`, `useTextBoxSubmit`, `useTextBoxValue`
    -  PR [#2553](https://github.com/microsoft/BotFramework-WebChat/pull/2553): `useDictateInterims`, `useDictateState`, `useGrammars`, `useMarkActivityAsSpoken`, `useMicrophoneButton`, `useShouldSpeakIncomingActivity`, `useStartDictate`, `useStopDictate`, `useVoiceSelector`, `useWebSpeechPonyfill`
    -  PR [#2554](https://github.com/microsoft/BotFramework-WebChat/pull/2554): `useRenderActivity`, `useRenderAttachment`
-   -  PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX): Added `internal/useWebChatUIContext` for cleaner code
+   -  PR [#2644](https://github.com/microsoft/BotFramework-WebChat/pull/2644): Added `internal/useWebChatUIContext` for cleaner code
 -  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
