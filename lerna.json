@@ -8,7 +8,8 @@
     "samples/16.customization-selectable-activity",
     "samples/17.a.chat-send-history",
     "samples/17.b.clear-after-idle",
-    "samples/21.customization-plain-ui"
+    "samples/21.customization-plain-ui",
+    "samples/24.customization-smart-display"
   ],
   "version": "0.0.0"
 }

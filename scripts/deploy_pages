@@ -7,7 +7,8 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 14.customization-piping-to-redux \
   --exclude 16.customization-selectable-activity \
   --exclude 17.a.chat-send-history \
-  --exclude 21.customization-plain-ui
+  --exclude 21.customization-plain-ui \
+  --exclude 24.customization-smart-display
 
 mkdir gh-pages/12.customization-minimizable-web-chat
 rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pages/12.customization-minimizable-web-chat/
@@ -26,3 +27,6 @@ rsync -av --progress samples/17.a.chat-send-history/build/ gh-pages/17.a.chat-se
 
 mkdir gh-pages/21.customization-plain-ui
 rsync -av --progress samples/21.customization-plain-ui/build/ gh-pages/21.customization-plain-ui/
+
+mkdir gh-pages/24.customization-smart-display
+rsync -av --progress samples/24.customization-smart-display/build/ gh-pages/24.customization-smart-display/
