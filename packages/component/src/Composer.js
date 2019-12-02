@@ -112,33 +112,9 @@ function createFocusSendBoxContext({ sendBoxRef }) {
   };
 }
 
-// TODO: [P3] Take this deprecation code out when releasing on or after 2019 December 11
-function patchStyleOptionsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }) {
-  let patchedStyleOptions = { ...styleOptions };
-
-  if (botAvatarInitials) {
-    patchedStyleOptions = { ...patchedStyleOptions, botAvatarInitials };
-
-    console.warn(
-      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
-    );
-  }
-
-  if (userAvatarInitials) {
-    patchedStyleOptions = { ...patchedStyleOptions, userAvatarInitials };
-
-    console.warn(
-      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
-    );
-  }
-
-  return patchedStyleOptions;
-}
-
 const Composer = ({
   activityRenderer,
   attachmentRenderer,
-  botAvatarInitials,
   cardActionMiddleware,
   children,
   directLine,
@@ -156,7 +132,6 @@ const Composer = ({
   sendTypingIndicator,
   styleOptions,
   styleSet,
-  userAvatarInitials,
   userID,
   username,
   webSpeechPonyfillFactory
@@ -177,11 +152,6 @@ const Composer = ({
 
     return sendTyping;
   }, [sendTyping, sendTypingIndicator]);
-
-  const patchedStyleOptions = useMemo(
-    () => patchStyleOptionsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
-    [botAvatarInitials, styleOptions, userAvatarInitials]
-  );
 
   useEffect(() => {
     dispatch(setLanguage(locale));
@@ -223,8 +193,8 @@ const Composer = ({
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
   const patchedStyleSet = useMemo(
-    () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
-    [extraStyleSet, patchedStyleOptions, styleSet]
+    () => styleSetToClassNames({ ...(styleSet || createStyleSet(styleOptions)), ...extraStyleSet }),
+    [extraStyleSet, styleOptions, styleSet]
   );
 
   const hoistedDispatchers = useMemo(
@@ -265,7 +235,7 @@ const Composer = ({
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
-      styleOptions: patchedStyleOptions,
+      styleOptions,
       styleSet: patchedStyleSet,
       userID,
       username,
@@ -283,12 +253,12 @@ const Composer = ({
       patchedGrammars,
       patchedSelectVoice,
       patchedSendTypingIndicator,
-      patchedStyleOptions,
       patchedStyleSet,
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
       sendTimeout,
+      styleOptions,
       userID,
       username,
       webSpeechPonyfill
@@ -336,7 +306,6 @@ export default ComposeWithStore;
 Composer.defaultProps = {
   activityRenderer: undefined,
   attachmentRenderer: undefined,
-  botAvatarInitials: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   disabled: false,
@@ -352,7 +321,6 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
-  userAvatarInitials: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -361,7 +329,6 @@ Composer.defaultProps = {
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
   attachmentRenderer: PropTypes.func,
-  botAvatarInitials: PropTypes.string,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
   directLine: PropTypes.shape({
@@ -393,7 +360,6 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
-  userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
