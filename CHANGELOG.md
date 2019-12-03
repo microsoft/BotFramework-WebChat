@@ -142,7 +142,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `bundle`: Webpack will now use `webpack-stats-plugin` instead of `webpack-visualizer-plugin`, by [@compulim](https://github.com/compulim) in PR [#2584](https://github.com/microsoft/BotFramework-WebChat/pull/2584)
    -  This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
    -  To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
--  `component`: Bumps [`react-film@1.3.1-master.3877c72`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
+-  `component`: Bumps [`react-film@2.0.0`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
 
 ### Samples
 
