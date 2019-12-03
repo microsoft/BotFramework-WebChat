@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import useStyleOptions from '../hooks/useStyleOptions';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 async function makeThumbnail(file, width, height, contentType, quality) {
   if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
@@ -15,7 +15,7 @@ async function makeThumbnail(file, width, height, contentType, quality) {
 }
 
 export default function useSendFiles() {
-  const { sendFiles } = useContext(WebChatUIContext);
+  const { sendFiles } = useWebChatUIContext();
   const [
     {
       enableUploadThumbnail,

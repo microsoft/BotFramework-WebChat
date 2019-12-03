@@ -1,9 +1,8 @@
-import { useCallback, useContext } from 'react';
-
-import WebChatUIContext from '../WebChatUIContext';
+import { useCallback } from 'react';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useVoiceSelector(activity) {
-  const context = useContext(WebChatUIContext);
+  const context = useWebChatUIContext();
 
   return useCallback(voices => context.selectVoice(voices, activity), [activity, context]);
 }

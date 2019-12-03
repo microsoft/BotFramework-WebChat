@@ -1,8 +1,6 @@
-import { useContext } from 'react';
-
 import { useSelector } from '../WebChatReduxContext';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useSendBoxValue() {
-  return [useSelector(({ sendBoxValue }) => sendBoxValue), useContext(WebChatUIContext).setSendBox];
+  return [useSelector(({ sendBoxValue }) => sendBoxValue), useWebChatUIContext().setSendBox];
 }
