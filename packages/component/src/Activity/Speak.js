@@ -32,7 +32,7 @@ const Speak = ({ activity }) => {
   }, [activity, markActivityAsSpoken]);
 
   const singleLine = useMemo(() => {
-    const { attachments = [], channelData: { speechSynthesisUtterance } = {}, speak, text } = activity;
+    const { attachments = [], speak, text } = activity;
 
     return (
       !!activity &&
@@ -46,6 +46,8 @@ const Speak = ({ activity }) => {
         .join('\r\n')
     );
   }, [activity]);
+
+  const { channelData: { speechSynthesisUtterance } = {} } = activity;
 
   return (
     !!activity && (
