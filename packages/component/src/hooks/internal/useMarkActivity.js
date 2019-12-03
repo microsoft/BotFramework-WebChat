@@ -1,4 +1,4 @@
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useMarkActivity() {
   return useWebChatUIContext().markActivity;

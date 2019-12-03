@@ -1,4 +1,4 @@
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useSetDictateState() {
   return useWebChatUIContext().setDictateState;
