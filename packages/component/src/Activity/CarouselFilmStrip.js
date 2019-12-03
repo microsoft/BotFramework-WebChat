@@ -119,6 +119,7 @@ const WebChatCarouselFilmStrip = ({
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
   const roleLabel = fromUser ? userRoleLabel : botRoleLabel;
+
   return (
     <div
       className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {

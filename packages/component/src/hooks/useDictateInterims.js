@@ -1,8 +1,6 @@
-import { useContext } from 'react';
-
 import { useSelector } from '../WebChatReduxContext';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useDictateInterims() {
-  return [useSelector(({ dictateInterims }) => dictateInterims) || [], useContext(WebChatUIContext).setDictateInterims];
+  return [useSelector(({ dictateInterims }) => dictateInterims) || [], useWebChatUIContext().setDictateInterims];
 }

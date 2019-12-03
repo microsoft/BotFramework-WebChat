@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customization, by [@compulim](https://github.com/compulim), in the following PRs:
-   -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxDictationStarted`
+   -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxShowInterims`
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
    -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
    -  PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543): `useAdaptiveCardsHostConfig`, `useAdaptiveCardsPackage`, `useRenderMarkdownAsHTML`
@@ -42,6 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2551](https://github.com/microsoft/BotFramework-WebChat/pull/2551): `useLastTypingAt`, `useSendTypingIndicator`, `useTypingIndicator`
    -  PR [#2552](https://github.com/microsoft/BotFramework-WebChat/pull/2552): `useFocusSendBox`, `useScrollToEnd`, `useSendBoxValue`, `useSubmitSendBox`, `useTextBoxSubmit`, `useTextBoxValue`
    -  PR [#2553](https://github.com/microsoft/BotFramework-WebChat/pull/2553): `useDictateInterims`, `useDictateState`, `useGrammars`, `useMarkActivityAsSpoken`, `useMicrophoneButton`, `useShouldSpeakIncomingActivity`, `useStartDictate`, `useStopDictate`, `useVoiceSelector`, `useWebSpeechPonyfill`
+   -  PR [#2554](https://github.com/microsoft/BotFramework-WebChat/pull/2554): `useRenderActivity`, `useRenderAttachment`
+   -  PR [#2644](https://github.com/microsoft/BotFramework-WebChat/pull/2644): Added `internal/useWebChatUIContext` for cleaner code
 -  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
@@ -55,12 +57,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2512](https://github.com/microsoft/BotFramework-WebChat/issues/2512). Adds check to ensure Adaptive Card's content is an Object, by [@tdurnford](https://github.com/tdurnford) in PR [#2590](https://github.com/microsoft/BotFramework-WebChat/pull/2590)
 -  Fixes [#1780](https://github.com/microsoft/BotFramework-WebChat/issues/1780), [#2277](https://github.com/microsoft/BotFramework-WebChat/issues/2277), and [#2285](https://github.com/microsoft/BotFramework-WebChat/issues/2285). Make Suggested Actions accessible, Fix Markdown card in carousel being read multiple times, and label widgets of Connectivity Status and Suggested Actions containers, by [@corinagum](https://github.com/corinagum) in PR [#2613](https://github.com/microsoft/BotFramework-WebChat/pull/2613)
 -  Fixes [#2608](https://github.com/microsoft/BotFramework-WebChat/issues/2608). Focus will return to sendbox after clicking New Messages or a Suggested Actions button, by [@corinagum](https://github.com/corinagum) in PR [#2628](https://github.com/microsoft/BotFramework-WebChat/pull/2628)
--  `component`: Fixes [#2331](https://github.com/microsoft/BotFramework-WebChat/issues/2331). Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
 -  Resolves [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
--  Adds `suggestedActionLayout` to `defaultStyleOptions`, by [@spyip](https://github.com/spyip), in PR [#2596](https://github.com/microsoft/BotFramework-WebChat/pull/2596)
+-  Resolves [#1835](https://github.com/microsoft/BotFramework-WebChat/issues/1835). Adds `suggestedActionLayout` to `defaultStyleOptions`, by [@spyip](https://github.com/spyip), in PR [#2596](https://github.com/microsoft/BotFramework-WebChat/pull/2596)
 -  Resolves [#2331](https://github.com/microsoft/BotFramework-WebChat/issues/2331). Updated timer to use React Hooks, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
--  Resolves [#2620](https://github.com/microsoft/BotFramework-WebChat/issues/2620), update Chinese localization files, by [@spyip](https://github.com/spyip) in PR [#2631](https://github.com/microsoft/BotFramework-WebChat/pull/2631)
+-  Resolves [#2620](https://github.com/microsoft/BotFramework-WebChat/issues/2620). Adds Chinese localization files, by [@spyip](https://github.com/spyip) in PR [#2631](https://github.com/microsoft/BotFramework-WebChat/pull/2631)
 -  Fixes [#2639](https://github.com/microsoft/BotFramework-WebChat/issues/2639). Fix passed in prop time from string to boolean, by [@corinagum](https://github.com/corinagum) in PR [#2640](https://github.com/microsoft/BotFramework-WebChat/pull/2640)
+-  `component`: Updated timer to use functional component, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
+-  Fixes [#2651](https://github.com/microsoft/BotFramework-WebChat/issues/2651). Add `ends-with` string module to ES5 bundle, by [@corinagum](https://github.com/corinagum) in PR [#2654](https://github.com/microsoft/BotFramework-WebChat/pull/2654)
 -  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
 
 ### Changed

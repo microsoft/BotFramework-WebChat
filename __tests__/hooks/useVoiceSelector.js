@@ -34,12 +34,12 @@ test('calling voiceSelector should use selectVoice from props', async () => {
       ])
     )
   ).resolves.toMatchInlineSnapshot(`
-          Object {
-            "default": false,
-            "lang": "zh-YUE",
-            "localService": true,
-            "name": "Mock Voice (zh-YUE)",
-            "voiceURI": "mock://web-speech/voice/zh-YUE",
-          }
-        `);
+    Object {
+      "default": false,
+      "lang": "zh-YUE",
+      "localService": true,
+      "name": "Mock Voice (zh-YUE)",
+      "voiceURI": "mock://web-speech/voice/zh-YUE",
+    }
+  `);
 });

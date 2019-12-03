@@ -1,15 +1,18 @@
-import { useContext } from 'react';
+import { useCallback } from 'react';
 
 import { useSelector } from '../WebChatReduxContext';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useShouldSpeakIncomingActivity() {
-  const { startSpeakingActivity, stopSpeakingActivity } = useContext(WebChatUIContext);
+  const { startSpeakingActivity, stopSpeakingActivity } = useWebChatUIContext();
 
   return [
     useSelector(({ shouldSpeakIncomingActivity }) => shouldSpeakIncomingActivity),
-    value => {
-      value ? startSpeakingActivity() : stopSpeakingActivity();
-    }
+    useCallback(
+      value => {
+        value ? startSpeakingActivity() : stopSpeakingActivity();
+      },
+      [startSpeakingActivity, stopSpeakingActivity]
+    )
   ];
 }

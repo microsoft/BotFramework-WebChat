@@ -132,7 +132,6 @@ const useMicrophoneButtonClick = () => {
   ]);
 };
 
-// TODO: [P1] We temporarily not exporting this hook because it requires legacy HOC code
 function useMicrophoneButtonDisabled() {
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();

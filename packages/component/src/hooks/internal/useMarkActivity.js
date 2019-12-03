@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-
-import WebChatUIContext from '../../WebChatUIContext';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useMarkActivity() {
-  return useContext(WebChatUIContext).markActivity;
+  return useWebChatUIContext().markActivity;
 }

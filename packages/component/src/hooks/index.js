@@ -17,6 +17,8 @@ import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
+import useRenderActivity from './useRenderActivity';
+import useRenderAttachment from './useRenderAttachment';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
@@ -40,8 +42,8 @@ import useVoiceSelector from './useVoiceSelector';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
-import { useSendBoxDictationStarted } from '../BasicSendBox';
-import { useTextBoxSubmit } from '../SendBox/TextBox';
+import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
+import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
 
 export {
@@ -66,9 +68,11 @@ export {
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
+  useRenderActivity,
+  useRenderAttachment,
   useRenderMarkdownAsHTML,
   useScrollToEnd,
-  useSendBoxDictationStarted,
+  useSendBoxSpeechInterimsVisible,
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
@@ -84,6 +88,7 @@ export {
   useSubmitSendBox,
   useSuggestedActions,
   useTextBoxSubmit,
+  useTextBoxValue,
   useTimeoutForSend,
   useTypingIndicatorVisible,
   useUserID,
