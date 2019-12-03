@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext } from 'react';
 
 import useStyleOptions from '../hooks/useStyleOptions';
 import WebChatUIContext from '../WebChatUIContext';
