@@ -1,11 +1,11 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 
 import useStyleOptions from '../hooks/useStyleOptions';
 import WebChatUIContext from '../WebChatUIContext';
 
 export default function useRenderMarkdownAsHTML() {
   const { renderMarkdown } = useContext(WebChatUIContext);
-  const styleOptions = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
 
   return useCallback(markdown => renderMarkdown(markdown, styleOptions), [renderMarkdown, styleOptions]);
 }
