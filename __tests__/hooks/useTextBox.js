@@ -9,21 +9,31 @@ import uiConnected from '../setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-// TODO: [P1] Test is temporarily disable until fully implemented
 test('calling submit should scroll to end', async () => {
-  // const { driver, pageObjects } = await setupWebDriver();
-  // await driver.wait(uiConnected(), timeouts.directLine);
-  // await pageObjects.typeOnSendBox('help');
-  // await expect(pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[0])).resolves.toBe('help');
-  // await pageObjects.clickSendButton();
-  // await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  // await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
-  // await driver.executeScript(() => {
-  //   document.querySelector('[role="log"] > *').scrollTop = 0;
-  // });
-  // expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  // await pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[1]('Hello, World!'));
-  // await pageObjects.runHook('useTextBoxSubmit', [], textBoxSubmit => textBoxSubmit());
-  // await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
-  // expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.typeOnSendBox('help');
+
+  await expect(pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[0])).resolves.toBe('help');
+
+  await pageObjects.clickSendButton();
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  await driver.executeScript(() => {
+    document.querySelector('[role="log"] > *').scrollTop = 0;
+  });
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[1]('Hello, World!'));
+  await pageObjects.runHook('useTextBoxSubmit', [], textBoxSubmit => textBoxSubmit());
+
+  await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });

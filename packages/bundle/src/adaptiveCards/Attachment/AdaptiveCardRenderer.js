@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { Components, connectToWebChat, getTabIndex, hooks } from 'botframework-webchat-component';
+import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -226,6 +226,4 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ tapAction }) => ({
-  tapAction
-}))(AdaptiveCardRenderer);
+export default AdaptiveCardRenderer;

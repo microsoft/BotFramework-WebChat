@@ -1,6 +1,5 @@
 import { timeouts } from '../constants.json';
 
-import isDictating from '../setup/pageObjects/isDictating';
 import uiConnected from '../setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -18,5 +17,11 @@ test('calling startDictate should start dictate', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.runHook('useStartDictate', [], startDictate => startDictate());
 
+  // The engine is starting, but not fully started yet.
   await expect(pageObjects.isDictating()).resolves.toBeFalsy();
+
+  await pageObjects.putSpeechRecognitionResult('recognizing', 'Hello, World!');
+
+  // The engine has started, and recognition is ongoing and is not stopping.
+  await expect(pageObjects.isDictating()).resolves.toBeTruthy();
 });

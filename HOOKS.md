@@ -320,17 +320,18 @@ This value is not controllable and is passed to Web Chat from the Direct Line ch
 ## `useRenderActivity`
 
 ```js
-useRenderActivity(): ({
-  activity: Activity,
+useRenderActivity(
   renderAttachment: ({
     activity: Activity,
     attachment: Attachment
-  }) => React.Element,
+  }) => React.Element
+): ({
+  activity: Activity,
   timestampClassName: string
 }) => React.Element
 ```
 
-This function is for rendering an activity inside a React element. The caller will need to pass `activity`, `timestampClassName`, and a render function for the attachment. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `timestampClassName`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
@@ -596,15 +597,15 @@ This value can be partly controllable through Web Chat props.
 
 These are hooks that are specific for the send box.
 
--  [`useSendBoxDictationStarted`](#usesendboxdictationstarted)
+-  [`useSendBoxSpeechInterimsVisible`](#usesendboxspeechinterimsvisible)
 
-### `useSendBoxDictationStarted`
+### `useSendBoxSpeechInterimsVisible`
 
 ```js
-useSendBoxDictationStarted(): [boolean]
+useSendBoxSpeechInterimsVisible(): [boolean]
 ```
 
-This function will return whether speech-to-text detection has been started or not.
+This function will return whether the send box should show speech interims.
 
 ## `TextBox`
 

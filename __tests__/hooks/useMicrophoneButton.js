@@ -9,20 +9,27 @@ import uiConnected from '../setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 test('microphoneButtonClick should toggle recording', async () => {
-  // TODO: [P1] Test is temporarily disabled until the hook is implemented
-  // const { driver, pageObjects } = await setupWebDriver({
-  //   props: {
-  //     webSpeechPonyfillFactory: () => window.WebSpeechMock
-  //   }
-  // });
-  // await driver.wait(uiConnected(), timeouts.directLine);
-  // await pageObjects.runHook('useMicrophoneButtonClick', [], microphoneButtonClick => microphoneButtonClick());
-  // await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
-  // await expect(
-  //   pageObjects.runHook('useMicrophoneButtonDisabled', [], microphoneButtonDisabled => microphoneButtonDisabled[0])
-  // ).resolves.toBeTruthy();
-  // await pageObjects.putSpeechRecognitionResult('recognizing', 'Hello');
-  // await expect(pageObjects.isDictating()).resolves.toBeTruthy();
-  // await pageObjects.runHook('useMicrophoneButtonClick', [], microphoneButtonClick => microphoneButtonClick());
-  // await expect(pageObjects.isDictating()).resolves.toBeFalsy();
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      webSpeechPonyfillFactory: () => window.WebSpeechMock
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.runHook('useMicrophoneButtonClick', [], microphoneButtonClick => microphoneButtonClick());
+
+  await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
+
+  await expect(
+    pageObjects.runHook('useMicrophoneButtonDisabled', [], microphoneButtonDisabled => microphoneButtonDisabled[0])
+  ).resolves.toBeTruthy();
+
+  await pageObjects.putSpeechRecognitionResult('recognizing', 'Hello');
+
+  await expect(pageObjects.isDictating()).resolves.toBeTruthy();
+
+  await pageObjects.runHook('useMicrophoneButtonClick', [], microphoneButtonClick => microphoneButtonClick());
+
+  await expect(pageObjects.isDictating()).resolves.toBeFalsy();
 });
