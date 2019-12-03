@@ -12,6 +12,7 @@ import useLanguage from './hooks/useLanguage';
 import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
 import useSetDictateState from './hooks/internal/useSetDictateState';
+import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
 import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
 import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
@@ -22,6 +23,7 @@ const {
 } = Constants;
 
 const Dictation = ({ onError }) => {
+  const [, setDictateAbortable] = useSettableDictateAbortable();
   const [, setDictateInterims] = useDictateInterims();
   const [, setSendBox] = useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
@@ -66,10 +68,11 @@ const Dictation = ({ onError }) => {
   );
 
   const handleDictating = useCallback(
-    ({ results = [] }) => {
+    ({ abortable, results = [] }) => {
       if (dictateState === DICTATING || dictateState === STARTING) {
         const interims = results.map(({ transcript }) => transcript);
 
+        setDictateAbortable(abortable);
         setDictateInterims(interims);
         setDictateState(DICTATING);
         sendTypingIndicator && emitTypingIndicator();

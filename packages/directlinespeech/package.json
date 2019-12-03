@@ -55,6 +55,6 @@
     "event-as-promise": "^1.0.5",
     "microsoft-cognitiveservices-speech-sdk": "file:external/microsoft-cognitiveservices-speech-sdk-1.6.0-alpha.0.1.tgz",
     "p-defer": "^3.0.0",
-    "web-speech-cognitive-services": "^5.0.2-master.e85a10c"
+    "web-speech-cognitive-services": "^6.0.0"
   }
 }
