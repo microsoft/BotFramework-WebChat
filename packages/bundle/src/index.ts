@@ -3,13 +3,15 @@
 
 export * from './index-minimal';
 
-import { hooks, version } from './index-minimal';
+import { Components as MinimalComponents, hooks, version } from './index-minimal';
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
+import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
-import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
+import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
+import FullComposer from './FullComposer';
 import ReactWebChat from './FullReactWebChat';
 import renderMarkdown from './renderMarkdown';
 import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';
@@ -31,9 +33,16 @@ const patchedHooks = {
   useAdaptiveCardsPackage
 };
 
+const Components = {
+  ...MinimalComponents,
+  Composer: FullComposer
+};
+
 export default ReactWebChat;
 
 export {
+  Components,
+  createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createStyleSet,
@@ -44,6 +53,7 @@ export {
 
 window['WebChat'] = {
   ...window['WebChat'],
+  createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,

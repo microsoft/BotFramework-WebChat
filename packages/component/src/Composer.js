@@ -3,8 +3,8 @@ import {
   FunctionContext as ScrollToBottomFunctionContext
 } from 'react-scroll-to-bottom';
 
-import { Provider } from 'react-redux';
 import { css } from 'glamor';
+import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
@@ -112,42 +112,14 @@ function createFocusSendBoxContext({ sendBoxRef }) {
   };
 }
 
-// TODO: [P3] Take this deprecation code out when releasing on or after 2019 December 11
-function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ...props }) {
-  // This code will take out "botAvatarInitials" and "userAvatarInitials" from props
-
-  let { styleOptions } = props;
-
-  if (botAvatarInitials) {
-    styleOptions = { ...styleOptions, botAvatarInitials };
-
-    console.warn(
-      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
-    );
-  }
-
-  if (userAvatarInitials) {
-    styleOptions = { ...styleOptions, userAvatarInitials };
-
-    console.warn(
-      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
-    );
-  }
-
-  return {
-    ...props,
-    styleOptions
-  };
-}
-
 const Composer = ({
   activityRenderer,
   attachmentRenderer,
-  botAvatarInitials,
   cardActionMiddleware,
   children,
   directLine,
   disabled,
+  extraStyleSet,
   grammars,
   groupTimestamp,
   locale,
@@ -160,7 +132,6 @@ const Composer = ({
   sendTypingIndicator,
   styleOptions,
   styleSet,
-  userAvatarInitials,
   userID,
   username,
   webSpeechPonyfillFactory
@@ -181,11 +152,6 @@ const Composer = ({
 
     return sendTyping;
   }, [sendTyping, sendTypingIndicator]);
-
-  const patchedStyleOptions = useMemo(
-    () => patchPropsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
-    [botAvatarInitials, styleOptions, userAvatarInitials]
-  );
 
   useEffect(() => {
     dispatch(setLanguage(locale));
@@ -226,10 +192,10 @@ const Composer = ({
 
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
-  const patchedStyleSet = useMemo(() => styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions)), [
-    patchedStyleOptions,
-    styleSet
-  ]);
+  const patchedStyleSet = useMemo(
+    () => styleSetToClassNames({ ...(styleSet || createStyleSet(styleOptions)), ...extraStyleSet }),
+    [extraStyleSet, styleOptions, styleSet]
+  );
 
   const hoistedDispatchers = useMemo(
     () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher(...args))),
@@ -269,7 +235,7 @@ const Composer = ({
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
-      styleOptions: patchedStyleOptions,
+      styleOptions,
       styleSet: patchedStyleSet,
       userID,
       username,
@@ -287,12 +253,12 @@ const Composer = ({
       patchedGrammars,
       patchedSelectVoice,
       patchedSendTypingIndicator,
-      patchedStyleOptions,
       patchedStyleSet,
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
       sendTimeout,
+      styleOptions,
       userID,
       username,
       webSpeechPonyfill
@@ -340,14 +306,14 @@ export default ComposeWithStore;
 Composer.defaultProps = {
   activityRenderer: undefined,
   attachmentRenderer: undefined,
-  botAvatarInitials: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   disabled: false,
+  extraStyleSet: undefined,
   grammars: [],
   groupTimestamp: true,
   locale: window.navigator.language || 'en-US',
-  renderMarkdown: text => text,
+  renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
   sendTimeout: 20000,
@@ -355,7 +321,6 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
-  userAvatarInitials: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -364,7 +329,6 @@ Composer.defaultProps = {
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
   attachmentRenderer: PropTypes.func,
-  botAvatarInitials: PropTypes.string,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
   directLine: PropTypes.shape({
@@ -381,6 +345,7 @@ Composer.propTypes = {
     token: PropTypes.string
   }).isRequired,
   disabled: PropTypes.bool,
+  extraStyleSet: PropTypes.any,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
@@ -395,7 +360,6 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
-  userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

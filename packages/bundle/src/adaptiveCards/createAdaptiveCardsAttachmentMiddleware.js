@@ -11,8 +11,7 @@ import SignInCardAttachment from './Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
-// TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
-export default function createAdaptiveCardMiddleware() {
+export default function createAdaptiveCardsAttachmentMiddleware() {
   return () => next => {
     function AdaptiveCardMiddleware({ activity, attachment }) {
       return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
