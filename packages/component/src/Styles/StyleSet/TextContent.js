@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 
-export default function createTextContentStyle({ bubbleMinHeight, primaryFont, paddingRegular }) {
+export default function createTextContentStyle({ bubbleMaxWidth, bubbleMinHeight, primaryFont, paddingRegular }) {
   return {
     fontFamily: primaryFont,
     margin: 0,
@@ -17,7 +17,8 @@ export default function createTextContentStyle({ bubbleMinHeight, primaryFont, p
 
     '&.markdown': {
       '& img': {
-        maxWidth: '100%'
+        maxWidth: bubbleMaxWidth,
+        width: '100%'
       },
 
       '& pre': {
