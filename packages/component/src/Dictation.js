@@ -3,8 +3,6 @@ import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
-import connectToWebChat from './connectToWebChat';
-
 import useActivities from './hooks/useActivities';
 import useDictateInterims from './hooks/useDictateInterims';
 import useDictateState from './hooks/useDictateState';
