@@ -31,7 +31,7 @@ export default function connectivityStatus(state = DEFAULT_STATE, { type, meta }
         break;
 
       case CONNECT_STILL_PENDING:
-        if (state === 'reconnecting') {
+        if (state === 'reconnecting' || state === DEFAULT_STATE) {
           state = 'connectingslow';
         }
         break;
