@@ -70,7 +70,7 @@ export default async function playCognitiveServicesStream(
 
     const read = () =>
       Promise.race([
-        // Abort will gracefully end the queue, we will check signal.aborted later to throw abort exception.
+        // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
         abortPromise.catch(() => ({ isEnd: true })),
         cognitiveServicesPromiseToESPromise(streamReader.read())
       ]);

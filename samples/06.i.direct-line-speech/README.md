@@ -32,15 +32,15 @@ Direct Line Speech is a channel for communicating with a bot via a low-latency s
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
-In this sample, we will switch the protocol in Web Chat. Direct Line Speech is a channel for communicating with a bot via a low-latency speech-focused protocol. The channel is designed for real-time speech purpose. Thus, not all features in Web Chat are supported in this channel.
+In this sample, we will switch the Web Chat protocol. Direct Line Speech is a channel for communicating with a bot via a low-latency speech-focused protocol. The channel is designed for real-time speech. Thus, *not all features in Web Chat are supported in this channel.*
 
 (TBD, list of limitations)
 
-Direct Line Speech JavaScript SDK provides several adapters for Web Chat and all of these adapters work as a whole. After we created the adapter set, we will pass it to Web Chat for initialization.
+The Direct Line Speech JavaScript SDK provides several adapters for Web Chat and all of these adapters work together as a whole. After we created the adapter set, we will pass it to Web Chat for initialization.
 
 ### Setting up Direct Line Channel
 
-First, go to Azure Portal and [create a new Cognitive Services for Speech Services resource](https://ms.portal.azure.com/#blade/Microsoft_Azure_Marketplace/MarketplaceOffersBlade/selectedMenuItemId/CognitiveServices_MP/dontDiscardJourney/true/launchingContext/%7B%22source%22%3A%22Resources%20Microsoft.CognitiveServices%2Faccounts%22%7D). Please write down the subscription key, we will use it to configure Web Chat later.
+First, go to Azure Portal and [create a new Cognitive Services for Speech Services resource](https://ms.portal.azure.com/#blade/Microsoft_Azure_Marketplace/MarketplaceOffersBlade/selectedMenuItemId/CognitiveServices_MP/dontDiscardJourney/true/launchingContext/%7B%22source%22%3A%22Resources%20Microsoft.CognitiveServices%2Faccounts%22%7D). Please securely record the subscription key. We will use it to configure Web Chat later.
 
 After the Azure resource is created, configure your bot with a new Direct Line Speech channel and associate the channel with your newly created Azure resource. You can follow [this article for connecting your bot to Direct Line Speech channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0).
 
@@ -48,9 +48,9 @@ You will also need to update your bot to use 4.6 SDK. You can follow [this artic
 
 ### Using subscription key
 
-We will start by using subscription key to connect to Direct Line Speech channel. Subscription key is not recommended to use in production environment. In this sample, we will use it to verify if our configuration is correct. In our latter section, we will upgrade the sample to use authorization token instead.
+We will start by using subscription key to connect to the Direct Line Speech channel. *Please note that a subscription key is not recommended to use in production environment.* In this sample, we will use it to verify if our configuration is correct. In the latter section, we will upgrade the sample to use an authorization token.
 
-We are replacing the existing code by creating an adapter set using the new `createDirectLineSpeechAdapters` function. We will pass the adapter set to Web Chat using [spread operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
+We are replacing the existing code by creating an adapter set using the new `createDirectLineSpeechAdapters` function. We will pass the adapter set to Web Chat using the [spread operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
 
 ```diff
 - const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -71,17 +71,17 @@ We are replacing the existing code by creating an adapter set using the new `cre
   );
 ```
 
-> For list of supported options, you can refer to our [README on Direct Line Speech SDK](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/directlinespeech/).
+> For a list of supported options, you can refer to Web Chat's [Direct Line Speech SDK](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/directlinespeech/) documentation.
 
 Now, you should be able to communicate with your bot using the Direct Line Speech channel. If you encounter any problems while connecting to the service, you should use the in-browser developer tool and investigate.
 
 ### Using authorization token
 
-After you verified Web Chat is communicating with your bot using Direct Line Speech channel, we will upgrade the code to use authorization token instead.
+Once you have verified that Web Chat is communicating with your bot using the Direct Line Speech channel, the next step is to upgrade the code to use the authorization token instead.
 
 The authorization token is generated using subscription key. To secure the token, the exchange must be done on server-side and the subscription key should never be passed to the browser.
 
-First, create an async function `fetchCredentials`. When called, it will fetch the authorization token from the server. In this sample, we will fetch the token from our demo bot. The function will return `authorizationToken` and `region` in a JavaScript object.
+First, create an async function `fetchCredentials`. When called, it will fetch the authorization token from the server. In this sample, the token is fetched from the demo bot, Mock Bot. The function will return `authorizationToken` and `region` in a JavaScript object.
 
 ```js
 const fetchCredentials = async () => {
@@ -118,7 +118,7 @@ Then, pass the function as an option to the Direct Line Speech SDK. The name of 
   );
 ```
 
-Open the web page and investigate the network traffic. You should see Web Chat is connecting to Cognitive Services using the authorization token fetched from the server.
+Open the web page and investigate the network traffic. Confirm that Web Chat is connecting to Cognitive Services using the authorization token fetched from the server.
 
 ## Completed code
 

@@ -44,7 +44,7 @@ export default async function create({
 
   if (typeof enableTelemetry !== 'undefined') {
     console.warn(
-      'botframework-directlinespeech: Telemetry options is not supported yet. Please refer to Cognitive Services documentation for details.'
+      'botframework-directlinespeech: Telemetry options are not yet supported. Please refer to Cognitive Services documentation for details.'
     );
   }
 
@@ -54,31 +54,31 @@ export default async function create({
 
   if (speechRecognitionEndpointId) {
     console.warn(
-      'botframework-directlinespeech: Custom Speech is currently not supported, ignoring speechRecognitionEndpointId.'
+      'botframework-directlinespeech: Custom Speech is currently not supported; ignoring speechRecognitionEndpointId.'
     );
   }
 
   if (speechSynthesisDeploymentId) {
     console.warn(
-      'botframework-directlinespeech: Custom Voice is currently not supported, ignoring speechSynthesisDeploymentId.'
+      'botframework-directlinespeech: Custom Voice is currently not supported; ignoring speechSynthesisDeploymentId.'
     );
   }
 
   if (speechSynthesisOutputFormat) {
     console.warn(
-      'botframework-directlinespeech: Synthesis output format is currently not supported, ignoring speechSynthesisOutputFormat.'
+      'botframework-directlinespeech: Synthesis output format is currently not supported; ignoring speechSynthesisOutputFormat.'
     );
   }
 
   if (textNormalization) {
     console.warn(
-      'botframework-directlinespeech: Text normalization is currently not supported, ignoreing "textNormalization".'
+      'botframework-directlinespeech: Text normalization is currently not supported; ignoring "textNormalization".'
     );
   }
 
   if (userID || username) {
     console.warn(
-      'botframework-directlinespeech: Custom "userId" and "username" are currently not supported, ignoring.'
+      'botframework-directlinespeech: Custom "userId" and "username" are currently not supported and are ignored.'
     );
   }
 
