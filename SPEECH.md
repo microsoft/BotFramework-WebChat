@@ -1,5 +1,7 @@
 # Using Cognitive Services Speech Services
 
+> For Direct Line Speech, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/DIRECT_LINE_SPEECH.md).
+
 This guide is for integrating speech-to-text and text-to-speech functionality of Azure Cognitive Services.
 
 We assume you have already set up a bot and have Web Chat running on a page.
@@ -86,7 +88,16 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Select language</td>
+      <td>Select language at initialization</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.2</td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Select language on-the-fly</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>
       <th>✔</th><td>4.2</td>

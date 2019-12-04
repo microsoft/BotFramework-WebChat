@@ -36,6 +36,7 @@ function* observeAndPutConnectionStatusUpdate(directLine) {
   }
 }
 
+// TODO: [P2] We should move this check and rectification to DirectLineJS.
 function rectifyUserID(directLine, userIDFromAction) {
   const { token } = directLine;
   const { user: userIDFromToken } = decode(token) || {};

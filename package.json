@@ -51,6 +51,7 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/setup/",
+      "<rootDir>/packages/directlinespeech/__tests__/utilities/",
       "<rootDir>/packages/playground/",
       "<rootDir>/samples/"
     ],
@@ -69,15 +70,15 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run --scope=botframework-webchat* --scope=isomorphic* --stream build",
+    "build": "lerna run --scope=botframework-* --scope=isomorphic* --stream build",
     "build:sample": "lerna run --scope=sample-* --stream build",
-    "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
+    "clean": "lerna run --scope=botframework-* --parallel --stream clean",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "eslint": "lerna run --scope=botframework-webchat* --scope=isomorphic* --parallel --stream eslint",
+    "eslint": "lerna run --scope=botframework-* --scope=isomorphic* --parallel --stream eslint",
     "lerna-publish": "lerna publish",
-    "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=isomorphic* --scope=playground --stream prepublishOnly",
+    "prepublishOnly": "lerna run --scope=botframework-* --scope=isomorphic* --scope=playground --stream prepublishOnly",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "start": "npm run build && lerna run --parallel --scope=botframework-webchat* --scope=isomorphic* --stream watch",
+    "start": "npm run build && lerna run --parallel --scope=botframework-* --scope=isomorphic* --stream watch",
     "start:docker": "npm run build && docker-compose up --build",
     "start:playground": "cd packages/playground && npm run start",
     "tableflip": "npm run tableflip:start && lerna clean --yes --concurrency 2 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",

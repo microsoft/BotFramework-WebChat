@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
 -  Adds `AdaptiveCardsComposer` and `AdaptiveCardsContext` for composability for Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#2648](https://github.com/microsoft/BotFramework-WebChat/pull/2648)
+-  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
 
 ### Fixed
 
@@ -68,7 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)
+-  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533) and PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
    -  Development dependencies
       -  Root package
          -  `@azure/storage-blob@12.0.0`
@@ -132,6 +133,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `component`
          -  `bytes@3.1.0`
          -  `memoize-one@5.1.1`
+         -  `react-dictate-button@1.2.1`
          -  `react-redux@7.1.1`
          -  `remark@11.0.1`
          -  `sanitize-html@1.20.1`

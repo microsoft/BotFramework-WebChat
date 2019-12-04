@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
-import Say from 'react-say';
+import Say, { SayUtterance } from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
@@ -47,10 +47,16 @@ const Speak = ({ activity }) => {
     );
   }, [activity]);
 
+  const { channelData: { speechSynthesisUtterance } = {} } = activity;
+
   return (
     !!activity && (
       <React.Fragment>
-        <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
+        {speechSynthesisUtterance ? (
+          <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={speechSynthesisUtterance} />
+        ) : (
+          <Say onEnd={markAsSpoken} onError={markAsSpoken} text={singleLine} voice={selectVoice} />
+        )}
         {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
       </React.Fragment>
     )
@@ -67,6 +73,9 @@ Speak.propTypes = {
         title: PropTypes.string
       })
     ),
+    channelData: PropTypes.shape({
+      speechSynthesisUtterance: PropTypes.any
+    }),
     speak: PropTypes.string,
     text: PropTypes.string
   }).isRequired
