@@ -95,6 +95,6 @@ export default class DirectLineSpeech {
   }
 }
 
-// Interfaces that we did not implemented.
+// Interfaces not yet implemented in Web Chat:
 // referenceGrammarId?: string,
 // getSessionId? : () => Observable<string>
