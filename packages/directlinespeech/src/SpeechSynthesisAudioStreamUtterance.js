@@ -1,20 +1,20 @@
 import EventTarget, { defineEventAttribute } from './external/event-target-shim';
 
-class SpeechSynthesisAudioStreamUtterance extends EventTarget {}
+class SpeechSynthesisAudioStreamUtterance extends EventTarget {
+  constructor(audioStream) {
+    super();
+
+    if (audioStream && !(audioStream.format && audioStream.streamReader)) {
+      throw new Error('The first argument must be a Cognitive Services audio stream.');
+    }
+
+    this.audioStream = audioStream;
+  }
+}
 
 defineEventAttribute(SpeechSynthesisAudioStreamUtterance, 'boundary');
 defineEventAttribute(SpeechSynthesisAudioStreamUtterance, 'end');
 defineEventAttribute(SpeechSynthesisAudioStreamUtterance, 'error');
 defineEventAttribute(SpeechSynthesisAudioStreamUtterance, 'start');
 
-function fromAudioStream(audioStream) {
-  const utterance = new SpeechSynthesisAudioStreamUtterance();
-
-  utterance.audioStream = audioStream;
-
-  return utterance;
-}
-
 export default SpeechSynthesisAudioStreamUtterance;
-
-export { fromAudioStream };

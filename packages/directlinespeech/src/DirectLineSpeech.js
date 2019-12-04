@@ -4,7 +4,7 @@ import Observable from 'core-js/features/observable';
 import random from 'math-random';
 
 import shareObservable from './shareObservable';
-import { fromAudioStream as createUtteranceFromAudioStream } from './SpeechSynthesisAudioStreamUtterance';
+import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
 
 function randomActivityId() {
   return random()
@@ -41,7 +41,7 @@ export default class DirectLineSpeech {
             ...activity,
             channelData: {
               ...activity.channelData,
-              ...(audioStream ? { speechSynthesisUtterance: createUtteranceFromAudioStream(audioStream) } : {})
+              ...(audioStream ? { speechSynthesisUtterance: new SpeechSynthesisAudioStreamUtterance(audioStream) } : {})
             },
             from: {
               ...activity.from,
