@@ -1,9 +1,6 @@
-import {
-  BotFrameworkConfig,
-  DialogServiceConnector,
-  PropertyId,
-  ServicePropertyChannel
-} from 'microsoft-cognitiveservices-speech-sdk';
+/* eslint complexity: ["error", 30] */
+
+import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
 
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
@@ -141,7 +138,7 @@ export default async function create({
         );
       }
 
-      dialogServiceConnector.authorizationToken = authorizationToken;
+      dialogServiceConnector.authorizationToken = authorizationToken; // eslint-disable-line require-atomic-updates
     }, TOKEN_RENEWAL_INTERVAL);
   }
 

@@ -78,7 +78,7 @@ const Dictation = ({ onError }) => {
         sendTypingIndicator && emitTypingIndicator();
       }
     },
-    [dictateState, emitTypingIndicator, sendTypingIndicator, setDictateInterims, setDictateState]
+    [dictateState, emitTypingIndicator, sendTypingIndicator, setDictateAbortable, setDictateInterims, setDictateState]
   );
 
   const handleError = useCallback(() => {
