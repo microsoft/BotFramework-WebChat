@@ -16,12 +16,18 @@ import { getTabIndex } from './getTabIndex';
 import { ConnectionStatus } from 'botframework-directlinejs';
 
 declare const fbq: Function;
+declare const dataLayer: Array<Object>;
 
 interface GaEvent {    
     eventCategory: string
     eventAction:string
     eventLabel?: string
     eventValue?: string
+}
+
+interface GtmEvent {    
+    event: string
+    variables?: Array<{name: string, value: string}>
 }
 
 export interface ChatProps {
@@ -58,6 +64,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private activitySubscription: Subscription;
     private fbPixelEventsSubscription: Subscription;
     private gaEventsSubscription: Subscription;
+    private gtmEventsSubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -266,7 +273,11 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.gaEventsSubscription = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "google-analytics-track-event")
-            .subscribe((activity: any) => trackGaEvent(JSON.parse(activity.value)))
+            .subscribe((activity: any) => trackGoogleAnalyticsEvent(JSON.parse(activity.value)))
+
+        this.gtmEventsSubscription = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "google-tag-manager-track-event")
+            .subscribe((activity: any) => trackGoogleTagManagerEvent(JSON.parse(activity.value)))
 
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
@@ -321,6 +332,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     componentWillUnmount() {
         this.fbPixelEventsSubscription.unsubscribe();
         this.gaEventsSubscription.unsubscribe();
+        this.gtmEventsSubscription.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
@@ -527,10 +539,30 @@ function getLocaleUserData(locale?: string) {
 
 function trackFacebookPixelEvent(eventName: string) {
     console.log('Tracking FB Pixel custom event ' + eventName)
-    typeof fbq === 'function' && fbq('trackCustom', eventName);
+    if (typeof fbq === 'function') {
+        console.log('Tracking FB Pixel custom event ' + eventName)
+        fbq('trackCustom', eventName);
+    } else {
+        console.warn('fbq is undefined - cannot track FB Pixel custom event ' + eventName)
+    }
 }
 
-function trackGaEvent(event: GaEvent) {
-    console.log('Tracking GA custom event ga("'+event.eventCategory+'", "'+event.eventAction+'", '+(event.eventLabel || 'undefined')+', '+(event.eventValue ? parseInt(event.eventValue) : 'undefined')+')', event)
-    typeof ga === 'function' && ga(event.eventCategory, event.eventAction, event.eventLabel || undefined, event.eventValue ? parseInt(event.eventValue) : undefined)
+function trackGoogleAnalyticsEvent(event: GaEvent) {
+    const eventInfo = 'ga("'+event.eventCategory+'", "'+event.eventAction+'", '+(event.eventLabel || 'undefined')+', '+(event.eventValue ? parseInt(event.eventValue) : 'undefined')+')'
+    if (typeof ga === 'function') {
+        console.log('Tracking GA custom event ' + eventInfo, event)
+        ga(event.eventCategory, event.eventAction, event.eventLabel || undefined, event.eventValue ? parseInt(event.eventValue) : undefined)
+    } else {
+        console.warn('ga is undefined - cannot track GA custom event ' + eventInfo, event)
+    }
+}
+
+function trackGoogleTagManagerEvent({event, variables}: GtmEvent) {
+    const data = (variables || []).reduce((data, variable) => ({...data, [variable.name]: variable.value}), {event})
+    if (typeof dataLayer === 'object') {
+        console.log('Tracking GTM custom event dataLayer.push(...)', data)
+        dataLayer.push(data)
+    } else {
+        console.warn('dataLayer is undefined - cannot track GTM custom event dataLayer.push(...)', data)
+    }
 }
