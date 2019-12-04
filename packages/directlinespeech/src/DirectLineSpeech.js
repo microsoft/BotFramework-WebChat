@@ -1,12 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 36] }] */
 
 import Observable from 'core-js/features/observable';
+import random from 'math-random';
 
 import shareObservable from './shareObservable';
 import { fromAudioStream as createUtteranceFromAudioStream } from './SpeechSynthesisAudioStreamUtterance';
 
 function randomActivityId() {
-  return Math.random()
+  return random()
     .toString(36)
     .substr(2);
 }

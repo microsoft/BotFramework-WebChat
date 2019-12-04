@@ -53,6 +53,7 @@
     "abort-controller": "^3.0.0",
     "base64-arraybuffer": "^0.2.0",
     "event-as-promise": "^1.0.5",
+    "math-random": "^1.0.4",
     "microsoft-cognitiveservices-speech-sdk": "file:external/microsoft-cognitiveservices-speech-sdk-1.6.0-alpha.0.1.tgz",
     "p-defer": "^3.0.0",
     "web-speech-cognitive-services": "^6.0.0"
