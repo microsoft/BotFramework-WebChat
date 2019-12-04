@@ -1,8 +1,8 @@
-# Using Cognitive Services Speech Services
+# Using Direct Line Speech
 
-> For Direct Line Speech, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/DIRECT_LINE_SPEECH.md).
+> For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md).
 
-This guide is for integrating speech-to-text and text-to-speech functionality of Azure Cognitive Services.
+This guide is for integrating Direct Line Speech.
 
 We assume you have already set up a bot and have Web Chat running on a page.
 
@@ -26,91 +26,91 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td>Basic recognition</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#custom-speech">Custom Speech</a></td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#text-normalization-options">Text normalization options</a></td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Abort recognition</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Interims</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Dynamic priming</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Reference grammar ID</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select language at initialization</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td>Select language on-the-fly</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
       <td>STT</td>
       <td><a href="#using-input-hint">Input hint</a></td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.5</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
@@ -125,91 +125,91 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>TTS</td>
       <td>Basic synthesis using text</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#using-speech-synthesis-markup-language">Speech Synthesis Markup Language</a></td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#custom-voice">Custom Voice</a></td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Stripping text from Markdown</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Override using "speak" property</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Adaptive Cards using "speak" property</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
-      <th>✔</th><td>4.5</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Interrupt synthesis when clicking on microphone button (<a href="https://github.com/microsoft/BotFramework-WebChat/issues/2428">Bug</a>) (<a href="https://github.com/microsoft/BotFramework-WebChat/pull/2429">PR</a>)</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
-      <th>✔</th><td>4.6</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td>Synthesize activity with multiple attachments</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
-      <th>✔</th><td>4.2</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
   </tbody>
@@ -225,40 +225,9 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 ## Requirements
 
-In order to use the speech functionality in Web Chat, the browser needs to provide minimal media capabilities, including recording from microphone and playing audio clips.
+Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#requirements).
 
-Internet Explorer 11 does not meet the basic requirements for both speech recognition and speech synthesis.
-
-### Speech-to-text requirements
-
--  Browser must [support WebRTC API][webrtc api support]
-   -  Available on most modern browsers on desktop and mobile platform
-   -  WebRTC will not work on third-party apps or browsers on iOS
--  Web page must be hosted over HTTPS
--  User must explicitly grant permission for microphone access
-
-#### Special considerations for iOS
-
-Safari is the only browser that supports WebRTC API on iOS.
-
-Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plugins or custom code to support WebRTC API.
-
-### Text-to-speech requirements
-
--  Browser must [support Web Audio API][web audio api support]
-   -  Available on all modern browsers on desktop and mobile platform
-
-#### Special considerations for Safari on macOS and iOS
-
-Safari requires additional permission granted _explicitly_ by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
-
-When the user taps on the microphone button for the first time, Web Chat will play a very short and silent audio clip. This will enable Web Chat to play any audio clip synthesized from bot messages.
-
-If you customize Web Chat to perform any text-to-speech operations before user gestures, Web Chat will be blocked by Safari for audio playback. Thus, bot messages will not be synthesized.
-
-You can present a splash screen with a tap-to-continue button, which will ready the engine by sending an empty utterance to unblock Safari.
-
-## Setting up Web Chat
+<!-- ## Setting up Web Chat
 
 To use Cognitive Services in Web Chat, you will need to add minimal setup code to set up Web Chat with your Cognitive Services subscription.
 
@@ -611,4 +580,4 @@ Using this approach, you can also combine two polyfills of different types. For 
 [web audio api support]: https://caniuse.com/#feat=audio-api
 [webrtc api support]: https://caniuse.com/#feat=rtcpeerconnection
 [what is custom speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
-[add input hints to messages]: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-input-hints?view=azure-bot-service-4.0
+[add input hints to messages]: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-input-hints?view=azure-bot-service-4.0 -->
