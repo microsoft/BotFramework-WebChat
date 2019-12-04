@@ -2,19 +2,14 @@ import createDeferred from 'p-defer';
 
 import createAdapters from '../../src/createAdapters';
 import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSource';
-import fetchSpeechData from './fetchSpeechData';
 import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
+import fetchSpeechData from './fetchSpeechData';
 
 export default async function createTestHarness() {
-  const {
-    authorizationToken: speechServicesAuthorizationToken,
-    region: speechServicesRegion
-  } = await fetchSpeechCredentialsWithCache();
   const audioConfig = createQueuedArrayBufferAudioSource();
-  const { directLine, webSpeechPonyfillFactory } = createAdapters({
+  const { directLine, webSpeechPonyfillFactory } = await createAdapters({
     audioConfig,
-    speechServicesAuthorizationToken,
-    speechServicesRegion
+    fetchCredentials: fetchSpeechCredentialsWithCache
   });
 
   return {
