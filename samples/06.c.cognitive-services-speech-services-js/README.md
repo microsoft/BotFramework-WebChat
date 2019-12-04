@@ -61,17 +61,20 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 +
 +         return () => {
 +           if (Date.now() > expireAfter) {
-+             const speechServicesTokenRes = await fetch(
++             const speechServicesTokenResPromise = fetch(
 +               'https://webchat-mockbot.azurewebsites.net/speechservices/token',
 +               { method: 'POST' }
 +             );
 +
 +             expireAfter = Date.now() + 300000;
-+             lastPromise = speechServicesTokenRes.json().catch(err => {
-+               lastPromise = null;
++             lastPromise = speechServicesTokenResPromise.then(
++               res => res.json(),
++               err => {
++                 lastPromise = null;
 +
-+               return Promise.reject(err);
-+             });
++                 return Promise.reject(err);
++               }
++             );
 +           }
 +
 +           return lastPromise;
