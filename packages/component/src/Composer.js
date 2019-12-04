@@ -6,7 +6,7 @@ import {
 import { css } from 'glamor';
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
@@ -93,9 +93,9 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
                   return observableToPromise(directLine.getSessionId()).then(
                     sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
                   );
-                } else {
-                  console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
                 }
+
+                console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
 
                 return value;
               }
@@ -140,6 +140,7 @@ const Composer = ({
 }) => {
   const dispatch = useDispatch();
   const [referenceGrammarID] = useReferenceGrammarID();
+  const [dictateAbortable, setDictateAbortable] = useState();
 
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {
@@ -227,6 +228,7 @@ const Composer = ({
       ...hoistedDispatchers,
       activityRenderer,
       attachmentRenderer,
+      dictateAbortable,
       directLine,
       disabled,
       grammars: patchedGrammars,
@@ -237,6 +239,7 @@ const Composer = ({
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
+      setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
       userID,
@@ -247,6 +250,7 @@ const Composer = ({
       activityRenderer,
       attachmentRenderer,
       cardActionContext,
+      dictateAbortable,
       directLine,
       disabled,
       focusSendBoxContext,
@@ -260,6 +264,7 @@ const Composer = ({
       scrollToEnd,
       sendBoxRef,
       sendTimeout,
+      setDictateAbortable,
       styleOptions,
       userID,
       username,

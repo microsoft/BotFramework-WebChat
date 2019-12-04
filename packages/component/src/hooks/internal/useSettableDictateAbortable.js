@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useSettableDictateAbortable() {
-  return useState();
+  const { dictateAbortable, setDictateAbortable } = useWebChatUIContext();
+
+  return [dictateAbortable, setDictateAbortable];
 }
