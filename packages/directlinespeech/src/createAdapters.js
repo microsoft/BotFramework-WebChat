@@ -97,7 +97,8 @@ export default async function create({
 
   config.setProperty(PropertyId.SpeechServiceConnection_RecoLanguage, speechRecognitionLanguage);
 
-  // None of the following works for setting output format.
+  // The following code set the output format. But currently, none of the following works for setting detailed output format.
+  // We will leave these code commented until the Speech SDK support, possibly it in one of the way mentioned below.
 
   // config.setProperty(PropertyId.SpeechServiceResponse_OutputFormatOption, OutputFormat[OutputFormat.Detailed]);
   // config.setProperty(PropertyId.SpeechServiceResponse_RequestDetailedResultTrueFalse, true);

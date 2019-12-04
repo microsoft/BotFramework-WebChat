@@ -35,6 +35,8 @@ export default function({
         cancelAll();
       }
 
+      // Returns an empty array.
+      // Synthesis is done on the bot side, the content of the voice list is not meaningful on the client side.
       getVoices() {
         return [];
       }
