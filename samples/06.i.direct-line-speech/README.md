@@ -13,7 +13,7 @@ Direct Line Speech is a channel for communicating with a bot via a low-latency s
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.c.cognitive-services-speech-services-js` in command line
+-  Navigate to `/Your-Local-WebChat/samples/06.i.direct-line-speech` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -129,10 +129,6 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
 <head>
   <title>Web Chat: Using Direct Line Speech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!--
-    This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
-    https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
-  -->
   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
   <style>
     html,
