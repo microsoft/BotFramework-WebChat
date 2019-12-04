@@ -8,7 +8,7 @@ if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && do
   const meta = document.createElement('meta');
 
   meta.setAttribute('name', 'botframework-directlinespeech:version');
-  meta.setAttribute('content', process.env.NPM_PACKAGE_VERSION);
+  meta.setAttribute('content', process.env.npm_package_version);
 
   document.head.appendChild(meta);
 }

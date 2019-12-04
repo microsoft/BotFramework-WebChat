@@ -34,11 +34,6 @@ export default class DirectLineSpeech {
     );
 
     dialogServiceConnector.activityReceived = (_, { activity, audioStream }) => {
-      // console.groupCollapsed('dialogServiceConnector.activityReceived');
-      // console.log('activity', activity);
-      // console.log('audioStream', audioStream);
-      // console.groupEnd();
-
       try {
         this._activityObserver &&
           this._activityObserver.next({
@@ -67,10 +62,6 @@ export default class DirectLineSpeech {
   }
 
   postActivity(activity) {
-    // console.groupCollapsed('postActivity');
-    // console.log(activity);
-    // console.groupEnd();
-
     // Currently, Web Chat set user ID on all outgoing activities.
     // As Direct Line Speech maintains its own user ID, Web Chat should not set the user ID.
     // TODO: [P2] We should move user ID into options of DirectLineJS, instead of Web Chat.

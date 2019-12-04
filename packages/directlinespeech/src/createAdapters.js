@@ -126,7 +126,7 @@ export default async function create({
         clearInterval(interval);
       }
 
-      const { authorizationToken, region: nextRegion } = await fetchCredentials();
+      const { authorizationToken, region: nextRegion } = await resolveFunctionOrReturnValue(fetchCredentials);
 
       if (!authorizationToken) {
         return console.warn(
