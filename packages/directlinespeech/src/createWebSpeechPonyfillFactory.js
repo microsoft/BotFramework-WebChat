@@ -13,7 +13,11 @@ import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtt
 
 export default function({
   audioConfig = AudioConfig.fromDefaultMicrophoneInput(),
+  audioContext,
   enableTelemetry,
+  ponyfill = {
+    AudioContext: window.AudioContext || window.webkitAudioContext
+  },
   recognizer,
   textNormalization
 }) {
@@ -26,7 +30,9 @@ export default function({
       textNormalization
     });
 
-    const audioContext = new AudioContext();
+    if (!audioContext) {
+      audioContext = new ponyfill.AudioContext();
+    }
 
     const { cancelAll, push } = createTaskQueue();
 
