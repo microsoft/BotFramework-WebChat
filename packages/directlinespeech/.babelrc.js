@@ -28,8 +28,8 @@ const CONFIG = {
 module.exports = api => {
   let config = CONFIG;
 
-  // Disable transformation when running test.
-  // This will make it easier to debug with Jest, which run Babel internally.
+  // Disable transformation when running tests.
+  // This will make it easier to debug with Jest, which runs Babel internally.
   if (api.env('test')) {
     const presetEnvOptionsPath = ['presets', ([name]) => name === '@babel/preset-env', 1];
 
