@@ -55,7 +55,7 @@ const Speak = ({ activity }) => {
         {speechSynthesisUtterance ? (
           <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={speechSynthesisUtterance} />
         ) : (
-          <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
+          <Say onEnd={markAsSpoken} onError={markAsSpoken} text={singleLine} voice={selectVoice} />
         )}
         {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
       </React.Fragment>
