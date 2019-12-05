@@ -8,6 +8,10 @@ import createDeferred from 'p-defer';
 // Safari requires audio buffer with sample rate of 22050 Hz
 const MINIMUM_SAMPLE_RATE = 22050;
 
+function average(array) {
+  return array.reduce((sum, value) => sum + value, 0) / array.length;
+}
+
 function createBufferSource(audioContext, { channels, samplesPerSec }, channelInterleavedAudioData) {
   let sampleRateMultiplier = 1;
 
@@ -27,17 +31,23 @@ function createBufferSource(audioContext, { channels, samplesPerSec }, channelIn
 
   for (let channel = 0; channel < channels; channel++) {
     const perChannelAudioData = audioBuffer.getChannelData(channel);
-    const arrayFill = [].fill.bind(perChannelAudioData);
+
+    let lastValues;
 
     // We are copying channel-interleaved audio data, into per-channel audio data
     for (let perChannelIndex = 0; perChannelIndex < channelInterleavedAudioDataLength; perChannelIndex++) {
       const destIndex = perChannelIndex * sampleRateMultiplier;
+      const value = channelInterleavedAudioData[perChannelIndex * channels + channel];
 
-      arrayFill(
-        channelInterleavedAudioData[perChannelIndex * channels + channel],
-        destIndex,
-        destIndex + sampleRateMultiplier
-      );
+      if (perChannelIndex === 0) {
+        lastValues = new Array(sampleRateMultiplier).fill(value);
+      }
+
+      for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
+        lastValues.shift();
+        lastValues.push(value);
+        perChannelAudioData[destIndex + multiplierIndex] = average(lastValues);
+      }
     }
   }
 
