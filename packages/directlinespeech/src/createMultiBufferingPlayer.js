@@ -15,7 +15,19 @@ function copyBuffer(buffer, multiChannelArrayBuffer) {
   const channels = buffer.numberOfChannels;
 
   for (let channel = 0; channel < channels; channel++) {
-    buffer.copyToChannel(multiChannelArrayBuffer[channel], channel);
+    const arrayBuffer = multiChannelArrayBuffer[channel];
+
+    // Safari does not support AudioBuffer.copyToChannel yet.
+    if (buffer.copyToChannel) {
+      buffer.copyToChannel(arrayBuffer, channel);
+    } else {
+      const { length: arrayBufferLength } = arrayBuffer;
+      const perChannelBuffer = buffer.getChannelData(channel);
+
+      for (let offset = 0; offset < arrayBufferLength; offset++) {
+        perChannelBuffer[offset] = arrayBuffer[offset];
+      }
+    }
   }
 }
 
