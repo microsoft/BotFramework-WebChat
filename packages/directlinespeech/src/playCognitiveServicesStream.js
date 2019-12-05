@@ -5,17 +5,35 @@
 import cognitiveServicesPromiseToESPromise from './cognitiveServicesPromiseToESPromise';
 import createDeferred from 'p-defer';
 
+// Safari requires audio buffer with sample rate of 22050 Hz
+const MINIMUM_SAMPLE_RATE = 22050;
+
 function createBufferSource(audioContext, { channels, samplesPerSec }, channelInterleavedAudioData) {
+  let sampleRateMultiplier = 1;
+
+  // For simplicity for upsampling, we just increase the rate by multiply of 2.
+  while (samplesPerSec * sampleRateMultiplier < MINIMUM_SAMPLE_RATE) {
+    sampleRateMultiplier *= 2;
+  }
+
   const bufferSource = audioContext.createBufferSource();
   const frames = channelInterleavedAudioData.length / channels;
-  const audioBuffer = audioContext.createBuffer(channels, frames, samplesPerSec);
+  const audioBuffer = audioContext.createBuffer(
+    channels,
+    frames * sampleRateMultiplier,
+    samplesPerSec * sampleRateMultiplier
+  );
 
   for (let channel = 0; channel < channels; channel++) {
     const perChannelAudioData = audioBuffer.getChannelData(channel);
 
     // We are copying channel-interleaved audio data, into per-channel audio data
     for (let perChannelIndex = 0; perChannelIndex < channelInterleavedAudioData.length; perChannelIndex++) {
-      perChannelAudioData[perChannelIndex] = channelInterleavedAudioData[perChannelIndex * channels + channel];
+      const value = channelInterleavedAudioData[perChannelIndex * channels + channel];
+
+      for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
+        perChannelAudioData[perChannelIndex * sampleRateMultiplier + multiplierIndex] = value;
+      }
     }
   }
 
