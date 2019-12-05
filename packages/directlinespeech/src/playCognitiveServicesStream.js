@@ -16,8 +16,9 @@ function createBufferSource(audioContext, { channels, samplesPerSec }, channelIn
     sampleRateMultiplier *= 2;
   }
 
+  const { length: channelInterleavedAudioDataLength } = channelInterleavedAudioData;
   const bufferSource = audioContext.createBufferSource();
-  const frames = channelInterleavedAudioData.length / channels;
+  const frames = channelInterleavedAudioDataLength / channels;
   const audioBuffer = audioContext.createBuffer(
     channels,
     frames * sampleRateMultiplier,
@@ -26,14 +27,17 @@ function createBufferSource(audioContext, { channels, samplesPerSec }, channelIn
 
   for (let channel = 0; channel < channels; channel++) {
     const perChannelAudioData = audioBuffer.getChannelData(channel);
+    const arrayFill = [].fill.bind(perChannelAudioData);
 
     // We are copying channel-interleaved audio data, into per-channel audio data
-    for (let perChannelIndex = 0; perChannelIndex < channelInterleavedAudioData.length; perChannelIndex++) {
-      const value = channelInterleavedAudioData[perChannelIndex * channels + channel];
+    for (let perChannelIndex = 0; perChannelIndex < channelInterleavedAudioDataLength; perChannelIndex++) {
+      const destIndex = perChannelIndex * sampleRateMultiplier;
 
-      for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
-        perChannelAudioData[perChannelIndex * sampleRateMultiplier + multiplierIndex] = value;
-      }
+      arrayFill(
+        channelInterleavedAudioData[perChannelIndex * channels + channel],
+        destIndex,
+        destIndex + sampleRateMultiplier
+      );
     }
   }
 
