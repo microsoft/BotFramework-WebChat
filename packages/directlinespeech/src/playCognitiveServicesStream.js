@@ -1,59 +1,29 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [8, 16, 32, 128, 1000, 32768, 2147483648] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 8, 16, 32, 128, 1000, 32768, 96000, 2147483648] }] */
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 
 import cognitiveServicesPromiseToESPromise from './cognitiveServicesPromiseToESPromise';
-import createDeferred from 'p-defer';
+import createMultiBufferingPlayer from './createMultiBufferingPlayer';
 
-// Safari requires audio buffer with sample rate of 22050 Hz
-const MINIMUM_SAMPLE_RATE = 22050;
+// Safari requires audio buffer with sample rate of 22050 Hz.
+// Let's use 44100 Hz, Speech SDK's default 16000 Hz sample will be upsampled to 48000 Hz.
+const MIN_SAMPLE_RATE = 44100;
+
+// We assume Speech SDK chop packet at size 4096 bytes, they hardcode it in Speech SDK.
+// We will set up our multi-buffering player with 3 buffers each of 4096 bytes (2048 of 16-bit samples).
+// For simplicity, our multi-buffer player currently do not support progressive buffering.
+
+// Progressive buffering means, we can queue at any sample size and they will be concatenated.
+// For example, queue 1000 samples, then queue 1048 samples, they will be concatenated into a single buffer of size 2048.
+
+// Currently, for simplicity, we will queue as two buffers.
+// First one is 1000 samples followed by 1048 zeroes, second one is 1048 sample followed by 1000 zeroes.
+
+// There is no plan to support progressive buffering unless Speech SDK chop at dynamic size.
+const DEFAULT_BUFFER_SIZE = 4096;
 
 function average(array) {
   return array.reduce((sum, value) => sum + value, 0) / array.length;
-}
-
-function createBufferSource(audioContext, { channels, samplesPerSec }, channelInterleavedAudioData) {
-  let sampleRateMultiplier = 1;
-
-  // For simplicity for upsampling, we just increase the rate by multiply of 2.
-  while (samplesPerSec * sampleRateMultiplier < MINIMUM_SAMPLE_RATE) {
-    sampleRateMultiplier *= 2;
-  }
-
-  const { length: channelInterleavedAudioDataLength } = channelInterleavedAudioData;
-  const bufferSource = audioContext.createBufferSource();
-  const frames = channelInterleavedAudioDataLength / channels;
-  const audioBuffer = audioContext.createBuffer(
-    channels,
-    frames * sampleRateMultiplier,
-    samplesPerSec * sampleRateMultiplier
-  );
-
-  for (let channel = 0; channel < channels; channel++) {
-    const perChannelAudioData = audioBuffer.getChannelData(channel);
-
-    let lastValues;
-
-    // We are copying channel-interleaved audio data, into per-channel audio data
-    for (let perChannelIndex = 0; perChannelIndex < channelInterleavedAudioDataLength; perChannelIndex++) {
-      const destIndex = perChannelIndex * sampleRateMultiplier;
-      const value = channelInterleavedAudioData[perChannelIndex * channels + channel];
-
-      if (perChannelIndex === 0) {
-        lastValues = new Array(sampleRateMultiplier).fill(value);
-      }
-
-      for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
-        lastValues.shift();
-        lastValues.push(value);
-        perChannelAudioData[destIndex + multiplierIndex] = average(lastValues);
-      }
-    }
-  }
-
-  bufferSource.buffer = audioBuffer;
-
-  return bufferSource;
 }
 
 function formatTypedBitArrayToFloatArray(audioData, maxValue) {
@@ -88,6 +58,49 @@ function abortToReject(signal) {
   });
 }
 
+// In a 2 channel audio (A/B), the data come as interleaved like "ABABABABAB".
+// This function will take "ABABABABAB" and return an array ["AAAAA", "BBBBB"].
+function deinterleave(channelInterleavedAudioData, { channels }) {
+  const multiChannelArrayBuffer = new Array(channels);
+  const frameSize = channelInterleavedAudioData.length / channels;
+
+  for (let channel = 0; channel < channels; channel++) {
+    const audioData = new Float32Array(frameSize);
+
+    multiChannelArrayBuffer[channel] = audioData;
+
+    for (let offset = 0; offset < frameSize; offset++) {
+      audioData[offset] = channelInterleavedAudioData[offset * channels + channel];
+    }
+  }
+
+  return multiChannelArrayBuffer;
+}
+
+// This function upsample the audio data by an integer multiplier.
+// We implemented simple anti-aliasing. For simplicity, the anti-aliasing do not roll over to next buffer.
+function multiplySampleRate(source, sampleRateMultiplier) {
+  if (sampleRateMultiplier === 1) {
+    return source;
+  }
+
+  const lastValues = new Array(sampleRateMultiplier).fill(source[0]);
+  const target = new Float32Array(source.length * sampleRateMultiplier);
+
+  for (let sourceOffset = 0; sourceOffset < source.length; sourceOffset++) {
+    const value = source[sourceOffset];
+    const targetOffset = sourceOffset * sampleRateMultiplier;
+
+    for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
+      lastValues.shift();
+      lastValues.push(value);
+      target[targetOffset + multiplierIndex] = average(lastValues);
+    }
+  }
+
+  return target;
+}
+
 export default async function playCognitiveServicesStream(
   audioContext,
   audioFormat,
@@ -98,7 +111,6 @@ export default async function playCognitiveServicesStream(
 
   try {
     const abortPromise = abortToReject(signal);
-    let lastBufferSource;
 
     const read = () =>
       Promise.race([
@@ -111,8 +123,31 @@ export default async function playCognitiveServicesStream(
       throw new Error('aborted');
     }
 
+    let newSamplesPerSec = audioFormat.samplesPerSec;
+    let sampleRateMultiplier = 1;
+
+    // Safari requires a minimum sample rate of 22100 Hz.
+    // We will calculate a multiplier so it meet the minimum sample rate.
+    // We prefer an integer-based multiplier to simplify our upsampler.
+    // For safety, we will only upsample up to 96000 Hz.
+    while (newSamplesPerSec < MIN_SAMPLE_RATE && newSamplesPerSec < 96000) {
+      sampleRateMultiplier++;
+      newSamplesPerSec = audioFormat.samplesPerSec * sampleRateMultiplier;
+    }
+
+    // The third parameter is sample size in bytes.
+    // For example, Speech SDK send us 4096 bytes of 16-bit samples. That means, 2048 samples per channel.
+    // The multi-buffering player will be set up to handle 2048 samples per buffer.
+    // If we have a multiplier of 3x, it will handle 6144 samples per buffer.
+    const player = createMultiBufferingPlayer(
+      audioContext,
+      { ...audioFormat, samplesPerSec: newSamplesPerSec },
+      (DEFAULT_BUFFER_SIZE / (audioFormat.bitsPerSample / 8)) * sampleRateMultiplier
+    );
+
+    // For safety, we will only handle up to 1000 chunks.
     for (
-      let chunk = await read(), currentTime, maxChunks = 0;
+      let chunk = await read(), maxChunks = 0;
       !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
       chunk = await read(), maxChunks++
     ) {
@@ -120,34 +155,31 @@ export default async function playCognitiveServicesStream(
         break;
       }
 
-      const audioData = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
-      const bufferSource = createBufferSource(audioContext, audioFormat, audioData);
-      const { duration } = bufferSource.buffer;
+      // Data received from Speech SDK is interleaved. It means, 2 channel (A/B) will be sent as "ABABABABAB"
+      // And each sample (A/B) will be a 8 to 32-bit number.
 
-      if (!currentTime) {
-        currentTime = audioContext.currentTime;
-      }
+      // First, we convert 8 to 32-bit number, into a floating-point number, which is required by Web Audio API.
+      const interleavedArrayBuffer = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
 
-      bufferSource.connect(audioContext.destination);
-      bufferSource.start(currentTime);
+      // Then, we deinterleave them back into two array buffer, as "AAAAA" and "BBBBB".
+      const multiChannelArrayBuffer = deinterleave(interleavedArrayBuffer, audioFormat);
 
-      queuedBufferSourceNodes.push(bufferSource);
+      // Lastly, if needed, we will upsample them. If the multiplier is 2x, "AAAAA" will become "AAAAAAAAAA" (with anti-alias).
+      const upsampledMultiChannelArrayBuffer = multiChannelArrayBuffer.map(arrayBuffer =>
+        multiplySampleRate(arrayBuffer, sampleRateMultiplier)
+      );
 
-      lastBufferSource = bufferSource;
-      currentTime += duration;
+      // Queue it to the buffering player.
+      player.push(upsampledMultiChannelArrayBuffer);
     }
+
+    abortPromise.catch(() => player.cancelAll());
 
     if (signal.aborted) {
       throw new Error('aborted');
     }
 
-    if (lastBufferSource) {
-      const { promise, resolve } = createDeferred();
-
-      lastBufferSource.onended = resolve;
-
-      await Promise.race([abortPromise, promise]);
-    }
+    await Promise.race([abortPromise, player.flush()]);
   } finally {
     queuedBufferSourceNodes.forEach(node => node.stop());
   }
