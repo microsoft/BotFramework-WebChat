@@ -116,7 +116,7 @@ export default async function create({
   // Renew token per interval.
   if (authorizationToken) {
     const interval = setInterval(async () => {
-      // If the connector has been disposed, we should stop renewing the token.
+      // #2660 If the connector has been disposed, we should stop renewing the token.
 
       // TODO: We should use a public implementation if Speech SDK has one related to "privIsDisposed".
       if (dialogServiceConnector.privIsDisposed) {
