@@ -233,7 +233,7 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 
 ## Requirements
 
-Direct Line Speech does not support Internet Explorer 11. It requires media capabilities that only modern browsers are capable.
+Direct Line Speech does not support Internet Explorer 11. It requires modern browser media capabilities that are not available in IE11.
 
 Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#requirements).
 
