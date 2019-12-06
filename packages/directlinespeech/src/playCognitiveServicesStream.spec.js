@@ -6,7 +6,7 @@ function createMockAudioContext(autoEndCount = Infinity) {
   const audioContext = {
     connectedNodes: [],
     createBuffer(channels, frames, samplesPerSec) {
-      const channelData = new Array(channels).fill(new Array(frames));
+      const channelData = new Array(channels).fill().map(() => new Float32Array(frames));
 
       return {
         channelData,
@@ -14,11 +14,17 @@ function createMockAudioContext(autoEndCount = Infinity) {
         getChannelData(channel) {
           return channelData[channel];
         },
+        numberOfChannels: channels,
         samplesPerSec
       };
     },
     createBufferSource() {
+      const endedEventListeners = [];
+
       const bufferSource = {
+        addEventListener(name, listener) {
+          name === 'ended' && endedEventListeners.push(listener);
+        },
         buffer: null,
         connect(destination) {
           destination.push(bufferSource);
@@ -30,6 +36,7 @@ function createMockAudioContext(autoEndCount = Infinity) {
           autoEndCount-- > 0 &&
             setTimeout(() => {
               bufferSource.onended && bufferSource.onended();
+              endedEventListeners.forEach(listener => listener());
             }, 0);
         },
         startAtTime: NaN,
@@ -92,7 +99,7 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
 
   const nodes = audioContext.connectedNodes.map(bufferSource => {
     return {
-      channelData: new Float32Array(bufferSource.buffer.channelData),
+      channelData: bufferSource.buffer.channelData.map(arrayBuffer => new Float32Array(arrayBuffer.buffer, 0, 10)),
       startAtTime: bufferSource.startAtTime,
       samplesPerSec: bufferSource.buffer.samplesPerSec
     };
@@ -101,17 +108,39 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
   expect(nodes).toMatchInlineSnapshot(`
     Array [
       Object {
-        "channelData": Float32Array [
-          0,
+        "channelData": Array [
+          Float32Array [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
         ],
-        "samplesPerSec": 16000,
+        "samplesPerSec": 48000,
         "startAtTime": 0,
       },
       Object {
-        "channelData": Float32Array [
-          -1,
+        "channelData": Array [
+          Float32Array [
+            -1,
+            -1,
+            -1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
         ],
-        "samplesPerSec": 16000,
+        "samplesPerSec": 48000,
         "startAtTime": 1,
       },
     ]
