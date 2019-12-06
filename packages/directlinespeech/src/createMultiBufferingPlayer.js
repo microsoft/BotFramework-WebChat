@@ -34,7 +34,7 @@ function copyBuffer(buffer, multiChannelArrayBuffer) {
 // This is a multi-buffering player. Users can keep pushing buffer to Web Chat.
 // The buffer, realized as BufferSource, is queued to AudioContext.
 // Data will be queued as quickly and frequently as possible.
-// We do not support progressive buffering (push partial buffer) and do not have plan for it.
+// Web Chat does not support progressive buffering (pushing a partial buffer) and there are currently no plans to implement.
 
 export default function createMultiBufferingPlayer(audioContext, { channels, samplesPerSec }, numSamplePerBuffer) {
   const freeBuffers = new Array(NUM_BUFFER)
