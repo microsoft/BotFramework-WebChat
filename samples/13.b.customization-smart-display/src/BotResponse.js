@@ -7,10 +7,10 @@ import React, { useMemo } from 'react';
 import useLastBotActivity from './hooks/useLastBotActivity';
 
 const { SpeakActivity } = Components;
-const { useSendBoxDictationStarted } = hooks;
+const { useSendBoxSpeechInterimsVisible } = hooks;
 
 const BotResponse = ({ lastReadActivityID }) => {
-  const [dictationStarted] = useSendBoxDictationStarted();
+  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
   const [lastBotActivity] = useLastBotActivity();
 
   const renderAttachment = useMemo(() => {
@@ -18,7 +18,7 @@ const BotResponse = ({ lastReadActivityID }) => {
   }, []);
 
   return (
-    !dictationStarted &&
+    !interimsVisible &&
     !!lastBotActivity &&
     lastBotActivity.id !== lastReadActivityID && (
       <div className="App-BotResponse">

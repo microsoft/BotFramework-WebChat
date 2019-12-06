@@ -39,6 +39,9 @@ module.exports = {
     alias: {
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
-    }
+    },
+    // We are not transpiling using Webpack, thus, we cannot use package.json/module field to load a module.
+    // If we are using "module" field, we could be loading non-ES5 code. So we are forcing Webpack to just use "main" field.
+    mainFields: ['main']
   }
 };

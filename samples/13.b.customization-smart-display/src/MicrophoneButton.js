@@ -4,14 +4,12 @@ import { hooks } from 'botframework-webchat';
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 
-const { useMicrophoneButtonClick, useMicrophoneButtonDisabled, useSendBoxDictationStarted } = hooks;
-const { useSendMessage } = hooks;
+const { useMicrophoneButtonClick, useMicrophoneButtonDisabled, useSendBoxSpeechInterimsVisible } = hooks;
 
 const CustomMicrophoneButton = ({ onClick }) => {
-  const [dictating] = useSendBoxDictationStarted();
+  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
-  const sendMessage = useSendMessage();
 
   const handleClick = useCallback(() => {
     click();
@@ -19,7 +17,11 @@ const CustomMicrophoneButton = ({ onClick }) => {
   }, [click, onClick]);
 
   return (
-    <button className={classNames('App-MicrophoneButton', { dictating })} disabled={disabled} onClick={handleClick}>
+    <button
+      className={classNames('App-MicrophoneButton', { dictating: interimsVisible })}
+      disabled={disabled}
+      onClick={handleClick}
+    >
       <i className="ms-Icon ms-Icon--Microphone" />
     </button>
   );

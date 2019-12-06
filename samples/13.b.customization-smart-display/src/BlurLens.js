@@ -4,13 +4,12 @@ import classNames from 'classnames';
 import React from 'react';
 import { hooks } from 'botframework-webchat';
 
-const { useSendBoxDictationStarted } = hooks;
+const { useSendBoxSpeechInterimsVisible } = hooks;
 
 const BlurLens = () => {
-  const [dictating] = useSendBoxDictationStarted();
-  const hide = !dictating;
+  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
 
-  return <div className={classNames('App-BlurLens', { hide })} />;
+  return <div className={classNames('App-BlurLens', { hide: !interimsVisible })} />;
 };
 
 export default BlurLens;

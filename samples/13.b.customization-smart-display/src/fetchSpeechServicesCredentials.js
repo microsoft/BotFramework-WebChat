@@ -20,8 +20,9 @@ async function fetchCredentials() {
   const now = Date.now();
 
   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+    fetchPromise = fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', { method: 'POST' })
       .then(res => res.json())
+      .then(({ region, token }) => ({ authorizationToken: token, region }))
       .catch(() => {
         lastFetch = 0;
       });
