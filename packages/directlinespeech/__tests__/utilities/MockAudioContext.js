@@ -1,10 +1,15 @@
 class MockAudioBuffer {
   constructor(channels, frames, samplesPerSec) {
-    this._channelData = new Array(channels).fill(new Array(frames * samplesPerSec));
+    this._channels = channels;
+    this._channelData = new Array(channels).fill().map(() => new Array(frames * samplesPerSec));
   }
 
   getChannelData(channel) {
     return this._channelData[channel];
+  }
+
+  get numberOfChannels() {
+    return this._channels;
   }
 }
 

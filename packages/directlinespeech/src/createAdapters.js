@@ -97,7 +97,8 @@ export default async function create({
 
   // The following code set the output format.
   // As advised by Speech team, this API may change in the future.
-  config.setProperty(PropertyId.SpeechServiceResponse_OutputFormatOption, 'detailed');
+  // We are not enabling output format option because it does not send detailed output format to the bot, rendering this option useless.
+  // config.setProperty(PropertyId.SpeechServiceResponse_OutputFormatOption, OutputFormat[OutputFormat.Detailed]);
 
   // Setting the user ID for starting the conversation.
   userID && config.setProperty(PropertyId.Conversation_From_Id, userID);
