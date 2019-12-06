@@ -1,4 +1,4 @@
-import createDeferred from 'p-defer';
+import createDeferred from '../../external/p-defer';
 
 import createAdapters from '../../src/createAdapters';
 import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSource';
