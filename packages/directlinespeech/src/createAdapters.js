@@ -92,20 +92,18 @@ export default async function create({
 
   // Supported options can be found in DialogConnectorFactory.js.
 
+  // Set the language used for recognition.
   config.setProperty(PropertyId.SpeechServiceConnection_RecoLanguage, speechRecognitionLanguage);
 
-  // The following code set the output format. But currently, none of the following works for setting detailed output format.
-  // We will leave these code commented until the Speech SDK support, possibly it in one of the way mentioned below.
-
+  // The following code sets the output format.
+  // As advised by the Speech team, this API may be subject to future changes.
+  // We are not enabling output format option because it does not send detailed output format to the bot, rendering this option useless.
   // config.setProperty(PropertyId.SpeechServiceResponse_OutputFormatOption, OutputFormat[OutputFormat.Detailed]);
-  // config.setProperty(PropertyId.SpeechServiceResponse_RequestDetailedResultTrueFalse, true);
-  // config.setProperty(OutputFormatPropertyName, OutputFormat[OutputFormat.Detailed]);
-  // config.setServiceProperty(PropertyId.SpeechServiceResponse_RequestDetailedResultTrueFalse, "true", ServicePropertyChannel.UriQueryParameter);
 
-  // The following code is copied from C#, it should set from.id, but it did not.
-  // https://github.com/Azure-Samples/Cognitive-Services-Direct-Line-Speech-Client/blob/master/DLSpeechClient/MainWindow.xaml.cs#L236
+  // Set the user ID for starting the conversation.
   userID && config.setProperty(PropertyId.Conversation_From_Id, userID);
 
+  // Set Custom Speech and Custom Voice.
   // The following code is copied from C#, and it is not working yet.
   // https://github.com/Azure-Samples/Cognitive-Services-Direct-Line-Speech-Client/blob/master/DLSpeechClient/MainWindow.xaml.cs
   // speechRecognitionEndpointId && config.setServiceProperty('cid', speechRecognitionEndpointId, ServicePropertyChannel.UriQueryParameter);
@@ -115,11 +113,12 @@ export default async function create({
 
   dialogServiceConnector.connect();
 
-  // Renew token
+  // Renew token per interval.
   if (authorizationToken) {
     const interval = setInterval(async () => {
-      // If the connector has been disposed, we should stop renewing the token.
-      // TODO: We should use a public implementation if Speech SDK has one.
+      // #2660 If the connector has been disposed, we should stop renewing the token.
+
+      // TODO: We should use a public implementation if Speech SDK has one related to "privIsDisposed".
       if (dialogServiceConnector.privIsDisposed) {
         clearInterval(interval);
       }
