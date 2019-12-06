@@ -2,7 +2,7 @@
   "name": "sample-customization-smart-display",
   "version": "0.0.0-0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/24.customization-smart-display/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/13.b.customization-smart-display/",
   "dependencies": {
     "botframework-webchat": "^4.6.0",
     "classnames": "^2.2.6",

@@ -21,12 +21,12 @@ Currently, this sample does not work on Safari. Safari requires explicit user in
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.a.customization-speech-ui)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/13.customization-speech-ui` in command line
+-  Navigate to `/Your-Local-WebChat/samples/13.a.customization-speech-ui` in command line
 -  Run `npm install`
 -  Run `npm start`
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
@@ -67,8 +67,8 @@ Let's set up the project.
 
 ```sh
 cd C:\Users\You\Documents
-npx create-react-app 13.customization-speech-ui
-cd 13.customization-speech-ui
+npx create-react-app 13.a.customization-speech-ui
+cd 13.a.customization-speech-ui
 npm i botframework-webchat
 ```
 
