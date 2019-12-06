@@ -4,10 +4,11 @@ import { SEND_MESSAGE } from '../actions/sendMessage';
 import postActivity from '../actions/postActivity';
 import whileConnected from './effects/whileConnected';
 
-function* postActivityWithMessage({ payload: { method, text } }) {
+function* postActivityWithMessage({ payload: { channelData, method, text } }) {
   yield put(
     postActivity(
       {
+        channelData,
         text,
         textFormat: 'plain',
         type: 'message'

@@ -11,6 +11,7 @@ import React, { useCallback, useState } from 'react';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useDictateAbortable from '../hooks/useDictateAbortable';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
@@ -133,10 +134,16 @@ const useMicrophoneButtonClick = () => {
 };
 
 function useMicrophoneButtonDisabled() {
+  const [abortable] = useDictateAbortable();
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
 
-  return [disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING];
+  return [
+    disabled ||
+      dictateState === DictateState.STARTING ||
+      dictateState === DictateState.STOPPING ||
+      (dictateState === DictateState.DICTATING && !abortable)
+  ];
 }
 
 const MicrophoneButton = ({ className }) => {

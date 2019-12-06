@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
 -  Adds `AdaptiveCardsComposer` and `AdaptiveCardsContext` for composability for Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#2648](https://github.com/microsoft/BotFramework-WebChat/pull/2648)
+-  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
 
 ### Fixed
 
@@ -65,11 +66,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: Updated timer to use functional component, by [@spyip](https://github.com/spyip) in PR [#2546](https://github.com/microsoft/BotFramework-WebChat/pull/2546)
 -  Fixes [#2651](https://github.com/microsoft/BotFramework-WebChat/issues/2651). Add `ends-with` string module to es5 bundle, by [@corinagum](https://github.com/corinagum) in PR [#2654](https://github.com/microsoft/BotFramework-WebChat/pull/2654)
 -  Fixes [#2658](https://github.com/microsoft/BotFramework-WebChat/issues/2658). Fix rendering of markdown images in IE11, by [@corinagum](https://github.com/corinagum) in PR [#2659](https://github.com/microsoft/BotFramework-WebChat/pull/2659)
+-  Fixes [#2662](https://github.com/microsoft/BotFramework-WebChat/issues/2662) and [#2666](https://github.com/microsoft/BotFramework-WebChat/issues/2666). Fix various issues related to Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#2671](https://github.com/microsoft/BotFramework-WebChat/pull/2671)
+   -  Added triple-buffering to reduce pops/cracks.
+   -  Enable Safari by upsampling to 48000 Hz.
+   -  Support detailed output format on Web Chat side.
 -  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdurnford](https://github.com/tdurnford) in PR [#2632](https://github.com/microsoft/BotFramework-WebChat/pull/2632)
 
 ### Changed
 
--  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533)
+-  Bumped all dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2533](https://github.com/microsoft/BotFramework-WebChat/pull/2533) and PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
    -  Development dependencies
       -  Root package
          -  `@azure/storage-blob@12.0.0`
@@ -133,6 +138,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `component`
          -  `bytes@3.1.0`
          -  `memoize-one@5.1.1`
+         -  `react-dictate-button@1.2.1`
          -  `react-redux@7.1.1`
          -  `remark@11.0.1`
          -  `sanitize-html@1.20.1`
