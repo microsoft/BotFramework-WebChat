@@ -1,4 +1,4 @@
-// Currently, we use a triple-buffer approach.
+// Currently, Web Chat uses a triple-buffer approach.
 const NUM_BUFFER = 3;
 
 function zeroBuffer(buffer) {
@@ -17,7 +17,7 @@ function copyBuffer(buffer, multiChannelArrayBuffer) {
   for (let channel = 0; channel < channels; channel++) {
     const arrayBuffer = multiChannelArrayBuffer[channel];
 
-    // Safari does not support AudioBuffer.copyToChannel yet.
+    // Note that Safari does not support AudioBuffer.copyToChannel yet.
     if (buffer.copyToChannel) {
       buffer.copyToChannel(arrayBuffer, channel);
     } else {
@@ -31,9 +31,9 @@ function copyBuffer(buffer, multiChannelArrayBuffer) {
   }
 }
 
-// This is a multi-buffering player. Users can keep pushing buffer to us.
-// We will realize the buffer as BufferSource and queue it to AudioContext.
-// We will queue as soon, and as much as possible.
+// This is a multi-buffering player. Users can keep pushing buffer to Web Chat.
+// The buffer, realized as BufferSource, is queued to AudioContext.
+// Data will be queued as quickly and frequently as possible.
 // We do not support progressive buffering (push partial buffer) and do not have plan for it.
 
 export default function createMultiBufferingPlayer(audioContext, { channels, samplesPerSec }, numSamplePerBuffer) {
@@ -55,13 +55,13 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
 
     if (typeof multiChannelArrayBuffer === 'function') {
       // If the queued item is a function, it is because the user called "flush".
-      // The "flush" function will callback when all queued buffer before the "flush" call had played.
+      // The "flush" function will callback when all queued buffers before the "flush" call have played.
       multiChannelArrayBuffer();
     } else if (multiChannelArrayBuffer) {
       const nextBuffer = freeBuffers.shift();
 
       // If all buffers are currently occupied, prepend the data back to the queue.
-      // When one of the buffer finish, it will call playNext() again to pick up things from the queue.
+      // When one of the buffers finish, it will call playNext() again to pick up items from the queue.
       if (!nextBuffer) {
         queue.unshift(multiChannelArrayBuffer);
 
@@ -75,7 +75,7 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
       bufferSource.connect(audioContext.destination);
       bufferSource.start(nextSchedule);
 
-      // We will remember all BufferSource that is currently queued at the AudioContext, thru bufferSource.start().
+      // All BufferSource data that is currently queued will be stored at the AudioContext, via bufferSource.start().
       // This is for cancelAll() to effectively cancel all BufferSource queued at the AudioContext.
       queuedBufferSources.push(bufferSource);
 
@@ -84,7 +84,7 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
       bufferSource.addEventListener('ended', () => {
         queuedBufferSources = queuedBufferSources.filter(target => target !== bufferSource);
 
-        // Declare this buffer is free to pick up on next round.
+        // Declare the buffer is free to pick up on the next iteration.
         freeBuffers.push(nextBuffer);
         playNext();
       });
@@ -95,7 +95,7 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
     cancelAll: () => {
       queue.splice(0);
 
-      // Although all buffer are cleared, there are still some BufferSources queued at the AudioContext that need to be stopped.
+      // Although all buffers are cleared, there are still some BufferSources queued at the AudioContext that need to be stopped.
       queuedBufferSources.forEach(bufferSource => bufferSource.stop());
     },
     flush: () => new Promise(resolve => queue.push(resolve)),

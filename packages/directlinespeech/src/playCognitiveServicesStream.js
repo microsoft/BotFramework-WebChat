@@ -5,21 +5,21 @@
 import cognitiveServicesPromiseToESPromise from './cognitiveServicesPromiseToESPromise';
 import createMultiBufferingPlayer from './createMultiBufferingPlayer';
 
-// Safari requires audio buffer with sample rate of 22050 Hz.
-// Let's use 44100 Hz, Speech SDK's default 16000 Hz sample will be upsampled to 48000 Hz.
+// Safari requires an audio buffer with a sample rate of 22050 Hz.
+// Using a minimum sample rate of 44100 Hz as an example, the Speech SDK's default 16000 Hz will be upsampled to 48000 Hz.
 const MIN_SAMPLE_RATE = 44100;
 
-// We assume Speech SDK chop packet at size 4096 bytes, they hardcode it in Speech SDK.
-// We will set up our multi-buffering player with 3 buffers each of 4096 bytes (2048 of 16-bit samples).
-// For simplicity, our multi-buffer player currently do not support progressive buffering.
+// The Speech SDK is hardcoded to chop packets to 4096 bytes.
+// Web Chat's multi-buffering player is set up with 3 buffers; each is 4096 bytes (2048 16-bit samples).
+// For simplicity, the multi-buffer player currently does not support progressive buffering.
 
-// Progressive buffering means, we can queue at any sample size and they will be concatenated.
-// For example, queue 1000 samples, then queue 1048 samples, they will be concatenated into a single buffer of size 2048.
+// Progressive buffering allows queuing at any sample size and will be concatenated.
+// If 1000 samples are queued, then 1048 samples are queued, they will be concatenated into a single buffer of size 2048.
 
-// Currently, for simplicity, we will queue as two buffers.
-// First one is 1000 samples followed by 1048 zeroes, second one is 1048 sample followed by 1000 zeroes.
+// For simplicity, data will be queued to two buffers.
+// The first buffer is 1000 samples followed by 1048 zeroes, and the second buffer is 1048 samples followed by 1000 zeroes.
 
-// There is no plan to support progressive buffering unless Speech SDK chop at dynamic size.
+// There is no plan to support progressive buffering until the Speech SDK chops data at dynamic size.
 const DEFAULT_BUFFER_SIZE = 4096;
 
 function average(array) {
@@ -58,7 +58,7 @@ function abortToReject(signal) {
   });
 }
 
-// In a 2 channel audio (A/B), the data come as interleaved like "ABABABABAB".
+// In a 2 channel audio (e.g. A/B), the data arrives as interleaved, like "ABABABABAB".
 // This function will take "ABABABABAB" and return an array ["AAAAA", "BBBBB"].
 function deinterleave(channelInterleavedAudioData, { channels }) {
   const multiChannelArrayBuffer = new Array(channels);
@@ -77,8 +77,8 @@ function deinterleave(channelInterleavedAudioData, { channels }) {
   return multiChannelArrayBuffer;
 }
 
-// This function upsample the audio data by an integer multiplier.
-// We implemented simple anti-aliasing. For simplicity, the anti-aliasing do not roll over to next buffer.
+// This function upsamples the audio data via an integer multiplier.
+// Web Chat uses simple anti-aliasing. For simplicity, the anti-aliasing does not roll over to next buffer.
 function multiplySampleRate(source, sampleRateMultiplier) {
   if (sampleRateMultiplier === 1) {
     return source;
@@ -127,25 +127,25 @@ export default async function playCognitiveServicesStream(
     let sampleRateMultiplier = 1;
 
     // Safari requires a minimum sample rate of 22100 Hz.
-    // We will calculate a multiplier so it meet the minimum sample rate.
-    // We prefer an integer-based multiplier to simplify our upsampler.
-    // For safety, we will only upsample up to 96000 Hz.
+    // A multiplier is calculated the the data meets the minimum sample rate.
+    // An integer-based multiplier to simplify our upsampler.
+    // For security, data will only be upsampled up to 96000 Hz.
     while (newSamplesPerSec < MIN_SAMPLE_RATE && newSamplesPerSec < 96000) {
       sampleRateMultiplier++;
       newSamplesPerSec = audioFormat.samplesPerSec * sampleRateMultiplier;
     }
 
-    // The third parameter is sample size in bytes.
-    // For example, Speech SDK send us 4096 bytes of 16-bit samples. That means, 2048 samples per channel.
-    // The multi-buffering player will be set up to handle 2048 samples per buffer.
-    // If we have a multiplier of 3x, it will handle 6144 samples per buffer.
+    // The third parameter is the sample size in bytes.
+    // For example, if the Speech SDK sends Web Chat 4096 bytes of 16-bit samples, there will be 2048 samples per channel.
+    // The multi-buffering player is set up to handle 2048 samples per buffer.
+    // If the multiplier 3x, it will handle 6144 samples per buffer.
     const player = createMultiBufferingPlayer(
       audioContext,
       { ...audioFormat, samplesPerSec: newSamplesPerSec },
       (DEFAULT_BUFFER_SIZE / (audioFormat.bitsPerSample / 8)) * sampleRateMultiplier
     );
 
-    // For safety, we will only handle up to 1000 chunks.
+    // For security, the maximum number of chunks handled will be 1000.
     for (
       let chunk = await read(), maxChunks = 0;
       !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
@@ -155,21 +155,21 @@ export default async function playCognitiveServicesStream(
         break;
       }
 
-      // Data received from Speech SDK is interleaved. It means, 2 channel (A/B) will be sent as "ABABABABAB"
-      // And each sample (A/B) will be a 8 to 32-bit number.
+      // Data received from Speech SDK is interleaved; 2 channels (e.g. A and B) will be sent as "ABABABABAB"
+      // And each sample (A/B) will be an 8 to 32-bit number.
 
-      // First, we convert 8 to 32-bit number, into a floating-point number, which is required by Web Audio API.
+      // Convert the 8 - 32-bit number into a floating-point number, as required by Web Audio API.
       const interleavedArrayBuffer = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
 
-      // Then, we deinterleave them back into two array buffer, as "AAAAA" and "BBBBB".
+      // Deinterleave data back into two array buffer, e.g. "AAAAA" and "BBBBB".
       const multiChannelArrayBuffer = deinterleave(interleavedArrayBuffer, audioFormat);
 
-      // Lastly, if needed, we will upsample them. If the multiplier is 2x, "AAAAA" will become "AAAAAAAAAA" (with anti-alias).
+      // Upsample data if necessary. If the multiplier is 2x, "AAAAA" will be upsampled to "AAAAAAAAAA" (with anti-alias).
       const upsampledMultiChannelArrayBuffer = multiChannelArrayBuffer.map(arrayBuffer =>
         multiplySampleRate(arrayBuffer, sampleRateMultiplier)
       );
 
-      // Queue it to the buffering player.
+      // Queue to the buffering player.
       player.push(upsampledMultiChannelArrayBuffer);
     }
 

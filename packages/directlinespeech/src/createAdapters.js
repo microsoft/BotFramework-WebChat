@@ -92,18 +92,18 @@ export default async function create({
 
   // Supported options can be found in DialogConnectorFactory.js.
 
-  // Setting the language use for recognition.
+  // Set the language used for recognition.
   config.setProperty(PropertyId.SpeechServiceConnection_RecoLanguage, speechRecognitionLanguage);
 
-  // The following code set the output format.
-  // As advised by Speech team, this API may change in the future.
+  // The following code sets the output format.
+  // As advised by the Speech team, this API may be subject to future changes.
   // We are not enabling output format option because it does not send detailed output format to the bot, rendering this option useless.
   // config.setProperty(PropertyId.SpeechServiceResponse_OutputFormatOption, OutputFormat[OutputFormat.Detailed]);
 
-  // Setting the user ID for starting the conversation.
+  // Set the user ID for starting the conversation.
   userID && config.setProperty(PropertyId.Conversation_From_Id, userID);
 
-  // Setting Custom Speech and Custom Voice.
+  // Set Custom Speech and Custom Voice.
   // The following code is copied from C#, and it is not working yet.
   // https://github.com/Azure-Samples/Cognitive-Services-Direct-Line-Speech-Client/blob/master/DLSpeechClient/MainWindow.xaml.cs
   // speechRecognitionEndpointId && config.setServiceProperty('cid', speechRecognitionEndpointId, ServicePropertyChannel.UriQueryParameter);
