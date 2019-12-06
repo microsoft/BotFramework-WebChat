@@ -21,6 +21,14 @@ export default function({
   recognizer,
   textNormalization
 }) {
+  if (!ponyfill.AudioContext) {
+    console.warn(
+      'botframework-directlinespeech-sdk: This browser does not support Web Audio API. Speech support is disabled.'
+    );
+
+    return () => ({});
+  }
+
   return () => {
     const { SpeechGrammarList, SpeechRecognition } = createSpeechRecognitionPonyfillFromRecognizer({
       audioConfig,
