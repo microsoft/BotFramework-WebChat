@@ -8,6 +8,14 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 > Sample code in this article is optimized for modern browsers. You may need to use a [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) (e.g. [Babel](https://babeljs.io/)) to target a broader range of browsers.
 
+## What is Direct Line Speech?
+
+Direct Line Speech is designed for Voice Assistant scenario. For example, smart display, automotive dashboard, navigation system with low-latency requirement on *single-page application* and *progressive web apps* (PWA). These apps usually are made with highly-customized UI and do not show conversation transcripts.
+
+You can look at our sample [13.a.customization-speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/13.a.customization-speech-ui) and [13.b.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/13.b.customization-smart-display) for target scenarios.
+
+Direct Line Speech is not recommended to use on traditional websites where its primary UI is transcript-based.
+
 ## Support matrix
 
 <table>
@@ -34,7 +42,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td><a href="#custom-speech">Custom Speech</a></td>
+      <td><a href="#custom-speech">Custom Speech</a> (<a href="#custom-speech-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -43,7 +51,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td><a href="#text-normalization-options">Text normalization options</a></td>
+      <td><a href="#text-normalization-options">Text normalization options</a> (<a href="#text-normalization-option-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -52,7 +60,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Abort recognition</td>
+      <td>Abort recognition (<a href="#abort-recognition-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -70,7 +78,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Dynamic priming</td>
+      <td>Dynamic priming (<a href="#dynamic-priming-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -79,7 +87,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Reference grammar ID</td>
+      <td>Reference grammar ID (<a href="#reference-grammar-id-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -97,7 +105,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>STT</td>
-      <td>Select language on-the-fly</td>
+      <td>Select language on-the-fly (<a href="#speech-recognition-language-cannot-be-switched-on-the-fly">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -107,10 +115,10 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <td>STT</td>
       <td><a href="#using-input-hint">Input hint</a></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
@@ -142,7 +150,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td><a href="#custom-voice">Custom Voice</a></td>
+      <td><a href="#custom-voice">Custom Voice</a> (<a href="#custom-voice-is-not-supported">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -160,7 +168,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a></td>
+      <td><a href="#text-to-speech-audio-format">Text-to-speech audio format</a> (<a href="#synthesis-audio-quality-is-not-configurable">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -169,7 +177,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Stripping text from Markdown</td>
+      <td>Stripping text from Markdown (<a href="#alternative-for-markdown">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -187,7 +195,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Adaptive Cards using "speak" property</td>
+      <td>Adaptive Cards using "speak" property (<a href="#attachments-are-not-synthesized">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -196,7 +204,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Interrupt synthesis when clicking on microphone button (<a href="https://github.com/microsoft/BotFramework-WebChat/issues/2428">Bug</a>) (<a href="https://github.com/microsoft/BotFramework-WebChat/pull/2429">PR</a>)</td>
+      <td>Interrupt synthesis when clicking on microphone button</td>
       <th>✔</th><td>4.7</td>
       <th>✔</th><td>4.7</td>
       <th>✔</th><td>4.7</td>
@@ -205,7 +213,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Synthesize activity with multiple attachments</td>
+      <td>Synthesize activity with multiple attachments (<a href="#attachments-are-not-synthesized">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -225,4 +233,174 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 ## Requirements
 
+Direct Line Speech does not support Internet Explorer 11. It requires modern browser media capabilities that are not available in IE11.
+
 Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#requirements).
+
+## How to get started
+
+Before start, please create corresponding Azure resources. You can follow [this tutorial for enabling voice in your bot](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/tutorial-voice-enable-your-bot-speech-sdk). You do not need to follow the steps for creating C# client, you will replace the client with Web Chat.
+
+Please look at our sample `06.i.direct-line-speech` to embedding Web Chat on your web app via Direct Line Speech channel.
+
+> You will need to use Web Chat 4.7 or higher for Direct Line Speech.
+
+After setting up Direct Line Speech on Azure Bot Services, there are two steps for using Direct Line Speech:
+
+- [Retrieve your Direct Line Speech credentials](#retrieve-your-direct-line-speech-credentials)
+- [Render Web Chat using Direct Line Speech adapters](#render-web-chat-using-direct-line-speech-adapters)
+
+### Retrieve your Direct Line Speech credentials
+
+> You should always use authorization token when authorizing with Direct Line Speech.
+
+To secure the conversation, you will need to set up a REST API to generate the credentials. When called, it will return authorization token and region for your Direct Line Speech channel.
+
+In the following code snippets, we assume sending a HTTP POST request to https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token will return with a JSON with `authorizationToken` and `region`.
+
+```js
+const fetchCredentials = async () => {
+  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+    method: 'POST'
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch authorization token and region.');
+  }
+
+  const { authorizationToken, region } = await res.json();
+
+  return { authorizationToken, region };
+};
+```
+
+> Since the token expire after 10 minutes, it is advised to cache this token for 5 minutes. You can use either HTTP header `Cache-Control` on the REST API, or implement a memoization function in the browser.
+
+### Render Web Chat using Direct Line Speech adapters
+
+After you have the `fetchCredentials` function set up, you can pass it to `createDirectLineSpeechAdapters` function. This function will return a set of adapters that is used by Web Chat. It includes DirectLineJS adapter and Web Speech adapter.
+
+```js
+const adapters = await window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials });
+
+window.WebChat.renderWebChat(
+  {
+    ...adapters
+  },
+  document.getElementById('webchat')
+);
+```
+
+> The code above will requires transpilation for browser which do not support the [spread operator](https://caniuse.com/#feat=mdn-javascript_operators_spread_spread_in_destructuring).
+
+## Known issues
+
+### Differences in `conversationUpdate` behaviors
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/XXX) if this behavior is not desirable.
+
+You can specify user ID when you instantiate Web Chat.
+
+- If you specify user ID
+   - `conversationUpdate` activity will be send on connect and every reconnect. And with your user ID specified in the `membersAdded` field.
+   - All `message` activities will be sent with your user ID in `from.id` field.
+- If you do not specify user ID
+   - `conversationUpdate` activity will be send on connect and every reconnect. The `membersAdded` field will have an user ID of empty string.
+   - All `message` activities will be sent with a randomized user ID
+      - The user ID is kept the same across reconnections
+
+### Connection idle and reconnection
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2677) if this behavior is not desirable.
+
+After idling for 5 minutes, the Web Socket connection will be disconnected. If the client is still active, we will try to reconnect. On every reconnect, a `conversationUpdate` activity will be sent.
+
+### Text normalization option is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2678) if this behavior is not desirable.
+
+Currently, there is no options to specify different text normalization options, including inverse text normalization (ITN), masked ITN, lexical, and display.
+
+### Page refresh will start a new conversation
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2679) if this behavior is not desirable.
+
+Web Chat do not persist conversation information (conversation ID and connection ID). Thus, on every page refresh, the conversation will be created as a new conversation.
+
+### Conversation history are not stored and resent
+
+Direct Line Speech is not targeting a transcript-based experience. Thus, our servers will no longer store conversation history. We do not plan to support this feature.
+
+### No additional data can be piggybacked on speech recognition
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2680) if this behavior is not desirable.
+
+When using text-based experience, we allow developers to piggyback additional information to outgoing messages. This is demonstrated in [sample 15.a "piggyback data on every outgoing activity"](15.a.backchannel-piggyback-on-outgoing-activities).
+
+With Direct Line Speech, you can no longer piggyback additional data to all speech-based outgoing activities.
+
+### Speech recognition language cannot be switched on-the-fly
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2681) if this behavior is not desirable.
+
+You can only specify speech recognition language at initialization time. You cannot switch speech recognition language while the conversation is active.
+
+### Proactive message is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2682) if this behavior is not desirable.
+
+[Proactive message](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0&tabs=csharp) is not supported when using Direct Line Speech.
+
+### Emulator is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2683) if this behavior is not desirable.
+
+Currently, Emulator only support Direct Line protocol. We are planning to add Direct Line Speech protocol to Emulator.
+
+### Abort recognition is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2664) if this behavior is not desirable.
+
+After the user click on microphone button to start speech recognition, they cannot click microphone button again to abort the recognition. What they have said will continue to be recognized and send to the bot.
+
+### Custom Speech is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2684) if this behavior is not desirable.
+
+Custom Speech is a feature for developers to train a custom speech model to improve speech recognition for uncommon words. This is not supported when using Direct Line Speech.
+
+### Dynamic priming is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2685) if this behavior is not desirable.
+
+Dynmic priming (a.k.a. pharse list) is a feature to improve speech recognition for words with similar pronunciations. This is not supported when using Direct Line Speech.
+
+### Reference grammer ID is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2686) if this behavior is not desirable.
+
+Reference grammar ID is a feature to improve speech recognition accuracy when pairing with LUIS. This is not supported when using Direct Line Speech.
+
+### Custom Voice is not supported
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2687) if this behavior is not desirable.
+
+Custom Voice is a feature for developers to perform synthesis using a custom voice font. This is not supported when using Direct Line Speech.
+
+### Synthesis audio quality is not configurable
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2688) if this behavior is not desirable.
+
+When using Direct Line Speech, you cannot specify the audio quality and format for synthesizing speech.
+
+### Alternative for Markdown
+
+When the bot send activities to the user, it can send both plain text and Markdown. If Markdown is sent, the bot should also provide `speak` field. The `speak` field will be used for speech synthesis and not displayed to end-user.
+
+### Attachments are not synthesized
+
+> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2689) if this behavior is not desirable.
+
+Attachments are not synthesized. The bot should provide a `speak` field for speech synthesis.
+
+As attachments are not synthesized, `speak` property in Adaptive Cards are ignored. The bot should provide a `speak` field for speech synthesis.
