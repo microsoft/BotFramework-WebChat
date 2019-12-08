@@ -10,7 +10,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 ## What is Direct Line Speech?
 
-Direct Line Speech is designed for Voice Assistant scenario. For example, smart display, automotive dashboard, navigation system with low-latency requirement on *single-page application* and *progressive web apps* (PWA). These apps usually are made with highly-customized UI and do not show conversation transcripts.
+Direct Line Speech is designed for Voice Assistant scenario. For example, smart display, automotive dashboard, navigation system with low-latency requirement on _single-page application_ and _progressive web apps_ (PWA). These apps usually are made with highly-customized UI and do not show conversation transcripts.
 
 You can look at our sample [13.a.customization-speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/13.a.customization-speech-ui) and [13.b.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/13.b.customization-smart-display) for target scenarios.
 
@@ -247,8 +247,8 @@ Please look at our sample `06.i.direct-line-speech` to embedding Web Chat on you
 
 After setting up Direct Line Speech on Azure Bot Services, there are two steps for using Direct Line Speech:
 
-- [Retrieve your Direct Line Speech credentials](#retrieve-your-direct-line-speech-credentials)
-- [Render Web Chat using Direct Line Speech adapters](#render-web-chat-using-direct-line-speech-adapters)
+-  [Retrieve your Direct Line Speech credentials](#retrieve-your-direct-line-speech-credentials)
+-  [Render Web Chat using Direct Line Speech adapters](#render-web-chat-using-direct-line-speech-adapters)
 
 ### Retrieve your Direct Line Speech credentials
 
@@ -260,17 +260,20 @@ In the following code snippets, we assume sending a HTTP POST request to https:/
 
 ```js
 const fetchCredentials = async () => {
-  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-    method: 'POST'
-  });
+   const res = await fetch(
+      'https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token',
+      {
+         method: 'POST'
+      }
+   );
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch authorization token and region.');
-  }
+   if (!res.ok) {
+      throw new Error('Failed to fetch authorization token and region.');
+   }
 
-  const { authorizationToken, region } = await res.json();
+   const { authorizationToken, region } = await res.json();
 
-  return { authorizationToken, region };
+   return { authorizationToken, region };
 };
 ```
 
@@ -281,13 +284,15 @@ const fetchCredentials = async () => {
 After you have the `fetchCredentials` function set up, you can pass it to `createDirectLineSpeechAdapters` function. This function will return a set of adapters that is used by Web Chat. It includes DirectLineJS adapter and Web Speech adapter.
 
 ```js
-const adapters = await window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials });
+const adapters = await window.WebChat.createDirectLineSpeechAdapters({
+   fetchCredentials
+});
 
 window.WebChat.renderWebChat(
-  {
-    ...adapters
-  },
-  document.getElementById('webchat')
+   {
+      ...adapters
+   },
+   document.getElementById('webchat')
 );
 ```
 
@@ -301,13 +306,13 @@ window.WebChat.renderWebChat(
 
 You can specify user ID when you instantiate Web Chat.
 
-- If you specify user ID
-   - `conversationUpdate` activity will be send on connect and every reconnect. And with your user ID specified in the `membersAdded` field.
-   - All `message` activities will be sent with your user ID in `from.id` field.
-- If you do not specify user ID
-   - `conversationUpdate` activity will be send on connect and every reconnect. The `membersAdded` field will have an user ID of empty string.
-   - All `message` activities will be sent with a randomized user ID
-      - The user ID is kept the same across reconnections
+-  If you specify user ID
+   -  `conversationUpdate` activity will be send on connect and every reconnect. And with your user ID specified in the `membersAdded` field.
+   -  All `message` activities will be sent with your user ID in `from.id` field.
+-  If you do not specify user ID
+   -  `conversationUpdate` activity will be send on connect and every reconnect. The `membersAdded` field will have an user ID of empty string.
+   -  All `message` activities will be sent with a randomized user ID
+      -  The user ID is kept the same across reconnections
 
 ### Connection idle and reconnection
 
