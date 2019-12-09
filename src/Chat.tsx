@@ -102,6 +102,13 @@ export class Chat extends React.Component<ChatProps, State> {
             if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
                 chatTitle = props.formatOptions.showHeader;
             }
+
+            if (props.formatOptions) {
+                this.store.dispatch<ChatActions>({
+                    type: 'Set_Format_Options',
+                    formatOptions: props.formatOptions
+                });
+            }
         }
 
         if (typeof chatTitle !== 'undefined') {
@@ -452,6 +459,10 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
 
+        const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : undefined;
+        const height = `calc(100vh - ${bottomOffset}px - 20px)`;
+        const chatviewPanelStyle = bottomOffset ? { bottom: bottomOffset, height } : {};
+
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
@@ -472,6 +483,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}
                         onKeyDownCapture={ this._handleKeyDownCapture }
                         ref={ this._saveChatviewPanelRef }
+                        style={chatviewPanelStyle}
                     >
                         {
                             !!state.format.chatTitle &&

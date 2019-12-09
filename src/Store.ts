@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { defaultStrings, strings, Strings } from './Strings';
-import { ActivityOrID } from './Types';
+import { ActivityOrID, FormatOptions } from './Types';
 
 // Reducers - perform state transformations
 
@@ -208,6 +208,7 @@ export interface FormatState {
     carouselMargin: number;
     themeColor: string;
     logoUrl: string;
+    bottomOffset: number;
 }
 
 export type FormatAction = {
@@ -228,6 +229,9 @@ export type FormatAction = {
 } | {
     type: 'Set_Logo_Img',
     logoUrl: string
+} | {
+    type: 'Set_Format_Options',
+    formatOptions: FormatOptions
 };
 
 export const format: Reducer<FormatState> = (
@@ -238,7 +242,8 @@ export const format: Reducer<FormatState> = (
         strings: defaultStrings,
         carouselMargin: undefined,
         themeColor: undefined,
-        logoUrl: undefined
+        logoUrl: undefined,
+        bottomOffset: undefined
     },
     action: FormatAction
 ) => {
@@ -273,6 +278,11 @@ export const format: Reducer<FormatState> = (
             return {
                 ...state,
                 logoUrl: action.logoUrl
+            };
+        case 'Set_Format_Options':
+            return {
+                ...state,
+                ...action.formatOptions
             };
         default:
             return state;

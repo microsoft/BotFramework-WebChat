@@ -33,6 +33,7 @@ interface FloatingIconProps {
     activity?: Activity & { text: string };
     clicked?: () => void;
     logoColor: string;
+    bottomOffset: number;
 }
 
 /**
@@ -44,12 +45,13 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
     }
 
     render() {
-        const { visible, activity, logoColor } = this.props;
+        const { visible, activity, logoColor, bottomOffset } = this.props;
 
         return (
             <div
                 className="wc-floating-wrap"
                 onClick={() => this.props.clicked() }
+                style={{bottom: bottomOffset }}
             >
                 {activity && activity.text !== '' && (
                     <span className={`wc-floating-message ${visible && activity != null ? 'visible' : '' }`}>
@@ -79,6 +81,7 @@ export const FloatingIcon = connect(
         activity: stateProps.activities ? stateProps.activities[0] : null,
         visible: ownProps.visible,
         clicked: ownProps.clicked,
-        logoColor: stateProps.format.themeColor
+        logoColor: stateProps.format.themeColor,
+        bottomOffset: stateProps.format.bottomOffset
     })
 )(FloatingIconView);
