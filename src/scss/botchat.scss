@@ -301,7 +301,7 @@
         height: 0;
         width: 200px;
         border-radius: 8px;
-        z-index: 1000;
+        z-index: 200000;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
@@ -332,7 +332,7 @@
         right: $rightWeight;
         bottom: $floatingBottom;
         width:150px;
-        z-index: 1000;
+        z-index: 200000;
         text-align: center;
 
         @include mobileAndTablet {
