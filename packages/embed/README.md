@@ -26,7 +26,7 @@ To use the embed page, you will need the site secret from your Azure Bot Service
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?s=your-site-secret"></iframe>
 ```
 
-**For production use, we strongly recomment that you use token retrieval instead of your secret.** Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token from your secret.
+**For production use, we strongly recommend that you use token retrieval instead of your secret.** Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token from your secret.
 
 With a token (instead of a secret), your `<iframe>` will look like the following:
 
