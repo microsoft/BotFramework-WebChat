@@ -49,9 +49,9 @@ This sample uses the base components of Web Chat to build new breakaway componen
 1. Dictation while the user is speaking
 1. The Microphone button to initiate speech-to-text
 
-Notice that traditional Web Chat 'pieces' are missing: the transcript and send box are not present on this app.
+Notice that traditional Web Chat "pieces" are missing: the transcript and send box are not present on this app.
 
-The intent of this bot is to show our users how you can pick and choose what components you want to use, allowing for expansion and modification of how traditional Web Chat works. If you have a significantly different design spec for your bot, but would still like to use Web Chat, looking at this sample is a great place to start.
+The intent of this sample is to show how you can pick and choose what components you want to use, allowing for expansion and modification of how traditional Web Chat works. If you have a significantly different design spec for your bot, but would still like to use Web Chat, looking at this sample is a great place to start.
 
 To see what components are available for customization, please take a look at the [components directory](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src) of the Web Chat repo. You are welcome to import any one of these into your app and make modifications, or build an entirely new component from scratch.
 
