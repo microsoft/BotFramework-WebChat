@@ -63,13 +63,15 @@ Then, we will create a Direct Line Speech adapter set with the `fetchCredentials
 -         token: token
 -       })
 -     },
-+     adapters,
++     Object.assign({}, adapters),
       document.getElementById('webchat')
     );
 
     document.querySelector('#webchat > *').focus();
   });
 ```
+
+> If you need to pass options to Web Chat, replace the `{}` with your options.
 
 ## Completed code
 
