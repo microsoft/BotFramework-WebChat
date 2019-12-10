@@ -1,6 +1,5 @@
-import createDeferred from '../../external/p-defer';
-
 import createAdapters from '../../src/createAdapters';
+import createDeferred from '../../src/external/p-defer';
 import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSource';
 import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
 import fetchSpeechData from './fetchSpeechData';
