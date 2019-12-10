@@ -111,7 +111,10 @@ Here is the finished `index.html`:
       };
 
       window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
-        window.WebChat.renderWebChat(adapters, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          Object.assign({}, adapters),
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       });
