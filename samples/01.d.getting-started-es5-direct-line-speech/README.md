@@ -1,10 +1,10 @@
-# Sample - Getting Started with Web Chat ES5 bundle with Direct Line Speech
+# Sample - Getting Started with Web Chat ES5 bundle and Direct Line Speech
 
 ## Description
 
-A simple web page with a maximized Web Chat that connect to Direct Line Speech channel and works under Internet Explorer 11.
+A simple web page with a maximized Web Chat that connects to the Direct Line Speech channel and works in Internet Explorer 11.
 
-Although the web page works under Internet Explorer 11, the speech recognition and synthesis will be disabled when running under Internet Explorer 11. When running the web page under a browser with required media capabilities, speech recognition and synthesis will be enabled/
+Although the web page works in Internet Explorer 11, the speech recognition and synthesis will be disabled when running in IE11. When running the web page under a browser with required media capabilities, speech recognition and synthesis will be enabled
 
 # Test out the hosted sample
 
@@ -33,7 +33,7 @@ This sample will show you how to implement your own initials displayed next to .
 
 This sample starts with the [ES5 bundle CDN sample](./../01.a.getting-started-es5-bundle/README.md) as the base template.
 
-First, we will remove the existing fetch token call with a `fetchCredentials` function, which asynchronously return a JavaScript object of `{ authorizationToken: string, region: string }` in a Promise fashion.
+First, we will remove the existing fetch token call with a `fetchCredentials` function, which asynchronously returns a JavaScript object of `{ authorizationToken: string, region: string }` in a Promise fashion.
 
 ```js
 const fetchCredentials = function() {
@@ -53,7 +53,7 @@ const fetchCredentials = function() {
 };
 ```
 
-Then, we will create a Direct Line Speech adapter set with the `fetchCredentials` function asynchronously. And use the adapter set to initialize Web Chat.
+Next we will create a Direct Line Speech adapter set with the `fetchCredentials` function asynchronously and use the adapter set to initialize Web Chat.
 
 ```diff
 + window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {

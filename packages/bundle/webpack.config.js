@@ -45,11 +45,11 @@ module.exports = {
     // The default Webpack module resolution order is: "module", then "browser", then "main".
     //
     // De facto entrypoint definitions:
-    // - "module": ES.next, transpilation is required for this entrypoint. It should yield code with smallest footprint.
-    // - "main": Plain old Node.js or browser, should be ES5 compatible. It may be configured to work only on either Node.js or browser.
+    // - "module": ES.next: transpilation is required for this entrypoint. It should yield code with smallest footprint.
+    // - "main": Plain old Node.js or browser: should be ES5 compatible. It may be configured to work only on either Node.js or browser.
     // - "browser": Plain old browsers (ES5, which is supported by IE9). This entrypoint will not work on Node.js.
     //
-    // If both "main" and "browser" present, "main" will be for Node.js, "browser" will be for browsers.
+    // If both "main" and "browser" are present, "main" will be for Node.js and "browser" will be for browsers.
     mainFields: ['browser', 'main']
   }
 };

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Full-featured bundle with ES5 polyfills via Direct Line Speech channel</title>
+    <title>Web Chat: Full-featured bundle with ES5 polyfills and Direct Line Speech channel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
@@ -31,7 +31,7 @@
       // You should never put the Direct Line secret in the browser or client app.
       // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-      // This code is modified to run in browser without async and Promise support
+      // This code is modified to run in a browser that does not have async and Promise support
       const fetchCredentials = function() {
         return window
           .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
