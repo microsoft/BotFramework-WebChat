@@ -19,7 +19,11 @@ Although the web page works in Internet Explorer 11, the speech recognition and 
 
 # Things to try out
 
--  Type `hello`: you should see the initials displayed next to user and bot speech bubbles in the transcript.
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel changes size
 
 # Code
 
