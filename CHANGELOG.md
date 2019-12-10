@@ -71,6 +71,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added triple-buffering to reduce pops/cracks.
    -  Enable Safari by upsampling to 48000 Hz.
    -  Support detailed output format on Web Chat side.
+-  Fixes [#2700](https://github.com/microsoft/BotFramework-WebChat/issues/2700). Enable `<SayComposer>` and Adaptive Cards in recompose story, in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
+   -  Moved `<SayComposer>` from `<BasicTranscript>` to `<Composer>`
+   -  Moved WebSpeechPonyfill patching code from `<BasicTranscript>` to `<Composer>`
+-  Fixes [#2699](https://github.com/microsoft/BotFramework-WebChat/issues/2699). Disable speech recognition and synthesis when using Direct Line Speech under IE11, in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
 
 ### Changed
 
