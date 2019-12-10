@@ -72,7 +72,7 @@ return (
 
 ## `SmartDisplay.js`
 
-[`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/13.b.customization-smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user click on the microphone button, it will mark the last bot activity as read.
+[`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/13.b.customization-smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user clicks on the microphone button, it will mark the last bot activity as read.
 
 ```jsx
 const SmartDisplay = () => {
@@ -157,7 +157,7 @@ const Clock = () => {
    - Microphone cannot be turned off because abort recording is not supported
 - `useSendBoxSpeechInterimsVisible` to indicate whether speech interims should be visible or not
 
-The `MicrophoneButton.js` leveraged logics from various Web Chat hooks, which are also used internally by Web Chat to drive its standard components.
+The `MicrophoneButton.js` leveraged logic from various Web Chat hooks, which are also used internally by Web Chat to drive its standard components.
 
 ```jsx
 const CustomMicrophoneButton = ({ onClick }) => {
