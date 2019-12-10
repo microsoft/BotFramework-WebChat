@@ -9,8 +9,7 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 16.customization-selectable-activity \
   --exclude 17.a.chat-send-history \
   --exclude 17.b.clear-after-idle \
-  --exclude 21.customization-plain-ui \
-  --exclude 24.customization-smart-display
+  --exclude 21.customization-plain-ui
 
 mkdir gh-pages/12.customization-minimizable-web-chat
 rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pages/12.customization-minimizable-web-chat/

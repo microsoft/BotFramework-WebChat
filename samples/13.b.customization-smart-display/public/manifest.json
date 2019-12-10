@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Web Chat sample",
+  "name": "Using Web Chat as a smart display",
   "icons": [
     {
       "src": "favicon.ico",
