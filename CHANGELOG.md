@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
 -  Adds `AdaptiveCardsComposer` and `AdaptiveCardsContext` for composability for Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#2648](https://github.com/microsoft/BotFramework-WebChat/pull/2648)
 -  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
+   -  Adds [`microsoft-cognitiveservices-sdk@1.8.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)
 -  Fixes [#2692](https://github.com/microsoft/BotFramework-WebChat/issues/2692). Rename sample 17 to 17.a, by [@corinagum](https://github.com/corinagum) in PR [#2695](https://github.com/microsoft/BotFramework-WebChat/pull/2695)
 
 ### Fixed
