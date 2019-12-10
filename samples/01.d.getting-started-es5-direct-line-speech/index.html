@@ -32,7 +32,7 @@
       // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
       // This code is modified to run in browser without async and Promise support
-      const fetchCredentials = function () {
+      const fetchCredentials = function() {
         return window
           .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
             method: 'POST'
@@ -48,15 +48,11 @@
           });
       };
 
-      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials })
-        .then(function(adapters) {
-          window.WebChat.renderWebChat(
-            adapters,
-            document.getElementById('webchat')
-          );
+      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
+        window.WebChat.renderWebChat(adapters, document.getElementById('webchat'));
 
-          document.querySelector('#webchat > *').focus();
-        });
+        document.querySelector('#webchat > *').focus();
+      });
     </script>
   </body>
 </html>
