@@ -39,6 +39,17 @@ module.exports = {
     alias: {
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
-    }
+    },
+
+    // Since Webpack is configured not to transpile, we cannot use package.json/module field to load a module.
+    // The default Webpack module resolution order is: "module", then "browser", then "main".
+    //
+    // De facto entrypoint definitions:
+    // - "module": ES.next: transpilation is required for this entrypoint. It should yield code with smallest footprint.
+    // - "main": Plain old Node.js or browser: should be ES5 compatible. It may be configured to work only on either Node.js or browser.
+    // - "browser": Plain old browsers (ES5, which is supported by IE9). This entrypoint will not work on Node.js.
+    //
+    // If both "main" and "browser" are present, "main" will be for Node.js and "browser" will be for browsers.
+    mainFields: ['browser', 'main']
   }
 };

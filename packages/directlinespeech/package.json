@@ -50,12 +50,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.2",
-    "abort-controller": "^3.0.0",
     "base64-arraybuffer": "^0.2.0",
     "event-as-promise": "^1.0.5",
     "math-random": "^1.0.4",
-    "microsoft-cognitiveservices-speech-sdk": "file:external/microsoft-cognitiveservices-speech-sdk-1.6.0-alpha.0.1.tgz",
-    "p-defer": "^3.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "file:external/microsoft-cognitiveservices-speech-sdk-1.8.1.tgz",
     "web-speech-cognitive-services": "^6.0.0"
   }
 }

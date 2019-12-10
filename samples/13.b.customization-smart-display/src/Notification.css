@@ -1,0 +1,14 @@
+.App-Notification {
+  display: flex;
+  font-weight: initial;
+  font-size: 5vmin;
+  line-height: 5vmin;
+  margin-left: 5vmin;
+  padding-top: 1vmin;
+}
+
+.App-Notification-Icon {
+  font-size: 5vmin;
+  line-height: 5.5vmin;
+  margin-right: 2vmin;
+}

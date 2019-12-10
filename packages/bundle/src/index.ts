@@ -46,6 +46,7 @@ export {
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
+  createDirectLineSpeechAdapters,
   createStyleSet,
   patchedHooks as hooks,
   renderMarkdown,

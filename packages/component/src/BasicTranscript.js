@@ -1,4 +1,3 @@
-import { Composer as SayComposer } from 'react-say';
 import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
@@ -13,12 +12,6 @@ import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
-
-import {
-  speechSynthesis as bypassSpeechSynthesis,
-  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
-} from './Speech/BypassSpeechSynthesisPonyfill';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -65,19 +58,10 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
 const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
-  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
   const [groupTimestamp] = useGroupTimestamp();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
-
-  const patchedWebSpeechPonyfill = useMemo(
-    () => ({
-      speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
-      SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
-    }),
-    [speechSynthesis, SpeechSynthesisUtterance]
-  );
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
@@ -123,31 +107,29 @@ const BasicTranscript = ({ className }) => {
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
-        <SayComposer ponyfill={patchedWebSpeechPonyfill}>
-          <ul
-            aria-atomic="false"
-            aria-live="polite"
-            aria-relevant="additions text"
-            className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
-            role="list"
-          >
-            {activityElementsWithMetadata.map(({ activity, element, key, timestampVisible, shouldSpeak }) => (
-              <li
-                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-                aria-label=" "
-                className={classNames(activityStyleSet + '', {
-                  // Hide timestamp if same timestamp group with the next activity
-                  'hide-timestamp': !timestampVisible
-                })}
-                key={key}
-                role="listitem"
-              >
-                {element}
-                {shouldSpeak && <SpeakActivity activity={activity} />}
-              </li>
-            ))}
-          </ul>
-        </SayComposer>
+        <ul
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
+          role="list"
+        >
+          {activityElementsWithMetadata.map(({ activity, element, key, timestampVisible, shouldSpeak }) => (
+            <li
+              // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
+              aria-label=" "
+              className={classNames(activityStyleSet + '', {
+                // Hide timestamp if same timestamp group with the next activity
+                'hide-timestamp': !timestampVisible
+              })}
+              key={key}
+              role="listitem"
+            >
+              {element}
+              {shouldSpeak && <SpeakActivity activity={activity} />}
+            </li>
+          ))}
+        </ul>
       </ScrollToBottomPanel>
       {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>
