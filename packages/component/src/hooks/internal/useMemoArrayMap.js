@@ -11,13 +11,7 @@ export default function useMemoArrayMap(array, mapper) {
   return useMemo(() => {
     const mapped = array.map((value, index) => {
       const prevResult = prevMapperCalls.find(({ value: targetValue }) => targetValue === value);
-      let result;
-
-      if (prevResult) {
-        result = prevResult.result;
-      } else {
-        result = mapper.call(array, value, index);
-      }
+      const { result = mapper.call(array, value, index) } = prevResult || {};
 
       nextMapperCalls.push({ result, value });
 
