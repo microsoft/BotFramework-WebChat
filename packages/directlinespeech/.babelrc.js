@@ -7,7 +7,7 @@ const CONFIG = {
     [
       'babel-plugin-transform-inline-environment-variables',
       {
-        include: ['NPM_PACKAGE_VERSION']
+        include: ['npm_package_version']
       }
     ]
   ],
