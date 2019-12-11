@@ -12,7 +12,6 @@ import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import useTrackChanges from './hooks/internal/useTrackChanges';
 import useMemoArrayMap from './hooks/internal/useMemoArrayMap';
 
 const ROOT_CSS = css({
