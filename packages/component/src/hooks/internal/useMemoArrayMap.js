@@ -5,7 +5,7 @@ export default function useMemoArrayMap(array, mapper) {
   const sameMapper = Object.is(mapper, prevMapperRef.current);
 
   const prevMapperCallsRef = useRef([]);
-  const { current: prevMapperCalls = {} } = sameMapper ? prevMapperCallsRef : {};
+  const { current: prevMapperCalls = [] } = sameMapper ? prevMapperCallsRef : {};
   const nextMapperCalls = [];
 
   return useMemo(() => {
