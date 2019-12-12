@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
@@ -12,6 +12,7 @@ import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useMemoArrayMap from './hooks/internal/useMemoArrayMap';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -62,45 +63,50 @@ const BasicTranscript = ({ className }) => {
   const [groupTimestamp] = useGroupTimestamp();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
+  const renderActivityElement = useCallback(
+    activity => {
+      const element = renderActivity({
+        activity,
+        timestampClassName: 'transcript-timestamp'
+      });
+
+      return element && { activity, element };
+    },
+    [renderActivity]
+  );
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
   // After we know which activities will show up, we can compute which activity will show timestamps.
   // If the activity does not render, it will not be spoken if text-to-speech is enabled.
-  const activityElements = useMemo(
-    () =>
-      activities.reduce((activityElements, activity) => {
-        const element = renderActivity({
-          activity,
-          timestampClassName: 'transcript-timestamp'
-        });
 
-        element && activityElements.push({ activity, element });
+  const activityElements = useMemoArrayMap(activities, renderActivityElement);
 
-        return activityElements;
-      }, []),
-    [activities, renderActivity]
-  );
-
+  // TODO: [P2] We can also use useMemoArrayMap() for this function.
+  //       useMemoArrayMap(array, mapper) will need to be modified to useMemoArrayMap(array, mapper, getDeps).
+  //       This is because the deps for every item is not itself anymore. It will include activityElements[index + 1].
+  const trimmedActivityElements = activityElements.filter(activityElement => activityElement);
   const activityElementsWithMetadata = useMemo(
     () =>
-      activityElements.map((activityElement, index) => {
-        const { activity } = activityElement;
-        const { activity: nextActivity } = activityElements[index + 1] || {};
+      trimmedActivityElements
+        .filter(activityElement => activityElement)
+        .map((activityElement, index) => {
+          const { activity } = activityElement;
+          const { activity: nextActivity } = trimmedActivityElements[index + 1] || {};
 
-        return {
-          ...activityElement,
+          return {
+            ...activityElement,
 
-          key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
+            key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
 
-          // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-          shouldSpeak: activity.channelData && activity.channelData.speak,
+            // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+            shouldSpeak: activity.channelData && activity.channelData.speak,
 
-          // Hide timestamp if same timestamp group with the next activity
-          timestampVisible: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
-        };
-      }),
-    [activityElements, groupTimestamp]
+            // Hide timestamp if same timestamp group with the next activity
+            timestampVisible: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
+          };
+        }),
+    [groupTimestamp, trimmedActivityElements]
   );
 
   return (
