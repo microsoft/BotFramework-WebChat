@@ -85,13 +85,14 @@ const BasicTranscript = ({ className }) => {
   // TODO: [P2] We can also use useMemoArrayMap() for this function.
   //       useMemoArrayMap(array, mapper) will need to be modified to useMemoArrayMap(array, mapper, getDeps).
   //       This is because the deps for every item is not itself anymore. It will include activityElements[index + 1].
+  const trimmedActivityElements = activityElements.filter(activityElement => activityElement);
   const activityElementsWithMetadata = useMemo(
     () =>
-      activityElements
+      trimmedActivityElements
         .filter(activityElement => activityElement)
         .map((activityElement, index) => {
           const { activity } = activityElement;
-          const { activity: nextActivity } = activityElements[index + 1] || {};
+          const { activity: nextActivity } = trimmedActivityElements[index + 1] || {};
 
           return {
             ...activityElement,
@@ -105,7 +106,7 @@ const BasicTranscript = ({ className }) => {
             timestampVisible: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
           };
         }),
-    [activityElements, groupTimestamp]
+    [groupTimestamp, trimmedActivityElements]
   );
 
   return (
