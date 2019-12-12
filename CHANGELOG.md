@@ -79,6 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2709](https://github.com/microsoft/BotFramework-WebChat/issues/2709). Reduce wasted render of activities by memoizing partial result of `<BasicTranscript>`, by [@compulim](https://github.com/compulim) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
 -  Fixes [#2710](https://github.com/microsoft/BotFramework-WebChat/issues/2710). Suggested actions container should persist for AT, by [@corinagum](https://github.com/corinagum) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
 -  Fixes [#2718](https://github.com/microsoft/BotFramework-WebChat/issues/2718). Add `Object.is` polyfill for IE11, by [@compulim](https://github.com/compulim) in PR [#2719](https://github.com/microsoft/BotFramework-WebChat/pull/2719)
+-  Fixes [#2723](https://github.com/microsoft/BotFramework-WebChat/issues/2723). Fix `renderMarkdown` should not be called if it is `undefined` in minimal bundle, by [@compulim](https://github.com/compulim) in PR [#2724](https://github.com/microsoft/BotFramework-WebChat/pull/2724)
 
 ### Changed
 
