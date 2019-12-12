@@ -32,7 +32,7 @@ Direct Line Speech is a channel for communicating with a bot via a low-latency s
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
-In this sample, we will switch the Web Chat protocol. Direct Line Speech is a channel for communicating with a bot via a low-latency speech-focused protocol. The channel is designed for real-time speech. Thus, *not all features in Web Chat are supported in this channel.*
+In this sample, we will switch the Web Chat protocol. Direct Line Speech is a channel for communicating with a bot via a low-latency speech-focused protocol. The channel is designed for real-time speech. Thus, _not all features in Web Chat are supported in this channel._
 
 (TBD, list of limitations)
 
@@ -48,7 +48,7 @@ You will also need to update your bot to use 4.6 SDK. You can follow [this artic
 
 ### Using subscription key
 
-We will start by using subscription key to connect to the Direct Line Speech channel. *Please note that a subscription key is not recommended to use in production environment.* In this sample, we will use it to verify if our configuration is correct. In the latter section, we will upgrade the sample to use an authorization token.
+We will start by using subscription key to connect to the Direct Line Speech channel. _Please note that a subscription key is not recommended to use in production environment._ In this sample, we will use it to verify if our configuration is correct. In the latter section, we will upgrade the sample to use an authorization token.
 
 We are replacing the existing code by creating an adapter set using the new `createDirectLineSpeechAdapters` function. We will pass the adapter set to Web Chat using the [spread operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
 
@@ -85,17 +85,17 @@ First, create an async function `fetchCredentials`. When called, it will fetch t
 
 ```js
 const fetchCredentials = async () => {
-  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-    method: 'POST'
-  });
+   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+      method: 'POST'
+   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch authorization token and region.');
-  }
+   if (!res.ok) {
+      throw new Error('Failed to fetch authorization token and region.');
+   }
 
-  const { region, token: authorizationToken } = await res.json();
+   const { region, token: authorizationToken } = await res.json();
 
-  return { authorizationToken, region };
+   return { authorizationToken, region };
 };
 ```
 

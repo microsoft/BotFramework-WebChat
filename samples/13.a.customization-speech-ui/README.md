@@ -2,31 +2,31 @@
 
 ## Description
 
-A simple React web site that use 3 pieces of custom UI:
+A simple React web site that creates and uses 3 pieces of custom UI:
 
 -  [Microphone button](src/CustomMicrophoneButton.js): a `<button>` to start/stop microphone input
 -  [Dictation interims](src/CustomDictationInterims.js): a `<p>` to show dictation interims
--  [Last bot activity](src/LastBotActivity.js): a new component which show the last message activity from bot
+-  [Last bot activity](src/LastBotActivity.js): a new component which shows the last message activity from the bot
 
 This app is built with `create-react-app`.
 
 ### Incompatible with Safari
 
-Currently, this sample does not work under Safari. Safari requires explicit user interaction to start recording on the microphone or playing audio clips. This is being investigated in [issue #995](https://github.com/microsoft/BotFramework-WebChat/issues/995).
+Currently, this sample does not work on Safari. Safari requires explicit user interaction to start recording on the microphone or playing audio clips. This is being investigated in [issue #995](https://github.com/microsoft/BotFramework-WebChat/issues/995).
 
--  Speech-to-text: after the user clicks the microphone, we fetch an authorization token and then start recording on the microphone
-   -  The network call to fetch the token "disconnect" the user interaction and recording, thus, Safari considered the recording do not have explicit grant from the user and denied access
--  Text-to-speech: the synthesized text is played when the bot sends the message, without any user interactions
-   -  Since the synthesized text is an audio clip and started playing without user interactions, Safari denied access to speaker
+-  Speech-to-text: after the user clicks the microphone, Web Chat fetches an authorization token and then starts recording on the microphone
+   -  The network call to fetch the token "disconnects" or separates the user interaction and recording. Thus, Safari considers the recording to not have explicit permission from the user and denies access
+-  Text-to-speech: the synthesized text is played when the bot sends the message, without any user interaction
+   -  Since the synthesized text is an audio clip and starts playing without user interaction, Safari denies access to speaker
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.a.customization-speech-ui)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/13.customization-speech-ui` in command line
+-  Navigate to `/Your-Local-WebChat/samples/13.a.customization-speech-ui` in command line
 -  Run `npm install`
 -  Run `npm start`
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
@@ -49,9 +49,9 @@ This sample uses the base components of Web Chat to build new breakaway componen
 1. Dictation while the user is speaking
 1. The Microphone button to initiate speech-to-text
 
-Notice that traditional Web Chat 'pieces' are missing: the transcript and send box are not present on this app.
+Notice that traditional Web Chat "pieces" are missing: the transcript and send box are not present on this app.
 
-The intent of this bot is to show our users how you can pick and choose what components you want to use, allowing for expansion and modification of how traditional Web Chat works. If you have a significantly different design spec for your bot, but would still like to use Web Chat, looking at this sample is a great place to start.
+The intent of this sample is to show how you can pick and choose what components you want to use, allowing for expansion and modification of how traditional Web Chat works. If you have a significantly different design spec for your bot, but would still like to use Web Chat, looking at this sample is a great place to start.
 
 To see what components are available for customization, please take a look at the [components directory](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src) of the Web Chat repo. You are welcome to import any one of these into your app and make modifications, or build an entirely new component from scratch.
 
@@ -67,8 +67,8 @@ Let's set up the project.
 
 ```sh
 cd C:\Users\You\Documents
-npx create-react-app 13.customization-speech-ui
-cd 13.customization-speech-ui
+npx create-react-app 13.a.customization-speech-ui
+cd 13.a.customization-speech-ui
 npm i botframework-webchat
 ```
 

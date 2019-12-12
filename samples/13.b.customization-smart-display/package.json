@@ -1,15 +1,16 @@
 {
-  "name": "sample-customization-speech-ui",
+  "name": "sample-customization-smart-display",
   "version": "0.0.0-0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/13.b.customization-smart-display/",
   "dependencies": {
     "botframework-webchat": "^4.6.0",
     "classnames": "^2.2.6",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-redux": "^5.1.1",
-    "react-scripts": "^3.0.1",
+    "react-film": "^1.3.0",
+    "react-redux": "^7.1.3",
+    "react-scripts": "^3.2.0",
     "redux": "^4.0.4"
   },
   "scripts": {

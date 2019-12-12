@@ -1,3 +1,4 @@
+import { Composer as SayComposer } from 'react-say';
 import {
   Composer as ScrollToBottomComposer,
   FunctionContext as ScrollToBottomFunctionContext
@@ -44,6 +45,11 @@ import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
 import WebChatReduxContext, { useDispatch } from './WebChatReduxContext';
 import WebChatUIContext from './WebChatUIContext';
+
+import {
+  speechSynthesis as bypassSpeechSynthesis,
+  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
+} from './Speech/BypassSpeechSynthesisPonyfill';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -205,10 +211,16 @@ const Composer = ({
     [dispatch]
   );
 
-  const webSpeechPonyfill = useMemo(
-    () => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID }),
-    [referenceGrammarID, webSpeechPonyfillFactory]
-  );
+  const webSpeechPonyfill = useMemo(() => {
+    const ponyfill = webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID });
+    const { speechSynthesis, SpeechSynthesisUtterance } = ponyfill || {};
+
+    return {
+      ...ponyfill,
+      speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
+      SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
+    };
+  }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
@@ -274,7 +286,9 @@ const Composer = ({
 
   return (
     <WebChatUIContext.Provider value={context}>
-      {typeof children === 'function' ? children(context) : children}
+      <SayComposer ponyfill={webSpeechPonyfill}>
+        {typeof children === 'function' ? children(context) : children}
+      </SayComposer>
       <Dictation />
     </WebChatUIContext.Provider>
   );
