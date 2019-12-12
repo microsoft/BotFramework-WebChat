@@ -76,7 +76,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Moved `<SayComposer>` from `<BasicTranscript>` to `<Composer>`
    -  Moved WebSpeechPonyfill patching code from `<BasicTranscript>` to `<Composer>`
 -  Fixes [#2699](https://github.com/microsoft/BotFramework-WebChat/issues/2699). Disable speech recognition and synthesis when using Direct Line Speech under IE11, in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
--  Fixes [#2710](https://github.com/microsoft/BotFramework-WebChat/issues/2710). Suggested Actions a11y, by [@corinagum](https://github.com/corinagum) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
+-  Fixes [#2710](https://github.com/microsoft/BotFramework-WebChat/issues/2710). Suggested actions container should persist for AT, by [@corinagum](https://github.com/corinagum) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
 
 ### Changed
 
