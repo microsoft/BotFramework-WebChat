@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+-  Fixes [#2714](https://github.com/microsoft/BotFramework-WebChat/issues/2714). Patched something, by [@corinagum](https://github.com/corinagum) in PR [#2725](https://github.com/microsoft/BotFramework-WebChat/pull/2725)
+
 ### Breaking changes
 
 -  `adaptiveCardHostConfig` is being renamed to `adaptiveCardsHostConfig`
