@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -42,19 +42,12 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+
   const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
   const suggestedActionsEmptyText = useLocalize('SuggestedActionsEmpty');
   const suggestedActionsContainerText =
     useLocalize('SuggestedActionsContainer') +
     (suggestedActions.length ? suggestedActionsContentText : suggestedActionsEmptyText);
-
-  if (!suggestedActions.length) {
-    return (
-      <div aria-label=" " aria-live="polite" role="status">
-        <ScreenReaderText text={suggestedActionsContainerText} />
-      </div>
-    );
-  }
 
   const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
     <SuggestedAction
@@ -69,28 +62,65 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     />
   ));
 
-  if (suggestedActionLayout === 'stacked') {
-    return (
-      <div aria-label=" " aria-live="polite" role="status">
+  const renderSuggestedActionsEmpty = useCallback(() => <ScreenReaderText text={suggestedActionsContainerText} />, [
+    suggestedActionsContainerText
+  ]);
+
+  const renderSuggestedActionsStacked = useCallback(
+    () => (
+      <React.Fragment>
         <ScreenReaderText text={suggestedActionsContainerText} />
         <div className={classNames(suggestedActionsStyleSet + '', SUGGESTED_ACTION_STACKED_CSS + '', className + '')}>
           {children}
         </div>
-      </div>
-    );
-  }
+      </React.Fragment>
+    ),
+    [children, className, suggestedActions, suggestedActionsContainerText, suggestedActionsStyleSet]
+  );
+
+  const renderSuggestedActionsContent = useCallback(
+    () => (
+      <React.Fragment>
+        <ScreenReaderText text={suggestedActionsContainerText} />
+        <BasicFilm
+          autoCenter={false}
+          className={classNames(suggestedActionsStyleSet + '', className + '')}
+          showDots={false}
+          styleSet={suggestedActionsStyleSetForReactFilm}
+        >
+          {children}
+        </BasicFilm>
+      </React.Fragment>
+    ),
+    [
+      children,
+      className,
+      suggestedActions,
+      suggestedActionsContainerText,
+      suggestedActionsStyleSet,
+      suggestedActionsStyleSetForReactFilm
+    ]
+  );
+
+  const renderSuggestedActionsContainer = useCallback(() => {
+    if (!suggestedActions.length) {
+      return renderSuggestedActionsEmpty();
+    } else if (suggestedActionLayout === 'stacked') {
+      return renderSuggestedActionsStacked();
+    }
+    return renderSuggestedActionsContent();
+  }, [
+    renderSuggestedActionsContent,
+    renderSuggestedActionsEmpty,
+    renderSuggestedActionsStacked,
+    suggestedActionLayout,
+    suggestedActions
+  ]);
 
   return (
-    <div aria-label=" " aria-live="polite" role="status">
-      <ScreenReaderText text={suggestedActionsContainerText} />
-      <BasicFilm
-        autoCenter={false}
-        className={classNames(suggestedActionsStyleSet + '', className + '')}
-        showDots={false}
-        styleSet={suggestedActionsStyleSetForReactFilm}
-      >
-        {children}
-      </BasicFilm>
+    // aria-live is implicitly set to polite when role="status"
+    <div aria-label=" " role="status">
+      {renderSuggestedActionsContainer()}
     </div>
   );
 };

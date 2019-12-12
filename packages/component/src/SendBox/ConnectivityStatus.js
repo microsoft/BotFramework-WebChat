@@ -165,6 +165,7 @@ const ConnectivityStatus = () => {
   ]);
 
   return (
+    // aria-live is implicitly set to polite when role="status"
     <div aria-label=" " role="status">
       <DebouncedConnectivityStatus
         interval={
