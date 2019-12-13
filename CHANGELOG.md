@@ -168,6 +168,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  This will fix [#2583](https://github.com/microsoft/BotFramework-WebChat/issues/2583) by not bringing in transient dependency of React
    -  To view the bundle stats, browse to https://chrisbateman.github.io/webpack-visualizer/ and drop the file `/packages/bundle/dist/stats.json`
 -  Resolves [#2674](https://github.com/microsoft/BotFramework-WebChat/issues/2674). Update embed docs, by [@corinagum](https://github.com/corinagum), in PR [#2696](https://github.com/microsoft/BotFramework-WebChat/pull/2696)
+- Moved `core-js` from dev dependencies to dependencies in `botframework-directlinespeech-sdk` package, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2727](https://github.com/microsoft/BotFramework-WebChat/pull/2727)
 
 ### Samples
 
