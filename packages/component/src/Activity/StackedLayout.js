@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -11,7 +10,6 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
-import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
 import useAvatarForBot from '../hooks/useAvatarForBot';
@@ -20,10 +18,6 @@ import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-
-const {
-  ActivityClientState: { SENDING, SEND_FAILED }
-} = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -103,7 +97,6 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
   const initials = fromUser ? userInitials : botInitials;
-  const showSendStatus = state === SENDING || state === SEND_FAILED;
   const plainText = remarkStripMarkdown(text);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
@@ -161,11 +154,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
           </div>
         ))}
         <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
-          {showSendStatus ? (
-            <SendStatus activity={activity} className="timestamp" />
-          ) : (
-            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
-          )}
+          <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
           <div className="filler" />
         </div>
       </div>
