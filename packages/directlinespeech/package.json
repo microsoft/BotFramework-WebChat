@@ -33,7 +33,6 @@
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "concurrently": "^4.1.2",
-    "core-js": "^3.2.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "eslint-plugin-prettier": "^3.1.1",
@@ -51,6 +50,7 @@
   "dependencies": {
     "@babel/runtime": "^7.6.2",
     "base64-arraybuffer": "^0.2.0",
+    "core-js": "^3.2.1",
     "event-as-promise": "^1.0.5",
     "math-random": "^1.0.4",
     "microsoft-cognitiveservices-speech-sdk": "^1.8.1",
