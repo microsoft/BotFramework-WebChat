@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Samples
+
+-  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/Microsoft/BotFramework-WebChat/issues/2726)
+
 ## [4.7.1] - 2019-12-13
 
 ### Changed
