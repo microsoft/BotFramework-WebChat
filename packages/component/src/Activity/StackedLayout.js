@@ -87,7 +87,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
 
   const {
     attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
+    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
     textFormat,

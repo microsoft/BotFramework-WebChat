@@ -6,23 +6,18 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Constants } from 'botframework-webchat-core';
-
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
+import Timestamp from './Timestamp';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-
-const {
-  ActivityClientState: { SENDING, SEND_FAILED }
-} = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -163,7 +158,8 @@ const WebChatCarouselFilmStrip = ({
 
 WebChatCarouselFilmStrip.defaultProps = {
   children: undefined,
-  className: ''
+  className: '',
+  timestampClassName: ''
 };
 
 WebChatCarouselFilmStrip.propTypes = {

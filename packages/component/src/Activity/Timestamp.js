@@ -40,6 +40,9 @@ Timestamp.defaultProps = {
 
 Timestamp.propTypes = {
   activity: PropTypes.shape({
+    channelData: PropTypes.shape({
+      state: PropTypes.string
+    }),
     timestamp: PropTypes.string.isRequired
   }).isRequired,
   'aria-hidden': PropTypes.bool,
