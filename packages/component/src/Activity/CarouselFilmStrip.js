@@ -11,6 +11,7 @@ import { Constants } from 'botframework-webchat-core';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
+import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
@@ -18,7 +19,6 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
