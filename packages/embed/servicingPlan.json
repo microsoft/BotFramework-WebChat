@@ -106,6 +106,25 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.7": {
+      "redirects": [
+        ["*", "4.7.1"]
+      ]
+    },
+    "4.7.0": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.7.0/webchat-es5.js", "sha384-D+O/WIE8WCupSBNZr0o0vf13eHWXaAj/HJkS6PFUgWgaHhVcJKWiBt5xq1UE1URM"]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.7.1": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.7.1/webchat-es5.js", "sha384-SLg/iz1Y+04Iie1JbZIc6ahBCa24SGjD5QHACU5r7iJgjmO7WBRpsy3j4rpEyFoT"]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
     "3": {
       "redirects": [
         ["*", "0.15.1-v3.748a85f"]
