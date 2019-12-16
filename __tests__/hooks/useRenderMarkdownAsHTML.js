@@ -24,3 +24,13 @@ test('renderMarkdown should use custom Markdown transform function from props', 
     pageObjects.runHook('useRenderMarkdownAsHTML', [], fn => fn('Hello, World!'))
   ).resolves.toMatchInlineSnapshot(`"HELLO, WORLD!"`);
 });
+
+test('renderMarkdown should return falsy if the custom Markdown transform function is null', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      renderMarkdown: null
+    }
+  });
+
+  await expect(pageObjects.runHook('useRenderMarkdownAsHTML', [], fn => !!fn)).resolves.toMatchInlineSnapshot(`false`);
+});

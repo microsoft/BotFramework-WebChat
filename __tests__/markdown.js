@@ -22,3 +22,16 @@ test('hero card', async () => {
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('null renderMarkdown function', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { renderMarkdown: null } });
+
+  await pageObjects.sendMessageViaSendBox('echo **This text should be plain text**', { waitForSend: true });
+
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});

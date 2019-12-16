@@ -21,8 +21,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
+### Changed
 
+### Added
+
+### Fixed
 -  Fixes [#2714](https://github.com/microsoft/BotFramework-WebChat/issues/2714). Refactor suggested actions, by [@corinagum](https://github.com/corinagum) in PR [#2725](https://github.com/microsoft/BotFramework-WebChat/pull/2725)
+
+### Samples
+
+-  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/Microsoft/BotFramework-WebChat/issues/2726)
+
+## [4.7.1] - 2019-12-13
+
+### Changed
+
+- Moved `core-js` from dev dependencies to dependencies in `botframework-directlinespeech-sdk` package, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2727](https://github.com/microsoft/BotFramework-WebChat/pull/2727)
+
+## [4.7.0] - 2019-12-12
+
 
 ### Breaking changes
 
@@ -77,8 +94,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2700](https://github.com/microsoft/BotFramework-WebChat/issues/2700). Enable `<SayComposer>` and Adaptive Cards in recompose story, in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
    -  Moved `<SayComposer>` from `<BasicTranscript>` to `<Composer>`
    -  Moved WebSpeechPonyfill patching code from `<BasicTranscript>` to `<Composer>`
--  Fixes [#2699](https://github.com/microsoft/BotFramework-WebChat/issues/2699). Disable speech recognition and synthesis when using Direct Line Speech under IE11, in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
+-  Fixes [#2699](https://github.com/microsoft/BotFramework-WebChat/issues/2699). Disable speech recognition and synthesis when using Direct Line Speech under IE11, by [@compulim](https://github.com/compulim), in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
+-  Fixes [#2709](https://github.com/microsoft/BotFramework-WebChat/issues/2709). Reduce wasted render of activities by memoizing partial result of `<BasicTranscript>`, by [@compulim](https://github.com/compulim) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
 -  Fixes [#2710](https://github.com/microsoft/BotFramework-WebChat/issues/2710). Suggested actions container should persist for AT, by [@corinagum](https://github.com/corinagum) in PR [#2710](https://github.com/microsoft/BotFramework-WebChat/pull/2710)
+-  Fixes [#2718](https://github.com/microsoft/BotFramework-WebChat/issues/2718). Add `Object.is` polyfill for IE11, by [@compulim](https://github.com/compulim) in PR [#2719](https://github.com/microsoft/BotFramework-WebChat/pull/2719)
+-  Fixes [#2723](https://github.com/microsoft/BotFramework-WebChat/issues/2723). Fix `renderMarkdown` should not be called if it is `undefined` in minimal bundle, by [@compulim](https://github.com/compulim) in PR [#2724](https://github.com/microsoft/BotFramework-WebChat/pull/2724)
 
 ### Changed
 
