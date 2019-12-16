@@ -22,6 +22,7 @@ export default function useComposerProps({ attachmentMiddleware, renderMarkdown,
   return {
     attachmentMiddleware: patchedAttachmentMiddleware,
     extraStyleSet,
-    renderMarkdown: renderMarkdown || (text => defaultRenderMarkdown(text, patchedStyleOptions))
+    renderMarkdown:
+      typeof renderMarkdown === 'undefined' ? text => defaultRenderMarkdown(text, patchedStyleOptions) : renderMarkdown
   };
 }

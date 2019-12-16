@@ -49,7 +49,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     (suggestedActions.length ? suggestedActionsContentText : suggestedActionsEmptyText);
 
   if (!suggestedActions.length) {
-    return false;
+    return (
+      <div aria-label=" " aria-live="polite" role="status">
+        <ScreenReaderText text={suggestedActionsContainerText} />
+      </div>
+    );
   }
 
   const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
