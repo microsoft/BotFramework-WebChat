@@ -60,7 +60,10 @@ export default function activities(state = DEFAULT_STATE, { meta, payload, type 
       break;
 
     case POST_ACTIVITY_PENDING:
-      state = upsertActivityWithSort(state, updateIn(payload.activity, ['channelData', 'state'], () => SENDING));
+      state = upsertActivityWithSort(
+        state,
+        updateIn(payload.activity, ['channelData', 'state'], () => SENDING)
+      );
       break;
 
     case POST_ACTIVITY_REJECTED:

@@ -117,7 +117,10 @@ test('Find targeted version using features', () => {
     {
       versions: {
         default: {
-          redirects: [['feature:nextmajor', '4.3.0'], ['*', '4.2.0']]
+          redirects: [
+            ['feature:nextmajor', '4.3.0'],
+            ['*', '4.2.0']
+          ]
         },
         '4.3.0': targetVersion
       }
