@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#2747](https://github.com/microsoft/BotFramework-WebChat/issues/2747). Moved `SendStatus` into the `Timestamp` component and removed the `sendStatus` style set, by [@tdurnford](https://github.com/tdurnford) in PR [#2735](https://github.com/microsoft/BotFramework-WebChat/pull/2735)
+
 ### Samples
 
 -  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/Microsoft/BotFramework-WebChat/issues/2726)
