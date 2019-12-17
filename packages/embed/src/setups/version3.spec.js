@@ -37,7 +37,10 @@ test('Load Web Chat v3 without a speech token', async () => {
 
   const setupTask = setupVersion3(
     {
-      assets: [['botchat.css', 'sha384-a1b2c3d'], ['botchat.js', 'sha384-a1b2c3d']]
+      assets: [
+        ['botchat.css', 'sha384-a1b2c3d'],
+        ['botchat.js', 'sha384-a1b2c3d']
+      ]
     },
     {
       botId: 'webchat-mockbot',

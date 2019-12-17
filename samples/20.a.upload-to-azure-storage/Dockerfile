@@ -24,7 +24,7 @@ RUN npm ci
 
 # Pack "concurrently" to make sure the image is reproducible
 WORKDIR /var/build/
-RUN npm install concurrently@4.1.0
+RUN npm install concurrently@5.0.0
 
 # Pack the build content as a "build.tgz" and export it out
 RUN tar -cf build.tgz *

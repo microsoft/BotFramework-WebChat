@@ -118,7 +118,7 @@ Here is the finished `index.html`:
    <head>
       <title>Web Chat: Change locale</title>
 
-      <script src="https://unpkg.com/@babel/standalone@7.6.2/babel.min.js"></script>
+      <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
       <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
       <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
       <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
