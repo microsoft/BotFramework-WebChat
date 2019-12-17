@@ -1,8 +1,17 @@
-export default function createTimestampStyle({ fontSizeSmall, primaryFont, subtle, timestampColor }) {
+export default function createTimestampStyle({ accent, fontSizeSmall, primaryFont, subtle, timestampColor }) {
   return {
     color: timestampColor || subtle,
     fontFamily: primaryFont,
     fontSize: fontSizeSmall,
-    paddingTop: 5
+    paddingTop: 5,
+
+    '& > button': {
+      backgroundColor: 'transparent',
+      border: 0,
+      color: accent,
+      cursor: 'pointer',
+      fontFamily: 'inherit',
+      padding: 0
+    }
   };
 }

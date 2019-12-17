@@ -31,9 +31,12 @@ const connectSendStatus = (...selectors) =>
   );
 
 const SendStatus = ({ activity }) => {
-  const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
+  const [{ sendStatus: sendStatusStyleSet, timestamp: timestampStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
+
+  sendStatusStyleSet &&
+    console.warn('Web Chat: styleSet.sendStatus is being deprecated. Please use styleSet.timestamp.');
 
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
@@ -63,7 +66,7 @@ const SendStatus = ({ activity }) => {
   return (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
-      <span aria-hidden={true} className={sendStatusStyleSet}>
+      <span aria-hidden={true} className={timestampStyleSet}>
         {state === SENDING ? (
           localizedSending
         ) : state === SEND_FAILED ? (
