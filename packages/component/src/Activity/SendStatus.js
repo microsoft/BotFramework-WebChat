@@ -36,7 +36,9 @@ const SendStatus = ({ activity }) => {
   const postActivity = usePostActivity();
 
   sendStatusStyleSet &&
-    console.warn('Web Chat: styleSet.sendStatus is being deprecated. Please use styleSet.timestamp.');
+    console.warn(
+      'Web Chat: styleSet.sendStatus is being deprecated. Please use styleSet.timestamp. This deprecation migration will be removed on or after December 17, 2021.'
+    );
 
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
