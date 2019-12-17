@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
-- Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669). Add `aria-label` to New messages button, by [@corinagum](https://github.com/corinagum) in PR [#2742](https://github.com/microsoft/BotFramework-WebChat/pull/2742)
+- Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669). Add `aria-label` to New messages button, by [@corinagum](https://github.com/corinagum) in PR [#2749](https://github.com/microsoft/BotFramework-WebChat/pull/2749)
 
 ### Changed
 
