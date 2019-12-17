@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import CardActionButton from './CardActionButton';
 

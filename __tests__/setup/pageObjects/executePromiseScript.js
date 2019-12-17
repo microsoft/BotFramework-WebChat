@@ -8,7 +8,10 @@ export default async function executePromiseScript(driver, fn, ...args) {
     (fn, args, callback) => {
       eval(`(${fn})`)
         .apply(null, args)
-        .then(result => callback({ result }), error => callback({ error }));
+        .then(
+          result => callback({ result }),
+          error => callback({ error })
+        );
     },
     fn + '',
     args

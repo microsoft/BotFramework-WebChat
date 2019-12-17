@@ -5,9 +5,9 @@
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
     "prop-types": "^15.7.2",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
-    "react-scripts": "3.0.1"
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "react-scripts": "3.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,6 +31,6 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^0.19.1"
+    "http-proxy-middleware": "^0.20.0"
   }
 }

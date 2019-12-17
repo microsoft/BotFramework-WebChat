@@ -1,5 +1,5 @@
 {
-  "lerna": "3.15.0",
+  "lerna": "3.19.0",
   "packages": [
     "packages/*",
     "samples/12.customization-minimizable-web-chat",

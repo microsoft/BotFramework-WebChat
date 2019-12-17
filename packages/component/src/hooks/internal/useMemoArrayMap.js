@@ -22,5 +22,5 @@ export default function useMemoArrayMap(array, mapper) {
     prevMapperRef.current = mapper;
 
     return mapped;
-  }, [array, mapper]);
+  }, [array, mapper, nextMapperCalls]);
 }

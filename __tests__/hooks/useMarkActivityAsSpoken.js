@@ -22,11 +22,14 @@ test('calling markActivityAsSpoken should stop synthesize', async () => {
 
   const [activities] = await pageObjects.runHook('useActivities');
 
-  await pageObjects.executePromiseScript(activity => {
-    return window.WebChatTest.runHook('useMarkActivityAsSpoken').then(markActivityAsSpoken => {
-      markActivityAsSpoken(activity);
-    });
-  }, activities.find(({ from: { role }, speak }) => role === 'bot' && speak));
+  await pageObjects.executePromiseScript(
+    activity => {
+      return window.WebChatTest.runHook('useMarkActivityAsSpoken').then(markActivityAsSpoken => {
+        markActivityAsSpoken(activity);
+      });
+    },
+    activities.find(({ from: { role }, speak }) => role === 'bot' && speak)
+  );
 
   const [activitiesAfterMark] = await pageObjects.runHook('useActivities');
 
