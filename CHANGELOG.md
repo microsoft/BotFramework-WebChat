@@ -22,6 +22,64 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+-  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21 hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2738](https://github.com/microsoft/BotFramework-WebChat/pull/2738)
+
+### Changed
+
+-  Bumped all dependencies to latest versions, by [@corinagum](https://github.com/corinagum) in PR [#2738](https://github.com/microsoft/BotFramework-WebChat/pull/2738)
+   -  Development dependencies
+      -  Root package
+         -  `@babel/plugin-proposal-class-properties@7.7.4`
+         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
+         -  `@babel/plugin-transform-runtime@7.7.6`
+         -  `@babel/preset-env@7.7.6`
+         -  `@babel/preset-react@7.7.4`
+         -  `@babel/preset-typescript@7.7.4`
+         -  `@babel/runtime@7.7.6`
+         -  `core-js@3.5.0`
+         -  `coveralls@3.0.9`
+         -  `husky@3.1.0`
+         -  `jest-image-snapshot@2.11.1`
+         -  `lerna@3.19.0`
+         -  `lint-staged@9.5.0`
+      -  Other packages
+         -  `@babel/cli@7.7.5`
+         -  `@babel/core@7.7.5`
+         -  `@babel/plugin-proposal-class-properties@7.7.4`
+         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
+         -  `@babel/plugin-transform-runtime@7.7.6`
+         -  `@babel/preset-env@7.7.6`
+         -  `@babel/preset-react@7.7.4`
+         -  `@babel/preset-typescript@7.7.4`
+         -  `@types/node@12.12.18`
+         -  `@types/react@16.8.25`
+         -  `@typescript-eslint/eslint-plugin@2.12.0`
+         -  `@typescript-eslint/parser@2.12.0`
+         -  `copy-webpack-plugin@5.1.1`
+         -  `eslint-plugin-react-hooks@2.3.0`
+         -  `eslint-plugin-react@7.17.0`
+         -  `eslint@6.7.2`
+         -  `http-proxy-middleware@0.20.0`
+         -  `terser-webpack-plugin@2.3.0`
+         -  `typescript@3.7.3`
+         -  `webpack@4.41.3`
+   -  Production dependencies
+      -  `core`
+         -  `math-random@1.0.4`
+      -  `bundle`
+         -  `@babel/runtime@7.7.6`
+         -  `core-js@3.5.0`
+         -  `sanitize-html@1.20.0`
+      -  `component`
+         -  `sanitize-html@1.20.1`
+      -  `embed`
+         -  `@babel/runtime@7.7.6`
+         -  `core-js@3.5.0`
+
 ### Samples
 
 -  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/Microsoft/BotFramework-WebChat/issues/2726)
@@ -30,7 +88,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Moved `core-js` from dev dependencies to dependencies in `botframework-directlinespeech-sdk` package, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2727](https://github.com/microsoft/BotFramework-WebChat/pull/2727)
+-  Moved `core-js` from dev dependencies to dependencies in `botframework-directlinespeech-sdk` package, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2727](https://github.com/microsoft/BotFramework-WebChat/pull/2727)
 
 ## [4.7.0] - 2019-12-12
 
