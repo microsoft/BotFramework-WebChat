@@ -26,11 +26,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21 hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2738](https://github.com/microsoft/BotFramework-WebChat/pull/2738)
+-  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21 hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
 
 ### Changed
 
--  Bumped all dependencies to latest versions, by [@corinagum](https://github.com/corinagum) in PR [#2738](https://github.com/microsoft/BotFramework-WebChat/pull/2738)
+-  Bumped all dependencies to latest versions, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
    -  Development dependencies
       -  Root package
          -  `@babel/plugin-proposal-class-properties@7.7.4`
