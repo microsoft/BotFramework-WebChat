@@ -54,18 +54,18 @@ const [directLineSpeechAdapters, setDirectLineSpeechAdapters] = useState();
 
 useEffect(() => {
    (async () =>
-   setDirectLineSpeechAdapters(
-      await createDirectLineSpeechAdapters({
-         fetchCredentials: fetchCognitiveServicesCredentials
-      })
-   ))();
+      setDirectLineSpeechAdapters(
+         await createDirectLineSpeechAdapters({
+            fetchCredentials: fetchCognitiveServicesCredentials
+         })
+      ))();
 }, [setDirectLineSpeechAdapters]);
 
 return (
    !!directLineSpeechAdapters && (
-   <Composer {...directLineSpeechAdapters}>
-      <SmartDisplay />
-   </Composer>
+      <Composer {...directLineSpeechAdapters}>
+         <SmartDisplay />
+      </Composer>
    )
 );
 ```
@@ -76,22 +76,22 @@ return (
 
 ```jsx
 const SmartDisplay = () => {
-  const [lastBotActivity] = useLastBotActivity();
-  const [lastReadActivityID, setLastReadActivityID] = useState();
+   const [lastBotActivity] = useLastBotActivity();
+   const [lastReadActivityID, setLastReadActivityID] = useState();
 
-  const handleMicrophoneButtonClick = useCallback(() => {
-    lastBotActivity && setLastReadActivityID(lastBotActivity.id);
-  }, [lastBotActivity, setLastReadActivityID]);
+   const handleMicrophoneButtonClick = useCallback(() => {
+      lastBotActivity && setLastReadActivityID(lastBotActivity.id);
+   }, [lastBotActivity, setLastReadActivityID]);
 
-  return (
-    <div className="App-SmartDisplay">
-      <Clock />
-      <BlurLens />
-      <SpeechInterims />
-      <BotResponse lastReadActivityID={lastReadActivityID} />
-      <MicrophoneButton onClick={handleMicrophoneButtonClick} />
-    </div>
-  );
+   return (
+      <div className="App-SmartDisplay">
+         <Clock />
+         <BlurLens />
+         <SpeechInterims />
+         <BotResponse lastReadActivityID={lastReadActivityID} />
+         <MicrophoneButton onClick={handleMicrophoneButtonClick} />
+      </div>
+   );
 };
 ```
 
@@ -101,49 +101,51 @@ const SmartDisplay = () => {
 
 ```jsx
 function useInterval(fn, intervalMS = 1000) {
-  useEffect(() => {
-    if (fn && intervalMS) {
-      const interval = setInterval(fn, intervalMS);
+   useEffect(() => {
+      if (fn && intervalMS) {
+         const interval = setInterval(fn, intervalMS);
 
-      return () => clearInterval(interval);
-    }
-  }, [fn, intervalMS]);
+         return () => clearInterval(interval);
+      }
+   }, [fn, intervalMS]);
 }
 
 const Clock = () => {
-  const [clock, setClock] = useState(Date.now());
-  const [temperatureInFahrenheit, setTemperatureInFahrenheit] = useState();
+   const [clock, setClock] = useState(Date.now());
+   const [temperatureInFahrenheit, setTemperatureInFahrenheit] = useState();
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch(WEATHER_FORECAST_URL, {
-        headers: { accept: 'application/geo+json' }
-      });
+   useEffect(() => {
+      (async () => {
+         const res = await fetch(WEATHER_FORECAST_URL, {
+            headers: { accept: 'application/geo+json' }
+         });
 
-      if (res.ok) {
-        const {
-          properties: {
-            periods: [firstPeriod]
-          }
-        } = await res.json();
+         if (res.ok) {
+            const {
+               properties: {
+                  periods: [firstPeriod]
+               }
+            } = await res.json();
 
-        setTemperatureInFahrenheit(firstPeriod.temperature);
-      }
-    })();
-  }, []);
+            setTemperatureInFahrenheit(firstPeriod.temperature);
+         }
+      })();
+   }, []);
 
-  useInterval(() => setClock(Date.now()), 1000);
+   useInterval(() => setClock(Date.now()), 1000);
 
-  return (
-    <div className="App-Clock">
-      <div className="App-Clock-Text">
-        {Intl.DateTimeFormat('en-US', { hour12: false, timeStyle: 'short' }).format(new Date(clock))}
+   return (
+      <div className="App-Clock">
+         <div className="App-Clock-Text">
+            {Intl.DateTimeFormat('en-US', { hour12: false, timeStyle: 'short' }).format(new Date(clock))}
+         </div>
+         {!!temperatureInFahrenheit && (
+            <Notification icon="PartlyCloudyDay">{temperatureInFahrenheit}&deg;F</Notification>
+         )}
+         <Notification icon="Mail">2</Notification>
+         <Notification icon="SkypeForBusinessLogo">1</Notification>
       </div>
-      {!!temperatureInFahrenheit && <Notification icon="PartlyCloudyDay">{temperatureInFahrenheit}&deg;F</Notification>}
-      <Notification icon="Mail">2</Notification>
-      <Notification icon="SkypeForBusinessLogo">1</Notification>
-    </div>
-  );
+   );
 };
 ```
 
@@ -151,34 +153,34 @@ const Clock = () => {
 
 [`MicrophoneButton.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/13.b.customization-smart-display/src/MicrophoneButton.js) represents the microphone button used to turn on microphone recording. It will use several hooks from Web Chat:
 
-- `useMicrophoneButtonClick` to turn on microphone recording
-- `useMicrophoneButtonDisabled` to disable microphone click, for example:
-   - While the microphone is being turned on
-   - Microphone cannot be turned off because abort recording is not supported
-- `useSendBoxSpeechInterimsVisible` to indicate whether speech interims should be visible or not
+-  `useMicrophoneButtonClick` to turn on microphone recording
+-  `useMicrophoneButtonDisabled` to disable microphone click, for example:
+   -  While the microphone is being turned on
+   -  Microphone cannot be turned off because abort recording is not supported
+-  `useSendBoxSpeechInterimsVisible` to indicate whether speech interims should be visible or not
 
 The `MicrophoneButton.js` leveraged logic from various Web Chat hooks, which are also used internally by Web Chat to drive its standard components.
 
 ```jsx
 const CustomMicrophoneButton = ({ onClick }) => {
-  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
-  const [disabled] = useMicrophoneButtonDisabled();
-  const click = useMicrophoneButtonClick();
+   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
+   const [disabled] = useMicrophoneButtonDisabled();
+   const click = useMicrophoneButtonClick();
 
-  const handleClick = useCallback(() => {
-    click();
-    onClick && onClick();
-  }, [click, onClick]);
+   const handleClick = useCallback(() => {
+      click();
+      onClick && onClick();
+   }, [click, onClick]);
 
-  return (
-    <button
-      className={classNames('App-MicrophoneButton', { dictating: interimsVisible })}
-      disabled={disabled}
-      onClick={handleClick}
-    >
-      <i className="ms-Icon ms-Icon--Microphone" />
-    </button>
-  );
+   return (
+      <button
+         className={classNames('App-MicrophoneButton', { dictating: interimsVisible })}
+         disabled={disabled}
+         onClick={handleClick}
+      >
+         <i className="ms-Icon ms-Icon--Microphone" />
+      </button>
+   );
 };
 ```
 
@@ -188,16 +190,17 @@ const CustomMicrophoneButton = ({ onClick }) => {
 
 ```js
 const CustomDictationInterims = () => {
-  const [dictateInterims] = useDictateInterims();
-  const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
+   const [dictateInterims] = useDictateInterims();
+   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
-  return (
-    speechInterimsVisible && (
-      <div className="App-SpeechInterims">
-        {!!speechInterimsVisible && dictateInterims.map((interim, index) => <span key={index}>{interim}&nbsp;</span>)}
-      </div>
-    )
-  );
+   return (
+      speechInterimsVisible && (
+         <div className="App-SpeechInterims">
+            {!!speechInterimsVisible &&
+               dictateInterims.map((interim, index) => <span key={index}>{interim}&nbsp;</span>)}
+         </div>
+      )
+   );
 };
 ```
 
@@ -205,39 +208,39 @@ const CustomDictationInterims = () => {
 
 [`BotResponse.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/13.b.customization-smart-display/src/BotResponse.js) will render the most recent unread activity and attachments from the bot.
 
-- Rendering Adaptive Cards attachments using [the middleware from full bundle](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/createAdaptiveCardsAttachmentMiddleware.js)
-   - If attachments other than Adaptive Cards is passed, it will be rendered as `false` and hidden in the UI
-- Using [`react-film`](https://npmjs.com/package/react-film) for the carousel of attachments
-- Using [`<SpeakActivity>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Activity/Speak.js) for synthesizing the bot response as speech
+-  Rendering Adaptive Cards attachments using [the middleware from full bundle](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/createAdaptiveCardsAttachmentMiddleware.js)
+   -  If attachments other than Adaptive Cards is passed, it will be rendered as `false` and hidden in the UI
+-  Using [`react-film`](https://npmjs.com/package/react-film) for the carousel of attachments
+-  Using [`<SpeakActivity>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Activity/Speak.js) for synthesizing the bot response as speech
 
 ```jsx
 const BotResponse = ({ lastReadActivityID }) => {
-  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
-  const [lastBotActivity] = useLastBotActivity();
+   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
+   const [lastBotActivity] = useLastBotActivity();
 
-  const renderAttachment = useMemo(() => {
-    return createAdaptiveCardsAttachmentMiddleware()()(() => false);
-  }, []);
+   const renderAttachment = useMemo(() => {
+      return createAdaptiveCardsAttachmentMiddleware()()(() => false);
+   }, []);
 
-  return (
-    !interimsVisible &&
-    !!lastBotActivity &&
-    lastBotActivity.id !== lastReadActivityID && (
-      <div className="App-BotResponse">
-        {!!lastBotActivity.text && <div className="App-BotResponse-Activity">{lastBotActivity.text}</div>}
-        <Film className="App-BotResponse-Attachments" showScrollBar={false}>
-          {(lastBotActivity.attachments || []).map((attachment, index) => (
-            <div className="App-BotResponse-Attachment" key={index}>
-              {renderAttachment({ activity: lastBotActivity, attachment })}
-            </div>
-          ))}
-        </Film>
-        {lastBotActivity.channelData && lastBotActivity.channelData.speak && (
-          <SpeakActivity activity={lastBotActivity} />
-        )}
-      </div>
-    )
-  );
+   return (
+      !interimsVisible &&
+      !!lastBotActivity &&
+      lastBotActivity.id !== lastReadActivityID && (
+         <div className="App-BotResponse">
+            {!!lastBotActivity.text && <div className="App-BotResponse-Activity">{lastBotActivity.text}</div>}
+            <Film className="App-BotResponse-Attachments" showScrollBar={false}>
+               {(lastBotActivity.attachments || []).map((attachment, index) => (
+                  <div className="App-BotResponse-Attachment" key={index}>
+                     {renderAttachment({ activity: lastBotActivity, attachment })}
+                  </div>
+               ))}
+            </Film>
+            {lastBotActivity.channelData && lastBotActivity.channelData.speak && (
+               <SpeakActivity activity={lastBotActivity} />
+            )}
+         </div>
+      )
+   );
 };
 ```
 

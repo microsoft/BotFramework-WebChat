@@ -165,7 +165,11 @@ export default async function main(search) {
   };
 
   const res = await fetch(
-    embedTelemetryURL(botId, { secret, token }, Object.keys(dataPoints).filter(name => dataPoints[name])),
+    embedTelemetryURL(
+      botId,
+      { secret, token },
+      Object.keys(dataPoints).filter(name => dataPoints[name])
+    ),
     { mode: 'no-cors' }
   );
 

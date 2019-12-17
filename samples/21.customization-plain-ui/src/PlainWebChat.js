@@ -6,6 +6,7 @@ import SuggestedActions from './SuggestedActions';
 
 import getValueOrUndefined from './util/getValueOrUndefined';
 
+console.log(hooks);
 const { useActivities, useSendMessage } = hooks;
 
 const PlainWebChat = () => {
@@ -23,7 +24,7 @@ const PlainWebChat = () => {
       sendMessage(sendBoxValue);
       setSendBoxValue('');
     },
-    [sendMessage, setSendBoxValue]
+    [sendBoxValue, sendMessage, setSendBoxValue]
   );
 
   return (

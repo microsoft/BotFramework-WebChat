@@ -41,19 +41,19 @@ First, we will remove the existing fetch token call with a `fetchCredentials` fu
 
 ```js
 const fetchCredentials = function() {
-  return window
-    .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-      method: 'POST'
-    })
-    .then(function(res) {
-      return res.json();
-    })
-    .then(function(json) {
-      return {
-        authorizationToken: json.token,
-        region: json.region
-      };
-    });
+   return window
+      .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+         method: 'POST'
+      })
+      .then(function(res) {
+         return res.json();
+      })
+      .then(function(json) {
+         return {
+            authorizationToken: json.token,
+            region: json.region
+         };
+      });
 };
 ```
 
@@ -84,49 +84,51 @@ Here is the finished `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <title>Web Chat: Avatar with images and initials</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+   <head>
+      <title>Web Chat: Avatar with images and initials</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+      <style>
+         html,
+         body {
+            height: 100%;
+         }
+         body {
+            margin: 0;
+         }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      const fetchCredentials = function() {
-        return window
-          .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-            method: 'POST'
-          })
-          .then(function(res) {
-            return res.json();
-          })
-          .then(function(json) {
-            return {
-              authorizationToken: json.token,
-              region: json.region
-            };
-          });
-      };
+         #webchat {
+            height: 100%;
+            width: 100%;
+         }
+      </style>
+   </head>
+   <body>
+      <div id="webchat" role="main"></div>
+      <script>
+         const fetchCredentials = function() {
+            return window
+               .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+                  method: 'POST'
+               })
+               .then(function(res) {
+                  return res.json();
+               })
+               .then(function(json) {
+                  return {
+                     authorizationToken: json.token,
+                     region: json.region
+                  };
+               });
+         };
 
-      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
-        window.WebChat.renderWebChat(
-          Object.assign({}, adapters),
-          document.getElementById('webchat')
-        );
+         window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
+            window.WebChat.renderWebChat(Object.assign({}, adapters), document.getElementById('webchat'));
 
-        document.querySelector('#webchat > *').focus();
-      });
-    </script>
-  </body>
+            document.querySelector('#webchat > *').focus();
+         });
+      </script>
+   </body>
 </html>
 ```
 
