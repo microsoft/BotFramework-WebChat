@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import ScreenReaderText from '../ScreenReaderText';
 import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
@@ -19,10 +20,19 @@ const ScrollToEndButton = ({ className }) => {
     focusSendBox();
   }, [focusSendBox, scrollToEnd]);
 
+  const newMessagesText = useLocalize('New messages');
+
   return (
-    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={handleClick} type="button">
-      {useLocalize('New messages')}
-    </button>
+    <React.Fragment>
+      <ScreenReaderText text={newMessagesText} />
+      <button
+        className={classNames(scrollToEndButtonStyleSet + '', className + '')}
+        onClick={handleClick}
+        type="button"
+      >
+        {newMessagesText}
+      </button>
+    </React.Fragment>
   );
 };
 
