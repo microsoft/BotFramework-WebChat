@@ -1,7 +1,6 @@
 #!/bin/bash
 
 rsync -av --progress samples/ gh-pages/ \
-  --exclude backend-cli \
   --exclude 12.customization-minimizable-web-chat \
   --exclude 13.a.customization-speech-ui \
   --exclude 13.b.customization-smart-display \
