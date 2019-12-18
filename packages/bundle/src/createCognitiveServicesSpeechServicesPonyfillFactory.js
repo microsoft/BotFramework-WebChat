@@ -1,6 +1,10 @@
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
+async function resolveFunction(fnOrValue) {
+  return await (typeof fnOrValue === 'function' ? fnOrValue() : fnOrValue);
+}
+
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
   authorizationToken,
@@ -13,18 +17,23 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
-  if (!credentials && (authorizationToken || region)) {
+  if (!credentials && (authorizationToken || region || subscriptionKey)) {
     console.warn(
-      'botframework-webchat: "authorizationToken" and "region" are being deprecated and will be removed on or after 2019-12-17. Please use "credentials" instead.'
+      'botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are being deprecated and will be removed on or after 2019-12-17. Please use "credentials" instead.'
     );
 
     credentials = async () => {
-      return {
-        authorizationToken: await (typeof authorizationToken === 'function'
-          ? authorizationToken()
-          : authorizationToken),
-        region
-      };
+      if (authorizationToken) {
+        return {
+          authorizationToken: resolveFunction(authorizationToken),
+          region
+        };
+      } else {
+        return {
+          region,
+          subscriptionKey: resolveFunction(subscriptionKey)
+        };
+      }
     };
   }
 
@@ -57,7 +66,6 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       speechRecognitionEndpointId,
       speechSynthesisDeploymentId,
       speechSynthesisOutputFormat,
-      subscriptionKey,
       textNormalization
     });
 
