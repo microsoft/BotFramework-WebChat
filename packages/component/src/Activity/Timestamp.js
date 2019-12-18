@@ -41,7 +41,7 @@ Timestamp.defaultProps = {
 Timestamp.propTypes = {
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
-      state: PropTypes.string
+      state: PropTypes.string.isRequired
     }),
     timestamp: PropTypes.string.isRequired
   }).isRequired,
