@@ -21,12 +21,12 @@ Polyfills are important for browsers that do not have native technology that is 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/01.b.getting-started-es5-bundle` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/c.es5-bundle` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

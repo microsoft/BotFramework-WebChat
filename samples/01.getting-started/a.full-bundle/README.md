@@ -142,7 +142,7 @@ Here is the finished `index.html`:
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
--  [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
+-  [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/c.es5-bundle)
 -  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
 -  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
 

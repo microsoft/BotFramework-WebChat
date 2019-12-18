@@ -35,7 +35,7 @@ Although the web page works in Internet Explorer 11, the speech recognition and 
 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat and Direct Line Speech channel, with IE11 backwards compatibility.
 
-This sample starts with the [ES5 bundle CDN sample](./../01.b.getting-started-es5-bundle/README.md) as the base template.
+This sample starts with the [ES5 bundle CDN sample](./../01.getting-started/c.es5-bundle/README.md) as the base template.
 
 First, we will remove the existing fetch token call with a `fetchCredentials` function, which asynchronously returns a JavaScript object of `{ authorizationToken: string, region: string }` in a Promise fashion.
 
