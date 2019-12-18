@@ -10,12 +10,12 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/b.minimal-bundle)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.a.getting-started-minimal-bundle` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/b.minimal-bundle` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
