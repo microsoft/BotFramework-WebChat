@@ -2,11 +2,11 @@
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a Web Chat v3 to v4.
 
-> Note: This sample is **unrelated** to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
+> Note: This sample is **unrelated** to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md).
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle)
    > Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
 
 # How to run locally
@@ -182,7 +182,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle)
 
 ## Full list of Web Chat hosted samples
 

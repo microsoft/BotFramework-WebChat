@@ -6,12 +6,12 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/01.a.getting-started-full-bundle` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/a.full-bundle` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

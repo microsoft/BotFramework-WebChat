@@ -29,7 +29,7 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 
 Showing user images (avatars) on Web Chat is a popular feature. This sample will show you how to implement your own images.
 
-This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
 
 First, we want to add the `styleOptions` object to our `index.html` page. This object will be passed into Web Chat.
 

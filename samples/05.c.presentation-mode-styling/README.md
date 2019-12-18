@@ -29,7 +29,7 @@ Enable presentation mode by:
 
 ## Overview
 
-This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
 
 The first chunk of new code in this sample is simply to invoke the card inputs and suggested actions commands to the store. You can use this code to similarly dispatch the commands you need to display in your presentation.
 

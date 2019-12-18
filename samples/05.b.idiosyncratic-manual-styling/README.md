@@ -35,7 +35,7 @@ To see what style sets are overwrite-able, please look at the [`createStyleSet` 
 
 ### Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
 
 First, we want to overwrite the current `styleSet` by using the `createStyleSet` method. Once you have your `styleSet` object, you can add changes to any object in `createStyleSet`.
 

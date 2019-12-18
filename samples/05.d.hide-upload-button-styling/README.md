@@ -23,7 +23,7 @@
 
 ## Overview
 
-This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
 
 By modifying the `styleOptions` object passed into the renderer, we can disable the upload button with minimal effort.
 

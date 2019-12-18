@@ -27,7 +27,7 @@ The `index.html` page has one main goal:
 -  To intercept both `"openUrl"` and `"signin"` card action
    -  Other unintercepted card action, will use default behavior
 
-We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as our Web Chat template.
 
 ```diff
 …

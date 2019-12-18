@@ -25,7 +25,7 @@ A full-featured Web Chat with a custom Redux store where one can listen for all 
 
 ### Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
 
 In this sample, we take advantage of the Web Chat (Redux) store to add custom functionality on the app hosting the bot when bot actions are sent. This means that your app can listen for the dispatch of actions from Web Chat, though you do not have the capability to modify the internal state of the store. Once your app receives the notification of that dispatch, you are free to add whatever customization your app requires.
 
