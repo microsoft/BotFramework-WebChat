@@ -43,10 +43,9 @@
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
           if (now > expireAfter) {
             expireAfter = now + 300000;
-            lastPromise = fetch(
-              'https://webchat-mockbot.azurewebsites.net/speechservices/token',
-              { method: 'POST' }
-            ).then(
+            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
+              method: 'POST'
+            }).then(
               res => res.json(),
               err => {
                 expireAfter = 0;
