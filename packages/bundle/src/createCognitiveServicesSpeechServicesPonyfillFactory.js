@@ -4,6 +4,7 @@ import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
   authorizationToken,
+  credentials,
   enableTelemetry,
   region,
   speechRecognitionEndpointId,
@@ -12,6 +13,21 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
+  if (!credentials && (authorizationToken || region)) {
+    console.warn(
+      'botframework-webchat: "authorizationToken" and "region" are being deprecated and will be removed on or after 2019-12-17. Please use "credentials" instead.'
+    );
+
+    credentials = async () => {
+      return {
+        authorizationToken: await (typeof authorizationToken === 'function'
+          ? authorizationToken()
+          : authorizationToken),
+        region
+      };
+    };
+  }
+
   // HACK: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
   //       In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
   //       And on next recognition, they will re-use the AudioContext object.
@@ -35,10 +51,9 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   return ({ referenceGrammarID }) => {
     const ponyfill = createPonyfill({
       audioConfig,
-      authorizationToken,
+      credentials,
       enableTelemetry,
       referenceGrammars: [`luis/${referenceGrammarID}-PRODUCTION`],
-      region,
       speechRecognitionEndpointId,
       speechSynthesisDeploymentId,
       speechSynthesisOutputFormat,

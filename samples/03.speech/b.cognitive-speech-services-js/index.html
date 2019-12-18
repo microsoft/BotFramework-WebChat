@@ -35,21 +35,21 @@
         let lastPromise;
 
         return () => {
+          const now = Date.now();
+
           // Fetch a new token if the existing one is expiring.
           // The following article mentioned the token is only valid for 10 minutes.
           // We will invalidate the token after 5 minutes.
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
-          if (Date.now() > expireAfter) {
-            const speechServicesTokenResPromise = fetch(
+          if (now > expireAfter) {
+            expireAfter = now + 300000;
+            lastPromise = fetch(
               'https://webchat-mockbot.azurewebsites.net/speechservices/token',
               { method: 'POST' }
-            );
-
-            expireAfter = Date.now() + 300000;
-            lastPromise = speechServicesTokenResPromise.then(
+            ).then(
               res => res.json(),
               err => {
-                lastPromise = null;
+                expireAfter = 0;
 
                 return Promise.reject(err);
               }
@@ -62,14 +62,6 @@
 
       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
 
-      async function fetchSpeechServicesRegion() {
-        return (await fetchSpeechServicesCredentials()).region;
-      }
-
-      async function fetchSpeechServicesToken() {
-        return (await fetchSpeechServicesCredentials()).token;
-      }
-
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -81,12 +73,9 @@
 
         // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          // We are passing the Promise function to the authorizationToken field.
+          // We are passing the Promise function to the "credentials" field.
           // This function will be called every time the token is being used.
-          authorizationToken: fetchSpeechServicesToken,
-
-          // In contrast, we are only fetching the region once.
-          region: await fetchSpeechServicesRegion()
+          credentials: fetchSpeechServicesCredentials
         });
 
         // Pass a Web Speech ponyfill factory to renderWebChat.
