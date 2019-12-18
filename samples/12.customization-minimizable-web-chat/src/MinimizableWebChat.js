@@ -12,17 +12,15 @@ const MinimizableWebChat = () => {
     () =>
       createStore({}, ({ dispatch }) => next => action => {
         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-          setTimeout(() => {
-            dispatch({
-              type: 'WEB_CHAT/SEND_EVENT',
-              payload: {
-                name: 'webchat/join',
-                value: {
-                  language: window.navigator.language
-                }
+          dispatch({
+            type: 'WEB_CHAT/SEND_EVENT',
+            payload: {
+              name: 'webchat/join',
+              value: {
+                language: window.navigator.language
               }
-            });
-          }, 1000);
+            }
+          });
         } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
           if (action.payload.activity.from.role === 'bot') {
             setNewMessage(true);
