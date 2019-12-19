@@ -96,7 +96,7 @@ const SendStatus = ({ activity }) => {
 SendStatus.propTypes = {
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
-      state: PropTypes.string.isRequired
+      state: PropTypes.string
     })
   }).isRequired
 };
