@@ -60,7 +60,6 @@ const { node_env } = process.env;
 if (node_env === 'development' || node_env === 'test') {
   config = {
     ...config,
-    // devtool: 'inline-source-map',
     devtool: 'eval-source-map',
     mode: 'development',
     module: {
