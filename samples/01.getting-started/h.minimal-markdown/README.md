@@ -9,12 +9,12 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/h.minimal-markdown)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.b.getting-started-minimal-markdown` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/h.minimal-markdown` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
