@@ -42,6 +42,15 @@
       body { margin: 0 }
       input, textarea, [contenteditable] { caret-color: Transparent; }
 
+      #manualStart {
+        background-color: Transparent;
+        border: 0;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
       #webchat {
         height: 100%;
         width: 100%;
@@ -56,6 +65,7 @@
     <script src="/mockWebSpeech.js"></script>
   </head>
   <body>
+    <button id="manualStart">Click here to load Web Chat</button>
     <div id="webchat" role="main"></div>
     <script>
       function unmarshal({ __evalKeys, ...obj } = {}) {
@@ -119,7 +129,7 @@
 
         if (setup) { await setup(); }
 
-        await loadScript('/webchat-instrumented.js');
+        await loadScript('/webchat.js');
 
         let directLine;
 
@@ -196,6 +206,7 @@
         renderWebChat = props => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
         renderWebChat(props);
 
+        document.querySelector('#manualStart').remove();
         document.querySelector('#webchat > *').focus();
 
         window.WebChatTest.updateProps = mergeProps => {
@@ -204,6 +215,10 @@
           renderWebChat(props);
         };
       }
+
+      document.querySelector('#manualStart').addEventListener('click', () => {
+        main();
+      });
 
       window.WebChatTest = {
         actions: [],

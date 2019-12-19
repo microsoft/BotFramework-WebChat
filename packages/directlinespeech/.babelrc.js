@@ -22,7 +22,8 @@ const CONFIG = {
       }
     ]
   ],
-  sourceMaps: 'inline'
+  sourceMaps: 'inline',
+  sourceRoot: 'directlinespeech:///'
 };
 
 module.exports = api => {

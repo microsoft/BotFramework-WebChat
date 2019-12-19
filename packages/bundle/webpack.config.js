@@ -1,8 +1,9 @@
+const { join } = require('path');
 const { resolve } = require('path');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
+let config = {
   entry: {
     webchat: './lib/index.js',
     'webchat-es5': './lib/index-es5.js',
@@ -53,3 +54,37 @@ module.exports = {
     mainFields: ['browser', 'main']
   }
 };
+
+const { node_env } = process.env;
+
+if (node_env === 'development' || node_env === 'test') {
+  config = {
+    ...config,
+    // devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
+    mode: 'development',
+    module: {
+      ...config.module,
+      rules: [
+        ...((config.module || {}).rules || []),
+        {
+          enforce: 'pre',
+          include: [
+            join(__dirname, './lib'),
+            join(__dirname, '../component/lib'),
+            join(__dirname, '../core/lib'),
+            join(__dirname, '../directlinespeech/lib')
+          ],
+          test: /\.js$/,
+          use: ['source-map-loader']
+        }
+      ]
+    },
+    output: {
+      ...config.output,
+      devtoolNamespace: 'botframework-webchat'
+    }
+  };
+}
+
+module.exports = config;

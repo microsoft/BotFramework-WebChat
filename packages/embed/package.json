@@ -1,6 +1,6 @@
 {
-  "name": "botframework-webchat-embed",
-  "version": "4.0.0-0",
+  "name": "embed",
+  "version": "0.0.0-0",
   "description": "",
   "main": "src/index.js",
   "private": true,
@@ -8,24 +8,24 @@
     "collectCoverageFrom": [
       "**/src/**/*.{js,jsx}",
       "!**/*.{spec,test}.{js,jsx,ts,tsx}",
+      "!**/__tests__/**/*.{js,jsx,ts,tsx}",
       "!**/node_modules/**"
     ],
     "testEnvironment": "node"
   },
   "scripts": {
-    "build": "npm run build:babel && webpack-cli --mode development",
-    "build:babel": "babel --extensions .js,.ts --ignore **/*.spec.js,**/*.spec.ts,**/*.test.js,**/*.test.ts,__test__/**/*.js,__test__/**/*.ts --out-dir lib --source-maps inline --verbose src",
-    "build:webpack": "webpack-cli --mode development",
-    "clean": "npm run clean:dist && npm run clean:lib",
-    "clean:dist": "rimraf dist",
-    "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run build:babel && webpack-cli",
-    "start": "concurrently --kill-others --names \"build,server\" \"npm run watch\" \"npm run start:server\"",
+    "eslint": "eslint src/**/*.js --ignore-pattern *.spec.js --ignore-pattern *.test.js --ignore-pattern __tests__",
+    "prepublishOnly": "npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
+    "prepublishOnly:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
+    "prepublishOnly:webpack": "webpack-cli",
+    "prestart": "npm run prepublishOnly:babel",
+    "start": "npm run start:babel && concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel:watch\" \"npm run start:server\" \"npm run start:webpack\"",
+    "start:babel": "cross-env node_env=test npm run prepublishOnly:babel --",
+    "start:babel:watch": "cross-env node_env=test npm run start:babel -- --skip-initial-build --watch",
     "start:server": "node-dev --no-notify --respawn hostDevServer",
-    "test": "jest",
-    "watch": "concurrently --kill-others --names \"babel,webpack\" \"npm run watch:babel\" \"npm run watch:webpack\"",
-    "watch:babel": "npm run build:babel -- --watch",
-    "watch:webpack": "webpack-cli --config webpack-watch.config.js --watch"
+    "start:webpack": "cross-env node_env=test npm run prepublishOnly:webpack -- --config webpack-development.config --watch",
+    "test": "jest --watch",
+    "test:ci": "cross-env node_env=test npm run test -- --ci --coverage true --no-watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -37,6 +37,7 @@
     "@babel/preset-env": "^7.7.6",
     "concurrently": "^5.0.0",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^6.0.3",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.20.0",
     "jest": "^24.9.0",

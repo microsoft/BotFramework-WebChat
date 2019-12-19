@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
-module.exports = {
+let config = {
   entry: './lib/index',
   mode: 'production',
   output: {
@@ -17,3 +17,19 @@ module.exports = {
     })
   ]
 };
+
+const { node_env } = process.env;
+
+if (node_env === 'development' || node_env === 'test') {
+  config = {
+    ...config,
+    devtool: 'inline-source-map',
+    mode: 'development',
+    output: {
+      ...config.output,
+      filename: 'directlinespeech.development.js'
+    }
+  };
+}
+
+module.exports = config;
