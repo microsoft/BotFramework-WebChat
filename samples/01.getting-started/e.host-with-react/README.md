@@ -6,12 +6,12 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.a.host-with-react)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/e.host-with-react)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/03.a.host-with-react` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/e.host-with-react` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

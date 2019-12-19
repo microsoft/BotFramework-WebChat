@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with User Highlighting
 
-This sample showcases the ability to add styling based on the activity Web Chat is displaying. In this case, activities sent by the user will be highlighted in green on the right-hand side. Activities from bot will have a red band on the left-hand side. This sample is implemented with React and makes changes that are based off of the [host with React sample](../03.a.host-with-react).
+This sample showcases the ability to add styling based on the activity Web Chat is displaying. In this case, activities sent by the user will be highlighted in green on the right-hand side. Activities from bot will have a red band on the left-hand side. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
 
 # Test out the hosted sample
 
@@ -24,7 +24,7 @@ This sample showcases the ability to add styling based on the activity Web Chat 
 
 ## Overview
 
-We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
+We'll start by using the [host with React sample](../01.getting-started/e.host-with-react) as our Web Chat React template.
 
 `activityMiddleware` can be used to add to the currently existing DOM of Web Chat by filtering the bot's content based on activity. In this instance we are going to add a containing `<div>` to the activity (with extra styling) based on the activity's `role` value.
 

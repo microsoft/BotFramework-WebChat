@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with GitHub Stargazer Components
 
-A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../03.a.host-with-react).
+A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
 
 # Test out the hosted sample
 
@@ -24,7 +24,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 ## Overview
 
-We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
+We'll start by using the [host with React sample](../01.getting-started/e.host-with-react) as our Web Chat React template.
 
 When the command `sample:github-repository` is sent to Mock Bot, the bot will send an attachment of cards. Instead of using Adaptive Cards to display these, we will instead build our own component and use `attachmentMiddleware` to intercept those cards.
 
