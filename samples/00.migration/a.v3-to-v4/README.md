@@ -12,7 +12,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/01.c.getting-started-migration` in command line
+-  Navigate to `/Your-Local-WebChat/samples/00.migration/a.v3-to-v4` in command line
 -  Run `npx serve` in the migration directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
