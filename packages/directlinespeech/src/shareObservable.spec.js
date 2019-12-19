@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import Observable from 'core-js/features/observable';
 
 import shareObservable from './shareObservable';

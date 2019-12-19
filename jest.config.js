@@ -14,7 +14,7 @@ module.exports = {
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   reporters: ['default', 'jest-junit'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup/setupTestFramework.js'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/setup/preSetupTestFramework.js'],
   testPathIgnorePatterns: [
     '<rootDir>/__tests__/setup/',
     '<rootDir>/packages/directlinespeech/__tests__/utilities/',
