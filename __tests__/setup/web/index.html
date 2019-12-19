@@ -65,7 +65,7 @@
     <script src="/mockWebSpeech.js"></script>
   </head>
   <body>
-    <button id="manualStart">Click here to load Web Chat</button>
+    <button id="manualStart">Tap to load Web Chat</button>
     <div id="webchat" role="main"></div>
     <script>
       function unmarshal({ __evalKeys, ...obj } = {}) {
@@ -123,6 +123,8 @@
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
+        document.querySelector('#manualStart').remove();
+
         let { createDirectLine, createStyleSet, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE, useProductionBot } = unmarshal(options);
 
         props = unmarshal(props);
@@ -206,7 +208,6 @@
         renderWebChat = props => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
         renderWebChat(props);
 
-        document.querySelector('#manualStart').remove();
         document.querySelector('#webchat > *').focus();
 
         window.WebChatTest.updateProps = mergeProps => {
@@ -216,9 +217,7 @@
         };
       }
 
-      document.querySelector('#manualStart').addEventListener('click', () => {
-        main();
-      });
+      document.querySelector('#manualStart').addEventListener('click', () => main());
 
       window.WebChatTest = {
         actions: [],
