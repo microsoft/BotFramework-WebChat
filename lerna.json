@@ -5,7 +5,7 @@
     "samples/12.customization-minimizable-web-chat",
     "samples/13.a.customization-speech-ui",
     "samples/13.b.customization-smart-display",
-    "samples/14.customization-piping-to-redux",
+    "samples/04.api/e.piping-to-redux",
     "samples/16.customization-selectable-activity",
     "samples/17.a.chat-send-history",
     "samples/17.b.clear-after-idle",

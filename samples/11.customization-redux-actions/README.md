@@ -144,7 +144,7 @@ Here is the finished `index.html`:
 
 -  Article on [Redux Middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6)
 
--  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux/) | [Piping to Redux source code](./../14.customization-piping-to-redux)
+-  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/) | [Piping to Redux source code](./../04.api/e.piping-to-redux)
 
 ## Full list of Web Chat hosted samples
 

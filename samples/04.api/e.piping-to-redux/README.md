@@ -8,12 +8,12 @@ If you haven't viewed them already, review and understanding of samples 11 and 1
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/14.customization-piping-to-redux` in command line
+-  Navigate to `/Your-Local-WebChat/samples/04.api/e.piping-to-redux` in command line
 -  Run `npm install`
 -  Run `npm start`
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
