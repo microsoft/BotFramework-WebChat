@@ -4,12 +4,12 @@ This sample showcases the ability to add styling based on the activity Web Chat 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/08.customization-user-highlighting)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/08.customization-user-highlighting` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/c.user-highlighting` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

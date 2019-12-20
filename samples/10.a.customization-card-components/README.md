@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with GitHub Stargazer Components
 
-A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
+A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../05.custom-components/c.user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
 
 # Test out the hosted sample
 
@@ -182,7 +182,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
 
 # Further reading
 
-[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/08.customization-user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/08.customization-user-highlighting)
+[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/c.user-highlighting)
 
 [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/09.customization-reaction-buttons)
 

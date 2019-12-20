@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with Reaction Buttons
 
-This sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates more involved middleware that will alert the bot to helpful and unhelpful messages via reaction buttons. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
+This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../05.custom-components/c.user-highlighting) and creates more involved middleware that will alert the bot to helpful and unhelpful messages via reaction buttons. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
 
 # Test out the hosted sample
 
@@ -310,7 +310,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
 # Further reading
 
-[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/08.customization-user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/08.customization-user-highlighting)
+[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/c.user-highlighting)
 
 [Card components bot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/10.a.customization-card-components)
 
