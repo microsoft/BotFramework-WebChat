@@ -8,12 +8,12 @@ This is an extension of sample [03.speech/b.cognitive-speech-services-js](https:
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.g.select-voice)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/e.select-voice)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.g.select-voice` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/e.select-voice` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

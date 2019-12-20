@@ -4,19 +4,19 @@ A simple web page that uses speech-to-text only and disable text-to-speech. This
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.d.cognitive-speech-services-speech-recognition-only)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.d.cognitive-speech-services-speech-recognition-only)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/03.d.cognitive-speech-services-speech-recognition-only` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/03.d.cognitive-speech-services-speech-recognition-only` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Use the microphone button: you should be able to provide commands to the bot via speech
-- Speak `echo 123`: the bot reply with "Echoing back in a separate activity" and "123"
+-  Use the microphone button: you should be able to provide commands to the bot via speech
+-  Speak `echo 123`: the bot reply with "Echoing back in a separate activity" and "123"
 
 # Code
 
@@ -26,9 +26,9 @@ A simple web page that uses speech-to-text only and disable text-to-speech. This
 
 The `index.html` page has one main goal:
 
-- To enable speech by using different engines:
-  - Speech-to-text: Cognitive Services Speech Services engine
-  - Text-to-speech: disabled
+-  To enable speech by using different engines:
+   -  Speech-to-text: Cognitive Services Speech Services engine
+   -  Text-to-speech: disabled
 
 We will start by using the [Cognitive Services Speech Services sample](./../03.speech/b.cognitive-speech-services-js/README.md) as our Web Chat template.
 
@@ -191,12 +191,12 @@ Here is the finished `index.html`:
 
 # Further Reading
 
-- [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
-- [W3C Web Speech API](https://w3c.github.io/speech-api/)
-- [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
+-  [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
+-  [W3C Web Speech API](https://w3c.github.io/speech-api/)
+-  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
-- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
-- [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
+-  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
+-  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 
