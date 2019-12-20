@@ -564,7 +564,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  `core`: [Programmatic access to post activity](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity/), in [#1568](https://github.com/microsoft/BotFramework-WebChat/pull/1568)
 -  `component`: [Hide upload button](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling/), in [#1491](https://github.com/microsoft/BotFramework-WebChat/pull/1491)
--  `component`: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.display-sender-images/), in [#1486](https://github.com/microsoft/BotFramework-WebChat/pull/1486)
+-  `component`: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/d.display-sender-images/), in [#1486](https://github.com/microsoft/BotFramework-WebChat/pull/1486)
 -  `core`: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/15.b.incoming-activity-event/), in [#1567](https://github.com/microsoft/BotFramework-WebChat/pull/1567)
 -  `core`: [Send welcome event](https://microsoft.github.io/BotFramework-WebChat/15.b.backchannel-send-welcome-event/), in PR [#1286](https://github.com/microsoft/BotFramework-WebChat/pull/1286)
 -  `core`: [Send typing indicator](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator), in [#1541](https://github.com/microsoft/BotFramework-WebChat/pull/1541)
