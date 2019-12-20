@@ -4,12 +4,12 @@ This sample shows bot can send activity to change locale on Web Chat.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/22.customization-change-locale)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/g.change-locale)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/22.customization-change-locale` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/g.change-locale` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
