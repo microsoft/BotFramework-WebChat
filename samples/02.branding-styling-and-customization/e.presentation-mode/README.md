@@ -7,12 +7,12 @@ Enable presentation mode by:
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.c.presentation-mode-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/e.presentation-mode)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/05.c.presentation-mode-styling` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/e.presentation-mode` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
