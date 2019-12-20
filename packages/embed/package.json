@@ -14,7 +14,6 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "eslint": "eslint src/**/*.js --ignore-pattern *.spec.js --ignore-pattern *.test.js --ignore-pattern __tests__",
     "prepublishOnly": "npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
     "prepublishOnly:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
     "prepublishOnly:webpack": "webpack-cli",
