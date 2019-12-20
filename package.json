@@ -21,7 +21,12 @@
     }
   },
   "jest-junit": {
-    "outputDirectory": "coverage"
+    "ancestorSeparator": " › ",
+    "classNameTemplate": "{classname} › {title}",
+    "includeConsoleOutput": true,
+    "outputDirectory": "coverage",
+    "suiteName": "{filename}",
+    "titleTemplate": "{classname} › {title}"
   },
   "keywords": [],
   "lint-staged": {
