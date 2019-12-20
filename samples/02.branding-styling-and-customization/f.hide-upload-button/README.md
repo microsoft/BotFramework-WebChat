@@ -4,12 +4,12 @@
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/f.hide-upload-button)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/05.d.hide-upload-button-styling` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/f.hide-upload-button` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
