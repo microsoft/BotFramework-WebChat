@@ -4,7 +4,7 @@ This sample shows how to set up a Web Chat client that will forward all incoming
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.b.incoming-activity-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/c.incoming-activity-event)
 
 # Things to try out
 
