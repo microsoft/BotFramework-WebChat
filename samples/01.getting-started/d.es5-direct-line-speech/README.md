@@ -8,12 +8,12 @@ Although the web page works in Internet Explorer 11, the speech recognition and 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.d.getting-started-es5-direct-line-speech)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/01.d.getting-started-es5-direct-line-speech` in command line
+-  Navigate to `/Your-Local-WebChat/samples/01.getting-started/d.es5-direct-line-speech` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -134,7 +134,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Getting Started with Web Chat CDN with ES5 Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.d.getting-started-es5-direct-line-speech) | [(Getting Started with Web Chat CDN with ES5 Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.d.getting-started-es5-direct-line-speech/)
+-  [Getting Started with Web Chat CDN with ES5 Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech) | [(Getting Started with Web Chat CDN with ES5 Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/d.es5-direct-line-speech/)
 
 ## Full list of Web Chat hosted samples
 
