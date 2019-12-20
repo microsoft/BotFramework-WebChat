@@ -4,12 +4,12 @@ This sample shows Web Chat users how to choose how groups of messages will be gr
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/07.a.customization-timestamp-grouping)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/a.timestamp-grouping)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/07.a.customization-timestamp-grouping` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/a.timestamp-grouping` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
