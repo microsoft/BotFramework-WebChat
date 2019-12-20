@@ -570,7 +570,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `core`: [Send typing indicator](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator), in [#1541](https://github.com/microsoft/BotFramework-WebChat/pull/1541)
 -  `component`: [Password input activity](https://microsoft.github.io/BotFramework-WebChat/10.b.customization-password-input/), in [#1569](https://github.com/microsoft/BotFramework-WebChat/pull/1569)
 -  `*`: Updated [minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/) sample to use `WEB_CHAT/SEND_EVENT` action, in [#1631](https://github.com/microsoft/BotFramework-WebChat/pull/1631)
--  `component`: [Hybrid speech engine](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech/), in [#1617](https://github.com/microsoft/BotFramework-WebChat/pull/1617)
+-  `component`: [Hybrid speech engine](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech/), in [#1617](https://github.com/microsoft/BotFramework-WebChat/pull/1617)
 -  `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/13.a.customization-speech-ui/), in [#1634](https://github.com/microsoft/BotFramework-WebChat/pull/1634)
 -  `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity/), in [#1624](https://github.com/microsoft/BotFramework-WebChat/pull/1624)
 -  `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/17.a.chat-send-history/), in [#1678](https://github.com/microsoft/BotFramework-WebChat/pull/1678)

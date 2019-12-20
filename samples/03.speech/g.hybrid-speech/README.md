@@ -4,12 +4,12 @@ A simple web page that uses separate speech engines for speech-to-text and text-
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.f.hybrid-speech` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/g.hybrid-speech` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -198,7 +198,7 @@ Here is the finished `index.html`:
 -  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
 -  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
--  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
+-  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 

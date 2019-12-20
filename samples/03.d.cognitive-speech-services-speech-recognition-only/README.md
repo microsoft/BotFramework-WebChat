@@ -196,7 +196,7 @@ Here is the finished `index.html`:
 -  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
 -  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
--  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
+-  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 
