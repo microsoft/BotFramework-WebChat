@@ -241,7 +241,7 @@ Direct Line Speech shares the same requirements as Cognitive Services Speech Ser
 
 Before start, please create corresponding Azure resources. You can follow [this tutorial for enabling voice in your bot](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/tutorial-voice-enable-your-bot-speech-sdk). You do not need to follow the steps for creating C# client, you will replace the client with Web Chat.
 
-Please look at our sample `06.i.direct-line-speech` to embedding Web Chat on your web app via Direct Line Speech channel.
+Please look at our sample `03.speech/a.direct-line-speech` to embedding Web Chat on your web app via Direct Line Speech channel.
 
 > You will need to use Web Chat 4.7 or higher for Direct Line Speech.
 

@@ -8,12 +8,12 @@ Direct Line Speech is a channel for communicating with a bot via a low-latency s
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.i.direct-line-speech)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/a.direct-line-speech)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.i.direct-line-speech` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/a.direct-line-speech` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
