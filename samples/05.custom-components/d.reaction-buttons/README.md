@@ -4,12 +4,12 @@ This sample builds on top of the ideas expressed in sample [05.custom-components
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/09.customization-reaction-buttons` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/d.reaction-buttons` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

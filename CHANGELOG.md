@@ -346,9 +346,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  [Single sign-on for Microsoft Teams apps](https://microsoft.github.io/BotFramework-WebChat/19.c.single-sign-on-for-teams-apps/), by [@compulim](https://github.com/compulim) in [#2196](https://github.com/microsoft/BotFramework-WebChat/pull/2196)
--  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
--  [Select voice for speech synthesis](https://microsoft.github.io/BotFramework-WebChat/06.g.select-voice/), by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
--  [Using different versions of React on a hosting app via NPM packages](https://microsoft.github.io/BotFramework-WebChat/23.a.hybrid-react-npm/), by [@compulim](https://github.com/compulim), in PR [#2509](https://github.com/microsoft/BotFramework-WebChat/pull/2509)
+-  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
+-  [Select voice for speech synthesis](https://microsoft.github.io/BotFramework-WebChat/03.speech/e.select-voice/), by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
+-  [Using different versions of React on a hosting app via NPM packages](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/), by [@compulim](https://github.com/compulim), in PR [#2509](https://github.com/microsoft/BotFramework-WebChat/pull/2509)
 
 ## [4.5.3] - 2019-10-10
 
