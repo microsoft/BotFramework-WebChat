@@ -4,12 +4,12 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN, 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.d.speech-web-browser)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/f.web-browser-speech)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.d.speech-web-browser` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/f.web-browser-speech` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
