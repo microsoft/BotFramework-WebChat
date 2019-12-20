@@ -6,7 +6,7 @@ A simple web page with a maximized Web Chat that displays initials for both the 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.a.display-user-bot-initials-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.display-sender-initials)
 
 # How to run
 
