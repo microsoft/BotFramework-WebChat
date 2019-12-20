@@ -241,7 +241,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/17.b.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
+-  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/04.api/h.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
 -  [Smart Display](https://microsoft.github.io/BotFramework-WebChat/24.customization-smart-display/), by [@compulim](https://github.com/compulim), in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
 
 ## [4.6.0] - 2019-10-31
