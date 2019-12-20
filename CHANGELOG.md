@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  `bundle`: Bumped DirectLineJS to [`botframework-directlinejs@0.11.6`](https://www.npmjs.com/package/botframework-directlinejs)
+
 ## [4.5.3] - 2019-10-06
 
 ### Changed
