@@ -63,24 +63,32 @@ Proving ground for Web Chat during development.
 
 ## Favors
 
-We offer 2 types of build favors:
+We offer 3 build favors:
 
-|             | Instrumented | Minified |
-|-------------|--------------|----------|
-| Production  | ❌            | ✔        |
-| Development | ✔            | ❌        |
+|             | Instrumented | Minified | Source maps |
+|-------------|--------------|----------|-------------|
+| Production  | ❌            | ✔        | ❌           |
+| Test        | ✔            | ✔        | ❌           |
+| Development | ❌            | ❌        | ✔           |
 
 > Instrumentation code is added by Istanbul via Babel.
 > Minification is carried out by Terser via Webpack.
+> Eval source maps took 1.6s to load in browser, while code without source maps only took 300-500ms to load
+
+Development build will also use to run tests locally, without code coverage collection (no instrumentation code needed).
+
+To select different build favors, use `node_env`:
+
+- `production`
+- `test`
+- `development` or not set
 
 ## Scripts
 
-To build for development bits, explicitly set environment variable `node_env` to `test`. This behavior is to match Jest behavior on automatic instrumentation code injection when `node_env` is set to `test` (a.k.a. running under test infrastructure, where code coverage will be collected.)
-
 We offer 2 types of build processes:
 
-- `start` will always produce bits in development mode and run with watch.
-- `prepublishOnly` will produce either development or production bits, depends on `node_env` is set or not.
+- `prepublishOnly` will build once
+- `start` will build continuously with watch
 
 # Design requirements
 
@@ -116,7 +124,8 @@ On subsequent pulls:
 - No more commands other than `prepublishOnly` and `start` needed to learn
 - Testability
    - Under CI pipeline
-      - Fresh build with instrumentation
+      - Fresh build with instrumentation but minified
+         - Non-minified build contains sourcemaps and take 3-5 seconds to load
       - Run test with code coverage
    - Under local box
       1. Developer start dev mode by `npm start`, wait until build stable
@@ -134,3 +143,39 @@ On subsequent pulls:
 - Docker is not a requirement to run build
 - Build scripts across multiple packages should largely the same and almost copyable
    - Some package use Webpack, while other do not use TypeScript, it is understandable the build script has slight differences
+
+# Verifications
+
+- Development build
+   - Verify `node_env` is not set
+   - Run `npm start`, wait until stabilized
+      - Verify only one pass of Babel is done on each package
+   - Open http://localhost:5000/
+      - Verify page load time is less than 4 seconds
+   - Open developer tools
+   - Go to "Source" tab
+      - Verify the source code can be seen under `botframework-webchat`
+         - Verify all 4 packages can be seen: `bundle:///src`, `component:///src`, `core:///src`, `directlinespeech:///src`
+      - Verify breakpoints will break correctly
+   - Make a change
+      - Verify Webpack took less than 4 seconds
+- Test build
+   - Verify `node_env` is set to `test`
+   - Run `npm start`, wait until stabilized
+   - Verify `packages/bundle/dist/webchat.js` is about 3 MB
+      - Minified
+      - With instrumentation code
+- Production build
+   - Verify `node_env` is set to `production`
+   - Run `npm prepublishOnly`, wait until finished
+   - Verify `packages/bundle/dist/webchat.js` is about 3 MB
+      - Minified
+      - No instrumentation code (smaller than test builds)
+- Direct Line Speech SDK
+   - Development build
+      - Run `npm start`, wait until stabilized
+      - Verify only `dist/directlinespeech.development.js` is on disk and about 4 MB in size
+   - Production build
+      - Run `npm prepublishOnly`, wait until stabilized
+      - Verify both `dist/directlinespeech.development.js` and `dist/directlinespeech.production.min.js` is on disk
+      - `dist/directlinespeech.production.min.js` is about 400 KB in size

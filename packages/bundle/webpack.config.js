@@ -57,7 +57,12 @@ let config = {
 
 const { node_env } = process.env;
 
-if (node_env === 'development' || node_env === 'test') {
+// We add source maps only for development bits. Source maps is very slow to load in browser.
+// - "eval-source-map" took 1.6s to load in browser, 1.5s to rebuild
+// - "source-map" took 500ms to load, 5s to rebuild
+// - No source map took 300ms to load
+// "Cheap modules" does not have column information, thus, breakpoint does not work correctly.
+if (node_env !== 'production' && node_env !== 'test') {
   config = {
     ...config,
     devtool: 'eval-source-map',

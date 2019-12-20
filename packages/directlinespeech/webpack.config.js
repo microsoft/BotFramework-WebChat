@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const { join, resolve } = require('path');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 let config = {
@@ -20,13 +20,26 @@ let config = {
 
 const { node_env } = process.env;
 
-if (node_env === 'development' || node_env === 'test') {
+if (node_env !== 'production' && node_env !== 'test') {
   config = {
     ...config,
-    devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
     mode: 'development',
+    module: {
+      ...config.module,
+      rules: [
+        ...((config.module || {}).rules || []),
+        {
+          enforce: 'pre',
+          include: [join(__dirname, './lib')],
+          test: /\.js$/,
+          use: ['source-map-loader']
+        }
+      ]
+    },
     output: {
       ...config.output,
+      devtoolNamespace: 'botframework-directlinespeech-sdk',
       filename: 'directlinespeech.development.js'
     }
   };

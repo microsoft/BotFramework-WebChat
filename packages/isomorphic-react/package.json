@@ -8,11 +8,10 @@
     "prepublishOnly": "npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
     "prepublishOnly:babel": "babel src --out-dir lib --verbose",
     "prepublishOnly:webpack": "webpack-cli",
-    "prestart": "npm run prepublishOnly:babel",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
-    "start:babel": "cross-env node_env=test npm run prepublishOnly:babel",
+    "start:babel": "npm run prepublishOnly:babel",
     "start:note": "echo \"isomorphic-react\" is not under actively development, running in non-watch mode.",
-    "start:webpack": "cross-env node_env=test npm run prepublishOnly:webpack"
+    "start:webpack": "npm run prepublishOnly:webpack"
   },
   "author": "",
   "license": "MIT",
@@ -21,7 +20,6 @@
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.6",
     "concurrently": "^5.0.2",
-    "cross-env": "^6.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.1",
     "prettier": "^1.19.1",
