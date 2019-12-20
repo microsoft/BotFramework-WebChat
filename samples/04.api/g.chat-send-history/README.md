@@ -8,7 +8,7 @@ sendbox input has focus. It aims to give an experience similar to a terminal his
 
 # Test out the hosted sample
 
--  [Try out with MockBot](https://microsoft.github.io/BotFramework-WebChat/17.a.chat-send-history)
+-  [Try out with MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history)
 
 # Things to try out
 

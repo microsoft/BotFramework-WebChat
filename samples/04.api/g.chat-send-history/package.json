@@ -2,7 +2,7 @@
   "name": "sample-chat-send-history",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/17.a.chat-send-history/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history/",
   "dependencies": {
     "botframework-webchat": "^4.7.1",
     "react": "16.12.0",
