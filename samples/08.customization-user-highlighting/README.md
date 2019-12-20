@@ -32,17 +32,17 @@ First, let's style our new containers using glamor. The container for activities
 
 ```css
 .highlightedActivity--bot {
-  border-left-color: Red;
-  border-left-style: solid;
-  border-left-width: 5px;
-  margin-left: 8px;
+   border-left-color: Red;
+   border-left-style: solid;
+   border-left-width: 5px;
+   margin-left: 8px;
 }
 
 .highlightedActivity--user {
-  border-right-color: Green;
-  border-right-style: solid;
-  border-right-width: 5px;
-  margin-right: 8px;
+   border-right-color: Green;
+   border-right-style: solid;
+   border-right-width: 5px;
+   margin-right: 8px;
 }
 ```
 

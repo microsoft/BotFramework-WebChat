@@ -73,14 +73,14 @@ Next, build the CSS and apply class names to the component.
    border: 0px;
    border-radius: 3px;
    flex: 1;
-   letter-spacing: .5em;
+   letter-spacing: 0.5em;
    outline: 0;
    padding: 0 10px;
    width: 100%;
 }
 
 .passwordInput .passwordInput__input:disabled {
-   background-color: rgba(255, 255, 255, .5);
+   background-color: rgba(255, 255, 255, 0.5);
    color: White;
 }
 ```
@@ -107,10 +107,10 @@ Then, apply the style sheet to our React component.
 
 Next, add the business logic to the component:
 
-- When the user types into the password box, save the code.
-- When the user presses <kbd>ENTER</kbd> inside the password box, submit the code and disable the password box.
+-  When the user types into the password box, save the code.
+-  When the user presses <kbd>ENTER</kbd> inside the password box, submit the code and disable the password box.
 
-This component will have a state object with `code` and `submitted` values, initially set to an empty string and `false`, respectively. `code` will store the  code, and `submitted` will store a boolean value to indicate whether the code has been submitted or not. If the code has been submitted, disable the input box to prevent resubmission.
+This component will have a state object with `code` and `submitted` values, initially set to an empty string and `false`, respectively. `code` will store the code, and `submitted` will store a boolean value to indicate whether the code has been submitted or not. If the code has been submitted, disable the input box to prevent resubmission.
 
 This component will have two callback functions, called `handleCodeChange` and `handleSubmit`. The former will be called when the code has changed, and it will save the value into the `code` state. The latter will be called when the form is submitted (user press <kbd>ENTER</kbd> on the password box). It will submit the input via `sendPostBack`, then disable itself to prevent resubmission by updating `submitted` to `true`.
 

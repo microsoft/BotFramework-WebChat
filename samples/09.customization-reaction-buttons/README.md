@@ -68,7 +68,7 @@ Next, build our CSS and apply class names to our component.
 
 .botActivityDecorator .botActivityDecorator__buttonBar .botActivityDecorator__button {
    background: White;
-   border: solid 1px #E6E6E6;
+   border: solid 1px #e6e6e6;
    margin-bottom: 2px;
    padding: 2px 5px 5px;
 }
@@ -101,8 +101,8 @@ Then, apply the style sheet to our React component.
 
 Then, add business logic to the component:
 
-- When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
-- When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
+-  When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
+-  When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
 
 The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostback` function.
 

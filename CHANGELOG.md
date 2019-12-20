@@ -26,12 +26,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+<<<<<<< HEAD
+
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
 -  Fixes [#2609](https://github.com/microsoft/BotFramework-WebChat/issues/2609). Fix sample 12: minimizable button is causing another reconnect on restore, by [@compulim](https://github.com/compulim) in PR [#2758](https://github.com/microsoft/BotFramework-WebChat/pull/2758)
 -  Fixes [#2773](https://github.com/microsoft/BotFramework-WebChat/issues/2773). Import ES5 version of the following bundles, by [@compulim](https://github.com/compulim) in PR [#2774](https://github.com/microsoft/BotFramework-WebChat/pull/2773)
    -  [`abort-controller`](https://npmjs.com/package/abort-controller)
    -  [`event-target-shim`](https://npmjs.com/package/event-target-shim)
-   -  [`p-defer`](https://npmjs.com/package/p-defer)
+   -  # [`p-defer`](https://npmjs.com/package/p-defer)
+-  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
+   > > > > > > > Move & rename piggyback sample
 
 ### Changed
 
@@ -104,6 +108,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+<<<<<<< HEAD
+
 -  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customization, by [@compulim](https://github.com/compulim), in the following PRs:
    -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxShowInterims`
    -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
@@ -126,7 +132,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Adds `AdaptiveCardsComposer` and `AdaptiveCardsContext` for composability for Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#2648](https://github.com/microsoft/BotFramework-WebChat/pull/2648)
 -  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
    -  Adds [`microsoft-cognitiveservices-sdk@1.8.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), in PR [#2704](https://github.com/microsoft/BotFramework-WebChat/pull/2704)
+-  # Fixes [#2692](https://github.com/microsoft/BotFramework-WebChat/issues/2692). Rename sample 17 to 17.a, by [@corinagum](https://github.com/corinagum) in PR [#2695](https://github.com/microsoft/BotFramework-WebChat/pull/2695)
+-  Resolves [#2539](https://github.com/Microsoft/BotFramework-WebChat/issues/2539), added React hooks for customization, by [@compulim](https://github.com/compulim), in the following PRs:
+   -  PR [#2540](https://github.com/microsoft/BotFramework-WebChat/pull/2540): `useActivities`, `useReferenceGrammarID`, `useSendBoxShowInterims`
+   -  PR [#2541](https://github.com/microsoft/BotFramework-WebChat/pull/2541): `useStyleOptions`, `useStyleSet`
+   -  PR [#2542](https://github.com/microsoft/BotFramework-WebChat/pull/2542): `useLanguage`, `useLocalize`, `useLocalizeDate`
+   -  PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543): `useAdaptiveCardsHostConfig`, `useAdaptiveCardsPackage`, `useRenderMarkdownAsHTML`
+   -  PR [#2544](https://github.com/microsoft/BotFramework-WebChat/pull/2544): `useAvatarForBot`, `useAvatarForUser`
+   -  PR [#2547](https://github.com/microsoft/BotFramework-WebChat/pull/2547): `useEmitTypingIndicator`, `usePeformCardAction`, `usePostActivity`, `useSendEvent`, `useSendFiles`, `useSendMessage`, `useSendMessageBack`, `useSendPostBack`
+   -  PR [#2548](https://github.com/microsoft/BotFramework-WebChat/pull/2548): `useDisabled`
+   -  PR [#2549](https://github.com/microsoft/BotFramework-WebChat/pull/2549): `useSuggestedActions`
+   -  PR [#2550](https://github.com/microsoft/BotFramework-WebChat/pull/2550): `useConnectivityStatus`, `useGroupTimestamp`, `useTimeoutForSend`, `useUserID`, `useUsername`
+   -  PR [#2551](https://github.com/microsoft/BotFramework-WebChat/pull/2551): `useLastTypingAt`, `useSendTypingIndicator`, `useTypingIndicator`
+   -  PR [#2552](https://github.com/microsoft/BotFramework-WebChat/pull/2552): `useFocusSendBox`, `useScrollToEnd`, `useSendBoxValue`, `useSubmitSendBox`, `useTextBoxSubmit`, `useTextBoxValue`
+   -  PR [#2553](https://github.com/microsoft/BotFramework-WebChat/pull/2553): `useDictateInterims`, `useDictateState`, `useGrammars`, `useMarkActivityAsSpoken`, `useMicrophoneButton`, `useShouldSpeakIncomingActivity`, `useStartDictate`, `useStopDictate`, `useVoiceSelector`, `useWebSpeechPonyfill`
+   -  PR [#2554](https://github.com/microsoft/BotFramework-WebChat/pull/2554): `useRenderActivity`, `useRenderAttachment`
+   -  PR [#2644](https://github.com/microsoft/BotFramework-WebChat/pull/2644): Added `internal/useWebChatUIContext` for cleaner code
+-  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
+-  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
+-  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)
+-  Adds `AdaptiveCardsComposer` and `AdaptiveCardsContext` for composability for Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#2648](https://github.com/microsoft/BotFramework-WebChat/pull/2648)
+-  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
+   -  Adds [`microsoft-cognitiveservices-sdk@1.8.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), in PR [#2704](https://github.com/microsoft/BotFramework-WebChat/pull/2704)
 -  Fixes [#2692](https://github.com/microsoft/BotFramework-WebChat/issues/2692). Rename sample 17 to 17.a, by [@corinagum](https://github.com/corinagum) in PR [#2695](https://github.com/microsoft/BotFramework-WebChat/pull/2695)
+   > > > > > > > Move & rename piggyback sample
 
 ### Fixed
 
@@ -633,7 +662,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  Backchannel: [Inject custom data into every `POST_ACTIVITY`](https://microsoft.github.io/BotFramework-WebChat/15.backchannel-piggyback-on-outgoing-activities/), in [#1331](https://github.com/microsoft/BotFramework-WebChat/pull/1331)
+-  Backchannel: [Inject custom data into every `POST_ACTIVITY`](https://microsoft.github.io/BotFramework-WebChat/15.backchannel-b.piggyback-on-outgoing-activities/), in [#1331](https://github.com/microsoft/BotFramework-WebChat/pull/1331)
 -  UI: [Minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/), in [#1290](https://github.com/microsoft/BotFramework-WebChat/pull/1290)
 -  Others: [Using Web Chat v3](https://microsoft.github.io/BotFramework-WebChat/webchat-v3/), in [#1287](https://github.com/microsoft/BotFramework-WebChat/pull/1287)
 -  Speech: [Cognitive Services Speech to Text and Text to Speech](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js) (both subscription key and authorization token flow)
