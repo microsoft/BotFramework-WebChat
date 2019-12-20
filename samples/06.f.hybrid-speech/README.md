@@ -1,6 +1,6 @@
 # Sample - Using hybrid speech engine
 
-A simple web page that uses separate speech engines for speech-to-text and text-to-speech. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md).
+A simple web page that uses separate speech engines for speech-to-text and text-to-speech. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../03.speech/b.cognitive-speech-services-js/README.md).
 
 # Test out the hosted sample
 
@@ -32,7 +32,7 @@ The `index.html` page has one main goal:
    -  Speech-to-text: browser-supported speech engine
    -  Text-to-speech: Cognitive Services Speech Services engine
 
-We will start by using the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md) as our Web Chat template.
+We will start by using the [Cognitive Services Speech Services sample](./../03.speech/b.cognitive-speech-services-js/README.md) as our Web Chat template.
 
 > Web browser speech package is available in the Web Chat core bundle and the full bundle, and you can use either CDN in your bot.
 
@@ -197,7 +197,7 @@ Here is the finished `index.html`:
 -  [W3C Web Speech API](https://w3c.github.io/speech-api/)
 -  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
--  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
+-  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
 -  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
 
 ## Full list of Web Chat hosted samples

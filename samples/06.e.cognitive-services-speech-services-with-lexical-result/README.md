@@ -2,7 +2,7 @@
 
 > Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/microsoft/BotFramework-WebChat/issues/.
 
-A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services, with lexical result. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js).
+A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services, with lexical result. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../03.speech/b.cognitive-speech-services-js).
 
 # Test out the hosted sample
 
@@ -23,7 +23,7 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fe
 
 ### Goals of this bot
 
-We'll start by using the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js) as our template.
+We'll start by using the [Cognitive Services Speech Services sample](./../03.speech/b.cognitive-speech-services-js) as our template.
 
 The main change you will need to make, regardless of whether you are using the subscription key or authorization token, is adding the value `'lexical'` to a `textNormalization` key in your `webSpeechPonyFillFactory` object.
 

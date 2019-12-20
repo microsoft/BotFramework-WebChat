@@ -4,7 +4,7 @@
 
 A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality that selects different voices based on the activity to be synthesized.
 
-This is an extension of sample [06.c.cognitive-services-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js).
+This is an extension of sample [03.speech/b.cognitive-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js).
 
 # Test out the hosted sample
 

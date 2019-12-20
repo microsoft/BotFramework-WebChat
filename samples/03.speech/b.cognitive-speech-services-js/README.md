@@ -8,12 +8,12 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fe
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.c.cognitive-services-speech-services-js` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/b.cognitive-speech-services-js` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
