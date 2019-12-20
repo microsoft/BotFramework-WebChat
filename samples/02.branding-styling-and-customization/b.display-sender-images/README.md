@@ -6,12 +6,12 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.display-sender-images)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/04.b.display-user-bot-images-styling` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/b.display-sender-images` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
