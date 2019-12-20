@@ -20,14 +20,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "jest-junit": {
-    "ancestorSeparator": " › ",
-    "classNameTemplate": "{classname} › {title}",
-    "includeConsoleOutput": true,
-    "outputDirectory": "coverage",
-    "suiteName": "{filename}",
-    "titleTemplate": "{classname} › {title}"
-  },
   "keywords": [],
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

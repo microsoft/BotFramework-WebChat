@@ -13,7 +13,24 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  reporters: ['default', 'jest-junit'],
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        ancestorSeparator: ' › ',
+        classNameTemplate: '{filepath}',
+        includeConsoleOutput: true,
+        outputDirectory: 'coverage',
+        suiteName: 'BotFramework-WebChat',
+        titleTemplate: ({ classname, filename, title }) =>
+          [filename, classname, title]
+            .map(value => (value || '').trim())
+            .filter(value => value)
+            .join(' › ')
+      }
+    ]
+  ],
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup/preSetupTestFramework.js'],
   testPathIgnorePatterns: [
     '<rootDir>/__tests__/setup/',
