@@ -4,12 +4,12 @@ A simple web page that uses speech-to-text only and disable text-to-speech. This
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.d.cognitive-speech-services-speech-recognition-only)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.speech/d.cognitive-services-speech-recognition-only)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/03.d.cognitive-speech-services-speech-recognition-only` in command line
+-  Navigate to `/Your-Local-WebChat/samples/03.speech/d.cognitive-services-speech-recognition-only` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
