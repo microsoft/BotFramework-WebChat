@@ -4,7 +4,7 @@ When the 'Help' button is clicked, an activity will be sent programmatically to 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event)
 
 # Things to try out
 
