@@ -18,7 +18,8 @@ let config = {
   ]
 };
 
-const { node_env } = process.env;
+// VSTS always emit uppercase environment variable.
+const node_env = process.env.node_env || process.env.NODE_ENV;
 
 if (node_env !== 'production' && node_env !== 'test') {
   config = {
