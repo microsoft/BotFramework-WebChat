@@ -20,8 +20,7 @@
     "start:babel:watch": "npm run start:babel -- --skip-initial-build --watch",
     "start:serve": "serve",
     "start:webpack": "npm run prepublishOnly:webpack:development -- --watch",
-    "test": "jest --watch",
-    "test:ci": "npm run test -- --ci --coverage true --no-watch"
+    "test": "jest --watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -32,6 +31,7 @@
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "^7.7.6",
     "babel-jest": "^24.9.0",
+    "babel-plugin-istanbul": "^5.2.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "concurrently": "^5.0.0",
     "cross-env": "^6.0.3",

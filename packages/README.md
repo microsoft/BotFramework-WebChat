@@ -59,7 +59,7 @@ For simplicity, Web Chat bundle its own version of React in `webchat*.js`. If th
 
 Proving ground for Web Chat during development.
 
-# Build scripts
+# Builds
 
 ## Favors
 
@@ -75,9 +75,9 @@ We offer 3 build favors:
 > Minification is carried out by Terser via Webpack.
 > Eval source maps took 1.6s to load in browser, while code without source maps only took 300-500ms to load
 
-Development build will also use to run tests locally, without code coverage collection (no instrumentation code needed).
+Tests run locally will be using development build without any code coverage collection.
 
-To select different build favors, use `node_env`:
+To select different build favors, set `node_env` to:
 
 - `production`
 - `test`
@@ -87,45 +87,44 @@ To select different build favors, use `node_env`:
 
 We offer 2 types of build processes:
 
-- `prepublishOnly` will build once
-- `start` will build continuously with watch
+- `npm run prepublishOnly` will build once
+- `npm start` will build continuously with watch
 
 # Design requirements
 
 ## Bootstrap scripts
 
-Only two commands is needed to set up the repository:
+Only two NPM commands are needed to ready the repository for development:
 
 - `npm ci`, followed by
 - `npm run bootstrap`
 
-On subsequent pulls:
-
-- `npm run tableflip`
+On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
 
 ## Build scripts
 
 - Use as much `npm run-script` commands as possible
 - `npm install` should not run any scripts, no `.gyp`
 - Dev mode (build development bits with watch)
-   - Single command, `npm start`
+   - Run `npm start`
    - Serve samples and bits from `http://localhost:5000/` (or other available ports)
    - Debug under browser with source maps enabled, displaying source code in original ESNext format
    - In browser, able to set breakpoints and break on original form of code
    - Build should be stabilized within 5 minutes, no extra steps should be taken (e.g. retouching file to trigger build, etc)
       - It is acceptable if the contributor start modifying code before the build is stabilized, their changes may not appear on the bits
 - Build production bits
-   - Single command, `npm run prepublishOnly`
+   - Set environment variable `node_env` to `production`
+   - Run `npm run prepublishOnly`
       - Prefer `prepublishOnly` because this sounds more towards production or CI builds
       - Contributors are very unlikely to run this script
-   - No instrumentation code
+   - No instrumentation code, no source maps
    - Minified
    - Produce `webchat.js`, `webchat-es5.js` and `webchat-minimal.js`
 - No more commands other than `prepublishOnly` and `start` needed to learn
 - Testability
    - Under CI pipeline
-      - Fresh build with instrumentation but minified
-         - Non-minified build contains sourcemaps and take 3-5 seconds to load
+      - Fresh build with instrumentation but minified (a.k.a. `node_env=test`)
+         - Non-minified build contains sourcemaps and take 3-5 seconds to load on a browser
       - Run test with code coverage
    - Under local box
       1. Developer start dev mode by `npm start`, wait until build stable
@@ -160,13 +159,15 @@ On subsequent pulls:
    - Make a change
       - Verify Webpack took less than 4 seconds
 - Test build
-   - Verify `node_env` is set to `test`
+   - Set `node_env` is set to `test`
    - Run `npm start`, wait until stabilized
-   - Verify `packages/bundle/dist/webchat.js` is about 3 MB
-      - Minified
-      - With instrumentation code
+      - Verify `packages/bundle/dist/webchat.js` is about 3 MB
+         - Minified
+         - With instrumentation code, but no source maps
+   - Run `npm test -- --ci --coverage false --maxWorkers=4 --no-watch`
+      - Verify code coverage is collected and correct
 - Production build
-   - Verify `node_env` is set to `production`
+   - Set `node_env` is set to `production`
    - Run `npm prepublishOnly`, wait until finished
    - Verify `packages/bundle/dist/webchat.js` is about 3 MB
       - Minified
@@ -174,8 +175,18 @@ On subsequent pulls:
 - Direct Line Speech SDK
    - Development build
       - Run `npm start`, wait until stabilized
-      - Verify only `dist/directlinespeech.development.js` is on disk and about 4 MB in size
+      - Verify only `dist/directlinespeech.development.js` is on disk and about 4 MB
+   - Test build
+      - Set `node_env` to `test`
+      - Run `npm prepublishOnly`, wait until finished
+         - Verify `packages/directlinespeech/dist/directlinespeech.production.min.js` is built
+            - Minified
+            - With instrumentation code, but no source maps
+      - Run `npm test -- --ci --coverage false --maxWorkers=4 --no-watch`
+         - Verify code coverage is collected and correct (`directlinespeech.production.min.js` is about 500 KB)
    - Production build
-      - Run `npm prepublishOnly`, wait until stabilized
-      - Verify both `dist/directlinespeech.development.js` and `dist/directlinespeech.production.min.js` is on disk
-      - `dist/directlinespeech.production.min.js` is about 400 KB in size
+      - Set `node_env` to `production`
+      - Run `npm prepublishOnly`, wait until finished
+         - Verify both `dist/directlinespeech.development.js` and `dist/directlinespeech.production.min.js` is on disk
+            - `dist/directlinespeech.development.js` is about 3 MB
+            - `dist/directlinespeech.production.min.js` is about 400 KB
