@@ -575,7 +575,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/), in [#1624](https://github.com/microsoft/BotFramework-WebChat/pull/1624)
 -  `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history/), in [#1678](https://github.com/microsoft/BotFramework-WebChat/pull/1678)
 -  `*`: Update `README.md`'s for samples 05-10 [#1444](https://github.com/microsoft/BotFramework-WebChat/issues/1444) and improve accessibility of anchors [#1681](https://github.com/microsoft/BotFramework-WebChat/issues/1681), by [@corinagum](https://github.com/corinagum) in PR [#1710](https://github.com/microsoft/BotFramework-WebChat/pull/1710)
--  `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/18.customization-open-url), in PR [#1704](https://github.com/microsoft/BotFramework-WebChat/pull/1704)
+-  `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/04.api/i.open-url), in PR [#1704](https://github.com/microsoft/BotFramework-WebChat/pull/1704)
 
 ## [4.2.0] - 2018-12-11
 
