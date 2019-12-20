@@ -4,7 +4,7 @@ This sample shows how to implement a welcome activity when the bot first starts.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.d.backchannel-send-welcome-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/a.welcome-event)
 
 # Things to try out
 
