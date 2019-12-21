@@ -4,14 +4,14 @@
   "main": "dist/react.js",
   "private": true,
   "scripts": {
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel src --out-dir lib --verbose",
+    "build:webpack": "webpack-cli",
     "eslint": "eslint src/**/*.js",
-    "prepublishOnly": "npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
-    "prepublishOnly:babel": "babel src --out-dir lib --verbose",
-    "prepublishOnly:webpack": "webpack-cli",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
-    "start:babel": "npm run prepublishOnly:babel",
+    "start:babel": "npm run build:babel",
     "start:note": "echo \"isomorphic-react\" is not under actively development, running in non-watch mode.",
-    "start:webpack": "npm run prepublishOnly:webpack"
+    "start:webpack": "npm run build:webpack"
   },
   "author": "",
   "license": "MIT",

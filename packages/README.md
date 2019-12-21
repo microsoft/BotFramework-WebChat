@@ -87,7 +87,7 @@ To select different build favors, set `node_env` to:
 
 We offer 2 types of build processes:
 
-- `npm run prepublishOnly` will build once
+- `npm run build` will build once
 - `npm start` will build continuously with watch
 
 # Design requirements
@@ -114,13 +114,12 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
       - It is acceptable if the contributor start modifying code before the build is stabilized, their changes may not appear on the bits
 - Build production bits
    - Set environment variable `node_env` to `production`
-   - Run `npm run prepublishOnly`
-      - Prefer `prepublishOnly` because this sounds more towards production or CI builds
-      - Contributors are very unlikely to run this script
+   - Run `npm run build`
+      - Contributors should be unlikely to run this script
    - No instrumentation code, no source maps
    - Minified
    - Produce `webchat.js`, `webchat-es5.js` and `webchat-minimal.js`
-- No more commands other than `prepublishOnly` and `start` needed to learn
+- No more commands other than `build` and `start` needed to learn
 - Testability
    - Under CI pipeline
       - Fresh build with instrumentation but minified (a.k.a. `node_env=test`)
@@ -168,7 +167,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
       - Verify code coverage is collected and correct
 - Production build
    - Set `node_env` is set to `production`
-   - Run `npm prepublishOnly`, wait until finished
+   - Run `npm build`, wait until finished
    - Verify `packages/bundle/dist/webchat.js` is about 3 MB
       - Minified
       - No instrumentation code (smaller than test builds)
@@ -178,7 +177,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
       - Verify only `dist/directlinespeech.development.js` is on disk and about 4 MB
    - Test build
       - Set `node_env` to `test`
-      - Run `npm prepublishOnly`, wait until finished
+      - Run `npm build`, wait until finished
          - Verify `packages/directlinespeech/dist/directlinespeech.production.min.js` is built
             - Minified
             - With instrumentation code, but no source maps
@@ -186,7 +185,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
          - Verify code coverage is collected and correct (`directlinespeech.production.min.js` is about 500 KB)
    - Production build
       - Set `node_env` to `production`
-      - Run `npm prepublishOnly`, wait until finished
+      - Run `npm build`, wait until finished
          - Verify both `dist/directlinespeech.development.js` and `dist/directlinespeech.production.min.js` is on disk
             - `dist/directlinespeech.development.js` is about 3 MB
             - `dist/directlinespeech.production.min.js` is about 400 KB

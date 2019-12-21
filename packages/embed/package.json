@@ -14,14 +14,14 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "prepublishOnly": "npm run prepublishOnly:babel && npm run prepublishOnly:webpack",
-    "prepublishOnly:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
-    "prepublishOnly:webpack": "webpack-cli",
-    "prestart": "npm run prepublishOnly:babel",
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
+    "build:webpack": "webpack-cli",
+    "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel\" \"npm run start:server\" \"npm run start:webpack\"",
-    "start:babel": "npm run prepublishOnly:babel -- --skip-initial-build --watch",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:server": "node-dev --no-notify --respawn hostDevServer",
-    "start:webpack": "npm run prepublishOnly:webpack -- --config webpack-development.config --watch",
+    "start:webpack": "npm run build:webpack -- --config webpack-development.config --watch",
     "test": "jest --watch",
     "test:ci": "npm run test -- --ci --coverage true --no-watch"
   },

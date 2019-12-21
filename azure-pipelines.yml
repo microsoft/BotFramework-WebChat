@@ -23,7 +23,7 @@ steps:
     npm ci
     npm run bootstrap
     npm run eslint
-    npm run prepublishOnly
+    npm run build
     docker-compose up --build --detach
     npm run test -- --ci --coverage true --maxWorkers=4 --no-watch
 
