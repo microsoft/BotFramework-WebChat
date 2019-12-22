@@ -16,28 +16,29 @@ provided by the bot. You will only need to do this once across all repos using o
 
 To build Web Chat, you will need to make sure both your Node.js and NPM is latest version (either LTS or current).
 
+## Preparing the build
+
+After you clone the repository, run the following to make sure it has all dependencies installed.
+
 ```sh
-npm install
+npm ci
 npm run bootstrap
-npm run build
 ```
 
 ## Build tasks
 
-There are 3 types of build tasks in the build process.
+You can use either one of the following scripts to build Web Chat:
 
--  `npm run build`: Build for development (instrumented code for code coverage)
-   -  Will bundle as `webchat-instrumented*.js`
--  `npm run watch`: Build for development with watch mode loop
--  `npm run prepublishOnly`: Build for production
-   -  Will bundle as `webchat*.js`
+- `npm run build` will build once
+- `npm start` will build and continuously rebuild for any changes
 
-## Testing Web Chat for development purpose
+## Trying out the build
 
 We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
 
 ```sh
-npm run start:playground
+cd packages/playground
+npm run start
 ```
 
 Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
@@ -47,29 +48,17 @@ Then browse to http://localhost:3000/, and click on one of the connection option
 
 You are also advised to test the CDN bundles by copying the test harness from our samples.
 
-## Building CDN bundle in development mode
+## Running integration tests
 
-Currently, the standard build script does not build the CDN bundle (`webchat*.js`).
-
-```sh
-cd packages/bundle
-npm run watch
+```bash
+docker-compose up --build --detach
+npm test
+docker-compose down --rmi all
 ```
 
-> By default, this script will run in watch mode.
+## Static code analysis
 
-## Building CDN bundle in production mode
-
-If you want to build a production CDN bundle with minification, you can follow these steps.
-
-```sh
-cd packages/bundle
-npm run prepublishOnly
-```
-
-## Submitting a Pull Request
-
-The Web Chat team welcomes Pull Requests from the community. Before committing code, please run the following command:
+Before committing code, please run the following command:
 
 ```
 npm run eslint
