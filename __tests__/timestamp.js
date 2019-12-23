@@ -26,3 +26,25 @@ test('update timestamp on-the-fly', async () => {
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('timestamp should update time', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    setup: () =>
+      Promise.all([
+        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+      ]).then(() => {
+        window.WebChatTest.clock = lolex.install();
+      })
+  });
+
+  await pageObjects.sendMessageViaSendBox('echo timestamp', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+
+  await driver.executeScript(() => {
+    window.WebChatTest.clock.tick(330000); // t = 5.5 minutes
+  });
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+});
