@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+-  Added custom hooks - `useTimer` and `useIntervalSince` - to replace `Timer` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2771](https://github.com/microsoft/BotFramework-WebChat/pull/2771)
+
 ### Fixed
 
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
