@@ -25,7 +25,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
 
-In this sample, we will build a new React component that will be show when we receive an event activity from the bot named `passwordInput`. It will show a password box. When the user press <kbd>ENTER</kbd> to submit the box, we will send a post back activity back to the bot.
+In this sample, we will build a new React component that will be shown when we receive an event activity from the bot named `passwordInput`. It will show a password box. When the user presses <kbd>ENTER</kbd> to submit the box, a post back activity will be sent back to the bot.
 
 Let's start by building the React component called `PasswordInputActivity`.
 This component will render a simple form that asks the user to input their Two-Factor Authentication code.
@@ -34,7 +34,7 @@ This component will render a simple form that asks the user to input their Two-F
 const PasswordInputActivity = () => {
    return (
       <form>
-         <labe >
+         <label>
             <span>Please input your 2FA code</span>
             <input
                autoFocus={true}
@@ -47,7 +47,7 @@ const PasswordInputActivity = () => {
 }
 ```
 
-Next, build our CSS and apply class names to our component.
+Next, build the CSS and apply class names to the component.
 
 ```css
 .passwordInput {
@@ -105,16 +105,16 @@ Then, apply the style sheet to our React component.
    );
 ```
 
-Then, add business logic to the component:
+Next, add the business logic to the component:
 
-- When the user type on the password box, save the code.
-- When the user press <kbd>ENTER</kbd> on the password box, submit the code and disable the password box.
+- When the user types into the password box, save the code.
+- When the user presses <kbd>ENTER</kbd> inside the password box, submit the code and disable the password box.
 
 This component will have a state object with `code` and `submitted` values, initially set to an empty string and `false`, respectively. `code` will store the  code, and `submitted` will store a boolean value to indicate whether the code has been submitted or not. If the code has been submitted, disable the input box to prevent resubmission.
 
-This component will have two callback functions, called `handleCodeChange` and `handleSubmit`. The former will be called when the code has changed, it will save the value into `code` state. The latter will be called when the form is submitted (user press <kbd>ENTER</kbd> on the password box). It will submit the code via `sendPostBack`, and disable itself to prevent resubmission by updating `submitted` to `true`.
+This component will have two callback functions, called `handleCodeChange` and `handleSubmit`. The former will be called when the code has changed, and it will save the value into the `code` state. The latter will be called when the form is submitted (user press <kbd>ENTER</kbd> on the password box). It will submit the input via `sendPostBack`, then disable itself to prevent resubmission by updating `submitted` to `true`.
 
-The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostBack` function.
+The `sendPostBack` function will be retrieved from Web Chat hooks via `useSendPostBack` function.
 
 ```diff
 -  const { ReactWebChat } = window.WebChat;
