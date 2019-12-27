@@ -1,6 +1,8 @@
 import { imageSnapshotOptions, timeouts } from '../constants.json';
 
 import minNumActivitiesShown from '../setup/conditions/minNumActivitiesShown';
+import negate from '../setup/conditions/negate';
+import scrollToBottomButtonVisible from '../setup/conditions/scrollToBottomButtonVisible';
 import scrollToBottomCompleted from '../setup/conditions/scrollToBottomCompleted';
 import uiConnected from '../setup/conditions/uiConnected';
 
@@ -27,6 +29,7 @@ test('calling submit should scroll to end', async () => {
     document.querySelector('[role="log"] > *').scrollTop = 0;
   });
 
+  await driver.wait(negate(scrollToBottomButtonVisible()), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[1]('Hello, World!'));
@@ -35,5 +38,6 @@ test('calling submit should scroll to end', async () => {
   await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
+  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
