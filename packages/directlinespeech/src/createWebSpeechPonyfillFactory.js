@@ -3,10 +3,10 @@
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services/lib/SpeechServices/SpeechToText';
 
-import AbortController from './external/abort-controller';
+import AbortController from 'abort-controller-es5';
 import createErrorEvent from './createErrorEvent';
 import createTaskQueue from './createTaskQueue';
-import EventTargetShim, { defineEventAttribute } from './external/event-target-shim';
+import EventTargetShim, { defineEventAttribute } from 'event-target-shim-es5';
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 import playWhiteNoise from './playWhiteNoise';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';

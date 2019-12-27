@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
 -  Fixes [#2609](https://github.com/microsoft/BotFramework-WebChat/issues/2609). Fix sample 12: minimizable button is causing another reconnect on restore, by [@compulim](https://github.com/compulim) in PR [#2758](https://github.com/microsoft/BotFramework-WebChat/pull/2758)
+-  Fixes [#2773](https://github.com/microsoft/BotFramework-WebChat/issues/2773). Import ES5 version of the following bundles, by [@compulim](https://github.com/compulim) in PR [#2774](https://github.com/microsoft/BotFramework-WebChat/pull/2773)
+   -  [`abort-controller`](https://npmjs.com/package/abort-controller)
+   -  [`event-target-shim`](https://npmjs.com/package/event-target-shim)
+   -  [`p-defer`](https://npmjs.com/package/p-defer)
 
 ### Changed
 
