@@ -17,7 +17,7 @@ describe('upload a picture', () => {
 
     await pageObjects.sendFile('seaofthieves.jpg');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -39,7 +39,7 @@ describe('upload a picture', () => {
 
     await pageObjects.sendFile('seaofthieves.jpg');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -59,7 +59,7 @@ describe('upload a picture', () => {
 
     await pageObjects.sendFile('seaofthieves.jpg');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -79,7 +79,7 @@ describe('upload a picture', () => {
 
     await pageObjects.sendFile('seaofthieves.jpg');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -97,7 +97,7 @@ describe('upload a picture', () => {
 
       await pageObjects.sendFile('seaofthieves.jpg');
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-      await driver.wait(allImagesLoaded(), timeouts.fetch);
+      await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
       const base64PNG = await driver.takeScreenshot();
 
@@ -122,7 +122,7 @@ describe('upload a picture', () => {
 
       await pageObjects.sendFile('seaofthieves.jpg');
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-      await driver.wait(allImagesLoaded(), timeouts.fetch);
+      await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
       const base64PNG = await driver.takeScreenshot();
 
@@ -145,7 +145,7 @@ describe('upload a picture', () => {
 
       await pageObjects.sendFile('seaofthieves.jpg');
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-      await driver.wait(allImagesLoaded(), timeouts.fetch);
+      await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
       const base64PNG = await driver.takeScreenshot();
 
@@ -161,7 +161,7 @@ test('upload a ZIP file', async () => {
 
   await pageObjects.sendFile('empty.zip');
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 

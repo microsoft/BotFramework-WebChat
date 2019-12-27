@@ -19,7 +19,7 @@ test('audio card', async () => {
   await pageObjects.sendMessageViaSendBox('audiocard', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const audioElement = await driver.findElement(By.css('audio'));
 
@@ -38,7 +38,7 @@ test('hero card', async () => {
   await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   const base64PNG = await driver.takeScreenshot();
@@ -53,7 +53,7 @@ test('oauth card', async () => {
   await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -67,7 +67,7 @@ test('receipt card', async () => {
   await pageObjects.sendMessageViaSendBox('receiptcard', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -81,7 +81,7 @@ test('sign-in card', async () => {
   await pageObjects.sendMessageViaSendBox('signin', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -95,7 +95,7 @@ test('thumbnail card', async () => {
   await pageObjects.sendMessageViaSendBox('thumbnailcard', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
