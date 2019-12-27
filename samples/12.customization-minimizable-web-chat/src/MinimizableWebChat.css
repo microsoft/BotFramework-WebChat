@@ -49,6 +49,10 @@
   width: 30%;
 }
 
+.minimizable-web-chat > .chat-box.hide {
+  display: none;
+}
+
 .minimizable-web-chat > .chat-box.left {
   left: 20px;
 }
