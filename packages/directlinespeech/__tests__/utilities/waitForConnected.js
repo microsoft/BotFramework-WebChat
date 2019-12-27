@@ -1,4 +1,4 @@
-import createDeferred from '../../src/external/p-defer';
+import createDeferred from 'p-defer';
 
 export default function waitForConnected(directLine) {
   const connectedDeferred = createDeferred();

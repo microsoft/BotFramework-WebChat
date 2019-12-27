@@ -1,4 +1,4 @@
-import EventTarget, { defineEventAttribute } from './external/event-target-shim';
+import EventTarget, { defineEventAttribute } from 'event-target-shim-es5';
 
 class SpeechSynthesisAudioStreamUtterance extends EventTarget {
   constructor(audioStream) {

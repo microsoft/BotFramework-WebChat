@@ -49,6 +49,8 @@
     "botframework-webchat-core": "0.0.0-0",
     "bytes": "^3.1.0",
     "classnames": "^2.2.6",
+    "event-target-shim": "^5.0.1",
+    "event-target-shim-es5": "1.0.1",
     "glamor": "^2.20.40",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
