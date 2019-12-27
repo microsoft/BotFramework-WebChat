@@ -16,7 +16,7 @@ test('setup', async () => {
   await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -33,7 +33,7 @@ test('long URLs with break-word', async () => {
   );
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -52,7 +52,7 @@ test('long URLs with break-all', async () => {
   );
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -69,7 +69,7 @@ test('long URLs with keep-all', async () => {
   });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -96,7 +96,7 @@ test('hero card with a long title and richCardWrapTitle set to true', async () =
   await pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -110,7 +110,7 @@ test('hero card with a long title and richCardWrapTitle set to default value', a
   await pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -124,7 +124,7 @@ test('thumbnail card with a long title and richCardWrapTitle set to true', async
   await pageObjects.sendMessageViaSendBox('thumbnailcard long title', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -138,7 +138,7 @@ test('thumbnail card with a long title and richCardWrapTitle set to default valu
   await pageObjects.sendMessageViaSendBox('thumbnailcard long title', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   const base64PNG = await driver.takeScreenshot();
 
