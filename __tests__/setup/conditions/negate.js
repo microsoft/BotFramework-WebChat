@@ -1,5 +1,8 @@
 import { Condition } from 'selenium-webdriver';
 
 export default function negateCondition(condition) {
-  return new Condition(`Negate of ${condition.name}`, async (...args) => !(await condition.fn(...args)));
+  return new Condition(
+    `negate of ${condition.name || 'a condition'}`,
+    async (...args) => !(await condition.fn(...args))
+  );
 }

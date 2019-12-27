@@ -29,7 +29,7 @@ test('calling submit should scroll to end', async () => {
     document.querySelector('[role="log"] > *').scrollTop = 0;
   });
 
-  await driver.wait(negate(scrollToBottomButtonVisible()), timeouts.ui);
+  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[1]('Hello, World!'));
@@ -38,6 +38,6 @@ test('calling submit should scroll to end', async () => {
   await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
-  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
+  await driver.wait(negate(scrollToBottomButtonVisible()), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
