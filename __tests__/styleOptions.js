@@ -50,11 +50,12 @@ describe('style options', () => {
 
     await pageObjects.scrollToTop();
 
+    await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.updateProps({ styleOptions: { hideScrollToEndButton: true } });
-    await driver.wait(negate(scrollToBottomButtonVisible()), timeouts.ui);
 
+    await driver.wait(negate(scrollToBottomButtonVisible()), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });
