@@ -141,7 +141,7 @@ describe('suggested-actions command', () => {
     const postBackStringButton = buttons[4];
 
     await postBackStringButton.click();
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
