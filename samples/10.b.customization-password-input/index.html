@@ -16,7 +16,7 @@
     This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
     https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
   -->
-  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  <script src="https://cdn.botframework.com/botframework-webchat/4.7.1/webchat.js"></script>
   <style>
     html,
     body {
@@ -77,20 +77,20 @@
       const { useCallback, useState } = window.React;
 
       const PasswordInputActivity = () => {
-        const [code, setCode] = useState('');
+        const [twoFACode, setTwoFACode] = useState('');
         const [submitted, setSubmitted] = useState(false);
         const sendPostBack = useSendPostBack();
 
         const handleCodeChange = useCallback(({ target: { value } }) => {
-          setCode(value);
-        }, [setCode]);
+          setTwoFACode(value);
+        }, [setTwoFACode]);
 
         const handleSubmit = useCallback(event => {
           event.preventDefault();
 
-          sendPostBack({ code });
+          sendPostBack({ code: twoFACode });
           setSubmitted(true);
-        }, [sendPostBack, setSubmitted]);
+        }, [sendPostBack, setSubmitted, twoFACode]);
 
         return (
           <form className="passwordInput" onSubmit={handleSubmit}>
@@ -102,7 +102,7 @@
                 disabled={submitted}
                 onChange={handleCodeChange}
                 type="password"
-                value={code}
+                value={twoFACode}
               />
             </label>
           </form>

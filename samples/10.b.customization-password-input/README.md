@@ -122,33 +122,33 @@ The `sendPostBack` function will be retrieved from Web Chat hooks via `useSendPo
 +  const { useCallback, useState } = window.React;
 
    const PasswordInputActivity = () => {
-+     const [code, setCode] = useState('');
++     const [twoFACode, setTwoFACode] = useState('');
 +     const [submitted, setSubmitted] = useState(false);
 +     const sendPostBack = useSendPostBack();
 +
 +     const handleCodeChange = useCallback(({ target: { value } }) => {
-+        setCode(value);
-+     }, [setCode]);
++        setTwoFACode(value);
++     }, [setTwoFACode]);
 +
 +     const handleSubmit = useCallback(event => {
 +        event.preventDefault();
 +
-+        sendPostBack({ code });
++        sendPostBack({ code: twoFACode });
 +        setSubmitted(true);
-+     }, [sendPostBack, setSubmitted]);
++     }, [sendPostBack, setSubmitted, twoFACode]);
 
       return (
 -        <form className="passwordInput">
 +        <form className="passwordInput" onSubmit={handleSubmit}>
             <label className="passwordInput__box">
-               <span className="passwordInput__label">Please input your 2FA code</   span>
+               <span className="passwordInput__label">Please input your 2FA code</span>
                <input
                   autoFocus={true}
                   className="passwordInput__input"
 +                 disabled={submitted}
 +                 onChange={handleCodeChange}
                   type="password"
-+                 value={code}
++                 value={twoFACode}
                />
             </label>
          </form>
@@ -265,31 +265,31 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
 +           const { useCallback, useState } = window.React;
 
 +           const PasswordInputActivity = () => {
-+              const [code, setCode] = useState('');
++              const [twoFACode, setTwoFACode] = useState('');
 +              const [submitted, setSubmitted] = useState(false);
 +              const sendPostBack = useSendPostBack();
 +
 +              const handleCodeChange = useCallback(({ target: { value } }) => {
-+                 setCode(value);
-+              }, [setCode]);
++                 setTwoFACode(value);
++              }, [setTwoFACode]);
 +
 +              const handleSubmit = useCallback(event => {
 +                 event.preventDefault();
 +
-+                 sendPostBack({ code });
++                 sendPostBack({ code: twoFACode });
 +                 setSubmitted(true);
-+              }, [sendPostBack, setSubmitted]);
++              }, [sendPostBack, setSubmitted, twoFACode]);
 +
 +              return (
 +                 <form className="passwordInput" onSubmit={handleSubmit}>
 +                    <label className="passwordInput__box">
-+                       <span className="passwordInput__label">Please input your 2FA    code</span>
++                       <span className="passwordInput__label">Please input your 2FA code</span>
 +                       <input
 +                          autoFocus={true}
 +                          className="passwordInput__input"
 +                          disabled={submitted}
 +                          onChange={handleCodeChange}
-+                          type="password"
++                          type="twoFACode"
 +                          value={code}
 +                       />
 +                    </label>
@@ -297,7 +297,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
 +              );
 +           };
 
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/   directline/token', { method: 'POST' });
+            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
             const { token } = await res.json();
 +           const store = createStore();
 +           const activityMiddleware = () => next => card => {
