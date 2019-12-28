@@ -61,7 +61,9 @@
         const { ReactWebChat } = window.WebChat;
         const activityMiddleware = () => next => card => {
           return children => (
-            <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>
+            <div
+              className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}
+            >
               {next(card)(children)}
             </div>
           );
