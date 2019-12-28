@@ -4,9 +4,9 @@
 
 A simple React web site that creates and uses 3 pieces of custom UI:
 
--  [Microphone button](src/CustomMicrophoneButton.js): a `<button>` to start/stop microphone input
--  [Dictation interims](src/CustomDictationInterims.js): a `<p>` to show dictation interims
--  [Last bot activity](src/LastBotActivity.js): a new component which shows the last message activity from the bot
+- [Microphone button](src/CustomMicrophoneButton.js): a `<button>` to start/stop microphone input
+- [Dictation interims](src/CustomDictationInterims.js): a `<p>` to show dictation interims
+- [Last bot activity](src/LastBotActivity.js): a new component which shows the last message activity from the bot
 
 This app is built with `create-react-app`.
 
@@ -14,28 +14,28 @@ This app is built with `create-react-app`.
 
 Currently, this sample does not work on Safari. Safari requires explicit user interaction to start recording on the microphone or playing audio clips. This is being investigated in [issue #995](https://github.com/microsoft/BotFramework-WebChat/issues/995).
 
--  Speech-to-text: after the user clicks the microphone, Web Chat fetches an authorization token and then starts recording on the microphone
-   -  The network call to fetch the token "disconnects" or separates the user interaction and recording. Thus, Safari considers the recording to not have explicit permission from the user and denies access
--  Text-to-speech: the synthesized text is played when the bot sends the message, without any user interaction
-   -  Since the synthesized text is an audio clip and starts playing without user interaction, Safari denies access to speaker
+- Speech-to-text: after the user clicks the microphone, Web Chat fetches an authorization token and then starts recording on the microphone
+  - The network call to fetch the token "disconnects" or separates the user interaction and recording. Thus, Safari considers the recording to not have explicit permission from the user and denies access
+- Text-to-speech: the synthesized text is played when the bot sends the message, without any user interaction
+  - Since the synthesized text is an audio clip and starts playing without user interaction, Safari denies access to speaker
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.a.customization-speech-ui)
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui)
 
 # How to run locally
 
--  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/13.a.customization-speech-ui` in command line
--  Run `npm install`
--  Run `npm start`
--  Browse to [http://localhost:3000/](http://localhost:3000/)
+- Fork this repository
+- Navigate to `/Your-Local-WebChat/samples/06.recomposing-UI/b.speech-ui` in command line
+- Run `npm install`
+- Run `npm start`
+- Browse to [http://localhost:3000/](http://localhost:3000/)
 
 # Things to try out
 
--  Notice there is a Microphone button instead of a Send Box.
--  Press the button and speak 'hello'
--  Mock Bot will respond via speech
+- Notice there is a Microphone button instead of a Send Box.
+- Press the button and speak 'hello'
+- Mock Bot will respond via speech
 
 # Code
 
@@ -67,8 +67,8 @@ Let's set up the project.
 
 ```sh
 cd C:\Users\You\Documents
-npx create-react-app 13.a.customization-speech-ui
-cd 13.a.customization-speech-ui
+npx create-react-app 06.recomposing-UI/b.speech-ui
+cd 06.recomposing-UI/b.speech-ui
 npm i botframework-webchat
 ```
 
@@ -108,23 +108,23 @@ Let's first work on fetching the Speech Services token, which we will need to re
 ```jsx
 const RENEW_EVERY = 300000;
 let fetchPromise,
-   lastFetch = 0;
+  lastFetch = 0;
 
 export default function() {
-   const now = Date.now();
+  const now = Date.now();
 
-   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
-         .then(res => res.json())
-         .then(({ token }) => token)
-         .catch(() => {
-            lastFetch = 0;
-         });
+  if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
+    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token)
+      .catch(() => {
+        lastFetch = 0;
+      });
 
-      lastFetch = now;
-   }
+    lastFetch = now;
+  }
 
-   return fetchPromise;
+  return fetchPromise;
 }
 ```
 
@@ -149,9 +149,9 @@ Next we will export a new `connectMicrophoneButton` method that will display the
 
 ```jsx
 export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
-   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
-      <MicrophoneIcon size="10vmin" />
-   </button>
+  <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+    <MicrophoneIcon size="10vmin" />
+  </button>
 ));
 ```
 
@@ -172,19 +172,19 @@ import { Components, Constants } from 'botframework-webchat';
 
 const { connectDictationInterims } = Components;
 const {
-   DictateState: { DICTATING, STARTING }
+  DictateState: { DICTATING, STARTING }
 } = Constants;
 
 export default connectDictationInterims()(
-   ({ className, dictateInterims, dictateState }) =>
-      (dictateState === STARTING || dictateState === DICTATING) &&
-      !!dictateInterims.length && (
-         <p className={className}>
-            {dictateInterims.map((interim, index) => (
-               <span key={index}>{interim}&nbsp;</span>
-            ))}
-         </p>
-      )
+  ({ className, dictateInterims, dictateState }) =>
+    (dictateState === STARTING || dictateState === DICTATING) &&
+    !!dictateInterims.length && (
+      <p className={className}>
+        {dictateInterims.map((interim, index) => (
+          <span key={index}>{interim}&nbsp;</span>
+        ))}
+      </p>
+    )
 );
 ```
 
@@ -202,18 +202,18 @@ import { connectToWebChat, Components } from 'botframework-webchat';
 const { SpeakActivity } = Components;
 
 export default connectToWebChat(({ activities }) => ({
-   activity: activities
-      .slice()
-      .reverse()
-      .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
+  activity: activities
+    .slice()
+    .reverse()
+    .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
 }))(
-   ({ activity }) =>
-      !!activity && (
-         <React.Fragment>
-            <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
-         </React.Fragment>
-      )
+  ({ activity }) =>
+    !!activity && (
+      <React.Fragment>
+        <p>{activity.text}</p>
+        {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+      </React.Fragment>
+    )
 );
 ```
 
@@ -222,9 +222,9 @@ Finally, let's return to `App.js`. Your imports should look like the following:
 ```jsx
 import './App.css';
 import {
-   Components,
-   createDirectLine,
-   createCognitiveServicesSpeechServicesPonyfillFactory
+  Components,
+  createDirectLine,
+  createCognitiveServicesSpeechServicesPonyfillFactory
 } from 'botframework-webchat';
 import React, { Component } from 'react';
 
@@ -309,9 +309,9 @@ This brings all of our new components together cohesively into the app.
 ```jsx
 import './App.css';
 import {
-   Components,
-   createDirectLine,
-   createCognitiveServicesSpeechServicesPonyfillFactory
+  Components,
+  createDirectLine,
+  createCognitiveServicesSpeechServicesPonyfillFactory
 } from 'botframework-webchat';
 import React, { Component } from 'react';
 
@@ -323,48 +323,48 @@ import LastBotActivity from './LastBotActivity';
 const { Composer } = Components;
 
 export default class App extends Component {
-   constructor(props) {
-      super(props);
+  constructor(props) {
+    super(props);
 
-      this.state = {
-         directLine: null
-      };
-   }
+    this.state = {
+      directLine: null
+    };
+  }
 
-   async componentDidMount() {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-      const { token } = await res.json();
+  async componentDidMount() {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
 
-      this.setState(() => ({
-         directLine: createDirectLine({
-            token,
-            webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
-               region: 'westus',
-               token: fetchSpeechServicesToken
-            })
-         })
-      }));
-   }
+    this.setState(() => ({
+      directLine: createDirectLine({
+        token,
+        webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
+          region: 'westus',
+          token: fetchSpeechServicesToken
+        })
+      })
+    }));
+  }
 
-   render() {
-      const {
-         state: { directLine }
-      } = this;
+  render() {
+    const {
+      state: { directLine }
+    } = this;
 
-      return (
-         !!directLine && (
-            <Composer directLine={directLine}>
-               <div className="App">
-                  <header className="App-header">
-                     <CustomMicrophoneButton className="App-speech-button" />
-                     <CustomDictationInterims className="App-speech-interims" />
-                     <LastBotActivity className="App-bot-activity" />
-                  </header>
-               </div>
-            </Composer>
-         )
-      );
-   }
+    return (
+      !!directLine && (
+        <Composer directLine={directLine}>
+          <div className="App">
+            <header className="App-header">
+              <CustomMicrophoneButton className="App-speech-button" />
+              <CustomDictationInterims className="App-speech-interims" />
+              <LastBotActivity className="App-bot-activity" />
+            </header>
+          </div>
+        </Composer>
+      )
+    );
+  }
 }
 ```
 
@@ -378,18 +378,18 @@ import { connectToWebChat, Components } from 'botframework-webchat';
 const { SpeakActivity } = Components;
 
 export default connectToWebChat(({ activities }) => ({
-   activity: activities
-      .slice()
-      .reverse()
-      .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
+  activity: activities
+    .slice()
+    .reverse()
+    .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
 }))(
-   ({ activity }) =>
-      !!activity && (
-         <React.Fragment>
-            <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
-         </React.Fragment>
-      )
+  ({ activity }) =>
+    !!activity && (
+      <React.Fragment>
+        <p>{activity.text}</p>
+        {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+      </React.Fragment>
+    )
 );
 ```
 
@@ -402,19 +402,19 @@ import { Components, Constants } from 'botframework-webchat';
 
 const { connectDictationInterims } = Components;
 const {
-   DictateState: { DICTATING, STARTING }
+  DictateState: { DICTATING, STARTING }
 } = Constants;
 
 export default connectDictationInterims()(
-   ({ className, dictateInterims, dictateState }) =>
-      (dictateState === STARTING || dictateState === DICTATING) &&
-      !!dictateInterims.length && (
-         <p className={className}>
-            {dictateInterims.map((interim, index) => (
-               <span key={index}>{interim}&nbsp;</span>
-            ))}
-         </p>
-      )
+  ({ className, dictateInterims, dictateState }) =>
+    (dictateState === STARTING || dictateState === DICTATING) &&
+    !!dictateInterims.length && (
+      <p className={className}>
+        {dictateInterims.map((interim, index) => (
+          <span key={index}>{interim}&nbsp;</span>
+        ))}
+      </p>
+    )
 );
 ```
 
@@ -430,9 +430,9 @@ import MicrophoneIcon from './MicrophoneIcon';
 const { connectMicrophoneButton } = Components;
 
 export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
-   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
-      <MicrophoneIcon size="10vmin" />
-   </button>
+  <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+    <MicrophoneIcon size="10vmin" />
+  </button>
 ));
 ```
 
@@ -441,23 +441,23 @@ export default connectMicrophoneButton()(({ className, click, dictating, disable
 ```jsx
 const RENEW_EVERY = 300000;
 let fetchPromise,
-   lastFetch = 0;
+  lastFetch = 0;
 
 export default function() {
-   const now = Date.now();
+  const now = Date.now();
 
-   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
-         .then(res => res.json())
-         .then(({ token }) => token)
-         .catch(() => {
-            lastFetch = 0;
-         });
+  if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
+    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token)
+      .catch(() => {
+        lastFetch = 0;
+      });
 
-      lastFetch = now;
-   }
+    lastFetch = now;
+  }
 
-   return fetchPromise;
+  return fetchPromise;
 }
 ```
 
