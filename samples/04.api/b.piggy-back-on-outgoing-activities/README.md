@@ -126,7 +126,7 @@ Here is the finished `index.html`:
 
 -  [simple-update-in](https://www.npmjs.com/package/simple-update-in) on npmjs
 
-[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions) | [Customization of Redux Actions source code](./../11.customization-redux-actions)
+[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions) | [Customization of Redux Actions source code](./../04.api/j.redux-actions)
 
 ## Full list of Web Chat hosted samples
 

@@ -32,7 +32,7 @@ If you haven't viewed them already, review and understanding of samples 11 and 1
 
 For a general overview of the `App.js` and `WebChat.js` files in `src`, please review sample [12.customization-minimizable-web-chat](./../12.customization-minimizable-web-chat)
 
-Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [11.customization-redux-actions](./../11.customization-redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
+Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions](./../04.api/j.redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
 
 ```jsx
 color = color.trim();
@@ -57,7 +57,7 @@ if (color) {
 
 > This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
 
-Here is `dispatchIncomingActivityMiddleware` with differences from [11.customization-redux-actions](./../11.customization-redux-actions) highlighted:
+Here is `dispatchIncomingActivityMiddleware` with differences from [04.api/j.redux-actions](./../04.api/j.redux-actions) highlighted:
 
 ```diff
 export default function (dispatch) {
@@ -225,7 +225,7 @@ export default function(dispatch) {
 
 [Redux Documentation](https://redux.js.org/)
 
-[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions) | [Customization of Redux Actions source code](./../11.customization-redux-actions)
+[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions) | [Customization of Redux Actions source code](./../04.api/j.redux-actions)
 
 [Minimizable Web Chat bot ](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat) | [Minimizable Web Chat source code](./../12.customization-minimizable-web-chat)
 
