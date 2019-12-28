@@ -4,7 +4,7 @@ This sample shows how to set up a Web Chat client that will forward all incoming
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/c.incoming-activity-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/c.incoming-activity-event)
 
 # Things to try out
 
@@ -119,7 +119,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/b.piggyback-on-outgoing-activities`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/b.piggyback-on-outgoing-activities) is a sample that will add custom data to every outgoing activity.
+[`04.API/b.piggyback-on-outgoing-activities`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/b.piggyback-on-outgoing-activities) is a sample that will add custom data to every outgoing activity.
 
 ## Full list of Web Chat hosted samples
 

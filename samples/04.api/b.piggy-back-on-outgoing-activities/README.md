@@ -11,12 +11,12 @@ If you haven't viewed it already, review and understanding of sample 11, which t
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/b.piggyback-on-outgoing-activities)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/b.piggyback-on-outgoing-activities)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/04.api/b.piggyback-on-outgoing-activities` in command line
+-  Navigate to `/Your-Local-WebChat/samples/04.API/b.piggyback-on-outgoing-activities` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -126,7 +126,7 @@ Here is the finished `index.html`:
 
 -  [simple-update-in](https://www.npmjs.com/package/simple-update-in) on npmjs
 
-[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions) | [Customization of Redux Actions source code](./../04.api/j.redux-actions)
+[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.API/j.redux-actions) | [Customization of Redux Actions source code](./../04.API/j.redux-actions)
 
 ## Full list of Web Chat hosted samples
 

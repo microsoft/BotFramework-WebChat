@@ -4,7 +4,7 @@ Web Chat client that will show a confirmation dialog when opening a URL.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/i.open-url)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/i.open-url)
 
 # Things to try out
 

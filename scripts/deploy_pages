@@ -4,10 +4,10 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 12.customization-minimizable-web-chat \
   --exclude 13.a.customization-speech-ui \
   --exclude 13.b.customization-smart-display \
-  --exclude 04.api/e.piping-to-redux \
-  --exclude 04.api/f.selectable-activity \
-  --exclude 04.api/g.chat-send-history \
-  --exclude 04.api/h.clear-after-idle \
+  --exclude 04.API/e.piping-to-redux \
+  --exclude 04.API/f.selectable-activity \
+  --exclude 04.API/g.chat-send-history \
+  --exclude 04.API/h.clear-after-idle \
   --exclude 21.customization-plain-ui
 
 mkdir gh-pages/12.customization-minimizable-web-chat
@@ -19,17 +19,17 @@ rsync -av --progress samples/13.a.customization-speech-ui/build/ gh-pages/13.a.c
 mkdir gh-pages/13.b.customization-smart-display
 rsync -av --progress samples/13.b.customization-smart-display/build/ gh-pages/13.b.customization-smart-display/
 
-mkdir gh-pages/04.api/e.piping-to-redux
-rsync -av --progress samples/04.api/e.piping-to-redux/build/ gh-pages/04.api/e.piping-to-redux/
+mkdir gh-pages/04.API/e.piping-to-redux
+rsync -av --progress samples/04.API/e.piping-to-redux/build/ gh-pages/04.API/e.piping-to-redux/
 
-mkdir gh-pages/04.api/f.selectable-activity
-rsync -av --progress samples/04.api/f.selectable-activity/build/ gh-pages/04.api/f.selectable-activity/
+mkdir gh-pages/04.API/f.selectable-activity
+rsync -av --progress samples/04.API/f.selectable-activity/build/ gh-pages/04.API/f.selectable-activity/
 
-mkdir gh-pages/04.api/g.chat-send-history
-rsync -av --progress samples/04.api/g.chat-send-history/build/ gh-pages/04.api/g.chat-send-history/
+mkdir gh-pages/04.API/g.chat-send-history
+rsync -av --progress samples/04.API/g.chat-send-history/build/ gh-pages/04.API/g.chat-send-history/
 
-mkdir gh-pages/04.api/h.clear-after-idle
-rsync -av --progress samples/04.api/h.clear-after-idle/build/ gh-pages/04.api/h.clear-after-idle/
+mkdir gh-pages/04.API/h.clear-after-idle
+rsync -av --progress samples/04.API/h.clear-after-idle/build/ gh-pages/04.API/h.clear-after-idle/
 
 mkdir gh-pages/21.customization-plain-ui
 rsync -av --progress samples/21.customization-plain-ui/build/ gh-pages/21.customization-plain-ui/

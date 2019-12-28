@@ -4,12 +4,12 @@ A full-featured Web Chat with a custom Redux store where one can listen for all 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/j.redux-actions)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/04.api/j.redux-actions` in command line
+-  Navigate to `/Your-Local-WebChat/samples/04.API/j.redux-actions` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -144,7 +144,7 @@ Here is the finished `index.html`:
 
 -  Article on [Redux Middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6)
 
--  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/) | [Piping to Redux source code](./../04.api/e.piping-to-redux)
+-  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/04.API/e.piping-to-redux/) | [Piping to Redux source code](./../04.API/e.piping-to-redux)
 
 ## Full list of Web Chat hosted samples
 

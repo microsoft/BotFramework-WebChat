@@ -7,12 +7,12 @@ This sample shows how to replace Web Chat's store to clear the conversation.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/h.clear-after-idle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/h.clear-after-idle)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/04.api/h.clear-after-idle` in the command line
+-  Navigate to `/Your-Local-WebChat/samples/04.API/h.clear-after-idle` in the command line
 -  Run `npm install && npm run start` in the directory
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
 
@@ -173,7 +173,7 @@ export default App;
 # Further reading
 
 -  [Hooks at a Glance](https://reactjs.org/docs/hooks-overview.html)
--  [Web Chat Back Channel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/a.welcome-event)
+-  [Web Chat Back Channel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/a.welcome-event)
 
 ## Full list of Web Chat hosted samples
 

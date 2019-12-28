@@ -4,7 +4,7 @@ In this sample, we show how to add an activity middleware to allow the user to s
 
 # Test out the hosted sample
 
--  [Try out with MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity)
+-  [Try out with MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/f.selectable-activity)
 
 # Things to try out
 

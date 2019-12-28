@@ -4,7 +4,7 @@ When the 'Help' button is clicked, an activity will be sent programmatically to 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/d.post-activity-event)
 
 # Things to try out
 
@@ -109,7 +109,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
+[`04.API/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
 
 ## Full list of Web Chat hosted samples
 

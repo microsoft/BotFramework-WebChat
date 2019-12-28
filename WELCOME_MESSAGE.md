@@ -144,7 +144,7 @@ this.onMembersAdded(async (context, next) => {
 });
 ```
 
-For more details regarding backchannel welcome events in Web Chat, take a look at this [sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/a.welcome-event).
+For more details regarding backchannel welcome events in Web Chat, take a look at this [sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/a.welcome-event).
 
 ### Additional Context
 
@@ -152,4 +152,4 @@ For more details regarding backchannel welcome events in Web Chat, take a look a
 -  [Using WebChat with Azure Bot Service’s Authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
 -  [Bot Framework Welcome Message Sample - Node SDK](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/javascript_nodejs/03.welcome-users)
 -  [Bot Framework Welcome Message Sample - C# SDK](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore/03.welcome-user)
--  [Web Chat Backchannel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/a.welcome-event)
+-  [Web Chat Backchannel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/a.welcome-event)
