@@ -4,18 +4,18 @@ This sample builds on top of the ideas expressed in sample [05.custom-components
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.custom-components/d.reaction-buttons` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/d.reaction-buttons` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Click the 👍👎 button next to activities from bot
+-  Click the 👍👎 button next to activities from bot
 
 # Code
 
@@ -31,19 +31,19 @@ Let's start by building the React Component called `BotActivityDecorator`. It wi
 
 ```jsx
 const BotActivityDecorator = ({ children }) => {
-  return (
-    <div>
-      <ul>
-        <li>
-          <button>👍</button>
-        </li>
-        <li>
-          <button>👎</button>
-        </li>
-      </ul>
-      <div>{children}</div>
-    </div>
-  );
+   return (
+      <div>
+         <ul>
+            <li>
+               <button>👍</button>
+            </li>
+            <li>
+               <button>👎</button>
+            </li>
+         </ul>
+         <div>{children}</div>
+      </div>
+   );
 };
 ```
 
@@ -51,26 +51,26 @@ Next, build our CSS and apply class names to our component.
 
 ```css
 .botActivityDecorator {
-  min-height: 60px;
-  position: relative;
+   min-height: 60px;
+   position: relative;
 }
 
 .botActivityDecorator .botActivityDecorator__content {
-  padding-left: 40px;
+   padding-left: 40px;
 }
 
 .botActivityDecorator .botActivityDecorator__buttonBar {
-  list-style-type: none;
-  margin: 0 0 0 10px;
-  padding: 0;
-  position: absolute;
+   list-style-type: none;
+   margin: 0 0 0 10px;
+   padding: 0;
+   position: absolute;
 }
 
 .botActivityDecorator .botActivityDecorator__buttonBar .botActivityDecorator__button {
-  background: White;
-  border: solid 1px #e6e6e6;
-  margin-bottom: 2px;
-  padding: 2px 5px 5px;
+   background: White;
+   border: solid 1px #e6e6e6;
+   margin-bottom: 2px;
+   padding: 2px 5px 5px;
 }
 ```
 
@@ -101,8 +101,8 @@ Then, apply the style sheet to our React component.
 
 Then, add business logic to the component:
 
-- When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
-- When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
+-  When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
+-  When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
 
 The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostback` function.
 
@@ -155,15 +155,15 @@ Next let's build the `activityMiddleware` that will filter which activities are 
 
 ```jsx
 const activityMiddleware = () => next => card => {
-  if (card.activity.from.role === 'bot') {
-    return children => (
-      <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
-        {next(card)(children)}
-      </BotActivityDecorator>
-    );
-  } else {
-    return next(card);
-  }
+   if (card.activity.from.role === 'bot') {
+      return children => (
+         <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
+            {next(card)(children)}
+         </BotActivityDecorator>
+      );
+   } else {
+      return next(card);
+   }
 };
 ```
 

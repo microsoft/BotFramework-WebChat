@@ -4,12 +4,12 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.b.customization-password-input)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/f.password-input)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/10.b.customization-password-input` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/f.password-input` in command line
 -  Run `npx serve` in the full-bundle directory
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 

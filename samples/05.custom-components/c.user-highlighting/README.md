@@ -4,19 +4,19 @@ This sample showcases the ability to add styling based on the activity Web Chat 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.custom-components/c.user-highlighting` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/c.user-highlighting` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Send normal messages
-- Type `layout carousel` and see how the decorators work with the band
+-  Send normal messages
+-  Type `layout carousel` and see how the decorators work with the band
 
 # Code
 
@@ -32,17 +32,17 @@ First, let's style our new containers using glamor. The container for activities
 
 ```css
 .highlightedActivity--bot {
-  border-left-color: Red;
-  border-left-style: solid;
-  border-left-width: 5px;
-  margin-left: 8px;
+   border-left-color: Red;
+   border-left-style: solid;
+   border-left-width: 5px;
+   margin-left: 8px;
 }
 
 .highlightedActivity--user {
-  border-right-color: Green;
-  border-right-style: solid;
-  border-right-width: 5px;
-  margin-right: 8px;
+   border-right-color: Green;
+   border-right-style: solid;
+   border-right-width: 5px;
+   margin-right: 8px;
 }
 ```
 
@@ -172,13 +172,13 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 # Further reading
 
-- CSS in JavaScript - [glamor npm](https://www.npmjs.com/package/glamor)
+-  CSS in JavaScript - [glamor npm](https://www.npmjs.com/package/glamor)
 
-- [Middleware wiki](https://en.wikipedia.org/wiki/Middleware)
+-  [Middleware wiki](https://en.wikipedia.org/wiki/Middleware)
 
-- [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons)
+-  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons)
 
-- [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+-  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
 
 ## Full list of Web Chat hosted samples
 

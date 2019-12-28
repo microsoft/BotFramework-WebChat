@@ -16,8 +16,8 @@ Although the Direct Line channel and Web Chat channel support the following acti
 | `typing`                               |                                         | :heavy_check_mark: |
 | `installationUpdate`                   | :heavy_check_mark:                      |                    |
 
-- `installationUpdate`, `event.TokenResponse` and `conversationUpdate` are activities sent between the bot and the channel. The channel does not send these events to Web Chat.
-- `endOfConversation` is not currently handled or rendered by Web Chat. See the Web Chat conversation on [Activity Types](https://github.com/microsoft/BotFramework-WebChat/issues/1808) to learn more.
+-  `installationUpdate`, `event.TokenResponse` and `conversationUpdate` are activities sent between the bot and the channel. The channel does not send these events to Web Chat.
+-  `endOfConversation` is not currently handled or rendered by Web Chat. See the Web Chat conversation on [Activity Types](https://github.com/microsoft/BotFramework-WebChat/issues/1808) to learn more.
 
 When developing your bot's web page, you may discover that the bot sends an activity type that needs to be supported by Web Chat. Luckily, it is possible to create renderers for different activities through the [`activityMiddleware`](https://github.com/microsoft/BotFramework-WebChat#web-chat-api-reference). To learn more, check out the following tutorials:
 
