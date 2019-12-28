@@ -99,6 +99,7 @@
     "babel-jest": "^24.9.0",
     "core-js": "^3.5.0",
     "coveralls": "^3.0.9",
+    "eslint-plugin-react": "^7.17.0",
     "get-port": "^5.0.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
