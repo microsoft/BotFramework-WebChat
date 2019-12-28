@@ -2,7 +2,7 @@
   "name": "sample-customization-minimizable-web-chat",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat/",
   "dependencies": {
     "botframework-webchat": "^4.7.1",
     "classnames": "^2.2.6",

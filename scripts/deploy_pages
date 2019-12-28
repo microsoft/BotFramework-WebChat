@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rsync -av --progress samples/ gh-pages/ \
-  --exclude 12.customization-minimizable-web-chat \
+  --exclude 06.recomposing-UI/a.minimizable-web-chat \
   --exclude 13.a.customization-speech-ui \
   --exclude 13.b.customization-smart-display \
   --exclude 04.API/e.piping-to-redux \
@@ -10,8 +10,8 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 04.API/h.clear-after-idle \
   --exclude 21.customization-plain-ui
 
-mkdir gh-pages/12.customization-minimizable-web-chat
-rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pages/12.customization-minimizable-web-chat/
+mkdir gh-pages/06.recomposing-UI/a.minimizable-web-chat
+rsync -av --progress samples/06.recomposing-UI/a.minimizable-web-chat/build/ gh-pages/06.recomposing-UI/a.minimizable-web-chat/
 
 mkdir gh-pages/13.a.customization-speech-ui
 rsync -av --progress samples/13.a.customization-speech-ui/build/ gh-pages/13.a.customization-speech-ui/
