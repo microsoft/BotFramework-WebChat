@@ -441,7 +441,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  `*`: [Single sign-on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), by [@compulim](https://github.com/compulim) in [#2002](https://github.com/microsoft/BotFramework-WebChat/pull/2002)
--  `*`: [Upload to Azure Storage](https://microsoft.github.io/BotFramework-WebChat/20.a.upload-to-azure-storage/), by [@compulim](https://github.com/compulim) in [#2127](https://github.com/microsoft/BotFramework-WebChat/pull/2127)
+-  `*`: [Upload to Azure Storage](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/a.upload-to-azure-storage/), by [@compulim](https://github.com/compulim) in [#2127](https://github.com/microsoft/BotFramework-WebChat/pull/2127)
 -  `*`: [Speech UI demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui). Reconfigured to use Cognitive Services properly, by [@compulim](https://github.com/compulim) in PR [#2132](https://github.com/microsoft/BotFramework-WebChat/pull/2132)
 -  `*`: [Single sign-on for Intranet apps](https://microsoft.github.io/BotFramework-WebChat/19.b.single-sign-on-for-intranet-apps/), by [@compulim](https://github.com/compulim) in [#2144](https://github.com/microsoft/BotFramework-WebChat/pull/2144)
 -  `*`: [Change locale on-the-fly](https://microsoft.github.io/BotFramework-WebChat/22.customization-change-locale/), by [@compulim](https://github.com/compulim) in [#2451](https://github.com/microsoft/BotFramework-WebChat/pull/2451)
