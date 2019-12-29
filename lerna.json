@@ -4,7 +4,7 @@
     "packages/*",
     "samples/06.recomposing-UI/a.minimizable-web-chat",
     "samples/06.recomposing-UI/b.speech-ui",
-    "samples/13.b.customization-smart-display",
+    "samples/ 06.recomposing-UI/c.smart-display",
     "samples/04.API/e.piping-to-redux",
     "samples/04.API/f.selectable-activity",
     "samples/04.API/g.chat-send-history",

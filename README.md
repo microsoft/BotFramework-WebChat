@@ -36,12 +36,12 @@ Please follow the implementation of sample [`00.migration/a.v3-to-v4`](https://g
 
 One of our team's favorite things about v4 of Web Chat is the ability to add customization **without the need to fork Web Chat**. Although this creates additional overhead for v3 users who forked Web Chat previously, we will do our best to support customers making the bump. Please use the following suggestions:
 
-- Take a look at the implementation of sample [`00.migration/a.v3-to-v4`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/00.migration/a.v3-to-v4). This is a great starting place to get Web Chat up and running.
-- Next, please go through the [samples list](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) to compare your customization requirements to what Web Chat has already provided support for. These samples are made up of commonly asked-for features for Web Chat.
-- If one or more of your features is not available in the samples, please look through our [open and closed issues](https://github.com/microsoft/BotFramework-WebChat/issues?utf8=%E2%9C%93&q=is%3Aissue+), [Samples label](https://github.com/microsoft/BotFramework-WebChat/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3ASample), and the [Migration Support label](https://github.com/microsoft/BotFramework-WebChat/issues?q=is%3Aissue+migrate+label%3A%22Migration+Support%22) to search for sample requests and/or customization support for a feature you are looking for. Adding your comment to open issues will help the team prioritize requests that are in high demand, and we encourage participation in our community.
-- If you did not find your feature in the list of open requests, please feel free to [file your own request](https://github.com/microsoft/BotFramework-WebChat/issues/new). Just like the item above, other customers adding comments to your open issue will help us prioritize which features are most commonly needed across Web Chat users.
-- Finally, if you need your feature as soon as possible, we welcome [pull requests](https://github.com/microsoft/BotFramework-WebChat/compare) to Web Chat. If you have the coding experience to implement the feature yourself, we would very much appreciate the additional support! Creating the feature yourself will mean that it is available for your use on Web Chat more quickly, and that other customers looking for the same or similar feature may utilize your contribution.
-- Make sure to check out the rest of this `README` to learn more about v4.
+-  Take a look at the implementation of sample [`00.migration/a.v3-to-v4`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/00.migration/a.v3-to-v4). This is a great starting place to get Web Chat up and running.
+-  Next, please go through the [samples list](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) to compare your customization requirements to what Web Chat has already provided support for. These samples are made up of commonly asked-for features for Web Chat.
+-  If one or more of your features is not available in the samples, please look through our [open and closed issues](https://github.com/microsoft/BotFramework-WebChat/issues?utf8=%E2%9C%93&q=is%3Aissue+), [Samples label](https://github.com/microsoft/BotFramework-WebChat/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3ASample), and the [Migration Support label](https://github.com/microsoft/BotFramework-WebChat/issues?q=is%3Aissue+migrate+label%3A%22Migration+Support%22) to search for sample requests and/or customization support for a feature you are looking for. Adding your comment to open issues will help the team prioritize requests that are in high demand, and we encourage participation in our community.
+-  If you did not find your feature in the list of open requests, please feel free to [file your own request](https://github.com/microsoft/BotFramework-WebChat/issues/new). Just like the item above, other customers adding comments to your open issue will help us prioritize which features are most commonly needed across Web Chat users.
+-  Finally, if you need your feature as soon as possible, we welcome [pull requests](https://github.com/microsoft/BotFramework-WebChat/compare) to Web Chat. If you have the coding experience to implement the feature yourself, we would very much appreciate the additional support! Creating the feature yourself will mean that it is available for your use on Web Chat more quickly, and that other customers looking for the same or similar feature may utilize your contribution.
+-  Make sure to check out the rest of this `README` to learn more about v4.
 
 # How to use
 
@@ -55,25 +55,25 @@ Here is how how you can add Web Chat control to your website:
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <script>
-      window.WebChat.renderWebChat(
-        {
-          directLine: window.WebChat.createDirectLine({
-            token: "YOUR_DIRECT_LINE_TOKEN"
-          }),
-          userID: "YOUR_USER_ID",
-          username: "Web Chat User",
-          locale: "en-US",
-          botAvatarInitials: "WC",
-          userAvatarInitials: "WW"
-        },
-        document.getElementById("webchat")
-      );
-    </script>
-  </body>
+   <body>
+      <div id="webchat" role="main"></div>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script>
+         window.WebChat.renderWebChat(
+            {
+               directLine: window.WebChat.createDirectLine({
+                  token: 'YOUR_DIRECT_LINE_TOKEN'
+               }),
+               userID: 'YOUR_USER_ID',
+               username: 'Web Chat User',
+               locale: 'en-US',
+               botAvatarInitials: 'WC',
+               userAvatarInitials: 'WW'
+            },
+            document.getElementById('webchat')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -89,21 +89,21 @@ You can use the full, typical webchat package that contains the most typically u
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <script>
-      window.WebChat.renderWebChat(
-        {
-          directLine: window.WebChat.createDirectLine({
-            token: "YOUR_DIRECT_LINE_TOKEN"
-          }),
-          userID: "YOUR_USER_ID"
-        },
-        document.getElementById("webchat")
-      );
-    </script>
-  </body>
+   <body>
+      <div id="webchat" role="main"></div>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script>
+         window.WebChat.renderWebChat(
+            {
+               directLine: window.WebChat.createDirectLine({
+                  token: 'YOUR_DIRECT_LINE_TOKEN'
+               }),
+               userID: 'YOUR_USER_ID'
+            },
+            document.getElementById('webchat')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -206,7 +206,7 @@ There is a breaking change on behavior expectations regarding speech and input h
 | [`04.API/j.redux-actions`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/j.redux-actions) | Advanced tutorial: Demonstrates how to incorporate redux middleware into your Web Chat app by sending redux actions through the bot. This example demonstrates manual styling based on activities between bot and user. | [Redux Actions Demo](https://microsoft.github.io/BotFramework-WebChat/04.API/j.redux-actions) |
 | [`06.recomposing-UI/a.minimizable-web-chat`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-UI/a.minimizable-web-chat) | Advanced tutorial: Demonstrates how to add the Web Chat interface to your website as a minimizable show/hide chat box. | [Minimizable Web Chat Demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat) |
 | [`06.recomposing-UI/b.speech-ui`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-UI/b.speech-ui) | Advanced tutorial: Demonstrates how to fully customize key components of your bot, in this case speech, which entirely replaces the text-based transcript UI and instead shows a simple speech button with the bot's response. | [Speech UI Demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui) |
-| [`13.b.customization-smart-display`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/13.b.customization-smart-display) | Demonstrates how to compose Web Chat UI into a Smart Display | [Smart Display Demo](https://microsoft.github.io/BotFramework-WebChat/13.b.customization-smart-display) |
+| [` 06.recomposing-UI/c.smart-display`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/ 06.recomposing-UI/c.smart-display) | Demonstrates how to compose Web Chat UI into a Smart Display | [Smart Display Demo](https://microsoft.github.io/BotFramework-WebChat/ 06.recomposing-UI/c.smart-display) |
 | [`04.API/e.piping-to-redux`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/e.piping-to-redux) | Advanced tutorial: Demonstrates how to pipe bot activities to your own Redux store and use your bot to control your page through bot activities and Redux. | [Piping to Redux Demo](https://microsoft.github.io/BotFramework-WebChat/04.API/e.piping-to-redux) |
 | [`04.API/b.piggyback-on-outgoing-activities`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/b.piggyback-on-outgoing-activities) | Advanced tutorial: Demonstrates how to add custom data to every outgoing activities. | [Backchannel Piggybacking Demo](https://microsoft.github.io/BotFramework-WebChat/04.API/b.piggyback-on-outgoing-activities) |
 | [`04.API/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/c.incoming-activity-event) | Advanced tutorial: Demonstrates how to forward all incoming activities to a JavaScript event for further processing. | [Incoming Activity Demo](https://microsoft.github.io/BotFramework-WebChat/04.API/c.incoming-activity-event) |
@@ -258,10 +258,10 @@ If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](h
 
 Please note, however:
 
-- Web Chat does not support Internet Explorer older than version 11
-- Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
-- Web Chat has no plan to support samples for IE11 (ES5).
-  - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+-  Web Chat does not support Internet Explorer older than version 11
+-  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
+-  Web Chat has no plan to support samples for IE11 (ES5).
+   -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
 # How to connect client app to bot
 
@@ -274,9 +274,9 @@ We strongly recommend using the token API instead of providing the app with your
 
 For further reading, please see the following links:
 
-- [Using Web Chat with Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+-  [Using Web Chat with Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
 
-- [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+-  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 
 # How to test with Web Chat's latest bits
 

@@ -3,7 +3,7 @@
 rsync -av --progress samples/ gh-pages/ \
   --exclude 06.recomposing-UI/a.minimizable-web-chat \
   --exclude 06.recomposing-UI/b.speech-ui \
-  --exclude 13.b.customization-smart-display \
+  --exclude  06.recomposing-UI/c.smart-display \
   --exclude 04.API/e.piping-to-redux \
   --exclude 04.API/f.selectable-activity \
   --exclude 04.API/g.chat-send-history \
@@ -16,8 +16,8 @@ rsync -av --progress samples/06.recomposing-UI/a.minimizable-web-chat/build/ gh-
 mkdir gh-pages/06.recomposing-UI/b.speech-ui
 rsync -av --progress samples/06.recomposing-UI/b.speech-ui/build/ gh-pages/06.recomposing-UI/b.speech-ui/
 
-mkdir gh-pages/13.b.customization-smart-display
-rsync -av --progress samples/13.b.customization-smart-display/build/ gh-pages/13.b.customization-smart-display/
+mkdir gh-pages/ 06.recomposing-UI/c.smart-display
+rsync -av --progress samples/ 06.recomposing-UI/c.smart-display/build/ gh-pages/ 06.recomposing-UI/c.smart-display/
 
 mkdir gh-pages/04.API/e.piping-to-redux
 rsync -av --progress samples/04.API/e.piping-to-redux/build/ gh-pages/04.API/e.piping-to-redux/
