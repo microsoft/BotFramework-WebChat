@@ -340,7 +340,7 @@ Direct Line Speech is not targeting a transcript-based experience. Thus, our ser
 
 > Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2680) if this behavior is not desirable.
 
-When using text-based experience, we allow developers to piggyback additional information to outgoing messages. This is demonstrated in [sample 15.a "piggyback data on every outgoing activity"](04.API/b.piggyback-on-outgoing-activities).
+When using text-based experience, we allow developers to piggyback additional information to outgoing messages. This is demonstrated in [sample 15.a "piggyback data on every outgoing activity"](04.api/b.piggyback-on-outgoing-activities).
 
 With Direct Line Speech, you can no longer piggyback additional data to all speech-based outgoing activities.
 

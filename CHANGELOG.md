@@ -241,7 +241,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/04.API/h.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
+-  [Clear Conversation After Idle](https://microsoft.github.io/BotFramework-WebChat/04.api/h.clear-after-idle/), by [@tdurnford](https://github.com/tdurnford), in PR [#2375](https://github.com/microsoft/BotFramework-WebChat/pull/2375)
 -  [Smart Display](https://microsoft.github.io/BotFramework-WebChat/24.customization-smart-display/), by [@compulim](https://github.com/compulim), in PR [#2649](https://github.com/microsoft/BotFramework-WebChat/pull/2649)
 
 ## [4.6.0] - 2019-10-31
@@ -480,7 +480,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#1943](https://github.com/microsoft/BotFramework-WebChat/issues/1943). Fix extra vertical padding in IE11 and Firefox, by [@compulim](https://github.com/compulim) in PR [#1949](https://github.com/microsoft/BotFramework-WebChat/pull/1949)
 -  Fixes [#1945](https://github.com/microsoft/BotFramework-WebChat/issues/1945). QA fixes for 4.4, by [@corinagum](https://github.com/johndoe) in PR [#1950](https://github.com/microsoft/BotFramework-WebChat/pull/1950)
 -  Fixes [#1947](https://github.com/microsoft/BotFramework-WebChat/issues/1947). Fix scrollbar in suggested action should be hidden in Firefox, remove gaps, and use style set for customizing `react-film`, by [@compulim](https://github.com/compulim) in PR [#1953](https://github.com/microsoft/BotFramework-WebChat/pull/1953)
--  Fixes [#1948](https://github.com/microsoft/BotFramework-WebChat/issues/1948). Fixed sample 04.API/g.chat-send-history to work with Firefox and Edge, by [@tdurnford](https://github.com/tdurnford) in PR [#1956](https://github.com/microsoft/BotFramework-WebChat/pull/1956)
+-  Fixes [#1948](https://github.com/microsoft/BotFramework-WebChat/issues/1948). Fixed sample 04.api/g.chat-send-history to work with Firefox and Edge, by [@tdurnford](https://github.com/tdurnford) in PR [#1956](https://github.com/microsoft/BotFramework-WebChat/pull/1956)
 -  Fixes [#1304](https://github.com/microsoft/BotFramework-WebChat/issues/1304). Move Adaptive Cards from component to bundle, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum) in PR [#1936](https://github.com/microsoft/BotFramework-WebChat/pull/1936)
 -  Fixes [#1990](https://github.com/microsoft/BotFramework-WebChat/issues/1990). Bump Adaptive Cards & fix textarea font-family from monospace to Web Chat's `primaryFont`, by [@corinagum](https://github.com/corinagum) in PR [#2064](https://github.com/microsoft/BotFramework-WebChat/pull/2064)
 
@@ -562,20 +562,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  `core`: [Programmatic access to post activity](https://microsoft.github.io/BotFramework-WebChat/04.API/d.post-activity-event/), in [#1568](https://github.com/microsoft/BotFramework-WebChat/pull/1568)
+-  `core`: [Programmatic access to post activity](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event/), in [#1568](https://github.com/microsoft/BotFramework-WebChat/pull/1568)
 -  `component`: [Hide upload button](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/f.hide-upload-button/), in [#1491](https://github.com/microsoft/BotFramework-WebChat/pull/1491)
 -  `component`: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/d.display-sender-images/), in [#1486](https://github.com/microsoft/BotFramework-WebChat/pull/1486)
--  `core`: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/04.API/c.incoming-activity-event/), in [#1567](https://github.com/microsoft/BotFramework-WebChat/pull/1567)
+-  `core`: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/04.api/c.incoming-activity-event/), in [#1567](https://github.com/microsoft/BotFramework-WebChat/pull/1567)
 -  `core`: [Send welcome event](https://microsoft.github.io/BotFramework-WebChat/15.b.backchannel-send-welcome-event/), in PR [#1286](https://github.com/microsoft/BotFramework-WebChat/pull/1286)
 -  `core`: [Send typing indicator](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/b.send-typing-indicator), in [#1541](https://github.com/microsoft/BotFramework-WebChat/pull/1541)
 -  `component`: [Password input activity](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/f.password-input/), in [#1569](https://github.com/microsoft/BotFramework-WebChat/pull/1569)
 -  `*`: Updated [minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat/) sample to use `WEB_CHAT/SEND_EVENT` action, in [#1631](https://github.com/microsoft/BotFramework-WebChat/pull/1631)
 -  `component`: [Hybrid speech engine](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech/), in [#1617](https://github.com/microsoft/BotFramework-WebChat/pull/1617)
 -  `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui/), in [#1634](https://github.com/microsoft/BotFramework-WebChat/pull/1634)
--  `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/04.API/f.selectable-activity/), in [#1624](https://github.com/microsoft/BotFramework-WebChat/pull/1624)
--  `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/04.API/g.chat-send-history/), in [#1678](https://github.com/microsoft/BotFramework-WebChat/pull/1678)
+-  `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/), in [#1624](https://github.com/microsoft/BotFramework-WebChat/pull/1624)
+-  `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history/), in [#1678](https://github.com/microsoft/BotFramework-WebChat/pull/1678)
 -  `*`: Update `README.md`'s for samples 05-10 [#1444](https://github.com/microsoft/BotFramework-WebChat/issues/1444) and improve accessibility of anchors [#1681](https://github.com/microsoft/BotFramework-WebChat/issues/1681), by [@corinagum](https://github.com/corinagum) in PR [#1710](https://github.com/microsoft/BotFramework-WebChat/pull/1710)
--  `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/04.API/i.open-url), in PR [#1704](https://github.com/microsoft/BotFramework-WebChat/pull/1704)
+-  `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/04.api/i.open-url), in PR [#1704](https://github.com/microsoft/BotFramework-WebChat/pull/1704)
 
 ## [4.2.0] - 2018-12-11
 

@@ -4,7 +4,7 @@ This sample shows how to implement a welcome activity when the bot first starts.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.API/a.welcome-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/a.welcome-event)
 
 # Things to try out
 
@@ -105,7 +105,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.API/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.API/c.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
+[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/c.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
 
 ## Full list of Web Chat hosted samples
 
