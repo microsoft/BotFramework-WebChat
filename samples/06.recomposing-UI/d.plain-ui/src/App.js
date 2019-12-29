@@ -45,7 +45,7 @@ export default () => {
       </ol>
       <p>
         For the{' '}
-        <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/">
+        <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-UI/d.plain-ui/">
           source code of this demo
         </a>
         , please visit <a href="https://github.com/microsoft/BotFramework-WebChat/">our GitHub repository</a>.

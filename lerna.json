@@ -9,7 +9,7 @@
     "samples/04.API/f.selectable-activity",
     "samples/04.API/g.chat-send-history",
     "samples/04.API/h.clear-after-idle",
-    "samples/21.customization-plain-ui"
+    "samples/06.recomposing-UI/d.plain-ui"
   ],
   "version": "0.0.0"
 }

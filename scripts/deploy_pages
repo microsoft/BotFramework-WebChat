@@ -8,7 +8,7 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 04.API/f.selectable-activity \
   --exclude 04.API/g.chat-send-history \
   --exclude 04.API/h.clear-after-idle \
-  --exclude 21.customization-plain-ui
+  --exclude 06.recomposing-UI/d.plain-ui
 
 mkdir gh-pages/06.recomposing-UI/a.minimizable-web-chat
 rsync -av --progress samples/06.recomposing-UI/a.minimizable-web-chat/build/ gh-pages/06.recomposing-UI/a.minimizable-web-chat/
@@ -31,5 +31,5 @@ rsync -av --progress samples/04.API/g.chat-send-history/build/ gh-pages/04.API/g
 mkdir gh-pages/04.API/h.clear-after-idle
 rsync -av --progress samples/04.API/h.clear-after-idle/build/ gh-pages/04.API/h.clear-after-idle/
 
-mkdir gh-pages/21.customization-plain-ui
-rsync -av --progress samples/21.customization-plain-ui/build/ gh-pages/21.customization-plain-ui/
+mkdir gh-pages/06.recomposing-UI/d.plain-ui
+rsync -av --progress samples/06.recomposing-UI/d.plain-ui/build/ gh-pages/06.recomposing-UI/d.plain-ui/
