@@ -3,7 +3,7 @@ import { By, Key } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import negate from './setup/conditions/negate.js';
+import negationOf from './setup/conditions/negationOf.js';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import sendBoxTextBoxFocused from './setup/conditions/sendBoxTextBoxFocused';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
@@ -23,7 +23,7 @@ test('should not focus send box after clicking on send button', async () => {
   await pageObjects.typeOnSendBox('echo 123');
   await pageObjects.clickSendButton();
 
-  await driver.wait(negate(sendBoxTextBoxFocused()), timeouts.ui);
+  await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
@@ -61,7 +61,7 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await driver.wait(negate(sendBoxTextBoxFocused()), timeouts.ui);
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()
@@ -112,14 +112,14 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await driver.wait(negate(sendBoxTextBoxFocused()), timeouts.ui);
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()
       .sendKeys(Key.SHIFT)
       .perform();
 
-    await driver.wait(negate(sendBoxTextBoxFocused()), timeouts.ui);
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
   });
 
   test('should paste into the send box when focus is on the transcript', async () => {
@@ -133,7 +133,7 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await driver.wait(negate(sendBoxTextBoxFocused()), timeouts.ui);
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()
