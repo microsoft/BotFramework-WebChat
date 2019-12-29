@@ -21,7 +21,7 @@ describe('suggested-actions command', () => {
     await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), 2000);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -37,7 +37,7 @@ describe('suggested-actions command', () => {
     await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), 2000);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -141,7 +141,7 @@ describe('suggested-actions command', () => {
     const postBackStringButton = buttons[4];
 
     await postBackStringButton.click();
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
@@ -169,7 +169,7 @@ describe('suggested-actions command', () => {
     await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), 2000);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -184,7 +184,7 @@ describe('suggested-actions command', () => {
     await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), 2000);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -203,7 +203,7 @@ describe('suggested-actions command', () => {
     await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), 2000);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     const base64PNG = await driver.takeScreenshot();
 

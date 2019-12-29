@@ -32,6 +32,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  [`abort-controller`](https://npmjs.com/package/abort-controller)
    -  [`event-target-shim`](https://npmjs.com/package/event-target-shim)
    -  [`p-defer`](https://npmjs.com/package/p-defer)
+-  Fixes the following issues and improves test reliability, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   - Fixes [#2612](https://github.com/microsoft/BotFramework-WebChat/issues/2612). Wait until language change
+   - Fixes [#2653](https://github.com/microsoft/BotFramework-WebChat/issues/2653). Scroll-to-bottom check will do 5 consecutive checks to determine stickiness.
+   - Fixes [#2691](https://github.com/microsoft/BotFramework-WebChat/issues/2691). Wait until button is shown/hid before taking screenshot
+   - Fixes [#2737](https://github.com/microsoft/BotFramework-WebChat/issues/2737). Use `driver.wait` for conditions
+   - Fixes [#2776](https://github.com/microsoft/BotFramework-WebChat/issues/2776). Wait until button is shown/hid before taking screenshot
+   - Use a new timeout `fetchImage` for images
 
 ### Changed
 

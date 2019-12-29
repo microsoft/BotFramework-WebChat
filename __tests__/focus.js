@@ -3,6 +3,7 @@ import { By, Key } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import negationOf from './setup/conditions/negationOf.js';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import sendBoxTextBoxFocused from './setup/conditions/sendBoxTextBoxFocused';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
@@ -22,7 +23,7 @@ test('should not focus send box after clicking on send button', async () => {
   await pageObjects.typeOnSendBox('echo 123');
   await pageObjects.clickSendButton();
 
-  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+  await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
@@ -36,7 +37,7 @@ test('SHOULD focus send box after clicking on suggested actions', async () => {
 
   await pageObjects.clickSuggestedActionButton(0);
 
-  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeTruthy();
+  await driver.wait(sendBoxTextBoxFocused(), timeouts.ui);
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
@@ -47,7 +48,7 @@ test('should focus send box after pressing ENTER to send message', async () => {
 
   await pageObjects.typeOnSendBox('echo 123', Key.RETURN);
 
-  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeTruthy();
+  await driver.wait(sendBoxTextBoxFocused(), timeouts.ui);
 });
 
 describe('type focus sink', () => {
@@ -60,7 +61,7 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()
@@ -111,14 +112,14 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()
       .sendKeys(Key.SHIFT)
       .perform();
 
-    await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
   });
 
   test('should paste into the send box when focus is on the transcript', async () => {
@@ -132,7 +133,7 @@ describe('type focus sink', () => {
 
     await transcript.click();
 
-    await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
 
     await driver
       .actions()

@@ -67,7 +67,7 @@ test('typing indicator should not display after second activity', async () => {
   });
 
   await pageObjects.sendMessageViaSendBox('typing', { waitForSend: true });
-  await driver.wait(minNumActivitiesShown(2), 5000);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);

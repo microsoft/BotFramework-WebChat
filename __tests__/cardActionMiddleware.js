@@ -10,6 +10,8 @@ import uiConnected from './setup/conditions/uiConnected';
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
+jest.setTimeout(timeouts.test);
+
 test('card action "openUrl"', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
@@ -42,7 +44,7 @@ test('card action "openUrl"', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-}, 60000);
+});
 
 test('card action "signin"', async () => {
   const { driver, pageObjects } = await setupWebDriver({
@@ -85,4 +87,4 @@ test('card action "signin"', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-}, 60000);
+});
