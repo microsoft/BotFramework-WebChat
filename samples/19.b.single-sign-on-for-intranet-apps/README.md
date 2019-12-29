@@ -10,7 +10,7 @@ In this demo, we will show you how to authorize a user to access resources on an
 
 ## Background
 
-This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)". There are notable differences:
+This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/b.sso-for-enterprise)". There are notable differences:
 
 -  In this demo, we are targeting a traditional web page instead of single-page application
    -  Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
