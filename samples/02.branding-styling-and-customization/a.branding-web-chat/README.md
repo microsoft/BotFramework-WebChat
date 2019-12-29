@@ -6,12 +6,12 @@ This sample introduces `styleSetOptions` and branding your bot through Web Chat 
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/05.a.branding-webchat-styling` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/a.branding-web-chat` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -42,7 +42,7 @@ We provide these options to override for several reasons:
 ### My required changes are not all specified in `defaultStyleOptions.js`, what do I do now?
 
 -  Please feel free to [file a PR](https://github.com/microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
--  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../02.branding-styling-and-customization/b.idiosyncratic-manual-stylesREADME.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
+-  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [02.branding-styling-and-customization/b.idiosyncrating-manual-styles sample](../02.branding-styling-and-customization/b.idiosyncratic-manual-styles/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
 
 ## Getting started
 
@@ -130,7 +130,7 @@ Feel free to add your own `styleSetOptions` object to override as many of these 
 
 # Further reading
 
--  [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/b.idiosyncratic-manual-styles)
+-  [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.idiosyncrating-manual-styles) | [(Idiosyncratic styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/b.idiosyncratic-manual-styles)
 
 ## Full list of Web Chat hosted samples
 

@@ -80,7 +80,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
+-  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/a.branding-web-chat)
 
 ## Full list of Web Chat hosted samples
 
