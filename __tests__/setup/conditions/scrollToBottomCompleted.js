@@ -10,7 +10,7 @@ export default function scrollToBottomCompleted() {
       });
     }
 
-    // Browser may keep rendering content. We wait until 5 consecutive completion checks are all truthy.
+    // Browser may keep rendering content. Wait until 5 consecutive completion checks are all truthy.
     for (let count = 0; count < 5; count++) {
       if (!(await completed())) {
         return false;
