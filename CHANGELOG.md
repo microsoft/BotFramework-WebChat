@@ -442,7 +442,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  `*`: [Single sign-on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/b.sso-for-enterprise/), by [@compulim](https://github.com/compulim) in [#2002](https://github.com/microsoft/BotFramework-WebChat/pull/2002)
 -  `*`: [Upload to Azure Storage](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/a.upload-to-azure-storage/), by [@compulim](https://github.com/compulim) in [#2127](https://github.com/microsoft/BotFramework-WebChat/pull/2127)
--  `*`: [Speech UI demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui). Reconfigured to use Cognitive Services properly, by [@compulim](https://github.com/compulim) in PR [#2132](https://github.com/microsoft/BotFramework-WebChat/pull/2132)
+-  `*`: [Speech UI demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui). Reconfigured to use Cognitive Services properly, by [@compulim](https://github.com/compulim) in PR [#2132](https://github.com/microsoft/BotFramework-WebChat/pull/2132)
 -  `*`: [Single sign-on for Intranet apps](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/c.sso-for-intranet/), by [@compulim](https://github.com/compulim) in [#2144](https://github.com/microsoft/BotFramework-WebChat/pull/2144)
 -  `*`: [Change locale on-the-fly](https://microsoft.github.io/BotFramework-WebChat/22.customization-change-locale/), by [@compulim](https://github.com/compulim) in [#2451](https://github.com/microsoft/BotFramework-WebChat/pull/2451)
 
@@ -569,9 +569,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `core`: [Send welcome event](https://microsoft.github.io/BotFramework-WebChat/15.b.backchannel-send-welcome-event/), in PR [#1286](https://github.com/microsoft/BotFramework-WebChat/pull/1286)
 -  `core`: [Send typing indicator](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/b.send-typing-indicator), in [#1541](https://github.com/microsoft/BotFramework-WebChat/pull/1541)
 -  `component`: [Password input activity](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/f.password-input/), in [#1569](https://github.com/microsoft/BotFramework-WebChat/pull/1569)
--  `*`: Updated [minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat/) sample to use `WEB_CHAT/SEND_EVENT` action, in [#1631](https://github.com/microsoft/BotFramework-WebChat/pull/1631)
+-  `*`: Updated [minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/) sample to use `WEB_CHAT/SEND_EVENT` action, in [#1631](https://github.com/microsoft/BotFramework-WebChat/pull/1631)
 -  `component`: [Hybrid speech engine](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech/), in [#1617](https://github.com/microsoft/BotFramework-WebChat/pull/1617)
--  `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/b.speech-ui/), in [#1634](https://github.com/microsoft/BotFramework-WebChat/pull/1634)
+-  `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/), in [#1634](https://github.com/microsoft/BotFramework-WebChat/pull/1634)
 -  `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/), in [#1624](https://github.com/microsoft/BotFramework-WebChat/pull/1624)
 -  `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history/), in [#1678](https://github.com/microsoft/BotFramework-WebChat/pull/1678)
 -  `*`: Update `README.md`'s for samples 05-10 [#1444](https://github.com/microsoft/BotFramework-WebChat/issues/1444) and improve accessibility of anchors [#1681](https://github.com/microsoft/BotFramework-WebChat/issues/1681), by [@corinagum](https://github.com/corinagum) in PR [#1710](https://github.com/microsoft/BotFramework-WebChat/pull/1710)
@@ -634,7 +634,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Backchannel: [Inject custom data into every `POST_ACTIVITY`](https://microsoft.github.io/BotFramework-WebChat/15.backchannel-piggyback-on-outgoing-activities/), in [#1331](https://github.com/microsoft/BotFramework-WebChat/pull/1331)
--  UI: [Minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat/), in [#1290](https://github.com/microsoft/BotFramework-WebChat/pull/1290)
+-  UI: [Minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/), in [#1290](https://github.com/microsoft/BotFramework-WebChat/pull/1290)
 -  Others: [Using Web Chat v3](https://microsoft.github.io/BotFramework-WebChat/webchat-v3/), in [#1287](https://github.com/microsoft/BotFramework-WebChat/pull/1287)
 -  Speech: [Cognitive Services Speech to Text and Text to Speech](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js) (both subscription key and authorization token flow)
 -  Speech: [Cognitive Services Speech to Text using lexical result](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.e.cognitive-services-speech-services-with-lexical-result) (text normalization)

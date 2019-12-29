@@ -2,14 +2,14 @@
   "lerna": "3.19.0",
   "packages": [
     "packages/*",
-    "samples/06.recomposing-UI/a.minimizable-web-chat",
-    "samples/06.recomposing-UI/b.speech-ui",
-    "samples/ 06.recomposing-UI/c.smart-display",
+    "samples/06.recomposing-ui/a.minimizable-web-chat",
+    "samples/06.recomposing-ui/b.speech-ui",
+    "samples/06.recomposing-ui/c.smart-display",
     "samples/04.api/e.piping-to-redux",
     "samples/04.api/f.selectable-activity",
     "samples/04.api/g.chat-send-history",
     "samples/04.api/h.clear-after-idle",
-    "samples/06.recomposing-UI/d.plain-ui"
+    "samples/06.recomposing-ui/d.plain-ui"
   ],
   "version": "0.0.0"
 }

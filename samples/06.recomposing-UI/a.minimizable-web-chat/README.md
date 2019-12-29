@@ -8,12 +8,12 @@ This app is built with `create-react-app`. If you have not used this package bef
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-UI/a.minimizable-web-chat)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.recomposing-UI/a.minimizable-web-chat` in command line
+-  Navigate to `/Your-Local-WebChat/samples/06.recomposing-ui/a.minimizable-web-chat` in command line
 -  Run `npm install`
 -  Run `npm start`
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
@@ -39,8 +39,8 @@ First let's set up the project.
 
 ```sh
 cd C:\Users\You\Documents
-npx create-react-app 06.recomposing-UI/a.minimizable-web-chat
-cd 06.recomposing-UI/a.minimizable-web-chat
+npx create-react-app06.recomposing-ui/a.minimizable-web-chat
+cd06.recomposing-ui/a.minimizable-web-chat
 npm i botframework-webchat memoize-one
 ```
 

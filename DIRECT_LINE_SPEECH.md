@@ -12,7 +12,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 Direct Line Speech is designed for Voice Assistant scenario. For example, smart display, automotive dashboard, navigation system with low-latency requirement on _single-page application_ and _progressive web apps_ (PWA). These apps usually are made with highly-customized UI and do not show conversation transcripts.
 
-You can look at our sample [06.recomposing-UI/b.speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/06.recomposing-UI/b.speech-ui) and [13.b.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/ 06.recomposing-UI/c.smart-display) for target scenarios.
+You can look at our sample [06.recomposing-ui/b.speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/06.recomposing-ui/b.speech-ui) and [13.b.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/06.recomposing-ui/c.smart-display) for target scenarios.
 
 Direct Line Speech is not recommended to use on traditional websites where its primary UI is transcript-based.
 

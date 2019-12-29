@@ -6,16 +6,16 @@ Customize Web Chat into a smart display for hosting voice assistant via Direct L
 
 This app is built with `create-react-app`.
 
-![Screenshot of smart display sample](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/ 06.recomposing-UI/c.smart-display/docs/screenshot1.png
+![Screenshot of smart display sample](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/06.recomposing-ui/c.smart-display/docs/screenshot1.png
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/ 06.recomposing-UI/c.smart-display)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/c.smart-display)
 
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/ 06.recomposing-UI/c.smart-display` in command line
+-  Navigate to `/Your-Local-WebChat/samples/06.recomposing-ui/c.smart-display` in command line
 -  Run `npm install`
 -  Run `npm start`
 -  Browse to [http://localhost:3000/](http://localhost:3000/)
@@ -45,7 +45,7 @@ Note that this is the component that builds up the other components we will crea
 
 ## `App.js`
 
-[`App.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/App.js) will set up the container for hosting Web Chat components. The container will be using Direct Line Speech channel.
+[`App.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/App.js) will set up the container for hosting Web Chat components. The container will be using Direct Line Speech channel.
 
 `useEffect` and `useState` hooks are used to create the Direct Line Speech adapter set asynchronously. After the adapter set are created, they will be used to create the container.
 
@@ -72,7 +72,7 @@ return (
 
 ## `SmartDisplay.js`
 
-[`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user clicks on the microphone button, it will mark the last bot activity as read.
+[`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user clicks on the microphone button, it will mark the last bot activity as read.
 
 ```jsx
 const SmartDisplay = () => {
@@ -97,7 +97,7 @@ const SmartDisplay = () => {
 
 ## `Clock.js`
 
-[`Clock.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/Clock.js) will set up the clock. The time will be updated every second using `useInterval` hook, and forecast fetched from https://api.weather.gov/ on initial render. Other notification icons are dummy.
+[`Clock.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/Clock.js) will set up the clock. The time will be updated every second using `useInterval` hook, and forecast fetched from https://api.weather.gov/ on initial render. Other notification icons are dummy.
 
 ```jsx
 function useInterval(fn, intervalMS = 1000) {
@@ -151,7 +151,7 @@ const Clock = () => {
 
 ## `MicrophoneButton.js`
 
-[`MicrophoneButton.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/MicrophoneButton.js) represents the microphone button used to turn on microphone recording. It will use several hooks from Web Chat:
+[`MicrophoneButton.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/MicrophoneButton.js) represents the microphone button used to turn on microphone recording. It will use several hooks from Web Chat:
 
 -  `useMicrophoneButtonClick` to turn on microphone recording
 -  `useMicrophoneButtonDisabled` to disable microphone click, for example:
@@ -186,7 +186,7 @@ const CustomMicrophoneButton = ({ onClick }) => {
 
 ## `SpeechInterims.js`
 
-[`SpeechInterims.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/SpeechInterims.js) formats and shows speech interims by the user. The interims could come in multiple parts.
+[`SpeechInterims.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/SpeechInterims.js) formats and shows speech interims by the user. The interims could come in multiple parts.
 
 ```js
 const CustomDictationInterims = () => {
@@ -206,7 +206,7 @@ const CustomDictationInterims = () => {
 
 ## `BotResponse.js`
 
-[`BotResponse.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/ 06.recomposing-UI/c.smart-display/src/BotResponse.js) will render the most recent unread activity and attachments from the bot.
+[`BotResponse.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/BotResponse.js) will render the most recent unread activity and attachments from the bot.
 
 -  Rendering Adaptive Cards attachments using [the middleware from full bundle](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/createAdaptiveCardsAttachmentMiddleware.js)
    -  If attachments other than Adaptive Cards is passed, it will be rendered as `false` and hidden in the UI
