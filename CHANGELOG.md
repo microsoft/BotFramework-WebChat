@@ -27,7 +27,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
+-  Fixes [#2609](https://github.com/microsoft/BotFramework-WebChat/issues/2609). Fix sample 12: minimizable button is causing another reconnect on restore, by [@compulim](https://github.com/compulim) in PR [#2758](https://github.com/microsoft/BotFramework-WebChat/pull/2758)
+-  Fixes [#2773](https://github.com/microsoft/BotFramework-WebChat/issues/2773). Import ES5 version of the following bundles, by [@compulim](https://github.com/compulim) in PR [#2774](https://github.com/microsoft/BotFramework-WebChat/pull/2773)
+   -  [`abort-controller`](https://npmjs.com/package/abort-controller)
+   -  [`event-target-shim`](https://npmjs.com/package/event-target-shim)
+   -  [`p-defer`](https://npmjs.com/package/p-defer)
+-  Fixes the following issues and improves test reliability, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   - Fixes [#2612](https://github.com/microsoft/BotFramework-WebChat/issues/2612). Wait until language change
+   - Fixes [#2653](https://github.com/microsoft/BotFramework-WebChat/issues/2653). Scroll-to-bottom check will do 5 consecutive checks to determine stickiness.
+   - Fixes [#2691](https://github.com/microsoft/BotFramework-WebChat/issues/2691). Wait until button is shown/hid before taking screenshot
+   - Fixes [#2737](https://github.com/microsoft/BotFramework-WebChat/issues/2737). Use `driver.wait` for conditions
+   - Fixes [#2776](https://github.com/microsoft/BotFramework-WebChat/issues/2776). Wait until button is shown/hid before taking screenshot
+   - Use a new timeout `fetchImage` for images
 -  Fixes [#2747](https://github.com/microsoft/BotFramework-WebChat/issues/2747). Moved `SendStatus` into the `Timestamp` component and removed the `sendStatus` style set, by [@tdurnford](https://github.com/tdurnford) in PR [#2735](https://github.com/microsoft/BotFramework-WebChat/pull/2735)
+
 
 ### Changed
 
@@ -115,6 +128,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  PR [#2553](https://github.com/microsoft/BotFramework-WebChat/pull/2553): `useDictateInterims`, `useDictateState`, `useGrammars`, `useMarkActivityAsSpoken`, `useMicrophoneButton`, `useShouldSpeakIncomingActivity`, `useStartDictate`, `useStopDictate`, `useVoiceSelector`, `useWebSpeechPonyfill`
    -  PR [#2554](https://github.com/microsoft/BotFramework-WebChat/pull/2554): `useRenderActivity`, `useRenderAttachment`
    -  PR [#2644](https://github.com/microsoft/BotFramework-WebChat/pull/2644): Added `internal/useWebChatUIContext` for cleaner code
+   -  PR [#2652](https://github.com/microsoft/BotFramework-WebChat/pull/2652): Update samples to use hooks
 -  Bring your own Adaptive Cards package by specifying `adaptiveCardsPackage` prop, by [@compulim](https://github.com/compulim) in PR [#2543](https://github.com/microsoft/BotFramework-WebChat/pull/2543)
 -  Fixes [#2597](https://github.com/microsoft/BotFramework-WebChat/issues/2597). Modify `watch` script to `start` and add `tableflip` script for throwing `node_modules`, by [@corinagum](https://github.com/corinagum) in PR [#2598](https://github.com/microsoft/BotFramework-WebChat/pull/2598)
 -  Adds Arabic Language Support, by [@midineo](https://github.com/midineo), in PR [#2593](https://github.com/microsoft/BotFramework-WebChat/pull/2593)

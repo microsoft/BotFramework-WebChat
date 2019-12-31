@@ -1,6 +1,8 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import negationOf from './setup/conditions/negationOf';
+import scrollToBottomButtonVisible from './setup/conditions/scrollToBottomButtonVisible';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -48,10 +50,12 @@ describe('style options', () => {
 
     await pageObjects.scrollToTop();
 
+    await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.updateProps({ styleOptions: { hideScrollToEndButton: true } });
 
+    await driver.wait(negationOf(scrollToBottomButtonVisible()), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });
