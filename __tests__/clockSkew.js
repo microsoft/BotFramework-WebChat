@@ -150,7 +150,7 @@ describe('Clock skew', () => {
     await driver.executeScript(() => window.WebChatTest.releaseActivity(3));
     await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
-    await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });

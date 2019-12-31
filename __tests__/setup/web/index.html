@@ -168,7 +168,7 @@
                 const hookFn = window.WebChat.hooks[name];
 
                 if (!hookFn) {
-                  console.log(`No hooks named "${ name }" were found. Valid hooks are:`, Object.keys(window.WebChat.hooks).sort());
+                  console.log(`No hooks named "${ name }" were found. Valid hooks are:`, Object.keys(window.WebChat.hooks).sort().map(name => `- ${ name }`).join('\n'));
 
                   throw new Error(`No hooks named "${ name }" were found.`);
                 }

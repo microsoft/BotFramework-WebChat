@@ -1,4 +1,5 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useCallback, useMemo, useState } from 'react';
 import { createStore, createStyleSet } from 'botframework-webchat';
 
 import WebChat from './WebChat';
@@ -6,18 +7,11 @@ import WebChat from './WebChat';
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
 
-export default class extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleFetchToken = this.handleFetchToken.bind(this);
-    this.handleMaximizeButtonClick = this.handleMaximizeButtonClick.bind(this);
-    this.handleMinimizeButtonClick = this.handleMinimizeButtonClick.bind(this);
-    this.handleSwitchButtonClick = this.handleSwitchButtonClick.bind(this);
-
-    const store = createStore({}, ({ dispatch }) => next => action => {
-      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-        setTimeout(() => {
+const MinimizableWebChat = () => {
+  const store = useMemo(
+    () =>
+      createStore({}, ({ dispatch }) => next => action => {
+        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
           dispatch({
             type: 'WEB_CHAT/SEND_EVENT',
             payload: {
@@ -27,90 +21,90 @@ export default class extends React.Component {
               }
             }
           });
-        }, 1000);
-      } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-        if (action.payload.activity.from.role === 'bot') {
-          this.setState(() => ({ newMessage: true }));
+        } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+          if (action.payload.activity.from.role === 'bot') {
+            setNewMessage(true);
+          }
         }
-      }
 
-      return next(action);
-    });
+        return next(action);
+      }),
+    []
+  );
 
-    this.state = {
-      minimized: true,
-      newMessage: false,
-      side: 'right',
-      store,
-      styleSet: createStyleSet({
+  const styleSet = useMemo(
+    () =>
+      createStyleSet({
         backgroundColor: 'Transparent'
       }),
-      token: null
-    };
-  }
+    []
+  );
 
-  async handleFetchToken() {
-    if (!this.state.token) {
+  const [loaded, setLoaded] = useState(false);
+  const [minimized, setMinimized] = useState(true);
+  const [newMessage, setNewMessage] = useState(false);
+  const [side, setSide] = useState('right');
+  const [token, setToken] = useState();
+
+  const handleFetchToken = useCallback(async () => {
+    if (!token) {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
       const { token } = await res.json();
 
-      this.setState(() => ({ token }));
+      setToken(token);
     }
-  }
+  }, [setToken, token]);
 
-  handleMaximizeButtonClick() {
-    this.setState(() => ({
-      minimized: false,
-      newMessage: false
-    }));
-  }
+  const handleMaximizeButtonClick = useCallback(async () => {
+    setLoaded(true);
+    setMinimized(false);
+    setNewMessage(false);
+  }, [setMinimized, setNewMessage]);
 
-  handleMinimizeButtonClick() {
-    this.setState(() => ({
-      minimized: true,
-      newMessage: false
-    }));
-  }
+  const handleMinimizeButtonClick = useCallback(() => {
+    setMinimized(true);
+    setNewMessage(false);
+  }, [setMinimized, setNewMessage]);
 
-  handleSwitchButtonClick() {
-    this.setState(({ side }) => ({
-      side: side === 'left' ? 'right' : 'left'
-    }));
-  }
+  const handleSwitchButtonClick = useCallback(() => {
+    setSide(side === 'left' ? 'right' : 'left');
+  }, [setSide, side]);
 
-  render() {
-    const {
-      state: { minimized, newMessage, side, store, styleSet, token }
-    } = this;
+  // TODO: [P2] Currently, we cannot unmount Web Chat from DOM when it is minimized.
+  //       Today, if we unmount it, Web Chat will call disconnect on DirectLineJS object.
+  //       When minimized, we still want to maintain that connection while the UI is gone.
+  //       This is related to https://github.com/microsoft/BotFramework-WebChat/issues/2750.
 
-    return (
-      <div className="minimizable-web-chat">
-        {minimized ? (
-          <button className="maximize" onClick={this.handleMaximizeButtonClick}>
-            <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
-            {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
-          </button>
-        ) : (
-          <div className={side === 'left' ? 'chat-box left' : 'chat-box right'}>
-            <header>
-              <div className="filler" />
-              <button className="switch" onClick={this.handleSwitchButtonClick}>
-                <span className="ms-Icon ms-Icon--Switch" />
-              </button>
-              <button className="minimize" onClick={this.handleMinimizeButtonClick}>
-                <span className="ms-Icon ms-Icon--ChromeMinimize" />
-              </button>
-            </header>
-            <WebChat
-              className="react-web-chat"
-              onFetchToken={this.handleFetchToken}
-              store={store}
-              styleSet={styleSet}
-              token={token}
-            />
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="minimizable-web-chat">
+      {minimized && (
+        <button className="maximize" onClick={handleMaximizeButtonClick}>
+          <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
+          {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
+        </button>
+      )}
+      {loaded && (
+        <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide' : '')}>
+          <header>
+            <div className="filler" />
+            <button className="switch" onClick={handleSwitchButtonClick}>
+              <span className="ms-Icon ms-Icon--Switch" />
+            </button>
+            <button className="minimize" onClick={handleMinimizeButtonClick}>
+              <span className="ms-Icon ms-Icon--ChromeMinimize" />
+            </button>
+          </header>
+          <WebChat
+            className="react-web-chat"
+            onFetchToken={handleFetchToken}
+            store={store}
+            styleSet={styleSet}
+            token={token}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MinimizableWebChat;

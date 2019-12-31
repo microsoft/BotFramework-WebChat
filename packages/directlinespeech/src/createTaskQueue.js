@@ -1,4 +1,4 @@
-import createDeferred from './external/p-defer';
+import createDeferred from 'p-defer-es5';
 
 export default function createTaskQueue() {
   let queueWithCurrent = [];

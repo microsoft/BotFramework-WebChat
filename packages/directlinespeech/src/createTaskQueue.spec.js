@@ -1,4 +1,5 @@
-import createDeferred from './external/p-defer';
+import createDeferred from 'p-defer';
+
 import createTaskQueue from './createTaskQueue';
 
 function createTask() {
