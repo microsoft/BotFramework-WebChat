@@ -23,7 +23,7 @@ test('video', async () => {
 
   await pageObjects.sendMessageViaSendBox('video youtube', { waitForSend: true });
 
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   await pageObjects.switchToYouTubeIFRAME();

@@ -20,7 +20,7 @@ test('breakfast card', async () => {
   await pageObjects.sendMessageViaSendBox('card breakfast', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -40,7 +40,7 @@ test('breakfast card with custom host config', async () => {
   await pageObjects.sendMessageViaSendBox('card breakfast', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -60,7 +60,7 @@ test('breakfast card with custom style options', async () => {
   await pageObjects.sendMessageViaSendBox('card breakfast', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -74,7 +74,7 @@ test('disable card inputs', async () => {
   await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   await driver.executeScript(() => {

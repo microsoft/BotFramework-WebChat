@@ -1,6 +1,6 @@
 import { timeouts } from '../constants.json';
 
-import negate from '../setup/conditions/negate';
+import negationOf from '../setup/conditions/negationOf';
 import speechRecognitionStartCalled from '../setup/conditions/speechRecognitionStartCalled';
 import speechSynthesisUtterancePended from '../setup/conditions/speechSynthesisUtterancePended';
 import uiConnected from '../setup/conditions/uiConnected';
@@ -73,7 +73,7 @@ test('sendBoxSpeechInterimsVisible should return false when synthesizing', async
 
   await pageObjects.clickMicrophoneButton();
 
-  await driver.wait(negate(speechSynthesisUtterancePended()), timeouts.ui);
+  await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
 
   await expect(
     pageObjects.runHook(

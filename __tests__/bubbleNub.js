@@ -14,7 +14,7 @@ async function sendMessageAndMatchSnapshot(driver, pageObjects, message) {
   await pageObjects.sendMessageViaSendBox(message);
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
   const base64PNG = await driver.takeScreenshot();
 
