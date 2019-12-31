@@ -228,8 +228,8 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 1. <a name="notes-1"></a>[Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. <a name="notes-2"></a>As speech recognition is not working (see above), speech synthesis is not tested
 3. <a name="notes-3"></a>Cognitive Services currently has a bug on selecting a different device for audio recording
-   - Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
-   - Tracking bug at https://github.com/microsoft/BotFramework-WebChat/issues/2481
+   -  Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
+   -  Tracking bug at https://github.com/microsoft/BotFramework-WebChat/issues/2481
 
 ## Requirements
 
@@ -247,8 +247,8 @@ Please look at our sample `03.speech/a.direct-line-speech` to embedding Web Chat
 
 After setting up Direct Line Speech on Azure Bot Services, there are two steps for using Direct Line Speech:
 
-- [Retrieve your Direct Line Speech credentials](#retrieve-your-direct-line-speech-credentials)
-- [Render Web Chat using Direct Line Speech adapters](#render-web-chat-using-direct-line-speech-adapters)
+-  [Retrieve your Direct Line Speech credentials](#retrieve-your-direct-line-speech-credentials)
+-  [Render Web Chat using Direct Line Speech adapters](#render-web-chat-using-direct-line-speech-adapters)
 
 ### Retrieve your Direct Line Speech credentials
 
@@ -260,20 +260,20 @@ In the following code snippets, we assume sending a HTTP POST request to https:/
 
 ```js
 const fetchCredentials = async () => {
-  const res = await fetch(
-    "https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token",
-    {
-      method: "POST"
-    }
-  );
+   const res = await fetch(
+      'https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token',
+      {
+         method: 'POST'
+      }
+   );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch authorization token and region.");
-  }
+   if (!res.ok) {
+      throw new Error('Failed to fetch authorization token and region.');
+   }
 
-  const { authorizationToken, region } = await res.json();
+   const { authorizationToken, region } = await res.json();
 
-  return { authorizationToken, region };
+   return { authorizationToken, region };
 };
 ```
 
@@ -285,14 +285,14 @@ After you have the `fetchCredentials` function set up, you can pass it to `creat
 
 ```js
 const adapters = await window.WebChat.createDirectLineSpeechAdapters({
-  fetchCredentials
+   fetchCredentials
 });
 
 window.WebChat.renderWebChat(
-  {
-    ...adapters
-  },
-  document.getElementById("webchat")
+   {
+      ...adapters
+   },
+   document.getElementById('webchat')
 );
 ```
 
@@ -306,13 +306,13 @@ window.WebChat.renderWebChat(
 
 You can specify user ID when you instantiate Web Chat.
 
-- If you specify user ID
-  - `conversationUpdate` activity will be send on connect and every reconnect. And with your user ID specified in the `membersAdded` field.
-  - All `message` activities will be sent with your user ID in `from.id` field.
-- If you do not specify user ID
-  - `conversationUpdate` activity will be send on connect and every reconnect. The `membersAdded` field will have an user ID of empty string.
-  - All `message` activities will be sent with a randomized user ID
-    - The user ID is kept the same across reconnections
+-  If you specify user ID
+   -  `conversationUpdate` activity will be send on connect and every reconnect. And with your user ID specified in the `membersAdded` field.
+   -  All `message` activities will be sent with your user ID in `from.id` field.
+-  If you do not specify user ID
+   -  `conversationUpdate` activity will be send on connect and every reconnect. The `membersAdded` field will have an user ID of empty string.
+   -  All `message` activities will be sent with a randomized user ID
+      -  The user ID is kept the same across reconnections
 
 ### Connection idle and reconnection
 
