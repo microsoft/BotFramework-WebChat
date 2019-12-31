@@ -1,4 +1,4 @@
-import createDeferred from './external/p-defer';
+import createDeferred from 'p-defer-es5';
 
 // Patching a function to add pre-processing of arguments and post-processing of result.
 function patchFunction(fn, pre, post) {

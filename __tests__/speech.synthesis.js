@@ -1,7 +1,7 @@
 import { timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import negateCondition from './setup/conditions/negate';
+import negationOf from './setup/conditions/negationOf';
 import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
 import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
@@ -122,7 +122,7 @@ describe('speech synthesis', () => {
     await pageObjects.clickMicrophoneButton();
 
     await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
-    await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
+    await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
   });
 
   describe('without speech synthesis', () => {
@@ -145,7 +145,7 @@ describe('speech synthesis', () => {
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
       await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
-      await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
+      await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
     });
   });
 });

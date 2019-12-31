@@ -12,17 +12,17 @@ test('getter should return language set in props', async () => {
     }
   });
 
-  const [groupTimestamp] = await pageObjects.runHook('useLanguage');
+  const [language] = await pageObjects.runHook('useLanguage');
 
-  expect(groupTimestamp).toMatchInlineSnapshot(`"zh-YUE"`);
+  expect(language).toMatchInlineSnapshot(`"zh-YUE"`);
 });
 
 test('getter should return default language if not set in props', async () => {
   const { pageObjects } = await setupWebDriver();
 
-  const [groupTimestamp] = await pageObjects.runHook('useLanguage');
+  const [language] = await pageObjects.runHook('useLanguage');
 
-  expect(groupTimestamp).toMatchInlineSnapshot(`"en-US"`);
+  expect(language).toMatchInlineSnapshot(`"en-US"`);
 });
 
 test('setter should be undefined', async () => {

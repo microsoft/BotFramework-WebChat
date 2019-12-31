@@ -13,7 +13,7 @@ test('hero card', async () => {
 
   await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
 
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   // Wait for transcript to scroll to bottom
   await driver.sleep(1000);
@@ -28,7 +28,7 @@ test('null renderMarkdown function', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo **This text should be plain text**', { waitForSend: true });
 
-  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();

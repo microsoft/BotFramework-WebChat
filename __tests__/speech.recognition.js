@@ -1,7 +1,7 @@
 import { timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import negateCondition from './setup/conditions/negate';
+import negationOf from './setup/conditions/negationOf';
 import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
 import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
@@ -26,7 +26,7 @@ describe('speech recognition', () => {
     await pageObjects.startSpeechSynthesize();
     await pageObjects.typeOnSendBox('Aloha!');
 
-    await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
+    await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
     await expect(pageObjects.isDictating()).resolves.toBeFalsy();
   });
 
