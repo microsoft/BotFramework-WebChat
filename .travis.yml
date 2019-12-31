@@ -13,7 +13,7 @@ before_install:
 
 install:
 - npm run bootstrap
-- npm run esilnt
+- npm run eslint
 - npm run build
 
 script:
