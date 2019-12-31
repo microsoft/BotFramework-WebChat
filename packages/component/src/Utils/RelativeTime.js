@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useIntervalSince from '../hooks/useIntervalSince';
 import ScreenReaderText from '../ScreenReaderText';
+import useIntervalSince from '../hooks/useIntervalSince';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
