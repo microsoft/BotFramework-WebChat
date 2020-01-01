@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Custom attachment with GitHub Stargazers</title>
+    <title>Web Chat: Customize timestamp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
@@ -41,7 +41,7 @@
         color: #767676;
         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
         font-size: 80%;
-        margin-top: .2em;
+        margin-top: 0.2em;
       }
 
       .activityStatus--role-user {
@@ -67,7 +67,7 @@
           const existingActivityStatus = next({ activity, ...otherArgs });
 
           return (
-            !!existingActivityStatus &&
+            !!existingActivityStatus && (
               <div className="activityStatus">
                 {existingActivityStatus}
                 <span
@@ -78,6 +78,7 @@
                   {activity.from.role === 'user' ? 'You' : 'Bot'}
                 </span>
               </div>
+            )
           );
         };
 
@@ -85,7 +86,6 @@
           <ReactWebChat
             activityStatusMiddleware={activityStatusMiddleware}
             directLine={window.WebChat.createDirectLine({ token })}
-            groupTimestamp={2000}
           />,
           document.getElementById('webchat')
         );
