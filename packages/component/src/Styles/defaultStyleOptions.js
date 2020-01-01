@@ -113,6 +113,7 @@ const DEFAULT_OPTIONS = {
   suggestedActionTextColor: null,
 
   // Timestamp
+  groupTimestamp: true,
   timestampColor: undefined, // defaults to subtle
   timestampFormat: 'relative', // 'absolute'
 

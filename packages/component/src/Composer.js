@@ -163,6 +163,18 @@ const Composer = ({
     return sendTyping;
   }, [sendTyping, sendTypingIndicator]);
 
+  const patchedStyleOptions = useMemo(() => {
+    if (typeof groupTimestamp !== 'undefined') {
+      console.warn(
+        'Web Chat: "groupTimestamp" has been moved to "styleOptions". This deprecation migration will be remove on or after January 1 2022'
+      );
+
+      return { ...styleOptions, groupTimestamp };
+    }
+
+    return styleOptions;
+  }, [groupTimestamp, styleOptions]);
+
   useEffect(() => {
     dispatch(setLanguage(locale));
   }, [dispatch, locale]);
@@ -203,8 +215,8 @@ const Composer = ({
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
   const patchedStyleSet = useMemo(
-    () => styleSetToClassNames({ ...(styleSet || createStyleSet(styleOptions)), ...extraStyleSet }),
-    [extraStyleSet, styleOptions, styleSet]
+    () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
+    [extraStyleSet, patchedStyleOptions, styleSet]
   );
 
   const hoistedDispatchers = useMemo(
@@ -246,7 +258,6 @@ const Composer = ({
       directLine,
       disabled,
       grammars: patchedGrammars,
-      groupTimestamp,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
@@ -269,7 +280,6 @@ const Composer = ({
       directLine,
       disabled,
       focusSendBoxContext,
-      groupTimestamp,
       hoistedDispatchers,
       patchedGrammars,
       patchedSelectVoice,
@@ -336,7 +346,7 @@ Composer.defaultProps = {
   disabled: false,
   extraStyleSet: undefined,
   grammars: [],
-  groupTimestamp: true,
+  groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
   renderMarkdown: undefined,
   selectVoice: undefined,

@@ -86,6 +86,7 @@
           <ReactWebChat
             activityStatusMiddleware={activityStatusMiddleware}
             directLine={window.WebChat.createDirectLine({ token })}
+            styleOptions={{groupTimestamp: 2000}}
           />,
           document.getElementById('webchat')
         );
