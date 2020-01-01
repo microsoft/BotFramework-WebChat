@@ -57,14 +57,12 @@ function createActivityStatusRenderer(additionalMiddleware) {
   return (...args) => {
     try {
       return activityStatusMiddleware(() => false)(...args);
-    } catch (err) {
-      const FailedRenderActivityStatus = () => (
+    } catch ({ message, stack }) {
+      return (
         <ErrorBox message="Failed to render activity status">
-          <pre>{JSON.stringify(err, null, 2)}</pre>
+          <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
-
-      return FailedRenderActivityStatus;
     }
   };
 }

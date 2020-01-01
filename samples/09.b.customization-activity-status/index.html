@@ -37,14 +37,14 @@
         flex-direction: column;
       }
 
-      .activityStatus--role {
+      .activityStatus__role {
         color: #767676;
         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
         font-size: 80%;
         margin-top: 0.2em;
       }
 
-      .activityStatus--role-user {
+      .activityStatus__role-user {
         align-self: flex-end;
       }
     </style>
@@ -71,8 +71,8 @@
               <div className="activityStatus">
                 {existingActivityStatus}
                 <span
-                  className={classNames('activityStatus--role', {
-                    'activityStatus--role-user': activity.from.role === 'user'
+                  className={classNames('activityStatus__role', {
+                    'activityStatus__role-user': activity.from.role === 'user'
                   })}
                 >
                   {activity.from.role === 'user' ? 'You' : 'Bot'}

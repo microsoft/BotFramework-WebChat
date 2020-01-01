@@ -16,7 +16,7 @@ const DEFAULT_GROUP_TIMESTAMP = 300000; // 5 minutes
 function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   if (groupTimestamp === false) {
     return true;
-  } else if (activityX && activityY) {
+  } else if (activityX && activityY && activityX.from && activityY.from) {
     groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : DEFAULT_GROUP_TIMESTAMP;
 
     if (activityX.from.role === activityY.from.role) {
