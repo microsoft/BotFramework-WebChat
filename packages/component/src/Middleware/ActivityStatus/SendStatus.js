@@ -3,13 +3,12 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
-import ScreenReaderText from '../ScreenReaderText';
-import Timestamp from './Timestamp';
-import useFocusSendBox from '../hooks/useFocusSendBox';
-import useLocalize from '../hooks/useLocalize';
-import usePostActivity from '../hooks/usePostActivity';
-import useStyleSet from '../hooks/useStyleSet';
+import connectToWebChat from '../../connectToWebChat';
+import ScreenReaderText from '../../ScreenReaderText';
+import useFocusSendBox from '../../hooks/useFocusSendBox';
+import useLocalize from '../../hooks/useLocalize';
+import usePostActivity from '../../hooks/usePostActivity';
+import useStyleSet from '../../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }

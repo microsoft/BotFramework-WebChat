@@ -18,6 +18,7 @@ import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderActivity from './useRenderActivity';
+import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollToEnd from './useScrollToEnd';
@@ -69,6 +70,7 @@ export {
   usePostActivity,
   useReferenceGrammarID,
   useRenderActivity,
+  useRenderActivityStatus,
   useRenderAttachment,
   useRenderMarkdownAsHTML,
   useScrollToEnd,

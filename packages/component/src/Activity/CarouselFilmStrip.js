@@ -11,11 +11,11 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
-import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
+import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -82,18 +82,12 @@ const connectCarouselFilmStrip = (...selectors) =>
     ...selectors
   );
 
-const WebChatCarouselFilmStrip = ({
-  activity,
-  children,
-  className,
-  itemContainerRef,
-  scrollableRef,
-  timestampClassName
-}) => {
+const WebChatCarouselFilmStrip = ({ activity, children, className, itemContainerRef, nextActivity, scrollableRef }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
+  const renderActivityStatus = useRenderActivityStatus();
 
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
@@ -149,7 +143,7 @@ const WebChatCarouselFilmStrip = ({
           ))}
         </ul>
         <div className={classNames({ webchat__carousel__item_indented: indented })}>
-          <SendStatus activity={activity} className={timestampClassName} />
+          {renderActivityStatus({ activity, nextActivity })}
         </div>
       </div>
     </div>
@@ -159,7 +153,7 @@ const WebChatCarouselFilmStrip = ({
 WebChatCarouselFilmStrip.defaultProps = {
   children: undefined,
   className: '',
-  timestampClassName: ''
+  nextActivity: undefined
 };
 
 WebChatCarouselFilmStrip.propTypes = {
@@ -181,8 +175,13 @@ WebChatCarouselFilmStrip.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  scrollableRef: PropTypes.any.isRequired,
-  timestampClassName: PropTypes.string
+  nextActivity: PropTypes.shape({
+    from: PropTypes.shape({
+      role: PropTypes.string.isRequired
+    }).isRequired,
+    timestamp: PropTypes.string
+  }),
+  scrollableRef: PropTypes.any.isRequired
 };
 
 const CarouselFilmStrip = props => (

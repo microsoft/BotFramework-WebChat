@@ -122,6 +122,7 @@ function createFocusSendBoxContext({ sendBoxRef }) {
 
 const Composer = ({
   activityRenderer,
+  activityStatusRenderer,
   attachmentRenderer,
   cardActionMiddleware,
   children,
@@ -239,6 +240,7 @@ const Composer = ({
       ...focusSendBoxContext,
       ...hoistedDispatchers,
       activityRenderer,
+      activityStatusRenderer,
       attachmentRenderer,
       dictateAbortable,
       directLine,
@@ -260,6 +262,7 @@ const Composer = ({
     }),
     [
       activityRenderer,
+      activityStatusRenderer,
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
@@ -326,6 +329,7 @@ export default ComposeWithStore;
 
 Composer.defaultProps = {
   activityRenderer: undefined,
+  activityStatusRenderer: undefined,
   attachmentRenderer: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
@@ -349,6 +353,7 @@ Composer.defaultProps = {
 
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
+  activityStatusRenderer: PropTypes.func,
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,

@@ -11,6 +11,7 @@ import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
@@ -28,6 +29,7 @@ const SEND_BOX_CSS = css({
   flexShrink: 0
 });
 
+// TODO: [P2] We should move these into <Composer>
 function createActivityRenderer(additionalMiddleware) {
   const activityMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityMiddleware())({});
 
@@ -48,6 +50,26 @@ function createActivityRenderer(additionalMiddleware) {
   };
 }
 
+// TODO: [P2] We should move these into <Composer>
+function createActivityStatusRenderer(additionalMiddleware) {
+  const activityStatusMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityStatusMiddleware())({});
+
+  return (...args) => {
+    try {
+      return activityStatusMiddleware(() => false)(...args);
+    } catch (err) {
+      const FailedRenderActivityStatus = () => (
+        <ErrorBox message="Failed to render activity status">
+          <pre>{JSON.stringify(err, null, 2)}</pre>
+        </ErrorBox>
+      );
+
+      return FailedRenderActivityStatus;
+    }
+  };
+}
+
+// TODO: [P2] We should move these into <Composer>
 function createAttachmentRenderer(additionalMiddleware) {
   const attachmentMiddleware = concatMiddleware(additionalMiddleware, createCoreAttachmentMiddleware())({});
 
@@ -68,6 +90,7 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
+// TODO: [P1] Move to functional component
 export default class BasicWebChat extends React.Component {
   constructor(props) {
     super(props);
@@ -76,6 +99,7 @@ export default class BasicWebChat extends React.Component {
 
     this.state = {
       activityRenderer: createActivityRenderer(props.activityMiddleware),
+      activityStatusRenderer: createActivityStatusRenderer(props.activityStatusMiddleware),
       attachmentRenderer: createAttachmentRenderer(props.attachmentMiddleware)
     };
   }
@@ -83,13 +107,19 @@ export default class BasicWebChat extends React.Component {
   // TODO: [P2] Move to React 16 APIs
   UNSAFE_componentWillReceiveProps({
     activityMiddleware: nextActivityMiddleware,
+    activityStatusRenderer: nextActivityStatusMiddleware,
     attachmentMiddleware: nextAttachmentMiddleware
   }) {
-    const { activityMiddleware, attachmentMiddleware } = this.props;
+    const { activityMiddleware, activityStatusMiddleware, attachmentMiddleware } = this.props;
 
-    if (activityMiddleware !== nextActivityMiddleware || attachmentMiddleware !== nextAttachmentMiddleware) {
+    if (
+      activityMiddleware !== nextActivityMiddleware ||
+      activityStatusMiddleware !== nextActivityStatusMiddleware ||
+      attachmentMiddleware !== nextAttachmentMiddleware
+    ) {
       this.setState(() => ({
         activityRenderer: createActivityRenderer(nextActivityMiddleware),
+        activityStatusRenderer: createActivityStatusRenderer(nextActivityStatusMiddleware),
         attachmentRenderer: createAttachmentRenderer(nextAttachmentMiddleware)
       }));
     }
@@ -99,7 +129,7 @@ export default class BasicWebChat extends React.Component {
     const {
       props: { className, ...otherProps },
       sendBoxRef,
-      state: { activityRenderer, attachmentRenderer }
+      state: { activityRenderer, activityStatusRenderer, attachmentRenderer }
     } = this;
 
     // TODO: [P2] Implement "scrollToBottom" feature
@@ -107,6 +137,7 @@ export default class BasicWebChat extends React.Component {
     return (
       <Composer
         activityRenderer={activityRenderer}
+        activityStatusRenderer={activityStatusRenderer}
         attachmentRenderer={attachmentRenderer}
         sendBoxRef={sendBoxRef}
         {...otherProps}

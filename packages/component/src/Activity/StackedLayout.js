@@ -10,12 +10,12 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
-import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
+import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -79,11 +79,12 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, children, timestampClassName }) => {
+const StackedLayout = ({ activity, children, nextActivity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
+  const renderActivityStatus = useRenderActivityStatus();
 
   const {
     attachments = [],
@@ -154,7 +155,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
           </div>
         ))}
         <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
-          <SendStatus activity={activity} className="timestamp" timestampClassName={timestampClassName} />
+          {renderActivityStatus({ activity, nextActivity })}
           <div className="filler" />
         </div>
       </div>
@@ -165,7 +166,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
 
 StackedLayout.defaultProps = {
   children: undefined,
-  timestampClassName: ''
+  nextActivity: undefined
 };
 
 StackedLayout.propTypes = {
@@ -185,7 +186,12 @@ StackedLayout.propTypes = {
     type: PropTypes.string.isRequired
   }).isRequired,
   children: PropTypes.any,
-  timestampClassName: PropTypes.string
+  nextActivity: PropTypes.shape({
+    from: PropTypes.shape({
+      role: PropTypes.string.isRequired
+    }).isRequired,
+    timestamp: PropTypes.string
+  })
 };
 
 export default StackedLayout;

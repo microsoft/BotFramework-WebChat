@@ -327,11 +327,28 @@ useRenderActivity(
   }) => React.Element
 ): ({
   activity: Activity,
-  timestampClassName: string
+  nextActivity: Activity
 }) => React.Element
 ```
 
-This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `timestampClassName`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `nextActivity`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+
+### New in 4.8.0
+
+Previously, we use `timestampClassName` to control if the activity should show timestamp or not. The `timestampClassName` should be add as a `class` attribute the DOM element which contains the timestamp.
+
+Today, we pass `activity` and `nextActivity` to the middleware, so the `activityRendererMiddleware` make the decision about timestamp visibility. For example, developers can group timestamp based on activity type.
+
+## `useRenderActivityStatus`
+
+```js
+useRenderActivityStatus(): ({
+  activity: Activity,
+  nextActivity: Activity
+}) => React.Element
+```
+
+This function is for rendering status of an activity. The caller will need to pass `activity` and `nextActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 

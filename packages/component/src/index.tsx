@@ -7,10 +7,10 @@ import Bubble from './Activity/Bubble';
 import CarouselLayout from './Activity/CarouselLayout';
 import ErrorBox from './ErrorBox';
 import Localize, { localize } from './Localization/Localize';
-import SendStatus, { connectSendStatus } from './Activity/SendStatus';
+import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
 import StackedLayout, { connectStackedLayout } from './Activity/StackedLayout';
-import Timestamp from './Activity/Timestamp';
+import Timestamp from './Middleware/ActivityStatus/Timestamp';
 
 import AudioContent from './Attachment/AudioContent';
 import HTMLVideoContent from './Attachment/HTMLVideoContent';
@@ -31,6 +31,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
 import Context from './WebChatUIContext';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
@@ -91,6 +92,7 @@ export {
   connectToWebChat,
   Context,
   createCoreActivityMiddleware,
+  createCoreActivityStatusMiddleware,
   createCoreAttachmentMiddleware,
   createStyleSet,
   defaultStyleOptions,
