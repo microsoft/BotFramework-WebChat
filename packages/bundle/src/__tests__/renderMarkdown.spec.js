@@ -49,4 +49,11 @@ describe('renderMarkdown', () => {
       '<p><a href="sip:example@test.com" target="_blank">example@test.com</a></p>\n'
     );
   });
+
+  it('should render tel protocol links correctly', () => {
+    const options = { markdownRespectCRLF: true };
+    expect(renderMarkdown(`[(505)503-4455](tel:505-503-4455)`, options)).toBe(
+      '<p><a href="tel:505-503-4455" target="_blank">(505)503-4455</a></p>\n'
+    );
+  });
 });
