@@ -59,17 +59,15 @@ const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
-    (activity, nextActivity) => {
-      const element = renderActivity({
+    (activity, nextActivity) =>
+      renderActivity({
         activity,
         nextActivity
-      });
-
-      return element;
-    },
+      }),
     [renderActivity]
   );
 

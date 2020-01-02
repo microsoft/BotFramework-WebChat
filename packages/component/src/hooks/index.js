@@ -28,6 +28,7 @@ import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
+import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
@@ -81,6 +82,7 @@ export {
   useSendMessage,
   useSendMessageBack,
   useSendPostBack,
+  useSendTimeoutForActivity,
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStartDictate,

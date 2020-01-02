@@ -57,7 +57,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Прекъсване на мрежата. Повторно свързване…',
   RENDER_ERROR_NOTIFICATION: 'Грешка при изобразяване. Проверете конзолата или се свържете с разработчика.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `Неуспешно изпращане. {Retry}.`,
+  SEND_FAILED_KEY: `Неуспешно изпращане. [Отново][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Свързването отнема необикновено дълго време.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -76,7 +76,6 @@ export default {
   Left: 'Ляво',
   'Listening…': 'Слушане…',
   'New messages': 'Ново съобщение',
-  Retry: 'Отново',
   Right: 'Дясно',
   Send: 'Изпрати',
   Sending: 'Изпращане',

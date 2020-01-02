@@ -164,24 +164,30 @@ const Composer = ({
   }, [sendTyping, sendTypingIndicator]);
 
   const patchedStyleOptions = useMemo(() => {
-    if (typeof groupTimestamp !== 'undefined') {
+    const patchedStyleOptions = { ...styleOptions };
+
+    if (typeof groupTimestamp !== 'undefined' && typeof patchedStyleOptions.groupTimestamp === 'undefined') {
       console.warn(
-        'Web Chat: "groupTimestamp" has been moved to "styleOptions". This deprecation migration will be remove on or after January 1 2022'
+        'Web Chat: "groupTimestamp" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
       );
 
-      return { ...styleOptions, groupTimestamp };
+      patchedStyleOptions.groupTimestamp = groupTimestamp;
     }
 
-    return styleOptions;
+    if (typeof sendTimeout !== 'undefined' && typeof patchedStyleOptions.sendTimeout === 'undefined') {
+      console.warn(
+        'Web Chat: "sendTimeout" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
+      );
+
+      patchedStyleOptions.sendTimeout = sendTimeout;
+    }
+
+    return patchedStyleOptions;
   }, [groupTimestamp, styleOptions]);
 
   useEffect(() => {
     dispatch(setLanguage(locale));
   }, [dispatch, locale]);
-
-  useEffect(() => {
-    dispatch(setSendTimeout(sendTimeout));
-  }, [dispatch, sendTimeout]);
 
   useEffect(() => {
     dispatch(setSendTypingIndicator(!!patchedSendTypingIndicator));
@@ -262,7 +268,6 @@ const Composer = ({
       scrollToEnd,
       selectVoice: patchedSelectVoice,
       sendBoxRef,
-      sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
       setDictateAbortable,
       styleOptions,
@@ -288,7 +293,6 @@ const Composer = ({
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
-      sendTimeout,
       setDictateAbortable,
       styleOptions,
       userID,
@@ -351,7 +355,7 @@ Composer.defaultProps = {
   renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
-  sendTimeout: 20000,
+  sendTimeout: undefined,
   sendTyping: undefined,
   sendTypingIndicator: false,
   styleOptions: {},

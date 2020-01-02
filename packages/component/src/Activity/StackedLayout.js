@@ -129,7 +129,7 @@ const StackedLayout = ({ activity, children, nextActivity }) => {
         {!!activityDisplayText && (
           <div className="webchat__row message">
             <ScreenReaderText text={ariaLabel} />
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={!!indented}>
               {children({
                 activity,
                 attachment: {

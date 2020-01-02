@@ -3,15 +3,18 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import connectToWebChat from '../../connectToWebChat';
-import ScreenReaderText from '../../ScreenReaderText';
-import useFocusSendBox from '../../hooks/useFocusSendBox';
-import useLocalize from '../../hooks/useLocalize';
-import usePostActivity from '../../hooks/usePostActivity';
-import useStyleSet from '../../hooks/useStyleSet';
+import connectToWebChat from '../../../connectToWebChat';
+import ScreenReaderText from '../../../ScreenReaderText';
+import SendFailedRetry from './SendFailedRetry';
+import useFocusSendBox from '../../../hooks/useFocusSendBox';
+import useLocalize from '../../../hooks/useLocalize';
+import usePostActivity from '../../../hooks/usePostActivity';
+import useSendTimeoutForActivity from '../../../hooks/useSendTimeoutForActivity';
+import useStyleSet from '../../../hooks/useStyleSet';
+import useTimePast from './useTimePast';
 
 const {
-  ActivityClientState: { SEND_FAILED, SENDING }
+  ActivityClientState: { SEND_FAILED, SENDING, SENT }
 } = Constants;
 
 const connectSendStatus = (...selectors) =>
@@ -35,50 +38,38 @@ const SendStatus = ({ activity, timestampClassName }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
+  const sendTimeoutForActivity = useSendTimeoutForActivity();
+  const sendTimeout = sendTimeoutForActivity(activity);
 
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
   const localizedSending = useLocalize('Sending');
   const localizedSendStatus = useLocalize('SendStatus');
-  const retryText = useLocalize('Retry');
-  const sendFailedText = useLocalize('SEND_FAILED_KEY');
 
-  const handleRetryClick = useCallback(
-    evt => {
-      evt.preventDefault();
+  const handleRetryClick = useCallback(() => {
+    postActivity(activity);
 
-      postActivity(activity);
+    // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
+    // We want to make sure the user stay inside Web Chat
+    focusSendBox();
+  }, [activity, focusSendBox, postActivity]);
 
-      // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
-      // We want to make sure the user stay inside Web Chat
-      focusSendBox();
-    },
-    [activity, focusSendBox, postActivity]
-  );
-
-  const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
   const { channelData: { state } = {} } = activity;
+
+  // We ignore SEND_FAILED from activity, instead, we derive it here based on styleOptions.sendTimeout
+  const activitySent = state !== SENDING && state !== SEND_FAILED;
+  const { clientTimestamp = 0 } = activity.channelData;
+  const pastTimeout = useTimePast(new Date(clientTimestamp).getTime() + sendTimeout);
+  const sendState = activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
   return state === SENDING || state === SEND_FAILED ? (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
-        {state === SENDING ? (
+        {sendState === SENDING ? (
           localizedSending
-        ) : state === SEND_FAILED ? (
-          sendFailedRetryMatch ? (
-            <React.Fragment>
-              {sendFailedText.substr(0, sendFailedRetryMatch.index)}
-              <button onClick={handleRetryClick} type="button">
-                {retryText}
-              </button>
-              {sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length)}
-            </React.Fragment>
-          ) : (
-            <button onClick={handleRetryClick} type="button">
-              {sendFailedText}
-            </button>
-          )
+        ) : sendState === SEND_FAILED ? (
+          <SendFailedRetry onRetryClick={handleRetryClick} />
         ) : (
           false
         )}

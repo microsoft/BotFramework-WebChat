@@ -5,7 +5,7 @@ export default function createSendStatusStyle({ accent, fontSizeSmall, primaryFo
     fontSize: fontSizeSmall,
     paddingTop: 5,
 
-    '& > button': {
+    '& > span > button': {
       backgroundColor: 'transparent',
       border: 0,
       color: accent,

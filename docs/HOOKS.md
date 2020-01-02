@@ -67,9 +67,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
--  [`useRenderActivity`](#useRenderActivity)
--  [`useRenderAttachment`](#useRenderAttachment)
--  [`useRenderMarkdownAsHTML`](#useRenderMarkdownAsHTML)
+-  [`useRenderActivity`](#userenderactivity)
+-  [`useRenderActivityStatus`](#userenderactivitystatus)
+-  [`useRenderAttachment`](#userenderattachment)
+-  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -77,6 +78,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
+-  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 -  [`useStartDictate`](#usestartdictate)
@@ -443,6 +445,14 @@ useSendPostBack(): (value: any) => void
 ```
 
 When called, this function will send a `postBack` activity to the bot.
+
+## `useSendTimeoutForActivity`
+
+```js
+useSendTimeoutForActivity(): (activity: Activity) => number
+```
+
+When called, this function will return a functino to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useSendTypingIndicator`
 

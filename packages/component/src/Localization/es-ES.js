@@ -55,7 +55,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Conexión interrumpida…',
   RENDER_ERROR_NOTIFICATION: 'Error de visualización',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `No enviado. {Retry}.`,
+  SEND_FAILED_KEY: `No enviado. [Reintentar][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Tomando más de lo usual para conectarse.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -69,7 +69,6 @@ export default {
   'New messages': 'Nuevos mensajes',
   Left: 'Izquierda',
   'Listening…': 'Escuchando…',
-  Retry: 'Reintentar',
   Right: 'Derecha',
   Send: 'Enviar',
   Sending: 'Enviando',

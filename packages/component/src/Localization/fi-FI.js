@@ -65,7 +65,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Yhteys palvelimeen keskeytyi. Yhdistää uudelleen…',
   RENDER_ERROR_NOTIFICATION: 'Renderöintivirhe. Ole hyvä ja katso konsolia tai ota yhteys botin kehittäjään.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `Lähetys epäonnistui, {Retry}.`,
+  SEND_FAILED_KEY: `Lähetys epäonnistui, [yritä uudelleen][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Yhteyden muodostaminen kestää kauemmin kuin yleensä.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -83,7 +83,6 @@ export default {
   Left: 'Vasen',
   'Listening…': 'Kuuntelee…',
   'New messages': 'Uusia viestejä',
-  Retry: 'yritä uudelleen',
   Right: 'Oikea',
   Send: 'Lähetä',
   SendBox: 'Sendbox',

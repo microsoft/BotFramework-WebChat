@@ -1,14 +1,13 @@
 export default {
   FAILED_CONNECTION_NOTIFICATION: '',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `nem sikerült elküldeni, {Retry}.`,
+  SEND_FAILED_KEY: `nem sikerült elküldeni, [próbálja újra][retry].`,
   SLOW_CONNECTION_NOTIFICATION: '',
   Chat: 'Csevegés',
   // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Figyelés…',
-  Retry: 'próbálja újra',
   Send: 'Küldés',
   Sending: 'küldés',
   // 'Speak': '',
