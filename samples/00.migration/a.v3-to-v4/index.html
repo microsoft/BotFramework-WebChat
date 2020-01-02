@@ -34,7 +34,9 @@
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
         function randomId() {
-          return Math.random().toString(36).substr(2);
+          return Math.random()
+            .toString(36)
+            .substr(2);
         }
 
         class Observable {
@@ -76,9 +78,11 @@
 
             this._subscribers.push(subscriber);
 
-            return { unsubscribe: () => {
-              this._subscribers = this._subscribers.filter(s => s !== subscriber);
-            } };
+            return {
+              unsubscribe: () => {
+                this._subscribers = this._subscribers.filter(s => s !== subscriber);
+              }
+            };
           }
         }
 
@@ -102,35 +106,37 @@
             const artificialError = /^e/.test(activity.text);
             const sendTimestamp = new Date().toISOString();
 
-            !artificialError && setTimeout(() => {
-              activityObserver.next({
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                id: randomId(),
-                text: `You said "${ activity.text }".`,
-                timestamp: new Date().toISOString(),
-                type: 'message',
-              });
-            }, 100);
+            !artificialError &&
+              setTimeout(() => {
+                activityObserver.next({
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: randomId(),
+                  text: `You said "${activity.text}".`,
+                  timestamp: new Date().toISOString(),
+                  type: 'message'
+                });
+              }, 100);
 
             return new Observable(observer => {
               const id = randomId();
 
-              !artificialError && setTimeout(() => {
-                observer.next(id);
+              !artificialError &&
+                setTimeout(() => {
+                  observer.next(id);
 
-                activityObserver.next({
-                  ...activity,
-                  from: {
-                    id: 'user',
-                    role: 'user'
-                  },
-                  id,
-                  timestamp: sendTimestamp
-                });
-              }, 200);
+                  activityObserver.next({
+                    ...activity,
+                    from: {
+                      id: 'user',
+                      role: 'user'
+                    },
+                    id,
+                    timestamp: sendTimestamp
+                  });
+                }, 200);
             });
           }
         };
