@@ -253,7 +253,7 @@ ReactDOM.render(
 );
 ```
 
-The full sample can be found at [/samples/10.a.customization-card-components/](samples/10.a.customization-card-components/).
+The full sample can be found at [/samples/05.custom-components/e.card-components/](samples/05.custom-components/e.card-components/).
 
 In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
 
