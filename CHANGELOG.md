@@ -24,8 +24,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Resolves [#2641](https://github.com/microsoft/BotFramework-WebChat/issues/2641). Reorganize Web Chat samples, by [@corinagum](https://github.com/corinagum), in PR [#2762](https://github.com/microsoft/BotFramework-WebChat/pull/2762)
-
 ### Fixed
 
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
@@ -35,12 +33,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  [`event-target-shim`](https://npmjs.com/package/event-target-shim)
    -  [`p-defer`](https://npmjs.com/package/p-defer)
 -  Fixes the following issues and improves test reliability, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
-   - Fixes [#2612](https://github.com/microsoft/BotFramework-WebChat/issues/2612). Wait until language change
-   - Fixes [#2653](https://github.com/microsoft/BotFramework-WebChat/issues/2653). Scroll-to-bottom check will do 5 consecutive checks to determine stickiness.
-   - Fixes [#2691](https://github.com/microsoft/BotFramework-WebChat/issues/2691). Wait until button is shown/hid before taking screenshot
-   - Fixes [#2737](https://github.com/microsoft/BotFramework-WebChat/issues/2737). Use `driver.wait` for conditions
-   - Fixes [#2776](https://github.com/microsoft/BotFramework-WebChat/issues/2776). Wait until button is shown/hid before taking screenshot
-   - Use a new timeout `fetchImage` for images
+   -  Fixes [#2612](https://github.com/microsoft/BotFramework-WebChat/issues/2612). Wait until language change
+   -  Fixes [#2653](https://github.com/microsoft/BotFramework-WebChat/issues/2653). Scroll-to-bottom check will do 5 consecutive checks to determine stickiness.
+   -  Fixes [#2691](https://github.com/microsoft/BotFramework-WebChat/issues/2691). Wait until button is shown/hid before taking screenshot
+   -  Fixes [#2737](https://github.com/microsoft/BotFramework-WebChat/issues/2737). Use `driver.wait` for conditions
+   -  Fixes [#2776](https://github.com/microsoft/BotFramework-WebChat/issues/2776). Wait until button is shown/hid before taking screenshot
+   -  Use a new timeout `fetchImage` for images
 -  Fixes [#2780](https://github.com/microsoft/BotFramework-WebChat/issues/2780). Added the `tel` protocol to the `allowedSchema` in the `sanitize-html` options, by [@tdurnford](https://github.com/tdurnford) in PR [#27XX](https://github.com/microsoft/BotFramework-WebChat/pull/27XX)
 
 ### Changed
@@ -98,6 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/Microsoft/BotFramework-WebChat/issues/2726)
+-  Resolves [#2641](https://github.com/microsoft/BotFramework-WebChat/issues/2641). Reorganize Web Chat samples, by [@corinagum](https://github.com/corinagum), in PR [#2762](https://github.com/microsoft/BotFramework-WebChat/pull/2762)
 
 ## [4.7.1] - 2019-12-13
 
