@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Fixes [#2776](https://github.com/microsoft/BotFramework-WebChat/issues/2776). Wait until button is shown/hid before taking screenshot
    -  Use a new timeout `fetchImage` for images
 -  Fixes [#2780](https://github.com/microsoft/BotFramework-WebChat/issues/2780). Added the `tel` protocol to the `allowedSchema` in the `sanitize-html` options, by [@tdurnford](https://github.com/tdurnford) in PR [#27XX](https://github.com/microsoft/BotFramework-WebChat/pull/27XX)
+-  Fixes [#2647](https://github.com/microsoft/BotFramework-WebChat/issues/2647). Update the `CroppedImage` component `PropType`, by [@tdurnford](https://github.com/tdurnford) in PR [#27XX](https://github.com/microsoft/BotFramework-WebChat/pull/27XX)
 
 ### Changed
 

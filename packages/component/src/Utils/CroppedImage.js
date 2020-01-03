@@ -35,7 +35,7 @@ CroppedImage.defaultProps = {
 CroppedImage.propTypes = {
   alt: PropTypes.string,
   className: PropTypes.string,
-  height: PropTypes.number.isRequired,
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   src: PropTypes.string.isRequired,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
