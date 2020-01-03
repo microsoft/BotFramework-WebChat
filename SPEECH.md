@@ -604,8 +604,8 @@ Using this approach, you can also combine two polyfills of different types. For 
 
 [authenticate requests to azure cognitive services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [get started with custom voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
-[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
-[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
+[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js
+[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech
 [speech synthesis markup language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
 [try cognitive services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [web audio api support]: https://caniuse.com/#feat=audio-api
