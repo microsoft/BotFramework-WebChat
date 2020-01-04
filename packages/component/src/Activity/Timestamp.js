@@ -9,14 +9,22 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, className }) => {
   const [{ timestampFormat }] = useStyleOptions();
-  const [{ timestamp: timestampStyleSet }] = useStyleSet();
+  const [{ timestamp: timestampStyleSet, sendStatus: sendStatusStyleSet }] = useStyleSet();
+
+  timestampStyleSet &&
+    console.warn(
+      'Web Chat: styleSet.timestamp is being deprecated. Please use styleSet.sendStatus. This deprecation migration will be removed on or after December 31, 2021.'
+    );
 
   if (!timestamp) {
     return false;
   }
 
   return (
-    <span aria-hidden={ariaHidden} className={classNames(timestampStyleSet + '', (className || '') + '')}>
+    <span
+      aria-hidden={ariaHidden}
+      className={classNames((timestampStyleSet || sendStatusStyleSet) + '', (className || '') + '')}
+    >
       {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
     </span>
   );
