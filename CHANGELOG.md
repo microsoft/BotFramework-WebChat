@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2780](https://github.com/microsoft/BotFramework-WebChat/issues/2780). Added the `tel` protocol to the `allowedSchema` in the `sanitize-html` options, by [@tdurnford](https://github.com/tdurnford) in PR [#2787](https://github.com/microsoft/BotFramework-WebChat/pull/2787)
 -  Fixes [#2747](https://github.com/microsoft/BotFramework-WebChat/issues/2747). Moved `Timestamp` into the `SendStatus` component and removed the `Timestamp` style set, by [@tdurnford](https://github.com/tdurnford) in PR [#2786](https://github.com/microsoft/BotFramework-WebChat/pull/2786)
 -  Fixes [#2647](https://github.com/microsoft/BotFramework-WebChat/issues/2647). Update the `CroppedImage` component `PropType`, by [@tdurnford](https://github.com/tdurnford) in PR [#2795](https://github.com/microsoft/BotFramework-WebChat/pull/2795)
+-  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdunford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
 
 ### Changed
 
@@ -94,6 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `embed`
          -  `@babel/runtime@7.7.6`
          -  `core-js@3.5.0`
+-  `component`: Bumps [`react-film@2.0.0`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
 
 ### Samples
 
