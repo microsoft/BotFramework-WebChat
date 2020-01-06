@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rsync -av --progress samples/ gh-pages/ \
+  --exclude 01.getting-started/g.hybrid-react-npm \
   --exclude 04.api/e.piping-to-redux \
   --exclude 04.api/f.selectable-activity \
   --exclude 04.api/g.chat-send-history \
@@ -9,6 +10,11 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 06.recomposing-ui/b.speech-ui \
   --exclude 06.recomposing-ui/c.smart-display \
   --exclude 06.recomposing-ui/d.plain-ui
+
+mkdir gh-pages/01.getting-started
+
+mkdir gh-pages/01.getting-started/g.hybrid-react-npm
+rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/build/ gh-pages/04.api/g.hybrid-react-npm/
 
 mkdir gh-pages/04.api
 
