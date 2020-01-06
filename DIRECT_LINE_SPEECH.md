@@ -12,7 +12,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 Direct Line Speech is designed for Voice Assistant scenario. For example, smart display, automotive dashboard, navigation system with low-latency requirement on _single-page application_ and _progressive web apps_ (PWA). These apps usually are made with highly-customized UI and do not show conversation transcripts.
 
-You can look at our sample [13.a.customization-speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/13.a.customization-speech-ui) and [13.b.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/13.b.customization-smart-display) for target scenarios.
+You can look at our sample [06.recomposing-ui/b.speech-ui](https://microsoft.github.io/BotFramework-WebChat/samples/06.recomposing-ui/b.speech-ui) and [06.recomposing-ui/c.smart-display](https://microsoft.github.io/BotFramework-WebChat/samples/06.recomposing-ui/c.smart-display) for target scenarios.
 
 Direct Line Speech is not recommended to use on traditional websites where its primary UI is transcript-based.
 
@@ -241,7 +241,7 @@ Direct Line Speech shares the same requirements as Cognitive Services Speech Ser
 
 Before start, please create corresponding Azure resources. You can follow [this tutorial for enabling voice in your bot](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/tutorial-voice-enable-your-bot-speech-sdk). You do not need to follow the steps for creating C# client, you will replace the client with Web Chat.
 
-Please look at our sample `06.i.direct-line-speech` to embedding Web Chat on your web app via Direct Line Speech channel.
+Please look at our sample `03.speech/a.direct-line-speech` to embedding Web Chat on your web app via Direct Line Speech channel.
 
 > You will need to use Web Chat 4.7 or higher for Direct Line Speech.
 
@@ -340,7 +340,7 @@ Direct Line Speech is not targeting a transcript-based experience. Thus, our ser
 
 > Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2680) if this behavior is not desirable.
 
-When using text-based experience, we allow developers to piggyback additional information to outgoing messages. This is demonstrated in [sample 15.a "piggyback data on every outgoing activity"](15.a.backchannel-piggyback-on-outgoing-activities).
+When using text-based experience, we allow developers to piggyback additional information to outgoing messages. This is demonstrated in [sample 15.a "piggyback data on every outgoing activity"](04.api/b.piggyback-on-outgoing-activities).
 
 With Direct Line Speech, you can no longer piggyback additional data to all speech-based outgoing activities.
 

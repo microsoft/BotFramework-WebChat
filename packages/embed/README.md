@@ -138,7 +138,7 @@ You can specify any `<iframe>` 4.x version of Web Chat on your app.
    -  `4.2` will serve the latest patch version of `4.2.*`. At the time this document was created, it is `4.2.0`
 -  Other
 
-   -  versions `3` and older are no longer available via embed. To use one of these versions on your app, please use the CDN of Web Chat in your HTML. See samples [01.a.getting-started-full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle) and [01.c.getting-started-migration](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.c.getting-started-migration) to learn more.
+   -  versions `3` and older are no longer available via embed. To use one of these versions on your app, please use the CDN of Web Chat in your HTML. See samples [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle) and [00.migration/a.v3-to-v4](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/00.migration/a.v3-to-v4) to learn more.
 
    -  Pre-v3, legacy versions of Web Chat are maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
 
