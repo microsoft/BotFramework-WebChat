@@ -7,24 +7,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
-import { Constants } from 'botframework-webchat-core';
-
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import Timestamp from './Timestamp';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-
-const {
-  ActivityClientState: { SENDING, SEND_FAILED }
-} = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -107,7 +100,7 @@ const WebChatCarouselFilmStrip = ({
 
   const {
     attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
+    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
     textFormat
@@ -156,11 +149,7 @@ const WebChatCarouselFilmStrip = ({
           ))}
         </ul>
         <div className={classNames({ webchat__carousel__item_indented: indented })}>
-          {state === SENDING || state === SEND_FAILED ? (
-            <SendStatus activity={activity} />
-          ) : (
-            <Timestamp activity={activity} className={timestampClassName} />
-          )}
+          <SendStatus activity={activity} className={timestampClassName} />
         </div>
       </div>
     </div>

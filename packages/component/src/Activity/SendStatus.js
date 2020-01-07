@@ -1,9 +1,11 @@
 import { Constants } from 'botframework-webchat-core';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import Timestamp from './Timestamp';
 import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import usePostActivity from '../hooks/usePostActivity';
@@ -30,7 +32,7 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity }) => {
+const SendStatus = ({ activity, timestampClassName }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
@@ -56,11 +58,9 @@ const SendStatus = ({ activity }) => {
   );
 
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
-  const {
-    channelData: { state }
-  } = activity;
+  const { channelData: { state } = {} } = activity;
 
-  return (
+  return state === SENDING || state === SEND_FAILED ? (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
@@ -85,6 +85,8 @@ const SendStatus = ({ activity }) => {
         )}
       </span>
     </React.Fragment>
+  ) : (
+    <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
   );
 };
 
@@ -93,7 +95,8 @@ SendStatus.propTypes = {
     channelData: PropTypes.shape({
       state: PropTypes.string
     })
-  }).isRequired
+  }).isRequired,
+  timestampClassName: PropTypes.string.isRequired
 };
 
 export default SendStatus;

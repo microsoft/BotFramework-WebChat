@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rsync -av --progress samples/ gh-pages/ \
+  --exclude 01.getting-started/g.hybrid-react-npm \
   --exclude 04.api/e.piping-to-redux \
   --exclude 04.api/f.selectable-activity \
   --exclude 04.api/g.chat-send-history \
@@ -9,6 +10,13 @@ rsync -av --progress samples/ gh-pages/ \
   --exclude 06.recomposing-ui/b.speech-ui \
   --exclude 06.recomposing-ui/c.smart-display \
   --exclude 06.recomposing-ui/d.plain-ui
+
+mkdir gh-pages/01.getting-started
+
+mkdir gh-pages/01.getting-started/g.hybrid-react-npm
+rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/build/ gh-pages/04.api/g.hybrid-react-npm/
+
+mkdir gh-pages/04.api
 
 mkdir gh-pages/04.api/e.piping-to-redux
 rsync -av --progress samples/04.api/e.piping-to-redux/build/ gh-pages/04.api/e.piping-to-redux/
@@ -21,6 +29,8 @@ rsync -av --progress samples/04.api/g.chat-send-history/build/ gh-pages/04.api/g
 
 mkdir gh-pages/04.api/h.clear-after-idle
 rsync -av --progress samples/04.api/h.clear-after-idle/build/ gh-pages/04.api/h.clear-after-idle/
+
+mkdir gh-pages/06.recomposing-ui
 
 mkdir gh-pages/06.recomposing-ui/a.minimizable-web-chat
 rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/build/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/

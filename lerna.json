@@ -2,6 +2,7 @@
   "lerna": "3.19.0",
   "packages": [
     "packages/*",
+    "samples/01.getting-started/g.hybrid-react-npm",
     "samples/04.api/e.piping-to-redux",
     "samples/04.api/f.selectable-activity",
     "samples/04.api/g.chat-send-history",
