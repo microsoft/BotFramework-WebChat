@@ -114,8 +114,7 @@ const DEFAULT_OPTIONS = {
 
   // Timestamp
   groupTimestamp: true,
-  // sendTimeout: 20000,
-  sendTimeout: 1000,
+  sendTimeout: 20000,
   sendTimeoutForAttachments: 120000,
   timestampColor: undefined, // defaults to subtle
   timestampFormat: 'relative', // 'absolute'
