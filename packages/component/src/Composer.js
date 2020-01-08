@@ -183,7 +183,7 @@ const Composer = ({
     }
 
     return patchedStyleOptions;
-  }, [groupTimestamp, styleOptions]);
+  }, [groupTimestamp, sendTimeout, styleOptions]);
 
   useEffect(() => {
     dispatch(setLanguage(locale));

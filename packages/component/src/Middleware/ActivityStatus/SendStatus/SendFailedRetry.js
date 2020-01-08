@@ -1,3 +1,5 @@
+/* eslint react/no-danger: "off" */
+
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
@@ -37,6 +39,9 @@ function replaceAnchorWithButton(markdownTokens) {
       case 'link_close':
         markdownToken.tag = 'button';
         break;
+
+      default:
+        break;
     }
 
     return markdownToken;
@@ -46,17 +51,20 @@ function replaceAnchorWithButton(markdownTokens) {
 const SendFailedRetry = ({ onRetryClick }) => {
   const sendFailedText = useLocalize('SEND_FAILED_KEY');
 
-  const markdown = useMemo(() => new MarkdownIt());
+  const markdown = useMemo(() => new MarkdownIt(), []);
   const html = useMemo(() => {
     const tree = markdown.parseInline(sendFailedText, { references: { RETRY: { href: '#retry' } } });
     const updatedTree = replaceAnchorWithButton(tree);
 
     return { __html: markdown.renderer.render(updatedTree) };
-  }, [sendFailedText]);
+  }, [markdown, sendFailedText]);
 
-  const handleClick = useCallback(event => {
-    event.target.getAttribute('data-ref') === '#retry' && onRetryClick();
-  }, []);
+  const handleClick = useCallback(
+    event => {
+      event.target.getAttribute('data-ref') === '#retry' && onRetryClick();
+    },
+    [onRetryClick]
+  );
 
   return <span dangerouslySetInnerHTML={html} onClick={handleClick} />;
 };

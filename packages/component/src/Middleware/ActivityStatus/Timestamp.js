@@ -18,7 +18,10 @@ const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, classNa
 
   return (
     !!timestamp && (
-      <span aria-hidden={ariaHidden} className={classNames(timestampStyleSet + '', (className || '') + '')}>
+      <span
+        aria-hidden={ariaHidden}
+        className={classNames((timestampStyleSet || '') + '', (sendStatusStyleSet || '') + '', (className || '') + '')}
+      >
         {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
       </span>
     )

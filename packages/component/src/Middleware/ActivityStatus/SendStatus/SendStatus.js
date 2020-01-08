@@ -1,5 +1,4 @@
 import { Constants } from 'botframework-webchat-core';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -34,7 +33,7 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity, timestampClassName }) => {
+const SendStatus = ({ activity }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
@@ -62,7 +61,7 @@ const SendStatus = ({ activity, timestampClassName }) => {
   const pastTimeout = useTimePast(new Date(clientTimestamp).getTime() + sendTimeout);
   const sendState = activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
-  return state === SENDING || state === SEND_FAILED ? (
+  return (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
@@ -75,18 +74,16 @@ const SendStatus = ({ activity, timestampClassName }) => {
         )}
       </span>
     </React.Fragment>
-  ) : (
-    <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
   );
 };
 
 SendStatus.propTypes = {
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
+      clientTimestamp: PropTypes.string,
       state: PropTypes.string
     })
-  }).isRequired,
-  timestampClassName: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default SendStatus;

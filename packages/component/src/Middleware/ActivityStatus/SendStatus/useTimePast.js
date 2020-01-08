@@ -13,7 +13,7 @@ export default function useTimePast(at) {
 
       return () => clearTimeout(timeout);
     }
-  }, [at, past]);
+  }, [at, now, past]);
 
   return past;
 }
