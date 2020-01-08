@@ -7,5 +7,8 @@ export default function useRenderActivityStatus() {
   const { activityStatusRenderer } = useContext(WebChatUIContext);
   const [groupTimestamp] = useGroupTimestamp();
 
-  return useCallback(arg => activityStatusRenderer({ groupTimestamp, ...arg }), [activityStatusRenderer]);
+  return useCallback(arg => activityStatusRenderer({ groupTimestamp, ...arg }), [
+    activityStatusRenderer,
+    groupTimestamp
+  ]);
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export default function useTimePast(at) {
   const now = Date.now();
   const [_, setDummy] = useState();
-  const past = now > at;
+  const past = now >= at;
 
   useEffect(() => {
     if (!past) {

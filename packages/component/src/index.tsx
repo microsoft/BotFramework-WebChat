@@ -7,7 +7,7 @@ import Bubble from './Activity/Bubble';
 import CarouselLayout from './Activity/CarouselLayout';
 import ErrorBox from './ErrorBox';
 import Localize, { localize } from './Localization/Localize';
-import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus';
+import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
 import StackedLayout, { connectStackedLayout } from './Activity/StackedLayout';
 import Timestamp from './Middleware/ActivityStatus/Timestamp';
