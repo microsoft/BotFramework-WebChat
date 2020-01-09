@@ -190,6 +190,10 @@ const Composer = ({
   }, [dispatch, locale]);
 
   useEffect(() => {
+    typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
+  }, [dispatch, sendTimeout]);
+
+  useEffect(() => {
     dispatch(setSendTypingIndicator(!!patchedSendTypingIndicator));
   }, [dispatch, patchedSendTypingIndicator]);
 

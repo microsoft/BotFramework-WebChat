@@ -7,8 +7,7 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
@@ -33,124 +32,12 @@
         // Tokens are more secure. To learn about the differences between secrets and tokens
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-        function randomId() {
-          return Math.random()
-            .toString(36)
-            .substr(2);
-        }
-
-        class Observable {
-          constructor(fn) {
-            this._subscribers = [];
-
-            let stopped;
-
-            fn({
-              complete: () => {
-                !stopped && this._subscribers.forEach(subscriber => subscriber.complete());
-                stopped = true;
-              },
-              error: err => {
-                !stopped && this._subscribers.forEach(subscriber => subscriber.error(err));
-                stopped = true;
-              },
-              next: value => {
-                !stopped && this._subscribers.forEach(subscribe => subscribe.next(value));
-              }
-            });
-          }
-
-          subscribe(subscriberOrNext, error, complete) {
-            if (typeof subscriberOrNext === 'function') {
-              subscriberOrNext = {
-                complete,
-                error,
-                next: subscriberOrNext
-              };
-            }
-
-            const subscriber = {
-              complete: () => {},
-              error: () => {},
-              next: () => {},
-              ...subscriberOrNext
-            };
-
-            this._subscribers.push(subscriber);
-
-            return {
-              unsubscribe: () => {
-                this._subscribers = this._subscribers.filter(s => s !== subscriber);
-              }
-            };
-          }
-        }
-
-        let activityObserver;
-        let connectionStatusObserver;
-
-        const directLine = {
-          activity$: new Observable(observer => {
-            activityObserver = observer;
-
-            setImmediate(() => {
-              connectionStatusObserver.next(0);
-              connectionStatusObserver.next(1);
-              connectionStatusObserver.next(2);
-            });
-          }),
-          connectionStatus$: new Observable(observer => {
-            connectionStatusObserver = observer;
-          }),
-          postActivity: activity => {
-            const artificialError = /^e/.test(activity.text);
-            const sendTimestamp = new Date().toISOString();
-
-            !artificialError &&
-              setTimeout(() => {
-                activityObserver.next({
-                  from: {
-                    id: 'bot',
-                    role: 'bot'
-                  },
-                  id: randomId(),
-                  text: `You said "${activity.text}".`,
-                  timestamp: new Date().toISOString(),
-                  type: 'message'
-                });
-              }, 100);
-
-            return new Observable(observer => {
-              const id = randomId();
-
-              !artificialError &&
-                setTimeout(() => {
-                  observer.next(id);
-
-                  activityObserver.next({
-                    ...activity,
-                    from: {
-                      id: 'user',
-                      role: 'user'
-                    },
-                    id,
-                    timestamp: sendTimestamp
-                  });
-                }, 200);
-            });
-          }
-        };
-
-        // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        // const { token } = await res.json();
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
 
         window.WebChat.renderWebChat(
           {
-            // directLine: window.WebChat.createDirectLine({ token }),
-            directLine,
-            styleOptions: {
-              bubbleNubSize: 10
-            }
+            directLine: window.WebChat.createDirectLine({ token })
           },
           document.getElementById('webchat')
         );

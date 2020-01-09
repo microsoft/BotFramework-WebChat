@@ -6,11 +6,13 @@ export default function createSendStatusStyle({ accent, fontSizeSmall, primaryFo
     paddingTop: 5,
 
     '& > span > button': {
+      appearance: 'none',
       backgroundColor: 'transparent',
       border: 0,
       color: accent,
       cursor: 'pointer',
       fontFamily: 'inherit',
+      fontSize: 'inherit',
       padding: 0
     }
   };
