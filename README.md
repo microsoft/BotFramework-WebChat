@@ -93,6 +93,7 @@ Here is how how you can add Web Chat control to your website:
 </html>
 ```
 
+
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
 > ![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
