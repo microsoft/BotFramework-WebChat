@@ -44,6 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixes [#2647](https://github.com/microsoft/BotFramework-WebChat/issues/2647). Update the `CroppedImage` component `PropType`, by [@tdurnford](https://github.com/tdurnford) in PR [#2795](https://github.com/microsoft/BotFramework-WebChat/pull/2795)
 - Fixes [#2794](https://github.com/microsoft/BotFramework-WebChat/issues/2794). Fix change locale sample, by [@corinagum](https://github.com/corinagum) in PR [#2798](https://github.com/microsoft/BotFramework-WebChat/pull/2798)
 - Fixes [#2510](https://github.com/microsoft/BotFramework-WebChat/issues/2510). Host hybrid-react and clear-after-idle samples, by [@corinagum](https://github.com/corinagum) in PR [#2798](https://github.com/microsoft/BotFramework-WebChat/pull/2798)
+- Fixes [#2772](https://github.com/microsoft/BotFramework-WebChat/issues/2772). Updated Adaptive Cards HostConfig to include container styles, by [@tdurnford](https://github.com/tdurnford) in PR [#28XX](https://github.com/microsoft/BotFramework-WebChat/pull/2810)
+- Fixes [#2145](https://github.com/microsoft/BotFramework-WebChat/issues/2145). Updated Adaptive Cards styles to include action styles, by [@tdurnford](https://github.com/tdurnford) in PR [#2810](https://github.com/microsoft/BotFramework-WebChat/pull/2810)
 
 ### Changed
 

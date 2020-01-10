@@ -23,9 +23,47 @@ export default ({
     },
     emphasis: {
       backgroundColor: cardEmphasisBackgroundColor,
-      default: {
-        default: bubbleTextColor,
-        subtle
+      foregroundColors: {
+        default: {
+          default: bubbleTextColor,
+          subtle
+        }
+      }
+    },
+    accent: {
+      backgroundColor: '#C7DEF9',
+      foregroundColors: {
+        default: {
+          default: '#333333',
+          subtle: '#EE333333'
+        }
+      }
+    },
+    good: {
+      backgroundColor: '#CCFFCC',
+      foregroundColors: {
+        default: {
+          default: '#333333',
+          subtle: '#EE333333'
+        }
+      }
+    },
+    attention: {
+      backgroundColor: '#FFC5B2',
+      foregroundColors: {
+        default: {
+          default: '#333333',
+          subtle: '#EE333333'
+        }
+      }
+    },
+    warning: {
+      backgroundColor: '#FFE2B2',
+      foregroundColors: {
+        default: {
+          default: '#333333',
+          subtle: '#EE333333'
+        }
       }
     }
   },
