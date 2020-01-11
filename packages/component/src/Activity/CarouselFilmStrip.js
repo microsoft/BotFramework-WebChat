@@ -82,12 +82,19 @@ const connectCarouselFilmStrip = (...selectors) =>
     ...selectors
   );
 
-const WebChatCarouselFilmStrip = ({ activity, children, className, itemContainerRef, nextActivity, scrollableRef }) => {
+const WebChatCarouselFilmStrip = ({
+  activity,
+  children,
+  className,
+  itemContainerRef,
+  nextVisibleActivity,
+  scrollableRef
+}) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
-  const renderActivityStatus = useRenderActivityStatus();
+  const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
@@ -142,9 +149,7 @@ const WebChatCarouselFilmStrip = ({ activity, children, className, itemContainer
             </li>
           ))}
         </ul>
-        <div className={classNames({ webchat__carousel__item_indented: indented })}>
-          {renderActivityStatus({ activity, nextActivity })}
-        </div>
+        <div className={classNames({ webchat__carousel__item_indented: indented })}>{renderActivityStatus()}</div>
       </div>
     </div>
   );
@@ -153,7 +158,7 @@ const WebChatCarouselFilmStrip = ({ activity, children, className, itemContainer
 WebChatCarouselFilmStrip.defaultProps = {
   children: undefined,
   className: '',
-  nextActivity: undefined
+  nextVisibleActivity: undefined
 };
 
 WebChatCarouselFilmStrip.propTypes = {
@@ -175,7 +180,7 @@ WebChatCarouselFilmStrip.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  nextActivity: PropTypes.shape({
+  nextVisibleActivity: PropTypes.shape({
     from: PropTypes.shape({
       role: PropTypes.string.isRequired
     }).isRequired,

@@ -83,10 +83,10 @@
 
         const { useCallback, useState } = window.React;
 
-        const PasswordInputActivity = ({ activity, nextActivity }) => {
+        const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
           const [twoFACode, setTwoFACode] = useState('');
           const [submitted, setSubmitted] = useState(false);
-          const renderActivityStatus = useRenderActivityStatus();
+          const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
           const sendPostBack = useSendPostBack();
 
           const handleCodeChange = useCallback(
@@ -121,7 +121,7 @@
                   />
                 </label>
               </form>
-              {renderActivityStatus({ activity, nextActivity })}
+              {renderActivityStatus()}
             </div>
           );
         };
@@ -134,13 +134,13 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const store = createStore();
-        const activityMiddleware = () => next => ({ activity, nextActivity, ...otherArgs }) => {
+        const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
           const { name, type } = activity;
 
           if (type === 'event' && name === 'passwordInput') {
-            return () => <PasswordInputActivity activity={activity} nextActivity={nextActivity} />;
+            return () => <PasswordInputActivity activity={activity} nextVisibleActivity={nextVisibleActivity} />;
           } else {
-            return next({ activity, nextActivity, ...otherArgs });
+            return next({ activity, nextVisibleActivity, ...otherArgs });
           }
         };
 

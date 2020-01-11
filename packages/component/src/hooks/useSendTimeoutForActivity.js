@@ -1,11 +1,11 @@
 import useStyleOptions from './useStyleOptions';
 
-export default function useSendTimeoutForActivity() {
+export default function useSendTimeoutForActivity(activity) {
   const [{ sendTimeout, sendTimeoutForAttachments }] = useStyleOptions();
 
   if (typeof sendTimeout === 'function') {
-    return activity => sendTimeout(activity);
+    return sendTimeout(activity);
   }
 
-  return activity => (activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout);
+  return activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout;
 }

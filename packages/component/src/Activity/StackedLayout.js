@@ -79,12 +79,12 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, children, nextActivity }) => {
+const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
-  const renderActivityStatus = useRenderActivityStatus();
+  const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {
     attachments = [],
@@ -155,7 +155,7 @@ const StackedLayout = ({ activity, children, nextActivity }) => {
           </div>
         ))}
         <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
-          {renderActivityStatus({ activity, nextActivity })}
+          {renderActivityStatus()}
           <div className="filler" />
         </div>
       </div>
@@ -166,7 +166,7 @@ const StackedLayout = ({ activity, children, nextActivity }) => {
 
 StackedLayout.defaultProps = {
   children: undefined,
-  nextActivity: undefined
+  nextVisibleActivity: undefined
 };
 
 StackedLayout.propTypes = {
@@ -186,7 +186,7 @@ StackedLayout.propTypes = {
     type: PropTypes.string.isRequired
   }).isRequired,
   children: PropTypes.any,
-  nextActivity: PropTypes.shape({
+  nextVisibleActivity: PropTypes.shape({
     from: PropTypes.shape({
       role: PropTypes.string.isRequired
     }).isRequired,

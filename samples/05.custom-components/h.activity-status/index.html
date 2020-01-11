@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Full-featured bundle</title>
+    <title>Web Chat: Integrate with React</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
         height: 100%;
       }
+
       body {
         margin: 0;
       }
@@ -23,43 +29,25 @@
         width: 100%;
       }
 
-      #buttonBar {
-        display: flex;
-        flex-wrap: wrap;
-        left: 10px;
-        margin: 0;
-        position: absolute;
-        top: 10px;
-      }
-
-      #buttonBar > a {
-        background-color: White;
-        border: solid 2px #0063b1;
-        color: #0063b1;
+      .activityStatus {
+        color: #767676;
         font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-        font-size: 80%;
-        margin: 0 10px 10px 0;
-        padding: 5px 8px;
-        text-decoration: none;
       }
 
-      #buttonBar > a.selected {
-        background-color: #0063b1;
-        color: White;
+      .activityStatus__sendStatus,
+      .activityStatus__timestampPretext {
+        font-size: 80%;
+      }
+
+      .activityStatus__timestampContent {
+        text-transform: lowercase;
       }
     </style>
   </head>
+
   <body>
     <div id="webchat" role="main"></div>
-    <p id="buttonBar">
-      <a href="#retry=default">Default retry</a>
-      <a href="#retry=false">Show retry immediately</a>
-      <a href="#retry=1000">Show retry after 1 second</a>
-      <a href="#retry=5000">Show retry after 5 seconds</a>
-      <a href="#retry=120000">Show retry after 2 minutes</a>
-      <a href="#retry=fn">Custom retry</a>
-    </p>
-    <script>
+    <script type="text/babel">
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -68,55 +56,41 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const directLine = window.WebChat.createDirectLine({ token });
+        const { ReactWebChat } = window.WebChat;
 
-        function getHash() {
-          const hash = new URLSearchParams((location.hash || '').substr(1));
-          const hashJSON = {};
+        const activityStatusMiddleware = () => next => args => {
+          const {
+            activity: {
+              from: { role }
+            },
+            sendState,
+            sameTimestampGroup
+          } = args;
 
-          for (const [key, value] of hash.entries()) {
-            hashJSON[key] = value;
+          if (sendState === 'sending') {
+            return <span className="activityStatus activityStatus__sendStatus">Sending&hellip;</span>;
+          } else if (sendState === 'send failed') {
+            // Custom retry logic can be added when rendering the "Send failed." status.
+            return <span className="activityStatus">Send failed.</span>;
+          } else if (!sameTimestampGroup) {
+            return (
+              <span className="activityStatus activityStatus__timestamp">
+                <span className="activityStatus__timestampPretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
+                <span className="activityStatus__timestampContent">{next(args)}</span>
+              </span>
+            );
           }
 
-          return hashJSON;
-        }
+          return next(args);
+        };
 
-        function renderWebChat() {
-          const { retry } = getHash();
-          const sendTimeout =
-            retry === 'fn'
-              ? activity => {
-                  console.group('Running custom function to evaluate send timeout for activity.');
-                  console.log(activity);
-                  console.log('Returning 2 seconds.');
-                  console.groupEnd();
-
-                  return 2000;
-                }
-              : retry === 'false'
-              ? false
-              : +retry || undefined;
-
-          console.log(
-            `Using send timeout value of ${
-              typeof sendTimeout === 'function' ? 'custom function' : JSON.stringify(sendTimeout)
-            }`
-          );
-
-          window.WebChat.renderWebChat(
-            {
-              directLine,
-              styleOptions: {
-                sendTimeout
-              }
-            },
-            document.getElementById('webchat')
-          );
-        }
-
-        window.addEventListener('hashchange', renderWebChat);
-
-        renderWebChat();
+        window.ReactDOM.render(
+          <ReactWebChat
+            activityStatusMiddleware={activityStatusMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+          />,
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));

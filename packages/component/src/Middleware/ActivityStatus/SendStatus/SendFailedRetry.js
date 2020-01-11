@@ -54,6 +54,8 @@ const SendFailedRetry = ({ onRetryClick }) => {
   const markdown = useMemo(() => new MarkdownIt(), []);
   const html = useMemo(() => {
     const tree = markdown.parseInline(sendFailedText, { references: { RETRY: { href: '#retry' } } });
+
+    // Turn "<a href="#retry">Retry</a>" into "<button data-ref="#retry">Retry</button>"
     const updatedTree = replaceAnchorWithButton(tree);
 
     return { __html: markdown.renderer.render(updatedTree) };
@@ -61,6 +63,7 @@ const SendFailedRetry = ({ onRetryClick }) => {
 
   const handleClick = useCallback(
     event => {
+      event.stopPropagation();
       event.target.getAttribute('data-ref') === '#retry' && onRetryClick();
     },
     [onRetryClick]

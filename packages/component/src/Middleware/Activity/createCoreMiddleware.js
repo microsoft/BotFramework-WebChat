@@ -6,7 +6,7 @@ import StackedLayout from '../../Activity/StackedLayout';
 const RETURN_FALSE = () => false;
 
 export default function createCoreMiddleware() {
-  return () => next => ({ activity, nextActivity }) => {
+  return () => next => ({ activity, nextVisibleActivity }) => {
     // TODO: [P4] Can we simplify these if-statement to something more readable?
 
     const { type } = activity;
@@ -37,7 +37,7 @@ export default function createCoreMiddleware() {
         // The following line is not a React functional component, it's a middleware function.
         // Note that "children" is not a props, but first argument.
         const CarouselActivity = children => (
-          <CarouselLayout activity={activity} nextActivity={nextActivity}>
+          <CarouselLayout activity={activity} nextVisibleActivity={nextVisibleActivity}>
             {children}
           </CarouselLayout>
         );
@@ -48,7 +48,7 @@ export default function createCoreMiddleware() {
       // The following line is not a React functional component, it's a middleware function.
       // Note that "children" is not a props, but first argument.
       const StackedActivity = children => (
-        <StackedLayout activity={activity} nextActivity={nextActivity}>
+        <StackedLayout activity={activity} nextVisibleActivity={nextVisibleActivity}>
           {children}
         </StackedLayout>
       );
@@ -56,6 +56,6 @@ export default function createCoreMiddleware() {
       return StackedActivity;
     }
 
-    return next({ activity, nextActivity });
+    return next({ activity, nextVisibleActivity });
   };
 }

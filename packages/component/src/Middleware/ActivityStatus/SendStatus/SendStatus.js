@@ -8,9 +8,7 @@ import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
 import useLocalize from '../../../hooks/useLocalize';
 import usePostActivity from '../../../hooks/usePostActivity';
-import useSendTimeoutForActivity from '../../../hooks/useSendTimeoutForActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
-import useTimePast from './useTimePast';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING, SENT }
@@ -33,12 +31,10 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity }) => {
+const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
-  const sendTimeoutForActivity = useSendTimeoutForActivity();
-  const sendTimeout = sendTimeoutForActivity(activity);
 
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
@@ -52,14 +48,6 @@ const SendStatus = ({ activity }) => {
     // We want to make sure the user stay inside Web Chat
     focusSendBox();
   }, [activity, focusSendBox, postActivity]);
-
-  const { channelData: { state } = {} } = activity;
-
-  // We ignore SEND_FAILED from activity, instead, we derive it here based on styleOptions.sendTimeout
-  const activitySent = state !== SENDING && state !== SEND_FAILED;
-  const { clientTimestamp = 0 } = activity.channelData;
-  const pastTimeout = useTimePast(new Date(clientTimestamp).getTime() + sendTimeout);
-  const sendState = activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
   return (
     <React.Fragment>

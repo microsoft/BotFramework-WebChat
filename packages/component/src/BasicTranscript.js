@@ -63,10 +63,10 @@ const BasicTranscript = ({ className }) => {
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
-    (activity, nextActivity) =>
+    (activity, nextVisibleActivity) =>
       renderActivity({
         activity,
-        nextActivity
+        nextVisibleActivity
       }),
     [renderActivity]
   );
@@ -77,8 +77,8 @@ const BasicTranscript = ({ className }) => {
     () =>
       memoizeRenderActivityElement(renderActivityElement => {
         const { result: activityElementsWithMetadata } = [...activities].reverse().reduce(
-          ({ nextActivity, result }, activity, index) => {
-            const element = renderActivityElement(activity, nextActivity);
+          ({ nextVisibleActivity, result }, activity, index) => {
+            const element = renderActivityElement(activity, nextVisibleActivity);
 
             // Until the activity pass thru middleware, we never know if it is going to show up.
             // If the activity does not render, it will not be spoken if text-to-speech is enabled.
@@ -95,12 +95,12 @@ const BasicTranscript = ({ className }) => {
                 ...result
               ];
 
-              nextActivity = activity;
+              nextVisibleActivity = activity;
             }
 
-            return { nextActivity, result };
+            return { nextVisibleActivity, result };
           },
-          { nextActivity: undefined, result: [] }
+          { nextVisibleActivity: undefined, result: [] }
         );
 
         return activityElementsWithMetadata;
