@@ -1,22 +1,24 @@
-# Sample - Change locale
+# Sample - Customize activity status
 
 This sample shows how to customize activity status.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/g.change-locale)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/h.activity-status)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/g.change-locale` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/h.activity-status` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
--  Type `echo ja-JP` to the bot
--  You can also change to `en-US` and `zh-HK`
+- Type `echo Hello` to the bot
+   - Observe the timestamp change become "User at just now"
+- Turn on airplane mode and send anything
+   - When send failed, observe the timestamp become "Send failed." without retry prompt
 
 # Code
 
@@ -26,86 +28,87 @@ This sample shows how to customize activity status.
 
 > Note: this sample is based from [`01.getting-started/e.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react).
 
-First, we will create a new `<App>` component that houses Web Chat, and render the `<App>` component.
+First, we will create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state is failed, developers could add custom retry logic.
 
 ```diff
-+ const { createDirectLine, ReactWebChat } = window.WebChat;
-+
-+ const App = () => {
-+   const directLine = useMemo(() => createDirectLine({ token }), []);
-+
-+   return (
-+     <ReactWebChat directLine={directLine} />
-+   );
-+ };
+  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const { token } = await res.json();
+  const { ReactWebChat } = window.WebChat;
 
++ const activityStatusMiddleware = () => next => args => {
++   const {
++     activity: {
++       from: { role }
++     },
++     sendState,
++     sameTimestampGroup
++   } = args;
++
++   if (sendState === 'sending') {
++     return <span className="activityStatus activityStatus__sendStatus">Sending&hellip;</span>;
++   } else if (sendState === 'send failed') {
++     return <span className="activityStatus">Send failed.</span>;
++   } else if (!sameTimestampGroup) {
++     return (
++       <span className="activityStatus activityStatus__timestamp">
++         <span className="activityStatus__timestampPretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
++         <span className="activityStatus__timestampContent">{next(args)}</span>
++       </span>
++     );
++   }
+
+    return next(args);
+  };
+
+  window.ReactDOM.render(
+    <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
+    document.getElementById('webchat')
+  );
+```
+
+Then, we will pass the middleware to React thru props.
+
+```diff
   window.ReactDOM.render(
 -   <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
-+   <App />,
++   <ReactWebChat
++     activityStatusMiddleware={activityStatusMiddleware}
++     directLine={window.WebChat.createDirectLine({ token })}
++   />,
     document.getElementById('webchat')
   );
 ```
 
-Then, we will add a locale to the `<App>` component, defaulting to browser's language.
+Lastly, we will set the CSS so the customized timestamp looks flushed.
 
 ```diff
-  const { createDirectLine, ReactWebChat } = window.WebChat;
+  html,
+  body {
+    height: 100%;
+  }
 
-  const App = () => {
-+   const [locale, setLocale] = useState(navigator.language);
-    const directLine = useMemo(() => createDirectLine({ token }), []);
+  body {
+    margin: 0;
+  }
 
-    return (
--     <ReactWebChat directLine={directLine} />
-+     <ReactWebChat
-+       directLine={directLine}
-+       locale={locale}
-+     />
-    );
-  };
+  #webchat {
+    height: 100%;
+    width: 100%;
+  }
 
-  window.ReactDOM.render(
-    <App />,
-    document.getElementById('webchat')
-  );
-```
-
-We will intercept all incoming activities. If the incoming activity is a message from the bot, and the content is a predefined locale, we will set the locale of Web Chat using the `setLocale` function.
-
-```diff
-  const { createDirectLine, ReactWebChat } = window.WebChat;
-
-  const App = () => {
-    const [locale, setLocale] = useState(navigator.language);
-    const directLine = useMemo(() => createDirectLine({ token }), []);
-+   const store = useMemo(() => createStore({}, () => next => action => {
-+     if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-+       const { activity: { from: { role }, text, type } } = action.payload;
++ .activityStatus {
++   color: #767676;
++   font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
++ }
 +
-+       if (
-+         (role === 'bot' && type === 'message') &&
-+         (text === 'en-US' || text === 'ja-JP' || text === 'zh-HK')
-+       ) {
-+         setLocale(text);
-+       }
-+     }
++ .activityStatus__sendStatus,
++ .activityStatus__timestampPretext {
++   font-size: 80%;
++ }
 +
-+     return next(action);
-+   }), []);
-
-    return (
-      <ReactWebChat
-        directLine={directLine}
-        locale={locale}
-+       store={store}
-      />
-    );
-  };
-
-  window.ReactDOM.render(
-    <App />,
-    document.getElementById('webchat')
-  );
++ .activityStatus__timestampContent {
++   text-transform: lowercase;
++ }
 ```
 
 ## Completed code
@@ -115,77 +118,89 @@ Here is the finished `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Change locale</title>
+  <head>
+    <title>Web Chat: Integrate with React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-      <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-      <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
+      body {
+        margin: 0;
+      }
 
-         body {
-            margin: 0;
-         }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-         (async function() {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-            const { token } = await res.json();
+      .activityStatus {
+        color: #767676;
+        font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+      }
 
-            const { useMemo, useState } = window.React;
-            const { createDirectLine, createStore, ReactWebChat } = window.WebChat;
+      .activityStatus__sendStatus,
+      .activityStatus__timestampPretext {
+        font-size: 80%;
+      }
 
-            const App = () => {
-               const [locale, setLocale] = useState(navigator.language);
-               const directLine = useMemo(() => createDirectLine({ token }), []);
-               const store = useMemo(
-                  () =>
-                     createStore({}, () => next => action => {
-                        if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-                           const {
-                              activity: {
-                                 from: { role },
-                                 text,
-                                 type
-                              }
-                           } = action.payload;
+      .activityStatus__timestampContent {
+        text-transform: lowercase;
+      }
+    </style>
+  </head>
 
-                           if (
-                              role === 'bot' &&
-                              type === 'message' &&
-                              (text === 'en-US' || text === 'ja-JP' || text === 'zh-HK')
-                           ) {
-                              setLocale(text);
-                           }
-                        }
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-                        return next(action);
-                     }),
-                  []
-               );
+        const activityStatusMiddleware = () => next => args => {
+          const {
+            activity: {
+              from: { role }
+            },
+            sendState,
+            sameTimestampGroup
+          } = args;
 
-               return <ReactWebChat directLine={directLine} locale={locale} store={store} />;
-            };
+          if (sendState === 'sending') {
+            return <span className="activityStatus activityStatus__sendStatus">Sending&hellip;</span>;
+          } else if (sendState === 'send failed') {
+            return <span className="activityStatus">Send failed.</span>;
+          } else if (!sameTimestampGroup) {
+            return (
+              <span className="activityStatus activityStatus__timestamp">
+                <span className="activityStatus__timestampPretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
+                <span className="activityStatus__timestampContent">{next(args)}</span>
+              </span>
+            );
+          }
 
-            window.ReactDOM.render(<App />, document.getElementById('webchat'));
+          return next(args);
+        };
 
-            document.querySelector('#webchat > *').focus();
-         })().catch(err => console.error(err));
-      </script>
-   </body>
+        window.ReactDOM.render(
+          <ReactWebChat
+            activityStatusMiddleware={activityStatusMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
 
