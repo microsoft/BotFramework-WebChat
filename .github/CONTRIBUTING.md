@@ -18,7 +18,7 @@ To build Web Chat, you will need to make sure both your Node.js and NPM is lates
 
 ## Preparing the build
 
-After you clone the repository, run the following to make sure it has all dependencies installed.
+After you clone the repository, run the following to make sure all dependencies were installed.
 
 ```sh
 npm ci
@@ -30,18 +30,18 @@ npm run bootstrap
 You can use either one of the following scripts to build Web Chat:
 
 - `npm run build` will build once
-- `npm start` will build and continuously rebuild for any changes
+- `npm start` will build and continuously rebuild if changes are detected
 
 ## Trying out the build
 
-We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
+Web Chat's playground app under `/packages/` is for testing and debugging.
 
 ```sh
 cd packages/playground
 npm run start
 ```
 
-Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
+Then navigate to http://localhost:3000/, and click on one of the connection options on the upper right corner.
 
 -  Official MockBot: we hosted a live demo bot for testing Web Chat features
 -  Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
