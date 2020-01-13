@@ -1,10 +1,10 @@
 # Build scripts
 
-This article outline our design for build scripts.
+This article outlines the Web Chat build scripts design.
 
 ## Design requirements
 
-This section lists requirements for an efficient design of build scripts.
+This section lists the requirements for an efficient design of build scripts. The Web Chat code closely follows the guidelines below.
 
 ### Bootstrap scripts
 
@@ -19,40 +19,40 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
 
 - Zero pollution
    - No `npm install -g`
-   - Do not publish build artifacts to GitHub
+   - Does not publish build artifacts to GitHub
 - Intuitive
-   - Use as much `npm run-script` commands as possible
-   - No commands other than `build` and `start` needed to learn
-      - `build` means build once
-      - `start` means build continuously
-   - Build scripts across multiple packages should largely the same and almost copyable
-      - Some package use Webpack, while other do not use TypeScript, it is understandable the build script has slight differences
+   - Use as many `npm run-script` commands as possible
+   - No requirement on learning scripts other than `build` and `start`
+      - `build`: build the `packages` directory once
+      - `start`: build the `packages` directory continuously
+   - Build scripts across multiple packages are as similar as possible
+      - There are understandable differences, like one package using TypeScript or Webpack while another one does not
    - Use `node_env` for different build favors
-      - `development` or unspecified, means development build
-      - `production` means production build
-      - `test` means testing build
-         - This build should be functionally similar to production build with instrumentation code
+      - `development` (or unspecified): run with development build
+      - `production`: run with production build
+      - `test`: run with test build
+         - This build is functionally identical to the production build, with instrumentation code added
 - Cross platform
-   - All scripts should run on both Windows and Linux
-   - `npm install` should not run any scripts, no `.gyp`
+   - All scripts run on both Windows and Linux
+   - `npm install` does not run any scripts such as `.gyp`
 - Optimized to run as fast as possible
-   - Incremental build should complete within 2-4 seconds
+   - Incremental build completes in 2-4 seconds
 
 ### Implementations
 
-- Dev mode (build development bits with watch)
+- Development mode (build development bits with watch):
    - Run `npm start`
    - Serve samples and bits from `http://localhost:5000/` (or other available ports)
-   - Debug under browser with source maps enabled, displaying source code in original ESNext format
-   - In browser, able to set breakpoints and break on original form of code
+   - Debug in the browser with source maps enabled, which displays source code in original ESNext format
+   - In browser, developers may set breakpoints and break on an original line of code
    - Build should be stabilized within 5 minutes, no extra steps should be taken (e.g. retouching file to trigger build, etc)
-      - It is acceptable if the contributor start modifying code before the build is stabilized, their changes may not appear on the bits
-- Build production bits
+      - If the contributor modifies code before the build completes, their changes may not appear in that build's bits
+- Build production bits:
    - Set environment variable `node_env` to `production`
-   - No instrumentation code, no source maps
+   - This bundle does not contain instrumentation code or source maps
    - Minified
-   - Produce `webchat.js`, `webchat-es5.js` and `webchat-minimal.js`
-- Testability
+   - Produces `webchat.js`, `webchat-es5.js` and `webchat-minimal.js`
+- Testability:
    - Under CI pipeline on Ubuntu
       - Fresh build with instrumentation but minified (a.k.a. `node_env=test`)
          - Non-minified build contains sourcemaps and take 3-5 seconds to load on a browser
@@ -69,7 +69,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
       - `embed`
          - Run `npm test` under `/packages/embed`, it must able to test independently
       - Other packages do not need to be tested independently
-- Webpack stats
+- Webpack stats:
    - Produce `stats.json` to visualize content of Webpack
 
 ## Design verifications
