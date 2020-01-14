@@ -19,17 +19,14 @@ In the example below, the user ID is added to the token request and the welcome 
    // You should never put the Direct Line secret in the browser or client app.
    // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
    const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
-   const res = await fetch(
-      'https://directline.botframework.com/v3/directline/tokens/generate',
-      {
-         body: JSON.stringify({ user: { id: 'dl_user_id', name: 'username' } }),
-         headers: {
-            Authorization: `Bearer ${secret}`,
-            'Content-type': 'application/json'
-         },
-         method: 'POST'
-      }
-   );
+   const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+      body: JSON.stringify({ user: { id: 'dl_user_id', name: 'username' } }),
+      headers: {
+         Authorization: `Bearer ${secret}`,
+         'Content-type': 'application/json'
+      },
+      method: 'POST'
+   });
    const { token } = await res.json();
 
    window.WebChat.renderWebChat(
@@ -51,9 +48,7 @@ this.onMembersAdded(async (context, next) => {
 
    for (let member of membersAdded) {
       if (member.id !== context.activity.recipient.id) {
-         await context.sendActivity(
-            'Welcome Message from `onMembersAdded` handler!'
-         );
+         await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
       }
    }
    await next();
@@ -80,31 +75,25 @@ Generally, users anticipate the bot to send a welcome message before they send a
    // You should never put the Direct Line secret in the browser or client app.
    // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
    const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
-   const res = await fetch(
-      'https://directline.botframework.com/v3/directline/tokens/generate',
-      {
-         headers: {
-            Authorization: `Bearer ${secret}`
-         },
-         method: 'POST'
-      }
-   );
+   const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+      headers: {
+         Authorization: `Bearer ${secret}`
+      },
+      method: 'POST'
+   });
    const { token } = await res.json();
 
-   const store = window.WebChat.createStore(
-      {},
-      ({ dispatch }) => next => action => {
-         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({
-               type: 'WEB_CHAT/SEND_EVENT',
-               payload: {
-                  name: 'webchat/join'
-               }
-            });
-         }
-         return next(action);
+   const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+         dispatch({
+            type: 'WEB_CHAT/SEND_EVENT',
+            payload: {
+               name: 'webchat/join'
+            }
+         });
       }
-   );
+      return next(action);
+   });
 
    window.WebChat.renderWebChat(
       {
@@ -134,9 +123,7 @@ this.onMembersAdded(async (context, next) => {
    if (channelId !== 'directline' && channelId !== 'webchat') {
       for (let member of membersAdded) {
          if (member.id !== context.activity.recipient.id) {
-            await context.sendActivity(
-               'Welcome Message from `onMembersAdded` handler!'
-            );
+            await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
          }
       }
    }
