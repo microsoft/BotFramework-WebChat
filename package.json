@@ -34,6 +34,7 @@
     "build": "lerna run --ignore playground --stream build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "eslint": "lerna run --parallel --stream eslint",
+    "posteslint": "npm run prettier-readmes",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
     "start": "concurrently --kill-others --raw \"serve\" \"lerna run --ignore playground --parallel --stream start\"",
     "tableflip": "npm run tableflip:start && npx lerna clean --yes --concurrency 2 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
