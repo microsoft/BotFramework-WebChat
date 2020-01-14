@@ -37,7 +37,7 @@
     "posteslint": "npm run prettier-readmes",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
     "start": "concurrently --kill-others --raw \"serve\" \"lerna run --ignore playground --parallel --stream start\"",
-    "tableflip": "npm run tableflip:start && npx lerna clean --yes --concurrency 2 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
+    "tableflip": "npm run tableflip:start && npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
     "tableflip:end": "echo ┬──┬ ノ( ゜-゜ノ) Tableflip complete. Now run npm start",
     "tableflip:start": "echo (╯ರ ~ ರ）╯︵ ┻━┻ Begin tableflip.",
     "test": "jest --watch",
