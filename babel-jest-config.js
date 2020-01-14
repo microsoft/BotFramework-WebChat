@@ -2,7 +2,7 @@ const { createTransformer } = require('babel-jest');
 const { join } = require('path');
 const { readFileSync } = require('fs');
 
-const stringifiedBabelOptions = readFileSync(join(__dirname, 'babel.config.json'));
+const stringifiedBabelOptions = readFileSync(join(__dirname, 'babel.config.json'), 'utf8');
 const babelOptions = JSON.parse(stringifiedBabelOptions);
 const transformer = createTransformer(babelOptions);
 
