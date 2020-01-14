@@ -29,8 +29,8 @@ npm run bootstrap
 
 You can use either one of the following scripts to build Web Chat:
 
-- `npm run build` will build once
-- `npm start` will build and continuously rebuild if changes are detected
+-  `npm run build` will build once
+-  `npm start` will build and continuously rebuild if changes are detected
 
 ## Trying out the build
 

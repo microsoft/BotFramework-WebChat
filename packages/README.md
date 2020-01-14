@@ -2,12 +2,12 @@
 
 Web Chat consists of multiple packages:
 
-- [`core`](#core)
-- [`component`](#component)
-- [`bundle`](#bundle)
-- [`directlinespeech`](#directlinespeech)
-- [`embed`](#embed)
-- [`isomorphic-*`](#isomorphic-*)
+-  [`core`](#core)
+-  [`component`](#component)
+-  [`bundle`](#bundle)
+-  [`directlinespeech`](#directlinespeech)
+-  [`embed`](#embed)
+-  [`isomorphic-*`](#isomorphic-*)
 
 ## `core`
 
@@ -28,18 +28,18 @@ This package serves two purposes.
 
 It includes 3 different bundles:
 
-- `webchat.js` is the full bundle, contains Adaptive Cards, Cognitive Services, Direct Line Speech, Markdown, etc.
-- `webchat-es5.js` is built on full bundle, contains polyfills required by ES5 browsers. For example, Internet Explorer 11.
-- `webchat-minimal.js` is the minimal bundle. Does not contains Adaptive Cards, etc.
-   - Minimal bundle is roughly 50% the size of full bundle
+-  `webchat.js` is the full bundle, contains Adaptive Cards, Cognitive Services, Direct Line Speech, Markdown, etc.
+-  `webchat-es5.js` is built on full bundle, contains polyfills required by ES5 browsers. For example, Internet Explorer 11.
+-  `webchat-minimal.js` is the minimal bundle. Does not contains Adaptive Cards, etc.
+   -  Minimal bundle is roughly 50% the size of full bundle
 
 Both bundles include support of Azure Bot Services channel:
 
-- Direct Line channel, exposed as `createDirectLine()` function
-   - This will create a `directLine` adapter
-   - This is almost a direct export of [`BotFramework-DirectLineJS`](https://npmjs.com/package/botframework-directlinejs) package.
-- Direct Line Speech channel, exposed as `createDirectLineSpeechAdapters()` function
-   - This will create an adapter set, consists of `directLine` and `webSpeechPonyfillFactory`
+-  Direct Line channel, exposed as `createDirectLine()` function
+   -  This will create a `directLine` adapter
+   -  This is almost a direct export of [`BotFramework-DirectLineJS`](https://npmjs.com/package/botframework-directlinejs) package.
+-  Direct Line Speech channel, exposed as `createDirectLineSpeechAdapters()` function
+   -  This will create an adapter set, consists of `directLine` and `webSpeechPonyfillFactory`
 
 ## `directlinespeech`
 
@@ -68,10 +68,10 @@ For all packages, we provide 3 favors and 2 build scripts.
 We offer 3 build favors:
 
 |             | Instrumented | Minified | Source maps |
-|-------------|--------------|----------|-------------|
-| Production  | ❌            | ✔        | ❌           |
-| Test        | ✔            | ✔        | ❌           |
-| Development | ❌            | ❌        | ✔           |
+| ----------- | ------------ | -------- | ----------- |
+| Production  | ❌           | ✔        | ❌          |
+| Test        | ✔            | ✔        | ❌          |
+| Development | ❌           | ❌       | ✔           |
 
 > Instrumentation code is added by Istanbul via Babel.
 > Minification is carried out by Terser via Webpack.
@@ -81,13 +81,13 @@ Tests run locally will be using development build without any code coverage coll
 
 To select different build favors, set `node_env` to:
 
-- `production`
-- `test`
-- `development` or not set
+-  `production`
+-  `test`
+-  `development` or not set
 
 ## Scripts
 
 We offer 2 types of build processes:
 
-- `npm run build` will build once
-- `npm start` will build continuously with watch
+-  `npm run build` will build once
+-  `npm start` will build continuously with watch

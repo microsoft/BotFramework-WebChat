@@ -260,12 +260,9 @@ In the following code snippets, we assume sending a HTTP POST request to https:/
 
 ```js
 const fetchCredentials = async () => {
-   const res = await fetch(
-      'https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token',
-      {
-         method: 'POST'
-      }
-   );
+   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+      method: 'POST'
+   });
 
    if (!res.ok) {
       throw new Error('Failed to fetch authorization token and region.');
