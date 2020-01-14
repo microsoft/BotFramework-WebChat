@@ -1,6 +1,6 @@
 # Packages
 
-Web Chat consists of multiple packages:
+Web Chat consists of the following packages:
 
 -  [`core`](#core)
 -  [`component`](#component)
@@ -29,17 +29,17 @@ This package serves two purposes.
 It includes 3 different bundles:
 
 -  `webchat.js` is the full bundle, contains Adaptive Cards, Cognitive Services, Direct Line Speech, Markdown, etc.
--  `webchat-es5.js` is built on full bundle, contains polyfills required by ES5 browsers. For example, Internet Explorer 11.
--  `webchat-minimal.js` is the minimal bundle. Does not contains Adaptive Cards, etc.
+-  `webchat-es5.js` is built on top of full bundle, and contains polyfills required by ES5 browsers. For example, Internet Explorer 11.
+-  `webchat-minimal.js` is the minimal bundle. It does not contain Adaptive Cards, etc.
    -  Minimal bundle is roughly 50% the size of full bundle
 
 Both bundles include support of Azure Bot Services channel:
 
 -  Direct Line channel, exposed as `createDirectLine()` function
-   -  This will create a `directLine` adapter
+   -  Supported via a `directLine` adapter
    -  This is almost a direct export of [`BotFramework-DirectLineJS`](https://npmjs.com/package/botframework-directlinejs) package.
 -  Direct Line Speech channel, exposed as `createDirectLineSpeechAdapters()` function
-   -  This will create an adapter set, consists of `directLine` and `webSpeechPonyfillFactory`
+   -  This is an adapter set consisting of `directLine` and `webSpeechPonyfillFactory`
 
 ## `directlinespeech`
 
@@ -51,17 +51,17 @@ IFRAME hosting page at https://webchat.botframework.com/.
 
 ## `isomorphic-*`
 
-These are non-publishing support packages for selecting correct instance and version of `react` and `react-dom` for bundle.
+These are non-published support packages for selecting the correct instance and version of `react` and `react-dom` for bundle.
 
-For simplicity, Web Chat bundle its own version of React in `webchat*.js`. If the hosting page already loaded React as a global variable through `window.React` and `window.ReactDOM`, Web Chat will prefer that instance over its own bundled version.
+For simplicity, Web Chat bundle its own version of React in `webchat*.js`. If the hosting page already loaded React as a global variable through `window.React` and `window.ReactDOM`, Web Chat prioritizes that instance over its own bundled version.
 
 ## `playground`
 
-Proving ground for Web Chat during development.
+Proving ground for Web Chat during development. Local changes to Web Chat will be reflected in the playground.
 
 # Builds
 
-For all packages, we provide 3 flavors and 2 build scripts.
+For all packages, there are a total of 3 flavors and 2 build scripts.
 
 ## Flavors
 
@@ -77,13 +77,13 @@ We offer 3 build flavors:
 > Minification is carried out by Terser via Webpack.
 > Eval source maps took 1.6s to load in browser, while code without source maps only took 300-500ms to load. Thus, test build should not contains source maps.
 
-Tests run locally will be using development build without any code coverage collection.
+Tests run locally will use the development build without any code coverage collection.
 
 To select different build flavors, set `node_env` to:
 
 -  `production`
 -  `test`
--  `development` or not set
+-  `development` (default)
 
 ## Scripts
 
