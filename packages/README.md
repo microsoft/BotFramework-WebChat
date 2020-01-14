@@ -61,11 +61,11 @@ Proving ground for Web Chat during development.
 
 # Builds
 
-For all packages, we provide 3 favors and 2 build scripts.
+For all packages, we provide 3 flavors and 2 build scripts.
 
-## Favors
+## Flavors
 
-We offer 3 build favors:
+We offer 3 build flavors:
 
 |             | Instrumented | Minified | Source maps |
 | ----------- | ------------ | -------- | ----------- |
@@ -79,7 +79,7 @@ We offer 3 build favors:
 
 Tests run locally will be using development build without any code coverage collection.
 
-To select different build favors, set `node_env` to:
+To select different build flavors, set `node_env` to:
 
 -  `production`
 -  `test`

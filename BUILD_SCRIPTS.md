@@ -27,7 +27,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
       -  `start`: build the `packages` directory continuously
    -  Build scripts across multiple packages are as similar as possible
       -  There are understandable differences, like one package using TypeScript or Webpack while another one does not
-   -  Use `node_env` for different build favors
+   -  Use `node_env` for different build flavors
       -  `development` (or unspecified): run with development build
       -  `production`: run with production build
       -  `test`: run with test build
