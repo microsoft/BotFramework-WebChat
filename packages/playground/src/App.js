@@ -22,16 +22,16 @@ css.global('body', {
 
 const ROOT_CSS = css({
   height: '100%',
+  display: 'flex',
+  flexDirection: 'row',
 
   '& > div.button-bar': {
     backdropFilter: 'blur(2px)',
     backgroundColor: 'rgba(255, 255, 255, .8)',
     display: 'flex',
     flexDirection: 'column',
+    minWidth: '278',
     padding: 10,
-    position: 'absolute',
-    right: 0,
-    top: 0,
 
     '& > button': {
       backgroundColor: 'rgba(128, 128, 128, .2)',
@@ -50,7 +50,7 @@ const ROOT_CSS = css({
 
 const WEB_CHAT_CSS = css({
   height: '100%',
-  margin: '0 auto',
+  margin: '0',
   maxWidth: 768
 });
 
