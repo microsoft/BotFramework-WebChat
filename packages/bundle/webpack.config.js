@@ -55,10 +55,10 @@ let config = {
   }
 };
 
-// VSTS always emit uppercase environment variable.
+// VSTS always emits uppercase environment variables.
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-// We add source maps only for development bits. Source maps is very slow to load in browser.
+// Source maps are only added to development bits because of being slow to load in the browser.
 // - "eval-source-map" took 1.6s to load in browser, 1.5s to rebuild
 // - "source-map" took 500ms to load, 5s to rebuild
 // - No source map took 300ms to load
