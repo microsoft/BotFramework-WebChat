@@ -19,7 +19,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
 }) {
   if (!credentials && (authorizationToken || region || subscriptionKey)) {
     console.warn(
-      'botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are being deprecated and will be removed on or after 2019-12-17. Please use "credentials" instead.'
+      'botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are being deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.'
     );
 
     credentials = async () => {
