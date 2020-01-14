@@ -444,11 +444,11 @@ const App = ({ store }) => {
             Language
             <select onChange={handleLanguageChange} value={language}>
               <option value="">Default ({window.navigator.language})</option>
-              <option value="ar-EG">Arabic</option>
+              <option value="ar-EG">Arabic (Egypt)</option>
               <option value="bg-BG">Bulgarian</option>
               <option value="zh-HK">Chinese (Hong Kong)</option>
               <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
-              <option value="zh-HANS">Chinese (Simplifies Chinese)</option>
+              <option value="zh-HANS">Chinese (Simplified Chinese)</option>
               <option value="zh-TW">Chinese (Taiwan)</option>
               <option value="zh-HANT">Chinese (Traditional Chinese)</option>
               <option value="cs-CZ">Czech (Czech Republic)</option>
@@ -459,6 +459,7 @@ const App = ({ store }) => {
               <option value="el-GR">Greek (Greece)</option>
               <option value="fi-FI">Finnish (Finland)</option>
               <option value="fr-FR">French (France)</option>
+              <option value="he-IL">Hebrew (Israel)</option>
               <option value="hu-HU">Hungarian (Hungary)</option>
               <option value="it-IT">Italian (Italy)</option>
               <option value="ja-JP">Japanese</option>
