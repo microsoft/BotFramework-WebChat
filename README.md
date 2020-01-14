@@ -55,9 +55,25 @@ Here is how how you can add Web Chat control to your website:
 ```html
 <!DOCTYPE html>
 <html>
+  <head>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
    <body>
       <div id="webchat" role="main"></div>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <script>
          window.WebChat.renderWebChat(
             {
@@ -77,6 +93,7 @@ Here is how how you can add Web Chat control to your website:
 </html>
 ```
 
+
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
 > ![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
@@ -89,9 +106,25 @@ You can use the full, typical webchat package that contains the most typically u
 ```html
 <!DOCTYPE html>
 <html>
+  <head>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
    <body>
       <div id="webchat" role="main"></div>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <script>
          window.WebChat.renderWebChat(
             {
