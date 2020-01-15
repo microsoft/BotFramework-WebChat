@@ -18,7 +18,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
 ### Build scripts
 
 -  Zero pollution
-   -  No `npm install -g`
+   -  No `npm install -g` are needed to build and run
    -  Does not publish build artifacts to GitHub
 -  Intuitive
    -  Use as many `npm run-script` commands as possible
@@ -35,7 +35,7 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
 -  Cross platform
    -  All scripts run on both Windows and Linux
    -  `npm install` does not run any scripts such as `.gyp`
--  Optimized to run as fast as possible
+-  Optimize to run as fast as possible
    -  Incremental build completes in 2-4 seconds
 
 ### Implementations
@@ -45,12 +45,12 @@ On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
    -  Serve samples and bits from `http://localhost:5000/` (or other available ports)
    -  Debug in the browser with source maps enabled, which displays source code in original ESNext format
    -  In browser, developers may set breakpoints and break on an original line of code
-   -  Build should be stabilized within 5 minutes, no extra steps should be taken (e.g. retouching file to trigger build, etc)
+   -  Full build is completed within 5 minutes and does not require superfluous steps
       -  If the contributor modifies code before the build completes, their changes may not appear in that build's bits
 -  Build production bits:
    -  Set environment variable `node_env` to `production`
    -  This bundle does not contain instrumentation code or source maps
-   -  Minified
+   -  The code is minified
    -  Produces `webchat.js`, `webchat-es5.js` and `webchat-minimal.js`
 -  Testability:
    -  Under CI pipeline on Ubuntu
