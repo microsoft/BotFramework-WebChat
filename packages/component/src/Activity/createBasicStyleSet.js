@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { css } from 'glamor';
 
 const DOT_BOX_SIZE = 20;
@@ -61,8 +63,8 @@ const createFlipperBoxCSS = ({ boxWidth, cursor, size }) =>
   css({
     ...(cursor ? { cursor } : {}),
 
-    background: 'Transparent',
-    // background: 'Orange',
+    // background: 'Transparent',
+    background: 'Orange',
     height: '100%',
     overflow: 'hidden',
     position: 'absolute',
