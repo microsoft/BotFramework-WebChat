@@ -197,7 +197,7 @@ export default function createBasicStyleSet({
         transitionProperty: 'left'
       },
 
-      '&:focus:not(.hide) > div.slider': {
+      [autoHideFlipperOnEdge ? '&:focus:not(.hide) > div.slider' : '&:focus > div.slider']: {
         left: 0,
         transitionDelay: '0s'
       }
@@ -210,7 +210,7 @@ export default function createBasicStyleSet({
         transitionProperty: 'right'
       },
 
-      '&:focus:not(.hide) > div.slider': {
+      [autoHideFlipperOnEdge ? '&:focus:not(.hide) > div.slider' : '&:focus > div.slider']: {
         right: 0,
         transitionDelay: '0s'
       }
@@ -236,11 +236,11 @@ export default function createBasicStyleSet({
           bottom: 0
         },
 
-        [`& .${styles.leftFlipper + ''}:not(.hide) > div.slider`]: {
+        [`& .${styles.leftFlipper + ''}${autoHideFlipperOnEdge ? ':not(.hide)' : ''} > div.slider`]: {
           left: 0
         },
 
-        [`& .${styles.rightFlipper + ''}:not(.hide) > div.slider`]: {
+        [`& .${styles.rightFlipper + ''}${autoHideFlipperOnEdge ? ':not(.hide)' : ''} > div.slider`]: {
           right: 0
         }
       }
