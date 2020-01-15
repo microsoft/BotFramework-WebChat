@@ -99,6 +99,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `embed`
          -  `@babel/runtime@7.7.6`
          -  `core-js@3.5.0`
+-  Resolves [#2748](https://github.com/microsoft/BotFramework-WebChat/issues/2748), updated build scripts and CI pipeline, by [@compulim](https://github.com/compulim), in PR [#2767](https://github.com/microsoft/BotFramework-WebChat/pull/2767)
 
 ### Samples
 
