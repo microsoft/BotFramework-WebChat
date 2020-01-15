@@ -277,11 +277,7 @@ This integration code is excerpted from the sample named ["Integrating with Cogn
 > To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should _always use authorization token_ for production environment.
 
 ```js
-const {
-   createCognitiveServicesSpeechServicesPonyfillFactory,
-   createDirectLine,
-   renderWebChat
-} = window.WebChat;
+const { createCognitiveServicesSpeechServicesPonyfillFactory, createDirectLine, renderWebChat } = window.WebChat;
 
 renderWebChat(
    {
@@ -289,12 +285,10 @@ renderWebChat(
          secret: 'YOUR_DIRECT_LINE_SECRET'
       }),
       language: 'en-US',
-      webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory(
-         {
-            region: 'YOUR_REGION',
-            subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
-         }
-      )
+      webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
+         region: 'YOUR_REGION',
+         subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      })
    },
    document.getElementById('webchat')
 );

@@ -19,12 +19,12 @@ steps:
     customCommand: ci
 
 - task: Npm@1
-  displayName: 'npm run prepublishOnly'
+  displayName: 'npm run build'
   inputs:
     command: custom
     workingDir: packages/embed
     verbose: false
-    customCommand: 'run prepublishOnly'
+    customCommand: 'run build'
 
 - task: CopyFiles@2
   displayName: 'Copy index.html to drop'

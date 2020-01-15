@@ -17,14 +17,14 @@
   },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
   "scripts": {
-    "build": "npm run build:typecheck && npm run build:babel-instrumented",
-    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
-    "build:babel-instrumented": "npm run build:babel -- --env-name test",
-    "build:typecheck": "tsc",
-    "clean": "rimraf lib",
-    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
-    "prepublishOnly": "npm run build:typecheck && npm run build:babel",
-    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
+    "build": "npm run build:typescript && npm run build:babel",
+    "build:babel": "babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
+    "build:typescript": "tsc --project src/tsconfig.json",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx? --ignore-pattern __tests__",
+    "prestart": "npm run build:babel",
+    "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -36,11 +36,10 @@
     "babel-plugin-istanbul": "^5.2.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "botframework-directlinejs": "^0.11.6",
-    "concurrently": "^5.0.0",
+    "concurrently": "^5.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.1",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
     "typescript": "^3.7.3"
   },
   "dependencies": {
