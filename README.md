@@ -1,6 +1,6 @@
 # ![Bot Framework Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/BotFrameworkWebChat_header.png)
 
-### [Click here to find out what is new for Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
+### [Click here to find out what is new in Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
 
 # Bot Framework Web Chat
 
