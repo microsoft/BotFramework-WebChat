@@ -63,8 +63,8 @@ const createFlipperBoxCSS = ({ boxWidth, cursor, size }) =>
   css({
     ...(cursor ? { cursor } : {}),
 
-    // background: 'Transparent',
-    background: 'Orange',
+    background: 'Transparent',
+    // background: 'Orange',
     height: '100%',
     overflow: 'hidden',
     position: 'absolute',
