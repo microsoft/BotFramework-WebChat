@@ -60,17 +60,17 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 +         let lastPromise;
 +
 +         return () => {
-+           if (Date.now() > expireAfter) {
-+             const speechServicesTokenResPromise = fetch(
++           const now = Date.now();
++
++           if (now > expireAfter) {
++             expireAfter = now + 300000;
++             lastPromise = fetch(
 +               'https://webchat-mockbot.azurewebsites.net/speechservices/token',
 +               { method: 'POST' }
-+             );
-+
-+             expireAfter = Date.now() + 300000;
-+             lastPromise = speechServicesTokenResPromise.then(
++             ).then(
 +               res => res.json(),
 +               err => {
-+                 lastPromise = null;
++                 expireAfter = 0;
 +
 +                 return Promise.reject(err);
 +               }
@@ -82,22 +82,13 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 +       }
 +
 +       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
-+
-+       async function fetchSpeechServicesRegion() {
-+         return (await fetchSpeechServicesCredentials()).region;
-+       }
-+
-+       async function fetchSpeechServicesToken() {
-+         return (await fetchSpeechServicesCredentials()).token;
-+       }
 
         (async function () {
           const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
           const { token } = await res.json();
 
 +         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+           authorizationToken: fetchSpeechServicesToken,
-+           region: await fetchSpeechServicesRegion()
++           credentials: fetchSpeechServicesCredentials
 +         });
 
           window.WebChat.renderWebChat({

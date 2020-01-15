@@ -3,18 +3,63 @@ version: '3'
 services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
-  chrome:
+  chrome1:
     build:
       context: ./
       dockerfile: Dockerfile-selenium
-    networks:
-    - selenium
     depends_on:
+    - selenium-hub
     - webchat
-    ports:
-    - "4444:4444"
+    environment:
+    - HUB_HOST=selenium-hub
+    - HUB_PORT=4444
     volumes:
     - /dev/shm:/dev/shm
+
+  chrome2:
+    build:
+      context: ./
+      dockerfile: Dockerfile-selenium
+    depends_on:
+    - selenium-hub
+    - webchat
+    environment:
+    - HUB_HOST=selenium-hub
+    - HUB_PORT=4444
+    volumes:
+    - /dev/shm:/dev/shm
+
+  chrome3:
+    build:
+      context: ./
+      dockerfile: Dockerfile-selenium
+    depends_on:
+    - selenium-hub
+    - webchat
+    environment:
+    - HUB_HOST=selenium-hub
+    - HUB_PORT=4444
+    volumes:
+    - /dev/shm:/dev/shm
+
+  chrome4:
+    build:
+      context: ./
+      dockerfile: Dockerfile-selenium
+    depends_on:
+    - selenium-hub
+    - webchat
+    environment:
+    - HUB_HOST=selenium-hub
+    - HUB_PORT=4444
+    volumes:
+    - /dev/shm:/dev/shm
+
+  selenium-hub:
+    image: selenium/hub:3.141.59-yttrium
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
 
   webchat:
     build:
@@ -22,9 +67,3 @@ services:
       dockerfile: Dockerfile-testharness
     ports:
     - "5080:80"
-    networks:
-    - selenium
-
-networks:
-  selenium:
-    driver: bridge

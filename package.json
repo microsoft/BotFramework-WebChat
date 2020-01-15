@@ -20,45 +20,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "**/packages/**/src/**/*.{js,jsx,ts,tsx}",
-      "!**/*.{spec,test}.{js,jsx,ts,tsx}",
-      "!**/*.json",
-      "!**/node_modules/**",
-      "!**/packages/playground/**"
-    ],
-    "coverageReporters": [
-      "lcov",
-      "text-summary"
-    ],
-    "globals": {
-      "npm_package_version": "0.0.0-0.jest"
-    },
-    "moduleDirectories": [
-      "node_modules",
-      "packages"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "ts",
-      "tsx"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/__tests__/setup/setupTestFramework.js"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/setup/",
-      "<rootDir>/packages/directlinespeech/__tests__/utilities/",
-      "<rootDir>/packages/playground/",
-      "<rootDir>/samples/"
-    ],
-    "transform": {
-      "\\.[jt]sx?$": "./babel-jest-config.js"
-    }
-  },
   "keywords": [],
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -69,23 +30,19 @@
     ]
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run --scope=botframework-* --scope=isomorphic* --stream build",
-    "build:sample": "lerna run --scope=sample-* --stream build",
-    "clean": "lerna run --scope=botframework-* --parallel --stream clean",
+    "bootstrap": "lerna bootstrap --ci",
+    "build": "lerna run --ignore playground --stream build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "eslint": "lerna run --scope=botframework-* --scope=isomorphic* --parallel --stream eslint",
-    "lerna-publish": "lerna publish",
-    "prepublishOnly": "lerna run --scope=botframework-* --scope=isomorphic* --scope=playground --stream prepublishOnly",
+    "eslint": "lerna run --parallel --stream eslint",
+    "posteslint": "npm run prettier-readmes",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "start": "npm run build && lerna run --parallel --scope=botframework-* --scope=isomorphic* --stream watch",
-    "start:docker": "npm run build && docker-compose up --build",
-    "start:playground": "cd packages/playground && npm run start",
-    "tableflip": "npm run tableflip:start && lerna clean --yes --concurrency 2 && rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
+    "start": "concurrently --kill-others --raw \"serve\" \"lerna run --ignore playground --parallel --stream start\"",
+    "tableflip": "npm run tableflip:start && npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
     "tableflip:end": "echo ┬──┬ ノ( ゜-゜ノ) Tableflip complete. Now run npm start",
     "tableflip:start": "echo (╯ರ ~ ರ）╯︵ ┻━┻ Begin tableflip.",
-    "test": "jest --no-cache",
-    "test:all": "lerna run --parallel --stream test"
+    "test": "jest --watch",
+    "test:ci": "npm run test -- --ci --coverage true --no-watch",
+    "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
   },
   "devDependencies": {
     "@azure/storage-blob": "^12.0.0",
@@ -97,20 +54,23 @@
     "@babel/preset-typescript": "^7.7.4",
     "@babel/runtime": "^7.7.6",
     "babel-jest": "^24.9.0",
+    "concurrently": "^5.0.2",
     "core-js": "^3.5.0",
     "coveralls": "^3.0.9",
+    "cross-env": "^6.0.3",
     "eslint-plugin-react": "^7.17.0",
     "get-port": "^5.0.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
     "jest-image-snapshot": "^2.11.1",
+    "jest-junit": "^10.0.0",
     "lerna": "^3.19.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "rimraf": "^3.0.0",
     "selenium-webdriver": "4.0.0-alpha.5",
     "serve-handler": "^6.1.2"
-  }
+  },
+  "dependencies": {}
 }
