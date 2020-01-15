@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { css } from 'glamor';
 
 const DOT_BOX_SIZE = 20;
