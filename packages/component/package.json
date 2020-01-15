@@ -55,7 +55,7 @@
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
     "react-dictate-button": "^1.2.1",
-    "react-film": "^2.0.0",
+    "react-film": "^2.0.1",
     "react-redux": "^7.1.1",
     "react-say": "^2.0.0",
     "react-scroll-to-bottom": "~1.3.2",
