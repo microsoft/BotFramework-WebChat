@@ -43,7 +43,7 @@ Please refer to the [supported parameters](#what-url-parameters-are-supported) f
 Follow the steps below to build the embed page locally.
 
 1. `npm install`
-1. `npm run prepublishOnly`
+1. `npm run build`
 1. Publishes the build artifact at `/dist/index.html`
    1. Verifies the file size. It should be less than 30 KB
 

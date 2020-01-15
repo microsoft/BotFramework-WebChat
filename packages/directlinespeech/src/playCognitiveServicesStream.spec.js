@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import hasResolved from 'has-resolved';
 
 import playCognitiveServicesStream from './playCognitiveServicesStream';

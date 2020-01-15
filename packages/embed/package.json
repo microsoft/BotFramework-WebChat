@@ -1,6 +1,6 @@
 {
-  "name": "botframework-webchat-embed",
-  "version": "4.0.0-0",
+  "name": "embed",
+  "version": "0.0.0-0",
   "description": "",
   "main": "src/index.js",
   "private": true,
@@ -8,24 +8,22 @@
     "collectCoverageFrom": [
       "**/src/**/*.{js,jsx}",
       "!**/*.{spec,test}.{js,jsx,ts,tsx}",
+      "!**/__tests__/**/*.{js,jsx,ts,tsx}",
       "!**/node_modules/**"
     ],
     "testEnvironment": "node"
   },
   "scripts": {
-    "build": "npm run build:babel && webpack-cli --mode development",
-    "build:babel": "babel --extensions .js,.ts --ignore **/*.spec.js,**/*.spec.ts,**/*.test.js,**/*.test.ts,__test__/**/*.js,__test__/**/*.ts --out-dir lib --source-maps inline --verbose src",
-    "build:webpack": "webpack-cli --mode development",
-    "clean": "npm run clean:dist && npm run clean:lib",
-    "clean:dist": "rimraf dist",
-    "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run build:babel && webpack-cli",
-    "start": "concurrently --kill-others --names \"build,server\" \"npm run watch\" \"npm run start:server\"",
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
+    "build:webpack": "webpack-cli",
+    "prestart": "npm run build:babel",
+    "start": "concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel\" \"npm run start:server\" \"npm run start:webpack\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:server": "node-dev --no-notify --respawn hostDevServer",
-    "test": "jest",
-    "watch": "concurrently --kill-others --names \"babel,webpack\" \"npm run watch:babel\" \"npm run watch:webpack\"",
-    "watch:babel": "npm run build:babel -- --watch",
-    "watch:webpack": "webpack-cli --config webpack-watch.config.js --watch"
+    "start:webpack": "npm run build:webpack -- --watch",
+    "test": "jest --watch",
+    "test:ci": "npm run test -- --ci --coverage true --no-watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -35,7 +33,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "^7.7.6",
-    "concurrently": "^5.0.0",
+    "concurrently": "^5.0.2",
     "copy-webpack-plugin": "^5.1.1",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.20.0",

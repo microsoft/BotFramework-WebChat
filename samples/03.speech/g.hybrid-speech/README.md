@@ -113,17 +113,17 @@ Here is the finished `index.html`:
           let lastPromise;
 
           return () => {
-            if (Date.now() > expireAfter) {
-              const speechServicesTokenResPromise = fetch(
+            const now = Date.now();
+
+            if (now > expireAfter) {
+              expireAfter = now + 300000;
+              lastPromise = fetch(
                 'https://webchat-mockbot.azurewebsites.net/speechservices/token',
                 { method: 'POST' }
-              );
-
-              expireAfter = Date.now() + 300000;
-              lastPromise = speechServicesTokenResPromise.then(
+              ).then(
                 res => res.json(),
                 err => {
-                  lastPromise = null;
+                  expireAfter = 0;
 
                   return Promise.reject(err);
                 }
@@ -136,14 +136,6 @@ Here is the finished `index.html`:
 
         const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
 
-        async function fetchSpeechServicesRegion() {
-          return (await fetchSpeechServicesCredentials()).region;
-        }
-
-        async function fetchSpeechServicesToken() {
-          return (await fetchSpeechServicesCredentials()).token;
-        }
-
         (async function () {
           const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
           const { token } = await directLineTokenRes.json();
@@ -152,14 +144,12 @@ Here is the finished `index.html`:
           const { region, token: authorizationToken } = await speechServicesTokenRes.json();
 
 -         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
--           authorizationToken: fetchSpeechServicesToken,
--           region: await fetchSpeechServicesRegion()
+-           credentials: fetchSpeechServicesCredentials
 -         });
 
 +         async function createHybridPonyfillFactory({ authorizationToken, region }) {
 +           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+             authorizationToken: fetchSpeechServicesToken,
-+             region: await fetchSpeechServicesRegion()
++             credentials: fetchSpeechServicesCredentials
 +           });
 +
 +           const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();

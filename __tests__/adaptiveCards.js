@@ -27,6 +27,34 @@ test('breakfast card', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
+test('container styles', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card containerstyles', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('action styles', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card actionstyles', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
 test('breakfast card with custom host config', async () => {
   const adaptiveCardHostConfig = createAdaptiveCardsHostConfig({ ...defaultStyleOptions, bubbleTextColor: '#FF0000' });
 
