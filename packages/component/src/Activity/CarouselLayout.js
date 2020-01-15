@@ -1,4 +1,5 @@
 import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -33,6 +34,7 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
               <React.Fragment>
                 <Flipper
                   aria-label={leftLabel}
+                  blurFocusOnClick={true}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
                   mode="left"
                 >
@@ -40,6 +42,7 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
                 </Flipper>
                 <Flipper
                   aria-label={rightLabel}
+                  blurFocusOnClick={true}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
                   mode="right"
                 >

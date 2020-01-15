@@ -86,6 +86,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       <BasicFilm
         autoCenter={false}
         className={classNames(suggestedActionsStyleSet + '', className + '')}
+        flipperBlurFocusOnClick={true}
         showDots={false}
         styleSet={suggestedActionsStyleSetForReactFilm}
       >
