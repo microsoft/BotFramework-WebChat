@@ -1,4 +1,8 @@
-import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
+// import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
+
+import { Composer, Context as FilmContext, Flipper } from 'react-film';
+import createBasicStyleSet from './createReactFilmBasicStyleSet';
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';

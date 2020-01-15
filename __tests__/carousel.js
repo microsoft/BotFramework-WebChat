@@ -31,7 +31,7 @@ describe('carousel without avatar initials', () => {
     await rightFlipper.click();
 
     // Wait for carousel animation to finish
-    await driver.sleep(4000);
+    await driver.sleep(timeouts.ui);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -55,7 +55,7 @@ describe('carousel without avatar initials', () => {
     await rightFlipper.click();
 
     // Wait for carousel animation to finish
-    await driver.sleep(4000);
+    await driver.sleep(timeouts.ui);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -131,7 +131,7 @@ describe('carousel with avatar initials', () => {
     await rightFlipper.click();
 
     // Wait for carousel animation to finish
-    await driver.sleep(4000);
+    await driver.sleep(timeouts.ui);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -155,7 +155,7 @@ describe('carousel with avatar initials', () => {
     await rightFlipper.click();
 
     // Wait for carousel animation to finish
-    await driver.sleep(4000);
+    await driver.sleep(timeouts.ui);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
