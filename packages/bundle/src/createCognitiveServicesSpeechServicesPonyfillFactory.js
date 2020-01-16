@@ -25,13 +25,13 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     credentials = async () => {
       if (authorizationToken) {
         return {
-          authorizationToken: resolveFunction(authorizationToken),
+          authorizationToken: await resolveFunction(authorizationToken),
           region
         };
       } else {
         return {
           region,
-          subscriptionKey: resolveFunction(subscriptionKey)
+          subscriptionKey: await resolveFunction(subscriptionKey)
         };
       }
     };
@@ -57,12 +57,12 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     };
   }
 
-  return ({ referenceGrammarID }) => {
+  return ({ referenceGrammarID } = {}) => {
     const ponyfill = createPonyfill({
       audioConfig,
       credentials,
       enableTelemetry,
-      referenceGrammars: [`luis/${referenceGrammarID}-PRODUCTION`],
+      referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
       speechRecognitionEndpointId,
       speechSynthesisDeploymentId,
       speechSynthesisOutputFormat,
