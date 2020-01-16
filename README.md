@@ -1,6 +1,6 @@
 # ![Bot Framework Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/BotFrameworkWebChat_header.png)
 
-### [Click here to find out what's new for //build2019!](https://github.com/microsoft/botframework/blob/master/whats-new.md#whats-new)
+### [Click here to find out what is new in Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
 
 # Bot Framework Web Chat
 
@@ -50,6 +50,12 @@ One of our team's favorite things about v4 of Web Chat is the ability to add cus
 First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
 Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal. Then use the secret to [generate a token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) and pass it to your Web Chat.
 
+## Integrate with JavaScript
+
+Web Chat is designed to integrate with your existing website using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
+
+You can use the full, typical webchat package that contains the most typically used features.
+
 Here is how how you can add Web Chat control to your website:
 
 ```html
@@ -62,6 +68,7 @@ Here is how how you can add Web Chat control to your website:
          body {
             height: 100%;
          }
+
          body {
             margin: 0;
          }
@@ -94,50 +101,8 @@ Here is how how you can add Web Chat control to your website:
 ```
 
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
-> ![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
-## Integrate with JavaScript
-
-Web Chat is designed to integrate with your existing website using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
-
-You can use the full, typical webchat package that contains the most typically used features.
-
-```html
-<!DOCTYPE html>
-<html>
-   <head>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
-         body {
-            margin: 0;
-         }
-
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script>
-         window.WebChat.renderWebChat(
-            {
-               directLine: window.WebChat.createDirectLine({
-                  token: 'YOUR_DIRECT_LINE_TOKEN'
-               }),
-               userID: 'YOUR_USER_ID'
-            },
-            document.getElementById('webchat')
-         );
-      </script>
-   </body>
-</html>
-```
+![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
 See the working sample of the [full Web Chat bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle).
 
@@ -148,29 +113,21 @@ For full customizability, you can use React to recompose components of Web Chat.
 To install the production build from NPM, run `npm install botframework-webchat`.
 
 ```jsx
-import { DirectLine } from 'botframework-directlinejs';
-import React from 'react';
-import ReactWebChat from 'botframework-webchat';
+import React, { useMemo } from 'react';
+import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 
-export default class extends React.Component {
-  constructor(props) {
-    super(props);
+export default () => {
+   const directLine = useMemo(() => createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }), []);
 
-    this.directLine = new DirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' });
-  }
-
-  render() {
-    return (
-      <ReactWebChat directLine={ this.directLine } userID='YOUR_USER_ID' />
-      element
-    );
-  }
-}
+   return (
+      <ReactWebChat directLine={ directLine } userID="YOUR_USER_ID" />
+   );
+};
 ```
 
 > You can also run `npm install botframework-webchat@master` to install a development build that is synced with Web Chat's GitHub `master` branch.
 
-See a working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react/).
+See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react/).
 
 ## Integrate with Cognitive Services Speech Services
 
@@ -256,7 +213,7 @@ There is a breaking change on behavior expectations regarding speech and input h
 | [`06.recomposing-ui/b.speech-ui`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/b.speech-ui)                                                                                             | Advanced tutorial: Demonstrates how to fully customize key components of your bot, in this case speech, which entirely replaces the text-based transcript UI and instead shows a simple speech button with the bot's response.      | [Speech UI Demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui)                                                               |
 | [`06.recomposing-ui/c.smart-display`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/c.smart-display)                                                                                     | Demonstrates how to compose Web Chat UI into a Smart Display                                                                                                                                                                        | [Smart Display Demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/c.smart-display)                                                       |
 | [`06.recomposing-ui/d.plain-ui`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/d.plain-ui)                                                                                               | Advanced tutorial: Demonstrates how to customize the Web Chat UI by building from ground up instead of needing to rewrite entire Web Chat components.                                                                               | [Plain UI Demo](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/d.plain-ui)                                                                 |
-| **Advanced Web Chat apps**                                                                                                                                                                                                         |                                                                                                                                                                                                                                     |                                                                                                                                                                | 
+| **Advanced Web Chat apps**                                                                                                                                                                                                         |                                                                                                                                                                                                                                     |                                                                                                                                                                |
 | [`07.advanced-web-chat-apps/a.upload-to-azure-storage`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/07.advanced-web-chat-apps/a.upload-to-azure-storage)                                                 | Demonstrates how to use upload attachments directly to Azure Storage                                                                                                                                                                | [Upload to Azure Storage Demo](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/a.upload-to-azure-storage)                           |
 | [`07.advanced-web-chat-apps/b.sso-for-enterprise`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/07.advanced-web-chat-apps/b.sso-for-enterprise)                                                           | Demonstrates how to use single sign-on for enterprise single-page applications using OAuth                                                                                                                                          | [Single Sign-On for Enterprise Single-Page Applications Demo](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/b.sso-for-enterprise) |
 | [`07.advanced-web-chat-apps/c.sso-for-intranet`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/07.advanced-web-chat-apps/c.sso-for-intranet)                                                               | Demonstrates how to use single sign-on for Intranet apps using Azure Active Directory                                                                                                                                               | [Single Sign-On for Intranet Apps Demo](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/c.sso-for-intranet)                         |
