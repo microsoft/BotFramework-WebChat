@@ -25,10 +25,10 @@ function upsertActivityWithSort(activities, nextActivity) {
 
   const nextTimestamp = Date.parse(nextActivity.timestamp);
   const nextActivities = activities.filter(
-    ({ channelData: { clientActivityID } = {} }) =>
-      // We will remove all "sending messages" activities
+    ({ channelData: { clientActivityID } = {}, id }) =>
+      // We will remove all "sending messages" activities and activities with same ID
       // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
-      !(nextClientActivityID && clientActivityID === nextClientActivityID)
+      !(nextClientActivityID && clientActivityID === nextClientActivityID) && !(id && id === nextActivity.id)
   );
 
   // Then, find the right (sorted) place to insert the new activity at, based on timestamp
@@ -83,9 +83,8 @@ export default function activities(state = DEFAULT_STATE, { meta, payload, type 
       break;
 
     case INCOMING_ACTIVITY:
-      // UpdateActivity is not supported right now because we ignore duplicated activity ID
       // TODO: [P4] Move "typing" into Constants.ActivityType
-      if (payload.activity.type !== 'typing' && !~state.findIndex(({ id }) => id === payload.activity.id)) {
+      if (payload.activity.type !== 'typing') {
         state = upsertActivityWithSort(state, payload.activity);
       }
 
