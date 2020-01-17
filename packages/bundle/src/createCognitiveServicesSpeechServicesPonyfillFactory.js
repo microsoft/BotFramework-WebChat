@@ -1,8 +1,8 @@
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
-async function resolveFunction(fnOrValue) {
-  return await (typeof fnOrValue === 'function' ? fnOrValue() : fnOrValue);
+function resolveFunction(fnOrValue) {
+  return typeof fnOrValue === 'function' ? fnOrValue() : fnOrValue;
 }
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
@@ -28,12 +28,12 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
           authorizationToken: await resolveFunction(authorizationToken),
           region
         };
-      } else {
-        return {
-          region,
-          subscriptionKey: await resolveFunction(subscriptionKey)
-        };
       }
+
+      return {
+        region,
+        subscriptionKey: await resolveFunction(subscriptionKey)
+      };
     };
   }
 
