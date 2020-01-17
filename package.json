@@ -27,6 +27,9 @@
       "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
       "prettier --write samples/**/*.{js,html}",
       "git add"
+    ],
+    "*.{md}": [
+      "prettier --write **/**/*.md --tab-width 3 --single-quote true"
     ]
   },
   "scripts": {
