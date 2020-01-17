@@ -86,8 +86,8 @@ const BasicWebChat = ({ activityMiddleware, attachmentMiddleware, className, ...
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
-          <BasicTranscript className={TRANSCRIPT_CSS + ''} />
-          {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
+          <BasicTranscript className={TRANSCRIPT_CSS + ''} {...otherProps} />
+          {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} {...otherProps} />}
         </TypeFocusSinkBox>
       )}
     </Composer>

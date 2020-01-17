@@ -7,6 +7,7 @@ import React, { useCallback, useMemo } from 'react';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useDirection from './hooks/useDirection';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
@@ -56,10 +57,11 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({ className }) => {
+const BasicTranscript = ({ className, dir }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+  const [direction] = useDirection(dir);
   const [groupTimestamp] = useGroupTimestamp();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
@@ -110,7 +112,7 @@ const BasicTranscript = ({ className }) => {
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', className + '')} role="log">
+    <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
         <ul
@@ -147,7 +149,8 @@ BasicTranscript.defaultProps = {
 };
 
 BasicTranscript.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']).isRequired
 };
 
 export default BasicTranscript;
