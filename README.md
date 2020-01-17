@@ -53,7 +53,6 @@ Here is how how you can add Web Chat control to your website:
          body {
             height: 100%;
          }
-
          body {
             margin: 0;
          }
