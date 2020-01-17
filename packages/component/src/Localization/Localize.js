@@ -2,6 +2,7 @@
 /* eslint complexity: "off" */
 
 import getLocaleString from './getLocaleString';
+import getRTLList from './getRTLList';
 import useLocalize from '../hooks/useLocalize';
 
 import arEG from './ar-EG';
@@ -164,4 +165,4 @@ function localize(text, language, ...args) {
 
 export default ({ args, text }) => useLocalize(text, ...(args || []));
 
-export { getLocaleString, localize };
+export { getLocaleString, getRTLList, localize };
