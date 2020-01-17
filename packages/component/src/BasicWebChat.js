@@ -4,7 +4,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 
 import BasicSendBox from './BasicSendBox';
 import BasicTranscript from './BasicTranscript';
@@ -88,70 +88,35 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
-// TODO: [P1] #2860 Move to functional component
-export default class BasicWebChat extends React.Component {
-  constructor(props) {
-    super(props);
+const BasicWebChat = ({ activityMiddleware, activityStatusMiddleware, attachmentMiddleware, className, ...otherProps }) => {
+  const sendBoxRef = useRef();
+  const activityRenderer = useMemo(() => createActivityRenderer(activityMiddleware), [activityMiddleware]);
+  const activityStatusRenderer = useMemo(() => createActivityStatusRenderer(activityStatusMiddleware), [activityStatusMiddleware]);
+  const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
 
-    this.sendBoxRef = React.createRef();
+  return (
+    <Composer
+      activityRenderer={activityRenderer}
+      activityStatusRenderer={activityStatusRenderer}
+      attachmentRenderer={attachmentRenderer}
+      sendBoxRef={sendBoxRef}
+      {...otherProps}
+    >
+      {({ styleSet }) => (
+        <TypeFocusSinkBox
+          className={classNames(ROOT_CSS + '', styleSet.root + '', className + '')}
+          role="complementary"
+          sendFocusRef={sendBoxRef}
+        >
+          <BasicTranscript className={TRANSCRIPT_CSS + ''} />
+          {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
+        </TypeFocusSinkBox>
+      )}
+    </Composer>
+  );
+};
 
-    this.state = {
-      activityRenderer: createActivityRenderer(props.activityMiddleware),
-      activityStatusRenderer: createActivityStatusRenderer(props.activityStatusMiddleware),
-      attachmentRenderer: createAttachmentRenderer(props.attachmentMiddleware)
-    };
-  }
-
-  // TODO: [P2] #2860 Move to React 16 APIs
-  UNSAFE_componentWillReceiveProps({
-    activityMiddleware: nextActivityMiddleware,
-    activityStatusRenderer: nextActivityStatusMiddleware,
-    attachmentMiddleware: nextAttachmentMiddleware
-  }) {
-    const { activityMiddleware, activityStatusMiddleware, attachmentMiddleware } = this.props;
-
-    if (
-      activityMiddleware !== nextActivityMiddleware ||
-      activityStatusMiddleware !== nextActivityStatusMiddleware ||
-      attachmentMiddleware !== nextAttachmentMiddleware
-    ) {
-      this.setState(() => ({
-        activityRenderer: createActivityRenderer(nextActivityMiddleware),
-        activityStatusRenderer: createActivityStatusRenderer(nextActivityStatusMiddleware),
-        attachmentRenderer: createAttachmentRenderer(nextAttachmentMiddleware)
-      }));
-    }
-  }
-
-  render() {
-    const {
-      props: { className, ...otherProps },
-      sendBoxRef,
-      state: { activityRenderer, activityStatusRenderer, attachmentRenderer }
-    } = this;
-
-    return (
-      <Composer
-        activityRenderer={activityRenderer}
-        activityStatusRenderer={activityStatusRenderer}
-        attachmentRenderer={attachmentRenderer}
-        sendBoxRef={sendBoxRef}
-        {...otherProps}
-      >
-        {({ styleSet }) => (
-          <TypeFocusSinkBox
-            className={classNames(ROOT_CSS + '', styleSet.root + '', className + '')}
-            role="complementary"
-            sendFocusRef={sendBoxRef}
-          >
-            <BasicTranscript className={TRANSCRIPT_CSS + ''} />
-            {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
-          </TypeFocusSinkBox>
-        )}
-      </Composer>
-    );
-  }
-}
+export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
   ...Composer.defaultProps,
