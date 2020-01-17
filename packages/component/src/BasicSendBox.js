@@ -13,6 +13,7 @@ import TextBox from './SendBox/TextBox';
 import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 import useActivities from './hooks/useActivities';
+import useDirection from './hooks/useDirection';
 import useDictateState from './hooks/useDictateState';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
@@ -47,16 +48,17 @@ function useSendBoxSpeechInterimsVisible() {
   ];
 }
 
-const BasicSendBox = ({ className }) => {
+const BasicSendBox = ({ className, dir }) => {
   const [{ hideUploadButton }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
+  const [direction] = useDirection(dir);
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
   const supportSpeechRecognition = !!SpeechRecognition;
 
   return (
-    <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
+    <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} dir={direction} role="form">
       <TypingIndicator />
       <ConnectivityStatus />
       <SuggestedActions />
@@ -80,7 +82,8 @@ BasicSendBox.defaultProps = {
 };
 
 BasicSendBox.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']).isRequired
 };
 
 export default BasicSendBox;

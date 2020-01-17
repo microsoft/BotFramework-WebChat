@@ -1,16 +1,24 @@
+import { Composer as SayComposer } from 'react-say';
 import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 
+import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
-import useRenderActivity from './hooks/useRenderActivity';
-import useRenderAttachment from './hooks/useRenderAttachment';
+import useDirection from './hooks/useDirection';
+import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+import {
+  speechSynthesis as bypassSpeechSynthesis,
+  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
+} from './Speech/BypassSpeechSynthesisPonyfill';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -28,109 +36,99 @@ const FILLER_CSS = css({
 });
 
 const LIST_CSS = css({
-  listStyleType: 'none'
+  listStyleType: 'none',
+
+  '& > li.hide-timestamp .transcript-timestamp': {
+    display: 'none'
+  }
 });
 
-function useMemoize(fn) {
-  return useMemo(() => {
-    let cache = [];
+const DEFAULT_GROUP_TIMESTAMP = 300000; // 5 minutes
 
-    return run => {
-      const nextCache = [];
-      const result = run((...args) => {
-        const { result } = [...cache, ...nextCache].find(
-          ({ args: cachedArgs }) =>
-            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[index]))
-        ) || { result: fn(...args) };
+function sameTimestampGroup(activityX, activityY, groupTimestamp) {
+  if (groupTimestamp === false) {
+    return true;
+  } else if (activityX && activityY) {
+    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : DEFAULT_GROUP_TIMESTAMP;
 
-        nextCache.push({ args, result });
+    if (activityX.from.role === activityY.from.role) {
+      const timeX = new Date(activityX.timestamp).getTime();
+      const timeY = new Date(activityY.timestamp).getTime();
 
-        return result;
-      });
+      return Math.abs(timeX - timeY) <= groupTimestamp;
+    }
+  }
 
-      cache = nextCache;
-
-      return result;
-    };
-  }, [fn]);
+  return false;
 }
 
-const BasicTranscript = ({ className }) => {
+const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, dir }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const renderAttachment = useRenderAttachment();
-  const renderActivity = useRenderActivity(renderAttachment);
-  const renderActivityElement = useCallback(
-    (activity, nextVisibleActivity) =>
-      renderActivity({
+  const [direction] = useDirection(dir);
+  const [groupTimestamp] = useGroupTimestamp();
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
+
+  // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
+  // Until the activity pass thru middleware, we never know if it is going to show up.
+  // After we know which activities will show up, we can compute which activity will show timestamps.
+  // If the activity does not render, it will not be spoken if text-to-speech is enabled.
+  const activityElements = activities.reduce((activityElements, activity) => {
+    const element = activityRenderer({
+      activity,
+      timestampClassName: 'transcript-timestamp'
+    })(({ attachment }) => attachmentRenderer({ activity, attachment }));
+
+    element &&
+      activityElements.push({
         activity,
-        nextVisibleActivity
-      }),
-    [renderActivity]
-  );
+        element
+      });
 
-  const memoizeRenderActivityElement = useMemoize(renderActivityElement);
-
-  const activityElementsWithMetadata = useMemo(
-    () =>
-      memoizeRenderActivityElement(renderActivityElement => {
-        const { result: activityElementsWithMetadata } = [...activities].reverse().reduce(
-          ({ nextVisibleActivity, result }, activity, index) => {
-            const element = renderActivityElement(activity, nextVisibleActivity);
-
-            // Until the activity passes through middleware, it is unknown whether the activity will be visible.
-            // If the activity does not render, it will not be spoken if text-to-speech is enabled.
-            if (element) {
-              result = [
-                {
-                  activity,
-                  element,
-                  key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
-
-                  // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-                  shouldSpeak: activity.channelData && activity.channelData.speak
-                },
-                ...result
-              ];
-
-              nextVisibleActivity = activity;
-            }
-
-            return { nextVisibleActivity, result };
-          },
-          { nextVisibleActivity: undefined, result: [] }
-        );
-
-        return activityElementsWithMetadata;
-      }),
-    [activities, memoizeRenderActivityElement]
-  );
+    return activityElements;
+  }, []);
 
   return (
-    <div className={classNames(ROOT_CSS + '', className + '')} role="log">
+    <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
-        <ul
-          aria-atomic="false"
-          aria-live="polite"
-          aria-relevant="additions text"
-          className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
-          role="list"
+        <SayComposer
+          // These are props for passing in Web Speech ponyfill, where speech synthesis requires these two class/object to be ponyfilled.
+          speechSynthesis={speechSynthesis || bypassSpeechSynthesis}
+          speechSynthesisUtterance={SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance}
         >
-          {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }) => (
-            <li
-              // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-              aria-label=" "
-              className={activityStyleSet + ''}
-              key={key}
-              role="listitem"
-            >
-              {element}
-              {shouldSpeak && <SpeakActivity activity={activity} />}
-            </li>
-          ))}
-        </ul>
+          <ul
+            aria-atomic="false"
+            aria-live="polite"
+            aria-relevant="additions text"
+            className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
+            role="list"
+          >
+            {activityElements.map(({ activity, element }, index) => (
+              <li
+                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
+                aria-label=" "
+                className={
+                  (activityStyleSet + '',
+                  {
+                    // Hide timestamp if same timestamp group with the next activity
+                    'hide-timestamp': sameTimestampGroup(
+                      activity,
+                      (activityElements[index + 1] || {}).activity,
+                      groupTimestamp
+                    )
+                  })}
+                key={(activity.channelData && activity.channelData.clientActivityID) || activity.id || index}
+                role="listitem"
+              >
+                {element}
+                {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+              </li>
+            ))}
+          </ul>
+        </SayComposer>
       </ScrollToBottomPanel>
       {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>
@@ -142,9 +140,12 @@ BasicTranscript.defaultProps = {
 };
 
 BasicTranscript.propTypes = {
+  activityRenderer: PropTypes.func.isRequired,
+  attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string
 };
 
-export default BasicTranscript;
-
-export { useMemoize };
+export default connectToWebChat(({ activityRenderer, attachmentRenderer }) => ({
+  activityRenderer,
+  attachmentRenderer
+}))(BasicTranscript);
