@@ -149,6 +149,7 @@ const App = ({ store }) => {
     [domain, directLineToken, webSocket]
   );
 
+  const [dir, setDirUI] = useState(() => window.sessionStorage.getItem('PLAYGROUND_DIRECTION') || 'auto');
   const [disabled, setDisabledUI] = useState(false);
 
   const [faulty, setFaultyDirectLine] = useState(false);
@@ -209,6 +210,14 @@ const App = ({ store }) => {
       setStyleBubbleBorder(!!value && (value === 'true' || (value === 'deprecated' && 'deprecated')));
     },
     [setStyleBubbleBorder]
+  );
+
+  const handleDirChange = useCallback(
+    ({ target: { value } }) => {
+      setDirUI(value);
+      window.sessionStorage.setItem('PLAYGROUND_DIRECTION', value);
+    },
+    [setDirUI]
   );
 
   const handleDisconnectClick = useCallback(() => {
@@ -402,6 +411,7 @@ const App = ({ store }) => {
         attachmentMiddleware={attachmentMiddleware}
         className={WEB_CHAT_CSS + ''}
         groupTimestamp={groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp}
+        dir={dir}
         directLine={directLine}
         disabled={disabled}
         locale={language}
@@ -473,6 +483,16 @@ const App = ({ store }) => {
               <option value="es-ES">Spanish (Spain)</option>
               <option value="sv-SE">Swedish (Sweden)</option>
               <option value="tr-TR">Turkish (Turkey)</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Direction
+            <select onChange={handleDirChange} value={dir}>
+              <option value="auto">Default (auto)</option>
+              <option value="ltr">Left to Right</option>
+              <option value="rtl">Right to Left</option>
             </select>
           </label>
         </div>
