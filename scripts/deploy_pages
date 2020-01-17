@@ -1,20 +1,41 @@
 #!/bin/bash
 
-rsync -av --progress samples/ gh-pages/ \
-  --exclude 01.getting-started/g.hybrid-react-npm \
-  --exclude 04.api/e.piping-to-redux \
-  --exclude 04.api/f.selectable-activity \
-  --exclude 04.api/g.chat-send-history \
-  --exclude 04.api/h.clear-after-idle \
-  --exclude 06.recomposing-ui/a.minimizable-web-chat \
-  --exclude 06.recomposing-ui/b.speech-ui \
-  --exclude 06.recomposing-ui/c.smart-display \
-  --exclude 06.recomposing-ui/d.plain-ui
+mkdir gh-pages
+
+mkdir gh-pages/00.migration
+rsync -av --progress samples/00.migration/ gh-pages/00.migration/
+
+mkdir gh-pages/01.getting-started
+rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/ \
+  --exclude g.hybrid-react-npm
+
+mkdir gh-pages/02.branding-styling-and-customization
+rsync -av --progress samples/02.branding-styling-and-customization/ gh-pages/02.branding-styling-and-customization/
+
+mkdir gh-pages/03.speech
+rsync -av --progress samples/03.speech/ gh-pages/03.speech/
+
+mkdir gh-pages/04.api
+rsync -av --progress samples/04.api/ gh-pages/04.api/ \
+  --exclude e.piping-to-redux \
+  --exclude f.selectable-activity \
+  --exclude g.chat-send-history \
+  --exclude h.clear-after-idle
+
+mkdir gh-pages/05.custom-components
+rsync -av --progress samples/05.custom-components/ gh-pages/05.custom-components/
+
+mkdir gh-pages/06.recomposing-ui
+rsync -av --progress samples/06.recomposing-ui/ gh-pages/06.recomposing-ui/ \
+  --exclude a.minimizable-web-chat \
+  --exclude b.speech-ui \
+  --exclude c.smart-display \
+  --exclude d.plain-ui
 
 mkdir gh-pages/01.getting-started
 
 mkdir gh-pages/01.getting-started/g.hybrid-react-npm
-rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/build/ gh-pages/04.api/g.hybrid-react-npm/
+rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/04.api/g.hybrid-react-npm/
 
 mkdir gh-pages/04.api
 
