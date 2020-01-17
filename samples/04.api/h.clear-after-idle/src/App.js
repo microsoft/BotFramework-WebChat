@@ -10,6 +10,7 @@ const TIME_INTERVAL = 30000;
 function App() {
   const [directLine, setDirectLine] = useState(createDirectLine({}));
   const [store, setStore] = useState();
+  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
 
   const initConversation = useCallback(() => {
     setStore(
@@ -42,11 +43,9 @@ function App() {
 
       setDirectLine(createDirectLine({ token }));
     })().catch(error => console.log(error));
-  }, [setStore, setDirectLine]);
+  }, [setStore, setDirectLine, setTimeRemaining]);
 
   useEffect(initConversation, []);
-
-  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
 
   return (
     <div className="App">
