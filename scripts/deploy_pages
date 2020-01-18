@@ -2,6 +2,10 @@
 
 mkdir gh-pages
 
+rsync -av --progress samples/index.css gh-pages/
+rsync -av --progress samples/index.html gh-pages/
+rsync -av --progress samples/README.md gh-pages/
+
 mkdir gh-pages/00.migration
 rsync -av --progress samples/00.migration/ gh-pages/00.migration/
 
