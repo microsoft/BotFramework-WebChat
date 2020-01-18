@@ -35,7 +35,7 @@ rsync -av --progress samples/06.recomposing-ui/ gh-pages/06.recomposing-ui/ \
 mkdir gh-pages/01.getting-started
 
 mkdir gh-pages/01.getting-started/g.hybrid-react-npm
-rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/1.getting-started/g.hybrid-react-npm/
+rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/01.getting-started/g.hybrid-react-npm/
 
 mkdir gh-pages/04.api
 
