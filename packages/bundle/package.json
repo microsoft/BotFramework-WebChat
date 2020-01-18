@@ -28,11 +28,6 @@
     "start:typescript": "npm run build:typescript -- --watch",
     "start:webpack": "npm run build:webpack -- --watch"
   },
-  "bundledDependencies": [
-    "botframework-directlinespeech-sdk",
-    "botframework-webchat-component",
-    "botframework-webchat-core"
-  ],
   "dependencies": {
     "@babel/runtime": "^7.7.6",
     "adaptivecards": "1.2.5",
