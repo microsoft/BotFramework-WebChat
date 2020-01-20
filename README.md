@@ -26,11 +26,11 @@ There is a breaking change on behavior expectations regarding speech and input h
 
 ## Migrating from Web Chat v3 to v4
 
-[View migration docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/MIGRATION.md) to learn about migrating from Web Chat v3
+[View migration docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/MIGRATION.md) to learn about migrating from Web Chat v3.
 
 # How to use
 
-> For previous versions of Web Chat (v3), visit the [Web Chat v3 branch](https://github.com/microsoft/BotFramework-WebChat/tree/v3).
+> For previous versions of Web Chat (v3), visit the [Web Chat v3 branch](https://github.com/microsoft/BotFramework-WebChat/tree/v3) documentation.
 
 First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
 Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal. Then use the secret to [generate a token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) and pass it to your Web Chat.
@@ -136,7 +136,7 @@ See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-
 
 ## Supported Activity Types on the Web Chat Client
 
-[View activity types docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md)
+Bot Framework has many activity types, but not all are supported in Web Chat. [View activity types docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md) to learn more.
 
 # Samples list
 
@@ -200,7 +200,7 @@ See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-
 
 # Web Chat API Reference
 
-[View the API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md)
+[View the API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) for implementing Web Chat.
 
 # Browser compatibility
 
