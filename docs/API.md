@@ -1,3 +1,5 @@
+# Web Chat API Reference
+
 There are several properties that you might pass into your Web Chat React Component (`<ReactWebChat>`) or the `renderWebChat()` method. Feel free to examine the source code starting with [`packages/component/src/Composer.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js#L378). Below is a short description of the available props.
 
 | Property                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
