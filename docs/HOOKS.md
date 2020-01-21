@@ -301,7 +301,7 @@ usePostActivity(): (activity: Activity) => void
 
 When called, this function will post the activity on behalf of the user, to the bot.
 
-You can use this function to send any type of activity to the bot, however we highly recommend limiting the activity types to one of the following:
+You can use this function to send any type of activity to the bot, however we highly recommend limiting the [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md) to one of the following:
 
 -  `event`
 -  `message`
