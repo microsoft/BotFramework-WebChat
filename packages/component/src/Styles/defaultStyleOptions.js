@@ -17,6 +17,9 @@ const DEFAULT_OPTIONS = {
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
 
+  // Bidirectionality / LTR vs RTL:
+  dir: 'auto', // 'auto' || 'ltr' || 'rtl' - 'auto' will determine direction based off locale
+
   // Word break
   messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'
 

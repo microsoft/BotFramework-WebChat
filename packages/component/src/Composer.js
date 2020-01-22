@@ -145,6 +145,8 @@ const Composer = ({
   username,
   webSpeechPonyfillFactory
 }) => {
+  console.log('Composer: ');
+  console.log(dir);
   const dispatch = useDispatch();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [dictateAbortable, setDictateAbortable] = useState();
@@ -286,7 +288,8 @@ const Composer = ({
       webSpeechPonyfill
     ]
   );
-
+  console.log('context: ');
+  console.log(context);
   return (
     <WebChatUIContext.Provider value={context}>
       <SayComposer ponyfill={webSpeechPonyfill}>

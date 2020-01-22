@@ -9,6 +9,8 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
+import useDirection from '../hooks/useDirection';
+import useDirFromProps from '../hooks/internal/useDirFromProps';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -40,6 +42,9 @@ const connectSuggestedActions = (...selectors) =>
   );
 
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
+  const [dirFromProps] = useDirFromProps();
+  console.log(dirFromProps);
+  const [dir] = useDirection(dirFromProps);
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
   const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
