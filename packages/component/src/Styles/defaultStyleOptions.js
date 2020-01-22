@@ -147,13 +147,16 @@ const DEFAULT_OPTIONS = {
   spinnerAnimationBackgroundImage: null,
   spinnerAnimationHeight: 16,
   spinnerAnimationWidth: 16,
-  spinnerAnimationPaddingRight: 12,
+  spinnerAnimationPadding: 12,
 
   enableUploadThumbnail: true,
   uploadThumbnailContentType: 'image/jpeg',
   uploadThumbnailHeight: 360,
   uploadThumbnailQuality: 0.6,
-  uploadThumbnailWidth: 720
+  uploadThumbnailWidth: 720,
+
+  // deprecated; will be removed on or after 2021-2-1
+  spinnerAnimationPaddingRight: undefined
 };
 
 export default DEFAULT_OPTIONS;
