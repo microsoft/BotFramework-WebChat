@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2459](https://github.com/microsoft/BotFramework-WebChat/issues/2459). Updated Cognitive Services Speech Services to use latest fetch credentials signature, by [@compulim](https://github.com/compulim) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2759)
 -  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdunford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
 -  Fixes [#2822](https://github.com/microsoft/BotFramework-WebChat/issues/2822). Fixed `credentials` should return `authorizationToken` and `subscriptionKey` as string and allow empty LUIS reference grammar ID, by [@compulim](https://github.com/compulim) in PR [#2824](https://github.com/microsoft/BotFramework-WebChat/pull/2824)
--  Fixes [#2838](https://github.com/microsoft/BotFramework-WebChat/issues/2838). Fixed `concatMiddleware` should allow any middleware to call its downstream middleware twice, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#2838](https://github.com/microsoft/BotFramework-WebChat/issues/2838). Fixed `concatMiddleware` should allow any middleware to call its downstream middleware twice, by [@compulim](https://github.com/compulim) in PR [#2839](https://github.com/microsoft/BotFramework-WebChat/pull/2839)
 
 ### Changed
 
