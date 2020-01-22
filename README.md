@@ -140,7 +140,7 @@ Bot Framework has many activity types, but not all are supported in Web Chat. [V
 
 # Samples list
 
-[View the complete list of Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/SAMPLES.md) for more ideas on customizing Web Chat.
+[View the complete list of Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) for more ideas on customizing Web Chat.
 
 # Web Chat API Reference
 
