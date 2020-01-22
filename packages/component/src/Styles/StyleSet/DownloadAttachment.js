@@ -17,6 +17,7 @@ export default function createDownloadAttachmentStyle({ accent, bubbleTextColor,
       '& > .icon': {
         fill: accent,
         marginLeft: paddingRegular,
+        marginRight: paddingRegular,
         padding: paddingRegular
       },
 

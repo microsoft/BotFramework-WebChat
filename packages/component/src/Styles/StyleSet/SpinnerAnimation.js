@@ -2,7 +2,7 @@ export default function createSpinnerAnimationStyle({
   spinnerAnimationBackgroundImage,
   spinnerAnimationHeight,
   spinnerAnimationWidth,
-  spinnerAnimationPaddingRight
+  spinnerAnimationPadding
 }) {
   const backgroundImage = spinnerAnimationBackgroundImage
     ? spinnerAnimationBackgroundImage
@@ -13,7 +13,8 @@ export default function createSpinnerAnimationStyle({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     height: spinnerAnimationHeight,
-    paddingRight: spinnerAnimationPaddingRight,
+    paddingLeft: spinnerAnimationPadding,
+    paddingRight: spinnerAnimationPadding,
     width: spinnerAnimationWidth
   };
 }
