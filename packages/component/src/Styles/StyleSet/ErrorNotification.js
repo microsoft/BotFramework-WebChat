@@ -20,6 +20,7 @@ export default function createErrorNotificationStyle({
 
     '& > svg': {
       fill: failedConnectivity,
+      paddingLeft: connectivityIconPadding,
       paddingRight: connectivityIconPadding
     }
   };

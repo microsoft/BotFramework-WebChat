@@ -43,7 +43,9 @@ export default function createBubbleStyle({
 
     '&:not(.from-user)': {
       '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+        '& > .webchat__bubble__content': bubbleNubSize
+          ? { marginLeft: paddingRegular, marginRight: paddingRegular }
+          : {}
       },
 
       '& > .webchat__bubble__content': {
@@ -79,7 +81,9 @@ export default function createBubbleStyle({
 
     '&.from-user': {
       '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+        '& > .webchat__bubble__content': bubbleNubSize
+          ? { marginLeft: paddingRegular, marginRight: paddingRegular }
+          : {}
       },
 
       '& > .webchat__bubble__content': {

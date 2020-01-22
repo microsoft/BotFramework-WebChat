@@ -1,39 +1,48 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
+  const doublePadding = paddingRegular * 2;
   return {
     '&.webchat__stacked_extra_left_indent': {
-      marginLeft: paddingRegular * 2
+      marginLeft: doublePadding,
+      marginRight: doublePadding
     },
 
     '&:not(.webchat__stacked_extra_left_indent)': {
-      marginLeft: paddingRegular
+      marginLeft: paddingRegular,
+      marginRight: paddingRegular
     },
 
     '&.webchat__stacked_extra_right_indent': {
-      marginRight: paddingRegular * 2
+      marginLeft: doublePadding,
+      marginRight: doublePadding
     },
 
     '&:not(.webchat__stacked_extra_right_indent)': {
+      marginLeft: paddingRegular,
       marginRight: paddingRegular
     },
 
     '&:not(.from-user)': {
       '&.webchat__stacked_indented_content > .avatar': {
+        marginLeft: paddingRegular,
         marginRight: paddingRegular
       },
 
       '& > .content > .webchat__stacked_item_indented': {
-        marginLeft: paddingRegular
+        marginLeft: paddingRegular,
+        marginRight: paddingRegular
       }
     },
 
     '&.from-user': {
       '&.webchat__stacked_indented_content > .avatar': {
-        marginLeft: paddingRegular
+        marginLeft: paddingRegular,
+        marginRight: paddingRegular
       },
 
       '& > .content > .webchat__stacked_item_indented': {
+        marginLeft: paddingRegular,
         marginRight: paddingRegular
       }
     },
