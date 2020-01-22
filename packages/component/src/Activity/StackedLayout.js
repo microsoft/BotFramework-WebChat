@@ -91,7 +91,8 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
     from: { role } = {},
     text,
     textFormat,
-    timestamp
+    timestamp,
+    ariaLabels = {}
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
@@ -100,16 +101,23 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const plainText = remarkStripMarkdown(text);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
-  const botRoleLabel = useLocalize('BotSent');
-  const userRoleLabel = useLocalize('UserSent');
+  const defaultBotRoleLabel = useLocalize('BotSent');
+  const defaultUserRoleLabel = useLocalize('UserSent');
+
+  const botRoleLabel = ariaLabels.botRoleLabel || defaultBotRoleLabel;
+  const userRoleLabel = ariaLabels.userRoleLabel || defaultUserRoleLabel;
 
   const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
 
-  const botAriaLabel = useLocalize('Bot said something', initials, plainText);
-  const userAriaLabel = useLocalize('User said something', initials, plainText);
-  const sentAtTimestamp = useLocalize('SentAt') + useLocalizeDate(timestamp);
+  const defaultBotAriaLabel = useLocalize('Bot said something', initials, plainText);
+  const defaultUserAriaLabel = useLocalize('User said something', initials, plainText);
+
+  const botAriaLabel = ariaLabels.botAriaLabel || defaultBotAriaLabel;
+  const userAriaLabel = ariaLabels.userAriaLabel || defaultUserAriaLabel;
 
   const someoneSaidString = (fromUser ? userAriaLabel : botAriaLabel).trim();
+
+  const sentAtTimestamp = useLocalize('SentAt') + useLocalizeDate(timestamp);
 
   const ariaLabel = someoneSaidString + (someoneSaidString.endsWith('.') ? '' : '.') + ' ' + sentAtTimestamp;
 
@@ -182,7 +190,13 @@ StackedLayout.propTypes = {
     text: PropTypes.string,
     textFormat: PropTypes.string,
     timestamp: PropTypes.string,
-    type: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired,
+    ariaLabels: PropTypes.shape({
+      botAriaLabel: PropTypes.string,
+      userAriaLabel: PropTypes.string,
+      botRoleLabel: PropTypes.string,
+      userRoleLabel: PropTypes.string
+    })
   }).isRequired,
   children: PropTypes.any,
   timestampClassName: PropTypes.string
