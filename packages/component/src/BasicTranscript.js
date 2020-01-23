@@ -66,7 +66,7 @@ const BasicTranscript = ({ activityRenderer, attachmentRenderer, className, dir 
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const [direction] = useDirection(dir);
+  const [direction] = useDirection();
   const [groupTimestamp] = useGroupTimestamp();
   const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
 

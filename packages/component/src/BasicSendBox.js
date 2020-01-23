@@ -48,11 +48,11 @@ function useSendBoxSpeechInterimsVisible() {
   ];
 }
 
-const BasicSendBox = ({ className, dir }) => {
+const BasicSendBox = ({ className }) => {
   const [{ hideUploadButton }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
-  const [direction] = useDirection(dir);
+  const [direction] = useDirection();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
   const supportSpeechRecognition = !!SpeechRecognition;
@@ -82,8 +82,7 @@ BasicSendBox.defaultProps = {
 };
 
 BasicSendBox.propTypes = {
-  className: PropTypes.string,
-  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']).isRequired
+  className: PropTypes.string
 };
 
 export default BasicSendBox;
