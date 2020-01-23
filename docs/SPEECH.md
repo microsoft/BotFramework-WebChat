@@ -1,6 +1,6 @@
 # Using Cognitive Services Speech Services
 
-> For Direct Line Speech, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/DIRECT_LINE_SPEECH.md).
+> For Direct Line Speech, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md).
 
 This guide is for integrating speech-to-text and text-to-speech functionality of Azure Cognitive Services.
 

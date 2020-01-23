@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+-  Resolves [#2753](https://github.com/microsoft/BotFramework-WebChat/issues/2753). Added support for updating an activity by the ID, by [@compulim](https://github.com/compulim) in PR [#2825](https://github.com/microsoft/BotFramework-WebChat/pull/2825)
+
 ### Fixed
 
 -  Fixes [#2611](https://github.com/microsoft/BotFramework-WebChat/issues/2611). Fix sample 21: hooks errors, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
@@ -44,10 +46,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2647](https://github.com/microsoft/BotFramework-WebChat/issues/2647). Update the `CroppedImage` component `PropType`, by [@tdurnford](https://github.com/tdurnford) in PR [#2795](https://github.com/microsoft/BotFramework-WebChat/pull/2795)
 -  Fixes [#2794](https://github.com/microsoft/BotFramework-WebChat/issues/2794). Fix change locale sample, by [@corinagum](https://github.com/corinagum) in PR [#2798](https://github.com/microsoft/BotFramework-WebChat/pull/2798)
 -  Fixes [#2510](https://github.com/microsoft/BotFramework-WebChat/issues/2510). Host hybrid-react and clear-after-idle samples, by [@corinagum](https://github.com/corinagum) in PR [#2798](https://github.com/microsoft/BotFramework-WebChat/pull/2798)
--  Fixes [#2772](https://github.com/microsoft/BotFramework-WebChat/issues/2772). Updated Adaptive Cards HostConfig to include container styles, by [@tdurnford](https://github.com/tdurnford) in PR [#28XX](https://github.com/microsoft/BotFramework-WebChat/pull/2810)
+-  Fixes [#2772](https://github.com/microsoft/BotFramework-WebChat/issues/2772). Updated Adaptive Cards HostConfig to include container styles, by [@tdurnford](https://github.com/tdurnford) in PR [#2810](https://github.com/microsoft/BotFramework-WebChat/pull/2810)
 -  Fixes [#2145](https://github.com/microsoft/BotFramework-WebChat/issues/2145). Updated Adaptive Cards styles to include action styles, by [@tdurnford](https://github.com/tdurnford) in PR [#2810](https://github.com/microsoft/BotFramework-WebChat/pull/2810)
 -  Fixes [#2459](https://github.com/microsoft/BotFramework-WebChat/issues/2459). Updated Cognitive Services Speech Services to use latest fetch credentials signature, by [@compulim](https://github.com/compulim) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2759)
 -  Fixes [#1673](https://github.com/microsoft/BotFramework-WebChat/issues/1673). Configured suggested action and carousel flippers to blur on click, by [@tdunford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
+-  Fixes [#2822](https://github.com/microsoft/BotFramework-WebChat/issues/2822). Fixed `credentials` should return `authorizationToken` and `subscriptionKey` as string and allow empty LUIS reference grammar ID, by [@compulim](https://github.com/compulim) in PR [#2824](https://github.com/microsoft/BotFramework-WebChat/pull/2824)
+-  Fixes [#2751](https://github.com/microsoft/BotFramework-WebChat/issues/2751). Move documentation to docs folder, by [@corinagum](https://github.com/corinagum) in PR [#2832](https://github.com/microsoft/BotFramework-WebChat/pull/2832)
+-  Fixes [#2838](https://github.com/microsoft/BotFramework-WebChat/issues/2838). Fixed `concatMiddleware` should allow any middleware to call its downstream middleware twice, by [@compulim](https://github.com/compulim) in PR [#2839](https://github.com/microsoft/BotFramework-WebChat/pull/2839)
 
 ### Changed
 
@@ -351,7 +356,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2157](https://github.com/Microsoft/BotFramework-WebChat/issues/2157), added `emitTypingIndicator` action and dispatcher, by [@compulim](https://github.com/compulim), in PR [#2413](https://github.com/microsoft/BotFramework-WebChat/pull/2413)
 -  Resolves [#2307](https://github.com/Microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/Microsoft/BotFramework-WebChat/pull/2332)
 -  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/microsoft/BotFramework-WebChat/pull/2137) and PR [#2487](https://github.com/microsoft/BotFramework-WebChat/pull/2487)
--  Resolves [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
+-  Resolves [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md), by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
 -  Resolves [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
