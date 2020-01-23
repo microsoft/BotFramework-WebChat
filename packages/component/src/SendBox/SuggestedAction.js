@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import useDirection from '../hooks/useDirection';
 import useDisabled from '../hooks/useDisabled';
 import useFocusSendBox from '../hooks/useFocusSendBox';
 import usePerformCardAction from '../hooks/usePerformCardAction';
@@ -37,6 +38,7 @@ const connectSuggestedAction = (...selectors) =>
 const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const [direction] = useDirection();
   const [disabled] = useDisabled();
   const focusSendBox = useFocusSendBox();
   const performCardAction = usePerformCardAction();
@@ -50,7 +52,7 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
   return (
     <div aria-hidden={ariaHidden} className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
       <button disabled={disabled} onClick={handleClick} type="button">
-        {image && <img src={image} />}
+        {image && <img className={classNames(direction + '')} src={image} />}
         <nobr>{buttonText}</nobr>
       </button>
     </div>

@@ -54,7 +54,13 @@ export default function createSuggestedActionStyle({
 
       '& > img': {
         height: suggestedActionImageHeight,
-        paddingRight: paddingRegular
+
+        '.ltr': {
+          paddingRight: paddingRegular
+        },
+        '.rtl': {
+          paddingLeft: paddingRegular
+        }
       },
 
       '& > nobr': {
