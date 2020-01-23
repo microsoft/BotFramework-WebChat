@@ -20,8 +20,8 @@ export default function createSpinnerAnimationStyle({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     height: spinnerAnimationHeight,
-    paddingLeft: spinnerAnimationPadding,
-    paddingRight: spinnerAnimationPadding,
+    marginLeft: spinnerAnimationPadding,
+    marginRight: spinnerAnimationPadding,
     width: spinnerAnimationWidth
   };
 }
