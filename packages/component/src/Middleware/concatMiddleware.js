@@ -4,13 +4,13 @@ export default function concatMiddleware(...middlewares) {
 
     return last => {
       const stack = setup.slice();
-      const work = (...args) => {
-        const next = stack.shift();
+      const work = index => (...args) => {
+        const next = stack[index];
 
-        return (next ? next(work) : last)(...args);
+        return (next ? next(work(index + 1)) : last)(...args);
       };
 
-      return work;
+      return work(0);
     };
   };
 }
