@@ -160,7 +160,7 @@ Please note, however:
 
 # How to connect a client app to bot
 
-Web Chat provides UI on top of the Direct Line Channel. There are two ways to connect to your bot through HTTP calls from the client: by sending the Bot secret or generating a token via the secret.
+Web Chat provides UI on top of the Direct Line and Direct Line Speech Channels. There are two ways to connect to your bot through HTTP calls from the client: by sending the Bot secret or generating a token via the secret.
 
 <!-- TODO: https://github.com/microsoft/BotFramework-WebChat/issues/2151 -->
 <!-- Update the following paragraph and the API table (`directline`) with new documentation when updated docs are published  -->
