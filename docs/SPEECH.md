@@ -284,7 +284,7 @@ renderWebChat(
       directLine: createDirectLine({
          secret: 'YOUR_DIRECT_LINE_SECRET'
       }),
-      language: 'en-US',
+      locale: 'en-US',
       webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
          region: 'YOUR_REGION',
          subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
