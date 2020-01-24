@@ -6,6 +6,7 @@ import getRTLList from './getRTLList';
 import useLocalize from '../hooks/useLocalize';
 
 import arEG from './ar-EG';
+import arJO from './ar-JO';
 import bgBG from './bg-BG';
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -97,6 +98,8 @@ function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
     case 'ar-EG':
       return arEG;
+    case 'ar-JO':
+      return arJO;
     case 'bg-BG':
       return bgBG;
     case 'cs-CZ':
