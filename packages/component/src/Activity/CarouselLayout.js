@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -17,13 +18,16 @@ const ROOT_CSS = css({
 const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
 
+  const [direction] = useDirection();
   const leftLabel = useLocalize('Left');
+  const leftSideFlipper = direction === 'ltr' ? '<' : '>';
   const rightLabel = useLocalize('Right');
+  const rightSideFlipper = direction === 'ltr' ? '>' : '<';
 
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (
-    <Composer numItems={React.Children.count(children)}>
+    <Composer dir={direction} numItems={React.Children.count(children)}>
       <FilmContext.Consumer>
         {({ scrollBarWidth }) => (
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
@@ -38,7 +42,7 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
                   mode="left"
                 >
-                  <div className="button">{'<'}</div>
+                  <div className="button">{leftSideFlipper}</div>
                 </Flipper>
                 <Flipper
                   aria-label={rightLabel}
@@ -46,7 +50,7 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
                   mode="right"
                 >
-                  <div className="button">{'>'}</div>
+                  <div className="button">{rightSideFlipper}</div>
                 </Flipper>
               </React.Fragment>
             )}
