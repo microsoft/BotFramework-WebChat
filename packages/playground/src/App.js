@@ -455,6 +455,7 @@ const App = ({ store }) => {
             <select onChange={handleLanguageChange} value={language}>
               <option value="">Default ({window.navigator.language})</option>
               <option value="ar-EG">Arabic (Egypt)</option>
+              <option value="ar-JO">Arabic (Jordan)</option>
               <option value="bg-BG">Bulgarian</option>
               <option value="zh-HK">Chinese (Hong Kong)</option>
               <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
