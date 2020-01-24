@@ -1,4 +1,4 @@
-// Supported Azure language as of 2019-04-25
+// Supported Azure languages as of 2019-04-25
 // The first part is language (localization), the second part is regional format (internationalization)
 
 // en.en-us
@@ -20,6 +20,8 @@
 // zh-hans.zh-cn
 // zh-hant.zh-tw
 
+// Please note that Arabic and Hebrew are not currently supported by Azure
+
 const AZURE_LOCALE_PATTERN = /^(([a-z]{2})(-[a-z]{2,})?)\.([a-z]{2})/;
 const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})-([A-Z]{2,})?$/;
 
@@ -31,6 +33,7 @@ const AZURE_LOCALE_MAPPING = {
   en: 'en-US',
   es: 'es-ES',
   fr: 'fr-FR',
+  he: 'he-IL',
   hu: 'hu-HU',
   it: 'it-IT',
   ja: 'ja-JP',

@@ -28,6 +28,10 @@ test('Normalizing "fr.fr-fr"', () => {
   expect(normalize('fr.fr-fr')).toBe('fr-FR');
 });
 
+test('Normalizing "he.he-IL"', () => {
+  expect(normalize('he.he-IL')).toBe('he-IL');
+});
+
 test('Normalizing "hu.hu-hu"', () => {
   expect(normalize('hu.hu-hu')).toBe('hu-HU');
 });
