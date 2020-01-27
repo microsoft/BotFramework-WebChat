@@ -14,7 +14,7 @@ function nextTimer(origin, interval) {
   return time > now ? time : now + interval - ((now - time) % interval);
 }
 
-export default function useIntervalSince(origin, interval, fn) {
+export default function useForceRenderAtInterval(origin, interval, fn) {
   const [timer, setTimer] = useState(nextTimer(origin, interval));
   const handler = useCallback(() => {
     fn && fn();
@@ -22,4 +22,6 @@ export default function useIntervalSince(origin, interval, fn) {
   }, [fn, origin, interval]);
 
   useTimer(timer, handler);
+
+  return [timer, setTimer];
 }

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useIntervalSince from '../hooks/useIntervalSince';
+import useForceRenderAtInterval from '../hooks/useForceRenderAtInterval';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
@@ -12,7 +12,7 @@ const RelativeTime = ({ value }) => {
   const localizedAbsoluteTime = useLocalize('SentAt') + useLocalizeDate(value);
   const text = useLocalize('X minutes ago', value);
 
-  useIntervalSince(value, TIMER_INTERVAL);
+  useForceRenderAtInterval(value, TIMER_INTERVAL);
 
   return (
     <React.Fragment>
