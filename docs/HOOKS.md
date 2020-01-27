@@ -335,7 +335,7 @@ useRenderActivity(
 
 This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `nextVisibleActivity`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
 
-Because not all activities are rendered, for example, event activities are not rendered. The `nextVisibleActivity` is the pointer to next visible activity and is intended for activity status renderer on grouping timestamps for adjacent activities.
+Note that not all activities are rendered, e.g. the event activity. Because of this, those activities will not be rendered. The `nextVisibleActivity` is the pointer to the next visible activity and is intended for the activity status renderer on grouping timestamps for adjacent activities.
 
 ### New in 4.8.0
 
@@ -352,7 +352,7 @@ useRenderActivityStatus(): ({
 }) => React.Element
 ```
 
-This function is for rendering status of an activity. The caller will need to pass `activity` and `nextVisibleActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop.
+This function is for rendering the status of an activity. The caller will need to pass `activity` and `nextVisibleActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
@@ -454,7 +454,7 @@ When called, this function will send a `postBack` activity to the bot.
 useSendTimeoutForActivity(): (activity: Activity) => number
 ```
 
-When called, this function will return a functino to evaluate the timeout (in milliseconds) for sending a specific activity.
+When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useSendTypingIndicator`
 

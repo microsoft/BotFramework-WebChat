@@ -23,8 +23,8 @@ const connectSendStatus = (...selectors) =>
 
         postActivity(activity);
 
-        // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
-        // We want to make sure the user stay inside Web Chat
+        // After clicking on "retry", the button will be removed from the DOM and focus will be lost (back to document.body)
+        // This ensures that focus will stay within Web Chat
         focusSendBox();
       }
     }),

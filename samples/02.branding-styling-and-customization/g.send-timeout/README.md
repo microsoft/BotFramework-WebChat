@@ -1,6 +1,6 @@
 # Sample - Customize send timeout
 
-This sample shows how to customize send timeout.
+This sample shows how to customize the send timeout component.
 
 # Test out the hosted sample
 
@@ -17,7 +17,7 @@ This sample shows how to customize send timeout.
 
 > You will need to turn on airplane mode to test send timeout.
 
-1. After Web Chat is loaded, turn on airplane mode and send a message
+1. After Web Chat loads, turn on airplane mode and send a message
 1. Try out different timeout values and observe the change
    - Open developer tools and change to "Custom retry"
 
@@ -33,7 +33,7 @@ This sample will add a button bar with multiple send timeout values. When clicke
 
 ### Adding a button bar
 
-First, we will add a button bar to the HTML. The button bar contains multiple hyperlinks that will change the retry value through URL hashes.
+First, add a button bar to the HTML. The button bar contains multiple hyperlinks that will change the retry value through URL hashes.
 
 ```diff
   <body>
@@ -91,7 +91,7 @@ Then, we will style the button bar by adding the following CSS styles.
 + }
 ```
 
-When the page is loaded, you should see the button bar is loaded.
+When the page is loaded, you should see the button bar on the page.
 
 ### Hooking the button bar
 

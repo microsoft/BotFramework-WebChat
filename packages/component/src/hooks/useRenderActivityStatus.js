@@ -39,8 +39,8 @@ export default function useRenderActivityStatus({ activity, nextVisibleActivity 
     nextVisibleActivity
   ]);
 
-  // We ignore SEND_FAILED from activity, instead, we derive it here based on styleOptions.sendTimeout.
-  // Note that the derived state is time-sensitive. We will call useTimePast() hook to make sure it change over time.
+  // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
+  // Note that the derived state is time-sensitive. The useTimePast() hook is used to make sure it changes over time.
   const {
     channelData: { clientTimestamp = 0, state } = {},
     from: { role }

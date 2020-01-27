@@ -80,7 +80,7 @@ const BasicTranscript = ({ className }) => {
           ({ nextVisibleActivity, result }, activity, index) => {
             const element = renderActivityElement(activity, nextVisibleActivity);
 
-            // Until the activity pass thru middleware, we never know if it is going to show up.
+            // Until the activity passes through middleware, it is unknown whether the activity will be visible.
             // If the activity does not render, it will not be spoken if text-to-speech is enabled.
             if (element) {
               result = [

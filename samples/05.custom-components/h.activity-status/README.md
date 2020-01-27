@@ -1,6 +1,6 @@
 # Sample - Customize activity status
 
-This sample shows how to customize activity status.
+This sample shows how to customize the activity status component through middleware.
 
 # Test out the hosted sample
 
@@ -16,9 +16,9 @@ This sample shows how to customize activity status.
 # Things to try out
 
 - Type `echo Hello` to the bot
-   - Observe the timestamp change become "User at just now"
+   - Observe the timestamp change: the timestamp for the user now says "User at just now"
 - Turn on airplane mode and send anything
-   - When send failed, observe the timestamp become "Send failed." without retry prompt
+   - When send fails, observe the timestamp becomes "Send failed." **without** the original retry prompt
 
 # Code
 
@@ -28,7 +28,7 @@ This sample shows how to customize activity status.
 
 > Note: this sample is based from [`01.getting-started/e.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react).
 
-First, we will create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state is failed, developers could add custom retry logic.
+First, we will create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state returns as failed, developers can add custom retry logic to the app.
 
 ```diff
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
