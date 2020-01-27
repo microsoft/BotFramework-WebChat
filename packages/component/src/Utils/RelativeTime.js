@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useForceRenderAtInterval from '../hooks/useForceRenderAtInterval';
+import useForceRenderAtInterval from '../hooks/internal/useForceRenderAtInterval';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 
