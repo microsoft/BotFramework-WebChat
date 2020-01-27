@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2753](https://github.com/microsoft/BotFramework-WebChat/issues/2753). Added support for updating an activity by the ID, by [@compulim](https://github.com/compulim) in PR [#2825](https://github.com/microsoft/BotFramework-WebChat/pull/2825)
+-  Added custom hooks - `useTimer` and `useIntervalSince` - to replace the headless `Timer` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2771](https://github.com/microsoft/BotFramework-WebChat/pull/2771)
 
 ### Fixed
 
