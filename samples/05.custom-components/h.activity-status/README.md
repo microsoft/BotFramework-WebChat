@@ -28,7 +28,7 @@ This sample shows how to customize the activity status component through middlew
 
 > Note: this sample is based from [`01.getting-started/e.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react).
 
-First, we will create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state returns as failed, developers can add custom retry logic to the app.
+First, create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state returns as failed, developers can add custom retry logic to the app.
 
 ```diff
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -66,7 +66,7 @@ First, we will create a middleware to render activity status. The middleware wil
   );
 ```
 
-Then, we will pass the middleware to React thru props.
+Then, pass the middleware to React thru props.
 
 ```diff
   window.ReactDOM.render(
@@ -79,7 +79,7 @@ Then, we will pass the middleware to React thru props.
   );
 ```
 
-Lastly, we will set the CSS so the customized timestamp looks flushed.
+Lastly, set the CSS so the customized timestamp looks flushed.
 
 ```diff
   html,

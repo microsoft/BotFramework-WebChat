@@ -49,7 +49,7 @@ First, add a button bar to the HTML. The button bar contains multiple hyperlinks
     <script>
 ```
 
-Then, we will style the button bar by adding the following CSS styles.
+Then, style the button bar by adding the following CSS styles.
 
 ```diff
   html,
@@ -121,7 +121,7 @@ First, call `renderWebChat` on initial page load and on every `hashchange` event
   document.querySelector('#webchat > *').focus();
 ```
 
-Then, we will read the `sendTimeout` value from `location.hash` and update Web Chat.
+Then, read the `sendTimeout` value from `location.hash` and update Web Chat.
 
 ```diff
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -303,6 +303,8 @@ Here is the finished `index.html`:
 ```
 
 # Further reading
+
+[`useSendTimeoutForActivity` hook](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/HOOKS.md#useSendTimeoutForActivity)
 
 ## Full list of Web Chat hosted samples
 
