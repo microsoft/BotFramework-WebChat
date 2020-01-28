@@ -4,12 +4,12 @@ This sample shows how to customize the activity status component through middlew
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/h.activity-status)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/g.activity-status)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/05.custom-components/h.activity-status` in command line
+-  Navigate to `/Your-Local-WebChat/samples/05.custom-components/g.activity-status` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
