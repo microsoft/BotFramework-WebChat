@@ -132,7 +132,7 @@ Web Chat is designed to be customizable without forking the source code. The tab
 | Add new UI components         |            | &#10004; |
 | Recompose the whole UI        |            | &#10004; |
 
-See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
+See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/README.md) to learn more on customization.
 
 ## Supported Activity Types on the Web Chat Client
 
