@@ -4,12 +4,12 @@ This sample shows how to customize the send timeout component.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/g.send-timeout)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/h.send-timeout)
 
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/g.send-timeout` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/h.send-timeout` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
