@@ -48,7 +48,7 @@ export default function useRenderActivityStatus({ activity, nextVisibleActivity 
   const fromUser = role === 'user';
   const activitySent = state !== SENDING && state !== SEND_FAILED;
   const pastTimeout = useTimePast(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
-  const sendState = fromUser ? (activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING) : SENT;
+  const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
   return useCallback(() => activityStatusRenderer({ activity, nextVisibleActivity, sameTimestampGroup, sendState }), [
     activity,
