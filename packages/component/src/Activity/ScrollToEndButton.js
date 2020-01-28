@@ -4,12 +4,14 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import useDirection from '../hooks/useDirection';
 import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ScrollToEndButton = ({ className }) => {
+  const [direction] = useDirection();
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const scrollToEnd = useScrollToEnd();
@@ -20,7 +22,11 @@ const ScrollToEndButton = ({ className }) => {
   }, [focusSendBox, scrollToEnd]);
 
   return (
-    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={handleClick} type="button">
+    <button
+      className={classNames(scrollToEndButtonStyleSet + '', className + '', direction)}
+      onClick={handleClick}
+      type="button"
+    >
       {useLocalize('New messages')}
     </button>
   );

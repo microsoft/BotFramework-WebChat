@@ -22,7 +22,6 @@ export default function createScrollToEndButtonStyle({
     outline: 0,
     padding: paddingRegular,
     position: 'absolute',
-    right: 20,
 
     '&:hover': {
       backgroundColor: transcriptOverlayButtonBackgroundOnHover,
@@ -32,6 +31,14 @@ export default function createScrollToEndButtonStyle({
     '&:focus': {
       backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
       color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
+    },
+
+    '&.ltr': {
+      right: 20
+    },
+
+    '&.rtl': {
+      left: 20
     }
   };
 }
