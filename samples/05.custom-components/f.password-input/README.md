@@ -33,15 +33,17 @@ This component will render a simple form that asks the user to input their Two-F
 ```jsx
 const PasswordInputActivity = () => {
    return (
-      <form>
-         <label>
-            <span>Please input your 2FA code</span>
-            <input
-               autoFocus={true}
-               type="password"
-            />
-         </label>
-      </form>
+      <div>
+         <form>
+            <label>
+               <span>Please input your 2FA code</span>
+               <input
+                  autoFocus={true}
+                  type="password"
+               />
+            </label>
+         </form>
+      </div>
    );
 };
 }
@@ -51,12 +53,15 @@ Next, build the CSS and apply class names to the component.
 
 ```css
 .passwordInput {
+   margin: 10px;
+}
+
+.passwordInput .passwordInput__form {
    background-color: Red;
    border-radius: 3px;
    color: White;
    display: flex;
    font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-   margin: 10px;
    padding: 5px;
 }
 
@@ -89,19 +94,22 @@ Then, apply the style sheet to our React component.
 
 ```diff
    return (
--     <form>
-+     <form className="passwordInput">
--        <label>
-+        <label className="passwordInput__box">
--           <span>Please input your 2FA code</span>
-+           <span className="passwordInput__label">Please input your 2FA code</span>
-            <input
-               autoFocus={true}
-+              className="passwordInput__input"
-               type="password"
-            />
-         </label>
-      </form>
+-     <div>
++        <div className="passwordInput">
+-        <form>
++        <form className="passwordInput__form">
+-           <label>
++           <label className="passwordInput__box">
+-              <span>Please input your 2FA code</span>
++              <span className="passwordInput__label">Please input your 2FA code</span>
+               <input
+                  autoFocus={true}
++                 className="passwordInput__input"
+                  type="password"
+               />
+            </label>
+         </form>
+      </div>
    );
 ```
 
@@ -116,42 +124,59 @@ This component will have two callback functions, called `handleCodeChange` and `
 
 The `sendPostBack` function will be retrieved from Web Chat hooks via `useSendPostBack` function.
 
+The activity status will be rendered by calling `useRenderActivityStatus()` function
+
 ```diff
 -  const { ReactWebChat } = window.WebChat;
-+  const { hooks: { useSendPostBack }, ReactWebChat } = window.WebChat;
++  const {
++     hooks: { useRenderActivityStatus, useSendPostBack },
++     ReactWebChat
++  } = window.WebChat;
++
 +  const { useCallback, useState } = window.React;
 
-   const PasswordInputActivity = () => {
+-  const PasswordInputActivity = () => {
++  const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
 +     const [twoFACode, setTwoFACode] = useState('');
 +     const [submitted, setSubmitted] = useState(false);
++     const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 +     const sendPostBack = useSendPostBack();
 +
-+     const handleCodeChange = useCallback(({ target: { value } }) => {
-+        setTwoFACode(value);
-+     }, [setTwoFACode]);
++     const handleCodeChange = useCallback(
++        ({ target: { value } }) => {
++           setTwoFACode(value);
++        },
++        [setTwoFACode]
++     );
 +
-+     const handleSubmit = useCallback(event => {
-+        event.preventDefault();
++     const handleSubmit = useCallback(
++        event => {
++           event.preventDefault();
 +
-+        sendPostBack({ code: twoFACode });
-+        setSubmitted(true);
-+     }, [sendPostBack, setSubmitted, twoFACode]);
++           sendPostBack({ code: twoFACode });
++           setSubmitted(true);
++        },
++        [sendPostBack, setSubmitted, twoFACode]
++     );
 
       return (
--        <form className="passwordInput">
-+        <form className="passwordInput" onSubmit={handleSubmit}>
-            <label className="passwordInput__box">
-               <span className="passwordInput__label">Please input your 2FA code</span>
-               <input
-                  autoFocus={true}
-                  className="passwordInput__input"
-+                 disabled={submitted}
-+                 onChange={handleCodeChange}
-                  type="password"
-+                 value={twoFACode}
-               />
-            </label>
-         </form>
+         <div className="passwordInput">
+-           <form className="passwordInput__form">
++           <form className="passwordInput__form" onSubmit={handleSubmit}>
+               <label className="passwordInput__box">
+                  <span className="passwordInput__label">Please input your 2FA code</span>
+                  <input
+                     autoFocus={true}
+                     className="passwordInput__input"
++                    disabled={submitted}
++                    onChange={handleCodeChange}
+                     type="password"
++                    value={twoFACode}
+                  />
+               </label>
+            </form>
++           {renderActivityStatus()}
+         </div>
       );
    };
 ```
@@ -161,22 +186,20 @@ Finally, set up `activityMiddleware` to add the `<PasswordInputActivity />` comp
 When the bot send an event activity with the name `passwordInput`, show the `<PasswordInputActivity>` component instead.
 
 ```diff
-+  const activityMiddleware = () => next => card => {
-+     const {
-+        activity: { name, type }
-+     } = card;
++  const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
++     const { name, type } = activity;
 +
 +     if (type === 'event' && name === 'passwordInput') {
-+        return () => <PasswordInputActivity />;
++        return () => <PasswordInputActivity activity={activity} nextVisibleActivity={nextVisibleActivity} />;
 +     } else {
-+        return next(card);
++        return next({ activity, nextVisibleActivity, ...otherArgs });
 +     }
 +  };
 
    window.ReactDOM.render(
      <ReactWebChat
-+      activityMiddleware={ activityMiddleware }
-       directLine={ window.WebChat.createDirectLine({ token }) }
++      activityMiddleware={activityMiddleware}
+       directLine={window.WebChat.createDirectLine({ token })}
      />,
      document.getElementById('webchat')
    );
@@ -219,12 +242,15 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
          }
 
 +        .passwordInput {
++           margin: 10px;
++        }
++
++        .passwordInput .passwordInput__form {
 +           background-color: Red;
 +           border-radius: 3px;
 +           color: White;
 +           display: flex;
 +           font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-+           margin: 10px;
 +           padding: 5px;
 +        }
 +
@@ -260,54 +286,66 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
          (async function() {
             'use strict';
 
-+           const { hooks: { useSendPostBack }, ReactWebChat } = window.WebChat;
++           const {
++              hooks: { useRenderActivityStatus, useSendPostBack },
++              ReactWebChat
++           } = window.WebChat;
++
 +           const { useCallback, useState } = window.React;
-
-+           const PasswordInputActivity = () => {
++
++           const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
 +              const [twoFACode, setTwoFACode] = useState('');
 +              const [submitted, setSubmitted] = useState(false);
++              const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 +              const sendPostBack = useSendPostBack();
 +
-+              const handleCodeChange = useCallback(({ target: { value } }) => {
-+                 setTwoFACode(value);
-+              }, [setTwoFACode]);
++              const handleCodeChange = useCallback(
++                 ({ target: { value } }) => {
++                    setTwoFACode(value);
++                 },
++                 [setTwoFACode]
++              );
 +
-+              const handleSubmit = useCallback(event => {
-+                 event.preventDefault();
++              const handleSubmit = useCallback(
++                 event => {
++                    event.preventDefault();
 +
-+                 sendPostBack({ code: twoFACode });
-+                 setSubmitted(true);
-+              }, [sendPostBack, setSubmitted, twoFACode]);
++                    sendPostBack({ code: twoFACode });
++                    setSubmitted(true);
++                 },
++                 [sendPostBack, setSubmitted, twoFACode]
++              );
 +
 +              return (
-+                 <form className="passwordInput" onSubmit={handleSubmit}>
-+                    <label className="passwordInput__box">
-+                       <span className="passwordInput__label">Please input your 2FA code</span>
-+                       <input
-+                          autoFocus={true}
-+                          className="passwordInput__input"
-+                          disabled={submitted}
-+                          onChange={handleCodeChange}
-+                          type="twoFACode"
-+                          value={code}
-+                       />
-+                    </label>
-+                 </form>
++                 <div className="passwordInput">
++                    <form className="passwordInput__form" onSubmit={handleSubmit}>
++                       <label className="passwordInput__box">
++                          <span className="passwordInput__label">Please input your 2FA code</span>
++                          <input
++                             autoFocus={true}
++                             className="passwordInput__input"
++                             disabled={submitted}
++                             onChange={handleCodeChange}
++                             type="password"
++                             value={twoFACode}
++                          />
++                       </label>
++                    </form>
++                    {renderActivityStatus()}
++                 </div>
 +              );
 +           };
 
             const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
             const { token } = await res.json();
 +           const store = createStore();
-+           const activityMiddleware = () => next => card => {
-+              const {
-+                 activity: { name, type }
-+              } = card;
++           const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
++              const { name, type } = activity;
 +
 +              if (type === 'event' && name === 'passwordInput') {
-+                 return () => <PasswordInputActivity />;
++                 return () => <PasswordInputActivity activity={activity} nextVisibleActivity={nextVisibleActivity} />;
 +              } else {
-+                 return next(card);
++                 return next({ activity, nextVisibleActivity, ...otherArgs });
 +              }
 +           };
 
