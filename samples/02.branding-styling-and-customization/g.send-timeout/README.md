@@ -95,7 +95,7 @@ When the page is loaded, you should see the button bar on the page.
 
 ### Hooking the button bar
 
-When clicking on the button bar, the URL will be updated with a new retry value in hash. `hashchange` event will be intercepted and update `sendTimeout` value in Web Chat by calling `renderWebChat`.
+When clicking on the button bar, the URL will be updated with a new retry value in hash. The `hashchange` event will be intercepted and update the `sendTimeout` value in Web Chat by calling `renderWebChat`.
 
 First, call `renderWebChat` on initial page load and on every `hashchange` event. The `directLine` object will be memoized so it will not be recreated and reconnected on every call.
 
