@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "bootstrap": "lerna bootstrap --ci",
+    "build": "lerna run build --ignore sample-clear-after-idle"
+  },
+  "devDependencies": {
+    "lerna": "^3.19.0"
+  }
+}
