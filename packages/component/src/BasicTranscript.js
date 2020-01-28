@@ -38,7 +38,7 @@ function useMemoize(fn) {
     return run => {
       const nextCache = [];
       const result = run((...args) => {
-        const { result } = cache.find(
+        const { result } = [...cache, ...nextCache].find(
           ({ args: cachedArgs }) =>
             args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[index]))
         ) || { result: fn(...args) };
@@ -147,3 +147,5 @@ BasicTranscript.propTypes = {
 };
 
 export default BasicTranscript;
+
+export { useMemoize };
