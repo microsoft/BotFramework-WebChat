@@ -59,7 +59,6 @@ const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
@@ -89,7 +88,7 @@ const BasicTranscript = ({ className }) => {
                   element,
                   key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
 
-                  // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                  // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
                   shouldSpeak: activity.channelData && activity.channelData.speak
                 },
                 ...result

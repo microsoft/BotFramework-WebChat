@@ -35,9 +35,6 @@ const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
-
-  // TODO: [P4] Currently, this is the only place which use a templated string
-  //       We could refactor this into a general component if there are more templated strings
   const localizedSending = useLocalize('Sending');
   const localizedSendStatus = useLocalize('SendStatus');
 

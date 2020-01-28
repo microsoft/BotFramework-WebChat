@@ -50,7 +50,7 @@ function createActivityRenderer(additionalMiddleware) {
   };
 }
 
-// TODO: [P2] We should move these into <Composer>
+// TODO: [P2] #2859 We should move these into <Composer>
 function createActivityStatusRenderer(additionalMiddleware) {
   const activityStatusMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityStatusMiddleware())({});
 
@@ -67,7 +67,7 @@ function createActivityStatusRenderer(additionalMiddleware) {
   };
 }
 
-// TODO: [P2] We should move these into <Composer>
+// TODO: [P2] #2859 We should move these into <Composer>
 function createAttachmentRenderer(additionalMiddleware) {
   const attachmentMiddleware = concatMiddleware(additionalMiddleware, createCoreAttachmentMiddleware())({});
 
@@ -88,7 +88,7 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
-// TODO: [P1] Move to functional component
+// TODO: [P1] #2860 Move to functional component
 export default class BasicWebChat extends React.Component {
   constructor(props) {
     super(props);
@@ -102,7 +102,7 @@ export default class BasicWebChat extends React.Component {
     };
   }
 
-  // TODO: [P2] Move to React 16 APIs
+  // TODO: [P2] #2860 Move to React 16 APIs
   UNSAFE_componentWillReceiveProps({
     activityMiddleware: nextActivityMiddleware,
     activityStatusRenderer: nextActivityStatusMiddleware,
@@ -129,8 +129,6 @@ export default class BasicWebChat extends React.Component {
       sendBoxRef,
       state: { activityRenderer, activityStatusRenderer, attachmentRenderer }
     } = this;
-
-    // TODO: [P2] Implement "scrollToBottom" feature
 
     return (
       <Composer
