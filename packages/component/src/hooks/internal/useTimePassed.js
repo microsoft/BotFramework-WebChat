@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 
 // Returns true if Date.now() > at, otherwise, false.
 // If Date.now() does not meet "at" yet, will trigger a refresh when Date.now() meet "at".
-export default function useTimePast(at) {
+export default function useTimePassed(timeAt) {
   const now = Date.now();
   const [_, setDummy] = useState();
-  const past = now >= at;
+  const passed = now >= timeAt;
 
   useEffect(() => {
-    if (!past) {
-      const timeout = setTimeout(() => setDummy({}), Math.max(0, at - now));
+    if (!passed) {
+      const timeout = setTimeout(() => setDummy({}), Math.max(0, timeAt - now));
 
       return () => clearTimeout(timeout);
     }
-  }, [at, now, past]);
+  }, [now, passed, timeAt]);
 
-  return past;
+  return passed;
 }

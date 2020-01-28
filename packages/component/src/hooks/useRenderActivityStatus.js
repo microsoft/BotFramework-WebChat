@@ -3,7 +3,7 @@ import { useCallback, useContext, useMemo } from 'react';
 
 import useGroupTimestamp from './useGroupTimestamp';
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
-import useTimePast from './internal/useTimePast';
+import useTimePassed from './internal/useTimePassed';
 import WebChatUIContext from '../WebChatUIContext';
 
 const {
@@ -40,14 +40,14 @@ export default function useRenderActivityStatus({ activity, nextVisibleActivity 
   ]);
 
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
-  // Note that the derived state is time-sensitive. The useTimePast() hook is used to make sure it changes over time.
+  // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
   const {
     channelData: { clientTimestamp = 0, state } = {},
     from: { role }
   } = activity;
   const fromUser = role === 'user';
   const activitySent = state !== SENDING && state !== SEND_FAILED;
-  const pastTimeout = useTimePast(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
+  const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
   const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
   return useCallback(() => activityStatusRenderer({ activity, nextVisibleActivity, sameTimestampGroup, sendState }), [
