@@ -37,7 +37,7 @@ export default function createBubbleStyle({
     },
 
     '& > .webchat__bubble__nub': {
-      overflow: 'hidden', // This style is for IE11 because it don't respect SVG viewport
+      overflow: 'hidden', // This style is for IE11 because it doesn't the respect SVG viewport
       position: 'absolute'
     },
 
@@ -67,7 +67,6 @@ export default function createBubbleStyle({
       '& > .webchat__bubble__nub': {
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
-        left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
         top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
         width: bubbleNubSize,
 
@@ -76,6 +75,13 @@ export default function createBubbleStyle({
           stroke: bubbleBorderColor,
           strokeWidth: bubbleBorderWidth
         }
+      },
+      '& > .ltr': {
+        left: bubbleBorderWidth - bubbleNubSize + paddingRegular
+      },
+      '& > .rtl': {
+        right: bubbleBorderWidth - bubbleNubSize + paddingRegular,
+        transform: 'scale(-1)'
       }
     },
 
@@ -104,7 +110,6 @@ export default function createBubbleStyle({
 
       '& > .webchat__bubble__nub': {
         height: bubbleFromUserNubSize,
-        right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
         top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
         width: bubbleFromUserNubSize,
@@ -114,6 +119,13 @@ export default function createBubbleStyle({
           stroke: bubbleFromUserBorderColor,
           strokeWidth: bubbleFromUserBorderWidth
         }
+      },
+      '& > .ltr': {
+        right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular
+      },
+      '& > .rtl': {
+        left: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
+        transform: 'scale(-1)'
       }
     }
   };

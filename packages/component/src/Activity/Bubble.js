@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import useDirection from '../hooks/useDirection';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -14,14 +15,13 @@ const ROOT_CSS = css({
   '& > .webchat__bubble__content': {
     // This is for hiding content outside of the bubble, for example, content outside of border radius
     overflow: 'hidden'
-  },
-
-  '& > .webchat__bubble__nub': {
-    position: 'absolute'
   }
 });
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
+  // If direction is 'rtl', the nub will be horizontally mirrored
+  const [direction] = useDirection();
+
   if (!nubSize) {
     return false;
   }
@@ -42,7 +42,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
 
   return (
     <svg
-      className="webchat__bubble__nub"
+      className={classNames('webchat__bubble__nub', direction)}
       version="1.1"
       viewBox={`0 0 ${nubSize} ${nubSize}`}
       xmlns="http://www.w3.org/2000/svg"
