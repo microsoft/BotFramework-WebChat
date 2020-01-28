@@ -222,6 +222,13 @@ const Composer = ({
     };
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
+  const dictationOnError = useMemo(
+    err => {
+      console.error(err);
+    },
+    [console.error]
+  );
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -289,7 +296,7 @@ const Composer = ({
       <SayComposer ponyfill={webSpeechPonyfill}>
         {typeof children === 'function' ? children(context) : children}
       </SayComposer>
-      <Dictation />
+      <Dictation onError={dictationOnError} />
     </WebChatUIContext.Provider>
   );
 };
