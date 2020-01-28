@@ -79,7 +79,7 @@ Then, pass the middleware to React thru props.
   );
 ```
 
-Lastly, set the CSS so the customized timestamp looks flushed.
+Lastly, set the CSS so the customized timestamp looks fleshed out.
 
 ```diff
   html,
