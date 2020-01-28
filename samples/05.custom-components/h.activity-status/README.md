@@ -206,6 +206,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
+[`useRenderActivityStatus` hook](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/HOOKS.md#useRenderActivityStatus)
+
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
