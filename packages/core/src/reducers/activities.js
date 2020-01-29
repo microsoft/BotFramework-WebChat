@@ -27,7 +27,7 @@ function patchActivity(activity) {
   // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
   // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
 
-  // TODO: [P2] This "contentURL" removal code should be moved to DirectLineJS adapter.
+  // TODO: [P2] #2869 This "contentURL" removal code should be moved to DirectLineJS adapter.
 
   // Also, if the "contentURL" starts with "blob:", this means the user is uploading a file (the URL is constructed by URL.createObjectURL)
   // Although the copy/reference of the file is temporary in-memory, to make the UX consistent across page refresh, we do not allow the user to re-download the file either.
