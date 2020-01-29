@@ -52,7 +52,7 @@ function userSaidSomething(avatarInitials, text) {
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Kunde inte ansluta.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `kunde inte skicka, {Retry}.`,
+  SEND_FAILED_KEY: `kunde inte skicka, [försök igen][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Det tar längre än vanligt att ansluta.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -69,7 +69,6 @@ export default {
   'Listening…': 'Lyssnar…',
   'New messages': 'Nya meddelanden',
   Right: 'Höger',
-  Retry: 'försök igen',
   Send: 'Skicka',
   Sending: 'Skickar',
   Speak: 'Läs upp',

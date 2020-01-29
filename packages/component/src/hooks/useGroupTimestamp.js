@@ -1,5 +1,7 @@
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useStyleOptions from './useStyleOptions';
 
 export default function useGroupTimestamp() {
-  return [useWebChatUIContext().groupTimestamp];
+  const [{ groupTimestamp }] = useStyleOptions();
+
+  return [groupTimestamp];
 }

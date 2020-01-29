@@ -29,7 +29,8 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
   const { clockSkewAdjustment, locale } = yield select(
     combineSelectors({ clockSkewAdjustment: clockSkewAdjustmentSelector, locale: languageSelector })
   );
-  const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
+  const { attachments } = activity;
+  const clientActivityID = uniqueID();
 
   activity = {
     ...deleteKey(activity, 'id'),
@@ -42,10 +43,10 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
         thumbnailUrl
       })),
     channelData: {
+      ...deleteKey(activity.channelData, 'state'),
       clientActivityID,
       // This is unskewed local timestamp for estimating clock skew.
-      clientTimestamp: getTimestamp(),
-      ...deleteKey(activity.channelData, 'state')
+      clientTimestamp: getTimestamp()
     },
     channelId: 'webchat',
     from: {

@@ -52,7 +52,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Nettverksavbrudd oppstod. Kobler til på nytt…',
   RENDER_ERROR_NOTIFICATION: 'Rederingsfeil. Sjekk utviklerkonsollen eller kontakt botutvikleren.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `Kunne ikke sende. {Retry}.`,
+  SEND_FAILED_KEY: `Kunne ikke sende. [Prøv igjen][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Det tar lenger tid enn vanlig å koble til.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -71,7 +71,6 @@ export default {
   Left: 'Venstre',
   'Listening…': 'Lytter…',
   'New messages': 'Nye meldinger',
-  Retry: 'Prøv igjen',
   Right: 'Høyre',
   Send: 'Send',
   Sending: 'Sender',

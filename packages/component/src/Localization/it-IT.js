@@ -65,7 +65,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'La connessione è stata interrotta. Riconnessione…',
   RENDER_ERROR_NOTIFICATION: 'Errore di visualizzazione. Contatta lo sviluppatore del bot.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `Impossibile inviare, {Retry}.`,
+  SEND_FAILED_KEY: `Impossibile inviare, [Riprova][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Il Bot sta impiegando più tempo del solito per connettersi.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -82,7 +82,6 @@ export default {
   Left: 'Sinistra',
   'Listening…': 'Ascoltando…',
   'New messages': 'Nuovi messaggi',
-  Retry: 'Riprova',
   Right: 'Destra',
   Send: 'Invia',
   Sending: 'invio',

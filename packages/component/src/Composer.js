@@ -122,6 +122,7 @@ function createFocusSendBoxContext({ sendBoxRef }) {
 
 const Composer = ({
   activityRenderer,
+  activityStatusRenderer,
   attachmentRenderer,
   cardActionMiddleware,
   children,
@@ -162,12 +163,34 @@ const Composer = ({
     return sendTyping;
   }, [sendTyping, sendTypingIndicator]);
 
+  const patchedStyleOptions = useMemo(() => {
+    const patchedStyleOptions = { ...styleOptions };
+
+    if (typeof groupTimestamp !== 'undefined' && typeof patchedStyleOptions.groupTimestamp === 'undefined') {
+      console.warn(
+        'Web Chat: "groupTimestamp" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
+      );
+
+      patchedStyleOptions.groupTimestamp = groupTimestamp;
+    }
+
+    if (typeof sendTimeout !== 'undefined' && typeof patchedStyleOptions.sendTimeout === 'undefined') {
+      console.warn(
+        'Web Chat: "sendTimeout" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
+      );
+
+      patchedStyleOptions.sendTimeout = sendTimeout;
+    }
+
+    return patchedStyleOptions;
+  }, [groupTimestamp, sendTimeout, styleOptions]);
+
   useEffect(() => {
     dispatch(setLanguage(locale));
   }, [dispatch, locale]);
 
   useEffect(() => {
-    dispatch(setSendTimeout(sendTimeout));
+    typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
   }, [dispatch, sendTimeout]);
 
   useEffect(() => {
@@ -202,8 +225,8 @@ const Composer = ({
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
   const patchedStyleSet = useMemo(
-    () => styleSetToClassNames({ ...(styleSet || createStyleSet(styleOptions)), ...extraStyleSet }),
-    [extraStyleSet, styleOptions, styleSet]
+    () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
+    [extraStyleSet, patchedStyleOptions, styleSet]
   );
 
   const hoistedDispatchers = useMemo(
@@ -239,17 +262,16 @@ const Composer = ({
       ...focusSendBoxContext,
       ...hoistedDispatchers,
       activityRenderer,
+      activityStatusRenderer,
       attachmentRenderer,
       dictateAbortable,
       directLine,
       disabled,
       grammars: patchedGrammars,
-      groupTimestamp,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
       sendBoxRef,
-      sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
       setDictateAbortable,
       styleOptions,
@@ -260,13 +282,13 @@ const Composer = ({
     }),
     [
       activityRenderer,
+      activityStatusRenderer,
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
       directLine,
       disabled,
       focusSendBoxContext,
-      groupTimestamp,
       hoistedDispatchers,
       patchedGrammars,
       patchedSelectVoice,
@@ -275,7 +297,6 @@ const Composer = ({
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
-      sendTimeout,
       setDictateAbortable,
       styleOptions,
       userID,
@@ -326,18 +347,19 @@ export default ComposeWithStore;
 
 Composer.defaultProps = {
   activityRenderer: undefined,
+  activityStatusRenderer: undefined,
   attachmentRenderer: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   disabled: false,
   extraStyleSet: undefined,
   grammars: [],
-  groupTimestamp: true,
+  groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
   renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
-  sendTimeout: 20000,
+  sendTimeout: undefined,
   sendTyping: undefined,
   sendTypingIndicator: false,
   styleOptions: {},
@@ -349,6 +371,7 @@ Composer.defaultProps = {
 
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
+  activityStatusRenderer: PropTypes.func,
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,

@@ -67,9 +67,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
--  [`useRenderActivity`](#useRenderActivity)
--  [`useRenderAttachment`](#useRenderAttachment)
--  [`useRenderMarkdownAsHTML`](#useRenderMarkdownAsHTML)
+-  [`useRenderActivity`](#userenderactivity)
+-  [`useRenderActivityStatus`](#userenderactivitystatus)
+-  [`useRenderAttachment`](#userenderattachment)
+-  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -77,6 +78,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
+-  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 -  [`useStartDictate`](#usestartdictate)
@@ -327,11 +329,30 @@ useRenderActivity(
   }) => React.Element
 ): ({
   activity: Activity,
-  timestampClassName: string
+  nextVisibleActivity: Activity
 }) => React.Element
 ```
 
-This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `timestampClassName`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `nextVisibleActivity`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+
+Note that not all activities are rendered, e.g. the event activity. Because of this, those activities will not be rendered. The `nextVisibleActivity` is the pointer to the next visible activity and is intended for the activity status renderer on grouping timestamps for adjacent activities.
+
+### New in 4.8.0
+
+Previously, we use `timestampClassName` to control if the activity should show timestamp or not. The `timestampClassName` should be add as a `class` attribute the DOM element which contains the timestamp.
+
+Today, we pass `activity` and `nextVisibleActivity` to the middleware, so the `activityRendererMiddleware` make the decision about timestamp visibility. For example, developers can group timestamp based on activity type.
+
+## `useRenderActivityStatus`
+
+```js
+useRenderActivityStatus(): ({
+  activity: Activity,
+  nextVisibleActivity: Activity
+}) => React.Element
+```
+
+This function is for rendering the status of an activity. The caller will need to pass `activity` and `nextVisibleActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
@@ -426,6 +447,14 @@ useSendPostBack(): (value: any) => void
 ```
 
 When called, this function will send a `postBack` activity to the bot.
+
+## `useSendTimeoutForActivity`
+
+```js
+useSendTimeoutForActivity(): (activity: Activity) => number
+```
+
+When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useSendTypingIndicator`
 

@@ -5,7 +5,21 @@ import { timeouts } from '../constants.json';
 
 jest.setTimeout(timeouts.test);
 
-test('getter should return group timestamp set in props', async () => {
+test('getter should return group timestamp set in styleOptions', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        groupTimestamp: 1000
+      }
+    }
+  });
+
+  const [groupTimestamp] = await pageObjects.runHook('useGroupTimestamp');
+
+  expect(groupTimestamp).toMatchInlineSnapshot(`1000`);
+});
+
+test('getter should return group timestamp set in props (deprecated)', async () => {
   const { pageObjects } = await setupWebDriver({
     props: {
       groupTimestamp: 1000
@@ -17,7 +31,7 @@ test('getter should return group timestamp set in props', async () => {
   expect(groupTimestamp).toMatchInlineSnapshot(`1000`);
 });
 
-test('getter should return default group timestamp if not set in props', async () => {
+test('getter should return default group timestamp if not set in styleOptions', async () => {
   const { pageObjects } = await setupWebDriver();
 
   const [groupTimestamp] = await pageObjects.runHook('useGroupTimestamp');
@@ -27,7 +41,7 @@ test('getter should return default group timestamp if not set in props', async (
 
 test('getter should return false if group timestamp is disabled', async () => {
   const { pageObjects } = await setupWebDriver({
-    props: { groupTimestamp: false }
+    props: { styleOptions: { groupTimestamp: false } }
   });
 
   const [groupTimestamp] = await pageObjects.runHook('useGroupTimestamp');

@@ -14,7 +14,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, timestampClassName }) => {
+const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
 
   const leftLabel = useLocalize('Left');
@@ -27,7 +27,7 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
       <FilmContext.Consumer>
         {({ scrollBarWidth }) => (
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
-            <CarouselFilmStrip activity={activity} timestampClassName={timestampClassName}>
+            <CarouselFilmStrip activity={activity} nextVisibleActivity={nextVisibleActivity}>
               {children}
             </CarouselFilmStrip>
             {scrollBarWidth !== '100%' && (
@@ -59,13 +59,13 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
 
 CarouselLayout.defaultProps = {
   children: undefined,
-  timestampClassName: ''
+  nextVisibleActivity: undefined
 };
 
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  timestampClassName: PropTypes.string
+  nextVisibleActivity: PropTypes.any
 };
 
 export default CarouselLayout;
