@@ -14,6 +14,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -96,6 +97,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
+  const direction = useDirection();
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
 
@@ -141,7 +143,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-            <li aria-label=" " key={index}>
+            <li aria-label=" " key={index} className={direction}>
               <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
