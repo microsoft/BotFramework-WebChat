@@ -16,9 +16,11 @@ ImageAttachment.propTypes = {
   attachment: PropTypes.oneOfType([
     PropTypes.shape({
       contentUrl: PropTypes.string.isRequired,
-      name: PropTypes.string
+      name: PropTypes.string,
+      thumbnailUrl: PropTypes.string
     }),
     PropTypes.shape({
+      contentUrl: PropTypes.string,
       name: PropTypes.string,
       thumbnailUrl: PropTypes.string.isRequired
     })
