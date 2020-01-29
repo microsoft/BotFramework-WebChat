@@ -55,6 +55,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useConnectivityStatus`](#useconnectivitystatus)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
+-  [`useDirection`](#useDirection)
 -  [`useDisabled`](#usedisabled)
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocusSendBox`](#usefocussendbox)
@@ -192,6 +193,21 @@ This function will return one of the following dictation states:
 
 To control dictate state, use the [`useStartDictate`](#usestartdictate) and [`useStopDictate`](#usestopdictate) hooks.
 
+## `useDirection`
+
+```js
+useDirection(): [string]
+```
+
+This function will return one of two language direction:
+
+-  `ltr`: Web Chat UI should display as left-to-right
+-  `rtl`: Web Chat UI should display as right-to-left
+
+This value will be automatically configured based on the `locale` of Web Chat.
+
+If you would prefer to set this property manually, change the value `dir` prop passed to Web Chat.
+
 ## `useDisabled`
 
 ```js
@@ -248,7 +264,7 @@ useLanguage(): [string]
 
 This function will return the language of the UI. All UI components should honor this value.
 
-To modify this value, change the value in the style options prop passed to Web Chat.
+To modify this value, change the value in the `locale` prop passed to Web Chat.
 
 ## `useLastTypingAt`
 
