@@ -11,11 +11,18 @@ ImageAttachment.propTypes = {
   activity: PropTypes.shape({
     attachments: PropTypes.array.isRequired
   }).isRequired,
-  attachment: PropTypes.shape({
-    contentUrl: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    thumbnailUrl: PropTypes.string
-  }).isRequired
+
+  // Either attachment.contentUrl or attachment.thumbnailUrl must be specified.
+  attachment: PropTypes.oneOfType([
+    PropTypes.shape({
+      contentUrl: PropTypes.string.isRequired,
+      name: PropTypes.string
+    }),
+    PropTypes.shape({
+      name: PropTypes.string,
+      thumbnailUrl: PropTypes.string.isRequired
+    })
+  ]).isRequired
 };
 
 export default ImageAttachment;

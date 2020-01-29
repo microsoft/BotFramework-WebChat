@@ -2,9 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import AudioAttachment from '../../Attachment/AudioAttachment';
-import DownloadAttachment from '../../Attachment/DownloadAttachment';
+import FileAttachment from '../../Attachment/FileAttachment';
 import ImageAttachment from '../../Attachment/ImageAttachment';
-import UploadAttachment from '../../Attachment/UploadAttachment';
 import TextAttachment from '../../Attachment/TextAttachment';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
@@ -18,7 +17,7 @@ export default function createCoreMiddleware() {
       attachment: { contentType, contentUrl, thumbnailUrl } = {}
     }) =>
       role === 'user' && !/^text\//u.test(contentType) && !thumbnailUrl ? (
-        <UploadAttachment activity={activity} attachment={attachment} />
+        <FileAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />
       ) : /^image\//u.test(contentType) ? (
@@ -26,7 +25,7 @@ export default function createCoreMiddleware() {
       ) : /^video\//u.test(contentType) ? (
         <VideoAttachment activity={activity} attachment={attachment} />
       ) : contentUrl || contentType === 'application/octet-stream' ? (
-        <DownloadAttachment activity={activity} attachment={attachment} />
+        <FileAttachment activity={activity} attachment={attachment} />
       ) : /^text\//u.test(contentType) ? (
         <TextAttachment activity={activity} attachment={attachment} />
       ) : (
@@ -37,7 +36,8 @@ export default function createCoreMiddleware() {
       activity: PropTypes.any.isRequired,
       attachment: PropTypes.shape({
         contentType: PropTypes.string.isRequired,
-        contentUrl: PropTypes.string.isRequired
+        contentUrl: PropTypes.string,
+        thumbnailUrl: PropTypes.string
       }).isRequired
     };
 
