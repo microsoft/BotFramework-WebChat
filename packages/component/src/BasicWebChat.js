@@ -88,10 +88,18 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
-const BasicWebChat = ({ activityMiddleware, activityStatusMiddleware, attachmentMiddleware, className, ...otherProps }) => {
+const BasicWebChat = ({
+  activityMiddleware,
+  activityStatusMiddleware,
+  attachmentMiddleware,
+  className,
+  ...otherProps
+}) => {
   const sendBoxRef = useRef();
   const activityRenderer = useMemo(() => createActivityRenderer(activityMiddleware), [activityMiddleware]);
-  const activityStatusRenderer = useMemo(() => createActivityStatusRenderer(activityStatusMiddleware), [activityStatusMiddleware]);
+  const activityStatusRenderer = useMemo(() => createActivityStatusRenderer(activityStatusMiddleware), [
+    activityStatusMiddleware
+  ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
 
   return (
