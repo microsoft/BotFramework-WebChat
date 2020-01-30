@@ -21,7 +21,7 @@ test('show ZIP files with contentUrl', async () => {
                 Object.assign({}, activity, {
                   attachments: (activity.attachments || []).map(attachment =>
                     Object.assign({}, attachment, {
-                      contentUrl: 'http://example.org/'
+                      contentUrl: 'https://example.org/'
                     })
                   )
                 })
@@ -50,6 +50,17 @@ test('show ZIP files with contentUrl', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await expect(
+    driver.executeScript(() =>
+      document.querySelector('[role="listitem"]:nth-child(1) a[target="_blank"]').getAttribute('href')
+    )
+  ).resolves.toEqual('https://example.org/');
+  await expect(
+    driver.executeScript(() =>
+      document.querySelector('[role="listitem"]:nth-child(2) a[target="_blank"]').getAttribute('href')
+    )
+  ).resolves.toEqual('https://example.org/');
 });
 
 test('show ZIP files without contentUrl', async () => {
@@ -93,4 +104,11 @@ test('show ZIP files without contentUrl', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await expect(
+    driver.executeScript(() => !!document.querySelector('[role="listitem"]:nth-child(1) a'))
+  ).resolves.toBeFalsy();
+  await expect(
+    driver.executeScript(() => !!document.querySelector('[role="listitem"]:nth-child(2) a'))
+  ).resolves.toBeFalsy();
 });
