@@ -199,7 +199,7 @@ To control dictate state, use the [`useStartDictate`](#usestartdictate) and [`us
 useDirection(): [string]
 ```
 
-This function will return one of two language direction:
+This function will return one of two language directions:
 
 -  `ltr`: Web Chat UI should display as left-to-right
 -  `rtl`: Web Chat UI should display as right-to-left
