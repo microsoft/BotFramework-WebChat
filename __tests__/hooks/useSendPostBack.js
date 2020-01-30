@@ -15,7 +15,7 @@ test('calling sendPostBack should send a post back activity', async () => {
 
   await pageObjects.runHook('useSendPostBack', [], sendPostBack => sendPostBack({ hello: 'World!' }));
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 

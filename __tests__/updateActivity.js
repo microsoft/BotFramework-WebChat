@@ -78,12 +78,12 @@ test('should not replace activity without activity ID', async () => {
   await pageObjects.sendMessageViaSendBox('echo This message will not be replaced by a carousel.', {
     waitForSend: true
   });
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
-  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 

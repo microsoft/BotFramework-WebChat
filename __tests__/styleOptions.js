@@ -35,7 +35,7 @@ describe('style options', () => {
       waitForSend: true
     });
 
-    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });

@@ -9,7 +9,10 @@ import uiConnected from '../setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 test('calling sendFile should send files', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
+  const { driver, pageObjects } = await setupWebDriver({
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+    useProductionBot: true
+  });
 
   await driver.wait(uiConnected(), timeouts.directLine);
 

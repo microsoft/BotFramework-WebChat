@@ -24,7 +24,7 @@ test('update timestamp language on-the-fly', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
@@ -83,7 +83,7 @@ test('prepend text', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
@@ -94,7 +94,7 @@ test('change timestamp grouping on-the-fly', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
