@@ -21,8 +21,13 @@ export default function createWarningNotificationStyle({
 
     '& > svg': {
       fill: slowConnectivity,
-      paddingLeft: connectivityIconPadding,
-      paddingRight: connectivityIconPadding
+
+      '.ltr': {
+        paddingRight: connectivityIconPadding
+      },
+      '.rtl': {
+        paddingLeft: connectivityIconPadding
+      }
     }
   };
 }

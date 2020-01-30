@@ -20,8 +20,13 @@ export default function createSpinnerAnimationStyle({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     height: spinnerAnimationHeight,
-    marginLeft: spinnerAnimationPadding,
-    marginRight: spinnerAnimationPadding,
-    width: spinnerAnimationWidth
+    width: spinnerAnimationWidth,
+
+    '.ltr': {
+      marginRight: spinnerAnimationPadding
+    },
+    '.rtl': {
+      marginLeft: spinnerAnimationPadding
+    }
   };
 }
