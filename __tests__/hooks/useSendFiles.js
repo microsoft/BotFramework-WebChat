@@ -1,5 +1,6 @@
 import { imageSnapshotOptions, timeouts } from '../constants.json';
 
+import allOutgoingActivitiesSent from '../setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from '../setup/conditions/minNumActivitiesShown';
 import uiConnected from '../setup/conditions/uiConnected';
 
@@ -27,6 +28,7 @@ test('calling sendFile should send files', async () => {
   });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
