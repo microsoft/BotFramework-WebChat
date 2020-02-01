@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
+import BasicNotificationBox from './BasicNotificationBox';
 import BasicSendBox from './BasicSendBox';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
@@ -21,12 +22,16 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-const TRANSCRIPT_CSS = css({
-  flex: 1
+const NOTIFICATIONS_CSS = css({
+  flexShrink: 0
 });
 
 const SEND_BOX_CSS = css({
   flexShrink: 0
+});
+
+const TRANSCRIPT_CSS = css({
+  flex: 1
 });
 
 // TODO: [P2] We should move these into <Composer>
@@ -117,6 +122,7 @@ const BasicWebChat = ({
           sendFocusRef={sendBoxRef}
         >
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
+          <BasicNotificationBox className={NOTIFICATIONS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
         </TypeFocusSinkBox>
       )}

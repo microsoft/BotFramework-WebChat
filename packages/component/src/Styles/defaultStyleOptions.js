@@ -156,7 +156,12 @@ const DEFAULT_OPTIONS = {
   uploadThumbnailWidth: 720,
 
   // deprecated; will be removed on or after 2021-02-01
-  spinnerAnimationPaddingRight: undefined
+  spinnerAnimationPaddingRight: undefined,
+
+  // Notification UI
+
+  // New debounce timeout value only affect new notifications.
+  notificationDebounceTimeout: 400
 };
 
 export default DEFAULT_OPTIONS;

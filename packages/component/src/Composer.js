@@ -15,6 +15,7 @@ import {
   connect as createConnectAction,
   createStore,
   disconnect,
+  dismissNotification,
   emitTypingIndicator,
   markActivity,
   postActivity,
@@ -54,6 +55,7 @@ import {
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
+  dismissNotification,
   emitTypingIndicator,
   markActivity,
   postActivity,

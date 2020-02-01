@@ -6,6 +6,7 @@ import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
 import useDirection from './useDirection';
 import useDisabled from './useDisabled';
+import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocusSendBox from './useFocusSendBox';
 import useGrammars from './useGrammars';
@@ -58,6 +59,7 @@ export {
   useDictateState,
   useDirection,
   useDisabled,
+  useDismissNotification,
   useEmitTypingIndicator,
   useFocusSendBox,
   useGrammars,

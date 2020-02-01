@@ -7,6 +7,7 @@ import dictateInterims from './reducers/dictateInterims';
 import dictateState from './reducers/dictateState';
 import language from './reducers/language';
 import lastTypingAt from './reducers/lastTypingAt';
+import notifications from './reducers/notifications';
 import readyState from './reducers/readyState';
 import referenceGrammarID from './reducers/referenceGrammarID';
 import sendBoxValue from './reducers/sendBoxValue';
@@ -23,6 +24,7 @@ export default combineReducers({
   dictateState,
   language,
   lastTypingAt,
+  notifications,
   readyState,
   referenceGrammarID,
   sendBoxValue,
