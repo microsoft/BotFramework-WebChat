@@ -8,11 +8,56 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
       marginBottom: -17
     },
 
-    paddingLeft: paddingRegular,
+    '&:not(.webchat__carousel--rtl)': {
+      paddingLeft: paddingRegular,
 
-    '&.webchat__carousel_indented_content > .content': {
-      marginLeft: paddingRegular,
-      marginRight: paddingRegular
+      '&.webchat__carousel_indented_content > .content': {
+        marginLeft: paddingRegular
+      },
+
+      '& > .content': {
+        paddingRight: paddingRegular,
+
+        '& > .webchat__carousel__item_indented': {
+          marginLeft: paddingRegular
+        },
+
+        '& > ul > li:not(:last-child)': {
+          marginRight: paddingRegular
+        },
+
+        '& > .webchat__carousel__item_indented': {
+          marginLeft: paddingRegular
+        }
+      },
+
+      '&.webchat__carousel_extra_right_indent > .content': {
+        paddingRight: paddingRegular * 2
+      }
+    },
+
+    '&.webchat__carousel--rtl': {
+      paddingRight: paddingRegular,
+
+      '&.webchat__carousel_indented_content > .content': {
+        marginRight: paddingRegular
+      },
+
+      '& > .content': {
+        paddingLeft: paddingRegular,
+
+        '& > .webchat__carousel__item_indented': {
+          marginRight: paddingRegular
+        },
+
+        '& > ul > li:not(:last-child)': {
+          marginLeft: paddingRegular
+        }
+      },
+
+      '&.webchat__carousel_extra_right_indent > .content': {
+        paddingLeft: paddingRegular * 2
+      }
     },
 
     '& > .content': {
@@ -24,20 +69,7 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
         '& > li': {
           maxWidth: bubbleMaxWidth,
           minWidth: bubbleMinWidth
-        },
-
-        '&:not(:last-child) > .ltr': {
-          marginRight: paddingRegular
-        },
-
-        '&:not(:last-child) > .rtl': {
-          marginLeft: paddingRegular
         }
-      },
-
-      '& > .webchat__carousel__item_indented': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular
       }
     }
   };

@@ -118,9 +118,16 @@ const WebChatCarouselFilmStrip = ({
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
-        webchat__carousel_indented_content: initials && !indented
-      })}
+      className={classNames(
+        ROOT_CSS + '',
+        carouselFilmStripStyleSet + '',
+        className + '',
+        {
+          webchat__carousel_indented_content: initials && !indented,
+          webchat__carousel_extra_right_indent: !userInitials && bubbleFromUserNubSize
+        },
+        direction === 'rtl' ? 'webchat__carousel--rtl' : ''
+      )}
       ref={scrollableRef}
     >
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
@@ -143,7 +150,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-            <li aria-label=" " key={index} className={direction}>
+            <li aria-label=" " key={index}>
               <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
