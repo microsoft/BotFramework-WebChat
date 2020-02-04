@@ -3,7 +3,7 @@ import updateIn from 'simple-update-in';
 
 import walkMarkdownTokens from './walkMarkdownTokens';
 
-test('walk all children', () => {
+test('add class="markdown" to every node', () => {
   const markdownIt = new MarkdownIt();
   const tree = markdownIt.parse('Hello, [World](#world)!');
   const patchedTree = walkMarkdownTokens(tree, token => {
