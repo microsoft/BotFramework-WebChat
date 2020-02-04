@@ -1,6 +1,9 @@
-export default function createNotificationStyleSet({ paddingRegular }) {
+export default function createNotificationStyleSet({ fontSizeSmall, paddingRegular, primaryFont }) {
   return {
     alignItems: 'center',
+    fontFamily: primaryFont,
+    // fontSize: fontSizeSmall,
+    fontSize: '87.5%',
     minHeight: 32,
 
     '&.webchat__notification--error': {

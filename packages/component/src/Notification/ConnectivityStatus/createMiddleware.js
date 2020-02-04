@@ -8,9 +8,9 @@ import ConnectivityStatusReconnecting from './Reconnecting';
 
 function createConnectivityStatusMiddleware() {
   return () => next => notification => {
-    const { id, message } = notification;
+    const { message, notificationId } = notification;
 
-    if (id !== 'connectivitystatus') {
+    if (notificationId !== 'connectivitystatus') {
       return next(notification);
     }
 

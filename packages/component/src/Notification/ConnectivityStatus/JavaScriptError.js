@@ -7,14 +7,14 @@ import useLocalize from '../../hooks/useLocalize';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const ConnectivityStatusJavaScriptError = () => {
-  const [{ errorNotificationStyleSet }] = useStyleSet();
+  const [{ errorNotification: errorNotificationStyleSet }] = useStyleSet();
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
   const renderErrorNotificationText = useLocalize('RENDER_ERROR_NOTIFICATION');
 
   return (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + renderErrorNotificationText} />
-      <div aria-hidden={true} className={errorNotificationStyleSet}>
+      <div aria-hidden={true} className={errorNotificationStyleSet + ''}>
         <ErrorNotificationIcon />
         {renderErrorNotificationText}
       </div>

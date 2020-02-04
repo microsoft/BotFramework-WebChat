@@ -60,7 +60,7 @@ const BasicSendBox = ({ className }) => {
   return (
     <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} dir={direction} role="form">
       <TypingIndicator />
-      <ConnectivityStatus />
+      {/* <ConnectivityStatus /> */}
       <SuggestedActions />
       <div className="main">
         {!hideUploadButton && <UploadButton />}

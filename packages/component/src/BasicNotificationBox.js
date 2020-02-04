@@ -5,12 +5,12 @@ import updateIn from 'simple-update-in';
 
 import CollapseIcon from './Notification/CollapseIcon';
 import ExpandIcon from './Notification/ExpandIcon';
+import NotificationIcon from './Notification/NotificationIcon';
 import useNotifications from './hooks/useNotifications';
 import useRenderNotification from './hooks/useRenderNotification';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useTimer from './hooks/internal/useTimer';
-import NotificationIcon from './Notification/NotificationIcon';
 
 function isUndefined(obj) {
   return typeof obj === 'undefined';
@@ -22,7 +22,12 @@ const ROOT_CSS = css({
   display: 'flex',
   flexDirection: 'column',
 
-  '& button.webchat__notificationBox__expander': {
+  '& .webchat__notificationBox__accordion': {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+
+  '& .webchat__notificationBox__expander': {
     display: 'flex',
     flexShrink: 0,
     textAlign: 'initial'
@@ -32,7 +37,7 @@ const ROOT_CSS = css({
     flex: 1
   },
 
-  '& > ul': {
+  '& .webchat__notificationBox__list': {
     display: 'flex',
     flexDirection: 'column',
     listStyleType: 'none'
@@ -121,15 +126,29 @@ const BasicNotificationBox = () => {
     numNotifications <= 1 && setExpanded(false);
   }, [numNotifications]);
 
-  // debouncedNotificationsRef.current = filterMap(debouncedNotificationsRef.current, ({ nextUpdateAt }) => nextUpdateAt > now);
-  // debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [() => true, 'nextUpdateAt'], nextUpdateAt =>
-  //   typeof nextUpdateAt === 'number' ? nextUpdateAt : now + notificationDebounceTimeout
-  // );
+  debouncedNotificationsRef.current = filterMap(
+    debouncedNotificationsRef.current,
+    ({ id, updateNotBefore }) => notifications[id] || now < updateNotBefore
+  );
 
   forEachMap(notifications, ({ alt, id, level, message, persistent, timestamp }) => {
     debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [id], debouncedNotification => {
-      if (debouncedNotification && now < debouncedNotification.updateNotBefore) {
+      if (
+        debouncedNotification &&
+        alt === debouncedNotification.alt &&
+        level === debouncedNotification.level &&
+        message === debouncedNotification.message &&
+        persistent === debouncedNotification.persistent &&
+        timestamp === debouncedNotification.timestamp
+      ) {
         return debouncedNotification;
+      }
+
+      if (debouncedNotification && now <= debouncedNotification.updateNotBefore) {
+        return {
+          ...debouncedNotification,
+          outOfDate: true
+        };
       }
 
       return {
@@ -138,31 +157,33 @@ const BasicNotificationBox = () => {
         id,
         level,
         message,
+        outOfDate: false,
         persistent,
         timestamp,
-        updateNotBefore: now + notificationDebounceTimeout * 100
+        updateNotBefore: now + notificationDebounceTimeout
       };
     });
   });
 
-  debouncedNotificationsRef.current = filterMap(
-    debouncedNotificationsRef.current,
-    ({ id, updateNotBefore }) => notifications[id] || Date.now() < updateNotBefore
-  );
-
   const { updateNotBefore: earliestUpdateNotBefore } =
-    minOfMap(debouncedNotificationsRef.current, ({ updateNotBefore }) => updateNotBefore) || {};
+    minOfMap(
+      filterMap(debouncedNotificationsRef.current, ({ outOfDate }) => outOfDate),
+      ({ updateNotBefore }) => updateNotBefore
+    ) || {};
 
   const [, setForceRefresh] = useState();
+  const forceRefresh = useCallback(() => setForceRefresh({}), [setForceRefresh]);
 
-  useTimer(earliestUpdateNotBefore, () => setForceRefresh({}));
+  useTimer(earliestUpdateNotBefore, forceRefresh);
 
   const sortedNotifications = sortNotifications(debouncedNotificationsRef.current);
-  const expandable = sortedNotifications.length > 1;
+  const persistedNotifications = sortedNotifications.filter(({ persistent }) => persistent);
+  const temporalNotifications = sortedNotifications.filter(({ persistent }) => !persistent);
+  const expandable = temporalNotifications.length > 1;
   const handleToggleExpand = useCallback(() => {
     setExpanded(!expanded);
   }, [expanded, setExpanded]);
-  const highestLevel = sortedNotifications.map(({ level }) => level).sort(compareLevel)[0];
+  const highestLevel = temporalNotifications.map(({ level }) => level).sort(compareLevel)[0];
 
   console.group('BasicNotifications render');
   console.log({
@@ -171,41 +192,48 @@ const BasicNotificationBox = () => {
     debouncedNotifications: debouncedNotificationsRef.current,
     notificationDebounceTimeout,
     earliestUpdateNotBefore,
-    timeToRefresh: earliestUpdateNotBefore - now
+    timeToRefresh: now - earliestUpdateNotBefore
   });
   console.groupEnd();
 
   return (
-    <div
-      className={classNames(ROOT_CSS + '', notificationBoxStyleSet + '', {
-        'webchat__notificationBox--error': highestLevel === 'error',
-        'webchat__notificationBox--expandable': expandable,
-        'webchat__notificationBox--expanded': expanded,
-        'webchat__notificationBox--info': highestLevel === 'info',
-        'webchat__notificationBox--success': highestLevel === 'success',
-        'webchat__notificationBox--warn': highestLevel === 'warn'
-      })}
-      role="log"
-    >
-      {expandable && (
-        <button className="webchat__notificationBox__expander" onClick={handleToggleExpand} type="button">
-          <div className="webchat__notificationBox__expandLevelIconBox">
-            <NotificationIcon className="webchat__notificationBox__expandLevelIcon" level={highestLevel} />
-          </div>
-          <div className="webchat__notificationBox__expandText">
-            {sortedNotifications.length} Notifications: Click here to see details
-          </div>
-          <div className="webchat__notificationBox__expandIcon">{expanded ? <CollapseIcon /> : <ExpandIcon />}</div>
-        </button>
-      )}
-      <ul>
-        {sortedNotifications.map(({ alt, id, level, message, persistent }) => (
-          <li key={id}>
-            {renderNotification({ alt, id, level, message, persistent })}
-            {/* <Notification alt={alt} level={level} message={message} notificationId={id} persistent={persistent} /> */}
+    <div className={classNames(ROOT_CSS + '', notificationBoxStyleSet + '')} role="log">
+      <ul className="webchat__notificationBox__list">
+        {persistedNotifications.map(({ alt, id, level, message, persistent }) => (
+          <li className="webchat__notificationBox__listItem" key={id}>
+            {renderNotification({ alt, level, message, notificationId: id, persistent })}
           </li>
         ))}
       </ul>
+      <div
+        className={classNames('webchat__notificationBox__accordion', {
+          'webchat__notificationBox__accordion--expandable': expandable,
+          'webchat__notificationBox__accordion--expanded': expanded,
+          'webchat__notificationBox__accordion--error': highestLevel === 'error',
+          'webchat__notificationBox__accordion--info': highestLevel === 'info',
+          'webchat__notificationBox__accordion--success': highestLevel === 'success',
+          'webchat__notificationBox__accordion--warn': highestLevel === 'warn'
+        })}
+      >
+        {expandable && (
+          <button className="webchat__notificationBox__expander" onClick={handleToggleExpand} type="button">
+            <div className="webchat__notificationBox__expandLevelIconBox">
+              <NotificationIcon className="webchat__notificationBox__expandLevelIcon" level={highestLevel} />
+            </div>
+            <div className="webchat__notificationBox__expandText">
+              {temporalNotifications.length} Notifications: Click here to see details
+            </div>
+            <div className="webchat__notificationBox__expandIcon">{expanded ? <CollapseIcon /> : <ExpandIcon />}</div>
+          </button>
+        )}
+        <ul className="webchat__notificationBox__list">
+          {temporalNotifications.map(({ alt, id, level, message, persistent }) => (
+            <li className="webchat__notificationBox__listItem" key={id}>
+              {renderNotification({ alt, level, message, notificationId: id, persistent })}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

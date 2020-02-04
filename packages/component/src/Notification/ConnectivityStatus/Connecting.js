@@ -11,7 +11,9 @@ import WarningNotificationIcon from '../../Attachment/Assets/WarningNotification
 
 const ConnectivityStatusConnecting = () => {
   const [{ slowConnectionAfter }] = useStyleOptions();
-  const [{ connectivityNotificationStyleSet, warningNotificationStyleSet }] = useStyleSet();
+  const [
+    { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
+  ] = useStyleSet();
   const [initialRenderAt] = useState(() => Date.now());
   const [slow, setSlow] = useState(false);
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
@@ -25,7 +27,7 @@ const ConnectivityStatusConnecting = () => {
   return slow ? (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
-      <div aria-hidden={true} className={warningNotificationStyleSet}>
+      <div aria-hidden={true} className={warningNotificationStyleSet + ''}>
         <WarningNotificationIcon />
         {slowConnectionText}
       </div>
@@ -33,7 +35,7 @@ const ConnectivityStatusConnecting = () => {
   ) : (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + initialConnectionText} />
-      <div aria-hidden={true} className={connectivityNotificationStyleSet}>
+      <div aria-hidden={true} className={connectivityNotificationStyleSet + ''}>
         <SpinnerAnimation />
         {initialConnectionText}
       </div>

@@ -1,64 +1,16 @@
-export default function createNotificationsStyleSet({ fontSizeSmall, paddingRegular, primaryFont }) {
+export default function createNotificationsStyleSet() {
   return {
-    fontFamily: primaryFont,
-    // fontSize: fontSizeSmall,
-    fontSize: '87.5%',
     overflowY: 'hidden',
 
-    '&.webchat__notificationBox--error': {
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander': {
-        color: '#3B3A39',
-        fill: '#3B3A39'
-      },
-
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander, &:not(.webchat__notificationBox--expandable) ul': {
-        backgroundColor: '#FFF4CE'
-      }
-    },
-
-    '&.webchat__notificationBox--info': {
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander': {
-        color: '#105E7D',
-        fill: '#105E7D'
-      },
-
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander, &:not(.webchat__notificationBox--expandable) ul': {
-        backgroundColor: '#CEF1FF'
-      }
-    },
-
-    '&.webchat__notificationBox--success': {
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander': {
-        color: '#107C10',
-        fill: '#107C10'
-      },
-
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander, &:not(.webchat__notificationBox--expandable) ul': {
-        backgroundColor: '#DFF6DD'
-      }
-    },
-
-    '&.webchat__notificationBox--warn': {
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander': {
-        color: '#3B3A39',
-        fill: '#3B3A39'
-      },
-
-      '&.webchat__notificationBox--expandable .webchat__notificationBox__expander, &:not(.webchat__notificationBox--expandable) ul': {
-        backgroundColor: '#FFF4CE'
-      }
-    },
-
-    '&:not(.webchat__notificationBox--expandable)': {
-      // maxHeight: 32 * 2
+    '& .webchat__notificationBox__accordion:not(.webchat__notificationBox__accordion--expandable)': {
       maxHeight: 50
     },
 
-    '&.webchat__notificationBox--expandable:not(.webchat__notificationBox--expanded) > ul': {
+    '& .webchat__notificationBox__accordion--expandable:not(.webchat__notificationBox__accordion--expanded) > ul': {
       height: 0
     },
 
-    '&.webchat__notificationBox--expandable.webchat__notificationBox--expanded': {
+    '& .webchat__notificationBox__accordion--expandable.webchat__notificationBox__accordion--expanded': {
       maxHeight: 32 * 5
     },
 
@@ -71,6 +23,52 @@ export default function createNotificationsStyleSet({ fontSizeSmall, paddingRegu
       fill: '#A80000',
       minHeight: 32,
       padding: 0
+    },
+
+    '& .webchat__notificationBox__accordion--error': {
+      // TODO: Checks if pass A11y contrast ratio requirement
+
+      '&:not(.webchat__notificationBox__accordion--expandable), & .webchat__notificationBox__expander': {
+        backgroundColor: '#FFF4CE'
+      },
+
+      '& .webchat__notificationBox__expander': {
+        color: '#3B3A39',
+        fill: '#3B3A39'
+      }
+    },
+
+    '& .webchat__notificationBox__accordion--info': {
+      '&:not(.webchat__notificationBox__accordion--expandable), & .webchat__notificationBox__expander': {
+        backgroundColor: '#CEF1FF'
+      },
+
+      '& .webchat__notificationBox__expander': {
+        color: '#105E7D',
+        fill: '#105E7D'
+      }
+    },
+
+    '& .webchat__notificationBox__accordion--success': {
+      '&:not(.webchat__notificationBox__accordion--expandable), & .webchat__notificationBox__expander': {
+        backgroundColor: '#DFF6DD'
+      },
+
+      '& .webchat__notificationBox__expander': {
+        color: '#107C10',
+        fill: '#107C10'
+      }
+    },
+
+    '& .webchat__notificationBox__accordion--warn': {
+      '&:not(.webchat__notificationBox__accordion--expandable), & .webchat__notificationBox__expander': {
+        backgroundColor: '#FFF4CE'
+      },
+
+      '& .webchat__notificationBox__expander': {
+        color: '#3B3A39',
+        fill: '#3B3A39'
+      }
     },
 
     '& .webchat__notificationBox__expandLevelIconBox': {
@@ -89,14 +87,14 @@ export default function createNotificationsStyleSet({ fontSizeSmall, paddingRegu
       justifyContent: 'center'
     },
 
-    '& > ul': {
+    '& .webchat__notificationBox__list': {
       margin: 0,
       overflowY: 'auto',
-      padding: 0,
+      padding: 0
+    },
 
-      '& > li:not(:first-child)': {
-        borderTop: '1px solid #E8EAEC'
-      }
+    '& .webchat__notificationBox__listItem:not(:first-child)': {
+      borderTop: '1px solid #E8EAEC'
     }
   };
 }

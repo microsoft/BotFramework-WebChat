@@ -1,9 +1,9 @@
 const SET_NOTIFICATION = 'WEB_CHAT/SET_NOTIFICATION';
 
-export default function setNotification({ alt, expireAt, id, level, message, permanent }) {
+export default function setNotification({ alt, expireAt, id, level, message, persistent }) {
   return {
     type: SET_NOTIFICATION,
-    payload: { alt, expireAt, id, level, message, permanent }
+    payload: { alt, expireAt, id, level, message, persistent }
   };
 }
 
