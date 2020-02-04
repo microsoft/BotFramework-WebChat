@@ -5,8 +5,8 @@ import updateIn from 'simple-update-in';
 
 import CollapseIcon from './Notification/CollapseIcon';
 import ExpandIcon from './Notification/ExpandIcon';
-import Notification from './Notification/Notification';
 import useNotifications from './hooks/useNotifications';
+import useRenderNotification from './hooks/useRenderNotification';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useTimer from './hooks/internal/useTimer';
@@ -99,10 +99,6 @@ function forEachMap(map, iterator) {
   }
 }
 
-function mapMap(map, mapper) {
-  return Object.keys(map).map(key => mapper.call(map, map[key], key));
-}
-
 function sortNotifications(map) {
   return Object.keys(map)
     .reduce((array, id) => [...array, map[id]], [])
@@ -113,10 +109,11 @@ const BasicNotificationBox = () => {
   const now = Date.now();
 
   const [{ notificationBox: notificationBoxStyleSet }] = useStyleSet();
-  const debouncedNotificationsRef = useRef({});
-  const [notifications] = useNotifications();
-  const { notificationDebounceTimeout } = useStyleOptions();
   const [expanded, setExpanded] = useState(false);
+  const [notifications] = useNotifications();
+  const [{ notificationDebounceTimeout }] = useStyleOptions();
+  const debouncedNotificationsRef = useRef({});
+  const renderNotification = useRenderNotification();
   const numNotifications = Object.keys(notifications).length;
 
   useEffect(() => {
@@ -124,29 +121,41 @@ const BasicNotificationBox = () => {
     numNotifications <= 1 && setExpanded(false);
   }, [numNotifications]);
 
-  debouncedNotificationsRef.current = filterMap(debouncedNotificationsRef.current, ({ removeAt }) => removeAt > now);
-  debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [() => true, 'removeAt'], removeAt =>
-    typeof removeAt === 'number' ? removeAt : now + notificationDebounceTimeout
-  );
+  // debouncedNotificationsRef.current = filterMap(debouncedNotificationsRef.current, ({ nextUpdateAt }) => nextUpdateAt > now);
+  // debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [() => true, 'nextUpdateAt'], nextUpdateAt =>
+  //   typeof nextUpdateAt === 'number' ? nextUpdateAt : now + notificationDebounceTimeout
+  // );
 
   forEachMap(notifications, ({ alt, id, level, message, persistent, timestamp }) => {
-    debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [id], debouncedNotification => ({
-      ...debouncedNotification,
-      alt,
-      id,
-      level,
-      message,
-      persistent,
-      removeAt: undefined,
-      timestamp
-    }));
+    debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [id], debouncedNotification => {
+      if (debouncedNotification && now < debouncedNotification.updateNotBefore) {
+        return debouncedNotification;
+      }
+
+      return {
+        ...debouncedNotification,
+        alt,
+        id,
+        level,
+        message,
+        persistent,
+        timestamp,
+        updateNotBefore: now + notificationDebounceTimeout * 100
+      };
+    });
   });
 
-  const { removeAt: nextRemoveAt } = minOfMap(debouncedNotificationsRef.current, ({ removeAt }) => removeAt) || {};
+  debouncedNotificationsRef.current = filterMap(
+    debouncedNotificationsRef.current,
+    ({ id, updateNotBefore }) => notifications[id] || Date.now() < updateNotBefore
+  );
+
+  const { updateNotBefore: earliestUpdateNotBefore } =
+    minOfMap(debouncedNotificationsRef.current, ({ updateNotBefore }) => updateNotBefore) || {};
 
   const [, setForceRefresh] = useState();
 
-  useTimer(nextRemoveAt, () => setForceRefresh({}));
+  useTimer(earliestUpdateNotBefore, () => setForceRefresh({}));
 
   const sortedNotifications = sortNotifications(debouncedNotificationsRef.current);
   const expandable = sortedNotifications.length > 1;
@@ -160,8 +169,9 @@ const BasicNotificationBox = () => {
     highestLevel,
     notifications,
     debouncedNotifications: debouncedNotificationsRef.current,
-    nextRemoveAt,
-    timeToRefresh: nextRemoveAt - now
+    notificationDebounceTimeout,
+    earliestUpdateNotBefore,
+    timeToRefresh: earliestUpdateNotBefore - now
   });
   console.groupEnd();
 
@@ -191,7 +201,8 @@ const BasicNotificationBox = () => {
       <ul>
         {sortedNotifications.map(({ alt, id, level, message, persistent }) => (
           <li key={id}>
-            <Notification alt={alt} level={level} message={message} notificationId={id} persistent={persistent} />
+            {renderNotification({ alt, id, level, message, persistent })}
+            {/* <Notification alt={alt} level={level} message={message} notificationId={id} persistent={persistent} /> */}
           </li>
         ))}
       </ul>

@@ -138,6 +138,7 @@ const DEFAULT_OPTIONS = {
   failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
   notificationText: '#5E5E5E',
+  slowConnectionAfter: 15000,
 
   typingAnimationBackgroundImage: null,
   typingAnimationDuration: 5000,

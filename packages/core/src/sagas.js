@@ -2,6 +2,7 @@ import { fork } from 'redux-saga/effects';
 
 import clearExpiredNotificationsSaga from './sagas/clearExpiredNotifications';
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
+import connectionStatusToNotificationSaga from './sagas/connectionStatusToNotificationSaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
 import connectSaga from './sagas/connectSaga';
 import detectSlowConnectionSaga from './sagas/detectSlowConnectionSaga';
@@ -27,6 +28,7 @@ export default function* sagas() {
 
   yield fork(clearExpiredNotificationsSaga);
   yield fork(clearSuggestedActionsOnPostActivitySaga);
+  yield fork(connectionStatusToNotificationSaga);
   yield fork(connectionStatusUpdateSaga);
   yield fork(connectSaga);
   yield fork(detectSlowConnectionSaga);

@@ -14,6 +14,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createCoreNotificationMiddleware from './Middleware/Notification/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
@@ -93,11 +94,35 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
+// TODO: [P2] #2859 We should move these into <Composer>
+function createNotificationRenderer(additionalMiddleware) {
+  const notificationMiddleware = concatMiddleware(additionalMiddleware, createCoreNotificationMiddleware())({});
+
+  return (...args) => {
+    try {
+      return notificationMiddleware(() => (
+        <ErrorBox message="No renderer for this notification">
+          <pre>{JSON.stringify(attachment, null, 2)}</pre>
+        </ErrorBox>
+      ))(...args);
+    } catch ({ message, stack }) {
+      console.error({ message, stack });
+
+      return (
+        <ErrorBox message="Failed to render notification">
+          <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
+        </ErrorBox>
+      );
+    }
+  };
+}
+
 const BasicWebChat = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentMiddleware,
   className,
+  notificationMiddleware,
   ...otherProps
 }) => {
   const sendBoxRef = useRef();
@@ -106,12 +131,14 @@ const BasicWebChat = ({
     activityStatusMiddleware
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
+  const notificationRenderer = useMemo(() => createNotificationRenderer(notificationMiddleware), [attachmentMidnotificationMiddlewaredleware]);
 
   return (
     <Composer
       activityRenderer={activityRenderer}
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
+      notificationRenderer={notificationRenderer}
       sendBoxRef={sendBoxRef}
       {...otherProps}
     >
