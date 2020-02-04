@@ -37,17 +37,14 @@ export default function createBubbleStyle({
     },
 
     '& > .webchat__bubble__nub': {
-      overflow: 'hidden', // This style is for IE11 because it doesn't the respect SVG viewport
+      overflow: 'hidden', // This style is for IE11 because it don't respect SVG viewport
       position: 'absolute'
     },
 
     '&:not(.from-user)': {
       '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize
-          ? { marginLeft: paddingRegular, marginRight: paddingRegular }
-          : {}
+        // '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
       },
-
       '& > .webchat__bubble__content': {
         background: bubbleBackground,
         borderColor: bubbleBorderColor,
@@ -64,6 +61,27 @@ export default function createBubbleStyle({
         ...(bubbleNubSize && !botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
       },
 
+      '&:not(.webchat__bubble--rtl)': {
+        '&.webchat__bubble_has_nub': {
+          '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+        },
+
+        '& > .webchat__bubble__nub': {
+          left: bubbleBorderWidth - bubbleNubSize + paddingRegular
+        }
+      },
+
+      '&.webchat__bubble--rtl': {
+        '&.webchat__bubble_has_nub': {
+          '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+        },
+
+        '& > .webchat__bubble__nub': {
+          right: bubbleBorderWidth - bubbleNubSize + paddingRegular,
+          transform: 'scale(-1,1)'
+        }
+      },
+
       '& > .webchat__bubble__nub': {
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
@@ -75,23 +93,10 @@ export default function createBubbleStyle({
           stroke: bubbleBorderColor,
           strokeWidth: bubbleBorderWidth
         }
-      },
-      '& > .ltr': {
-        left: bubbleBorderWidth - bubbleNubSize + paddingRegular
-      },
-      '& > .rtl': {
-        right: bubbleBorderWidth - bubbleNubSize + paddingRegular,
-        transform: 'scale(-1)'
       }
     },
 
     '&.from-user': {
-      '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize
-          ? { marginLeft: paddingRegular, marginRight: paddingRegular }
-          : {}
-      },
-
       '& > .webchat__bubble__content': {
         background: bubbleFromUserBackground,
         borderColor: bubbleFromUserBorderColor,
@@ -108,6 +113,26 @@ export default function createBubbleStyle({
         ...(bubbleFromUserNubSize && !userNubUpSideDown ? { borderTopRightRadius: userNubCornerRadius } : {})
       },
 
+      '&:not(.webchat__bubble--rtl)': {
+        '&.webchat__bubble_has_nub': {
+          '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+        },
+
+        '& > .webchat__bubble__nub': {
+          right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular
+        }
+      },
+
+      '&.webchat__bubble--rtl': {
+        '&.webchat__bubble_has_nub': {
+          '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+        },
+        '& > .webchat__bubble__nub': {
+          left: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
+          transform: 'scale(-1, 1)'
+        }
+      },
+
       '& > .webchat__bubble__nub': {
         height: bubbleFromUserNubSize,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
@@ -119,13 +144,6 @@ export default function createBubbleStyle({
           stroke: bubbleFromUserBorderColor,
           strokeWidth: bubbleFromUserBorderWidth
         }
-      },
-      '& > .ltr': {
-        right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular
-      },
-      '& > .rtl': {
-        left: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
-        transform: 'scale(-1)'
       }
     }
   };

@@ -19,9 +19,6 @@ const ROOT_CSS = css({
 });
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
-  // If direction is 'rtl', the nub will be horizontally mirrored
-  const [direction] = useDirection();
-
   if (!nubSize) {
     return false;
   }
@@ -42,7 +39,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
 
   return (
     <svg
-      className={classNames('webchat__bubble__nub', direction)}
+      className={'webchat__bubble__nub'}
       version="1.1"
       viewBox={`0 0 ${nubSize} ${nubSize}`}
       xmlns="http://www.w3.org/2000/svg"
@@ -85,18 +82,20 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         nubSize: bubbleNubSize,
         side: 'bot'
       };
+  const [direction] = useDirection();
 
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
+        direction === 'rtl' ? 'webchat__bubble--rtl' : '',
         bubbleStyleSet + '',
         { 'from-user': fromUser, webchat__bubble_has_nub: nub },
         className + '' || ''
       )}
     >
-      <div className="webchat__bubble__content">{children}</div>
+      <div className={classNames('webchat__bubble__content')}>{children}</div>
       {nub && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
     </div>
   );
