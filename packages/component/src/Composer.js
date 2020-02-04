@@ -38,6 +38,7 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
+import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
@@ -220,6 +221,18 @@ const Composer = ({
 
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
 
+  const internalRenderMarkdownInline = useMemo(
+    () => markdown => {
+      const tree = internalMarkdownIt.parseInline(markdown);
+
+      // We should add rel="noopener noreferrer" and target="_blank"
+      const patchedTree = addTargetBlankToHyperlinksMarkdown(tree);
+
+      return internalMarkdownIt.renderer.render(patchedTree);
+    },
+    [internalMarkdownIt]
+  );
+
   const cardActionContext = useMemo(() => createCardActionContext({ cardActionMiddleware, directLine, dispatch }), [
     cardActionMiddleware,
     directLine,
@@ -282,6 +295,7 @@ const Composer = ({
       disabled,
       grammars: patchedGrammars,
       internalMarkdownIt,
+      internalRenderMarkdownInline,
       notificationRenderer,
       renderMarkdown,
       scrollToEnd,

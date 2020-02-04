@@ -4,15 +4,13 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
-import updateIn from 'simple-update-in';
 
 import { useDismissNotification } from '../hooks';
 import DismissIcon from './DismissIcon';
-import useStyleSet from '../hooks/useStyleSet';
-import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import NotificationIcon from './NotificationIcon';
-import walkMarkdownTokens from '../Utils/walkMarkdownTokens';
 import ScreenReaderText from '../ScreenReaderText';
+import useInternalRenderMarkdownInline from '../hooks/internal/useInternalRenderMarkdownInline';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -26,48 +24,15 @@ const ROOT_CSS = css({
   }
 });
 
-function updateMarkdownAttrs(token, updater) {
-  return updateIn(token, ['attrs'], attrs => {
-    const map = attrs.reduce((map, [name, value]) => ({ ...map, [name]: value }), {});
-    const nextMap = updater(map);
-
-    return Object.keys(nextMap).reduce((attrs, key) => [...attrs, [key, nextMap[key]]], []);
-  });
-}
-
-function addTargetBlankToHyperlinks(markdownTokens) {
-  return walkMarkdownTokens(markdownTokens, markdownToken => {
-    switch (markdownToken.type) {
-      case 'link_open':
-        markdownToken = updateMarkdownAttrs(markdownToken, attrs => ({
-          ...attrs,
-          rel: 'noopener noreferrer',
-          target: '_blank'
-        }));
-
-        break;
-
-      default:
-        break;
-    }
-
-    return markdownToken;
-  });
-}
-
 const Notification = ({ alt, level, message, notificationId, persistent }) => {
   const [{ notification: notificationStyleSet }] = useStyleSet();
   const dismissNotification = useDismissNotification();
-  const handleDismissNotification = useCallback(() => {
-    dismissNotification(notificationId);
-  }, [dismissNotification, notificationId]);
-  const [markdownIt] = useInternalMarkdownIt();
-  const html = useMemo(() => {
-    const tree = markdownIt.parseInline(message);
-    const updatedTree = addTargetBlankToHyperlinks(tree);
-
-    return { __html: markdownIt.renderer.render(updatedTree) };
-  }, [markdownIt, message]);
+  const handleDismissNotification = useCallback(() => dismissNotification(notificationId), [
+    dismissNotification,
+    notificationId
+  ]);
+  const renderMarkdownInline = useInternalRenderMarkdownInline();
+  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
 
   return (
     <div
