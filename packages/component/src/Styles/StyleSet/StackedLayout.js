@@ -1,49 +1,63 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
-  const doublePadding = paddingRegular * 2;
   return {
     '&.webchat__stacked_extra_left_indent': {
-      marginLeft: doublePadding,
-      marginRight: doublePadding
+      marginLeft: paddingRegular * 2
     },
 
     '&:not(.webchat__stacked_extra_left_indent)': {
-      marginLeft: paddingRegular,
-      marginRight: paddingRegular
+      marginLeft: paddingRegular
     },
 
     '&.webchat__stacked_extra_right_indent': {
-      marginLeft: doublePadding,
-      marginRight: doublePadding
+      marginRight: paddingRegular * 2
     },
 
     '&:not(.webchat__stacked_extra_right_indent)': {
-      marginLeft: paddingRegular,
       marginRight: paddingRegular
     },
+    '&:not(.webchat__stacked--rtl)': {
+      '&:not(.from-user)': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginRight: paddingRegular
+        },
 
-    '&:not(.from-user)': {
-      '&.webchat__stacked_indented_content > .avatar': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular
+        '& > .content > .webchat__stacked_item_indented': {
+          marginLeft: paddingRegular
+        }
       },
 
-      '& > .content > .webchat__stacked_item_indented': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular
+      '&.from-user': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginLeft: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginRight: paddingRegular
+        }
       }
     },
 
-    '&.from-user': {
-      '&.webchat__stacked_indented_content > .avatar': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular
+    '&.webchat__stacked--rtl': {
+      '&:not(.from-user)': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginLeft: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginRight: paddingRegular
+        }
       },
 
-      '& > .content > .webchat__stacked_item_indented': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular
+      '&.from-user': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginRight: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginLeft: paddingRegular
+        }
       }
     },
 
