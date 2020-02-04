@@ -56,7 +56,7 @@ export default {
   RENDER_ERROR_NOTIFICATION:
     'Ocorreu um erro a renderizar. Por favor verifique a consola ou contacte o developer do bot.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: 'O envio falhou. {Retry}.',
+  SEND_FAILED_KEY: 'O envio falhou. [Tentar novamente][retry].',
   SLOW_CONNECTION_NOTIFICATION: 'A ligação está a demorar mais tempo que o normal',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -72,7 +72,6 @@ export default {
   'Microphone off': 'Desligar microfone',
   'Microphone on': 'Ligar microfone',
   'New messages': 'Novas mensagens',
-  Retry: 'Tentar novamente',
   Right: 'Direita',
   Send: 'Enviar',
   Sending: 'A enviar',

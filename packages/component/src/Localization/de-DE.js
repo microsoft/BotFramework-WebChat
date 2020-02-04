@@ -44,7 +44,7 @@ function xMinutesAgo(dateStr) {
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Keine Verbindung',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `konnte nicht senden, {Retry}.`,
+  SEND_FAILED_KEY: `konnte nicht senden, [Wiederholen][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Eingeschränkte Konnektivität',
   Chat: 'Chat',
   'Download file': 'Datei herunterladen',
@@ -53,7 +53,6 @@ export default {
   Left: 'Links',
   'Listening…': 'hört zu…',
   'New messages': 'Neue Nachrichten',
-  Retry: 'Wiederholen',
   Right: 'Rechts',
   Send: 'Senden',
   Sending: 'sendet…',

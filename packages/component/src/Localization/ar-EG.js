@@ -60,7 +60,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'حدث انقطاع في الشبكة. إعادة التوصيل…',
   RENDER_ERROR_NOTIFICATION: 'خطأ في التقديم. يرجى التحقق من وحدة التحكم أو الاتصال بمطور البوت.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `{Retry}. فشل في الإرسال.`,
+  SEND_FAILED_KEY: `[إعادة المحاولة][retry]. فشل في الإرسال.`,
   SLOW_CONNECTION_NOTIFICATION: 'يستغرق وقتا أطول من المعتاد للاتصال.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -79,7 +79,6 @@ export default {
   Left: 'يسار',
   'Listening…': 'يستمع…',
   'New messages': 'رسائل جديدة',
-  Retry: 'إعادة المحاولة',
   Right: 'يمين',
   Send: 'أرسل',
   SendBox: 'Sendbox',

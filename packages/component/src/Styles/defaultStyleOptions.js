@@ -113,6 +113,9 @@ const DEFAULT_OPTIONS = {
   suggestedActionTextColor: null,
 
   // Timestamp
+  groupTimestamp: true,
+  sendTimeout: 20000,
+  sendTimeoutForAttachments: 120000,
   timestampColor: undefined, // defaults to subtle
   timestampFormat: 'relative', // 'absolute'
 

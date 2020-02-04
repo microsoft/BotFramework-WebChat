@@ -1,6 +1,7 @@
-import { useSelector } from '../WebChatReduxContext';
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useStyleOptions from './useStyleOptions';
 
 export default function useTimeoutForSend() {
-  return [useSelector(({ sendTimeout }) => sendTimeout), useWebChatUIContext().setSendTimeout];
+  const [{ sendTimeout }] = useStyleOptions();
+
+  return [sendTimeout];
 }

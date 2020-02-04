@@ -57,7 +57,7 @@ export default {
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Network interruption occurred. Reconnecting…',
   RENDER_ERROR_NOTIFICATION: 'Render error. Please check the console or contact the bot developer.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `Send failed. {Retry}.`,
+  SEND_FAILED_KEY: `Send failed. [Retry][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Taking longer than usual to connect.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -77,7 +77,6 @@ export default {
   Left: 'Left',
   'Listening…': 'Listening…',
   'New messages': 'New messages',
-  Retry: 'Retry',
   Right: 'Right',
   Send: 'Send',
   SendBox: 'Sendbox',

@@ -46,7 +46,7 @@ export default {
   INITIAL_CONNECTION_NOTIFICATION: 'Bağlanıyor…',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Ağ kesintisi meydana geldi. Yeniden bağlanıyor...',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `gönderilemedi, {Retry}.`,
+  SEND_FAILED_KEY: `gönderilemedi, [yeniden deneyin][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Bağlantı hızı çok düşük.',
   Chat: 'Sohbet',
   'Download file': 'Dosyayı indir',
@@ -54,7 +54,6 @@ export default {
   'Microphone on': 'Mikrofon açık',
   'X minutes ago': xMinutesAgo,
   'Listening…': 'Dinliyor…',
-  Retry: 'yeniden deneyin',
   Send: 'Gönder',
   Sending: 'gönderiliyor',
   // 'Speak': '',

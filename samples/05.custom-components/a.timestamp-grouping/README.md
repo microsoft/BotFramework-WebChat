@@ -43,7 +43,9 @@ Modify the Web Chat object by passing the timestamp into `renderWebChat`
 ```diff
   window.WebChat.renderWebChat({
     directLine: window.WebChat.createDirectLine({ token }),
-+   groupTimestamp: groupTimestamp,
++   styleOptions: {
++     groupTimestamp
++   }
   }, document.getElementById('webchat'));
 ```
 
@@ -79,7 +81,9 @@ Here is the finished `index.html`:
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-+         groupTimestamp: groupTimestamp,
++         styleOptions: {
++           groupTimestamp
++         }
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

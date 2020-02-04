@@ -8,6 +8,20 @@ jest.setTimeout(timeouts.test);
 test('getter should return timeout for sending activity', async () => {
   const { pageObjects } = await setupWebDriver({
     props: {
+      styleOptions: {
+        sendTimeout: 1000
+      }
+    }
+  });
+
+  const [timeoutForSend] = await pageObjects.runHook('useTimeoutForSend');
+
+  expect(timeoutForSend).toMatchInlineSnapshot(`1000`);
+});
+
+test('getter should return timeout for sending activity if set in props', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
       sendTimeout: 1000
     }
   });
@@ -25,12 +39,9 @@ test('getter should return default timeout for sending activity if not set in pr
   expect(timeoutForSend).toMatchInlineSnapshot(`20000`);
 });
 
-test('setter should set the timeout for sending activity', async () => {
+test('setter should be falsy', async () => {
   const { pageObjects } = await setupWebDriver();
+  const [_, setTimeoutForSend] = await pageObjects.runHook('useTimeoutForSend');
 
-  await pageObjects.runHook('useTimeoutForSend', [], result => result[1](1000));
-
-  const [timeoutForSend] = await pageObjects.runHook('useTimeoutForSend');
-
-  expect(timeoutForSend).toMatchInlineSnapshot(`1000`);
+  expect(setTimeoutForSend).toBeFalsy();
 });

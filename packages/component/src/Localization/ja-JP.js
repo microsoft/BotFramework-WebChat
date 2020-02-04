@@ -62,7 +62,7 @@ export default {
   RENDER_ERROR_NOTIFICATION:
     'レンダリングエラーが発生しました。コンソールを確認するか、ボットの開発者に連絡してください。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: `送信できませんでした。{Retry}。`,
+  SEND_FAILED_KEY: `送信できませんでした。[再送][retry]。`,
   SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
@@ -79,7 +79,6 @@ export default {
   'Microphone on': 'マイクオフ',
   Left: '左',
   Listening: '聴いてます…',
-  Retry: '再送',
   Right: '右',
   Send: '送信',
   SendBox: 'テキストボックス',

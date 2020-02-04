@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
-    For simplicity and code clarity, we are using Babel and React from unpkg.com.
-  -->
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
     <!--
-    This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
-    https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
-  -->
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
@@ -31,12 +31,15 @@
       }
 
       .passwordInput {
+        margin: 10px;
+      }
+
+      .passwordInput .passwordInput__form {
         background-color: Red;
         border-radius: 3px;
         color: White;
         display: flex;
         font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-        margin: 10px;
         padding: 5px;
       }
 
@@ -73,14 +76,16 @@
         'use strict';
 
         const {
-          hooks: { useSendPostBack },
+          hooks: { useRenderActivityStatus, useSendPostBack },
           ReactWebChat
         } = window.WebChat;
+
         const { useCallback, useState } = window.React;
 
-        const PasswordInputActivity = () => {
+        const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
           const [twoFACode, setTwoFACode] = useState('');
           const [submitted, setSubmitted] = useState(false);
+          const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
           const sendPostBack = useSendPostBack();
 
           const handleCodeChange = useCallback(
@@ -101,19 +106,22 @@
           );
 
           return (
-            <form className="passwordInput" onSubmit={handleSubmit}>
-              <label className="passwordInput__box">
-                <span className="passwordInput__label">Please input your 2FA code</span>
-                <input
-                  autoFocus={true}
-                  className="passwordInput__input"
-                  disabled={submitted}
-                  onChange={handleCodeChange}
-                  type="password"
-                  value={twoFACode}
-                />
-              </label>
-            </form>
+            <div className="passwordInput">
+              <form className="passwordInput__form" onSubmit={handleSubmit}>
+                <label className="passwordInput__box">
+                  <span className="passwordInput__label">Please input your 2FA code</span>
+                  <input
+                    autoFocus={true}
+                    className="passwordInput__input"
+                    disabled={submitted}
+                    onChange={handleCodeChange}
+                    type="password"
+                    value={twoFACode}
+                  />
+                </label>
+              </form>
+              {renderActivityStatus()}
+            </div>
           );
         };
 
@@ -125,15 +133,13 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const store = createStore();
-        const activityMiddleware = () => next => card => {
-          const {
-            activity: { name, type }
-          } = card;
+        const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
+          const { name, type } = activity;
 
           if (type === 'event' && name === 'passwordInput') {
-            return () => <PasswordInputActivity />;
+            return () => <PasswordInputActivity activity={activity} nextVisibleActivity={nextVisibleActivity} />;
           } else {
-            return next(card);
+            return next({ activity, nextVisibleActivity, ...otherArgs });
           }
         };
 
