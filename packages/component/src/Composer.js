@@ -222,7 +222,7 @@ const Composer = ({
     };
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
-  const dictationOnError = useMemo(
+  const dictationOnError = useCallback(
     err => {
       console.error(err);
     },
