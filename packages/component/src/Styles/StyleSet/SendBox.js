@@ -3,6 +3,7 @@ export default function createSendBoxStyle({
   sendBoxHeight,
   sendBoxBorderBottom,
   sendBoxBorderLeft,
+  sendBoxBorderRadius,
   sendBoxBorderRight,
   sendBoxBorderTop
 }) {
@@ -12,6 +13,7 @@ export default function createSendBoxStyle({
       backgroundColor: sendBoxBackground,
       borderBottom: sendBoxBorderBottom,
       borderLeft: sendBoxBorderLeft,
+      borderRadius: sendBoxBorderRadius,
       borderRight: sendBoxBorderRight,
       borderTop: sendBoxBorderTop,
       minHeight: sendBoxHeight
