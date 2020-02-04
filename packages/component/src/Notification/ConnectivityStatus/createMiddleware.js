@@ -7,11 +7,11 @@ import ConnectivityStatusJavaScriptError from './JavaScriptError';
 import ConnectivityStatusReconnecting from './Reconnecting';
 
 function createConnectivityStatusMiddleware() {
-  return () => next => notification => {
-    const { message, notificationId } = notification;
+  return () => next => ({ notification, ...otherArgs }) => {
+    const { id, message } = notification;
 
-    if (notificationId !== 'connectivitystatus') {
-      return next(notification);
+    if (id !== 'connectivitystatus') {
+      return next({ notification, ...otherArgs });
     }
 
     switch (message) {

@@ -100,9 +100,9 @@ function createNotificationRenderer(additionalMiddleware) {
 
   return (...args) => {
     try {
-      return notificationMiddleware(() => (
+      return notificationMiddleware(({ notification }) => (
         <ErrorBox message="No renderer for this notification">
-          <pre>{JSON.stringify(attachment, null, 2)}</pre>
+          <pre>{JSON.stringify(notification, null, 2)}</pre>
         </ErrorBox>
       ))(...args);
     } catch ({ message, stack }) {

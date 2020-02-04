@@ -69,7 +69,7 @@ SendStatus.propTypes = {
       state: PropTypes.string
     })
   }).isRequired,
-  sendState: PropTypes.any.isRequired
+  sendState: PropTypes.string.isRequired
 };
 
 export default SendStatus;

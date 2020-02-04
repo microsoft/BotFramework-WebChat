@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3] }] */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React, { useCallback, useRef, useState, useEffect } from 'react';
@@ -99,7 +101,7 @@ function filterMap(map, predicate) {
 }
 
 function forEachMap(map, iterator) {
-  for (let key in map) {
+  for (const key in map) {
     iterator.call(map, map[key], key);
   }
 }
@@ -126,6 +128,7 @@ const BasicNotificationBox = () => {
     numNotifications <= 1 && setExpanded(false);
   }, [numNotifications]);
 
+  // In some cases, notification may not disappear.
   debouncedNotificationsRef.current = filterMap(
     debouncedNotificationsRef.current,
     ({ id, updateNotBefore }) => notifications[id] || now < updateNotBefore
@@ -183,7 +186,7 @@ const BasicNotificationBox = () => {
   const handleToggleExpand = useCallback(() => {
     setExpanded(!expanded);
   }, [expanded, setExpanded]);
-  const highestLevel = temporalNotifications.map(({ level }) => level).sort(compareLevel)[0];
+  const [highestLevel] = temporalNotifications.map(({ level }) => level).sort(compareLevel);
 
   console.group('BasicNotifications render');
   console.log({
@@ -201,7 +204,7 @@ const BasicNotificationBox = () => {
       <ul className="webchat__notificationBox__list">
         {persistedNotifications.map(({ alt, id, level, message, persistent }) => (
           <li className="webchat__notificationBox__listItem" key={id}>
-            {renderNotification({ alt, level, message, notificationId: id, persistent })}
+            {renderNotification({ notification: { alt, id, level, message, persistent } })}
           </li>
         ))}
       </ul>
@@ -221,7 +224,8 @@ const BasicNotificationBox = () => {
               <NotificationIcon className="webchat__notificationBox__expandLevelIcon" level={highestLevel} />
             </div>
             <div className="webchat__notificationBox__expandText">
-              {temporalNotifications.length} Notifications: Click here to see details
+              {temporalNotifications.length}
+              {' Notifications: Click here to see details'}
             </div>
             <div className="webchat__notificationBox__expandIcon">{expanded ? <CollapseIcon /> : <ExpandIcon />}</div>
           </button>
@@ -229,7 +233,7 @@ const BasicNotificationBox = () => {
         <ul className="webchat__notificationBox__list">
           {temporalNotifications.map(({ alt, id, level, message, persistent }) => (
             <li className="webchat__notificationBox__listItem" key={id}>
-              {renderNotification({ alt, level, message, notificationId: id, persistent })}
+              {renderNotification({ notification: { alt, id, level, message, persistent } })}
             </li>
           ))}
         </ul>

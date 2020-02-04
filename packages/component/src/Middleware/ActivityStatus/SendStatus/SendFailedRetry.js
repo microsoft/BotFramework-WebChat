@@ -4,24 +4,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
-import MarkdownIt from '../../../../../bundle/node_modules/markdown-it';
 import useLocalize from '../../../hooks/useLocalize';
-
-function walkMarkdownTokens(tokens, walker) {
-  return tokens.map(token => {
-    if (token) {
-      const nextToken = walker(token);
-
-      if (nextToken.children) {
-        nextToken.children = walkMarkdownTokens(nextToken.children, walker);
-      }
-
-      return nextToken;
-    }
-
-    return token;
-  });
-}
+import useInternalMarkdownIt from '../../../hooks/internal/useInternalMarkdownIt';
+import walkMarkdownTokens from '../../../Utils/walkMarkdownTokens';
 
 function replaceAnchorWithButton(markdownTokens) {
   return walkMarkdownTokens(markdownTokens, markdownToken => {
@@ -51,15 +36,15 @@ function replaceAnchorWithButton(markdownTokens) {
 const SendFailedRetry = ({ onRetryClick }) => {
   const sendFailedText = useLocalize('SEND_FAILED_KEY');
 
-  const markdown = useMemo(() => new MarkdownIt(), []);
+  const [markdownIt] = useInternalMarkdownIt();
   const html = useMemo(() => {
-    const tree = markdown.parseInline(sendFailedText, { references: { RETRY: { href: '#retry' } } });
+    const tree = markdownIt.parseInline(sendFailedText, { references: { RETRY: { href: '#retry' } } });
 
     // Turn "<a href="#retry">Retry</a>" into "<button data-ref="#retry">Retry</button>"
     const updatedTree = replaceAnchorWithButton(tree);
 
-    return { __html: markdown.renderer.render(updatedTree) };
-  }, [markdown, sendFailedText]);
+    return { __html: markdownIt.renderer.render(updatedTree) };
+  }, [markdownIt, sendFailedText]);
 
   const handleClick = useCallback(
     event => {

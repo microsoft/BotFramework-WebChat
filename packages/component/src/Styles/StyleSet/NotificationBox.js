@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 5, 32, 50] }] */
+
 export default function createNotificationsStyleSet() {
   return {
     overflowY: 'hidden',

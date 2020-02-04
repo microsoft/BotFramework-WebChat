@@ -23,7 +23,7 @@ function subscribeToPromiseQueue(observable) {
 function* connectionStatusToNotification({ payload: { directLine } }) {
   let numConnecting = 0;
 
-  let { shift, unsubscribe } = subscribeToPromiseQueue(directLine.connectionStatus$);
+  const { shift, unsubscribe } = subscribeToPromiseQueue(directLine.connectionStatus$);
 
   try {
     for (;;) {
@@ -65,6 +65,9 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
             })
           );
 
+          break;
+
+        default:
           break;
       }
     }

@@ -1,4 +1,4 @@
-export default function createNotificationStyleSet({ fontSizeSmall, paddingRegular, primaryFont }) {
+export default function createNotificationStyleSet({ primaryFont }) {
   return {
     alignItems: 'center',
     fontFamily: primaryFont,

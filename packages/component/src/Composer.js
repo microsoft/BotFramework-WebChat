@@ -6,6 +6,7 @@ import {
 
 import { css } from 'glamor';
 import { Provider } from 'react-redux';
+import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
@@ -217,6 +218,8 @@ const Composer = ({
     };
   }, [dispatch, directLine, userID, username]);
 
+  const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
+
   const cardActionContext = useMemo(() => createCardActionContext({ cardActionMiddleware, directLine, dispatch }), [
     cardActionMiddleware,
     directLine,
@@ -278,6 +281,7 @@ const Composer = ({
       directLine,
       disabled,
       grammars: patchedGrammars,
+      internalMarkdownIt,
       notificationRenderer,
       renderMarkdown,
       scrollToEnd,
@@ -302,6 +306,7 @@ const Composer = ({
       disabled,
       focusSendBoxContext,
       hoistedDispatchers,
+      internalMarkdownIt,
       notificationRenderer,
       patchedGrammars,
       patchedSelectVoice,
