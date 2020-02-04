@@ -22,10 +22,10 @@ export default function createSpinnerAnimationStyle({
     height: spinnerAnimationHeight,
     width: spinnerAnimationWidth,
 
-    '.ltr': {
+    ':not(.webchat__spinner--rtl)': {
       marginRight: spinnerAnimationPadding
     },
-    '.rtl': {
+    '.webchat__spinner--rtl': {
       marginLeft: spinnerAnimationPadding
     }
   };

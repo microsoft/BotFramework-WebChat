@@ -23,7 +23,11 @@ const ScrollToEndButton = ({ className }) => {
 
   return (
     <button
-      className={classNames(scrollToEndButtonStyleSet + '', className + '', direction)}
+      className={classNames(
+        scrollToEndButtonStyleSet + '',
+        className + '',
+        direction === 'rtl' ? 'webchat__overlay--rtl' : ''
+      )}
       onClick={handleClick}
       type="button"
     >
