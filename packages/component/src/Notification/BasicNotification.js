@@ -12,6 +12,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import NotificationIcon from './NotificationIcon';
 import walkMarkdownTokens from '../Utils/walkMarkdownTokens';
+import ScreenReaderText from '../ScreenReaderText';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -59,7 +60,7 @@ const Notification = ({ alt, level, message, notificationId, persistent }) => {
   const dismissNotification = useDismissNotification();
   const handleDismissNotification = useCallback(() => {
     dismissNotification(notificationId);
-  }, [notificationId]);
+  }, [dismissNotification, notificationId]);
   const [markdownIt] = useInternalMarkdownIt();
   const html = useMemo(() => {
     const tree = markdownIt.parseInline(message);
@@ -77,12 +78,14 @@ const Notification = ({ alt, level, message, notificationId, persistent }) => {
         'webchat__notification--warn': level === 'warn'
       })}
     >
+      <ScreenReaderText text={alt || message} />
       <div className="webchat__notification__iconBox">
         <NotificationIcon className="webchat__notification__icon" level={level} />
       </div>
       <div className="webchat__notification__name" dangerouslySetInnerHTML={html} />
       {!persistent && (
         <button className="webchat__notification__dismissButton" onClick={handleDismissNotification} type="button">
+          <ScreenReaderText text="Dismiss" />
           <DismissIcon />
         </button>
       )}
@@ -90,13 +93,17 @@ const Notification = ({ alt, level, message, notificationId, persistent }) => {
   );
 };
 
+Notification.defaultProps = {
+  alt: undefined,
+  persistent: false
+};
+
 Notification.propTypes = {
-  notification: PropTypes.shape({
-    alt: PropTypes.string,
-    level: PropTypes.oneOf(['error', 'warn', 'info', 'success']).isRequired,
-    message: PropTypes.string.isRequired,
-    persistent: PropTypes.bool
-  }).isRequired
+  alt: PropTypes.string,
+  level: PropTypes.oneOf(['error', 'warn', 'info', 'success']).isRequired,
+  message: PropTypes.string.isRequired,
+  notificationId: PropTypes.string.isRequired,
+  persistent: PropTypes.bool
 };
 
 export default Notification;
