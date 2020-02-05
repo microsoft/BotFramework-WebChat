@@ -59,6 +59,12 @@ export default {
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: `Send failed. [Retry][retry].`,
   SLOW_CONNECTION_NOTIFICATION: 'Taking longer than usual to connect.',
+  NOTIFICATION_DISMISS_BUTTON: 'Dismiss',
+  NOTIFICATION_EXPAND_TEXT: '$1 Notifications: Click here to see details',
+  NOTIFICATION_ERROR_PREFIX: 'Error:',
+  NOTIFICATION_INFO_PREFIX: 'Information:',
+  NOTIFICATION_SUCCESS_PREFIX: 'Success:',
+  NOTIFICATION_WARN_PREFIX: 'Warning:',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,

@@ -8,6 +8,7 @@ import CollapseIcon from './Notification/CollapseIcon';
 import ExpandIcon from './Notification/ExpandIcon';
 import NotificationIcon from './Notification/NotificationIcon';
 import useDebouncedNotifications from './hooks/useDebouncedNotifications';
+import useLocalize from './hooks/useLocalize';
 import useRenderNotification from './hooks/useRenderNotification';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -64,8 +65,9 @@ function sortNotifications(map) {
 
 const BasicNotificationBar = () => {
   const [{ notificationBar: notificationBarStyleSet }] = useStyleSet();
-  const [expanded, setExpanded] = useState(false);
   const [debouncedNotifications] = useDebouncedNotifications();
+  const [expanded, setExpanded] = useState(false);
+  const notificationExpandText = useLocalize('NOTIFICATION_EXPAND_TEXT') || '';
   const renderNotification = useRenderNotification();
 
   const sortedNotifications = useMemo(() => sortNotifications(debouncedNotifications), [debouncedNotifications]);
@@ -94,6 +96,8 @@ const BasicNotificationBar = () => {
 
   return (
     <div
+      aria-live="polite"
+      aria-relevant="additions text"
       className={classNames(ROOT_CSS + '', notificationBarStyleSet + '', 'webchat__notificationBar', {
         'webchat__notificationBar--expandable': expandable,
         'webchat__notificationBar--expanded': expanded,
@@ -110,21 +114,22 @@ const BasicNotificationBar = () => {
             <NotificationIcon className="webchat__notificationBar__expandLevelIcon" level={highestLevel} />
           </div>
           <div className="webchat__notificationBar__expandText">
-            {sortedNotificationsWithChildren.length}
-            {' Notifications: Click here to see details'}
+            {notificationExpandText.replace('$1', sortedNotificationsWithChildren.length)}
           </div>
           <div aria-hidden={true} className="webchat__notificationBar__expandIcon">
             {expanded ? <CollapseIcon /> : <ExpandIcon />}
           </div>
         </button>
       )}
-      <ul className="webchat__notificationBar__list">
-        {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-          <li className="webchat__notificationBar__listItem" key={id}>
-            {children}
-          </li>
-        ))}
-      </ul>
+      {(!expandable || expanded) && (
+        <ul className="webchat__notificationBar__list">
+          {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
+            <li className="webchat__notificationBar__listItem" key={id}>
+              {children}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

@@ -70,11 +70,11 @@ function useDebouncedNotifications() {
 
   useTimer(earliestUpdateNotBefore, forceRefresh);
 
-  console.group('useDebouncedNotifications');
-  console.log(earliestUpdateNotBefore);
-  console.log(notifications);
-  console.log(debouncedNotificationsRef.current);
-  console.groupEnd();
+  // console.group('useDebouncedNotifications');
+  // console.log(earliestUpdateNotBefore);
+  // console.log(notifications);
+  // console.log(debouncedNotificationsRef.current);
+  // console.groupEnd();
 
   return [debouncedNotificationsRef.current];
 }
