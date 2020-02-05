@@ -81,12 +81,15 @@ const Dictation = ({ onError }) => {
     [dictateState, emitTypingIndicator, sendTypingIndicator, setDictateAbortable, setDictateInterims, setDictateState]
   );
 
-  const handleError = useCallback(() => {
-    dictateState !== IDLE && setDictateState(IDLE);
-    (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
+  const handleError = useCallback(
+    event => {
+      dictateState !== IDLE && setDictateState(IDLE);
+      (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
 
-    onError && onError(event);
-  }, [dictateState, onError, setDictateState, stopDictate]);
+      onError && onError(event);
+    },
+    [dictateState, onError, setDictateState, stopDictate]
+  );
 
   return (
     <DictateComposer
