@@ -202,7 +202,7 @@ const BasicNotificationBox = () => {
       <ul className="webchat__notificationBox__list">
         {persistedNotifications.map(({ alt, id, level, message, persistent }) => (
           <li className="webchat__notificationBox__listItem" key={id}>
-            {renderNotification({ notification: { alt, id, level, mFessage, persistent } })}
+            {renderNotification({ notification: { alt, id, level, message, persistent } })}
           </li>
         ))}
       </ul>
