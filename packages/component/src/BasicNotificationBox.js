@@ -181,8 +181,8 @@ const BasicNotificationBox = () => {
   }, [expanded, setExpanded]);
   const [highestLevel] = temporalNotifications.map(({ level }) => level).sort(compareLevel);
 
+  // TODO: [P3] Optimize the "expanded" state, so we don't need to call "setExpanded" that would cause re-render.
   useEffect(() => {
-    // TODO: Check if calling setState will cause a re-render
     !expandable && setExpanded(false);
   }, [expandable]);
 
@@ -202,7 +202,7 @@ const BasicNotificationBox = () => {
       <ul className="webchat__notificationBox__list">
         {persistedNotifications.map(({ alt, id, level, message, persistent }) => (
           <li className="webchat__notificationBox__listItem" key={id}>
-            {renderNotification({ notification: { alt, id, level, message, persistent } })}
+            {renderNotification({ notification: { alt, id, level, mFessage, persistent } })}
           </li>
         ))}
       </ul>
