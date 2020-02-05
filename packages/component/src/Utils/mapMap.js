@@ -1,6 +1,6 @@
 export default function mapMap(map, mapper) {
-  return Object.keys(map).reduce((result, key) => {
-    result[key] = mapper(map[key], key);
+  return Object.entries(map).reduce((result, [key, value]) => {
+    result[key] = mapper(value, key);
 
     return result;
   }, {});
