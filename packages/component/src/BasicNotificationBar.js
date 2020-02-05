@@ -2,7 +2,7 @@
 
 import { css } from 'glamor';
 import classNames from 'classnames';
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import CollapseIcon from './Notification/CollapseIcon';
 import ExpandIcon from './Notification/ExpandIcon';
@@ -69,25 +69,28 @@ const BasicNotificationBar = () => {
   const renderNotification = useRenderNotification();
 
   const sortedNotifications = useMemo(() => sortNotifications(debouncedNotifications), [debouncedNotifications]);
-  const sortedNotificationsWithChildren = useMemo(() => {
-    return sortedNotifications
-      .map(notification => {
-        const children = renderNotification({ notification });
+  const sortedNotificationsWithChildren = useMemo(
+    () =>
+      sortedNotifications
+        .map(notification => {
+          const children = renderNotification({ notification });
 
-        return children && { children, notification };
-      })
-      .filter(entry => entry);
-  }, [sortedNotifications]);
+          return children && { children, notification };
+        })
+        .filter(entry => entry),
+    [renderNotification, sortedNotifications]
+  );
   const expandable = sortedNotificationsWithChildren.length > 1;
-  const handleToggleExpand = useCallback(() => {
-    setExpanded(!expanded);
-  }, [expanded, setExpanded]);
-  const [highestLevel] = sortedNotificationsWithChildren.map(({ notification: { level } }) => level).sort(compareLevel);
 
-  // TODO: [P3] Optimize the "expanded" state, so we don't need to call "setExpanded" that would cause re-render.
   useEffect(() => {
     !expandable && setExpanded(false);
   }, [expandable]);
+
+  const handleToggleExpand = useCallback(() => {
+    setExpanded(!expanded);
+  }, [expanded, setExpanded]);
+
+  const [highestLevel] = sortedNotificationsWithChildren.map(({ notification: { level } }) => level).sort(compareLevel);
 
   return (
     <div

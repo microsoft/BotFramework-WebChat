@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef } from 'react';
 import updateIn from 'simple-update-in';
 
 import { map as minOfMap } from '../Utils/minOf';
 import filterMap from '../Utils/filterMap';
+import useForceRender from './internal/useForceRender';
 import useNotifications from './useNotifications';
 import useStyleOptions from './useStyleOptions';
 import useTimer from './internal/useTimer';
@@ -13,15 +14,16 @@ function useDebouncedNotifications() {
   const [{ notificationDebounceTimeout }] = useStyleOptions();
   const [notifications] = useNotifications();
   const debouncedNotificationsRef = useRef({});
-  const [, setForceRefresh] = useState();
-  const forceRefresh = useCallback(() => {
-    console.group('useDebouncedNotifications.forceRefresh');
-    console.log(notifications);
-    console.log(debouncedNotificationsRef.current);
-    console.groupEnd();
+  const forceRefresh = useForceRender();
 
-    setForceRefresh({});
-  }, [setForceRefresh]);
+  // const forceRefresh = useCallback(() => {
+  //   console.group('useDebouncedNotifications.forceRefresh');
+  //   console.log(notifications);
+  //   console.log(debouncedNotificationsRef.current);
+  //   console.groupEnd();
+
+  //   coreForceRefresh();
+  // }, [coreForceRefresh]);
 
   // TODO: [P2] We can improve performance if we can keep debouncedNotificationsRef unchanged if possible.
   debouncedNotificationsRef.current = filterMap(
@@ -69,6 +71,7 @@ function useDebouncedNotifications() {
   useTimer(earliestUpdateNotBefore, forceRefresh);
 
   console.group('useDebouncedNotifications');
+  console.log(earliestUpdateNotBefore);
   console.log(notifications);
   console.log(debouncedNotificationsRef.current);
   console.groupEnd();
