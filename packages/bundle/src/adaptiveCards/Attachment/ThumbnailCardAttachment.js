@@ -9,14 +9,15 @@ import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const { useStyleOptions } = hooks;
+const { useDirection, useStyleOptions } = hooks;
 
 const ThumbnailCardAttachment = ({ attachment: { content } = {} }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
+  const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
+      const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
       const { TextSize, TextWeight } = adaptiveCardsPackage;
       const { buttons, images, subtitle, text, title } = content;
       const { richCardWrapTitle } = styleOptions;
@@ -40,7 +41,7 @@ const ThumbnailCardAttachment = ({ attachment: { content } = {} }) => {
       }
       return builder.card;
     }
-  }, [adaptiveCardsPackage, content, styleOptions]);
+  }, [adaptiveCardsPackage, direction, content, styleOptions]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };

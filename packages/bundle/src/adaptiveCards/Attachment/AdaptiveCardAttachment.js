@@ -4,6 +4,10 @@ import React, { useMemo } from 'react';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
+import { hooks } from 'botframework-webchat-component';
+
+const { useDirection } = hooks;
+
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;
@@ -17,8 +21,27 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
+function updateRTLInline(element, rtl, adaptiveCardsPackage) {
+  if (element instanceof adaptiveCardsPackage.Container) {
+    element.rtl = rtl;
+  }
+
+  // Tree traversal to add rtl boolean to child elements
+  if (element.getItemAt && element.getItemCount) {
+    const count = element.getItemCount();
+
+    for (let index = 0; index < count; index++) {
+      const child = element.getItemAt(index);
+
+      updateRTLInline(child, rtl, adaptiveCardsPackage);
+    }
+  }
+}
+
 const AdaptiveCardAttachment = ({ attachment: { content } }) => {
-  const [{ AdaptiveCard }] = useAdaptiveCardsPackage();
+  const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
+  const { AdaptiveCard } = adaptiveCardsPackage;
+  const [direction] = useDirection();
   const { card } = useMemo(() => {
     if (content) {
       const card = new AdaptiveCard();
@@ -34,6 +57,9 @@ const AdaptiveCardAttachment = ({ attachment: { content } }) => {
         })
       );
 
+      // Add rtl to Adaptive Card and child elements if Web Chat direction is 'rtl'
+      updateRTLInline(card, direction === 'rtl', adaptiveCardsPackage);
+
       AdaptiveCard.onParseError = null;
 
       return {
@@ -43,7 +69,7 @@ const AdaptiveCardAttachment = ({ attachment: { content } }) => {
     }
 
     return {};
-  }, [AdaptiveCard, content]);
+  }, [AdaptiveCard, content, direction]);
 
   return !!card && <AdaptiveCardRenderer adaptiveCard={card} />;
 };
