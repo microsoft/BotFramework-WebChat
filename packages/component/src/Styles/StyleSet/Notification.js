@@ -38,6 +38,7 @@ export default function createNotificationStyleSet({ primaryFont }) {
     '& .webchat__notification__dismissButton': {
       alignItems: 'center',
       alignSelf: 'flex-start',
+      appearance: 'none',
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',

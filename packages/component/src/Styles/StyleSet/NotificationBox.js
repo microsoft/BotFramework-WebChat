@@ -19,6 +19,7 @@ export default function createNotificationsStyleSet() {
     '& .webchat__notificationBox__expander': {
       alignItems: 'center',
       alignSelf: 'stretch',
+      appearance: 'none',
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',
@@ -95,8 +96,12 @@ export default function createNotificationsStyleSet() {
       padding: 0
     },
 
-    '& .webchat__notificationBox__listItem:not(:first-child)': {
-      borderTop: '1px solid #E8EAEC'
+    '& .webchat__notificationBox__listItem': {
+      minHeight: 0,
+
+      '&:not(:first-child)': {
+        borderTop: '1px solid #E8EAEC'
+      }
     }
   };
 }

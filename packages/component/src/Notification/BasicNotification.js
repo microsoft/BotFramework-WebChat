@@ -15,12 +15,8 @@ import useStyleSet from '../hooks/useStyleSet';
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& > .webchat__notification__name': {
+  '& .webchat__notification__name': {
     flex: 1
-  },
-
-  '& > button': {
-    appearance: 'none'
   }
 });
 

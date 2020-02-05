@@ -321,6 +321,7 @@ const Composer = ({
       focusSendBoxContext,
       hoistedDispatchers,
       internalMarkdownIt,
+      internalRenderMarkdownInline,
       notificationRenderer,
       patchedGrammars,
       patchedSelectVoice,
