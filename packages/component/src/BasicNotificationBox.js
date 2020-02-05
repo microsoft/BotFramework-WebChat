@@ -121,12 +121,6 @@ const BasicNotificationBox = () => {
   const [{ notificationDebounceTimeout }] = useStyleOptions();
   const debouncedNotificationsRef = useRef({});
   const renderNotification = useRenderNotification();
-  const numNotifications = Object.keys(notifications).length;
-
-  useEffect(() => {
-    // TODO: Check if calling setState will cause a re-render
-    numNotifications <= 1 && setExpanded(false);
-  }, [numNotifications]);
 
   // In some cases, notification may not disappear.
   debouncedNotificationsRef.current = filterMap(
@@ -187,6 +181,11 @@ const BasicNotificationBox = () => {
     setExpanded(!expanded);
   }, [expanded, setExpanded]);
   const [highestLevel] = temporalNotifications.map(({ level }) => level).sort(compareLevel);
+
+  useEffect(() => {
+    // TODO: Check if calling setState will cause a re-render
+    !expandable && setExpanded(false);
+  }, [expandable]);
 
   console.group('BasicNotifications render');
   console.log({
