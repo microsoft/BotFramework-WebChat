@@ -25,7 +25,10 @@ export default function createNotificationsStyleSet() {
       display: 'flex',
       fill: '#A80000',
       minHeight: 32,
-      padding: 0
+      padding: 0,
+
+      // IE11 does not have "initial", we are using "justify" so we don't need "left"/"right" for LTR/RTL.
+      textAlign: 'justify'
     },
 
     '& .webchat__notificationBox__accordion--error': {

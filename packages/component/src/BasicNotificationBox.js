@@ -31,8 +31,7 @@ const ROOT_CSS = css({
 
   '& .webchat__notificationBox__expander': {
     display: 'flex',
-    flexShrink: 0,
-    textAlign: 'initial'
+    flexShrink: 0
   },
 
   '& .webchat__notificationBox__expandText': {
