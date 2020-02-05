@@ -13,7 +13,7 @@ import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
 import createFileContentStyle from './StyleSet/FileContent';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
-import createNotificationBoxStyleSet from './StyleSet/NotificationBox';
+import createNotificationBarStyleSet from './StyleSet/NotificationBar';
 import createNotificationStyleSet from './StyleSet/Notification';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -185,7 +185,7 @@ export default function createStyleSet(options) {
     fileContent: createFileContentStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     notification: createNotificationStyleSet(options),
-    notificationBox: createNotificationBoxStyleSet(options),
+    notificationBar: createNotificationBarStyleSet(options),
     options: {
       ...options,
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)

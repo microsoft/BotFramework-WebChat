@@ -2,6 +2,7 @@ import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useConnectivityStatus from './useConnectivityStatus';
+import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
 import useDirection from './useDirection';
@@ -55,6 +56,7 @@ export {
   useAvatarForBot,
   useAvatarForUser,
   useConnectivityStatus,
+  useDebouncedNotifications,
   useDictateInterims,
   useDictateState,
   useDirection,

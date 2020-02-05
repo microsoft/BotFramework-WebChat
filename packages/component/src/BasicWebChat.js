@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
-import BasicNotificationBox from './BasicNotificationBox';
+import BasicNotificationBar from './BasicNotificationBar';
 import BasicSendBox from './BasicSendBox';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
@@ -17,10 +17,15 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createCoreNotificationMiddleware from './Middleware/Notification/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
+import BasicConnectivityStatus from './BasicConnectivityStatus';
 
 const ROOT_CSS = css({
   display: 'flex',
   flexDirection: 'column'
+});
+
+const CONNECTIVITY_STATUS_CSS = css({
+  flexShrink: 0
 });
 
 const NOTIFICATIONS_CSS = css({
@@ -148,8 +153,9 @@ const BasicWebChat = ({
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
+          <BasicNotificationBar className={NOTIFICATIONS_CSS + ''} />
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
-          <BasicNotificationBox className={NOTIFICATIONS_CSS + ''} />
+          <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
         </TypeFocusSinkBox>
       )}

@@ -35,8 +35,7 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,
               level: 'info',
-              message: numConnecting++ ? 'reconnecting' : 'connecting',
-              persistent: true
+              message: numConnecting++ ? 'reconnecting' : 'connecting'
             })
           );
 
@@ -47,8 +46,7 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,
               level: 'success',
-              message: 'connected',
-              persistent: true
+              message: 'connected'
             })
           );
 
@@ -60,8 +58,7 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,
               level: 'error',
-              message: 'failedtoconnect',
-              persistent: true
+              message: 'failedtoconnect'
             })
           );
 

@@ -1,38 +1,47 @@
-export default function createNotificationStyleSet({ primaryFont }) {
+export default function createNotificationStyleSet({
+  notificationBarHeight,
+  notificationErrorColor,
+  notificationFontSize,
+  notificationIconWidth,
+  notificationInfoColor,
+  notificationSuccessColor,
+  notificationTextPadding,
+  notificationWarnColor,
+  primaryFont
+}) {
   return {
     alignItems: 'center',
     fontFamily: primaryFont,
-    // fontSize: fontSizeSmall,
-    fontSize: '87.5%',
-    minHeight: 32,
+    fontSize: notificationFontSize,
+    minHeight: notificationBarHeight,
 
     '&.webchat__notification--error': {
-      color: '#3B3A39',
-      fill: '#3B3A39'
+      color: notificationErrorColor,
+      fill: notificationErrorColor
     },
 
     '&.webchat__notification--info': {
-      color: '#105E7D',
-      fill: '#105E7D'
+      color: notificationInfoColor,
+      fill: notificationInfoColor
     },
 
     '&.webchat__notification--success': {
-      color: '#107C10',
-      fill: '#107C10'
+      color: notificationSuccessColor,
+      fill: notificationSuccessColor
     },
 
     '&.webchat__notification--warn': {
-      color: '#3B3A39',
-      fill: '#3B3A39'
+      color: notificationWarnColor,
+      fill: notificationWarnColor
     },
 
     '& .webchat__notification__iconBox': {
       alignItems: 'center',
       alignSelf: 'flex-start',
       display: 'flex',
-      height: 32,
+      height: notificationBarHeight,
       justifyContent: 'center',
-      width: 36
+      width: notificationIconWidth
     },
 
     '& .webchat__notification__dismissButton': {
@@ -42,15 +51,15 @@ export default function createNotificationStyleSet({ primaryFont }) {
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',
-      height: 32,
+      height: notificationBarHeight,
       justifyContent: 'center',
       padding: 0,
-      width: 32
+      width: notificationBarHeight
     },
 
-    '& .webchat__notification__name': {
-      paddingBottom: 6,
-      paddingTop: 6
+    '& .webchat__notification__text': {
+      paddingBottom: notificationTextPadding,
+      paddingTop: notificationTextPadding
     }
   };
 }

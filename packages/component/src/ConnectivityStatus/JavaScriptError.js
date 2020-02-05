@@ -1,10 +1,9 @@
 import React from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
-// TODO: Should we move ErrorNotificationIcon to under this folder?
-import ErrorNotificationIcon from '../../Attachment/Assets/ErrorNotificationIcon';
-import useLocalize from '../../hooks/useLocalize';
-import useStyleSet from '../../hooks/useStyleSet';
+import ScreenReaderText from '../ScreenReaderText';
+import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
+import useLocalize from '../hooks/useLocalize';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ConnectivityStatusJavaScriptError = () => {
   const [{ errorNotification: errorNotificationStyleSet }] = useStyleSet();

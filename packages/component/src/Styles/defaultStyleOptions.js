@@ -162,7 +162,23 @@ const DEFAULT_OPTIONS = {
   // Notification UI
 
   // New debounce timeout value only affect new notifications.
-  notificationDebounceTimeout: 400
+  notificationBarHeight: 32,
+  notificationBarMaxHeight: 32 * 5,
+  notificationBarSingularMaxHeight: 50,
+  notificationDebounceTimeout: 400,
+  notificationFontSize: '87.5%',
+  notificationIconWidth: 36,
+  notificationSeparatorColor: '#E8EAEC',
+  notificationTextPadding: 6,
+
+  notificationErrorBackgroundColor: '#FDE7E9',
+  notificationErrorColor: '#A80000',
+  notificationInfoBackgroundColor: '#CEF1FF',
+  notificationInfoColor: '#105E7D',
+  notificationSuccessBackgroundColor: '#DFF6DD',
+  notificationSuccessColor: '#107C10',
+  notificationWarnBackgroundColor: '#FFF4CE',
+  notificationWarnColor: '#3B3A39'
 };
 
 export default DEFAULT_OPTIONS;

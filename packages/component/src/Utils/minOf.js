@@ -20,9 +20,10 @@ function minOf(array, selector = DEFAULT_SELECTOR) {
 }
 
 function map(map, selector = DEFAULT_SELECTOR) {
-  const minKey = minOf(Object.keys(map), key => selector.call(map, map[key], key));
-
-  return minKey && map[minKey];
+  return minOf(
+    Object.entries(map).map(entry => (isUndefined(entry[1]) ? undefined : entry)),
+    ([key, value]) => selector.call(map, value, key)
+  );
 }
 
 export default minOf;

@@ -15,12 +15,12 @@ import useStyleSet from '../hooks/useStyleSet';
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& .webchat__notification__name': {
+  '& .webchat__notification__text': {
     flex: 1
   }
 });
 
-const Notification = ({ alt, level, message, notificationId, persistent }) => {
+const Notification = ({ alt, level, message, notificationId }) => {
   const [{ notification: notificationStyleSet }] = useStyleSet();
   const dismissNotification = useDismissNotification();
   const handleDismissNotification = useCallback(() => dismissNotification(notificationId), [
@@ -43,28 +43,24 @@ const Notification = ({ alt, level, message, notificationId, persistent }) => {
       <div className="webchat__notification__iconBox">
         <NotificationIcon className="webchat__notification__icon" level={level} />
       </div>
-      <div className="webchat__notification__name" dangerouslySetInnerHTML={html} />
-      {!persistent && (
-        <button className="webchat__notification__dismissButton" onClick={handleDismissNotification} type="button">
-          <ScreenReaderText text="Dismiss" />
-          <DismissIcon />
-        </button>
-      )}
+      <div className="webchat__notification__text" dangerouslySetInnerHTML={html} />
+      <button className="webchat__notification__dismissButton" onClick={handleDismissNotification} type="button">
+        <ScreenReaderText text="Dismiss" />
+        <DismissIcon />
+      </button>
     </div>
   );
 };
 
 Notification.defaultProps = {
-  alt: undefined,
-  persistent: false
+  alt: undefined
 };
 
 Notification.propTypes = {
   alt: PropTypes.string,
   level: PropTypes.oneOf(['error', 'warn', 'info', 'success']).isRequired,
   message: PropTypes.string.isRequired,
-  notificationId: PropTypes.string.isRequired,
-  persistent: PropTypes.bool
+  notificationId: PropTypes.string.isRequired
 };
 
 export default Notification;

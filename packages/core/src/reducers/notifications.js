@@ -29,7 +29,7 @@ export default function notifications(state = DEFAULT_STATE, { payload, type }) 
   } else if (type === DISMISS_NOTIFICATION) {
     state = updateIn(state, [payload.id]);
   } else if (type === SET_NOTIFICATION) {
-    const { alt, expireAt, id, level, message, persistent } = payload;
+    const { alt, expireAt, id, level, message } = payload;
 
     state = updateIn(state, [id], () => ({
       alt,
@@ -37,7 +37,6 @@ export default function notifications(state = DEFAULT_STATE, { payload, type }) 
       id,
       level,
       message,
-      persistent,
       timestamp: now
     }));
   }

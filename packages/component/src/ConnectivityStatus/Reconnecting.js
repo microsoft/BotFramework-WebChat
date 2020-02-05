@@ -1,10 +1,9 @@
 import React from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
-// TODO: Should we move ErrorNotificationIcon to under this folder?
-import SpinnerAnimation from '../../Attachment/Assets/SpinnerAnimation';
-import useLocalize from '../../hooks/useLocalize';
-import useStyleSet from '../../hooks/useStyleSet';
+import ScreenReaderText from '../ScreenReaderText';
+import SpinnerAnimation from './Assets/SpinnerAnimation';
+import useLocalize from '../hooks/useLocalize';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ConnectivityStatusReconnecting = () => {
   const [{ connectivityNotification: connectivityNotificationStyleSet }] = useStyleSet();

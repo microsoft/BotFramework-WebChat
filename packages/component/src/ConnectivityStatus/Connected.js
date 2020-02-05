@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
-import useLocalize from '../../hooks/useLocalize';
+import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 
 const ConnectivityStatusConnected = () => {
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');

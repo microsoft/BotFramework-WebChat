@@ -6,6 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import TypingIndicator from './SendBox/TypingIndicator';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
 import useRenderActivity from './hooks/useRenderActivity';
@@ -135,6 +136,7 @@ const BasicTranscript = ({ className }) => {
         </ul>
       </ScrollToBottomPanel>
       {!hideScrollToEndButton && <ScrollToEndButton />}
+      <TypingIndicator />
     </div>
   );
 };

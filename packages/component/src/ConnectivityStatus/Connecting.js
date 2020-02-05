@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
-// TODO: Should we move SpinnerAnimation to under this folder?
-import SpinnerAnimation from '../../Attachment/Assets/SpinnerAnimation';
-import useLocalize from '../../hooks/useLocalize';
-import useStyleOptions from '../../hooks/useStyleOptions';
-import useStyleSet from '../../hooks/useStyleSet';
-import useTimer from '../../hooks/internal/useTimer';
-import WarningNotificationIcon from '../../Attachment/Assets/WarningNotificationIcon';
+import ScreenReaderText from '../ScreenReaderText';
+import SpinnerAnimation from './Assets/SpinnerAnimation';
+import useLocalize from '../hooks/useLocalize';
+import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleSet from '../hooks/useStyleSet';
+import useTimer from '../hooks/internal/useTimer';
+import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
 const ConnectivityStatusConnecting = () => {
   const [{ slowConnectionAfter }] = useStyleOptions();
