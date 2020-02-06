@@ -13,6 +13,7 @@ import StackedLayout, { connectStackedLayout } from './Activity/StackedLayout';
 import Timestamp from './Middleware/ActivityStatus/Timestamp';
 
 import AudioContent from './Attachment/AudioContent';
+import FileContent from './Attachment/FileContent';
 import HTMLVideoContent from './Attachment/HTMLVideoContent';
 import ImageContent from './Attachment/ImageContent';
 import TextContent from './Attachment/TextContent';
@@ -47,6 +48,7 @@ const Components = {
 
   // Components for recomposing activities and attachments
   AudioContent,
+  FileContent,
   HTMLVideoContent,
   ImageContent,
   TextContent,

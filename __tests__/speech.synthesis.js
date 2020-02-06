@@ -110,7 +110,7 @@ describe('speech synthesis', () => {
     await pageObjects.sendMessageViaMicrophone('echo Hello, World!');
 
     await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
-    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
     await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty(
       'text',
@@ -140,7 +140,7 @@ describe('speech synthesis', () => {
         }
       });
 
-      await pageObjects.sendMessageViaMicrophone('input hint expected');
+      await pageObjects.sendMessageViaMicrophone('hint expected');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 

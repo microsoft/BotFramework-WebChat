@@ -20,7 +20,7 @@ describe('selecting voice based on language', () => {
 
       await pageObjects.sendMessageViaMicrophone('echo 123');
 
-      await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+      await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
       await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
       await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty('voice', {
@@ -42,7 +42,7 @@ describe('selecting voice based on language', () => {
 
       await pageObjects.sendMessageViaMicrophone('echo 123');
 
-      await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+      await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
       await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
       await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty('voice', {
@@ -66,7 +66,7 @@ describe('selecting voice based on language', () => {
 
     await pageObjects.sendMessageViaMicrophone('echo 123');
 
-    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty('voice', {

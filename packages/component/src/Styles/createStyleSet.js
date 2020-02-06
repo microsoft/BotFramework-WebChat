@@ -9,9 +9,9 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
-import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
+import createFileContentStyle from './StyleSet/FileContent';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -29,7 +29,6 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
-import createUploadAttachmentStyle from './StyleSet/UploadAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
@@ -179,9 +178,9 @@ export default function createStyleSet(options) {
     carouselFlipper: createCarouselFlipper(options),
     connectivityNotification: createConnectivityNotification(options),
     dictationInterims: createDictationInterimsStyle(options),
-    downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
     errorNotification: createErrorNotificationStyle(options),
+    fileContent: createFileContentStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     options: {
       ...options,
@@ -202,7 +201,6 @@ export default function createStyleSet(options) {
     textContent: createTextContentStyle(options),
     typingAnimation: createTypingAnimationStyle(options),
     typingIndicator: createTypingIndicatorStyle(options),
-    uploadAttachment: createUploadAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),
     videoContent: createVideoContentStyle(options),

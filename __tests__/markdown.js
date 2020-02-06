@@ -29,7 +29,7 @@ test('null renderMarkdown function', async () => {
   await pageObjects.sendMessageViaSendBox('echo **This text should be plain text**', { waitForSend: true });
 
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 

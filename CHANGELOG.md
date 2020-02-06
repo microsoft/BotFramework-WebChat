@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2822](https://github.com/microsoft/BotFramework-WebChat/issues/2822). Fixed `credentials` should return `authorizationToken` and `subscriptionKey` as string and allow empty LUIS reference grammar ID, by [@compulim](https://github.com/compulim) in PR [#2824](https://github.com/microsoft/BotFramework-WebChat/pull/2824)
 -  Fixes [#2751](https://github.com/microsoft/BotFramework-WebChat/issues/2751). Move documentation to docs folder, by [@corinagum](https://github.com/corinagum) in PR [#2832](https://github.com/microsoft/BotFramework-WebChat/pull/2832)
 -  Fixes [#2838](https://github.com/microsoft/BotFramework-WebChat/issues/2838). Fixed `concatMiddleware` should allow any middleware to call its downstream middleware twice, by [@compulim](https://github.com/compulim) in PR [#2839](https://github.com/microsoft/BotFramework-WebChat/pull/2839)
+-  Fixes [#2864](https://github.com/microsoft/BotFramework-WebChat/issues/2864). Replaced `DownloadAttachment` and `UploadAttachment` with `FileAttachment`, which shows the download link and icon if the attachment contains the `contentUrl`, by [@compulim](https://github.com/compulim) in PR [#2868](https://github.com/microsoft/BotFramework-WebChat/pull/2868)
 
 ### Changed
 

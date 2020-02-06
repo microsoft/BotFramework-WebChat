@@ -11,7 +11,10 @@ jest.setTimeout(timeouts.test);
 
 describe('upload a picture', () => {
   test('', async () => {
-    const { driver, pageObjects } = await setupWebDriver();
+    const { driver, pageObjects } = await setupWebDriver({
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      useProductionBot: true
+    });
 
     await driver.wait(uiConnected(), timeouts.directLine);
 
@@ -32,7 +35,9 @@ describe('upload a picture', () => {
           uploadThumbnailHeight: 60,
           uploadThumbnailWidth: 120
         }
-      }
+      },
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -52,7 +57,9 @@ describe('upload a picture', () => {
         styleOptions: {
           uploadThumbnailQuality: 0.1
         }
-      }
+      },
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -72,7 +79,9 @@ describe('upload a picture', () => {
         styleOptions: {
           enableUploadThumbnail: false
         }
-      }
+      },
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -88,7 +97,10 @@ describe('upload a picture', () => {
 
   describe('without Web Worker', () => {
     test('', async () => {
-      const { driver, pageObjects } = await setupWebDriver();
+      const { driver, pageObjects } = await setupWebDriver({
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        useProductionBot: true
+      });
 
       await driver.executeScript(() => {
         window.Worker = undefined;
@@ -112,7 +124,9 @@ describe('upload a picture', () => {
             uploadThumbnailHeight: 60,
             uploadThumbnailWidth: 120
           }
-        }
+        },
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        useProductionBot: true
       });
 
       await driver.executeScript(() => {
@@ -135,7 +149,9 @@ describe('upload a picture', () => {
           styleOptions: {
             uploadThumbnailQuality: 0.1
           }
-        }
+        },
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        useProductionBot: true
       });
 
       await driver.executeScript(() => {
@@ -155,7 +171,10 @@ describe('upload a picture', () => {
 });
 
 test('upload a ZIP file', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
+  const { driver, pageObjects } = await setupWebDriver({
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+    useProductionBot: true
+  });
 
   await driver.wait(uiConnected(), timeouts.directLine);
 

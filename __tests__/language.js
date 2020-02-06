@@ -14,7 +14,7 @@ test('setting language to empty string should not crash', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('echo Hello', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 

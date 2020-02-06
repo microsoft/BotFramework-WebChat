@@ -45,7 +45,9 @@ test('file upload should show thumbnail and file name', async () => {
 
         return next({ activity, attachment });
       }
-    }
+    },
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+    useProductionBot: true
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);

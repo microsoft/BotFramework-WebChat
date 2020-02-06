@@ -92,7 +92,7 @@ export default {
   Total: 'Total',
   'Type your message': 'Type your message',
   TypingIndicator: 'Showing typing indicator',
-  'Upload file': 'Upload file',
+  'Upload file': 'File',
   UploadFileWithFileSize: uploadFileWithFileSize,
   UserSent: 'User sent: ',
   VAT: 'VAT'

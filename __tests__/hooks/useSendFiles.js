@@ -1,5 +1,6 @@
 import { imageSnapshotOptions, timeouts } from '../constants.json';
 
+import allOutgoingActivitiesSent from '../setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from '../setup/conditions/minNumActivitiesShown';
 import uiConnected from '../setup/conditions/uiConnected';
 
@@ -9,7 +10,10 @@ import uiConnected from '../setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 test('calling sendFile should send files', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
+  const { driver, pageObjects } = await setupWebDriver({
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+    useProductionBot: true
+  });
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
@@ -24,6 +28,7 @@ test('calling sendFile should send files', async () => {
   });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
