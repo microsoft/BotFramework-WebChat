@@ -21,10 +21,15 @@ export default function createFileContentStyle({ accent, bubbleTextColor, paddin
 
     '& .webchat__fileContent__downloadIcon': {
       fill: accent,
-      marginLeft: paddingRegular,
-      padding: paddingRegular
-    },
+      padding: paddingRegular,
 
+      '&:not(.webchat__fileContent__downloadIcon--rtl)': {
+        marginLeft: paddingRegular
+      },
+      '&.webchat__fileContent__downloadIcon--rtl': {
+        marginRight: paddingRegular
+      }
+    },
     '& .webchat__fileContent__fileName': {
       color: accent
     }

@@ -6,6 +6,7 @@ import React from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -25,6 +26,8 @@ const ROOT_CSS = css({
 });
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
+  const [direction] = useDirection();
+  console.log(direction);
   const formattedSize = typeof size === 'number' && format(size);
 
   return (
@@ -33,7 +36,15 @@ const FileContentBadge = ({ downloadIcon, fileName, size }) => {
         <div className="webchat__fileContent__fileName">{fileName}</div>
         {!!formattedSize && <div className="webchat__fileContent__size">{formattedSize}</div>}
       </div>
-      {downloadIcon && <DownloadIcon className="webchat__fileContent__downloadIcon" size={1.5} />}
+      {downloadIcon && (
+        <DownloadIcon
+          className={classNames(
+            direction === 'rtl' ? 'webchat__fileContent__downloadIcon--rtl' : '',
+            'webchat__fileContent__downloadIcon'
+          )}
+          size={1.5}
+        />
+      )}
     </React.Fragment>
   );
 };
