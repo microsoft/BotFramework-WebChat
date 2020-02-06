@@ -66,25 +66,20 @@ const FileContent = ({ className, href, fileName, size }) => {
       aria-hidden={true}
       className={classNames('webchat__fileContent', ROOT_CSS + '', fileContentStyleSet + '', (className || '') + '')}
     >
+      <ScreenReaderText text={alt} />
       {href ? (
-        <React.Fragment>
-          <ScreenReaderText text={alt} />
-          <a
-            aria-hidden={true}
-            className="webchat__fileContent__buttonLink"
-            href={href}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden in FileContentBadge necessary */}
-            <FileContentBadge downloadIcon={true} fileName={fileName} size={size} />
-          </a>
-        </React.Fragment>
+        <a
+          aria-hidden={true}
+          className="webchat__fileContent__buttonLink"
+          href={href}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden in FileContentBadge necessary */}
+          <FileContentBadge downloadIcon={true} fileName={fileName} size={size} />
+        </a>
       ) : (
-        <React.Fragment>
-          <ScreenReaderText text={alt} />
-          <FileContentBadge downloadIcon={false} fileName={fileName} size={size} />
-        </React.Fragment>
+        <FileContentBadge downloadIcon={false} fileName={fileName} size={size} />
       )}
     </div>
   );

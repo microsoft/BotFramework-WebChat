@@ -11,7 +11,6 @@ import createConnectivityNotification from './StyleSet/ConnectivityNotification'
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
-import createFileAttachmentStyle from './StyleSet/FileAttachment';
 import createFileContentStyle from './StyleSet/FileContent';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
@@ -181,7 +180,6 @@ export default function createStyleSet(options) {
     dictationInterims: createDictationInterimsStyle(options),
     errorBox: createErrorBoxStyle(options),
     errorNotification: createErrorNotificationStyle(options),
-    fileAttachment: createFileAttachmentStyle(options),
     fileContent: createFileContentStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     options: {
