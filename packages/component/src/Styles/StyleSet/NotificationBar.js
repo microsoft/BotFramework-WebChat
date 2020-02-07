@@ -42,10 +42,31 @@ export default function createNotificationBarStyleSet({
       fontFamily: primaryFont,
       fontSize: notificationFontSize,
       minHeight: notificationBarHeight,
+      outline: 0,
       padding: 0,
 
       // IE11 does not have "initial", we are using "justify" so we don't need "left"/"right" for LTR/RTL.
-      textAlign: 'justify'
+      textAlign: 'justify',
+
+      '&:focus .webchat__notificationBar__expandIconFocus': {
+        borderColor: 'rgba(26, 10, 0, .7)'
+      },
+
+      '&:hover .webchat__notificationBar__expandIconFocus': {
+        backgroundColor: 'rgba(0, 0, 0, .12)'
+      }
+    },
+
+    '& .webchat__notificationBar__expandIconFocus': {
+      alignItems: 'center',
+      borderColor: 'Transparent',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderRadius: 3,
+      display: 'flex',
+      height: 22,
+      justifyContent: 'center',
+      width: 22
     },
 
     '&.webchat__notificationBar--error': {

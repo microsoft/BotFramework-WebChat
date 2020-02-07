@@ -53,8 +53,29 @@ export default function createNotificationStyleSet({
       display: 'flex',
       height: notificationBarHeight,
       justifyContent: 'center',
+      outline: 0,
       padding: 0,
-      width: notificationBarHeight
+      width: notificationBarHeight,
+
+      '&:focus .webchat__notification__dismissButtonFocus': {
+        borderColor: 'rgba(26, 10, 0, .7)'
+      },
+
+      '&:hover .webchat__notification__dismissButtonFocus': {
+        backgroundColor: 'rgba(0, 0, 0, .12)'
+      }
+    },
+
+    '& .webchat__notification__dismissButtonFocus': {
+      alignItems: 'center',
+      borderColor: 'Transparent',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderRadius: 3,
+      display: 'flex',
+      height: 22,
+      justifyContent: 'center',
+      width: 22
     },
 
     '& .webchat__notification__text': {

@@ -10,6 +10,12 @@ const ROOT_CSS = css({
   height: 1,
   overflow: 'hidden',
   position: 'absolute',
+  // We need to set top: 0, otherwise, it will repro:
+  // - Run NVDA
+  // - Make the transcript long enough to show the scrollbar
+  // - Press SHIFT-TAB, focus on upload button
+  // - Press up arrow multiple times
+  top: 0,
   whiteSpace: 'nowrap',
   width: 1
 });

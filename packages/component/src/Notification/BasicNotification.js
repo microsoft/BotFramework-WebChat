@@ -64,7 +64,9 @@ const Notification = ({ alt, level, message, notificationId }) => {
         onClick={handleDismissNotification}
         type="button"
       >
-        <DismissIcon />
+        <div className="webchat__notification__dismissButtonFocus">
+          <DismissIcon />
+        </div>
       </button>
     </div>
   );

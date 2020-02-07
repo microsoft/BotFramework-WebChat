@@ -58,9 +58,12 @@ function compareLevel(x, y) {
 }
 
 function sortNotifications(map) {
-  return Object.keys(map)
-    .reduce((array, id) => [...array, map[id]], [])
-    .sort(({ timestamp: x }, { timestamp: y }) => x - y);
+  return (
+    Object.keys(map)
+      .reduce((array, id) => [...array, map[id]], [])
+      // We want the order reversed, most recent on top.
+      .sort(({ timestamp: x }, { timestamp: y }) => y - x)
+  );
 }
 
 const BasicNotificationBar = () => {
@@ -117,7 +120,9 @@ const BasicNotificationBar = () => {
             {notificationExpandText.replace('$1', sortedNotificationsWithChildren.length)}
           </div>
           <div aria-hidden={true} className="webchat__notificationBar__expandIcon">
-            {expanded ? <CollapseIcon /> : <ExpandIcon />}
+            <div className="webchat__notificationBar__expandIconFocus">
+              {expanded ? <CollapseIcon /> : <ExpandIcon />}
+            </div>
           </div>
         </button>
       )}
