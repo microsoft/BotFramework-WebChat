@@ -105,8 +105,7 @@
               payload: {
                 id: 'privacypolicy',
                 level: 'info',
-                message:
-                  'Please read our [privacy policy](https://privacy.microsoft.com/).'
+                message: 'Please read our [privacy policy](https://privacy.microsoft.com/).'
               }
             });
           } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity.from.role === 'bot') {
@@ -159,18 +158,10 @@
             });
           }, []);
 
-          const altId = useMemo(
-            () =>
-              `app_signInNotification__${Math.random()
-                .toString(36)
-                .substr(2, 5)}`,
-            []
-          );
-
           return (
-            <div aria-labelledby={altId} role="dialog" className="app__signInNotification">
+            <div aria-label="Sign in" role="dialog" className="app__signInNotification">
               <i aria-hidden={true} className="ms-Icon ms-Icon--Signin app__signInNotification__icon" />
-              <span id={altId}>{'Do you want to sign-in?'}</span>{' '}
+              {'Do you want to sign-in? '}
               <button className="app__signInNotification__button" onClick={handleAgreeClick} type="button">
                 Yes
               </button>{' '}
