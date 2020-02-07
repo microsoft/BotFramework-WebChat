@@ -43,14 +43,14 @@ const BasicNotification = ({ notification: { alt, id, level, message } }) => {
 
   return (
     <div
+      aria-describedby={contentId}
+      aria-label={notificationTitleAlt}
       className={classNames(ROOT_CSS + '', notificationStyleSet + '', {
         'webchat__notification--error': level === 'error',
         'webchat__notification--info': level === 'info',
         'webchat__notification--success': level === 'success',
         'webchat__notification--warn': level === 'warn'
       })}
-      aria-describedby={contentId}
-      aria-label={notificationTitleAlt}
       role="dialog"
     >
       <div aria-hidden={true} className="webchat__notification__iconBox">

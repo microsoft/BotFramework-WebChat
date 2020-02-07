@@ -147,14 +147,9 @@ const BasicNotificationArea = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul
-          aria-labelledby={expanderId}
-          className="webchat__notificationArea__list"
-          id={expandableId}
-          data-role="region"
-        >
+        <ul aria-labelledby={expanderId} className="webchat__notificationArea__list" id={expandableId} role="region">
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li className="webchat__notificationArea__listItem" key={id} data-role="none">
+            <li className="webchat__notificationArea__listItem" key={id} role="none">
               {children}
             </li>
           ))}
