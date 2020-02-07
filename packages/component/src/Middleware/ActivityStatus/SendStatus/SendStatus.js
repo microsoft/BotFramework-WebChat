@@ -48,7 +48,6 @@ const SendStatus = ({ activity, sendState }) => {
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
         {sendState === SENDING ? (
           localizedSending

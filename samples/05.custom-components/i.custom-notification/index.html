@@ -93,9 +93,11 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const { useCallback, useMemo } = window.React;
         const {
           hooks: { useSendPostBack }
         } = window.WebChat;
+
         const store = window.WebChat.createStore({}, () => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
             store.dispatch({
@@ -104,11 +106,17 @@
                 id: 'privacypolicy',
                 level: 'info',
                 message:
-                  'Please read our privacy policy at [https://privacy.microsoft.com/](https://privacy.microsoft.com/).'
+                  'Please read our [privacy policy](https://privacy.microsoft.com/).'
               }
             });
           } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity.from.role === 'bot') {
-            if ((action.payload.activity.attachments || []).find(({ contentType }) => contentType === 'application/vnd.microsoft.card.oauth' || contentType === 'application/vnd.microsoft.card.signin')) {
+            if (
+              (action.payload.activity.attachments || []).find(
+                ({ contentType }) =>
+                  contentType === 'application/vnd.microsoft.card.oauth' ||
+                  contentType === 'application/vnd.microsoft.card.signin'
+              )
+            ) {
               store.dispatch({
                 type: 'WEB_CHAT/SET_NOTIFICATION',
                 payload: {
@@ -131,8 +139,6 @@
           return next(action);
         });
 
-        const { useCallback } = window.React;
-
         const SignInNotification = ({ level }) => {
           const sendPostBack = useSendPostBack();
           const handleAgreeClick = useCallback(() => {
@@ -153,10 +159,18 @@
             });
           }, []);
 
+          const altId = useMemo(
+            () =>
+              `app_signInNotification__${Math.random()
+                .toString(36)
+                .substr(2, 5)}`,
+            []
+          );
+
           return (
-            <div className="app__signInNotification">
-              <i className="ms-Icon ms-Icon--Signin app__signInNotification__icon" />
-              {'Do you want to sign-in? '}
+            <div aria-labelledby={altId} role="dialog" className="app__signInNotification">
+              <i aria-hidden={true} className="ms-Icon ms-Icon--Signin app__signInNotification__icon" />
+              <span id={altId}>{'Do you want to sign-in?'}</span>{' '}
               <button className="app__signInNotification__button" onClick={handleAgreeClick} type="button">
                 Yes
               </button>{' '}

@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CollapseIcon from './Notification/CollapseIcon';
 import ExpandIcon from './Notification/ExpandIcon';
 import NotificationIcon from './Notification/NotificationIcon';
+import random from 'math-random';
 import useDebouncedNotifications from './hooks/useDebouncedNotifications';
 import useLocalize from './hooks/useLocalize';
 import useRenderNotification from './hooks/useRenderNotification';
@@ -48,8 +49,10 @@ function getLevelAsNumber(level) {
       return 2;
 
     case 'success':
-    default:
       return 3;
+
+    default:
+      return 4;
   }
 }
 
@@ -96,9 +99,24 @@ const BasicNotificationArea = () => {
   }, [expanded, setExpanded]);
 
   const [highestLevel] = sortedNotificationsWithChildren.map(({ notification: { level } }) => level).sort(compareLevel);
+  const expanderId = useMemo(
+    () =>
+      `webchat__notificationArea__expander__${random()
+        .toString(36)
+        .substr(2, 5)}`,
+    []
+  );
+  const expandableId = useMemo(
+    () =>
+      `webchat__notificationArea__list__${random()
+        .toString(36)
+        .substr(2, 5)}`,
+    []
+  );
 
   return (
     <div
+      aria-labelledby={expanderId}
       aria-live="polite"
       aria-relevant="additions text"
       className={classNames(ROOT_CSS + '', notificationAreaStyleSet + '', 'webchat__notificationArea', {
@@ -112,7 +130,14 @@ const BasicNotificationArea = () => {
       role="log"
     >
       {expandable && (
-        <button className="webchat__notificationArea__expander" onClick={handleToggleExpand} type="button">
+        <button
+          aria-controls={expandableId}
+          aria-expanded={expanded}
+          className="webchat__notificationArea__expander"
+          id={expanderId}
+          onClick={handleToggleExpand}
+          type="button"
+        >
           <div aria-hidden={true} className="webchat__notificationArea__expandLevelIconBox">
             <NotificationIcon className="webchat__notificationArea__expandLevelIcon" level={highestLevel} />
           </div>
@@ -127,9 +152,9 @@ const BasicNotificationArea = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul className="webchat__notificationArea__list">
+        <ul aria-labelledby={expanderId} className="webchat__notificationArea__list" id={expandableId} role="region">
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li className="webchat__notificationArea__listItem" key={id}>
+            <li className="webchat__notificationArea__listItem" key={id} role="none">
               {children}
             </li>
           ))}

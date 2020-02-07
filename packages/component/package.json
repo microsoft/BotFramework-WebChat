@@ -53,6 +53,7 @@
     "event-target-shim-es5": "1.0.1",
     "glamor": "^2.20.40",
     "markdown-it": "^10.0.0",
+    "math-random": "^1.0.4",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
     "react-dictate-button": "^1.2.1",
