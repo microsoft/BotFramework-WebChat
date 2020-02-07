@@ -20,12 +20,12 @@ const ROOT_CSS = css({
   width: 1
 });
 
-const ScreenReaderText = ({ id, text }) => {
+const ScreenReaderText = ({ text }) => {
   const ariaLabel = browser.chrome ? ' ' : text;
 
   return (
     // Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers. This workaround was made to accommodate Chrome
-    <span aria-label={ariaLabel} className={classNames(ROOT_CSS + '')} id={id}>
+    <span aria-label={ariaLabel} className={classNames(ROOT_CSS + '')}>
       {text}
     </span>
   );

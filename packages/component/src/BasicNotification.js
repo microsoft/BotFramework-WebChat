@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2, 5, 36] }] */
+/* eslint react/forbid-dom-props: "off" */
 /* eslint react/no-danger: "off" */
 
 import { css } from 'glamor';
@@ -8,6 +10,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import DismissIcon from './Notification/DismissIcon';
 import NotificationIcon from './Notification/NotificationIcon';
+import ScreenReaderText from './ScreenReaderText';
 import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
 import useLocalize from './hooks/useLocalize';
@@ -21,21 +24,22 @@ const ROOT_CSS = css({
   }
 });
 
+function randomId() {
+  return random()
+    .toString(36)
+    .substr(2, 5);
+}
+
 const BasicNotification = ({ notification: { alt, id, level, message } }) => {
   const [{ notification: notificationStyleSet }] = useStyleSet();
+  const contentId = useMemo(() => `webchat__notification__${randomId()}`, []);
   const dismissButtonText = useLocalize('NOTIFICATION_DISMISS_BUTTON');
   const dismissNotification = useDismissNotification();
-  const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
-  const renderMarkdownInline = useInternalRenderMarkdownInline();
-  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
   const notificationTitleAlt = useLocalize('NOTIFICATION_TITLE_ALT');
-  const contentId = useMemo(
-    () =>
-      `webchat__notification__${random()
-        .toString(36)
-        .substr(2, 5)}`,
-    []
-  );
+  const renderMarkdownInline = useInternalRenderMarkdownInline();
+
+  const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
+  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
 
   return (
     <div
@@ -45,14 +49,15 @@ const BasicNotification = ({ notification: { alt, id, level, message } }) => {
         'webchat__notification--success': level === 'success',
         'webchat__notification--warn': level === 'warn'
       })}
-      aria-label={notificationTitleAlt}
       aria-describedby={contentId}
+      aria-label={notificationTitleAlt}
       role="dialog"
     >
       <div aria-hidden={true} className="webchat__notification__iconBox">
         <NotificationIcon className="webchat__notification__icon" level={level} />
       </div>
-      <div className="webchat__notification__text" dangerouslySetInnerHTML={html} id={contentId} />
+      {!!alt && <ScreenReaderText text={alt} />}
+      <div aria-hidden={!!alt} className="webchat__notification__text" dangerouslySetInnerHTML={html} id={contentId} />
       <button
         aria-label={dismissButtonText}
         className="webchat__notification__dismissButton"

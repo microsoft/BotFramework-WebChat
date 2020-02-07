@@ -1,4 +1,5 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4, 5, 36] }] */
+/* eslint react/forbid-dom-props: "off" */
 
 import { css } from 'glamor';
 import classNames from 'classnames';
@@ -60,6 +61,12 @@ function compareLevel(x, y) {
   return getLevelAsNumber(x) - getLevelAsNumber(y);
 }
 
+function randomId() {
+  return random()
+    .toString(36)
+    .substr(2, 5);
+}
+
 function sortNotifications(map) {
   return (
     Object.keys(map)
@@ -99,20 +106,8 @@ const BasicNotificationArea = () => {
   }, [expanded, setExpanded]);
 
   const [highestLevel] = sortedNotificationsWithChildren.map(({ notification: { level } }) => level).sort(compareLevel);
-  const expanderId = useMemo(
-    () =>
-      `webchat__notificationArea__expander__${random()
-        .toString(36)
-        .substr(2, 5)}`,
-    []
-  );
-  const expandableId = useMemo(
-    () =>
-      `webchat__notificationArea__list__${random()
-        .toString(36)
-        .substr(2, 5)}`,
-    []
-  );
+  const expanderId = useMemo(() => `webchat__notificationArea__expander__${randomId()}`, []);
+  const expandableId = useMemo(() => `webchat__notificationArea__list__${randomId()}`, []);
 
   return (
     <div
@@ -152,9 +147,14 @@ const BasicNotificationArea = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul aria-labelledby={expanderId} className="webchat__notificationArea__list" id={expandableId} role="region">
+        <ul
+          aria-labelledby={expanderId}
+          className="webchat__notificationArea__list"
+          id={expandableId}
+          data-role="region"
+        >
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li className="webchat__notificationArea__listItem" key={id} role="none">
+            <li className="webchat__notificationArea__listItem" key={id} data-role="none">
               {children}
             </li>
           ))}
