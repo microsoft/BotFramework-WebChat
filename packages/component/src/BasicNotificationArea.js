@@ -16,21 +16,21 @@ const ROOT_CSS = css({
   display: 'flex',
   flexDirection: 'column',
 
-  '&.webchat__notificationBar': {
+  '&.webchat__notificationArea': {
     display: 'flex',
     flexDirection: 'column'
   },
 
-  '& .webchat__notificationBar__expander': {
+  '& .webchat__notificationArea__expander': {
     display: 'flex',
     flexShrink: 0
   },
 
-  '& .webchat__notificationBar__expandText': {
+  '& .webchat__notificationArea__expandText': {
     flex: 1
   },
 
-  '& .webchat__notificationBar__list': {
+  '& .webchat__notificationArea__list': {
     display: 'block',
     listStyleType: 'none'
   }
@@ -66,8 +66,8 @@ function sortNotifications(map) {
   );
 }
 
-const BasicNotificationBar = () => {
-  const [{ notificationBar: notificationBarStyleSet }] = useStyleSet();
+const BasicNotificationArea = () => {
+  const [{ notificationArea: notificationAreaStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
   const notificationExpandText = useLocalize('NOTIFICATION_EXPAND_TEXT') || '';
@@ -101,35 +101,35 @@ const BasicNotificationBar = () => {
     <div
       aria-live="polite"
       aria-relevant="additions text"
-      className={classNames(ROOT_CSS + '', notificationBarStyleSet + '', 'webchat__notificationBar', {
-        'webchat__notificationBar--expandable': expandable,
-        'webchat__notificationBar--expanded': expanded,
-        'webchat__notificationBar--error': highestLevel === 'error',
-        'webchat__notificationBar--info': highestLevel === 'info',
-        'webchat__notificationBar--success': highestLevel === 'success',
-        'webchat__notificationBar--warn': highestLevel === 'warn'
+      className={classNames(ROOT_CSS + '', notificationAreaStyleSet + '', 'webchat__notificationArea', {
+        'webchat__notificationArea--expandable': expandable,
+        'webchat__notificationArea--expanded': expanded,
+        'webchat__notificationArea--error': highestLevel === 'error',
+        'webchat__notificationArea--info': highestLevel === 'info',
+        'webchat__notificationArea--success': highestLevel === 'success',
+        'webchat__notificationArea--warn': highestLevel === 'warn'
       })}
       role="log"
     >
       {expandable && (
-        <button className="webchat__notificationBar__expander" onClick={handleToggleExpand} type="button">
-          <div aria-hidden={true} className="webchat__notificationBar__expandLevelIconBox">
-            <NotificationIcon className="webchat__notificationBar__expandLevelIcon" level={highestLevel} />
+        <button className="webchat__notificationArea__expander" onClick={handleToggleExpand} type="button">
+          <div aria-hidden={true} className="webchat__notificationArea__expandLevelIconBox">
+            <NotificationIcon className="webchat__notificationArea__expandLevelIcon" level={highestLevel} />
           </div>
-          <div className="webchat__notificationBar__expandText">
+          <div className="webchat__notificationArea__expandText">
             {notificationExpandText.replace('$1', sortedNotificationsWithChildren.length)}
           </div>
-          <div aria-hidden={true} className="webchat__notificationBar__expandIcon">
-            <div className="webchat__notificationBar__expandIconFocus">
+          <div aria-hidden={true} className="webchat__notificationArea__expandIcon">
+            <div className="webchat__notificationArea__expandIconFocus">
               {expanded ? <CollapseIcon /> : <ExpandIcon />}
             </div>
           </div>
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul className="webchat__notificationBar__list">
+        <ul className="webchat__notificationArea__list">
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li className="webchat__notificationBar__listItem" key={id}>
+            <li className="webchat__notificationArea__listItem" key={id}>
               {children}
             </li>
           ))}
@@ -139,4 +139,4 @@ const BasicNotificationBar = () => {
   );
 };
 
-export default BasicNotificationBar;
+export default BasicNotificationArea;

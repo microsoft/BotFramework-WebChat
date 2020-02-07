@@ -1,13 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 5, 32, 50] }] */
 
-export default function createNotificationBarStyleSet({
+export default function createNotificationAreaStyleSet({
   notificationErrorBackgroundColor,
   notificationErrorColor,
   notificationFontSize,
   notificationInfoBackgroundColor,
-  notificationBarHeight,
-  notificationBarMaxHeight,
-  notificationBarSingularMaxHeight,
+  notificationAreaHeight,
+  notificationAreaMaxHeight,
+  notificationAreaSingularMaxHeight,
   notificationIconWidth,
   notificationInfoColor,
   notificationSeparatorColor,
@@ -20,19 +20,19 @@ export default function createNotificationBarStyleSet({
   return {
     overflowY: 'hidden',
 
-    '&:not(.webchat__notificationBar--expandable)': {
-      maxHeight: notificationBarSingularMaxHeight
+    '&:not(.webchat__notificationArea--expandable)': {
+      maxHeight: notificationAreaSingularMaxHeight
     },
 
-    '&.webchat__notificationBar--expandable:not(.webchat__notificationBar--expanded) > ul': {
+    '&.webchat__notificationArea--expandable:not(.webchat__notificationArea--expanded) > ul': {
       height: 0
     },
 
-    '&.webchat__notificationBar--expandable.webchat__notificationBar--expanded': {
-      maxHeight: notificationBarMaxHeight
+    '&.webchat__notificationArea--expandable.webchat__notificationArea--expanded': {
+      maxHeight: notificationAreaMaxHeight
     },
 
-    '& .webchat__notificationBar__expander': {
+    '& .webchat__notificationArea__expander': {
       alignItems: 'center',
       alignSelf: 'stretch',
       appearance: 'none',
@@ -41,23 +41,23 @@ export default function createNotificationBarStyleSet({
       display: 'flex',
       fontFamily: primaryFont,
       fontSize: notificationFontSize,
-      minHeight: notificationBarHeight,
+      minHeight: notificationAreaHeight,
       outline: 0,
       padding: 0,
 
       // IE11 does not have "initial", we are using "justify" so we don't need "left"/"right" for LTR/RTL.
       textAlign: 'justify',
 
-      '&:focus .webchat__notificationBar__expandIconFocus': {
+      '&:focus .webchat__notificationArea__expandIconFocus': {
         borderColor: 'rgba(26, 10, 0, .7)'
       },
 
-      '&:hover .webchat__notificationBar__expandIconFocus': {
+      '&:hover .webchat__notificationArea__expandIconFocus': {
         backgroundColor: 'rgba(0, 0, 0, .12)'
       }
     },
 
-    '& .webchat__notificationBar__expandIconFocus': {
+    '& .webchat__notificationArea__expandIconFocus': {
       alignItems: 'center',
       borderColor: 'Transparent',
       borderStyle: 'solid',
@@ -69,75 +69,75 @@ export default function createNotificationBarStyleSet({
       width: 22
     },
 
-    '&.webchat__notificationBar--error': {
+    '&.webchat__notificationArea--error': {
       // TODO: Checks if pass A11y contrast ratio requirement
 
-      '&:not(.webchat__notificationBar--expandable), & .webchat__notificationBar__expander': {
+      '&:not(.webchat__notificationArea--expandable), & .webchat__notificationArea__expander': {
         backgroundColor: notificationErrorBackgroundColor
       },
 
-      '& .webchat__notificationBar__expander': {
+      '& .webchat__notificationArea__expander': {
         color: notificationErrorColor,
         fill: notificationErrorColor
       }
     },
 
-    '&.webchat__notificationBar--info': {
-      '&:not(.webchat__notificationBar--expandable), & .webchat__notificationBar__expander': {
+    '&.webchat__notificationArea--info': {
+      '&:not(.webchat__notificationArea--expandable), & .webchat__notificationArea__expander': {
         backgroundColor: notificationInfoBackgroundColor
       },
 
-      '& .webchat__notificationBar__expander': {
+      '& .webchat__notificationArea__expander': {
         color: notificationInfoColor,
         fill: notificationInfoColor
       }
     },
 
-    '&.webchat__notificationBar--success': {
-      '&:not(.webchat__notificationBar--expandable), & .webchat__notificationBar__expander': {
+    '&.webchat__notificationArea--success': {
+      '&:not(.webchat__notificationArea--expandable), & .webchat__notificationArea__expander': {
         backgroundColor: notificationSuccessBackgroundColor
       },
 
-      '& .webchat__notificationBar__expander': {
+      '& .webchat__notificationArea__expander': {
         color: notificationSuccessColor,
         fill: notificationSuccessColor
       }
     },
 
-    '&.webchat__notificationBar--warn': {
-      '&:not(.webchat__notificationBar--expandable), & .webchat__notificationBar__expander': {
+    '&.webchat__notificationArea--warn': {
+      '&:not(.webchat__notificationArea--expandable), & .webchat__notificationArea__expander': {
         backgroundColor: notificationWarnBackgroundColor
       },
 
-      '& .webchat__notificationBar__expander': {
+      '& .webchat__notificationArea__expander': {
         color: notificationWarnColor,
         fill: notificationWarnColor
       }
     },
 
-    '& .webchat__notificationBar__expandLevelIconBox': {
-      height: notificationBarHeight,
+    '& .webchat__notificationArea__expandLevelIconBox': {
+      height: notificationAreaHeight,
       width: notificationIconWidth
     },
 
-    '& .webchat__notificationBar__expandIcon': {
-      height: notificationBarHeight,
-      width: notificationBarHeight
+    '& .webchat__notificationArea__expandIcon': {
+      height: notificationAreaHeight,
+      width: notificationAreaHeight
     },
 
-    '& .webchat__notificationBar__expandLevelIconBox, & .webchat__notificationBar__expandIcon': {
+    '& .webchat__notificationArea__expandLevelIconBox, & .webchat__notificationArea__expandIcon': {
       alignItems: 'center',
       display: 'flex',
       justifyContent: 'center'
     },
 
-    '& .webchat__notificationBar__list': {
+    '& .webchat__notificationArea__list': {
       margin: 0,
       overflowY: 'auto',
       padding: 0
     },
 
-    '& .webchat__notificationBar__listItem': {
+    '& .webchat__notificationArea__listItem:not(:first-child), & .webchat__notificationArea__listItem:not(:last-child)': {
       borderBottomColor: notificationSeparatorColor,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,

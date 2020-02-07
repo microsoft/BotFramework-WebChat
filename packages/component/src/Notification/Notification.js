@@ -3,38 +3,29 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 
-import useDismissNotification from '../hooks/useDismissNotification';
-import useLocalize from '../hooks/useLocalize';
 import DismissIcon from './DismissIcon';
 import NotificationIcon from './NotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
-import useInternalRenderMarkdownInline from '../hooks/internal/useInternalRenderMarkdownInline';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& .webchat__notification__text': {
+  '& .webchat__notification__content': {
     flex: 1
   }
 });
 
-const Notification = ({ alt, level, message, notificationId }) => {
+const Notification = ({ children, level, onDismiss }) => {
   const [{ notification: notificationStyleSet }] = useStyleSet();
   const dismissButtonText = useLocalize('NOTIFICATION_DISMISS_BUTTON');
-  const dismissNotification = useDismissNotification();
   const errorPrefix = useLocalize('NOTIFICATION_ERROR_PREFIX');
   const infoPrefix = useLocalize('NOTIFICATION_INFO_PREFIX');
   const successPrefix = useLocalize('NOTIFICATION_SUCCESS_PREFIX');
   const warnPrefix = useLocalize('NOTIFICATION_WARN_PREFIX');
-  const handleDismissNotification = useCallback(() => dismissNotification(notificationId), [
-    dismissNotification,
-    notificationId
-  ]);
-  const renderMarkdownInline = useInternalRenderMarkdownInline();
-  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
   const prefix =
     {
       error: errorPrefix,
@@ -56,31 +47,32 @@ const Notification = ({ alt, level, message, notificationId }) => {
         <NotificationIcon className="webchat__notification__icon" level={level} />
       </div>
       <ScreenReaderText text={prefix} />
-      {!!alt && <ScreenReaderText text={alt} />}
-      <div aria-hidden={!!alt} className="webchat__notification__text" dangerouslySetInnerHTML={html} />
-      <button
-        aria-label={dismissButtonText}
-        className="webchat__notification__dismissButton"
-        onClick={handleDismissNotification}
-        type="button"
-      >
-        <div className="webchat__notification__dismissButtonFocus">
-          <DismissIcon />
-        </div>
-      </button>
+      <div className="webchat__notification__content">{children}</div>
+      {!!onDismiss && (
+        <button
+          aria-label={dismissButtonText}
+          className="webchat__notification__dismissButton"
+          onClick={onDismiss}
+          type="button"
+        >
+          <div className="webchat__notification__dismissButtonFocus">
+            <DismissIcon />
+          </div>
+        </button>
+      )}
     </div>
   );
 };
 
 Notification.defaultProps = {
-  alt: undefined
+  children: undefined,
+  onDismiss: undefined
 };
 
 Notification.propTypes = {
-  alt: PropTypes.string,
+  children: PropTypes.any,
   level: PropTypes.oneOf(['error', 'warn', 'info', 'success']).isRequired,
-  message: PropTypes.string.isRequired,
-  notificationId: PropTypes.string.isRequired
+  onDismiss: PropTypes.func
 };
 
 export default Notification;

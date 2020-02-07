@@ -1,5 +1,5 @@
 import concatMiddleware from '../concatMiddleware';
-import createBasicNotificationMiddlware from '../../Notification/createBasicNotificationMiddleware';
+import createNotificationMiddleware from '../../Notification/createNotificationMiddleware';
 
 function createCoreMiddleware() {
   return concatMiddleware(
@@ -12,7 +12,7 @@ function createCoreMiddleware() {
       // If devs want to render it, they can add a middleware.
       return id !== 'connectivitystatus' && next(args);
     },
-    createBasicNotificationMiddlware()
+    createNotificationMiddleware()
   );
 }
 

@@ -162,9 +162,9 @@ const DEFAULT_OPTIONS = {
   // Notification UI
 
   // New debounce timeout value only affect new notifications.
-  notificationBarHeight: 32,
-  notificationBarMaxHeight: 32 * 5,
-  notificationBarSingularMaxHeight: 50,
+  notificationAreaHeight: 32,
+  notificationAreaMaxHeight: 32 * 5,
+  notificationAreaSingularMaxHeight: 50,
   notificationDebounceTimeout: 400,
   notificationFontSize: '87.5%',
   notificationIconWidth: 36,

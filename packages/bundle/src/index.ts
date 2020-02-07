@@ -55,6 +55,7 @@ export {
 
 window['WebChat'] = {
   ...window['WebChat'],
+  Components,
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,

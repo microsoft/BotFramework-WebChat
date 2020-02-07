@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
-import BasicNotificationBar from './BasicNotificationBar';
+import BasicNotificationArea from './BasicNotificationArea';
 import BasicSendBox from './BasicSendBox';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
@@ -153,7 +153,7 @@ const BasicWebChat = ({
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
-          <BasicNotificationBar className={NOTIFICATIONS_CSS + ''} />
+          <BasicNotificationArea className={NOTIFICATIONS_CSS + ''} />
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
           <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}

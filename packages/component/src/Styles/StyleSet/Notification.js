@@ -1,5 +1,5 @@
 export default function createNotificationStyleSet({
-  notificationBarHeight,
+  notificationAreaHeight,
   notificationErrorColor,
   notificationFontSize,
   notificationIconWidth,
@@ -13,7 +13,7 @@ export default function createNotificationStyleSet({
     alignItems: 'center',
     fontFamily: primaryFont,
     fontSize: notificationFontSize,
-    minHeight: notificationBarHeight,
+    minHeight: notificationAreaHeight,
 
     '&.webchat__notification--error': {
       color: notificationErrorColor,
@@ -37,25 +37,25 @@ export default function createNotificationStyleSet({
 
     '& .webchat__notification__iconBox': {
       alignItems: 'center',
-      alignSelf: 'flex-start',
+      // alignSelf: 'stretch',
       display: 'flex',
-      height: notificationBarHeight,
+      height: notificationAreaHeight,
       justifyContent: 'center',
       width: notificationIconWidth
     },
 
     '& .webchat__notification__dismissButton': {
       alignItems: 'center',
-      alignSelf: 'flex-start',
+      // alignSelf: 'stretch',
       appearance: 'none',
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',
-      height: notificationBarHeight,
+      height: notificationAreaHeight,
       justifyContent: 'center',
       outline: 0,
       padding: 0,
-      width: notificationBarHeight,
+      width: notificationAreaHeight,
 
       '&:focus .webchat__notification__dismissButtonFocus': {
         borderColor: 'rgba(26, 10, 0, .7)'
