@@ -27,7 +27,6 @@ const ROOT_CSS = css({
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
-  console.log(direction);
   const formattedSize = typeof size === 'number' && format(size);
 
   return (

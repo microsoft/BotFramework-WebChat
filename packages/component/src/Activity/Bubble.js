@@ -39,7 +39,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
 
   return (
     <svg
-      className={'webchat__bubble__nub'}
+      className="webchat__bubble__nub"
       version="1.1"
       viewBox={`0 0 ${nubSize} ${nubSize}`}
       xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         className + '' || ''
       )}
     >
-      <div className={classNames('webchat__bubble__content')}>{children}</div>
+      <div className="webchat__bubble__content">{children}</div>
       {nub && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
     </div>
   );

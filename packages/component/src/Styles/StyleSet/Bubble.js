@@ -42,9 +42,6 @@ export default function createBubbleStyle({
     },
 
     '&:not(.from-user)': {
-      '&.webchat__bubble_has_nub': {
-        // '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
-      },
       '& > .webchat__bubble__content': {
         background: bubbleBackground,
         borderColor: bubbleBorderColor,
