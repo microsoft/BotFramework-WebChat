@@ -85,10 +85,7 @@ const Components = {
   connectSendButton,
   connectSendTextBox,
   connectSuggestedActions,
-  connectUploadButton,
-
-  // Components for notification
-  Notification
+  connectUploadButton
 };
 
 export default BasicWebChat;

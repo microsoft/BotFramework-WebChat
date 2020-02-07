@@ -43,7 +43,6 @@ export {
 
 window['WebChat'] = {
   ...window['WebChat'],
-  Components,
   concatMiddleware,
   connectToWebChat,
   Constants,

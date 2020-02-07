@@ -137,6 +137,10 @@ export default function createNotificationAreaStyleSet({
       padding: 0
     },
 
+    '& .webchat__notificationArea__listItem': {
+      height: notificationAreaHeight
+    },
+
     '& .webchat__notificationArea__listItem:not(:first-child), & .webchat__notificationArea__listItem:not(:last-child)': {
       borderBottomColor: notificationSeparatorColor,
       borderBottomStyle: 'solid',
