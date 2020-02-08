@@ -1,5 +1,7 @@
-import { By } from 'selenium-webdriver';
+import getTranscript from './getTranscript';
 
 export default async function getScrollToBottomButton(driver) {
-  return await driver.findElement(By.css('[role="log"] > button:last-child'));
+  const transcript = await getTranscript(driver);
+
+  return await transcript.findElement('button:last-child');
 }

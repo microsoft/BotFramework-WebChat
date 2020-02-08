@@ -1,7 +1,8 @@
-import { By, Key } from 'selenium-webdriver';
+import { Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
+import getTranscript from './setup/elements/getTranscript.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import negationOf from './setup/conditions/negationOf.js';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
@@ -57,7 +58,7 @@ describe('type focus sink', () => {
 
     await driver.wait(uiConnected(), timeouts.directLine);
 
-    const transcript = await driver.findElement(By.css('[role="log"]'));
+    const transcript = await getTranscript(driver);
 
     await transcript.click();
 
@@ -108,7 +109,7 @@ describe('type focus sink', () => {
 
     await driver.wait(uiConnected(), timeouts.directLine);
 
-    const transcript = await driver.findElement(By.css('[role="log"]'));
+    const transcript = await getTranscript(driver);
 
     await transcript.click();
 
@@ -129,7 +130,7 @@ describe('type focus sink', () => {
 
     await driver.wait(uiConnected(), timeouts.directLine);
 
-    const transcript = await driver.findElement(By.css('[role="log"]'));
+    const transcript = await getTranscript(driver);
 
     await transcript.click();
 

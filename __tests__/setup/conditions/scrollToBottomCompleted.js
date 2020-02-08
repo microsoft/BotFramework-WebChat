@@ -1,13 +1,19 @@
 import { Condition } from 'selenium-webdriver';
 
+import getTranscriptScrollable from '../elements/getTranscriptScrollable';
+
 export default function scrollToBottomCompleted() {
   return new Condition('for UI to scroll to bottom', async driver => {
     async function completed() {
-      return await driver.executeScript(() => {
-        const scrollable = document.querySelector('[role="log"] > *');
+      const scrollable = await getTranscriptScrollable(driver);
 
-        return scrollable && scrollable.offsetHeight + scrollable.scrollTop === scrollable.scrollHeight;
-      });
+      return (
+        scrollable &&
+        (await driver.executeScript(
+          scrollable => scrollable.offsetHeight + scrollable.scrollTop === scrollable.scrollHeight,
+          scrollable
+        ))
+      );
     }
 
     // Browser may keep rendering content. Wait until 5 consecutive completion checks are all truthy.
