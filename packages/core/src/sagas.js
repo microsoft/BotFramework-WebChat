@@ -1,6 +1,5 @@
 import { fork } from 'redux-saga/effects';
 
-// import clearExpiredNotificationsSaga from './sagas/clearExpiredNotifications';
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusToNotificationSaga from './sagas/connectionStatusToNotificationSaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
@@ -26,7 +25,6 @@ import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 export default function* sagas() {
   // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
 
-  // yield fork(clearExpiredNotificationsSaga);
   yield fork(clearSuggestedActionsOnPostActivitySaga);
   yield fork(connectionStatusToNotificationSaga);
   yield fork(connectionStatusUpdateSaga);
