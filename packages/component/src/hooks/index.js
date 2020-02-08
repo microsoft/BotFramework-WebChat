@@ -50,7 +50,7 @@ import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
-import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
+import { useTypingIndicatorVisible } from './BasicTypingIndicator';
 
 export {
   useActivities,
