@@ -28,8 +28,6 @@ import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
 import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
-import Notification from './Notification/Notification.js';
-
 import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
 import Context from './WebChatUIContext';
