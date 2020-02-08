@@ -2,6 +2,9 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 // import allImagesLoaded from './setup/conditions/allImagesLoaded';
 // import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
+import negationOf from './setup/conditions/negationOf';
+import toasterExpandable from './setup/conditions/toasterExpandable';
+import toasterExpanded from './setup/conditions/toasterExpanded';
 import toastShown from './setup/conditions/toastShown';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -10,61 +13,72 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('show a notification, update, and dismiss it', async () => {
+test('show 2 notifications, expand, close one, and add new', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     setup: () =>
       Promise.all([
         window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
         window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
       ]).then(() => {
-        window.WebChatTest.clock = lolex.install();
+        window.WebChatTest.clock = lolex.install({ shouldAdvanceTime: true });
       })
   });
 
-  await driver.wait(uiConnected(), timeouts.directLine);
   await driver.executeScript(() => window.WebChatTest.clock.tick(400));
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/SET_NOTIFICATION',
     payload: {
-      id: 'privacypolicy',
+      id: '1',
       level: 'info',
-      message: 'Please read our [privacy policy](https://microsoft.com/privacypolicy).'
+      message: 'Notification 1.'
     }
   });
 
-  await driver.wait(toastShown(1), timeouts.ui);
-  await driver.wait(toastShown('Please read our privacy policy.'), timeouts.ui);
+  await pageObjects.dispatchAction({
+    type: 'WEB_CHAT/SET_NOTIFICATION',
+    payload: {
+      id: '2',
+      level: 'error',
+      message: 'Notification 2.'
+    }
+  });
+
+  await driver.wait(toasterExpandable(), timeouts.ui);
+  await driver.wait(negationOf(toasterExpanded()), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-  await pageObjects.dispatchAction({
-    type: 'WEB_CHAT/SET_NOTIFICATION',
-    payload: {
-      id: 'privacypolicy',
-      level: 'warn',
-      message: 'Please read our [privacy policy](https://microsoft.com/privacypolicy) again.'
-    }
-  });
-
-  await driver.wait(toastShown(1), timeouts.ui);
-  await driver.wait(toastShown('Please read our privacy policy.'), timeouts.ui);
-  await driver.executeScript(() => window.WebChatTest.clock.tick(400));
-  await driver.wait(toastShown('Please read our privacy policy again.'), timeouts.ui);
+  await pageObjects.clickToasterExpander();
+  await driver.wait(toasterExpanded(), timeouts.ui);
+  await driver.wait(toastShown(2), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/DISMISS_NOTIFICATION',
     payload: {
-      id: 'privacypolicy'
+      id: '2'
     }
   });
 
-  await driver.wait(toastShown(1), timeouts.ui);
-  await driver.wait(toastShown('Please read our privacy policy again.'), timeouts.ui);
-  await driver.executeScript(() => window.WebChatTest.clock.tick(400));
-  await driver.wait(toastShown(0), timeouts.ui);
+  await driver.wait(toastShown(1), 60000);
+  await driver.wait(negationOf(toasterExpandable()), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.dispatchAction({
+    type: 'WEB_CHAT/SET_NOTIFICATION',
+    payload: {
+      id: '3',
+      level: 'success',
+      message: 'Notification 3.'
+    }
+  });
+
+  await driver.wait(toasterExpandable(), timeouts.ui);
+  await driver.wait(negationOf(toasterExpanded()), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
