@@ -33,6 +33,7 @@ import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useSendTypingIndicator from './useSendTypingIndicator';
+import useSetNotification from './useSetNotification';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
 import useStopDictate from './useStopDictate';
@@ -90,6 +91,7 @@ export {
   useSendPostBack,
   useSendTimeoutForActivity,
   useSendTypingIndicator,
+  useSetNotification,
   useShouldSpeakIncomingActivity,
   useStartDictate,
   useStopDictate,
