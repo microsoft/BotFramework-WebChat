@@ -11,45 +11,57 @@ import useTimer from './internal/useTimer';
 function useDebouncedNotifications() {
   const now = Date.now();
 
-  const [{ notificationDebounceTimeout }] = useStyleOptions();
+  const [{ toastDebounceTimeout }] = useStyleOptions();
   const [notifications] = useNotifications();
   const debouncedNotificationsRef = useRef({});
-  const forceRefresh = useForceRender();
+  const forceRender = useForceRender();
 
-  // TODO: [P2] We can improve performance if we can keep debouncedNotificationsRef unchanged if possible.
-  debouncedNotificationsRef.current = filterMap(
-    debouncedNotificationsRef.current,
-    ({ id, updateNotBefore }) => notifications[id] || now < updateNotBefore
-  );
+  // Delete notifications or mark them to be deleted if debouncing.
+  for (const id of Object.keys(debouncedNotificationsRef.current).filter(id => !(id in notifications))) {
+    debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [id], debouncedNotification => {
+      if (now < debouncedNotification.updateNotBefore) {
+        // The update need to be postponed.
+        return { ...debouncedNotification, outOfDate: true };
+      }
 
-  for (const [, { alt, id, level, message, timestamp }] of Object.entries(notifications)) {
+      // Otherwise, return undefined will remove it.
+    });
+  }
+
+  // For any changes, update notifications or mark them to be updated if debouncing.
+  for (const [, { alt, data, id, level, message, timestamp }] of Object.entries(notifications)) {
     debouncedNotificationsRef.current = updateIn(debouncedNotificationsRef.current, [id], debouncedNotification => {
       if (
         debouncedNotification &&
         alt === debouncedNotification.alt &&
+        Object.is(data, debouncedNotification.data) &&
         level === debouncedNotification.level &&
         message === debouncedNotification.message &&
         timestamp === debouncedNotification.timestamp
       ) {
+        // If nothing changed, return as-is.
         return debouncedNotification;
       }
 
-      if (debouncedNotification && now <= debouncedNotification.updateNotBefore) {
+      if (debouncedNotification && now < debouncedNotification.updateNotBefore) {
+        // The update need to be postponed.
         return {
           ...debouncedNotification,
           outOfDate: true
         };
       }
 
+      // Update the notification.
       return {
         ...debouncedNotification,
         alt,
+        data,
         id,
         level,
         message,
         outOfDate: false,
         timestamp,
-        updateNotBefore: now + notificationDebounceTimeout
+        updateNotBefore: now + toastDebounceTimeout
       };
     });
   }
@@ -59,7 +71,7 @@ function useDebouncedNotifications() {
     ({ updateNotBefore }) => updateNotBefore
   ) || [undefined, {}];
 
-  useTimer(earliestUpdateNotBefore, forceRefresh);
+  useTimer(earliestUpdateNotBefore, forceRender);
 
   return [debouncedNotificationsRef.current];
 }
