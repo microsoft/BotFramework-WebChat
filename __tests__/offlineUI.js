@@ -250,7 +250,6 @@ describe('offline UI', () => {
         // This part of code is running in the JavaScript VM in Chromium.
         // These Direct Line Connection Status variables must be declared within scope
         const CONNECTING = 1;
-
         const ONLINE = 2;
 
         const reconnectingDirectLine = window.WebChat.createDirectLine(options);

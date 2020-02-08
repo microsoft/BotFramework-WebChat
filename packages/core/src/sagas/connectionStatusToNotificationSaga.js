@@ -21,7 +21,7 @@ function subscribeToPromiseQueue(observable) {
 }
 
 function* connectionStatusToNotification({ payload: { directLine } }) {
-  let numConnecting = 0;
+  let reconnecting;
 
   const { shift, unsubscribe } = subscribeToPromiseQueue(directLine.connectionStatus$);
 
@@ -30,18 +30,21 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
       const value = yield call(shift);
 
       switch (value) {
+        case 0:
         case 1:
           yield put(
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,
               level: 'info',
-              message: numConnecting++ ? 'reconnecting' : 'connecting'
+              message: reconnecting ? 'reconnecting' : 'connecting'
             })
           );
 
           break;
 
         case 2:
+          reconnecting = 1;
+
           yield put(
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,
@@ -54,6 +57,8 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
 
         case 3:
         case 4:
+          reconnecting = 1;
+
           yield put(
             setNotification({
               id: CONNECTIVITY_STATUS_NOTIFICATION_ID,

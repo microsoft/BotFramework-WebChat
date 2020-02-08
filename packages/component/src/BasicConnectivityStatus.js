@@ -4,7 +4,6 @@ import ConnectivityStatusConnected from './ConnectivityStatus/Connected';
 import ConnectivityStatusConnecting from './ConnectivityStatus/Connecting';
 import ConnectivityStatusFailedToConnect from './ConnectivityStatus/FailedToConnect';
 import ConnectivityStatusJavaScriptError from './ConnectivityStatus/JavaScriptError';
-import ConnectivityStatusReconnecting from './ConnectivityStatus/Reconnecting';
 import useDebouncedNotifications from './hooks/useDebouncedNotifications';
 
 const BasicConnectivityStatus = () => {
@@ -25,7 +24,7 @@ const BasicConnectivityStatus = () => {
       return <ConnectivityStatusFailedToConnect />;
 
     case 'reconnecting':
-      return <ConnectivityStatusReconnecting />;
+      return <ConnectivityStatusConnecting reconnect={true} />;
 
     case 'connected':
     default:
