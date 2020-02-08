@@ -1,4 +1,4 @@
-import getTranscriptScrollable from '../elements/getTranscript.js';
+import getTranscriptScrollable from '../elements/getTranscriptScrollable';
 
 export default async function scrollToTop(driver) {
   await driver.executeScript(scrollable => {
