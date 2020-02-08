@@ -24,6 +24,7 @@ const ScrollToEndButton = ({ className }) => {
   return (
     <button
       className={classNames(
+        'webchat__scrollToEndButton',
         scrollToEndButtonStyleSet + '',
         className + '',
         direction === 'rtl' ? 'webchat__overlay--rtl' : ''
