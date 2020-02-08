@@ -82,3 +82,53 @@ test('show 2 notifications, expand, close one, and add new', async () => {
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('show 2 notifications, expand, and collapse', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    setup: () =>
+      Promise.all([
+        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+      ]).then(() => {
+        window.WebChatTest.clock = lolex.install({ shouldAdvanceTime: true });
+      })
+  });
+
+  await driver.executeScript(() => window.WebChatTest.clock.tick(400));
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.dispatchAction({
+    type: 'WEB_CHAT/SET_NOTIFICATION',
+    payload: {
+      id: '1',
+      level: 'info',
+      message: 'Notification 1.'
+    }
+  });
+
+  await pageObjects.dispatchAction({
+    type: 'WEB_CHAT/SET_NOTIFICATION',
+    payload: {
+      id: '2',
+      level: 'error',
+      message: 'Notification 2.'
+    }
+  });
+
+  await driver.wait(toasterExpandable(), timeouts.ui);
+  await driver.wait(negationOf(toasterExpanded()), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.clickToasterExpander();
+  await driver.wait(toasterExpanded(), timeouts.ui);
+  await driver.wait(toastShown(2), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.clickToasterExpander();
+  await driver.wait(negationOf(toasterExpanded()), timeouts.ui);
+  await driver.wait(toastShown(0), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+});
