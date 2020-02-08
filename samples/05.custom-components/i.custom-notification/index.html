@@ -47,7 +47,7 @@
         content: '\F286';
       }
 
-      .app__signInNotification {
+      .app__signInToast {
         align-items: center;
         color: #105e7d;
         display: flex;
@@ -56,12 +56,12 @@
         height: 100%;
       }
 
-      .app__signInNotification__icon {
+      .app__signInToast__icon {
         text-align: center;
         width: 36px;
       }
 
-      .app__signInNotification__button {
+      .app__signInToast__button {
         appearance: none;
         background-color: rgba(255, 255, 255, 0.8);
         border: solid 1px rgba(0, 0, 0, 0.3);
@@ -73,11 +73,11 @@
         outline: 0;
       }
 
-      .app__signInNotification__button:hover {
+      .app__signInToast__button:hover {
         background-color: rgba(0, 0, 0, 0.12);
       }
 
-      .app__signInNotification__button:focus {
+      .app__signInToast__button:focus {
         border-color: rgba(0, 0, 0, 0.7);
       }
     </style>
@@ -138,7 +138,7 @@
           return next(action);
         });
 
-        const SignInNotification = ({ level }) => {
+        const SignInToast = ({ level }) => {
           const sendPostBack = useSendPostBack();
           const handleAgreeClick = useCallback(() => {
             sendPostBack({
@@ -159,22 +159,22 @@
           }, []);
 
           return (
-            <div aria-label="Sign in" role="dialog" className="app__signInNotification">
-              <i aria-hidden={true} className="ms-Icon ms-Icon--Signin app__signInNotification__icon" />
+            <div aria-label="Sign in" role="dialog" className="app__signInToast">
+              <i aria-hidden={true} className="ms-Icon ms-Icon--Signin app__signInToast__icon" />
               {'Do you want to sign-in? '}
-              <button className="app__signInNotification__button" onClick={handleAgreeClick} type="button">
+              <button className="app__signInToast__button" onClick={handleAgreeClick} type="button">
                 Yes
               </button>{' '}
-              <button className="app__signInNotification__button" onClick={dismissNotification} type="button">
+              <button className="app__signInToast__button" onClick={dismissNotification} type="button">
                 No
               </button>
             </div>
           );
         };
 
-        const notificationMiddleware = () => next => ({ notification, ...otherArgs }) => {
+        const toastMiddleware = () => next => ({ notification, ...otherArgs }) => {
           if (notification.id === 'signin') {
-            return <SignInNotification />;
+            return <SignInToast />;
           }
 
           return next({ notification, ...otherArgs });
@@ -183,7 +183,7 @@
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token }),
-            notificationMiddleware,
+            toastMiddleware,
             store
           },
           document.getElementById('webchat')

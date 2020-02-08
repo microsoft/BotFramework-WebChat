@@ -13,8 +13,6 @@ import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
 import createFileContentStyle from './StyleSet/FileContent';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
-import createNotificationAreaStyleSet from './StyleSet/NotificationArea';
-import createNotificationStyleSet from './StyleSet/Notification';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
@@ -29,6 +27,8 @@ import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
+import createToasterStyle from './StyleSet/Toaster';
+import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
@@ -184,8 +184,6 @@ export default function createStyleSet(options) {
     errorNotification: createErrorNotificationStyle(options),
     fileContent: createFileContentStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
-    notification: createNotificationStyleSet(options),
-    notificationArea: createNotificationAreaStyleSet(options),
     options: {
       ...options,
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
@@ -203,6 +201,8 @@ export default function createStyleSet(options) {
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
+    toast: createToastStyle(options),
+    toaster: createToasterStyle(options),
     typingAnimation: createTypingAnimationStyle(options),
     typingIndicator: createTypingIndicatorStyle(options),
     uploadButton: createUploadButtonStyle(options),

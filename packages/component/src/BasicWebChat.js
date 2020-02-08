@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
-import BasicNotificationArea from './BasicNotificationArea';
+import BasicToaster from './BasicToaster';
 import BasicSendBox from './BasicSendBox';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
@@ -14,7 +14,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
-import createCoreNotificationMiddleware from './Middleware/Notification/createCoreMiddleware';
+import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
@@ -28,11 +28,11 @@ const CONNECTIVITY_STATUS_CSS = css({
   flexShrink: 0
 });
 
-const NOTIFICATIONS_CSS = css({
+const SEND_BOX_CSS = css({
   flexShrink: 0
 });
 
-const SEND_BOX_CSS = css({
+const TOASTER_CSS = css({
   flexShrink: 0
 });
 
@@ -100,12 +100,12 @@ function createAttachmentRenderer(additionalMiddleware) {
 }
 
 // TODO: [P2] #2859 We should move these into <Composer>
-function createNotificationRenderer(additionalMiddleware) {
-  const notificationMiddleware = concatMiddleware(additionalMiddleware, createCoreNotificationMiddleware())({});
+function createToastRenderer(additionalMiddleware) {
+  const toastMiddleware = concatMiddleware(additionalMiddleware, createCoreToastMiddleware())({});
 
   return (...args) => {
     try {
-      return notificationMiddleware(({ notification }) => (
+      return toastMiddleware(({ notification }) => (
         <ErrorBox message="No renderer for this notification">
           <pre>{JSON.stringify(notification, null, 2)}</pre>
         </ErrorBox>
@@ -153,7 +153,7 @@ const BasicWebChat = ({
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
-          <BasicNotificationArea className={NOTIFICATIONS_CSS + ''} />
+          <BasicToaster className={TOASTER_CSS + ''} />
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
           <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}

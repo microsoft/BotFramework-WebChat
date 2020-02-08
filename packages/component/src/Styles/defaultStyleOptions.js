@@ -159,26 +159,26 @@ const DEFAULT_OPTIONS = {
   // deprecated; will be removed on or after 2021-02-01
   spinnerAnimationPaddingRight: undefined,
 
-  // Notification UI
+  // Toast UI
 
   // New debounce timeout value only affect new notifications.
-  notificationAreaHeight: 32,
-  notificationAreaMaxHeight: 32 * 5,
-  notificationAreaSingularMaxHeight: 50,
-  notificationDebounceTimeout: 400,
-  notificationFontSize: '87.5%',
-  notificationIconWidth: 36,
-  notificationSeparatorColor: '#E8EAEC',
-  notificationTextPadding: 6,
+  toasterHeight: 32,
+  toasterMaxHeight: 32 * 5,
+  toasterSingularMaxHeight: 50,
+  toastDebounceTimeout: 400,
+  toastFontSize: '87.5%',
+  toastIconWidth: 36,
+  toastSeparatorColor: '#E8EAEC',
+  toastTextPadding: 6,
 
-  notificationErrorBackgroundColor: '#FDE7E9',
-  notificationErrorColor: '#A80000',
-  notificationInfoBackgroundColor: '#CEF1FF',
-  notificationInfoColor: '#105E7D',
-  notificationSuccessBackgroundColor: '#DFF6DD',
-  notificationSuccessColor: '#107C10',
-  notificationWarnBackgroundColor: '#FFF4CE',
-  notificationWarnColor: '#3B3A39'
+  toastErrorBackgroundColor: '#FDE7E9',
+  toastErrorColor: '#A80000',
+  toastInfoBackgroundColor: '#CEF1FF',
+  toastInfoColor: '#105E7D',
+  toastSuccessBackgroundColor: '#DFF6DD',
+  toastSuccessColor: '#107C10',
+  toastWarnBackgroundColor: '#FFF4CE',
+  toastWarnColor: '#3B3A39'
 };
 
 export default DEFAULT_OPTIONS;
