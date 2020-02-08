@@ -16,6 +16,7 @@ import sendPostBack from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
+import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
@@ -50,6 +51,7 @@ export {
   setDictateInterims,
   setDictateState,
   setLanguage,
+  setNotification,
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,

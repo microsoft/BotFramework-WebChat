@@ -1,5 +1,5 @@
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
-export default function useDismissNotification() {
+export default function useSetNotification() {
   return useWebChatUIContext().setNotification;
 }
