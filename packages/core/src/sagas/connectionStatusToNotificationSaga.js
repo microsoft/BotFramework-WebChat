@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [1, 2, 3, 4] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4] }] */
 
 import { call, put, takeLatest } from 'redux-saga/effects';
 
