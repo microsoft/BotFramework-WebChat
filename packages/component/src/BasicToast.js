@@ -41,16 +41,6 @@ const BasicToast = ({ notification: { alt, id, level, message } }) => {
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
   const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
 
-  const prefixes = {
-    error: useLocalize('TOAST_ERROR_PREFIX'),
-    info: useLocalize('TOAST_INFO_PREFIX'),
-    success: useLocalize('TOAST_SUCCESS_PREFIX'),
-    warn: useLocalize('TOAST_WARN_PREFIX')
-  };
-
-  const prefix = prefixes[level] || '$1';
-  const prefixedAlt = alt && prefix.replace('$1', alt);
-
   return (
     <div
       aria-describedby={contentId}
@@ -63,14 +53,11 @@ const BasicToast = ({ notification: { alt, id, level, message } }) => {
       })}
       role="dialog"
     >
-      <div aria-hidden={true} className="webchat__toast__iconBox">
+      <div className="webchat__toast__iconBox">
         <NotificationIcon className="webchat__toast__icon" level={level} />
       </div>
-      {!!prefixedAlt && <ScreenReaderText text={prefixedAlt} />}
-      <div aria-hidden={!!prefixedAlt} className="webchat__toast__text" id={contentId}>
-        {!prefixedAlt && <ScreenReaderText text={prefix} />}
-        <div dangerouslySetInnerHTML={html} />
-      </div>
+      {!!alt && <ScreenReaderText text={alt} />}
+      <div aria-hidden={!!alt} className="webchat__toast__text" dangerouslySetInnerHTML={html} id={contentId} />
       <button
         aria-label={dismissButtonText}
         className="webchat__toast__dismissButton"

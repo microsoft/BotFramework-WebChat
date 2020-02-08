@@ -73,7 +73,6 @@ function sortNotifications(map) {
 
 const BasicToaster = () => {
   const [{ toaster: toasterStyleSet }] = useStyleSet();
-  console.log(useStyleSet()[0].toaster);
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
   const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);

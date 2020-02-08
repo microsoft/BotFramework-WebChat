@@ -16,15 +16,6 @@ function useDebouncedNotifications() {
   const debouncedNotificationsRef = useRef({});
   const forceRefresh = useForceRender();
 
-  // const forceRefresh = useCallback(() => {
-  //   console.group('useDebouncedNotifications.forceRefresh');
-  //   console.log(notifications);
-  //   console.log(debouncedNotificationsRef.current);
-  //   console.groupEnd();
-
-  //   coreForceRefresh();
-  // }, [coreForceRefresh]);
-
   // TODO: [P2] We can improve performance if we can keep debouncedNotificationsRef unchanged if possible.
   debouncedNotificationsRef.current = filterMap(
     debouncedNotificationsRef.current,
@@ -69,12 +60,6 @@ function useDebouncedNotifications() {
   ) || [undefined, {}];
 
   useTimer(earliestUpdateNotBefore, forceRefresh);
-
-  // console.group('useDebouncedNotifications');
-  // console.log(earliestUpdateNotBefore);
-  // console.log(notifications);
-  // console.log(debouncedNotificationsRef.current);
-  // console.groupEnd();
 
   return [debouncedNotificationsRef.current];
 }

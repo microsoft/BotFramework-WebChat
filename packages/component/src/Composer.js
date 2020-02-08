@@ -392,7 +392,6 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
-  toastRenderer: undefined,
   renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
@@ -401,6 +400,7 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
+  toastRenderer: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -442,8 +442,8 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
+  toastRenderer: PropTypes.func,
   userID: PropTypes.string,
   username: PropTypes.string,
-  toastRenderer: PropTypes.func,
   webSpeechPonyfillFactory: PropTypes.func
 };

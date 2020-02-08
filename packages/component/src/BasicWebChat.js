@@ -127,7 +127,7 @@ const BasicWebChat = ({
   activityStatusMiddleware,
   attachmentMiddleware,
   className,
-  notificationMiddleware,
+  toastMiddleware,
   ...otherProps
 }) => {
   const sendBoxRef = useRef();
@@ -136,14 +136,14 @@ const BasicWebChat = ({
     activityStatusMiddleware
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
-  const notificationRenderer = useMemo(() => createNotificationRenderer(notificationMiddleware), [attachmentMidnotificationMiddlewaredleware]);
+  const toastRenderer = useMemo(() => createToastRenderer(toastMiddleware), [toastMiddleware]);
 
   return (
     <Composer
       activityRenderer={activityRenderer}
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
-      notificationRenderer={notificationRenderer}
+      toastRenderer={toastRenderer}
       sendBoxRef={sendBoxRef}
       {...otherProps}
     >
