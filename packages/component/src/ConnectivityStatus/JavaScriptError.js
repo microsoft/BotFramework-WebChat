@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
@@ -13,7 +14,7 @@ const ConnectivityStatusJavaScriptError = () => {
   return (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + renderErrorNotificationText} />
-      <div aria-hidden={true} className={errorNotificationStyleSet + ''}>
+      <div aria-hidden={true} className={classNames('webchat__connectivityStatus', errorNotificationStyleSet + '')}>
         <ErrorNotificationIcon />
         {renderErrorNotificationText}
       </div>

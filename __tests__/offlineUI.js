@@ -2,6 +2,7 @@ import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import actionDispatched from './setup/conditions/actionDispatched';
+import connectivityStatusShown from './setup/conditions/connectivityStatusShown';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import staticSpinner from './setup/assets/staticSpinner';
 import uiConnected from './setup/conditions/uiConnected';
@@ -384,7 +385,7 @@ describe('offline UI', () => {
     await driver.wait(actionDispatched('WEB_CHAT/SAGA_ERROR'), timeouts.directLine);
 
     // Wait until error status come up
-    await driver.wait(async () => /render error/iu.test(await pageObjects.getNotificationText()), timeouts.ui);
+    await driver.wait(connectivityStatusShown(/render error/iu), timeouts.ui);
 
     const base64PNG = await driver.takeScreenshot();
 

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
@@ -28,7 +29,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   return slow ? (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
-      <div aria-hidden={true} className={warningNotificationStyleSet + ''}>
+      <div aria-hidden={true} className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}>
         <WarningNotificationIcon />
         {slowConnectionText}
       </div>
@@ -38,7 +39,10 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
       <ScreenReaderText
         text={connectivityStatusLabelText + (reconnect ? interruptedConnectionText : initialConnectionText)}
       />
-      <div aria-hidden={true} className={connectivityNotificationStyleSet + ''}>
+      <div
+        aria-hidden={true}
+        className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
+      >
         <SpinnerAnimation />
         {reconnect ? interruptedConnectionText : initialConnectionText}
       </div>
