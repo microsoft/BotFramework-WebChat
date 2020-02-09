@@ -5,6 +5,6 @@ export default function updateMarkdownItAttrs(token, updater) {
     const map = Object.fromEntries(attrs);
     const nextMap = updater(map);
 
-    return Object.keys(nextMap).reduce((attrs, key) => [...attrs, [key, nextMap[key]]], []);
+    return Object.entries(nextMap);
   });
 }
