@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4, 5] }] */
 /* eslint react/forbid-dom-props: "off" */
 
 import { css } from 'glamor';
@@ -34,14 +34,14 @@ const ROOT_CSS = css({
 });
 
 const LEVEL_AS_NUMBER = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  success: 3
+  error: 1,
+  warn: 2,
+  info: 3,
+  success: 4
 };
 
 function getLevelAsNumber(level) {
-  return LEVEL_AS_NUMBER[level] || 4;
+  return LEVEL_AS_NUMBER[level] || 5;
 }
 
 function compareLevel(x, y) {
