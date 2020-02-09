@@ -164,6 +164,7 @@ const DEFAULT_OPTIONS = {
   // New debounce timeout value only affect new notifications.
   notificationDebounceTimeout: 400,
 
+  hideToaster: false,
   toasterHeight: 32,
   toasterMaxHeight: 32 * 5,
   toasterSingularMaxHeight: 50,

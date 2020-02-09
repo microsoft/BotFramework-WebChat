@@ -153,7 +153,7 @@ const BasicWebChat = ({
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
-          <BasicToaster className={TOASTER_CSS + ''} />
+          {!styleSet.options.hideToaster && <BasicToaster className={TOASTER_CSS + ''} />}
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
           <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}

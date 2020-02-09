@@ -132,3 +132,48 @@ test('show 2 notifications, expand, and collapse', async () => {
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('hide toaster', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        hideToaster: true
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.dispatchAction({
+    type: 'WEB_CHAT/SET_NOTIFICATION',
+    payload: {
+      id: '1',
+      level: 'info',
+      message: 'Notification 1.'
+    }
+  });
+
+  await driver.wait(toastShown(0), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.updateProps({
+    styleOptions: {
+      hideToaster: false
+    }
+  });
+
+  await driver.wait(toastShown(1), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.updateProps({
+    styleOptions: {
+      hideToaster: true
+    }
+  });
+
+  await driver.wait(toastShown(0), timeouts.ui);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+});
