@@ -1,9 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
+import useForceRender from '../hooks/internal/useForceRender';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -16,15 +17,24 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
   ] = useStyleSet();
   const [initialRenderAt] = useState(() => Date.now());
-  const [slow, setSlow] = useState(false);
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
   const initialConnectionText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
   const interruptedConnectionText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
   const slowConnectionText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
+  const forceRender = useForceRender();
 
-  const handleSlowConnection = useCallback(() => setSlow(true), [setSlow]);
+  useTimer(initialRenderAt + slowConnectionAfter, forceRender);
 
-  useTimer(initialRenderAt + slowConnectionAfter, handleSlowConnection);
+  const now = Date.now();
+  const slow = now >= initialRenderAt + slowConnectionAfter;
+
+  console.log({
+    slow,
+    now,
+    initialRenderAt,
+    slowConnectionAfter,
+    slowAfter: initialRenderAt + slowConnectionAfter
+  });
 
   return slow ? (
     <React.Fragment>

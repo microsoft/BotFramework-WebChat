@@ -25,7 +25,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 
 describe('offline UI', () => {
   test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // This variable must be declared within scope
@@ -61,19 +61,31 @@ describe('offline UI', () => {
     });
 
     await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Taking longer than usual to connect"
-      window.WebChatTest.clock.tick(14600); // Go to t=15s
-    });
-
-    await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
+      // window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Taking longer than usual to connect"
+      // window.WebChatTest.clock.tick(14600); // Go to t=15s
+      window.WebChatTest.clock.tick(15000);
     });
 
     await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
+    await driver.wait(connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
 
-    const base64PNG = await driver.takeScreenshot();
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    await pageObjects.updateProps({
+      styleOptions: {
+        slowConnectionAfter: 20000
+      }
+    });
+
+    await driver.wait(connectivityStatusShown(/connecting/iu), timeouts.ui);
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(5000);
+    });
+
+    await driver.wait(connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should show "unable to connect" UI when credentials are incorrect', async () => {
