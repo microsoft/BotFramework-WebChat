@@ -44,9 +44,7 @@ export default function createToasterStyle({
       minHeight: toasterHeight,
       outline: 0,
       padding: 0,
-
-      // IE11 does not have "initial", we are using "justify" so we don't need "left"/"right" for LTR/RTL.
-      textAlign: 'justify',
+      textAlign: 'left',
 
       '&:focus .webchat__toaster__expandIconFocus': {
         borderColor: 'rgba(26, 10, 0, .7)'
