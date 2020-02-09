@@ -28,14 +28,6 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const now = Date.now();
   const slow = now >= initialRenderAt + slowConnectionAfter;
 
-  console.log({
-    slow,
-    now,
-    initialRenderAt,
-    slowConnectionAfter,
-    slowAfter: initialRenderAt + slowConnectionAfter
-  });
-
   return slow ? (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
