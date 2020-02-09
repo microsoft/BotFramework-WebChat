@@ -1,7 +1,5 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
-// import allImagesLoaded from './setup/conditions/allImagesLoaded';
-// import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 import negationOf from './setup/conditions/negationOf';
 import toasterExpandable from './setup/conditions/toasterExpandable';
 import toasterExpanded from './setup/conditions/toasterExpanded';

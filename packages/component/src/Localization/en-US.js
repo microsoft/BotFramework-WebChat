@@ -65,7 +65,7 @@ export default {
   TOAST_SUCCESS_PREFIX: 'Success',
   TOAST_TITLE_ALT: 'Notification',
   TOAST_WARN_PREFIX: 'Warning',
-  TOASTER_EXPAND_TEXT: '$1 Notifications: Click here to see details',
+  TOASTER_HEADER_TEXT: '$1 Notifications: Click here to see details',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,

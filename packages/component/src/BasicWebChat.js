@@ -6,8 +6,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
-import BasicToaster from './BasicToaster';
+import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
+import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
 import concatMiddleware from './Middleware/concatMiddleware';
@@ -17,7 +18,6 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
-import BasicConnectivityStatus from './BasicConnectivityStatus';
 
 const ROOT_CSS = css({
   display: 'flex',

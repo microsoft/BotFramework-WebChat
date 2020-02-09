@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import ScreenReaderText from '../ScreenReaderText';
 import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
+import ScreenReaderText from '../ScreenReaderText';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 

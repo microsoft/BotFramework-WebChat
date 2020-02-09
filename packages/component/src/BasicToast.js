@@ -5,11 +5,11 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import random from 'math-random';
 import React, { useCallback, useMemo } from 'react';
 
 import DismissIcon from './Toast/DismissIcon';
 import NotificationIcon from './Toast/NotificationIcon';
+import randomId from './Utils/randomId';
 import ScreenReaderText from './ScreenReaderText';
 import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
@@ -24,12 +24,6 @@ const ROOT_CSS = css({
   }
 });
 
-function randomId() {
-  return random()
-    .toString(36)
-    .substr(2, 5);
-}
-
 const BasicToast = ({ notification: { alt, id, level, message } }) => {
   const [{ toast: toastStyleSet }] = useStyleSet();
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
@@ -39,7 +33,7 @@ const BasicToast = ({ notification: { alt, id, level, message } }) => {
   const renderMarkdownInline = useInternalRenderMarkdownInline();
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
-  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [renderMarkdownInline, message]);
+  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message, renderMarkdownInline]);
 
   return (
     <div

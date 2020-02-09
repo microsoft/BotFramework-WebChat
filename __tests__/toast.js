@@ -1,7 +1,5 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
-// import allImagesLoaded from './setup/conditions/allImagesLoaded';
-// import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 import toastShown from './setup/conditions/toastShown';
 import uiConnected from './setup/conditions/uiConnected';
 

@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CollapseIcon from './Toast/CollapseIcon';
 import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
-import random from 'math-random';
+import randomId from './Utils/randomId';
 import useDebouncedNotifications from './hooks/useDebouncedNotifications';
 import useLocalize from './hooks/useLocalize';
 import useRenderToast from './hooks/useRenderToast';
@@ -33,33 +33,19 @@ const ROOT_CSS = css({
   }
 });
 
+const LEVEL_AS_NUMBER = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  success: 3
+};
+
 function getLevelAsNumber(level) {
-  switch (level) {
-    case 'error':
-      return 0;
-
-    case 'warn':
-      return 1;
-
-    case 'info':
-      return 2;
-
-    case 'success':
-      return 3;
-
-    default:
-      return 4;
-  }
+  return LEVEL_AS_NUMBER[level] || 4;
 }
 
 function compareLevel(x, y) {
   return getLevelAsNumber(x) - getLevelAsNumber(y);
-}
-
-function randomId() {
-  return random()
-    .toString(36)
-    .substr(2, 5);
 }
 
 function sortNotifications(map) {
@@ -71,6 +57,8 @@ function sortNotifications(map) {
   );
 }
 
+const PASSTHRU_FN = value => value;
+
 const BasicToaster = () => {
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
@@ -78,7 +66,7 @@ const BasicToaster = () => {
   const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);
   const headerElementId = useMemo(() => `webchat__toaster__header__${randomId()}`, []);
   const renderToast = useRenderToast();
-  const toasterExpandText = useLocalize('TOASTER_EXPAND_TEXT') || '';
+  const toasterExpandText = useLocalize('TOASTER_HEADER_TEXT') || '';
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
   const sortedNotifications = useMemo(() => sortNotifications(debouncedNotifications), [debouncedNotifications]);
@@ -90,7 +78,7 @@ const BasicToaster = () => {
 
           return children && { children, notification };
         })
-        .filter(entry => entry),
+        .filter(PASSTHRU_FN),
     [renderToast, sortedNotifications]
   );
 
