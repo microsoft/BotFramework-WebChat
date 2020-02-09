@@ -50,7 +50,7 @@ test('show 2 notifications, expand, close one, and add new', async () => {
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-  await pageObjects.clickToasterExpander();
+  await pageObjects.clickToasterHeader();
   await driver.wait(toasterExpanded(), timeouts.ui);
   await driver.wait(toastShown(2), timeouts.ui);
 
@@ -120,13 +120,13 @@ test('show 2 notifications, expand, and collapse', async () => {
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-  await pageObjects.clickToasterExpander();
+  await pageObjects.clickToasterHeader();
   await driver.wait(toasterExpanded(), timeouts.ui);
   await driver.wait(toastShown(2), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-  await pageObjects.clickToasterExpander();
+  await pageObjects.clickToasterHeader();
   await driver.wait(negationOf(toasterExpanded()), timeouts.ui);
   await driver.wait(toastShown(0), timeouts.ui);
 

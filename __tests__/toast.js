@@ -73,7 +73,7 @@ test('customize toast debounce time on update and dismiss', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
-        toastDebounceTimeout: 1000
+        notificationDebounceTimeout: 1000
       }
     },
     setup: () =>

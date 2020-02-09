@@ -162,10 +162,11 @@ const DEFAULT_OPTIONS = {
   // Toast UI
 
   // New debounce timeout value only affect new notifications.
+  notificationDebounceTimeout: 400,
+
   toasterHeight: 32,
   toasterMaxHeight: 32 * 5,
   toasterSingularMaxHeight: 50,
-  toastDebounceTimeout: 400,
   toastFontSize: '87.5%',
   toastIconWidth: 36,
   toastSeparatorColor: '#E8EAEC',

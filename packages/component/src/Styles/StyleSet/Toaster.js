@@ -32,7 +32,7 @@ export default function createToasterStyle({
       maxHeight: toasterMaxHeight
     },
 
-    '& .webchat__toaster__expander': {
+    '& .webchat__toaster__header': {
       alignItems: 'center',
       alignSelf: 'stretch',
       appearance: 'none',
@@ -72,44 +72,44 @@ export default function createToasterStyle({
     '&.webchat__toaster--error': {
       // TODO: Checks if pass A11y contrast ratio requirement
 
-      '&:not(.webchat__toaster--expandable), & .webchat__toaster__expander': {
+      '&:not(.webchat__toaster--expandable), & .webchat__toaster__header': {
         backgroundColor: toastErrorBackgroundColor
       },
 
-      '& .webchat__toaster__expander': {
+      '& .webchat__toaster__header': {
         color: toastErrorColor,
         fill: toastErrorColor
       }
     },
 
     '&.webchat__toaster--info': {
-      '&:not(.webchat__toaster--expandable), & .webchat__toaster__expander': {
+      '&:not(.webchat__toaster--expandable), & .webchat__toaster__header': {
         backgroundColor: toastInfoBackgroundColor
       },
 
-      '& .webchat__toaster__expander': {
+      '& .webchat__toaster__header': {
         color: toastInfoColor,
         fill: toastInfoColor
       }
     },
 
     '&.webchat__toaster--success': {
-      '&:not(.webchat__toaster--expandable), & .webchat__toaster__expander': {
+      '&:not(.webchat__toaster--expandable), & .webchat__toaster__header': {
         backgroundColor: toastSuccessBackgroundColor
       },
 
-      '& .webchat__toaster__expander': {
+      '& .webchat__toaster__header': {
         color: toastSuccessColor,
         fill: toastSuccessColor
       }
     },
 
     '&.webchat__toaster--warn': {
-      '&:not(.webchat__toaster--expandable), & .webchat__toaster__expander': {
+      '&:not(.webchat__toaster--expandable), & .webchat__toaster__header': {
         backgroundColor: toastWarnBackgroundColor
       },
 
-      '& .webchat__toaster__expander': {
+      '& .webchat__toaster__header': {
         color: toastWarnColor,
         fill: toastWarnColor
       }

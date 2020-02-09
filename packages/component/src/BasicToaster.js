@@ -18,7 +18,7 @@ const ROOT_CSS = css({
   display: 'flex',
   flexDirection: 'column',
 
-  '& .webchat__toaster__expander': {
+  '& .webchat__toaster__header': {
     display: 'flex',
     flexShrink: 0
   },
@@ -76,7 +76,7 @@ const BasicToaster = () => {
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
   const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);
-  const expanderElementId = useMemo(() => `webchat__toaster__expander__${randomId()}`, []);
+  const headerElementId = useMemo(() => `webchat__toaster__header__${randomId()}`, []);
   const renderToast = useRenderToast();
   const toasterExpandText = useLocalize('TOASTER_EXPAND_TEXT') || '';
 
@@ -103,7 +103,7 @@ const BasicToaster = () => {
 
   return (
     <div
-      aria-labelledby={expanderElementId}
+      aria-labelledby={headerElementId}
       aria-live="polite"
       aria-relevant="additions text"
       className={classNames(ROOT_CSS + '', toasterStyleSet + '', 'webchat__toaster', {
@@ -120,8 +120,8 @@ const BasicToaster = () => {
         <button
           aria-controls={expandableElementId}
           aria-expanded={expanded}
-          className="webchat__toaster__expander"
-          id={expanderElementId}
+          className="webchat__toaster__header"
+          id={headerElementId}
           onClick={handleToggleExpand}
           type="button"
         >
@@ -137,12 +137,7 @@ const BasicToaster = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul
-          aria-labelledby={expanderElementId}
-          className="webchat__toaster__list"
-          id={expandableElementId}
-          role="region"
-        >
+        <ul aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId} role="region">
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
             <li className="webchat__toaster__listItem" key={id} role="none">
               {children}

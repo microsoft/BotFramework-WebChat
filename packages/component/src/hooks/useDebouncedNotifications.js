@@ -11,7 +11,7 @@ import useTimer from './internal/useTimer';
 function useDebouncedNotifications() {
   const now = Date.now();
 
-  const [{ toastDebounceTimeout }] = useStyleOptions();
+  const [{ notificationDebounceTimeout }] = useStyleOptions();
   const [notifications] = useNotifications();
   const debouncedNotificationsRef = useRef({});
   const forceRender = useForceRender();
@@ -61,7 +61,7 @@ function useDebouncedNotifications() {
         message,
         outOfDate: false,
         timestamp,
-        updateNotBefore: now + toastDebounceTimeout
+        updateNotBefore: now + notificationDebounceTimeout
       };
     });
   }
