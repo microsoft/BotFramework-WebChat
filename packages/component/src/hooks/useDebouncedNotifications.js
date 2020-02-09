@@ -69,7 +69,7 @@ function useDebouncedNotifications() {
   const [, { updateNotBefore: earliestUpdateNotBefore }] = minOfMap(
     filterMap(debouncedNotificationsRef.current, ({ outOfDate }) => outOfDate),
     ({ updateNotBefore }) => updateNotBefore
-  ) || [undefined, {}];
+  ) || [0, {}];
 
   useTimer(earliestUpdateNotBefore, forceRender);
 

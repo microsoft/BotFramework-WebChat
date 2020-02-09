@@ -37,7 +37,6 @@ export default function createToastStyle({
 
     '& .webchat__toast__iconBox': {
       alignItems: 'center',
-      // alignSelf: 'stretch',
       display: 'flex',
       height: toasterHeight,
       justifyContent: 'center',
@@ -46,7 +45,6 @@ export default function createToastStyle({
 
     '& .webchat__toast__dismissButton': {
       alignItems: 'center',
-      // alignSelf: 'stretch',
       appearance: 'none',
       backgroundColor: 'Transparent',
       border: 0,

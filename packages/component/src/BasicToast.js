@@ -1,4 +1,3 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [2, 5, 36] }] */
 /* eslint react/forbid-dom-props: "off" */
 /* eslint react/no-danger: "off" */
 

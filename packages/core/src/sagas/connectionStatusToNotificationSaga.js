@@ -21,11 +21,11 @@ function subscribeToPromiseQueue(observable) {
 }
 
 function* connectionStatusToNotification({ payload: { directLine } }) {
-  let reconnecting;
-
   const { shift, unsubscribe } = subscribeToPromiseQueue(directLine.connectionStatus$);
 
   try {
+    let reconnecting;
+
     for (;;) {
       const value = yield call(shift);
 

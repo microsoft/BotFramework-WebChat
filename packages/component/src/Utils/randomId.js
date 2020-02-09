@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2, 5, 36] }] */
+
 import random from 'math-random';
 
 export default function randomId(maxLength = 5) {

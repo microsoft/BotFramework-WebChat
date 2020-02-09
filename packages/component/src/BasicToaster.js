@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4, 5, 36] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4] }] */
 /* eslint react/forbid-dom-props: "off" */
 
 import { css } from 'glamor';
@@ -50,8 +50,8 @@ function compareLevel(x, y) {
 
 function sortNotifications(map) {
   return (
-    Object.keys(map)
-      .reduce((array, id) => [...array, map[id]], [])
+    Object.values(map)
+      .reduce((array, notification) => [...array, notification], [])
       // We want the order reversed, most recent on top.
       .sort(({ timestamp: x }, { timestamp: y }) => y - x)
   );

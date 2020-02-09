@@ -7,8 +7,7 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
@@ -36,70 +35,13 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const store = window.WebChat.createStore({}, () => next => action => {
-          console.log(action);
-          return next(action);
-        });
 
         window.WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({ token }),
-            store
+            directLine: window.WebChat.createDirectLine({ token })
           },
           document.getElementById('webchat')
         );
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_NOTIFICATION',
-          payload: {
-            id: 'connectivity',
-            message: 'Connecting...',
-            persistent: true
-          }
-        });
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_NOTIFICATION',
-          payload: {
-            id: 'privacypolicy',
-            level: 'info',
-            message:
-              'Please read our privacy policy. Quis id qui id consequat enim anim laboris proident. Et veniam qui ea consequat cillum ea nisi anim adipisicing quis aliqua ipsum. Elit cillum Lorem excepteur proident ad. Consequat eiusmod ex sit ex do irure ullamco nostrud. Eu incididunt esse consequat in id fugiat deserunt ipsum irure. In sint exercitation amet non cillum pariatur ex amet. Lorem qui est Lorem tempor velit exercitation consectetur adipisicing pariatur enim commodo nostrud. Aliquip pariatur ad deserunt dolore pariatur pariatur dolore duis. Est nisi incididunt aute est duis do ullamco enim eiusmod velit occaecat deserunt incididunt dolor.',
-            persistent: false
-          }
-        });
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_NOTIFICATION',
-          payload: {
-            id: 'privacypolicy2',
-            level: 'warn',
-            message:
-              'Aute proident tempor non aute duis adipisicing. Ad Lorem veniam cupidatat magna dolor officia id dolor in do velit elit nostrud anim. Voluptate magna ex consectetur commodo cupidatat voluptate ipsum velit quis Lorem et commodo quis quis.',
-            persistent: false
-          }
-        });
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_NOTIFICATION',
-          payload: {
-            id: 'success',
-            level: 'success',
-            message: 'You have successfully completed something'
-          }
-        });
-
-        setTimeout(() => {
-          store.dispatch({
-            type: 'WEB_CHAT/SET_NOTIFICATION',
-            payload: {
-              expireAt: 0,
-              id: 'connectivity',
-              message: 'Connected',
-              persistent: true
-            }
-          });
-        }, 1000);
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
