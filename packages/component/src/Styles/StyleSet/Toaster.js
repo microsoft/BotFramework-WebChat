@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 5, 32, 50] }] */
+/* eslint no-magic-numbers: ["off"] */
 
 export default function createToasterStyle({
   primaryFont,
