@@ -105,7 +105,7 @@ describe('offline UI', () => {
   });
 
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -122,19 +122,20 @@ describe('offline UI', () => {
         };
       },
       setup: () =>
-        new Promise(resolve => {
-          const scriptElement = document.createElement('script');
-
-          scriptElement.onload = resolve;
-          scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-          document.head.appendChild(scriptElement);
+        Promise.all([
+          window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+          window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+        ]).then(() => {
+          window.WebChatTest.clock = lolex.install();
         })
     });
-    await driver.wait(uiConnected(), 10000);
-    const input = await driver.findElement(By.css('input[type="text"]'));
 
-    await input.sendKeys('42', Key.RETURN);
+    await driver.executeScript(() => window.WebChatTest.clock.tick(400));
+    await driver.wait(uiConnected(), timeouts.directLine);
+
+    await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
+
+    await driver.executeScript(() => window.WebChatTest.clock.tick(20000));
     await driver.wait(allOutgoingMessagesFailed, timeouts.postActivity);
 
     const base64PNG = await driver.takeScreenshot();
@@ -143,7 +144,7 @@ describe('offline UI', () => {
   });
 
   test('should display "Send failed. Retry" when activity is sent but not acknowledged', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const bannedClientActivityIDs = [];
@@ -176,21 +177,22 @@ describe('offline UI', () => {
         };
       },
       setup: () =>
-        new Promise(resolve => {
-          const scriptElement = document.createElement('script');
-
-          scriptElement.onload = resolve;
-          scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-          document.head.appendChild(scriptElement);
+        Promise.all([
+          window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+          window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+        ]).then(() => {
+          window.WebChatTest.clock = lolex.install();
         })
     });
 
+    await driver.executeScript(() => window.WebChatTest.clock.tick(400));
     await driver.wait(uiConnected(), timeouts.directLine);
-    const input = await driver.findElement(By.css('input[type="text"]'));
 
-    await input.sendKeys('42', Key.RETURN);
+    await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
+
+    await driver.executeScript(() => window.WebChatTest.clock.tick(20000));
     await driver.wait(allOutgoingMessagesFailed, timeouts.postActivity);
+    await driver.wait(minNumActivitiesShown(2), timeouts.postActivity);
 
     const base64PNG = await driver.takeScreenshot();
 
