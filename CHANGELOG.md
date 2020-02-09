@@ -29,10 +29,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2720](https://github.com/microsoft/BotFramework-WebChat/issues/2720), added customizable activity status using `activityStatusMiddleware` props, by [@compulim](https://github.com/compulim), in PR [#2788](https://github.com/microsoft/BotFramework-WebChat/pull/2788)
 -  Added default `onError` prop to the `Dictation` component, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2866](https://github.com/microsoft/BotFramework-WebChat/pull/2866)
 -  Resolves [#1976](https://github.com/microsoft/BotFramework-WebChat/issues/1976). Added RTL support with localization for Hebrew and Arabic, by [@corinagum](https://github.com/corinagum), in PR [#2890](https://github.com/microsoft/BotFramework-WebChat/pull/2890)
--  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755], added notification system and toast UI, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755), added notification system and toast UI, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
    -  Please read [this article on how to use notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
    -  Slow connection timer can now be set using `styleOptions.slowConnectionAfter` (in milliseconds)
--  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871], moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871), moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
 
 ### Fixed
 
