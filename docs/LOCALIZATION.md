@@ -22,7 +22,7 @@ To add a new language, please update following files:
 There are two types of supported languages:
 
 - Maintained by Microsoft
-- Maintained by community
+- Maintained by the community
 
 For strings that are maintained by Microsoft, please file a bug to us. We need to verify to make sure new strings pass our additional checks.
 
