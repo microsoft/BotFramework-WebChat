@@ -31,3 +31,7 @@ For strings that are maintained by the community, please submit a pull request t
 ## Adding new strings for new UI
 
 To add new strings to be used in the UI, please update `/packages/component/src/localization/en-US.json`. Our localization team will pick up the new strings and translate them to all other officially supported languages.
+
+## Overriding localization database
+
+(TBD)
