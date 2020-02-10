@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Custom notifications</title>
+    <title>Web Chat: Notification system</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
@@ -117,7 +117,7 @@
           return next(action);
         });
 
-        const PrivacyPolicyToast = ({ id, level }) => {
+        const PrivacyPolicyToast = () => {
           const sendPostBack = useSendPostBack();
           const dismissNotification = useDismissNotification();
           const setNotification = useSetNotification();
