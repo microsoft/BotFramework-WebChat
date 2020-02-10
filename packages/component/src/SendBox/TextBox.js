@@ -7,7 +7,7 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
 import useFocusSendBox from '../hooks/useFocusSendBox';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useStopDictate from '../hooks/useStopDictate';
@@ -96,10 +96,11 @@ const TextBox = ({ className }) => {
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
-
+  const localize = useLocalizeCallback();
   const submitTextBox = useTextBoxSubmit();
-  const sendBoxString = useLocalize('Sendbox');
-  const typeYourMessageString = useLocalize('Type your message');
+
+  const sendBoxString = localize('TEXT_INPUT_ALT');
+  const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 
   const handleChange = useCallback(({ target: { value } }) => setTextBoxValue(value), [setTextBoxValue]);
 

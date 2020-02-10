@@ -4,7 +4,7 @@ import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 import useDisabled from '../hooks/useDisabled';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const connectSendButton = (...selectors) =>
@@ -19,11 +19,11 @@ const connectSendButton = (...selectors) =>
 
 const SendButton = () => {
   const [disabled] = useDisabled();
-  const altText = useLocalize('Send');
+  const localize = useLocalizeCallback();
   const submitSendBox = useSubmitSendBox();
 
   return (
-    <IconButton alt={altText} disabled={disabled} onClick={submitSendBox}>
+    <IconButton alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')} disabled={disabled} onClick={submitSendBox}>
       <SendIcon />
     </IconButton>
   );

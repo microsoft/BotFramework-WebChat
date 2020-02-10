@@ -66,6 +66,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useLanguage`](#uselanguage)
 -  [`useLastTypingAt`](#uselasttypingat)
 -  [`useLocalize`](#uselocalize)
+-  [`useLocalizeBytesCallback`](#useLocalizeBytesCallback)
+-  [`useLocalizeCallback`](#uselocalizeCallback)
+-  [`useLocalizeDateCallback`](#uselocalizeDateCallback)
+-  [`useLocalizeRelativeTimeCallback`](#useLocalizeRelativeTimeCallback)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
@@ -315,9 +319,43 @@ This property is computed on every incoming activity.
 useLocalize(identifier: string) => string
 ```
 
+> This function is being deprecated. Developers should migrate to [`useLocalizeCallback`](#uselocalizecallback).
+
 This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useLocalizeBytesCallback`
+
+```js
+useLocalizeBytesCallback() => (bytes: number) => string
+```
+
+This function will return a function, when called with a file size, it will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+
+## `useLocalizeCallback`
+
+```js
+useLocalizeCallback() => (identifier: string, ...arguments: string[]) => string
+```
+
+This function will return a function, when called, will return a localized string represented by the identifier and its arguments. It honors the language settings from the `useLanguage` hook.
+
+## `useLocalizeDateCallback`
+
+```js
+useLocalizeDateCallback() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
+
+## `useLocalizeRelativeTimeCallback`
+
+```js
+useLocalizeRelativeTimeCallback() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useMarkActivityAsSpoken`
 

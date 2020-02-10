@@ -7,7 +7,7 @@ import React from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -17,14 +17,11 @@ const ROOT_CSS = css({
 
 const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
-
   const [direction] = useDirection();
-  const leftLabel = useLocalize('Left');
-  const leftSideFlipper = direction === 'rtl' ? '>' : '<';
-  const rightLabel = useLocalize('Right');
-  const rightSideFlipper = direction === 'rtl' ? '<' : '>';
-
   const filmStyleSet = createBasicStyleSet({ cursor: null });
+  const leftSideFlipper = direction === 'rtl' ? '>' : '<';
+  const localize = useLocalizeCallback();
+  const rightSideFlipper = direction === 'rtl' ? '<' : '>';
 
   return (
     <Composer dir={direction} numItems={React.Children.count(children)}>
@@ -37,7 +34,7 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
                 <Flipper
-                  aria-label={leftLabel}
+                  aria-label={localize('CAROUSEL_FLIPPER_LEFT_ALT')}
                   blurFocusOnClick={true}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
                   mode="left"
@@ -45,7 +42,7 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
                   <div className="button">{leftSideFlipper}</div>
                 </Flipper>
                 <Flipper
-                  aria-label={rightLabel}
+                  aria-label={localize('CAROUSEL_FLIPPER_RIGHT_ALT')}
                   blurFocusOnClick={true}
                   className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
                   mode="right"

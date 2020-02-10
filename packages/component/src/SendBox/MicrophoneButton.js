@@ -15,7 +15,7 @@ import useDictateAbortable from '../hooks/useDictateAbortable';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useShouldSpeakIncomingActivity from '../hooks/useShouldSpeakIncomingActivity';
 import useStartDictate from '../hooks/useStartDictate';
@@ -148,25 +148,23 @@ function useMicrophoneButtonDisabled() {
 
 const MicrophoneButton = ({ className }) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+  const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
-  const [dictateState] = useDictateState();
+  const localize = useLocalizeCallback();
 
   const dictating = dictateState === DictateState.DICTATING;
-
-  const iconButtonAltText = useLocalize('Speak');
-  const screenReaderText = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
   return (
     <div
       aria-controls="webchatSendBoxMicrophoneButton"
       className={classNames(microphoneButtonStyleSet + '', ROOT_CSS + '', className + '', { dictating })}
     >
-      <IconButton alt={iconButtonAltText} disabled={disabled} onClick={click}>
+      <IconButton alt={localize('TEXT_INPUT_SPEAK_BUTTON_ALT')} disabled={disabled} onClick={click}>
         <MicrophoneIcon />
       </IconButton>
       <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
-        {screenReaderText}
+        {localize(dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT')}
       </div>
     </div>
   );

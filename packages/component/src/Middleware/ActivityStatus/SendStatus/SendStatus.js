@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../../../connectToWebChat';
 import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
-import useLocalize from '../../../hooks/useLocalize';
+import useLocalizeCallback from '../../../hooks/useLocalizeCallback';
 import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
 
@@ -33,8 +33,12 @@ const connectSendStatus = (...selectors) =>
 const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
+  const localize = useLocalizeCallback();
   const postActivity = usePostActivity();
-  const localizedSending = useLocalize('Sending');
+
+  const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');
+
+  const label = localize('ACTIVITY_STATUS_SEND_STATUS_ALT', sendingText);
 
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
@@ -46,9 +50,10 @@ const SendStatus = ({ activity, sendState }) => {
 
   return (
     <React.Fragment>
+      <ScreenReaderText text={label} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
         {sendState === SENDING ? (
-          localizedSending
+          sendingText
         ) : sendState === SEND_FAILED ? (
           <SendFailedRetry onRetryClick={handleRetryClick} />
         ) : (

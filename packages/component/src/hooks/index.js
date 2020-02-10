@@ -15,7 +15,11 @@ import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize';
+import useLocalizeBytesCallback from './useLocalizeBytesCallback';
+import useLocalizeCallback from './useLocalizeCallback';
 import useLocalizeDate from './useLocalizeDate';
+import useLocalizeDateCallback from './useLocalizeDateCallback';
+import useLocalizeRelativeTimeCallback from './useLocalizeRelativeTimeCallback';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
@@ -70,7 +74,12 @@ export {
   useLanguage,
   useLastTypingAt,
   useLocalize,
+  useLocalizeBytes,
+  useLocalizeBytesCallback,
+  useLocalizeCallback,
   useLocalizeDate,
+  useLocalizeDateCallback,
+  useLocalizeRelativeTimeCallback,
   useMarkActivityAsSpoken,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,

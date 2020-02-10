@@ -4,9 +4,25 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
-import useLocalize from '../../../hooks/useLocalize';
 import useInternalMarkdownIt from '../../../hooks/internal/useInternalMarkdownIt';
+import useLocalizeCallback from '../../../hooks/useLocalizeCallback';
 import walkMarkdownTokens from '../../../Utils/walkMarkdownTokens';
+
+function walkMarkdownTokens(tokens, walker) {
+  return tokens.map(token => {
+    if (token) {
+      const nextToken = walker(token);
+
+      if (nextToken.children) {
+        nextToken.children = walkMarkdownTokens(nextToken.children, walker);
+      }
+
+      return nextToken;
+    }
+
+    return token;
+  });
+}
 
 function replaceAnchorWithButton(markdownTokens) {
   return walkMarkdownTokens(markdownTokens, markdownToken => {
@@ -34,7 +50,9 @@ function replaceAnchorWithButton(markdownTokens) {
 }
 
 const SendFailedRetry = ({ onRetryClick }) => {
-  const sendFailedText = useLocalize('SEND_FAILED_KEY');
+  const localize = useLocalizeCallback();
+
+  const sendFailedText = localize('ACTIVITY_STATUS_SEND_FAILED_RETRY');
 
   const [markdownIt] = useInternalMarkdownIt();
   const html = useMemo(() => {

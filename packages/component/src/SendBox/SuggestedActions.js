@@ -10,7 +10,7 @@ import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -41,14 +41,17 @@ const connectSuggestedActions = (...selectors) =>
   );
 
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
-  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
-  const suggestedActionsEmptyText = useLocalize('SuggestedActionsEmpty');
-  const suggestedActionsContainerText =
-    useLocalize('SuggestedActionsContainer') +
-    (suggestedActions.length ? suggestedActionsContentText : suggestedActionsEmptyText);
+  const localize = useLocalizeCallback();
+
+  const suggestedActionsContainerText = localize(
+    'SUGGESTED_ACTIONS_ALT',
+    suggestedActions.length
+      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
+      : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
+  );
 
   if (!suggestedActions.length) {
     return (

@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from './ScreenReaderText';
-import useLocalize from './hooks/useLocalize';
+import useLocalizeCallback from './hooks/useLocalizeCallback';
 import useStyleSet from './hooks/useStyleSet';
 
 const ErrorBox = ({ children, message }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
-  const errorMessageText = useLocalize('ErrorMessage');
+  const errorMessageText = useLocalizeCallback()('ACTIVITY_ERROR_BOX_TITLE');
 
   return (
     <React.Fragment>

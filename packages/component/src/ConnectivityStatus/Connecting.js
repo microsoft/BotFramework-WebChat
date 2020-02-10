@@ -6,7 +6,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
 import useDirection from '../hooks/useDirection';
 import useForceRender from '../hooks/internal/useForceRender';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useTimer from '../hooks/internal/useTimer';
@@ -19,11 +19,12 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   ] = useStyleSet();
   const [direction] = useDirection();
   const [initialRenderAt] = useState(() => Date.now());
-  const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
-  const initialConnectionText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
-  const interruptedConnectionText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
-  const slowConnectionText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
   const forceRender = useForceRender();
+  const localize = useLocalizeCallback();
+
+  const initialConnectionText = localize('CONNECTIVITY_STATUS_ALT_CONNECTING');
+  const interruptedConnectionText = localize('CONNECTIVITY_STATUS_ALT_RECONNECTING');
+  const slowConnectionText = localize('CONNECTIVITY_STATUS_ALT_SLOW_CONNECTION');
 
   useTimer(initialRenderAt + slowConnectionAfter, forceRender);
 
@@ -32,7 +33,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
 
   return slow ? (
     <React.Fragment>
-      <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
+      <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', slowConnectionText)} />
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
@@ -45,7 +46,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   ) : (
     <React.Fragment>
       <ScreenReaderText
-        text={connectivityStatusLabelText + (reconnect ? interruptedConnectionText : initialConnectionText)}
+        text={localize('CONNECTIVITY_STATUS_ALT', reconnect ? interruptedConnectionText : initialConnectionText)}
       />
       <div
         aria-hidden={true}

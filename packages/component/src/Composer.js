@@ -9,6 +9,8 @@ import { Provider } from 'react-redux';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
+import PrecompiledGlobalize from './Utils/PrecompiledGlobalize';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
@@ -265,6 +267,8 @@ const Composer = ({
     console.error(err);
   }, []);
 
+  const globalize = useMemo(() => PrecompiledGlobalize('en'), []);
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -288,6 +292,7 @@ const Composer = ({
       dir: patchedDir,
       directLine,
       disabled,
+      globalize,
       grammars: patchedGrammars,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -314,6 +319,7 @@ const Composer = ({
       directLine,
       disabled,
       focusSendBoxContext,
+      globalize,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,

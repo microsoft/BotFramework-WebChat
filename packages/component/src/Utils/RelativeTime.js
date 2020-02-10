@@ -3,21 +3,23 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useForceRenderAtInterval from '../hooks/internal/useForceRenderAtInterval';
-import useLocalize from '../hooks/useLocalize';
-import useLocalizeDate from '../hooks/useLocalizeDate';
+import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizeDateCallback from '../hooks/useLocalizeDateCallback';
+import useLocalizeRelativeTimeCallback from '../hooks/useLocalizeRelativeTimeCallback';
 
 const TIMER_INTERVAL = 60000;
 
 const RelativeTime = ({ value }) => {
-  const localizedAbsoluteTime = useLocalize('SentAt') + useLocalizeDate(value);
-  const text = useLocalize('X minutes ago', value);
+  const localize = useLocalizeCallback();
+  const localizeDate = useLocalizeDateCallback();
+  const localizeRelativeTime = useLocalizeRelativeTimeCallback();
 
   useForceRenderAtInterval(value, TIMER_INTERVAL);
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={localizedAbsoluteTime} />
-      <span aria-hidden={true}>{text}</span>
+      <ScreenReaderText text={localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', localizeDate(value))} />
+      <span aria-hidden={true}>{localizeRelativeTime(value)}</span>
     </React.Fragment>
   );
 };

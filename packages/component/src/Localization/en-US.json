@@ -28,15 +28,19 @@
   "NOTIFICATION_ALT_WARN": "Warning: $1",
   "_NOTIFICATION_ALT_WARN.comment": "This is for screen reader. $1 is user-generated content, the actual notification message.",
   "NOTIFICATION_DISMISS_BUTTON": "Dismiss",
+  "NOTIFICATION_TITLE_ALT": "Notification",
+  "_NOTIFICATION_TITLE_ALT.comment": "This is for screen reader. The label for individiual notification.",
 
-  "ACTIVITY_BOT_SAID": "Bot $1 said, $2",
+  "ACTIVITY_BOT_SAID": "Bot $1 said, $2. Sent at $3.",
   "_ACTIVITY_BOT_SAID.comment": "$1 is the initials for the bot (e.g. \"JD\"), and $2 is user-generated content, the actual message.",
-  "ACTIVITY_USER_SAID": "User $1 said, $2",
+  "ACTIVITY_USER_SAID": "User $1 said, $2. Sent at $3.",
   "_ACTIVITY_USER_SAID.comment": "$1 is the initials for the user (e.g. \"LC\"), and $2 is user-generated content, the actual message.",
 
   "ACTIVITY_STATUS_TIMESTAMP_JUST_NOW": "Just now",
   "ACTIVITY_STATUS_TIMESTAMP_ONE_MINUTE_AGO": "A minute ago",
   "ACTIVITY_STATUS_TIMESTAMP_ONE_HOUR_AGO": "An hour ago",
+  "ACTIVITY_STATUS_TIMESTAMP_TODAY": "Today",
+  "ACTIVITY_STATUS_TIMESTAMP_YESTERDAY": "Yesterday",
   "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Send failed. [Retry][RETRY].",
   "_ACTIVITY_STATUS_SEND_FAILED_RETRY.comment": "This is Markdown. Do not localize \"[RETRY]\" (the one in uppercase).",
   "ACTIVITY_STATUS_SEND_STATUS_ALT": "Send Status: $1",
@@ -53,9 +57,11 @@
   "ADAPTIVE_CARD_ERROR_BOX_TITLE_PARSE": "Adaptive Card parse error",
   "ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER": "Adaptive Card render error",
 
-  "FILE_CONTENT_ALT": "'$1' of size $2",
+  "FILE_CONTENT_ALT": "'$1'",
+  "FILE_CONTENT_WITH_SIZE_ALT": "'$1' of size $2",
   "_FILE_CONTENT_ALT.comment": "$1 is the name of the file, e.g. document.docx. $2 is the file size, e.g. 12 MB",
-  "FILE_CONTENT_DOWNLOADABLE_ALT": "Download file '$1' of size $2",
+  "FILE_CONTENT_DOWNLOADABLE_ALT": "Download file '$1'",
+  "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Download file '$1' of size $2",
 
   "SPEECH_INPUT_LISTENING": "Listening…",
   "SPEECH_INPUT_STARTING": "Starting…",
@@ -79,6 +85,7 @@
   "TEXT_INPUT_PLACEHOLDER": "Type your message",
   "TEXT_INPUT_SEND_BUTTON_ALT": "Send",
   "TEXT_INPUT_SPEAK_BUTTON_ALT": "Speak",
+  "TEXT_INPUT_UPLOAD_BUTTON_ALT": "Upload file",
 
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
 
