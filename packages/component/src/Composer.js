@@ -10,7 +10,9 @@ import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import normalizeLanguage from './Utils/normalizeLanguage';
 import PrecompiledGlobalize from './Utils/PrecompiledGlobalize';
+import toGlobalizeLanguage from './Utils/toGlobalizeLanguage';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
@@ -159,6 +161,7 @@ const Composer = ({
   const [dictateAbortable, setDictateAbortable] = useState();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
+  const patchedLanguage = normalizeLanguage(locale);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
   const patchedStyleOptions = useMemo(() => {
@@ -190,8 +193,8 @@ const Composer = ({
   }, [groupTimestamp, sendTimeout, styleOptions]);
 
   useEffect(() => {
-    dispatch(setLanguage(locale));
-  }, [dispatch, locale]);
+    dispatch(setLanguage(patchedLanguage));
+  }, [dispatch, patchedLanguage]);
 
   useEffect(() => {
     typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
@@ -267,7 +270,7 @@ const Composer = ({
     console.error(err);
   }, []);
 
-  const globalize = useMemo(() => PrecompiledGlobalize('en'), []);
+  const globalize = useMemo(() => PrecompiledGlobalize(toGlobalizeLanguage(patchedLanguage)), [patchedLanguage]);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
@@ -296,6 +299,7 @@ const Composer = ({
       grammars: patchedGrammars,
       internalMarkdownIt,
       internalRenderMarkdownInline,
+      language: patchedLanguage,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
@@ -324,6 +328,7 @@ const Composer = ({
       internalMarkdownIt,
       internalRenderMarkdownInline,
       patchedGrammars,
+      patchedLanguage,
       patchedSelectVoice,
       sendTypingIndicator,
       patchedStyleSet,

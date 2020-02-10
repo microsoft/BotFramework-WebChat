@@ -1,5 +1,5 @@
-import { useSelector } from '../WebChatReduxContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useLanguage() {
-  return [useSelector(({ language }) => language)];
+  return [useWebChatUIContext().language];
 }
