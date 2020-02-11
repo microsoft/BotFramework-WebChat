@@ -1,5 +1,5 @@
 {
-  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcomed but it could be delayed as we conduct additional checks.",
+  "_.comment": "The content of this file is contributed by the community.",
 
   "CONNECTIVITY_STATUS_ALT": "接駁情況：$1",
   "_CONNECTIVITY_STATUS_ALT.comment": "This is for screen reader. $1 will be one of \"CONNECTIVITY_STATUS_ALT_\"*.",

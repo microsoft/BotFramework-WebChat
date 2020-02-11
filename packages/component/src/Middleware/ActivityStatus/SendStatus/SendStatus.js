@@ -71,7 +71,7 @@ SendStatus.propTypes = {
       state: PropTypes.string
     })
   }).isRequired,
-  sendState: PropTypes.string.isRequired
+  sendState: PropTypes.oneOf([SENDING, SEND_FAILED]).isRequired
 };
 
 export default SendStatus;

@@ -3,7 +3,9 @@ const { join } = require('path');
 const { writeFileSync } = require('fs');
 const Globalize = require('globalize');
 const globalizeCompiler = require('globalize-compiler');
-const languages = require('./languages.json');
+const languages = Object.values(require('../src/Localization/overrides.json')).map(
+  ({ GLOBALIZE_LANGUAGE }) => GLOBALIZE_LANGUAGE
+);
 
 Globalize.load(require('cldr-data').entireSupplemental());
 

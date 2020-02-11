@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1024, 1048576, 1073741824] }] */
+
 import { useMemo } from 'react';
 import useGlobalize from './internal/useGlobalize';
 
@@ -22,9 +24,9 @@ export default function useLocalizeBytesCallback() {
         return unitFormatter('kilobyte', SHORT_FORM)(~~(bytes / KILOBYTE));
       } else if (bytes < GIGABYTE) {
         return unitFormatter('megabyte', SHORT_FORM)(~~(bytes / MEGABYTE));
-      } else {
-        return unitFormatter('gigabyte', SHORT_FORM)(~~(bytes / GIGABYTE));
       }
+
+      return unitFormatter('gigabyte', SHORT_FORM)(~~(bytes / GIGABYTE));
     };
   }, [globalize]);
 }

@@ -74,7 +74,6 @@ export {
   useLanguage,
   useLastTypingAt,
   useLocalize,
-  useLocalizeBytes,
   useLocalizeBytesCallback,
   useLocalizeCallback,
   useLocalizeDate,

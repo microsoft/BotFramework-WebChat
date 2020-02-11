@@ -1,5 +1,8 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
 import { useMemo } from 'react';
 
+import getLocaleString from '../Localization/getLocaleString';
 import useGlobalize from './internal/useGlobalize';
 import useLocalizeCallback from './useLocalizeCallback';
 
@@ -12,7 +15,8 @@ export default function useLocalizeRelativeTimeCallback() {
 
     return dateOrString => {
       const date = new Date(dateOrString);
-      const dateTime = date.getTime();
+      // const dateTime = date.getTime();
+      const dateTime = date.getTime() - 120000;
 
       if (isNaN(dateTime)) {
         return dateOrString;

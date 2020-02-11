@@ -10,9 +10,10 @@ import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import getLocalizedStrings from './Localization/getLocalizedStrings';
+import isObject from './Utils/isObject';
 import normalizeLanguage from './Utils/normalizeLanguage';
 import PrecompiledGlobalize from './Utils/PrecompiledGlobalize';
-import toGlobalizeLanguage from './Utils/toGlobalizeLanguage';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
@@ -143,6 +144,7 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  overrideLocalizedStrings,
   renderMarkdown,
   scrollToEnd,
   selectVoice,
@@ -270,7 +272,34 @@ const Composer = ({
     console.error(err);
   }, []);
 
-  const globalize = useMemo(() => PrecompiledGlobalize(toGlobalizeLanguage(patchedLanguage)), [patchedLanguage]);
+  const patchedLocalizedStrings = useMemo(() => {
+    const allStrings = getLocalizedStrings();
+    const localizedStrings = { ...allStrings['en-US'], ...allStrings[patchedLanguage] };
+
+    if (!overrideLocalizedStrings) {
+      return localizedStrings;
+    } else if (typeof overrideLocalizedStrings === 'function') {
+      const merged = overrideLocalizedStrings(localizedStrings, patchedLanguage);
+
+      if (!isObject(merged)) {
+        throw new Error('botframework-webchat: overrideLocalizedStrings function must return an object.');
+      }
+
+      return merged;
+    } else if (!isObject(overrideLocalizedStrings)) {
+      throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, an object, or falsy.');
+    }
+
+    return { ...localizedStrings, ...overrideLocalizedStrings };
+  }, [overrideLocalizedStrings, patchedLanguage]);
+
+  const globalize = useMemo(() => {
+    const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
+
+    return (
+      GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en-US')
+    );
+  }, [patchedLocalizedStrings]);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
@@ -300,6 +329,7 @@ const Composer = ({
       internalMarkdownIt,
       internalRenderMarkdownInline,
       language: patchedLanguage,
+      localizedStrings: patchedLocalizedStrings,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
@@ -329,6 +359,7 @@ const Composer = ({
       internalRenderMarkdownInline,
       patchedGrammars,
       patchedLanguage,
+      patchedLocalizedStrings,
       patchedSelectVoice,
       sendTypingIndicator,
       patchedStyleSet,
@@ -434,6 +465,7 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
   selectVoice: PropTypes.func,

@@ -1,0 +1,177 @@
+{
+  "ar-EG": {
+    "GLOBALIZE_LANGUAGE": "ar-EG",
+    "SPEECH_LANGUAGE": "ar-EG"
+  },
+  "ar-SA": {
+    "GLOBALIZE_LANGUAGE": "ar-SA",
+    "SPEECH_LANGUAGE": "ar-SA"
+  },
+  "bg-BG": {
+    "GLOBALIZE_LANGUAGE": "bg"
+  },
+  "ca-ES": {
+    "GLOBALIZE_LANGUAGE": "ca",
+    "SPEECH_LANGUAGE": "ca-ES"
+  },
+  "cs-CZ": {
+    "GLOBALIZE_LANGUAGE": "cs"
+  },
+  "da-DK": {
+    "GLOBALIZE_LANGUAGE": "da",
+    "SPEECH_LANGUAGE": "da-DK"
+  },
+  "de-DE": {
+    "GLOBALIZE_LANGUAGE": "de",
+    "SPEECH_LANGUAGE": "de-DE"
+  },
+  "el-GR": {
+    "GLOBALIZE_LANGUAGE": "el"
+  },
+  "en-US": {
+    "GLOBALIZE_LANGUAGE": "en",
+    "SPEECH_LANGUAGE": "en-US"
+  },
+  "es-ES": {
+    "GLOBALIZE_LANGUAGE": "es",
+    "SPEECH_LANGUAGE": "es-ES"
+  },
+  "et-EE": {
+    "GLOBALIZE_LANGUAGE": "et"
+  },
+  "eu-ES": {
+    "GLOBALIZE_LANGUAGE": "eu"
+  },
+  "fi-FI": {
+    "GLOBALIZE_LANGUAGE": "fi",
+    "SPEECH_LANGUAGE": "fi-FI"
+  },
+  "fr-FR": {
+    "GLOBALIZE_LANGUAGE": "fr",
+    "SPEECH_LANGUAGE": "fr-FR"
+  },
+  "gl-ES": {
+    "GLOBALIZE_LANGUAGE": "gl"
+  },
+  "he-IL": {
+    "GLOBALIZE_LANGUAGE": "he"
+  },
+  "hi-IN": {
+    "GLOBALIZE_LANGUAGE": "hi",
+    "SPEECH_LANGUAGE": "hi-IN"
+  },
+  "hr-HR": {
+    "GLOBALIZE_LANGUAGE": "hr"
+  },
+  "hu-HU": {
+    "GLOBALIZE_LANGUAGE": "hu"
+  },
+  "id-ID": {
+    "GLOBALIZE_LANGUAGE": "id"
+  },
+  "it-IT": {
+    "GLOBALIZE_LANGUAGE": "it",
+    "SPEECH_LANGUAGE": "it-IT"
+  },
+  "ja-JP": {
+    "GLOBALIZE_LANGUAGE": "ja",
+    "SPEECH_LANGUAGE": "ja-JP"
+  },
+  "kk-KZ": {
+    "GLOBALIZE_LANGUAGE": "kk"
+  },
+  "ko-KR": {
+    "GLOBALIZE_LANGUAGE": "ko",
+    "SPEECH_LANGUAGE": "ko-KR"
+  },
+  "lt-LT": {
+    "GLOBALIZE_LANGUAGE": "lt"
+  },
+  "lv-LV": {
+    "GLOBALIZE_LANGUAGE": "lv"
+  },
+  "ms-MY": {
+    "GLOBALIZE_LANGUAGE": "ms"
+  },
+  "nb-NO": {
+    "GLOBALIZE_LANGUAGE": "nb",
+    "SPEECH_LANGUAGE": "nb-no"
+  },
+  "nl-NL": {
+    "GLOBALIZE_LANGUAGE": "nl",
+    "SPEECH_LANGUAGE": "nl-NL"
+  },
+  "pl-PL": {
+    "GLOBALIZE_LANGUAGE": "pl",
+    "SPEECH_LANGUAGE": "pl-PL"
+  },
+  "pt-BR": {
+    "GLOBALIZE_LANGUAGE": "pt",
+    "SPEECH_LANGUAGE": "pt-BR"
+  },
+  "pt-PT": {
+    "GLOBALIZE_LANGUAGE": "pt-PT",
+    "SPEECH_LANGUAGE": "pt-PT"
+  },
+  "ro-RO": {
+    "GLOBALIZE_LANGUAGE": "ro"
+  },
+  "ru-RU": {
+    "GLOBALIZE_LANGUAGE": "ru",
+    "SPEECH_LANGUAGE": "ru-RU"
+  },
+  "sk-SK": {
+    "GLOBALIZE_LANGUAGE": "sk"
+  },
+  "sl-SL": {
+    "GLOBALIZE_LANGUAGE": "sl"
+  },
+  "sr-Cyrl": {
+    "GLOBALIZE_LANGUAGE": "sr-Cyrl"
+  },
+  "sr-Latn": {
+    "GLOBALIZE_LANGUAGE": "sr-Latn"
+  },
+  "sv-SE": {
+    "GLOBALIZE_LANGUAGE": "sv",
+    "SPEECH_LANGUAGE": "sv-SE"
+  },
+  "th-TH": {
+    "GLOBALIZE_LANGUAGE": "th",
+    "SPEECH_LANGUAGE": "th-TH"
+  },
+  "tr-TR": {
+    "GLOBALIZE_LANGUAGE": "tr",
+    "SPEECH_LANGUAGE": "tr-TR"
+  },
+  "uk-UA": {
+    "GLOBALIZE_LANGUAGE": "uk"
+  },
+  "vi-VN": {
+    "GLOBALIZE_LANGUAGE": "vi"
+  },
+  "yue": {
+    "GLOBALIZE_LANGUAGE": "yue",
+    "SPEECH_LANGUAGE": "zh-HK"
+  },
+  "zh-Hans": {
+    "GLOBALIZE_LANGUAGE": "zh-Hans",
+    "SPEECH_LANGUAGE": "zh-CN"
+  },
+  "zh-Hans-SG": {
+    "GLOBALIZE_LANGUAGE": "zh-Hans-SG",
+    "SPEECH_LANGUAGE": "zh-CN"
+  },
+  "zh-Hant": {
+    "GLOBALIZE_LANGUAGE": "zh-Hant",
+    "SPEECH_LANGUAGE": "zh-TW"
+  },
+  "zh-Hant-HK": {
+    "GLOBALIZE_LANGUAGE": "zh-Hant-HK",
+    "SPEECH_LANGUAGE": "zh-HK"
+  },
+  "zh-Hant-MO": {
+    "GLOBALIZE_LANGUAGE": "zh-Hant-MO",
+    "SPEECH_LANGUAGE": "zh-HK"
+  }
+}
