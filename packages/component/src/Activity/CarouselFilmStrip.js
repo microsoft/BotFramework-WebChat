@@ -97,7 +97,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
-  const direction = useDirection();
+  const [direction] = useDirection();
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
 
