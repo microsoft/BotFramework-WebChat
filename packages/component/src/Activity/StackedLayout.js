@@ -1,3 +1,4 @@
+/* eslint complexity: ["error", 30] */
 /* eslint react/no-array-index-key: "off" */
 
 import { css } from 'glamor';

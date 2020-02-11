@@ -246,12 +246,9 @@ const Composer = ({
     };
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
-  const dictationOnError = useCallback(
-    err => {
-      console.error(err);
-    },
-    [console.error]
-  );
+  const dictationOnError = useCallback(err => {
+    console.error(err);
+  }, []);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated

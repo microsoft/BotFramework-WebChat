@@ -23,7 +23,7 @@ const HeroCardAttachment = ({ attachment: { content } = {} }) => {
 
       return builder.card;
     }
-  }, [adaptiveCardsPackage, content, styleOptions]);
+  }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };

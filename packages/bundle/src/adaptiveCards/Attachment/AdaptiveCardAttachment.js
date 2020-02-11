@@ -69,7 +69,7 @@ const AdaptiveCardAttachment = ({ attachment: { content } }) => {
     }
 
     return {};
-  }, [AdaptiveCard, content, direction]);
+  }, [AdaptiveCard, adaptiveCardsPackage, content, direction]);
 
   return !!card && <AdaptiveCardRenderer adaptiveCard={card} />;
 };

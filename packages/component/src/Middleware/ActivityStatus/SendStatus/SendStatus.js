@@ -11,7 +11,7 @@ import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
 
 const {
-  ActivityClientState: { SEND_FAILED, SENDING, SENT }
+  ActivityClientState: { SEND_FAILED, SENDING }
 } = Constants;
 
 const connectSendStatus = (...selectors) =>
@@ -68,7 +68,8 @@ SendStatus.propTypes = {
       clientTimestamp: PropTypes.string,
       state: PropTypes.string
     })
-  }).isRequired
+  }).isRequired,
+  sendState: PropTypes.any.isRequired
 };
 
 export default SendStatus;
