@@ -201,8 +201,8 @@ useDirection(): [string]
 
 This function will return one of two language directions:
 
--  `ltr`: Web Chat UI should display as left-to-right
--  `rtl`: Web Chat UI should display as right-to-left
+-  `ltr`: Web Chat UI will display as left-to-right
+-  `rtl`: Web Chat UI will display as right-to-left
 
 This value will be automatically configured based on the `locale` of Web Chat.
 

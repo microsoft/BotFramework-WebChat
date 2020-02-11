@@ -15,8 +15,8 @@ This sample shows how to change locale and direction for RTL languages on Web Ch
 
 # Things to try out
 
--  Note that the UI is set to Right to Left.
--  Type `HELLO IN ARABIC` to the bot // FIX THIS
+-  Note that the UI is set to Right to Left
+-  Type `card arabicgreeting` to the bot
 
 # Code
 

@@ -5,6 +5,7 @@
 
 // Should the following language be displayed in RTL by default?
 // 'ar-EG' yes
+// 'ar-JO' yes
 // 'bg-BG'
 // 'cs-CZ'
 // 'da-DK'
