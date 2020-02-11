@@ -24,10 +24,6 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
 
         '& > ul > li:not(:last-child)': {
           marginRight: paddingRegular
-        },
-
-        '& > .webchat__carousel__item_indented': {
-          marginLeft: paddingRegular
         }
       },
 
