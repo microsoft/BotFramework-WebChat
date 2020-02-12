@@ -31,8 +31,8 @@ const Dictation = ({ onError }) => {
   const [activities] = useActivities();
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
-  const [language] = useLanguage();
   const [sendTypingIndicator] = useSendTypingIndicator();
+  const [speechLanguage] = useLanguage('speech');
   const emitTypingIndicator = useEmitTypingIndicator();
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
@@ -93,7 +93,7 @@ const Dictation = ({ onError }) => {
 
   return (
     <DictateComposer
-      lang={language}
+      lang={speechLanguage}
       onDictate={handleDictate}
       onError={handleError}
       onProgress={handleDictating}

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useLocalizedStrings from './internal/useLocalizedStrings';
 
 export default function useLocalizeCallback() {
-  const { localizedStrings } = useWebChatUIContext();
+  const localizedStrings = useLocalizedStrings();
 
   return useCallback(
     (id, ...args) =>

@@ -427,6 +427,7 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,

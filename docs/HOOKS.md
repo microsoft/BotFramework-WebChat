@@ -293,11 +293,17 @@ To control the `groupTimestamp` state, change the props passed to Web Chat via s
 
 ## `useLanguage`
 
-```js
-useLanguage(): [string]
+```ts
+type LanguageOptions = 'speech';
+
+useLanguage(options?: LanguageOptions): [string]
 ```
 
 This function will return the language of the UI. All UI components should honor this value.
+
+If no options is passed, the return value will be the written language.
+
+If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
 To modify this value, change the value in the `locale` prop passed to Web Chat.
 

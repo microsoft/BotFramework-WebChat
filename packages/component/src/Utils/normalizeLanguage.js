@@ -76,7 +76,7 @@ export default function normalizeLanguage(language) {
   } else if (language.startsWith('sk')) {
     return 'sk-SK';
   } else if (language.startsWith('sl')) {
-    return 'sl-SL';
+    return 'sl-SI';
   } else if (language.startsWith('sr-Cyrl')) {
     return 'sr-Cyrl';
   } else if (language.startsWith('sr-Latn')) {

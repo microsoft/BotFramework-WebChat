@@ -1,38 +1,58 @@
 {
   "ar-EG": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ar-EG",
     "SPEECH_LANGUAGE": "ar-EG"
   },
   "ar-SA": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ar-SA",
     "SPEECH_LANGUAGE": "ar-SA"
   },
   "bg-BG": {
-    "GLOBALIZE_LANGUAGE": "bg"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "bg",
+    "SPEECH_LANGUAGE": "bg-BG"
   },
   "ca-ES": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ca",
     "SPEECH_LANGUAGE": "ca-ES"
   },
   "cs-CZ": {
-    "GLOBALIZE_LANGUAGE": "cs"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "cs",
+    "SPEECH_LANGUAGE": "cs-CZ"
   },
   "da-DK": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "da",
     "SPEECH_LANGUAGE": "da-DK"
   },
   "de-DE": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": "neural",
     "GLOBALIZE_LANGUAGE": "de",
     "SPEECH_LANGUAGE": "de-DE"
   },
   "el-GR": {
-    "GLOBALIZE_LANGUAGE": "el"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "el",
+    "SPEECH_LANGUAGE": "el-GR"
   },
   "en-US": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": "neural",
     "GLOBALIZE_LANGUAGE": "en",
     "SPEECH_LANGUAGE": "en-US"
   },
   "es-ES": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "es",
     "SPEECH_LANGUAGE": "es-ES"
   },
@@ -43,10 +63,14 @@
     "GLOBALIZE_LANGUAGE": "eu"
   },
   "fi-FI": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "fi",
     "SPEECH_LANGUAGE": "fi-FI"
   },
   "fr-FR": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "fr",
     "SPEECH_LANGUAGE": "fr-FR"
   },
@@ -54,26 +78,40 @@
     "GLOBALIZE_LANGUAGE": "gl"
   },
   "he-IL": {
-    "GLOBALIZE_LANGUAGE": "he"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "he",
+    "SPEECH_LANGUAGE": "he-IL"
   },
   "hi-IN": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "hi",
     "SPEECH_LANGUAGE": "hi-IN"
   },
   "hr-HR": {
-    "GLOBALIZE_LANGUAGE": "hr"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "hr",
+    "SPEECH_LANGUAGE": "hr-HR"
   },
   "hu-HU": {
-    "GLOBALIZE_LANGUAGE": "hu"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "hu",
+    "SPEECH_LANGUAGE": "hu-HU"
   },
   "id-ID": {
-    "GLOBALIZE_LANGUAGE": "id"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "id",
+    "SPEECH_LANGUAGE": "id-ID"
   },
   "it-IT": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": "neural",
     "GLOBALIZE_LANGUAGE": "it",
     "SPEECH_LANGUAGE": "it-IT"
   },
   "ja-JP": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ja",
     "SPEECH_LANGUAGE": "ja-JP"
   },
@@ -81,6 +119,8 @@
     "GLOBALIZE_LANGUAGE": "kk"
   },
   "ko-KR": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ko",
     "SPEECH_LANGUAGE": "ko-KR"
   },
@@ -91,40 +131,60 @@
     "GLOBALIZE_LANGUAGE": "lv"
   },
   "ms-MY": {
-    "GLOBALIZE_LANGUAGE": "ms"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "ms",
+    "SPEECH_LANGUAGE": "ms-MY"
   },
   "nb-NO": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "nb",
-    "SPEECH_LANGUAGE": "nb-no"
+    "SPEECH_LANGUAGE": "nb-NO"
   },
   "nl-NL": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "nl",
     "SPEECH_LANGUAGE": "nl-NL"
   },
   "pl-PL": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "pl",
     "SPEECH_LANGUAGE": "pl-PL"
   },
   "pt-BR": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "pt",
     "SPEECH_LANGUAGE": "pt-BR"
   },
   "pt-PT": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "pt-PT",
     "SPEECH_LANGUAGE": "pt-PT"
   },
   "ro-RO": {
-    "GLOBALIZE_LANGUAGE": "ro"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "ro",
+    "SPEECH_LANGUAGE": "ro-RO"
   },
   "ru-RU": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "ru",
     "SPEECH_LANGUAGE": "ru-RU"
   },
   "sk-SK": {
-    "GLOBALIZE_LANGUAGE": "sk"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "sk",
+    "SPEECH_LANGUAGE": "sk-SK"
   },
-  "sl-SL": {
-    "GLOBALIZE_LANGUAGE": "sl"
+  "sl-SI": {
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "sl",
+    "SPEECH_LANGUAGE": "sl-SI"
   },
   "sr-Cyrl": {
     "GLOBALIZE_LANGUAGE": "sr-Cyrl"
@@ -133,14 +193,20 @@
     "GLOBALIZE_LANGUAGE": "sr-Latn"
   },
   "sv-SE": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "sv",
     "SPEECH_LANGUAGE": "sv-SE"
   },
   "th-TH": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "th",
     "SPEECH_LANGUAGE": "th-TH"
   },
   "tr-TR": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "tr",
     "SPEECH_LANGUAGE": "tr-TR"
   },
@@ -148,29 +214,43 @@
     "GLOBALIZE_LANGUAGE": "uk"
   },
   "vi-VN": {
-    "GLOBALIZE_LANGUAGE": "vi"
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
+    "GLOBALIZE_LANGUAGE": "vi",
+    "SPEECH_LANGUAGE": "vi-VN"
   },
   "yue": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "yue",
     "SPEECH_LANGUAGE": "zh-HK"
   },
   "zh-Hans": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": "neural",
     "GLOBALIZE_LANGUAGE": "zh-Hans",
     "SPEECH_LANGUAGE": "zh-CN"
   },
   "zh-Hans-SG": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": "neural",
     "GLOBALIZE_LANGUAGE": "zh-Hans-SG",
     "SPEECH_LANGUAGE": "zh-CN"
   },
   "zh-Hant": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "zh-Hant",
     "SPEECH_LANGUAGE": "zh-TW"
   },
   "zh-Hant-HK": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "zh-Hant-HK",
     "SPEECH_LANGUAGE": "zh-HK"
   },
   "zh-Hant-MO": {
+    "COGNITIVE_SERVICES_SPEECH_TO_TEXT": true,
+    "COGNITIVE_SERVICES_TEXT_TO_SPEECH": true,
     "GLOBALIZE_LANGUAGE": "zh-Hant-MO",
     "SPEECH_LANGUAGE": "zh-HK"
   }
