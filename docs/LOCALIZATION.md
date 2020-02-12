@@ -143,6 +143,15 @@ The additional checks do not applies for strings that are contributed by the com
 
 Developers should have a way to modify existing strings. One of the popular ask is the modify the "Type your message" placeholder text in the message input box.
 
+### New hooks to simplify internationalization
+
+`useLocalizerForXXX` hooks are added to simplify internationalization using Unicode CLDR data
+
+- `useLocalizerForBytes` will format number of file size in bytes, into localized strings
+- `useLocalizerForDate` will format date in absolute format, similar to `useLocalizeDate` but with updated function signature. This hook do not use Unicode CLDR data
+- `useLocalizerForRelativeTime` will format time in relative format, using Unicode CLDR data
+- `useLanguage` now accept options to return oral language instead of written language
+
 ## Appendix
 
 ### Convert string ID to new format
