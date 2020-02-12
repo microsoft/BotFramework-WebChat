@@ -7,6 +7,10 @@ const KILOBYTE = 1024;
 const MEGABYTE = 1048576;
 const GIGABYTE = 1073741824;
 
+const LONG_FORM = {
+  form: 'long'
+};
+
 const SHORT_FORM = {
   form: 'short'
 };
@@ -19,7 +23,7 @@ export default function useLocalizerForBytes() {
 
     return bytes => {
       if (bytes < KILOBYTE) {
-        return unitFormatter('byte', SHORT_FORM)(bytes);
+        return unitFormatter('byte', LONG_FORM)(bytes);
       } else if (bytes < MEGABYTE) {
         return unitFormatter('kilobyte', SHORT_FORM)(~~(bytes / KILOBYTE));
       } else if (bytes < GIGABYTE) {

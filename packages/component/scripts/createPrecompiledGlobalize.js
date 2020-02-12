@@ -9,8 +9,6 @@ const languages = Object.values(require('../src/Localization/overrides.json')).m
 
 Globalize.load(require('cldr-data').entireSupplemental());
 
-const SHORT_FORM = { form: 'short' };
-
 const formattersAndParsers = languages.reduce((formattersAndParsers, language) => {
   Globalize.load(require('cldr-data').entireMainFor(language));
 
@@ -21,10 +19,10 @@ const formattersAndParsers = languages.reduce((formattersAndParsers, language) =
     ...[
       globalize.relativeTimeFormatter('hour'),
       globalize.relativeTimeFormatter('minute'),
-      globalize.unitFormatter('byte', SHORT_FORM),
-      globalize.unitFormatter('kilobyte', SHORT_FORM),
-      globalize.unitFormatter('megabyte', SHORT_FORM),
-      globalize.unitFormatter('gigabyte', SHORT_FORM)
+      globalize.unitFormatter('byte', { form: 'long' }),
+      globalize.unitFormatter('kilobyte', { form: 'short' }),
+      globalize.unitFormatter('megabyte', { form: 'short' }),
+      globalize.unitFormatter('gigabyte', { form: 'short' })
     ]
   ];
 }, []);

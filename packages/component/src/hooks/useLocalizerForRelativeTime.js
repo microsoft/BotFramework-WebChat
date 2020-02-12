@@ -15,8 +15,7 @@ export default function useLocalizerForRelativeTime() {
 
     return dateOrString => {
       const date = new Date(dateOrString);
-      // const dateTime = date.getTime();
-      const dateTime = date.getTime() - 120000;
+      const dateTime = date.getTime();
 
       if (isNaN(dateTime)) {
         return dateOrString;

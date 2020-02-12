@@ -8,11 +8,15 @@ jest.setTimeout(timeouts.test);
 test('calling localize should return a localized string', async () => {
   const { pageObjects } = await setupWebDriver();
 
-  await expect(pageObjects.runHook('useLocalize', ['Chat'])).resolves.toMatchInlineSnapshot(`"Chat"`);
+  await expect(pageObjects.runHook('useLocalize', ['TEXT_INPUT_SPEAK_BUTTON_ALT'])).resolves.toMatchInlineSnapshot(
+    `"TEXT_INPUT_SPEAK_BUTTON_ALT"`
+  );
 });
 
 test('calling localize on zh-YUE should return a localized string', async () => {
   const { pageObjects } = await setupWebDriver({ props: { locale: 'zh-YUE' } });
 
-  await expect(pageObjects.runHook('useLocalize', ['Chat'])).resolves.toMatchInlineSnapshot(`"傾偈"`);
+  await expect(pageObjects.runHook('useLocalize', ['TEXT_INPUT_SPEAK_BUTTON_ALT'])).resolves.toMatchInlineSnapshot(
+    `"TEXT_INPUT_SPEAK_BUTTON_ALT"`
+  );
 });
