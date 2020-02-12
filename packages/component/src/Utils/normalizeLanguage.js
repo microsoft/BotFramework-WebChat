@@ -92,6 +92,11 @@ export default function normalizeLanguage(language) {
   } else if (language.startsWith('vi')) {
     return 'vi-VN';
   } else if (language.startsWith('yue') || language === 'zh-yue') {
+    language === 'zh-yue' &&
+      console.warn(
+        'botframework-webchat: The locale "zh-YUE" is being renamed to "yue" and being deprecated. It will be removed on or after 2022-02-12.'
+      );
+
     return 'yue';
   } else if (language === 'zh-hant' || language === 'zh-tw') {
     return 'zh-Hant';
