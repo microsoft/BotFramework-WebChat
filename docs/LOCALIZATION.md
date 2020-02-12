@@ -142,3 +142,96 @@ The additional checks do not applies for strings that are contributed by the com
 ### Overrideable by developers
 
 Developers should have a way to modify existing strings. One of the popular ask is the modify the "Type your message" placeholder text in the message input box.
+
+## Appendix
+
+### Convert string ID to new format
+
+To support the work from localization team, we are refreshing all string ID in a standard format.
+
+The following code is used by Web Chat team to convert strings from our previous format into new format.
+
+```js
+function convertFromOldStringId(js) {
+  const xMinutesAgoRelative = relative =>
+    js['X minutes ago'] && js['X minutes ago'](new Date(Date.now() + relative).toISOString());
+
+  return {
+    '_.comment':
+      '[CI-LOCKED] The content of this file is locked. Contributions are welcomed but it could be delayed as we conduct additional checks.',
+
+    CONNECTIVITY_STATUS_ALT: js.ConnectivityStatus && js.ConnectivityStatus + '$1',
+    CONNECTIVITY_STATUS_ALT_CONNECTED: js.CONNECTED_NOTIFICATION,
+    CONNECTIVITY_STATUS_ALT_SLOW_CONNECTION: js.SLOW_CONNECTION_NOTIFICATION,
+    CONNECTIVITY_STATUS_ALT_FATAL: js.FAILED_CONNECTION_NOTIFICATION,
+    CONNECTIVITY_STATUS_ALT_CONNECTING: js.INITIAL_CONNECTION_NOTIFICATION,
+    CONNECTIVITY_STATUS_ALT_RECONNECTING: js.INTERRUPTED_CONNECTION_NOTIFICATION,
+    CONNECTIVITY_STATUS_ALT_RENDER_ERROR: js.RENDER_ERROR_NOTIFICATION,
+
+    NOTIFICATION_ACCORDION_TWO: undefined,
+    NOTIFICATION_ACCORDION_FEW: undefined,
+    NOTIFICATION_ACCORDION_MANY: undefined,
+    NOTIFICATION_ACCORDION_OTHER: undefined,
+
+    NOTIFICATION_ALT_ERROR: undefined,
+    NOTIFICATION_ALT_INFO: undefined,
+    NOTIFICATION_ALT_SUCCESS: undefined,
+    NOTIFICATION_ALT_WARN: undefined,
+    NOTIFICATION_DISMISS_BUTTON: undefined,
+    NOTIFICATION_TITLE_ALT: undefined,
+
+    ACTIVITY_BOT_SAID: js['Bot said something'] && js.SentAt && js['Bot said something']('$1', '$2') + ' ' + js.SentAt + '$3',
+    ACTIVITY_USER_SAID: js['User said something'] && js.SentAt && js['User said something']('$1', '$2') + ' ' + js.SentAt + '$3',
+
+    ACTIVITY_STATUS_TIMESTAMP_JUST_NOW: xMinutesAgoRelative(0),
+    ACTIVITY_STATUS_TIMESTAMP_ONE_MINUTE_AGO: xMinutesAgoRelative(60000),
+    ACTIVITY_STATUS_TIMESTAMP_ONE_HOUR_AGO: xMinutesAgoRelative(3600000),
+    ACTIVITY_STATUS_TIMESTAMP_TODAY: xMinutesAgoRelative(1440 * 60000 * 1000),
+    ACTIVITY_STATUS_TIMESTAMP_YESTERDAY: xMinutesAgoRelative(2880 * 60000 * 1000),
+    ACTIVITY_STATUS_SEND_FAILED_RETRY: js.SEND_FAILED_KEY && js.SEND_FAILED_KEY.replace('[retry]', '[RETRY]'),
+    ACTIVITY_STATUS_SEND_STATUS_ALT: js.SendStatus && js.SendStatus + '$1',
+    ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT: js.SentAt && js.SentAt + '$1',
+    ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING: js.Sending,
+
+    SUGGESTED_ACTIONS_ALT: js.SuggestedActionsContainer && js.SuggestedActionsContainer + '$1',
+    SUGGESTED_ACTIONS_ALT_HAS_CONTENT: js.SuggestedActionsContent,
+    SUGGESTED_ACTIONS_ALT_NO_CONTENT: js.SuggestedActionsEmpty,
+
+    ADAPTIVE_CARD_ERROR_BOX_TITLE_PARSE: js['Adaptive Card parse error'],
+    ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER: js['Adaptive Card render error'],
+
+    FILE_CONTENT_ALT: "'$1'",
+    FILE_CONTENT_WITH_SIZE_ALT: js.UploadFileWithFileSize && js.UploadFileWithFileSize('', '$1', '$2').trim(),
+    FILE_CONTENT_DOWNLOADABLE_ALT: js['Download file'] && js['Download file'] + " '$1'",
+    FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT:
+      js.DownloadFileWithFileSize && js.DownloadFileWithFileSize(js['Download file'], '$1', '$2').trim(),
+
+    SPEECH_INPUT_LISTENING: js['Listening…'],
+    SPEECH_INPUT_STARTING: js['Starting…'],
+    SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT: js['Microphone on'],
+    SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT: js['Microphone off'],
+
+    ACTIVITY_ERROR_BOX_TITLE: js.ErrorMessage,
+
+    CAROUSEL_ATTACHMENTS_BOT_ALT: js.BotSent,
+    CAROUSEL_ATTACHMENTS_USER_ALT: js.UserSent,
+
+    TYPING_INDICATOR_ALT: js.TypingIndicator,
+
+    TEXT_INPUT_ALT: js.SendBox,
+    TEXT_INPUT_PLACEHOLDER: js['Type your message'],
+    TEXT_INPUT_SEND_BUTTON_ALT: js.Send,
+    TEXT_INPUT_SPEAK_BUTTON_ALT: js.Speak,
+    TEXT_INPUT_UPLOAD_BUTTON_ALT: js['Upload file'],
+
+    TRANSCRIPT_NEW_MESSAGES: js['New messages'],
+
+    CAROUSEL_FLIPPER_LEFT_ALT: js.Left,
+    CAROUSEL_FLIPPER_RIGHT_ALT: js.Right,
+
+    RECEIPT_CARD_TAX: js.Tax,
+    RECEIPT_CARD_TOTAL: js.Total,
+    RECEIPT_CARD_VAT: js.VAT
+  };
+}
+```

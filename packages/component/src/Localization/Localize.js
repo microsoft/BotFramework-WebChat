@@ -96,6 +96,7 @@ function getStrings(language) {
   }
 }
 
+// TODO: Convert this function to be usable with the new JSON files.
 function localize(text, language, ...args) {
   const string = (getStrings(language) || {})[text] || enUS[text];
 
