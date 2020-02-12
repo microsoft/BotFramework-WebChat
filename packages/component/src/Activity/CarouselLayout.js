@@ -7,7 +7,7 @@ import React from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useDirection from '../hooks/useDirection';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -20,7 +20,7 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
   const [direction] = useDirection();
   const filmStyleSet = createBasicStyleSet({ cursor: null });
   const leftSideFlipper = direction === 'rtl' ? '>' : '<';
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';
 
   return (

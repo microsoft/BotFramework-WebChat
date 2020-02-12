@@ -163,7 +163,7 @@ const Composer = ({
   const [dictateAbortable, setDictateAbortable] = useState();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
-  const patchedLanguage = normalizeLanguage(locale);
+  const patchedLanguage = useMemo(() => normalizeLanguage(locale), [locale]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
   const patchedStyleOptions = useMemo(() => {

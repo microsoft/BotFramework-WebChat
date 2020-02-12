@@ -11,7 +11,7 @@ const SHORT_FORM = {
   form: 'short'
 };
 
-export default function useLocalizeBytesCallback() {
+export default function useLocalizerForBytes() {
   const globalize = useGlobalize();
 
   return useMemo(() => {

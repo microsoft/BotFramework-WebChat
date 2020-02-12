@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../../../connectToWebChat';
 import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
-import useLocalizeCallback from '../../../hooks/useLocalizeCallback';
+import useLocalizer from '../../../hooks/useLocalizer';
 import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
 
@@ -33,7 +33,7 @@ const connectSendStatus = (...selectors) =>
 const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
   const postActivity = usePostActivity();
 
   const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');

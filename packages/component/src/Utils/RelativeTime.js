@@ -3,16 +3,16 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useForceRenderAtInterval from '../hooks/internal/useForceRenderAtInterval';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
-import useLocalizeDateCallback from '../hooks/useLocalizeDateCallback';
-import useLocalizeRelativeTimeCallback from '../hooks/useLocalizeRelativeTimeCallback';
+import useLocalizer from '../hooks/useLocalizer';
+import useLocalizerForDate from '../hooks/useLocalizerForDate';
+import useLocalizerForRelativeTime from '../hooks/useLocalizerForRelativeTime';
 
 const TIMER_INTERVAL = 60000;
 
 const RelativeTime = ({ value }) => {
-  const localize = useLocalizeCallback();
-  const localizeDate = useLocalizeDateCallback();
-  const localizeRelativeTime = useLocalizeRelativeTimeCallback();
+  const localize = useLocalizer();
+  const localizeDate = useLocalizerForDate();
+  const localizeRelativeTime = useLocalizerForRelativeTime();
 
   useForceRenderAtInterval(value, TIMER_INTERVAL);
 

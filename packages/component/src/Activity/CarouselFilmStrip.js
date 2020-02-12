@@ -15,7 +15,7 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -96,7 +96,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {

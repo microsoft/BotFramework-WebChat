@@ -6,7 +6,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
 import useDirection from '../hooks/useDirection';
 import useForceRender from '../hooks/internal/useForceRender';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useTimer from '../hooks/internal/useTimer';
@@ -20,7 +20,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const [direction] = useDirection();
   const [initialRenderAt] = useState(() => Date.now());
   const forceRender = useForceRender();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
 
   const initialConnectionText = localize('CONNECTIVITY_STATUS_ALT_CONNECTING');
   const interruptedConnectionText = localize('CONNECTIVITY_STATUS_ALT_RECONNECTING');

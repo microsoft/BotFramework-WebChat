@@ -3,12 +3,12 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
-import useLocalizeDateCallback from '../hooks/useLocalizeDateCallback';
+import useLocalizer from '../hooks/useLocalizer';
+import useLocalizerForDate from '../hooks/useLocalizerForDate';
 
 const AbsoluteTime = ({ value }) => {
-  const localize = useLocalizeCallback();
-  const localizeDate = useLocalizeDateCallback();
+  const localize = useLocalizer();
+  const localizeDate = useLocalizerForDate();
 
   const absoluteTime = localizeDate(value);
 

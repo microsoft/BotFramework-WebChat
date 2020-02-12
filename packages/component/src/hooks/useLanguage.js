@@ -6,7 +6,7 @@ export default function useLanguage(options) {
   const localizedStrings = useLocalizedStrings();
 
   if (options === 'speech') {
-    return localizedStrings.SPEECH_LANGUAGE || language;
+    return [localizedStrings.SPEECH_LANGUAGE || language];
   }
 
   return [language];

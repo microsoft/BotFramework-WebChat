@@ -4,10 +4,10 @@ import { useMemo } from 'react';
 
 import getLocaleString from '../Localization/getLocaleString';
 import useGlobalize from './internal/useGlobalize';
-import useLocalizeCallback from './useLocalizeCallback';
+import useLocalizer from './useLocalizer';
 
-export default function useLocalizeRelativeTimeCallback() {
-  const localize = useLocalizeCallback();
+export default function useLocalizerForRelativeTime() {
+  const localize = useLocalizer();
   const globalize = useGlobalize();
 
   return useMemo(() => {

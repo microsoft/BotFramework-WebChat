@@ -15,7 +15,7 @@ import useDictateAbortable from '../hooks/useDictateAbortable';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useShouldSpeakIncomingActivity from '../hooks/useShouldSpeakIncomingActivity';
 import useStartDictate from '../hooks/useStartDictate';
@@ -151,7 +151,7 @@ const MicrophoneButton = ({ className }) => {
   const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
 
   const dictating = dictateState === DictateState.DICTATING;
 

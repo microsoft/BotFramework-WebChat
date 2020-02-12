@@ -8,13 +8,25 @@ jest.setTimeout(timeouts.test);
 test('getter should return language set in props', async () => {
   const { pageObjects } = await setupWebDriver({
     props: {
-      locale: 'zh-YUE'
+      locale: 'yue'
     }
   });
 
   const [language] = await pageObjects.runHook('useLanguage');
 
-  expect(language).toMatchInlineSnapshot(`"zh-YUE"`);
+  expect(language).toMatchInlineSnapshot(`"yue"`);
+});
+
+test('getter should return speech language "zh-HK" for "yue"', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      locale: 'yue'
+    }
+  });
+
+  const [language] = await pageObjects.runHook('useLanguage', ['speech']);
+
+  expect(language).toMatchInlineSnapshot(`"zh-HK"`);
 });
 
 test('getter should return default language if not set in props', async () => {

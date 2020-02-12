@@ -5,7 +5,7 @@ import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
 import useInternalMarkdownIt from '../../../hooks/internal/useInternalMarkdownIt';
-import useLocalizeCallback from '../../../hooks/useLocalizeCallback';
+import useLocalizer from '../../../hooks/useLocalizer';
 import walkMarkdownTokens from '../../../Utils/walkMarkdownTokens';
 
 function walkMarkdownTokens(tokens, walker) {
@@ -50,7 +50,7 @@ function replaceAnchorWithButton(markdownTokens) {
 }
 
 const SendFailedRetry = ({ onRetryClick }) => {
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
 
   const sendFailedText = localize('ACTIVITY_STATUS_SEND_FAILED_RETRY');
 

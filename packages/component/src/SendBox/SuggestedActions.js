@@ -10,7 +10,7 @@ import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useDirection from '../hooks/useDirection';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -44,7 +44,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
 
   const suggestedActionsContainerText = localize(
     'SUGGESTED_ACTIONS_ALT',

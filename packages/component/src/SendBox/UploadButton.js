@@ -7,7 +7,7 @@ import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 import useDisabled from '../hooks/useDisabled';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -86,7 +86,7 @@ const UploadButton = () => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const inputRef = useRef();
-  const localize = useLocalizeCallback();
+  const localize = useLocalizer();
   const sendFiles = useSendFiles();
 
   const { current } = inputRef;
