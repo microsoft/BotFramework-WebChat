@@ -131,6 +131,26 @@ function createFocusSendBoxContext({ sendBoxRef }) {
   };
 }
 
+function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStrings) {
+  if (!overrideLocalizedStrings) {
+    return localizedStrings;
+  } else if (typeof overrideLocalizedStrings === 'function') {
+    const merged = overrideLocalizedStrings(localizedStrings, language);
+
+    if (!isObject(merged)) {
+      throw new Error('botframework-webchat: overrideLocalizedStrings function must return an object.');
+    }
+
+    return merged;
+  }
+
+  if (!isObject(overrideLocalizedStrings)) {
+    throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, an object, or falsy.');
+  }
+
+  return { ...localizedStrings, ...overrideLocalizedStrings };
+}
+
 const Composer = ({
   activityRenderer,
   activityStatusRenderer,
@@ -274,23 +294,9 @@ const Composer = ({
 
   const patchedLocalizedStrings = useMemo(() => {
     const allStrings = getLocalizedStrings();
-    const localizedStrings = { ...allStrings['en-US'], ...allStrings[patchedLanguage] };
+    const { 'en-US': englishStrings, [patchedLanguage]: localizedStrings } = allStrings;
 
-    if (!overrideLocalizedStrings) {
-      return localizedStrings;
-    } else if (typeof overrideLocalizedStrings === 'function') {
-      const merged = overrideLocalizedStrings(localizedStrings, patchedLanguage);
-
-      if (!isObject(merged)) {
-        throw new Error('botframework-webchat: overrideLocalizedStrings function must return an object.');
-      }
-
-      return merged;
-    } else if (!isObject(overrideLocalizedStrings)) {
-      throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, an object, or falsy.');
-    }
-
-    return { ...localizedStrings, ...overrideLocalizedStrings };
+    return { ...englishStrings, ...mergeStringsOverrides(localizedStrings, patchedLanguage, overrideLocalizedStrings) };
   }, [overrideLocalizedStrings, patchedLanguage]);
 
   const globalize = useMemo(() => {

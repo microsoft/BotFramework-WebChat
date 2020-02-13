@@ -26,3 +26,28 @@ test('should return string for default language', async () => {
 
   expect(actual).toMatchInlineSnapshot(`"Speak"`);
 });
+
+test('should return empty string for non-existent ID', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {}
+  });
+
+  const actual = await pageObjects.runHook('useLocalizer', [], localizer => localizer('NON_EXISTENT'));
+
+  expect(actual).toMatchInlineSnapshot(`""`);
+});
+
+test('should return overrode string for non-existent ID', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      locale: 'yue',
+      overrideLocalizedStrings: {
+        SOMETHING_NEW: 'Something new'
+      }
+    }
+  });
+
+  const actual = await pageObjects.runHook('useLocalizer', [], localizer => localizer('SOMETHING_NEW'));
+
+  expect(actual).toMatchInlineSnapshot(`"Something new"`);
+});
