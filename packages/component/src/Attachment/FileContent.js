@@ -1,5 +1,4 @@
 import { css } from 'glamor';
-import { format } from 'bytes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -28,13 +27,15 @@ const ROOT_CSS = css({
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
-  const formattedSize = typeof size === 'number' && format(size);
+  const localizeBytes = useLocalizerForBytes();
+
+  const localizedSize = typeof size === 'number' && localizeBytes(size);
 
   return (
     <React.Fragment>
       <div aria-hidden={true} className="webchat__fileContent__badge">
         <div className="webchat__fileContent__fileName">{fileName}</div>
-        {!!formattedSize && <div className="webchat__fileContent__size">{formattedSize}</div>}
+        {!!localizedSize && <div className="webchat__fileContent__size">{localizedSize}</div>}
       </div>
       {downloadIcon && (
         <DownloadIcon
@@ -65,18 +66,18 @@ const FileContent = ({ className, href, fileName, size }) => {
   const localize = useLocalizer();
   const localizeBytes = useLocalizerForBytes();
 
-  const formattedSize = typeof size === 'number' && localizeBytes(size);
+  const localizedSize = typeof size === 'number' && localizeBytes(size);
 
   const alt = localize(
     href
-      ? formattedSize
+      ? localizedSize
         ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
         : 'FILE_CONTENT_DOWNLOADABLE_ALT'
-      : formattedSize
+      : localizedSize
       ? 'FILE_CONTENT_WITH_SIZE_ALT'
       : 'FILE_CONTENT_ALT',
-    attachment.name,
-    formattedSize
+    fileName,
+    localizedSize
   );
 
   return (
