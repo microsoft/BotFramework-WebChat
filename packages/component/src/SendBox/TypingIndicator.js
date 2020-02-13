@@ -1,6 +1,8 @@
+import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 
 import TypingAnimation from './Assets/TypingAnimation';
+import useDirection from '../hooks/useDirection';
 import useLastTypingAt from '../hooks/useLastTypingAt';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -36,11 +38,12 @@ const TypingIndicator = () => {
   const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
   const [showTyping] = useTypingIndicatorVisible();
 
+  const [direction] = useDirection();
   const animationAriaLabel = useLocalize('TypingIndicator');
 
   return (
     showTyping && (
-      <div className={typingIndicatorStyleSet}>
+      <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' ? 'rtl' : '')}>
         <TypingAnimation aria-label={animationAriaLabel} />
       </div>
     )

@@ -1,6 +1,12 @@
 export default function createTypingIndicatorStyle({ paddingRegular }) {
   return {
     paddingBottom: paddingRegular,
-    paddingLeft: paddingRegular
+
+    '&:not(.rtl)': {
+      paddingLeft: paddingRegular
+    },
+    '&.rtl': {
+      paddingRight: paddingRegular
+    }
   };
 }
