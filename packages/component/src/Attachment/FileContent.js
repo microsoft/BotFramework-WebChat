@@ -7,8 +7,8 @@ import React from 'react';
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import useDirection from '../hooks/useDirection';
-import useLocalizeBytesCallback from '../hooks/useLocalizeBytesCallback';
-import useLocalizeCallback from '../hooks/useLocalizeCallback';
+import useLocalizer from '../hooks/useLocalizer';
+import useLocalizerForBytes from '../hooks/useLocalizerForBytes';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -62,20 +62,19 @@ FileContentBadge.propTypes = {
 
 const FileContent = ({ className, href, fileName, size }) => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
-  const localize = useLocalizeCallback();
-  const localizeBytes = useLocalizeBytesCallback();
-
-  const attachmentIndex = attachments.indexOf(attachment);
-
-  const size = attachmentSizes[attachmentIndex];
+  const localize = useLocalizer();
+  const localizeBytes = useLocalizerForBytes();
 
   const formattedSize = typeof size === 'number' && localizeBytes(size);
 
   const alt = localize(
-    href ?
-      (formattedSize ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT' : 'FILE_CONTENT_DOWNLOADABLE_ALT')
-    :
-      (formattedSize ? 'FILE_CONTENT_WITH_SIZE_ALT' : 'FILE_CONTENT_ALT'),
+    href
+      ? formattedSize
+        ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
+        : 'FILE_CONTENT_DOWNLOADABLE_ALT'
+      : formattedSize
+      ? 'FILE_CONTENT_WITH_SIZE_ALT'
+      : 'FILE_CONTENT_ALT',
     attachment.name,
     formattedSize
   );
