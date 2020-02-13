@@ -81,13 +81,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped all dependencies to latest versions, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
    -  Development dependencies
       -  Root package
-         -  `@babel/plugin-proposal-class-properties@7.7.4`
-         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
-         -  `@babel/plugin-transform-runtime@7.7.6`
-         -  `@babel/preset-env@7.7.6`
-         -  `@babel/preset-react@7.7.4`
-         -  `@babel/preset-typescript@7.7.4`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/plugin-proposal-class-properties@7.8.3`
+         -  `@babel/plugin-proposal-object-rest-spread@7.8.3`
+         -  `@babel/plugin-transform-runtime@7.8.3`
+         -  `@babel/preset-env@7.8.4`
+         -  `@babel/preset-react@7.8.3`
+         -  `@babel/preset-typescript@7.8.3`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
          -  `coveralls@3.0.9`
          -  `husky@3.1.0`
@@ -97,9 +97,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  Other packages
          -  `@babel/cli@7.8.4`
          -  `@babel/core@7.8.4`
-         -  `@babel/plugin-proposal-class-properties@7.7.4`
-         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
-         -  `@babel/plugin-transform-runtime@7.7.6`
+         -  `@babel/plugin-proposal-class-properties@7.8.3`
+         -  `@babel/plugin-proposal-object-rest-spread@7.8.3`
+         -  `@babel/plugin-transform-runtime@7.8.3`
          -  `@babel/preset-env@7.8.4`
          -  `@babel/preset-react@7.8.3`
          -  `@babel/preset-typescript@7.8.3`
@@ -119,13 +119,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `core`
          -  `math-random@1.0.4`
       -  `bundle`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
          -  `sanitize-html@1.20.0`
       -  `component`
          -  `sanitize-html@1.20.1`
       -  `embed`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
 -  Resolves [#2748](https://github.com/microsoft/BotFramework-WebChat/issues/2748), updated build scripts and CI pipeline, by [@compulim](https://github.com/compulim), in PR [#2767](https://github.com/microsoft/BotFramework-WebChat/pull/2767)
 -  `component`: Bumps [`react-film@2.0.2`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
