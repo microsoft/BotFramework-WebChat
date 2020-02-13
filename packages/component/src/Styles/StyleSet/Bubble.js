@@ -112,7 +112,7 @@ export default function createBubbleStyle({
 
       '&:not(.webchat__bubble--rtl)': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleFromUserNubSize ? { marginRight: paddingRegular } : {}
         },
 
         '& > .webchat__bubble__nub': {
@@ -122,7 +122,7 @@ export default function createBubbleStyle({
 
       '&.webchat__bubble--rtl': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleFromUserNubSize ? { marginLeft: paddingRegular } : {}
         },
         '& > .webchat__bubble__nub': {
           left: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
