@@ -1,5 +1,5 @@
 const { format } = require('prettier');
-const { join } = require('path');
+const { join, relative } = require('path');
 const { writeFileSync } = require('fs');
 const Globalize = require('globalize');
 const globalizeCompiler = require('globalize-compiler');
@@ -28,5 +28,8 @@ const formattersAndParsers = languages.reduce((formattersAndParsers, language) =
 }, []);
 
 const code = format(globalizeCompiler.compile(formattersAndParsers), { parser: 'babel' });
+const filename = join(__dirname, '../lib/Utils/PrecompiledGlobalize.js');
 
-writeFileSync(join(__dirname, '../lib/Utils/PrecompiledGlobalize.js'), code);
+writeFileSync(filename, code);
+
+console.log(`Successfully compiled globalize to ${relative(process.cwd(), filename)}.`);
