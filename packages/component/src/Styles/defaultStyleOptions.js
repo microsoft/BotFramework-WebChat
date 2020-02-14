@@ -155,7 +155,7 @@ const DEFAULT_OPTIONS = {
   uploadThumbnailQuality: 0.6,
   uploadThumbnailWidth: 720,
 
-  // deprecated; will be removed on or after 2021-2-1
+  // deprecated; will be removed on or after 2021-02-01
   spinnerAnimationPaddingRight: undefined
 };
 

@@ -12,7 +12,7 @@ const WarningNotificationIcon = ({ className, size }) => {
   return (
     <svg
       alt=""
-      className={classNames(className + '', direction === 'rtl' ? 'webchat_warning--rtl' : '')}
+      className={classNames(className + '', direction === 'rtl' && 'webchat_warning--rtl')}
       height={ICON_SIZE_FACTOR * size}
       viewBox="0 0 13.1 13.1"
       width={ICON_SIZE_FACTOR * size}

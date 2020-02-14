@@ -9,7 +9,7 @@ const SpinnerAnimation = () => {
   const [direction] = useDirection();
 
   return (
-    <div className={classNames(spinnerAnimationStyleSet + '', direction === 'rtl' ? 'webchat__spinner--rtl' : '')} />
+    <div className={classNames(spinnerAnimationStyleSet + '', direction === 'rtl' && 'webchat__spinner--rtl')} />
   );
 };
 
