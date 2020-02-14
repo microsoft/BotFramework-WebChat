@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
+import ScreenReaderText from '../ScreenReaderText';
 import useDirection from '../hooks/useDirection';
 import useStyleSet from '../hooks/useStyleSet';
 
