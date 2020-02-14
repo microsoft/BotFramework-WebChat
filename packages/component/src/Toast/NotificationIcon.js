@@ -3,14 +3,16 @@ import React from 'react';
 
 import CheckMarkIcon from './CheckMarkIcon';
 import ExclamationMarkIcon from './ExclamationMarkIcon';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 
 const NotificationIcon = ({ className, level }) => {
+  const localize = useLocalizer();
+
   const prefixes = {
-    error: useLocalize('TOAST_ERROR_PREFIX'),
-    info: useLocalize('TOAST_INFO_PREFIX'),
-    success: useLocalize('TOAST_SUCCESS_PREFIX'),
-    warn: useLocalize('TOAST_WARN_PREFIX')
+    error: localize('TOAST_ALT_ERROR'),
+    info: localize('TOAST_ALT_INFO'),
+    success: localize('TOAST_ALT_SUCCESS'),
+    warn: localize('TOAST_ALT_WARN')
   };
 
   const prefix = prefixes[level] || '';

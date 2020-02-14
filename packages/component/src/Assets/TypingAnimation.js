@@ -4,7 +4,7 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useDirection from '../hooks/useDirection';
-import useLocalizer from '../../hooks/useLocalizer';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 
 const RTL_SCALE_CSS = css({ transform: 'scale(-1, 1)' });

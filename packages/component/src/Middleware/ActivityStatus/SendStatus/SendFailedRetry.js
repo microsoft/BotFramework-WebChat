@@ -8,22 +8,6 @@ import useInternalMarkdownIt from '../../../hooks/internal/useInternalMarkdownIt
 import useLocalizer from '../../../hooks/useLocalizer';
 import walkMarkdownTokens from '../../../Utils/walkMarkdownTokens';
 
-function walkMarkdownTokens(tokens, walker) {
-  return tokens.map(token => {
-    if (token) {
-      const nextToken = walker(token);
-
-      if (nextToken.children) {
-        nextToken.children = walkMarkdownTokens(nextToken.children, walker);
-      }
-
-      return nextToken;
-    }
-
-    return token;
-  });
-}
-
 function replaceAnchorWithButton(markdownTokens) {
   return walkMarkdownTokens(markdownTokens, markdownToken => {
     markdownToken = { ...markdownToken };

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 
 import TypingAnimation from './Assets/TypingAnimation';
 import useDirection from './hooks/useDirection';
-import useLastTypingAt from '../hooks/useLastTypingAt';
-import useStyleOptions from '../hooks/useStyleOptions';
-import useStyleSet from '../hooks/useStyleSet';
+import useLastTypingAt from './hooks/useLastTypingAt';
+import useStyleOptions from './hooks/useStyleOptions';
+import useStyleSet from './hooks/useStyleSet';
 
 function useTypingIndicatorVisible() {
   const [lastTypingAt] = useLastTypingAt();

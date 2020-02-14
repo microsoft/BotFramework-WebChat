@@ -177,17 +177,17 @@ function convertFromOldStringId(js) {
       CONNECTIVITY_STATUS_ALT_RECONNECTING: js.INTERRUPTED_CONNECTION_NOTIFICATION,
       CONNECTIVITY_STATUS_ALT_RENDER_ERROR: js.RENDER_ERROR_NOTIFICATION,
 
-      NOTIFICATION_ACCORDION_TWO: undefined,
-      NOTIFICATION_ACCORDION_FEW: undefined,
-      NOTIFICATION_ACCORDION_MANY: undefined,
-      NOTIFICATION_ACCORDION_OTHER: undefined,
+      TOAST_ACCORDION_TWO: undefined,
+      TOAST_ACCORDION_FEW: undefined,
+      TOAST_ACCORDION_MANY: undefined,
+      TOAST_ACCORDION_OTHER: undefined,
 
-      NOTIFICATION_ALT_ERROR: undefined,
-      NOTIFICATION_ALT_INFO: undefined,
-      NOTIFICATION_ALT_SUCCESS: undefined,
-      NOTIFICATION_ALT_WARN: undefined,
-      NOTIFICATION_DISMISS_BUTTON: undefined,
-      NOTIFICATION_TITLE_ALT: undefined,
+      TOAST_ALT_ERROR: undefined,
+      TOAST_ALT_INFO: undefined,
+      TOAST_ALT_SUCCESS: undefined,
+      TOAST_ALT_WARN: undefined,
+      TOAST_DISMISS_BUTTON: undefined,
+      TOAST_TITLE_ALT: undefined,
 
       ACTIVITY_BOT_SAID:
          js['Bot said something'] && js.SentAt && js['Bot said something']('$1', '$2') + ' ' + js.SentAt + '$3',

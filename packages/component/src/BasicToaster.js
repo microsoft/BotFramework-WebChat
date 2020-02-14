@@ -10,7 +10,7 @@ import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
 import useDebouncedNotifications from './hooks/useDebouncedNotifications';
-import useLocalize from './hooks/useLocalize';
+import useLocalizer from './hooks/useLocalizer';
 import useRenderToast from './hooks/useRenderToast';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -62,10 +62,10 @@ const BasicToaster = () => {
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
+  const localize = useLocalizer();
   const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);
   const headerElementId = useMemo(() => `webchat__toaster__header__${randomId()}`, []);
   const renderToast = useRenderToast();
-  const toasterExpandText = useLocalize('TOASTER_HEADER_TEXT') || '';
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
   const sortedNotifications = useMemo(() => sortNotifications(debouncedNotifications), [debouncedNotifications]);
@@ -116,7 +116,7 @@ const BasicToaster = () => {
             <NotificationIcon className="webchat__toaster__expandLevelIcon" level={highestLevel} />
           </div>
           <div className="webchat__toaster__expandText">
-            {toasterExpandText.replace('$1', sortedNotificationsWithChildren.length)}
+            {localize('TOAST_ACCORDION_OTHER', sortedNotificationsWithChildren.length)}
           </div>
           <div aria-hidden={true} className="webchat__toaster__expandIcon">
             <div className="webchat__toaster__expandIconFocus">{expanded ? <CollapseIcon /> : <ExpandIcon />}</div>

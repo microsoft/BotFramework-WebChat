@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../../../connectToWebChat';
+import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
 import useLocalizer from '../../../hooks/useLocalizer';
