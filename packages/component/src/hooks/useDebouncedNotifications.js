@@ -1,12 +1,19 @@
 import { useRef } from 'react';
 import updateIn from 'simple-update-in';
 
-import { map as minOfMap } from '../Utils/minOf';
-import filterMap from '../Utils/filterMap';
+import findMin from '../Utils/findMin';
 import useForceRender from './internal/useForceRender';
 import useNotifications from './useNotifications';
 import useStyleOptions from './useStyleOptions';
 import useTimer from './internal/useTimer';
+
+function getEarliestUpdateNotBefore(notificationMap) {
+  return findMin(
+    Object.values(notificationMap)
+      .filter(({ outOfDate }) => outOfDate)
+      .map(({ updateNotBefore }) => updateNotBefore)
+  );
+}
 
 function useDebouncedNotifications() {
   const now = Date.now();
@@ -66,14 +73,11 @@ function useDebouncedNotifications() {
     });
   }
 
-  const [, { updateNotBefore: earliestUpdateNotBefore }] = minOfMap(
-    filterMap(debouncedNotificationsRef.current, ({ outOfDate }) => outOfDate),
-    ({ updateNotBefore }) => updateNotBefore
-  ) || [0, {}];
-
-  useTimer(earliestUpdateNotBefore, forceRender);
+  useTimer(getEarliestUpdateNotBefore(debouncedNotificationsRef.current), forceRender);
 
   return [debouncedNotificationsRef.current];
 }
 
 export default useDebouncedNotifications;
+
+export { getEarliestUpdateNotBefore };

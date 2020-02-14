@@ -51,7 +51,6 @@ function compareLevel(x, y) {
 function sortNotifications(map) {
   return (
     Object.values(map)
-      .reduce((array, notification) => [...array, notification], [])
       // We want the order reversed, most recent on top.
       .sort(({ timestamp: x }, { timestamp: y }) => y - x)
   );

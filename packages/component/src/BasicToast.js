@@ -69,7 +69,7 @@ BasicToast.propTypes = {
   notification: PropTypes.shape({
     alt: PropTypes.string,
     id: PropTypes.string.isRequired,
-    level: PropTypes.oneOf(['error', 'warn', 'info', 'success']).isRequired,
+    level: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired
   }).isRequired
 };
