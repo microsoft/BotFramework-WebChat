@@ -25,7 +25,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 
 describe('offline UI', () => {
   test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {
-    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+    const initialProps = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
     const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
@@ -52,7 +52,7 @@ describe('offline UI', () => {
         };
       },
       pingBotOnLoad: false,
-      props: WEB_CHAT_PROPS,
+      props: initialProps,
       setup: () =>
         Promise.all([
           window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
@@ -72,8 +72,9 @@ describe('offline UI', () => {
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.updateProps({
-      ...WEB_CHAT_PROPS,
+      ...initialProps,
       styleOptions: {
+        ...initialProps.styleOptions,
         slowConnectionAfter: 20000
       }
     });
