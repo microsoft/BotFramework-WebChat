@@ -124,6 +124,7 @@ export default function createBubbleStyle({
         '&.webchat__bubble_has_nub': {
           '& > .webchat__bubble__content': bubbleFromUserNubSize ? { marginLeft: paddingRegular } : {}
         },
+
         '& > .webchat__bubble__nub': {
           left: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
           transform: 'scale(-1, 1)'

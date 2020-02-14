@@ -8,9 +8,7 @@ const SpinnerAnimation = () => {
   const [{ spinnerAnimation: spinnerAnimationStyleSet }] = useStyleSet();
   const [direction] = useDirection();
 
-  return (
-    <div className={classNames(spinnerAnimationStyleSet + '', direction === 'rtl' && 'webchat__spinner--rtl')} />
-  );
+  return <div className={classNames(spinnerAnimationStyleSet + '', direction === 'rtl' && 'webchat__spinner--rtl')} />;
 };
 
 export default SpinnerAnimation;

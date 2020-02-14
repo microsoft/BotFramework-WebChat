@@ -7,10 +7,12 @@ import ScreenReaderText from '../../ScreenReaderText';
 import useDirection from '../../hooks/useDirection';
 import useStyleSet from '../../hooks/useStyleSet';
 
+const RTL_SCALE_CSS = css({ transform: 'scale(-1, 1)' });
+
 const TypingAnimation = ({ 'aria-label': ariaLabel }) => {
   const [{ typingAnimation: typingAnimationStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const rtlScale = direction === 'rtl' ? css({ transform: 'scale(-1)' }) : '';
+  const rtlScale = direction === 'rtl' ? RTL_SCALE_CSS + '' : '';
 
   return (
     <React.Fragment>

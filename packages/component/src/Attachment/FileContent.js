@@ -38,8 +38,8 @@ const FileContentBadge = ({ downloadIcon, fileName, size }) => {
       {downloadIcon && (
         <DownloadIcon
           className={classNames(
-            direction === 'rtl' && 'webchat__fileContent__downloadIcon--rtl',
-            'webchat__fileContent__downloadIcon'
+            'webchat__fileContent__downloadIcon',
+            direction === 'rtl' && 'webchat__fileContent__downloadIcon--rtl'
           )}
           size={1.5}
         />

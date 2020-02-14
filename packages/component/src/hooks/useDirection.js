@@ -5,15 +5,13 @@ import useDirFromProps from './internal/useDirFromProps';
 import useLanguage from './useLanguage';
 
 function determineDirection(dir, language) {
-  if (dir === 'auto') {
-    const RTLList = getRTLList();
-
-    if (RTLList.includes(language)) {
-      return 'rtl';
-    }
-    return 'ltr';
+  if (dir !== 'auto') {
+    return dir;
+  } else if (getRTLList().includes(language)) {
+    return 'rtl';
   }
-  return dir;
+
+  return 'ltr';
 }
 
 export default function useDirection() {

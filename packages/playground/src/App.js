@@ -21,8 +21,8 @@ css.global('body', {
 });
 
 const ROOT_CSS = css({
-  height: '100%',
   display: 'flex',
+  height: '100%',
   flexDirection: 'row',
 
   '& > div.button-bar': {
@@ -150,6 +150,7 @@ const App = ({ store }) => {
   );
 
   const [dir, setDirUI] = useState(() => window.sessionStorage.getItem('PLAYGROUND_DIRECTION') || 'auto');
+
   const [disabled, setDisabledUI] = useState(false);
 
   const [faulty, setFaultyDirectLine] = useState(false);

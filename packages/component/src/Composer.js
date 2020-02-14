@@ -150,6 +150,7 @@ const Composer = ({
   const [referenceGrammarID] = useReferenceGrammarID();
   const [dictateAbortable, setDictateAbortable] = useState();
 
+  const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {
     if (typeof sendTyping === 'undefined') {
@@ -270,7 +271,7 @@ const Composer = ({
       activityStatusRenderer,
       attachmentRenderer,
       dictateAbortable,
-      dir,
+      dir: patchedDir,
       directLine,
       disabled,
       grammars: patchedGrammars,
@@ -292,7 +293,7 @@ const Composer = ({
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
-      dir,
+      patchedDir,
       directLine,
       disabled,
       focusSendBoxContext,

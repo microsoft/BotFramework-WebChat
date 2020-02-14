@@ -3,9 +3,11 @@ import React from 'react';
 
 import useDirection from '../../hooks/useDirection';
 
+const RTL_SCALE_CSS = css({ transform: 'scale(-1, 1)' });
+
 const SendIcon = () => {
   const [direction] = useDirection();
-  const rtlScale = direction === 'rtl' ? css({ transform: 'scale(-1)' }) : '';
+  const rtlScale = direction === 'rtl' ? RTL_SCALE_CSS + '' : '';
 
   return (
     <svg className={rtlScale} height={28} viewBox="0 0 45.7 33.8" width={28}>

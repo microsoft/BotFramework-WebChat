@@ -41,9 +41,9 @@ const connectSuggestedActions = (...selectors) =>
   );
 
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
-  const [direction] = useDirection();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+  const [direction] = useDirection();
   const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
   const suggestedActionsEmptyText = useLocalize('SuggestedActionsEmpty');
   const suggestedActionsContainerText =
