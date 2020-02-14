@@ -126,6 +126,7 @@ const Composer = ({
   attachmentRenderer,
   cardActionMiddleware,
   children,
+  dir,
   directLine,
   disabled,
   extraStyleSet,
@@ -149,6 +150,7 @@ const Composer = ({
   const [referenceGrammarID] = useReferenceGrammarID();
   const [dictateAbortable, setDictateAbortable] = useState();
 
+  const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {
     if (typeof sendTyping === 'undefined') {
@@ -245,12 +247,9 @@ const Composer = ({
     };
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
-  const dictationOnError = useCallback(
-    err => {
-      console.error(err);
-    },
-    [console.error]
-  );
+  const dictationOnError = useCallback(err => {
+    console.error(err);
+  }, []);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
@@ -272,6 +271,7 @@ const Composer = ({
       activityStatusRenderer,
       attachmentRenderer,
       dictateAbortable,
+      dir: patchedDir,
       directLine,
       disabled,
       grammars: patchedGrammars,
@@ -293,6 +293,7 @@ const Composer = ({
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
+      patchedDir,
       directLine,
       disabled,
       focusSendBoxContext,
@@ -358,6 +359,7 @@ Composer.defaultProps = {
   attachmentRenderer: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
+  dir: 'auto',
   disabled: false,
   extraStyleSet: undefined,
   grammars: [],
@@ -382,6 +384,7 @@ Composer.propTypes = {
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
+  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
   directLine: PropTypes.shape({
     activity$: PropTypes.shape({
       subscribe: PropTypes.func.isRequired

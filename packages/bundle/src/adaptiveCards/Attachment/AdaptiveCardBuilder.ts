@@ -55,9 +55,10 @@ export default class AdaptiveCardBuilder {
   container: Container;
   styleOptions: any;
 
-  constructor(adaptiveCards, styleOptions) {
+  constructor(adaptiveCards, styleOptions, direction = 'ltr') {
     this.card = new adaptiveCards.AdaptiveCard();
     this.container = new Container();
+    this.container.rtl = direction === 'rtl';
     this.styleOptions = styleOptions;
 
     this.card.addItem(this.container);

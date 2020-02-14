@@ -6,7 +6,8 @@ If you want to help to translate Web Chat to different language, please submit a
 
 | Language code | Translator                                                 |
 | ------------- | ---------------------------------------------------------- |
-| ar-EG         | @midineo                                                   |
+| ar-eg         | @midineo                                                   |
+| ar-jo         | muminasaad, Odai Hatem AbuGaith                            |
 | bg-bg         | @kalin.krustev                                             |
 | cs-cz         | @msimecek                                                  |
 | da-dk         | @Simon_lfr, Thomas Skødt Andersen                          |
@@ -15,6 +16,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | es-es         | @SantiEspada, @ckgrafico, @renrous, @axelsrz, @munozemilio |
 | fi-fi         | @jsur, @sk91swd                                            |
 | fr-fr         | @meulta, @tao1                                             |
+| he-il         | @geea-develop                                              |
 | hu-hu         |                                                            |
 | it-it         | Maurizio Moriconi, @Andrea-Orimoto, @AntoT84               |
 | ja-jp         | @bigplants, @corinagum                                     |

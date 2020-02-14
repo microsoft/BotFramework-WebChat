@@ -14,6 +14,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -96,6 +97,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
+  const [direction] = useDirection();
   const botRoleLabel = useLocalize('BotSent');
   const userRoleLabel = useLocalize('UserSent');
 
@@ -116,9 +118,16 @@ const WebChatCarouselFilmStrip = ({
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
-        webchat__carousel_indented_content: initials && !indented
-      })}
+      className={classNames(
+        ROOT_CSS + '',
+        carouselFilmStripStyleSet + '',
+        className + '',
+        {
+          webchat__carousel_indented_content: initials && !indented,
+          webchat__carousel_extra_right_indent: !userInitials && bubbleFromUserNubSize
+        },
+        direction === 'rtl' ? 'webchat__carousel--rtl' : ''
+      )}
       ref={scrollableRef}
     >
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />

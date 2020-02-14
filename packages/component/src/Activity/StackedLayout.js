@@ -1,3 +1,4 @@
+/* eslint complexity: ["error", 30] */
 /* eslint react/no-array-index-key: "off" */
 
 import { css } from 'glamor';
@@ -13,6 +14,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useLocalizeDate from '../hooks/useLocalizeDate';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
@@ -84,6 +86,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
+  const [direction] = useDirection();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {
@@ -116,12 +119,21 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', stackedLayoutStyleSet + '', {
-        'from-user': fromUser,
-        webchat__stacked_extra_left_indent: fromUser && !botAvatarInitials && bubbleNubSize,
-        webchat__stacked_extra_right_indent: !fromUser && !userAvatarInitials && bubbleFromUserNubSize,
-        webchat__stacked_indented_content: initials && !indented
-      })}
+      className={classNames(
+        ROOT_CSS + '',
+        stackedLayoutStyleSet + '',
+        direction === 'rtl' ? 'webchat__stacked--rtl' : '',
+        {
+          'from-user': fromUser,
+          webchat__stacked_extra_left_indent:
+            (direction !== 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize) ||
+            (direction === 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize),
+          webchat__stacked_extra_right_indent:
+            (direction !== 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize) ||
+            (direction === 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize),
+          webchat__stacked_indented_content: initials && !indented
+        }
+      )}
     >
       {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />

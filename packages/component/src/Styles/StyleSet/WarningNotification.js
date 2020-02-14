@@ -21,7 +21,13 @@ export default function createWarningNotificationStyle({
 
     '& > svg': {
       fill: slowConnectivity,
-      paddingRight: connectivityIconPadding
+
+      ':not(webchat__warning--rtl)': {
+        paddingRight: connectivityIconPadding
+      },
+      '.webchat__warning--rtl': {
+        paddingLeft: connectivityIconPadding
+      }
     }
   };
 }

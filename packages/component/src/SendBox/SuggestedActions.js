@@ -9,6 +9,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
+import useDirection from '../hooks/useDirection';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -42,6 +43,7 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
+  const [direction] = useDirection();
   const suggestedActionsContentText = useLocalize('SuggestedActionsContent');
   const suggestedActionsEmptyText = useLocalize('SuggestedActionsEmpty');
   const suggestedActionsContainerText =
@@ -86,6 +88,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       <BasicFilm
         autoCenter={false}
         className={classNames(suggestedActionsStyleSet + '', className + '')}
+        dir={direction}
         flipperBlurFocusOnClick={true}
         showDots={false}
         styleSet={suggestedActionsStyleSetForReactFilm}

@@ -8,7 +8,7 @@ import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const { useLocalize, useStyleOptions } = hooks;
+const { useDirection, useLocalize, useStyleOptions } = hooks;
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
@@ -16,13 +16,14 @@ function nullOrUndefined(obj) {
 
 const ReceiptCardAttachment = ({ attachment: { content } }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
+  const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
   const taxText = useLocalize('Tax');
   const totalText = useLocalize('Total');
   const vatText = useLocalize('VAT');
 
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
+    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCardsPackage;
     const { buttons, facts, items, tax, title, total, vat } = content;
     const { richCardWrapTitle } = styleOptions;
@@ -96,7 +97,7 @@ const ReceiptCardAttachment = ({ attachment: { content } }) => {
 
       return builder.card;
     }
-  }, [adaptiveCardsPackage, content, styleOptions, taxText, totalText, vatText]);
+  }, [adaptiveCardsPackage, content, direction, styleOptions, taxText, totalText, vatText]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };

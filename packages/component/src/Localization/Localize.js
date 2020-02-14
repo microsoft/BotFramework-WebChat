@@ -2,9 +2,11 @@
 /* eslint complexity: "off" */
 
 import getLocaleString from './getLocaleString';
+import getRTLList from './getRTLList';
 import useLocalize from '../hooks/useLocalize';
 
 import arEG from './ar-EG';
+import arJO from './ar-JO';
 import bgBG from './bg-BG';
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -14,6 +16,7 @@ import enUS from './en-US';
 import esES from './es-ES';
 import fiFI from './fi-FI';
 import frFR from './fr-FR';
+import heIL from './he-IL';
 import huHU from './hu-HU';
 import itIT from './it-IT';
 import jaJP from './ja-JP';
@@ -52,6 +55,8 @@ function normalizeLanguage(language) {
     return 'fi-FI';
   } else if (language.startsWith('fr')) {
     return 'fr-FR';
+  } else if (language.startsWith('he')) {
+    return 'he-IL';
   } else if (language.startsWith('hu')) {
     return 'hu-HU';
   } else if (language.startsWith('it')) {
@@ -93,6 +98,8 @@ function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
     case 'ar-EG':
       return arEG;
+    case 'ar-JO':
+      return arJO;
     case 'bg-BG':
       return bgBG;
     case 'cs-CZ':
@@ -109,6 +116,8 @@ function getStrings(language) {
       return fiFI;
     case 'fr-FR':
       return frFR;
+    case 'he-IL':
+      return heIL;
     case 'hu-HU':
       return huHU;
     case 'it-IT':
@@ -159,4 +168,4 @@ function localize(text, language, ...args) {
 
 export default ({ args, text }) => useLocalize(text, ...(args || []));
 
-export { getLocaleString, localize };
+export { getLocaleString, getRTLList, localize };

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import useDirection from '../hooks/useDirection';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -14,10 +15,6 @@ const ROOT_CSS = css({
   '& > .webchat__bubble__content': {
     // This is for hiding content outside of the bubble, for example, content outside of border radius
     overflow: 'hidden'
-  },
-
-  '& > .webchat__bubble__nub': {
-    position: 'absolute'
   }
 });
 
@@ -85,12 +82,14 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         nubSize: bubbleNubSize,
         side: 'bot'
       };
+  const [direction] = useDirection();
 
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
+        direction === 'rtl' ? 'webchat__bubble--rtl' : '',
         bubbleStyleSet + '',
         { 'from-user': fromUser, webchat__bubble_has_nub: nub },
         className + '' || ''

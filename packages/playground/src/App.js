@@ -21,17 +21,17 @@ css.global('body', {
 });
 
 const ROOT_CSS = css({
+  display: 'flex',
   height: '100%',
+  flexDirection: 'row',
 
   '& > div.button-bar': {
     backdropFilter: 'blur(2px)',
     backgroundColor: 'rgba(255, 255, 255, .8)',
     display: 'flex',
     flexDirection: 'column',
+    minWidth: '278',
     padding: 10,
-    position: 'absolute',
-    right: 0,
-    top: 0,
 
     '& > button': {
       backgroundColor: 'rgba(128, 128, 128, .2)',
@@ -50,7 +50,7 @@ const ROOT_CSS = css({
 
 const WEB_CHAT_CSS = css({
   height: '100%',
-  margin: '0 auto',
+  margin: '0',
   maxWidth: 768
 });
 
@@ -149,6 +149,8 @@ const App = ({ store }) => {
     [domain, directLineToken, webSocket]
   );
 
+  const [dir, setDirUI] = useState(() => window.sessionStorage.getItem('PLAYGROUND_DIRECTION') || 'auto');
+
   const [disabled, setDisabledUI] = useState(false);
 
   const [faulty, setFaultyDirectLine] = useState(false);
@@ -209,6 +211,14 @@ const App = ({ store }) => {
       setStyleBubbleBorder(!!value && (value === 'true' || (value === 'deprecated' && 'deprecated')));
     },
     [setStyleBubbleBorder]
+  );
+
+  const handleDirChange = useCallback(
+    ({ target: { value } }) => {
+      setDirUI(value);
+      window.sessionStorage.setItem('PLAYGROUND_DIRECTION', value);
+    },
+    [setDirUI]
   );
 
   const handleDisconnectClick = useCallback(() => {
@@ -402,6 +412,7 @@ const App = ({ store }) => {
         attachmentMiddleware={attachmentMiddleware}
         className={WEB_CHAT_CSS + ''}
         groupTimestamp={groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp}
+        dir={dir}
         directLine={directLine}
         disabled={disabled}
         locale={language}
@@ -444,11 +455,12 @@ const App = ({ store }) => {
             Language
             <select onChange={handleLanguageChange} value={language}>
               <option value="">Default ({window.navigator.language})</option>
-              <option value="ar-EG">Arabic</option>
+              <option value="ar-EG">Arabic (Egypt)</option>
+              <option value="ar-JO">Arabic (Jordan)</option>
               <option value="bg-BG">Bulgarian</option>
               <option value="zh-HK">Chinese (Hong Kong)</option>
               <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
-              <option value="zh-HANS">Chinese (Simplifies Chinese)</option>
+              <option value="zh-HANS">Chinese (Simplified Chinese)</option>
               <option value="zh-TW">Chinese (Taiwan)</option>
               <option value="zh-HANT">Chinese (Traditional Chinese)</option>
               <option value="cs-CZ">Czech (Czech Republic)</option>
@@ -459,6 +471,7 @@ const App = ({ store }) => {
               <option value="el-GR">Greek (Greece)</option>
               <option value="fi-FI">Finnish (Finland)</option>
               <option value="fr-FR">French (France)</option>
+              <option value="he-IL">Hebrew (Israel)</option>
               <option value="hu-HU">Hungarian (Hungary)</option>
               <option value="it-IT">Italian (Italy)</option>
               <option value="ja-JP">Japanese</option>
@@ -472,6 +485,16 @@ const App = ({ store }) => {
               <option value="es-ES">Spanish (Spain)</option>
               <option value="sv-SE">Swedish (Sweden)</option>
               <option value="tr-TR">Turkish (Turkey)</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Direction
+            <select onChange={handleDirChange} value={dir}>
+              <option value="auto">Default (auto)</option>
+              <option value="ltr">Left to Right</option>
+              <option value="rtl">Right to Left</option>
             </select>
           </label>
         </div>

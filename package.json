@@ -27,6 +27,9 @@
       "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
       "prettier --write samples/**/*.{js,html}",
       "git add"
+    ],
+    "*.{md}": [
+      "prettier --write **/**/*.md --tab-width 3 --single-quote true"
     ]
   },
   "scripts": {
@@ -37,9 +40,7 @@
     "posteslint": "npm run prettier-readmes",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
     "start": "concurrently --kill-others --raw \"serve\" \"lerna run --ignore playground --parallel --stream start\"",
-    "tableflip": "npm run tableflip:start && npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 2 && npm run tableflip:end",
-    "tableflip:end": "echo ┬──┬ ノ( ゜-゜ノ) Tableflip complete. Now run npm start",
-    "tableflip:start": "echo (╯ರ ~ ರ）╯︵ ┻━┻ Begin tableflip.",
+    "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
     "test": "jest --watch",
     "test:ci": "npm run test -- --ci --coverage true --no-watch",
     "watch": "echo NPM script \"watch\" has been replaced with \"start\"."

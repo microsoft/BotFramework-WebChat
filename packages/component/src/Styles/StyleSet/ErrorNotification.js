@@ -20,7 +20,13 @@ export default function createErrorNotificationStyle({
 
     '& > svg': {
       fill: failedConnectivity,
-      paddingRight: connectivityIconPadding
+
+      '&:not(.webchat__error--rtl)': {
+        paddingRight: connectivityIconPadding
+      },
+      '.webchat__error--rtl': {
+        paddingLeft: connectivityIconPadding
+      }
     }
   };
 }

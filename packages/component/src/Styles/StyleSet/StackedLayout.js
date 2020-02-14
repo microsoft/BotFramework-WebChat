@@ -17,24 +17,47 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
     '&:not(.webchat__stacked_extra_right_indent)': {
       marginRight: paddingRegular
     },
+    '&:not(.webchat__stacked--rtl)': {
+      '&:not(.from-user)': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginRight: paddingRegular
+        },
 
-    '&:not(.from-user)': {
-      '&.webchat__stacked_indented_content > .avatar': {
-        marginRight: paddingRegular
+        '& > .content > .webchat__stacked_item_indented': {
+          marginLeft: paddingRegular
+        }
       },
 
-      '& > .content > .webchat__stacked_item_indented': {
-        marginLeft: paddingRegular
+      '&.from-user': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginLeft: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginRight: paddingRegular
+        }
       }
     },
 
-    '&.from-user': {
-      '&.webchat__stacked_indented_content > .avatar': {
-        marginLeft: paddingRegular
+    '&.webchat__stacked--rtl': {
+      '&:not(.from-user)': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginLeft: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginRight: paddingRegular
+        }
       },
 
-      '& > .content > .webchat__stacked_item_indented': {
-        marginRight: paddingRegular
+      '&.from-user': {
+        '&.webchat__stacked_indented_content > .avatar': {
+          marginRight: paddingRegular
+        },
+
+        '& > .content > .webchat__stacked_item_indented': {
+          marginLeft: paddingRegular
+        }
       }
     },
 

@@ -7,13 +7,14 @@ import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const { useStyleOptions } = hooks;
+const { useDirection, useStyleOptions } = hooks;
 
 const HeroCardAttachment = ({ attachment: { content } = {} }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
+  const [direction] = useDirection();
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions);
+    const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
     if (content) {
       (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
@@ -22,7 +23,7 @@ const HeroCardAttachment = ({ attachment: { content } = {} }) => {
 
       return builder.card;
     }
-  }, [adaptiveCardsPackage, content, styleOptions]);
+  }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };
