@@ -111,11 +111,11 @@ interface NotificationRendererArgs {
       element: (ReactElement | false)
 ```
 
--  If the middleware is interested to render the notification, it should return a `ReactElement`
--  If the middleware want to hide the notification, it should return `false`
+-  If the middleware should render the notification, it should return a `ReactElement`
+-  If the middleware should hide the notification, it should return `false`
 -  If the middleware is not interested about the notification, it should call `next(notificationRenderArg)` to passthrough the notification
 
-Please note that arguments passed to the middleware may change from time to time. Developers should passthrough all arguments to the next middleware. The recommended code pattern is:
+Please note that arguments passed to the middleware may change from time to time. Developers should pass all arguments to the next middleware. The recommended code pattern is:
 
 ```js
 const middleware = () => next => (...args) => {
