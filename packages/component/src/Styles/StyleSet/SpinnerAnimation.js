@@ -12,7 +12,7 @@ export default function createSpinnerAnimationStyle({
   // since defaultStyleOptions has a predefined value for spinnerAnimationPadding by default, the console.warn will appear if both it and spinnerAnimationPaddingRight are set
   if (spinnerAnimationPadding && spinnerAnimationPaddingRight) {
     console.warn(
-      'botframework-webchat: "spinnerAnimationPaddingRight" is being deprecated and will be removed on or after 2021-2-1. Please use "spinnerAnimationPadding" instead.'
+      'botframework-webchat: "spinnerAnimationPaddingRight" is being deprecated and will be removed on or after 2021-02-01. Please use "spinnerAnimationPadding" instead.'
     );
   }
   return {
