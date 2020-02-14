@@ -6,7 +6,7 @@ import getLocaleString from '../Localization/getLocaleString';
 import useGlobalize from './internal/useGlobalize';
 import useLocalizer from './useLocalizer';
 
-export default function useLocalizerForRelativeTime() {
+export default function useRelativeTimeFormatter() {
   const localize = useLocalizer();
   const globalize = useGlobalize();
 

@@ -12,11 +12,11 @@ test('should return bytes for "ja-JP"', async () => {
     }
   });
 
-  const actual = await pageObjects.runHook('useLocalizerForBytes', [], localizeBytes => [
-    localizeBytes(10),
-    localizeBytes(1024),
-    localizeBytes(1048576),
-    localizeBytes(1073741824)
+  const actual = await pageObjects.runHook('useByteFormatter', [], formatByte => [
+    formatByte(10),
+    formatByte(1024),
+    formatByte(1048576),
+    formatByte(1073741824)
   ]);
 
   expect(actual).toMatchInlineSnapshot(`

@@ -14,9 +14,9 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
-import useLocalizerForDate from '../hooks/useLocalizerForDate';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -87,8 +87,8 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
+  const formatDate = useDateFormatter();
   const localize = useLocalizer();
-  const localizeDate = useLocalizerForDate();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {
@@ -111,7 +111,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
     plainText,
-    localizeDate(timestamp)
+    formatDate(timestamp)
   ).trim();
 
   return (

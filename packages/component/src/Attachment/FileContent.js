@@ -5,9 +5,9 @@ import React from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useByteFormatter from '../hooks/useByteFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
-import useLocalizerForBytes from '../hooks/useLocalizerForBytes';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -27,9 +27,9 @@ const ROOT_CSS = css({
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
-  const localizeBytes = useLocalizerForBytes();
+  const formatByte = useByteFormatter();
 
-  const localizedSize = typeof size === 'number' && localizeBytes(size);
+  const localizedSize = typeof size === 'number' && formatByte(size);
 
   return (
     <React.Fragment>
@@ -64,7 +64,7 @@ FileContentBadge.propTypes = {
 const FileContent = ({ className, href, fileName, size }) => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
-  const localizeBytes = useLocalizerForBytes();
+  const localizeBytes = useByteFormatter();
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
 

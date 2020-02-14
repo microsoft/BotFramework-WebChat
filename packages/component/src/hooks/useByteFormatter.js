@@ -15,7 +15,7 @@ const SHORT_FORM = {
   form: 'short'
 };
 
-export default function useLocalizerForBytes() {
+export default function useByteFormatter() {
   const globalize = useGlobalize();
 
   return useMemo(() => {

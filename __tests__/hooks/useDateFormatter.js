@@ -12,8 +12,8 @@ test('should return relative date for "yue"', async () => {
     }
   });
 
-  const actual = await pageObjects.runHook('useLocalizerForDate', [], localizeDate =>
-    localizeDate('2000-12-23T12:34:56.789Z')
+  const actual = await pageObjects.runHook('useDateFormatter', [], formatDate =>
+    formatDate('2000-12-23T12:34:56.789Z')
   );
 
   expect(actual).toMatchInlineSnapshot(`"December 23, 12:34"`);

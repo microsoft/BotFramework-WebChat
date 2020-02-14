@@ -145,11 +145,11 @@ Developers should have a way to modify existing strings. One of the popular ask 
 
 ### New hooks to simplify internationalization
 
-`useLocalizerForXXX` hooks are added to simplify internationalization using Unicode CLDR data
+`useXXXFormatter` hooks are added to simplify internationalization using Unicode CLDR data
 
--  `useLocalizerForBytes` will format number of file size in bytes, into localized strings
--  `useLocalizerForDate` will format date in absolute format, similar to `useLocalizeDate` but with updated function signature. This hook do not use Unicode CLDR data
--  `useLocalizerForRelativeTime` will format time in relative format, using Unicode CLDR data
+-  `useByteFormatter` will format number of file size in bytes, into localized strings
+-  `useDateFOrmatter` will format date in absolute format, similar to `useLocalizeDate` but with updated function signature. This hook do not use Unicode CLDR data
+-  `useRelativeTimeFormatter` will format time in relative format, using Unicode CLDR data
 -  `useLanguage` now accept options to return oral language instead of written language
 
 ## Appendix

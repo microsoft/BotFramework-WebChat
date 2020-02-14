@@ -52,7 +52,9 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 -  [`useAvatarForBot`](#useavatarforbot)
 -  [`useAvatarForUser`](#useavatarforuser)
+-  [`useByteFormatter`](#useByteFormatter)
 -  [`useConnectivityStatus`](#useconnectivitystatus)
+-  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
@@ -67,14 +69,12 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useLastTypingAt`](#uselasttypingat)
 -  [`useLocalize`](#uselocalize)
 -  [`useLocalizer`](#useLocalizer)
--  [`useLocalizerForBytes`](#useLocalizerForBytes)
--  [`useLocalizerForDate`](#useLocalizerForDate)
--  [`useLocalizerForRelativeTime`](#useLocalizerForRelativeTime)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
+-  [`useRelativeTimeFormatter`](#useRelativeTimeFormatter)
 -  [`useRenderActivity`](#userenderactivity)
 -  [`useRenderActivityStatus`](#userenderactivitystatus)
 -  [`useRenderAttachment`](#userenderattachment)
@@ -156,6 +156,16 @@ This function will return the image and initials of the user. Both image and ini
 
 To set the avatar for the user, change the props passed to Web Chat via style options.
 
+## `useByteFormatter`
+
+> New in 4.9.0.
+
+```js
+useByteFormatter() => (bytes: number) => string
+```
+
+This function will return a function, when called with a file size, it will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+
 ## `useConnectivityStatus`
 
 ```js
@@ -172,6 +182,16 @@ This function will return the Direct Line connectivity status:
 -  `reconnecting`: Reconnecting after interruption
 -  `sagaerror`: Errors on JavaScript renderer; please see the browser's console
 -  `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
+
+## `useDateFormatter`
+
+> New in 4.9.0.
+
+```js
+useDateFormatter() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
 
 ## `useDebouncedNotification`
 
@@ -333,35 +353,13 @@ To modify this value, change the value in the style options prop passed to Web C
 
 ## `useLocalizer`
 
+> New in 4.9.0.
+
 ```js
 useLocalizer() => (identifier: string, ...arguments: string[]) => string
 ```
 
 This function will return a function, when called, will return a localized string represented by the identifier and its arguments. It honors the language settings from the `useLanguage` hook.
-
-## `useLocalizerForBytes`
-
-```js
-useLocalizerForBytes() => (bytes: number) => string
-```
-
-This function will return a function, when called with a file size, it will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
-
-## `useLocalizerForDate`
-
-```js
-useLocalizerForDate() => (dateOrString: (Date | number | string)) => string
-```
-
-This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
-
-## `useLocalizerForRelativeTime`
-
-```js
-useLocalizerForRelativeTime() => (dateOrString: (Date | number | string)) => string
-```
-
-This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useMarkActivityAsSpoken`
 
@@ -424,6 +422,16 @@ useReferenceGrammarId(): [string]
 When called, this function will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
 
 This value is not controllable and is passed to Web Chat from the Direct Line channel.
+
+## `useRelativeTimeFormatter`
+
+> New in 4.9.0.
+
+```js
+useRelativeTimeFormatter() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useRenderActivity`
 

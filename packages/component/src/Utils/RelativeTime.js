@@ -2,24 +2,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
+import useDateFormatter from '../hooks/useDateFormatter';
 import useForceRenderAtInterval from '../hooks/internal/useForceRenderAtInterval';
 import useLocalizer from '../hooks/useLocalizer';
-import useLocalizerForDate from '../hooks/useLocalizerForDate';
-import useLocalizerForRelativeTime from '../hooks/useLocalizerForRelativeTime';
+import useRelativeTimeFormatter from '../hooks/useRelativeTimeFormatter';
 
 const TIMER_INTERVAL = 60000;
 
 const RelativeTime = ({ value }) => {
+  const formatDate = useDateFormatter();
+  const formatRelativeTime = useRelativeTimeFormatter();
   const localize = useLocalizer();
-  const localizeDate = useLocalizerForDate();
-  const localizeRelativeTime = useLocalizerForRelativeTime();
 
   useForceRenderAtInterval(value, TIMER_INTERVAL);
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', localizeDate(value))} />
-      <span aria-hidden={true}>{localizeRelativeTime(value)}</span>
+      <ScreenReaderText text={localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(value))} />
+      <span aria-hidden={true}>{formatRelativeTime(value)}</span>
     </React.Fragment>
   );
 };

@@ -1,7 +1,9 @@
 import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
+import useByteFormatter from './useByteFormatter';
 import useConnectivityStatus from './useConnectivityStatus';
+import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
@@ -17,13 +19,11 @@ import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize';
 import useLocalizeDate from './useLocalizeDate';
 import useLocalizer from './useLocalizer';
-import useLocalizerForBytes from './useLocalizerForBytes';
-import useLocalizerForDate from './useLocalizerForDate';
-import useLocalizerForRelativeTime from './useLocalizerForRelativeTime';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
+import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
@@ -60,7 +60,9 @@ export {
   useActivities,
   useAvatarForBot,
   useAvatarForUser,
+  useByteFormatter,
   useConnectivityStatus,
+  useDateFormatter,
   useDebouncedNotifications,
   useDictateInterims,
   useDictateState,
@@ -76,15 +78,13 @@ export {
   useLocalize,
   useLocalizeDate,
   useLocalizer,
-  useLocalizerForBytes,
-  useLocalizerForDate,
-  useLocalizerForRelativeTime,
   useMarkActivityAsSpoken,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
+  useRelativeTimeFormatter,
   useRenderActivity,
   useRenderActivityStatus,
   useRenderAttachment,

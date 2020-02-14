@@ -3,14 +3,14 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 
+import useDateFormatter from '../hooks/useDateFormatter';
 import useLocalizer from '../hooks/useLocalizer';
-import useLocalizerForDate from '../hooks/useLocalizerForDate';
 
 const AbsoluteTime = ({ value }) => {
   const localize = useLocalizer();
-  const localizeDate = useLocalizerForDate();
+  const formatDate = useDateFormatter();
 
-  const absoluteTime = localizeDate(value);
+  const absoluteTime = formatDate(value);
 
   return (
     <React.Fragment>

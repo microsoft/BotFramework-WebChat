@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Most strings are being retranslated by Microsoft localization team, except English (US), Egyptian Arabic, and Chinese Yue
       -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md#overriding-localization-strings) to override
       -  String IDs are being refreshed and use a standard format
-   -  `useLocalize` and `useLocalizeDate` is being deprecated. Please use `useLocalizer` and `useLocalizerForDate` instead
+   -  `useLocalize` and `useLocalizeDate` is being deprecated. Please use `useLocalizer` and `useDateFormatter` instead
 
 ### Added
 

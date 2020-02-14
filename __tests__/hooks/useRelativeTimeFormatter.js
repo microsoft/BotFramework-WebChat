@@ -12,16 +12,16 @@ test('should return relative time for "yue"', async () => {
     }
   });
 
-  const actual = await pageObjects.runHook('useLocalizerForRelativeTime', [], localizeRelativeTime => [
-    localizeRelativeTime(Date.now()),
-    localizeRelativeTime(new Date()),
-    localizeRelativeTime(new Date().toISOString()),
-    localizeRelativeTime(Date.now() - 60000),
-    localizeRelativeTime(Date.now() - 120000),
-    localizeRelativeTime(Date.now() - 3600000),
-    localizeRelativeTime(Date.now() - 7200000),
-    localizeRelativeTime(Date.now() - 86400000),
-    localizeRelativeTime(Date.now() - 172800000)
+  const actual = await pageObjects.runHook('useRelativeTimeFormatter', [], formatRelativeTime => [
+    formatRelativeTime(Date.now()),
+    formatRelativeTime(new Date()),
+    formatRelativeTime(new Date().toISOString()),
+    formatRelativeTime(Date.now() - 60000),
+    formatRelativeTime(Date.now() - 120000),
+    formatRelativeTime(Date.now() - 3600000),
+    formatRelativeTime(Date.now() - 7200000),
+    formatRelativeTime(Date.now() - 86400000),
+    formatRelativeTime(Date.now() - 172800000)
   ]);
 
   expect(actual).toMatchInlineSnapshot(`
