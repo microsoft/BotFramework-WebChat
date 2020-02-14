@@ -75,7 +75,7 @@ export default function createBubbleStyle({
 
         '& > .webchat__bubble__nub': {
           right: bubbleBorderWidth - bubbleNubSize + paddingRegular,
-          transform: 'scale(-1,1)'
+          transform: 'scale(-1, 1)'
         }
       },
 

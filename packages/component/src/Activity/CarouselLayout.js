@@ -20,9 +20,9 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
 
   const [direction] = useDirection();
   const leftLabel = useLocalize('Left');
-  const leftSideFlipper = direction === 'ltr' ? '<' : '>';
+  const leftSideFlipper = direction === 'rtl' ? '>' : '<';
   const rightLabel = useLocalize('Right');
-  const rightSideFlipper = direction === 'ltr' ? '>' : '<';
+  const rightSideFlipper = direction === 'rtl' ? '<' : '>';
 
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
