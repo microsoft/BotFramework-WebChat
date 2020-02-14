@@ -54,9 +54,9 @@ The completed code will be:
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
   const { token } = await res.json();
 
-+ const store = window.WebChat.createStore({}, () => next => action => {
++ const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
 +   if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-+     store.dispatch({
++     dispatch({
 +       type: 'WEB_CHAT/SET_NOTIFICATION',
 +       payload: {
 +         data: { accepted: false },
@@ -259,9 +259,9 @@ Here is the finished `index.html`:
 +   hooks: { useDismissNotification, useSendPostBack, useSetNotification }
 + } = window.WebChat;
 +
-+ const store = window.WebChat.createStore({}, () => next => action => {
++ const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
 +   if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-+     store.dispatch({
++     dispatch({
 +       type: 'WEB_CHAT/SET_NOTIFICATION',
 +       payload: {
 +         data: { accepted: false },

@@ -191,6 +191,12 @@ const Composer = ({
       patchedStyleOptions.sendTimeout = sendTimeout;
     }
 
+    if (styleOptions.slowConnectionAfter < 0) {
+      console.warn('Web Chat: "slowConnectionAfter" cannot be negative, will set to 0.');
+
+      patchedStyleOptions.slowConnectionAfter = 0;
+    }
+
     return patchedStyleOptions;
   }, [groupTimestamp, sendTimeout, styleOptions]);
 
