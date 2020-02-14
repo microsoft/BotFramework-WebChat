@@ -27,6 +27,8 @@ import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
+import createToasterStyle from './StyleSet/Toaster';
+import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
@@ -199,6 +201,8 @@ export default function createStyleSet(options) {
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
+    toast: createToastStyle(options),
+    toaster: createToasterStyle(options),
     typingAnimation: createTypingAnimationStyle(options),
     typingIndicator: createTypingIndicatorStyle(options),
     uploadButton: createUploadButtonStyle(options),

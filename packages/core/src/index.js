@@ -4,6 +4,7 @@ import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore from './createStore';
 import disconnect from './actions/disconnect';
+import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import markActivity from './actions/markActivity';
 import postActivity from './actions/postActivity';
@@ -15,6 +16,7 @@ import sendPostBack from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
+import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
@@ -37,6 +39,7 @@ export {
   Constants,
   createStore,
   disconnect,
+  dismissNotification,
   emitTypingIndicator,
   markActivity,
   postActivity,
@@ -48,6 +51,7 @@ export {
   setDictateInterims,
   setDictateState,
   setLanguage,
+  setNotification,
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,

@@ -13,6 +13,8 @@ import 'core-js/features/dom-collections';
 import 'core-js/features/math/sign';
 import 'core-js/features/number/is-finite';
 import 'core-js/features/object/assign';
+import 'core-js/features/object/entries';
+import 'core-js/features/object/from-entries';
 import 'core-js/features/object/is';
 import 'core-js/features/object/values';
 import 'core-js/features/promise';

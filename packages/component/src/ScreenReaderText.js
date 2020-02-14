@@ -10,12 +10,19 @@ const ROOT_CSS = css({
   height: 1,
   overflow: 'hidden',
   position: 'absolute',
+  // We need to set top: 0, otherwise, it will repro:
+  // - Run NVDA
+  // - Make the transcript long enough to show the scrollbar
+  // - Press SHIFT-TAB, focus on upload button
+  // - Press up arrow multiple times
+  top: 0,
   whiteSpace: 'nowrap',
   width: 1
 });
 
 const ScreenReaderText = ({ text }) => {
   const ariaLabel = browser.chrome ? ' ' : text;
+
   return (
     // Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers. This workaround was made to accommodate Chrome
     <span aria-label={ariaLabel} className={classNames(ROOT_CSS + '')}>

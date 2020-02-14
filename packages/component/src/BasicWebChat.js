@@ -6,13 +6,16 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
 
+import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
+import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
@@ -21,12 +24,20 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-const TRANSCRIPT_CSS = css({
-  flex: 1
+const CONNECTIVITY_STATUS_CSS = css({
+  flexShrink: 0
 });
 
 const SEND_BOX_CSS = css({
   flexShrink: 0
+});
+
+const TOASTER_CSS = css({
+  flexShrink: 0
+});
+
+const TRANSCRIPT_CSS = css({
+  flex: 1
 });
 
 // TODO: [P2] We should move these into <Composer>
@@ -88,11 +99,35 @@ function createAttachmentRenderer(additionalMiddleware) {
   };
 }
 
+// TODO: [P2] #2859 We should move these into <Composer>
+function createToastRenderer(additionalMiddleware) {
+  const toastMiddleware = concatMiddleware(additionalMiddleware, createCoreToastMiddleware())({});
+
+  return (...args) => {
+    try {
+      return toastMiddleware(({ notification }) => (
+        <ErrorBox message="No renderer for this notification">
+          <pre>{JSON.stringify(notification, null, 2)}</pre>
+        </ErrorBox>
+      ))(...args);
+    } catch ({ message, stack }) {
+      console.error({ message, stack });
+
+      return (
+        <ErrorBox message="Failed to render notification">
+          <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
+        </ErrorBox>
+      );
+    }
+  };
+}
+
 const BasicWebChat = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentMiddleware,
   className,
+  toastMiddleware,
   ...otherProps
 }) => {
   const sendBoxRef = useRef();
@@ -101,6 +136,7 @@ const BasicWebChat = ({
     activityStatusMiddleware
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
+  const toastRenderer = useMemo(() => createToastRenderer(toastMiddleware), [toastMiddleware]);
 
   return (
     <Composer
@@ -108,6 +144,7 @@ const BasicWebChat = ({
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
       sendBoxRef={sendBoxRef}
+      toastRenderer={toastRenderer}
       {...otherProps}
     >
       {({ styleSet }) => (
@@ -116,7 +153,9 @@ const BasicWebChat = ({
           role="complementary"
           sendFocusRef={sendBoxRef}
         >
+          {!styleSet.options.hideToaster && <BasicToaster className={TOASTER_CSS + ''} />}
           <BasicTranscript className={TRANSCRIPT_CSS + ''} />
+          <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
           {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
         </TypeFocusSinkBox>
       )}

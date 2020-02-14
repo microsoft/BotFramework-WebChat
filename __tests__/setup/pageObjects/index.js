@@ -2,6 +2,7 @@ import clickMicrophoneButton from './clickMicrophoneButton';
 import clickScrollToBottomButton from './clickScrollToBottomButton';
 import clickSendButton from './clickSendButton';
 import clickSuggestedActionButton from './clickSuggestedActionButton';
+import clickToasterHeader from './clickToasterHeader';
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import errorSpeechSynthesize from './errorSpeechSynthesize';
@@ -41,6 +42,7 @@ export default function pageObjects(driver) {
       clickScrollToBottomButton,
       clickSendButton,
       clickSuggestedActionButton,
+      clickToasterHeader,
       dispatchAction,
       endSpeechSynthesize,
       errorSpeechSynthesize,

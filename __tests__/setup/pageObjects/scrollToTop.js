@@ -1,7 +1,7 @@
-import { timeouts } from '../../constants.json';
+import getTranscriptScrollable from '../elements/getTranscriptScrollable';
 
 export default async function scrollToTop(driver) {
-  await driver.executeScript(() => {
-    document.querySelector('[role="log"] > *').scrollTop = 0;
-  }, timeouts.ui);
+  await driver.executeScript(scrollable => {
+    scrollable.scrollTop = 0;
+  }, await getTranscriptScrollable(driver));
 }

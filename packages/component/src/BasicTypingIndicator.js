@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 
 import TypingAnimation from './Assets/TypingAnimation';
-import useDirection from '../hooks/useDirection';
-import useLastTypingAt from '../hooks/useLastTypingAt';
-import useLocalize from '../hooks/useLocalize';
-import useStyleOptions from '../hooks/useStyleOptions';
-import useStyleSet from '../hooks/useStyleSet';
+import useDirection from './hooks/useDirection';
+import useLastTypingAt from './hooks/useLastTypingAt';
+import useLocalize from './hooks/useLocalize';
+import useStyleOptions from './hooks/useStyleOptions';
+import useStyleSet from './hooks/useStyleSet';
 
 function useTypingIndicatorVisible() {
   const [lastTypingAt] = useLastTypingAt();

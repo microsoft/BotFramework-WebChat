@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ScreenReaderText from '../../ScreenReaderText';
-import useDirection from '../../hooks/useDirection';
-import useStyleSet from '../../hooks/useStyleSet';
+import ScreenReaderText from '../ScreenReaderText';
+import useDirection from '../hooks/useDirection';
+import useStyleSet from '../hooks/useStyleSet';
 
 const RTL_SCALE_CSS = css({ transform: 'scale(-1, 1)' });
 

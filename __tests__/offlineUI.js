@@ -1,7 +1,8 @@
-import { By, Condition, Key } from 'selenium-webdriver';
+import { Condition } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import actionDispatched from './setup/conditions/actionDispatched';
+import connectivityStatusShown from './setup/conditions/connectivityStatusShown';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import staticSpinner from './setup/assets/staticSpinner';
 import uiConnected from './setup/conditions/uiConnected';
@@ -24,7 +25,8 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 
 describe('offline UI', () => {
   test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {
-    const { driver } = await setupWebDriver({
+    const initialProps = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // This variable must be declared within scope
@@ -50,6 +52,7 @@ describe('offline UI', () => {
         };
       },
       pingBotOnLoad: false,
+      props: initialProps,
       setup: () =>
         Promise.all([
           window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
@@ -60,19 +63,31 @@ describe('offline UI', () => {
     });
 
     await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Taking longer than usual to connect"
-      window.WebChatTest.clock.tick(14600); // Go to t=15s
-    });
-
-    await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
+      window.WebChatTest.clock.tick(15000);
     });
 
     await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
+    await driver.wait(connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
 
-    const base64PNG = await driver.takeScreenshot();
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    await pageObjects.updateProps({
+      ...initialProps,
+      styleOptions: {
+        ...initialProps.styleOptions,
+        slowConnectionAfter: 20000
+      }
+    });
+
+    await driver.wait(connectivityStatusShown(/connecting/iu), timeouts.ui);
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(5000);
+    });
+
+    await driver.wait(connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should show "unable to connect" UI when credentials are incorrect', async () => {
@@ -104,7 +119,7 @@ describe('offline UI', () => {
   });
 
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -121,19 +136,20 @@ describe('offline UI', () => {
         };
       },
       setup: () =>
-        new Promise(resolve => {
-          const scriptElement = document.createElement('script');
-
-          scriptElement.onload = resolve;
-          scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-          document.head.appendChild(scriptElement);
+        Promise.all([
+          window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+          window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+        ]).then(() => {
+          window.WebChatTest.clock = lolex.install();
         })
     });
-    await driver.wait(uiConnected(), 10000);
-    const input = await driver.findElement(By.css('input[type="text"]'));
 
-    await input.sendKeys('42', Key.RETURN);
+    await driver.executeScript(() => window.WebChatTest.clock.tick(400));
+    await driver.wait(uiConnected(), timeouts.directLine);
+
+    await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
+
+    await driver.executeScript(() => window.WebChatTest.clock.tick(20000));
     await driver.wait(allOutgoingMessagesFailed, timeouts.postActivity);
 
     const base64PNG = await driver.takeScreenshot();
@@ -142,7 +158,7 @@ describe('offline UI', () => {
   });
 
   test('should display "Send failed. Retry" when activity is sent but not acknowledged', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const bannedClientActivityIDs = [];
@@ -175,21 +191,22 @@ describe('offline UI', () => {
         };
       },
       setup: () =>
-        new Promise(resolve => {
-          const scriptElement = document.createElement('script');
-
-          scriptElement.onload = resolve;
-          scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-          document.head.appendChild(scriptElement);
+        Promise.all([
+          window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+          window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+        ]).then(() => {
+          window.WebChatTest.clock = lolex.install();
         })
     });
 
+    await driver.executeScript(() => window.WebChatTest.clock.tick(400));
     await driver.wait(uiConnected(), timeouts.directLine);
-    const input = await driver.findElement(By.css('input[type="text"]'));
 
-    await input.sendKeys('42', Key.RETURN);
+    await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
+
+    await driver.executeScript(() => window.WebChatTest.clock.tick(20000));
     await driver.wait(allOutgoingMessagesFailed, timeouts.postActivity);
+    await driver.wait(minNumActivitiesShown(2), timeouts.postActivity);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -250,7 +267,6 @@ describe('offline UI', () => {
         // This part of code is running in the JavaScript VM in Chromium.
         // These Direct Line Connection Status variables must be declared within scope
         const CONNECTING = 1;
-
         const ONLINE = 2;
 
         const reconnectingDirectLine = window.WebChat.createDirectLine(options);
@@ -385,7 +401,7 @@ describe('offline UI', () => {
     await driver.wait(actionDispatched('WEB_CHAT/SAGA_ERROR'), timeouts.directLine);
 
     // Wait until error status come up
-    await driver.wait(async () => /render error/iu.test(await pageObjects.getNotificationText()), timeouts.ui);
+    await driver.wait(connectivityStatusShown(/render error/iu), timeouts.ui);
 
     const base64PNG = await driver.takeScreenshot();
 

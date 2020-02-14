@@ -2,10 +2,12 @@ import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useConnectivityStatus from './useConnectivityStatus';
+import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
 import useDirection from './useDirection';
 import useDisabled from './useDisabled';
+import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocusSendBox from './useFocusSendBox';
 import useGrammars from './useGrammars';
@@ -31,6 +33,7 @@ import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useSendTypingIndicator from './useSendTypingIndicator';
+import useSetNotification from './useSetNotification';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
 import useStopDictate from './useStopDictate';
@@ -47,17 +50,19 @@ import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
-import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
+import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 
 export {
   useActivities,
   useAvatarForBot,
   useAvatarForUser,
   useConnectivityStatus,
+  useDebouncedNotifications,
   useDictateInterims,
   useDictateState,
   useDirection,
   useDisabled,
+  useDismissNotification,
   useEmitTypingIndicator,
   useFocusSendBox,
   useGrammars,
@@ -86,6 +91,7 @@ export {
   useSendPostBack,
   useSendTimeoutForActivity,
   useSendTypingIndicator,
+  useSetNotification,
   useShouldSpeakIncomingActivity,
   useStartDictate,
   useStopDictate,

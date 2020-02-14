@@ -53,10 +53,12 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useAvatarForBot`](#useavatarforbot)
 -  [`useAvatarForUser`](#useavatarforuser)
 -  [`useConnectivityStatus`](#useconnectivitystatus)
+-  [`useDebouncedNotification`](#usedebouncednotification)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
 -  [`useDirection`](#useDirection)
 -  [`useDisabled`](#usedisabled)
+-  [`useDismissNotification`](#usedismissnotification)
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocusSendBox`](#usefocussendbox)
 -  [`useGrammars`](#usegrammars)
@@ -65,6 +67,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useLastTypingAt`](#uselasttypingat)
 -  [`useLocalize`](#uselocalize)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
+-  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
@@ -81,6 +84,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendPostBack`](#usesendpostback)
 -  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
+-  [`useSetNotification`](#usesetnotification)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 -  [`useStartDictate`](#usestartdictate)
 -  [`useStopDictate`](#usestopdictate)
@@ -165,6 +169,25 @@ This function will return the Direct Line connectivity status:
 -  `sagaerror`: Errors on JavaScript renderer; please see the browser's console
 -  `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
 
+## `useDebouncedNotification`
+
+```js
+interface Notification {
+  alt?: string;
+  id: string;
+  level: 'error' | 'info' | 'success' | 'warn';
+  message: string;
+}
+
+useDebouncedNotifications(): [Notification[]]
+```
+
+When called, this hook will return a debounced array of notifications.
+
+Due to debouncing, notifications retrieved using this hook may not be current. At the time of convergence, this hook will trigger another render.
+
+For the debounce behavior, please read our [article regarding notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md).
+
 ## `useDictateInterims`
 
 ```js
@@ -217,6 +240,14 @@ useDisabled(): [boolean]
 This function will return whether the UI should be disabled or not. All interactable UI components should honor this value.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useDismissNotification`
+
+```js
+useDismissNotification(): (id: string) => void
+```
+
+This hook will return a function which can be called to dismiss a notification given its ID.
 
 ## `useEmitTypingIndicator`
 
@@ -295,6 +326,21 @@ useMarkActivityAsSpoken(): (activity: Activity) => void
 ```
 
 When called, this function will mark the activity as spoken and remove it from the text-to-speech queue.
+
+## `useNotifications`
+
+```js
+interface Notification {
+  alt?: string;
+  id: string;
+  level: 'error' | 'info' | 'success' | 'warn';
+  message: string;
+}
+
+useNotifications(): [Notification[]]
+```
+
+When called, this hook will return an array of notifications.
 
 ## `usePerformCardAction`
 
@@ -481,6 +527,25 @@ useSendTypingIndicator(): [boolean]
 This function will return whether the typing indicator will be sent to the bot when the send box value is being modified.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useSetNotification`
+
+```js
+interface Notification {
+  alt?: string;
+  id: string;
+  level: 'error' | 'info' | 'success' | 'warn';
+  message: string;
+}
+
+useSetNotification(): (notification: Notification) => void
+```
+
+This hook will return a function which can be called to add or update a notification. If a notification with same ID is already in the system, it will be updated. Otherwise, a new notification will be added.
+
+The `message` field will be processed through an internal Markdown renderer. If Markdown is provided, it is recommended to provide plain text via the `alt` field for assistive technologies.
+
+The toast UI will [debounce notifications](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md#postponing-changes-via-debounce) that update too frequently.
 
 ## `useShouldSpeakIncomingActivity`
 

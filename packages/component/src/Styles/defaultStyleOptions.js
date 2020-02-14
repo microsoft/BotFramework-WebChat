@@ -138,6 +138,7 @@ const DEFAULT_OPTIONS = {
   failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
   notificationText: '#5E5E5E',
+  slowConnectionAfter: 15000,
 
   typingAnimationBackgroundImage: null,
   typingAnimationDuration: 5000,
@@ -156,7 +157,30 @@ const DEFAULT_OPTIONS = {
   uploadThumbnailWidth: 720,
 
   // deprecated; will be removed on or after 2021-02-01
-  spinnerAnimationPaddingRight: undefined
+  spinnerAnimationPaddingRight: undefined,
+
+  // Toast UI
+
+  // New debounce timeout value only affect new notifications.
+  notificationDebounceTimeout: 400,
+
+  hideToaster: false,
+  toasterHeight: 32,
+  toasterMaxHeight: 32 * 5,
+  toasterSingularMaxHeight: 50,
+  toastFontSize: '87.5%',
+  toastIconWidth: 36,
+  toastSeparatorColor: '#E8EAEC',
+  toastTextPadding: 6,
+
+  toastErrorBackgroundColor: '#FDE7E9',
+  toastErrorColor: '#A80000',
+  toastInfoBackgroundColor: '#CEF1FF',
+  toastInfoColor: '#105E7D',
+  toastSuccessBackgroundColor: '#DFF6DD',
+  toastSuccessColor: '#107C10',
+  toastWarnBackgroundColor: '#FFF4CE',
+  toastWarnColor: '#3B3A39'
 };
 
 export default DEFAULT_OPTIONS;

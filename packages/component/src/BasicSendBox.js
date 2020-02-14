@@ -4,13 +4,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ConnectivityStatus from './SendBox/ConnectivityStatus';
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
-import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
@@ -59,8 +57,6 @@ const BasicSendBox = ({ className }) => {
 
   return (
     <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} dir={direction} role="form">
-      <TypingIndicator />
-      <ConnectivityStatus />
       <SuggestedActions />
       <div className="main">
         {!hideUploadButton && <UploadButton />}

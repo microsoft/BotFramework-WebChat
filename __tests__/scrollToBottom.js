@@ -45,9 +45,7 @@ test('clicking "New messages" button should scroll to end and stick to bottom', 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
-  await driver.executeScript(() => {
-    document.querySelector('[role="log"] > *').scrollTop = 0;
-  });
+  await pageObjects.scrollToTop();
 
   await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
 

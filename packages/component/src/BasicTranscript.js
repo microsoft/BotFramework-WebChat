@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
+import BasicTypingIndicator from './BasicTypingIndicator';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
@@ -133,6 +134,7 @@ const BasicTranscript = ({ className }) => {
             </li>
           ))}
         </ul>
+        <BasicTypingIndicator />
       </ScrollToBottomPanel>
       {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>

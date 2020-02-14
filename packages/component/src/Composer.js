@@ -6,6 +6,7 @@ import {
 
 import { css } from 'glamor';
 import { Provider } from 'react-redux';
+import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
@@ -15,6 +16,7 @@ import {
   connect as createConnectAction,
   createStore,
   disconnect,
+  dismissNotification,
   emitTypingIndicator,
   markActivity,
   postActivity,
@@ -26,6 +28,7 @@ import {
   setDictateInterims,
   setDictateState,
   setLanguage,
+  setNotification,
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
@@ -36,6 +39,7 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
+import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
@@ -54,6 +58,7 @@ import {
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
+  dismissNotification,
   emitTypingIndicator,
   markActivity,
   postActivity,
@@ -64,6 +69,7 @@ const DISPATCHERS = {
   sendPostBack,
   setDictateInterims,
   setDictateState,
+  setNotification,
   setSendBox,
   setSendTimeout,
   startDictate,
@@ -142,6 +148,7 @@ const Composer = ({
   sendTypingIndicator,
   styleOptions,
   styleSet,
+  toastRenderer,
   userID,
   username,
   webSpeechPonyfillFactory
@@ -184,6 +191,12 @@ const Composer = ({
       patchedStyleOptions.sendTimeout = sendTimeout;
     }
 
+    if (styleOptions.slowConnectionAfter < 0) {
+      console.warn('Web Chat: "slowConnectionAfter" cannot be negative, will set to 0.');
+
+      patchedStyleOptions.slowConnectionAfter = 0;
+    }
+
     return patchedStyleOptions;
   }, [groupTimestamp, sendTimeout, styleOptions]);
 
@@ -213,6 +226,20 @@ const Composer = ({
       dispatch(disconnect());
     };
   }, [dispatch, directLine, userID, username]);
+
+  const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
+
+  const internalRenderMarkdownInline = useMemo(
+    () => markdown => {
+      const tree = internalMarkdownIt.parseInline(markdown);
+
+      // We should add rel="noopener noreferrer" and target="_blank"
+      const patchedTree = addTargetBlankToHyperlinksMarkdown(tree);
+
+      return internalMarkdownIt.renderer.render(patchedTree);
+    },
+    [internalMarkdownIt]
+  );
 
   const cardActionContext = useMemo(() => createCardActionContext({ cardActionMiddleware, directLine, dispatch }), [
     cardActionMiddleware,
@@ -275,6 +302,8 @@ const Composer = ({
       directLine,
       disabled,
       grammars: patchedGrammars,
+      internalMarkdownIt,
+      internalRenderMarkdownInline,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
@@ -283,6 +312,7 @@ const Composer = ({
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
+      toastRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -298,6 +328,8 @@ const Composer = ({
       disabled,
       focusSendBoxContext,
       hoistedDispatchers,
+      internalMarkdownIt,
+      internalRenderMarkdownInline,
       patchedGrammars,
       patchedSelectVoice,
       patchedSendTypingIndicator,
@@ -307,6 +339,7 @@ const Composer = ({
       sendBoxRef,
       setDictateAbortable,
       styleOptions,
+      toastRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -373,6 +406,7 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
+  toastRenderer: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -414,6 +448,7 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
+  toastRenderer: PropTypes.func,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

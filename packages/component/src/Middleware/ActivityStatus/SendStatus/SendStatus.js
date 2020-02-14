@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../../../connectToWebChat';
-import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
 import useLocalize from '../../../hooks/useLocalize';
@@ -36,7 +35,6 @@ const SendStatus = ({ activity, sendState }) => {
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
   const localizedSending = useLocalize('Sending');
-  const localizedSendStatus = useLocalize('SendStatus');
 
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
@@ -48,7 +46,6 @@ const SendStatus = ({ activity, sendState }) => {
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
         {sendState === SENDING ? (
           localizedSending
@@ -69,7 +66,7 @@ SendStatus.propTypes = {
       state: PropTypes.string
     })
   }).isRequired,
-  sendState: PropTypes.any.isRequired
+  sendState: PropTypes.string.isRequired
 };
 
 export default SendStatus;
