@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
+import useDirection from '../hooks/useDirection';
 import useForceRender from '../hooks/internal/useForceRender';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -16,6 +17,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const [
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
   ] = useStyleSet();
+  const [direction] = useDirection();
   const [initialRenderAt] = useState(() => Date.now());
   const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
   const initialConnectionText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
@@ -31,7 +33,11 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   return slow ? (
     <React.Fragment>
       <ScreenReaderText text={connectivityStatusLabelText + slowConnectionText} />
-      <div aria-hidden={true} className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}>
+      <div
+        aria-hidden={true}
+        className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
+        dir={direction}
+      >
         <WarningNotificationIcon />
         {slowConnectionText}
       </div>
@@ -44,6 +50,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
+        dir={direction}
       >
         <SpinnerAnimation />
         {reconnect ? interruptedConnectionText : initialConnectionText}

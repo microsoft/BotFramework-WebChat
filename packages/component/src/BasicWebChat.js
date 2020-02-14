@@ -143,8 +143,8 @@ const BasicWebChat = ({
       activityRenderer={activityRenderer}
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
-      toastRenderer={toastRenderer}
       sendBoxRef={sendBoxRef}
+      toastRenderer={toastRenderer}
       {...otherProps}
     >
       {({ styleSet }) => (
