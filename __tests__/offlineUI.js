@@ -63,8 +63,6 @@ describe('offline UI', () => {
     });
 
     await driver.executeScript(() => {
-      // window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Taking longer than usual to connect"
-      // window.WebChatTest.clock.tick(14600); // Go to t=15s
       window.WebChatTest.clock.tick(15000);
     });
 

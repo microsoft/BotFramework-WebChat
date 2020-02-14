@@ -1,10 +1,10 @@
 # Notification system
 
-With Web Chat 4.8, you can start displaying notifications that represents information that are important for your customers. Currently, we render most notifications as toasts on the top of the screen. Connectivity status also become part of the notification system.
+With Web Chat 4.8, you can start displaying notifications that represents information that are important for your customers. Currently, most notifications are rendered as toasts on the top of the screen. Connectivity status also become part of the notification system.
 
 ## Adding and updating notification
 
-To make both add and update operation seamless, we are using an "upsert" strategy. When you add a new notification, you will need to specify `id`. To update an existing notification, you will use the same `id` of the notification you want to update.
+To make both add and update operation seamless, an "upsert" strategy is adopted. When you add a new notification, you will need to specify `id`. To update an existing notification, you will use the same `id` of the notification you want to update.
 
 Markdown is supported for the message. When using Markdown, you are responsible to provide a screen reader version of your message via `alt` field. Hyperlinks will have `rel="noopener noreferrer"` and `target="_blank"` added for privacy reasons.
 
@@ -62,7 +62,7 @@ setNotification({
 
 ## User experience
 
-Web Chat implements the notification UI as toast, located above the transcript. We offer multiple style options to customize the UI. In case the design and user experience is not desirable in target applications, developers are welcomed to rebuild the UI.
+Web Chat implements toast notifications, which are located above the transcript. Multiple style options are offered to customize the UI. In case the design and user experience are not desirable in target applications, developers are welcomed to rebuild the UI.
 
 ### Order of notifications
 
@@ -111,9 +111,9 @@ interface NotificationRendererArgs {
       element: (ReactElement | false)
 ```
 
--  If the middleware should render the notification, it should return a `ReactElement`
--  If the middleware should hide the notification, it should return `false`
--  If the middleware is not interested about the notification, it should call `next(notificationRenderArg)` to passthrough the notification
+-  If the middleware will render the notification, it should return a `ReactElement`
+-  If the middleware will hide the notification, it should return `false`
+-  If the middleware will return the notification, it should call `next(notificationRenderArg)` to passthrough the notification
 
 Please note that arguments passed to the middleware may change from time to time. Developers should pass all arguments to the next middleware. The recommended code pattern is:
 
