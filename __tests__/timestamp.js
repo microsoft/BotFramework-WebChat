@@ -29,12 +29,12 @@ test('update timestamp language on-the-fly', async () => {
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ locale: 'zh-HK' });
-  await driver.wait(expectLanguage('zh-HK'), timeouts.ui);
+  await driver.wait(expectLanguage('zh-Hant-HK'), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-  await pageObjects.updateProps({ locale: 'zh-YUE' });
-  await driver.wait(expectLanguage('zh-YUE'), timeouts.ui);
+  await pageObjects.updateProps({ locale: 'yue' });
+  await driver.wait(expectLanguage('yue'), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });

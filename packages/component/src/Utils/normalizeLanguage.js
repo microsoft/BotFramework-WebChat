@@ -100,7 +100,7 @@ export default function normalizeLanguage(language) {
     return 'yue';
   } else if (language === 'zh-hant' || language === 'zh-tw') {
     return 'zh-Hant';
-  } else if (language === 'zh-hk') {
+  } else if (language === 'zh-hant-hk' || language === 'zh-hk') {
     return 'zh-Hant-HK';
   } else if (language === 'zh-mo') {
     return 'zh-Hant-MO';
