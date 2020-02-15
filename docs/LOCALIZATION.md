@@ -1,6 +1,6 @@
 # Localization
 
-Starting from Web Chat 4.8, a dedicated team at Microsoft will start localizing our UI for 44 languages.
+Beginning in Web Chat 4.8, this project shifted from community-provided localization to supporting most languages through a dedicated Microsoft team. As of 2020.02.14, 44 languages are officially maintained by Microsoft. Other languages will continue to be community-supported and -driven.
 
 ## Adding a new language
 
