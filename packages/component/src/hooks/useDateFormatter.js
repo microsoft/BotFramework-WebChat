@@ -1,10 +1,13 @@
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
-import getLocaleString from '../Localization/getLocaleString';
-import useLanguage from './useLanguage';
+import useGlobalize from './internal/useGlobalize';
 
 export default function useDateFormatter() {
-  const [language] = useLanguage();
+  const globalize = useGlobalize();
 
-  return useCallback(date => getLocaleString(date, language), [language]);
+  const formatDate = useMemo(() => date => globalize.dateFormatter({ skeleton: 'MMMMdhm' })(new Date(date)), [
+    globalize
+  ]);
+
+  return formatDate;
 }

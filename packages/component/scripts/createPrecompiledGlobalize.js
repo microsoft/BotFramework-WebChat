@@ -17,6 +17,7 @@ const formattersAndParsers = languages.reduce((formattersAndParsers, language) =
   return [
     ...formattersAndParsers,
     ...[
+      globalize.dateFormatter({ skeleton: 'MMMMdhm' }),
       globalize.relativeTimeFormatter('hour'),
       globalize.relativeTimeFormatter('minute'),
       globalize.unitFormatter('byte', { form: 'long' }),

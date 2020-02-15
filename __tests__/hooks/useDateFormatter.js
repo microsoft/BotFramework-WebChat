@@ -5,6 +5,20 @@ import { timeouts } from '../constants.json';
 
 jest.setTimeout(timeouts.test);
 
+test('should return relative date for "en"', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      locale: 'en'
+    }
+  });
+
+  const actual = await pageObjects.runHook('useDateFormatter', [], formatDate =>
+    formatDate('2000-12-23T12:34:56.789Z')
+  );
+
+  expect(actual).toMatchInlineSnapshot(`"December 23 at 12:34 PM"`);
+});
+
 test('should return relative date for "yue"', async () => {
   const { pageObjects } = await setupWebDriver({
     props: {
@@ -16,5 +30,5 @@ test('should return relative date for "yue"', async () => {
     formatDate('2000-12-23T12:34:56.789Z')
   );
 
-  expect(actual).toMatchInlineSnapshot(`"December 23, 12:34"`);
+  expect(actual).toMatchInlineSnapshot(`"12月23日 下午12:34"`);
 });
