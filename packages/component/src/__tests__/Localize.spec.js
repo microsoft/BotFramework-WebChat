@@ -1,4 +1,4 @@
-import { getLocaleString, localize } from './Localize';
+import { getLocaleString, localize } from '../../lib/Localization/Localize';
 
 const originalWarn = console.warn;
 let warnings;
@@ -33,9 +33,9 @@ test('localize should return empty string for non-existing ID', () => {
   expect(warnings.find(message => /deprecate/iu.test(message)));
 });
 
-test('getLocaleString for en-US', () => {
-  const actual = getLocaleString(new Date(2000, 12, 23, 12, 34, 56, 789), 'en-US');
+test('getLocaleString for "en"', () => {
+  const actual = getLocaleString(new Date(2000, 12, 23, 12, 34, 56, 789), 'en');
 
-  expect(actual).toMatchInlineSnapshot(`"January 23, 12:34"`);
+  expect(actual).toMatchInlineSnapshot(`"January 23 at 12:34 PM"`);
   expect(warnings.find(message => /deprecate/iu.test(message)));
 });
