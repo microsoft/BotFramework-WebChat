@@ -164,7 +164,7 @@ To set the avatar for the user, change the props passed to Web Chat via style op
 useByteFormatter() => (bytes: number) => string
 ```
 
-This function will return a function, when called with a file size, it will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+This function will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
 
 ## `useConnectivityStatus`
 
@@ -191,7 +191,7 @@ This function will return the Direct Line connectivity status:
 useDateFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 
-This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
+This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
 
 ## `useDebouncedNotification`
 
@@ -321,7 +321,7 @@ useLanguage(options?: LanguageOptions): [string]
 
 This function will return the language of the UI. All UI components should honor this value.
 
-If no options is passed, the return value will be the written language.
+If no options are passed, the return value will be the written language.
 
 If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
@@ -359,7 +359,7 @@ To modify this value, change the value in the style options prop passed to Web C
 useLocalizer() => (identifier: string, ...arguments: string[]) => string
 ```
 
-This function will return a function, when called, will return a localized string represented by the identifier and its arguments. It honors the language settings from the `useLanguage` hook.
+This function, when called, will return a localized string represented by the identifier and its arguments. It honors the language settings from the `useLanguage` hook.
 
 ## `useMarkActivityAsSpoken`
 
@@ -431,7 +431,7 @@ This value is not controllable and is passed to Web Chat from the Direct Line ch
 useRelativeTimeFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 
-This function will return a function, when called with a `Date` object, `number`, or `string`, it will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
+This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useRenderActivity`
 

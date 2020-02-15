@@ -12,7 +12,7 @@ let deprecationNotesShown;
 function localize(id, language, ...args) {
   if (!deprecationNotesShown) {
     console.warn(
-      'botframework-webchat: localize() is being deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
+      'botframework-webchat: localize() is deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
     );
 
     deprecationNotesShown = true;

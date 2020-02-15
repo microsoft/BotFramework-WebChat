@@ -26,10 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Localization
    -  `locale` prop: `zh-YUE` has been renamed to `yue` to conform with Unicode standard. `zh-YUE` will continue to work with warnings
-   -  Most strings are being retranslated by Microsoft localization team, except English (US), Egyptian Arabic, and Chinese Yue
+   -  Most strings have been validated and retranslated by the Microsoft localization team, with the exception of English (US), Egyptian Arabic, Jordan Arabic, and Chinese Yue
       -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md#overriding-localization-strings) to override
-      -  String IDs are being refreshed and use a standard format
-   -  `useLocalize` and `useLocalizeDate` is being deprecated. Please use `useLocalizer` and `useDateFormatter` instead
+      -  String IDs have been refreshed and now use a standard format
+   -  `useLocalize` and `useLocalizeDate` is deprecated. Please use `useLocalizer` and `useDateFormatter` instead
 
 ### Added
 
@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871). Moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
 -  Resolves [#2756](https://github.com/microsoft/BotFramework-WebChat/issues/2756). Improved localizability and add override support for localized strings, by [@compulim](https://github.com/compulim) in PR [#2894](https://github.com/microsoft/BotFramework-WebChat/pull/2894)
    -  Will be translated into 44 languages, plus 2 community-contributed translations
-   -  For details, please read this [documentation on the localization work](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
+   -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 
 ### Fixed
 

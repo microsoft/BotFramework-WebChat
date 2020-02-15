@@ -4,19 +4,19 @@ Starting from Web Chat 4.8, a dedicated team at Microsoft will start localizing 
 
 ## Adding a new language
 
-To add a new language, please update following files:
+To add a new language, please update the following files:
 
 -  Update `/packages/component/src/Localization/overrides.json` and add the language according to Unicode CLDR.
    -  `GLOBALIZE_LANGUAGE` is the language code used for referencing Unicode CLDR
       -  To see the supported list of Unicode CLDR, look under `/packages/component/node_modules/cldr-data/main/`.
    -  (Optional) `TEXT_TO_SPEECH` is used to indicate the language code for speech.
-      -  Some locales has different oral but share same written language with other locales. For example, written language in Hong Kong and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
-      -  The language code used in Web Chat only indicate the written language.
-      -  Thus, when performing text-to-speech, the language code will be remapped for oral language.
-      -  For example, written language in Hong Kong is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). And the written language in Taiwan is `zh-Hant`, while the oral language is `zh-TW` (Taiwanese Mandarin).
+      -  Some locales have different oral languages, but share same written language with other locales. For example, the written language in both Hong Kong and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
+      -  The language code used in Web Chat only indicates the written language.
+      -  Thus, when performing text-to-speech, the language code will be remapped to the oral language.
+      -  For example, the written language in Hong Kong is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
    -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language supported Cognitive Services Speech Services.
-      -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate the language is supported by Cognitive Services Speech-to-Text Service.
-      -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate the language is supported by Cognitive Services Text-to-Speech Service. If the service support neural voices, set it to `"neural"`, otherwise, `true`
+      -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate that the language is supported by Cognitive Services Speech-to-Text Service.
+      -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate that the language is supported by Cognitive Services Text-to-Speech Service. If the service supports neural voices, set it to `"neural"`; otherwise, `true`
       -  https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support
 -  Update `/packages/component/src/Utils/normalizeLanguage.js` and add a normalization logic for ISO language.
    -  This is for cleaning up data provided by developers.
@@ -31,17 +31,17 @@ There are two types of supported languages:
 -  Maintained by Microsoft
 -  Contributed by the community
 
-For strings that are maintained by Microsoft, please file a bug to us. It will take us time as we need perform additional checks to maintain the quality.
+For strings that are maintained by Microsoft, please file a bug to the Web Chat repo. Validation will be performed on these changes to maintain high quality.
 
-For strings that are contributed by the community, please submit a pull request to us.
+For strings that are contributed by the community, please submit a pull request to the Web Chat repo.
 
 ## Adding new strings for new UI
 
-To add new strings to be used in the UI, please update `/packages/component/src/localization/en-US.json`. Our localization team will pick up the new strings and translate them to all other officially supported languages.
+To add new strings to be used in the UI, please update `/packages/component/src/localization/en-US.json`. The localization team will pick up the new strings and translate them to all other officially supported languages.
 
 ## Overriding localization strings
 
-Developers can override localization strings in one of two ways. An `overrideLocalizedStrings` prop will be passed and it can either be a plain object or a function.
+Developers can override localization strings in one of two ways. An `overrideLocalizedStrings` prop can be passed either as a plain object or a function in the Web Chat renderer.
 
 ```js
 window.WebChat.renderWebChat(
@@ -73,7 +73,8 @@ The localization feature is backed by these user stories:
 
 ### Translated by Microsoft localization team
 
-We support 44 languages, including right-to-left languages, translated by Microsoft localization team. Additional languages by the community are always welcomed.
+Web Chat officially supports 44 languages translated by the Microsoft localization team, which includes right-to-left languages.
+Additional languages contributed and maintained by the community are always welcome.
 
 | Language Code | Language              | Name             |
 | ------------- | --------------------- | ---------------- |
@@ -131,34 +132,34 @@ We support 44 languages, including right-to-left languages, translated by Micros
 
 ### JSON file format
 
-This file format is maintained by localization team at Microsoft. An automated pipeline has been set up and will help Web Chat to translate new strings in a matter of days than weeks or months.
+This file format is maintained by the localization team at Microsoft, where an automated pipeline allows for Web Chat strings to be translated in a timely manner.
 
 ### Lock down on strings
 
-For strings that are maintained by Microsoft, they have passed additional checks, for example, profanity check and cultural check, to guarantee the quality of the strings. In order to maintain the quality of these strings, modification of these strings requires additional checks from the localization team.
+Localized strings maintained by Microsoft have passed additional checks, including profanity and cultural checks to guarantee the localization quality. For maintenance purposes, any requested changes must be validated by the localization team.
 
-The additional checks do not applies for strings that are contributed by the community, for example, Egyptian Arabic and Cantonese.
+Additional validation is not required for languages that are contributed by the community, e.g. Egyptian Arabic and Cantonese.
 
 ### Overrideable by developers
 
 Developers should have a way to modify existing strings. One of the popular ask is the modify the "Type your message" placeholder text in the message input box.
 
-### New hooks to simplify internationalization
+### Hooks to streamline internationalization
 
-`useXXXFormatter` hooks are added to simplify internationalization using Unicode CLDR data
+All `useXXXFormatter` hooks are intended for internationalization using Unicode CLDR data
 
--  `useByteFormatter` will format number of file size in bytes, into localized strings
--  `useDateFOrmatter` will format date in absolute format, similar to `useLocalizeDate` but with updated function signature. This hook do not use Unicode CLDR data
--  `useRelativeTimeFormatter` will format time in relative format, using Unicode CLDR data
--  `useLanguage` now accept options to return oral language instead of written language
+-  `useByteFormatter` will format file size-related numbers into localized strings
+-  `useDateFOrmatter` will format date in absolute format, similar to `useLocalizeDate`, but with an updated function signature. This hook does not use Unicode CLDR data
+-  `useRelativeTimeFormatter` will format time to relative format, using Unicode CLDR data
+-  `useLanguage` now accepts options to return oral language instead of written language
 
 ## Appendix
 
 ### Convert string ID to new format
 
-To support the work from localization team, we are refreshing all string ID in a standard format.
+To support the localization team, all string IDs have been refreshed to a standard format.
 
-The following code is used by Web Chat team to convert strings from our previous format into new format.
+The following code is used by the Web Chat team to convert strings from our previous format into new format.
 
 ```js
 function convertFromOldStringId(js) {
