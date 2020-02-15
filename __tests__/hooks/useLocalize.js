@@ -9,7 +9,7 @@ test('calling localize should return a localized string', async () => {
   const { pageObjects } = await setupWebDriver();
 
   await expect(pageObjects.runHook('useLocalize', ['TEXT_INPUT_SPEAK_BUTTON_ALT'])).resolves.toMatchInlineSnapshot(
-    `"TEXT_INPUT_SPEAK_BUTTON_ALT"`
+    `"Speak"`
   );
 });
 
@@ -17,6 +17,6 @@ test('calling localize on zh-YUE should return a localized string', async () => 
   const { pageObjects } = await setupWebDriver({ props: { locale: 'zh-YUE' } });
 
   await expect(pageObjects.runHook('useLocalize', ['TEXT_INPUT_SPEAK_BUTTON_ALT'])).resolves.toMatchInlineSnapshot(
-    `"TEXT_INPUT_SPEAK_BUTTON_ALT"`
+    `"講嘢"`
   );
 });

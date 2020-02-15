@@ -214,13 +214,13 @@ describe('speech recognition', () => {
   test('should set recognition language', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
-        locale: 'zh-YUE',
+        locale: 'yue',
         webSpeechPonyfillFactory: () => window.WebSpeechMock
       }
     });
 
     await pageObjects.clickMicrophoneButton();
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toHaveProperty('lang', 'zh-YUE');
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toHaveProperty('lang', 'zh-HK');
   });
 });
