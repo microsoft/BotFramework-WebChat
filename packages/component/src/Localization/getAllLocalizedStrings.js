@@ -52,7 +52,7 @@ import mergeLocalizedStrings from './mergeLocalizedStrings';
 
 let localizedStrings;
 
-function getAllStrings() {
+function getAllLocalizedStrings() {
   return (
     localizedStrings ||
     (localizedStrings = mergeLocalizedStrings(
@@ -112,4 +112,4 @@ function getAllStrings() {
   );
 }
 
-export default getAllStrings;
+export default getAllLocalizedStrings;

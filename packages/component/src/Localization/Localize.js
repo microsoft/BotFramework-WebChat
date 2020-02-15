@@ -2,13 +2,12 @@
 /* eslint complexity: "off" */
 
 import deprecatingGetLocaleString from './getLocaleString';
-import getAllStrings from './getAllStrings';
+import getAllLocalizedStrings from './getAllLocalizedStrings';
 import getRTLList from './getRTLList';
 import useLocalizer from '../hooks/useLocalizer';
 
 let deprecationNotesShown;
 
-// TODO: Convert this function to be usable with the new JSON files.
 function localize(id, language, ...args) {
   if (!deprecationNotesShown) {
     console.warn(
@@ -18,7 +17,7 @@ function localize(id, language, ...args) {
     deprecationNotesShown = true;
   }
 
-  const allStrings = getAllStrings();
+  const allStrings = getAllLocalizedStrings();
   const localizedStrings = allStrings[language];
 
   return Object.entries(args).reduce(
@@ -30,7 +29,7 @@ function localize(id, language, ...args) {
 function getLocaleString(...args) {
   if (!deprecationNotesShown) {
     console.warn(
-      'botframework-webchat: localize() is being deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
+      'botframework-webchat: localize() is deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
     );
 
     deprecationNotesShown = true;
@@ -42,7 +41,7 @@ function getLocaleString(...args) {
 export default ({ args, text }) => {
   if (!deprecationNotesShown) {
     console.warn(
-      'botframework-webchat: <Localize> is being deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
+      'botframework-webchat: <Localize> is deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
     );
 
     deprecationNotesShown = true;

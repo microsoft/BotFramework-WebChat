@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 
-import getAllStrings from '../Localization/getAllStrings';
+import getAllLocalizedStrings from '../Localization/getAllLocalizedStrings';
 import useLocalizedStrings from './internal/useLocalizedStrings';
+
+const DEFAULT_STRINGS = getAllLocalizedStrings()['en-US'];
 
 export default function useLocalizer() {
   const localizedStrings = useLocalizedStrings();
@@ -10,7 +12,7 @@ export default function useLocalizer() {
     (id, ...args) =>
       Object.entries(args).reduce(
         (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
-        localizedStrings[id] || getAllStrings()['en-US'][id] || ''
+        localizedStrings[id] || DEFAULT_STRINGS[id] || ''
       ),
     [localizedStrings]
   );

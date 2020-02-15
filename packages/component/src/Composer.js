@@ -10,7 +10,7 @@ import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import getAllStrings from './Localization/getAllStrings';
+import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
 import isObject from './Utils/isObject';
 import normalizeLanguage from './Utils/normalizeLanguage';
 import PrecompiledGlobalize from './Utils/PrecompiledGlobalize';
@@ -293,7 +293,7 @@ const Composer = ({
   }, []);
 
   const patchedLocalizedStrings = useMemo(() => {
-    const allStrings = getAllStrings();
+    const allStrings = getAllLocalizedStrings();
     const { 'en-US': englishStrings, [patchedLanguage]: localizedStrings } = allStrings;
 
     return { ...englishStrings, ...mergeStringsOverrides(localizedStrings, patchedLanguage, overrideLocalizedStrings) };

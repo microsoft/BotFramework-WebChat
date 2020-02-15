@@ -13,7 +13,7 @@ const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, classNa
 
   timestampStyleSet &&
     console.warn(
-      'Web Chat: styleSet.timestamp is deprecated. Please use styleSet.sendStatus. This deprecation migration will be removed on or after December 31, 2021.'
+      'botframework-webchat: "styleSet.timestamp" is deprecated. Please use "styleSet.sendStatus". This deprecation migration will be removed on or after December 31, 2021.'
     );
 
   return (

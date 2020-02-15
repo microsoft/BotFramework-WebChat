@@ -67,7 +67,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
 -  [`useLastTypingAt`](#uselasttypingat)
--  [`useLocalize`](#uselocalize)
+-  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
@@ -345,7 +345,7 @@ This property is computed on every incoming activity.
 useLocalize(identifier: string) => string
 ```
 
-> This function is being deprecated. Developers should migrate to [`useLocalizer`](#useLocalizer).
+> This function is deprecated. Developers should migrate to [`useLocalizer`](#useLocalizer).
 
 This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 

@@ -1,5 +1,5 @@
 {
-  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcomed but it could be delayed as we conduct additional checks.",
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
   "ACTIVITY_STATUS_SEND_FAILED_RETRY": "nepodařilo se odeslat, [opakovat][RETRY].",
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Odesílání",
   "FILE_CONTENT_ALT": "'$1'",

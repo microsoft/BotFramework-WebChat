@@ -6,7 +6,7 @@ Starting from Web Chat 4.8, a dedicated team at Microsoft will start localizing 
 
 To add a new language, please update the following files:
 
--  Update `/packages/component/src/Localization/overrides.json` and add the language according to Unicode CLDR.
+-  Update `/packages/component/src/Localization/overrides.json` and add the language according to [Unicode CLDR](https://st.unicode.org/cldr-apps/v#locales///).
    -  `GLOBALIZE_LANGUAGE` is the language code used for referencing Unicode CLDR
       -  To see the supported list of Unicode CLDR, look under `/packages/component/node_modules/cldr-data/main/`.
    -  (Optional) `TEXT_TO_SPEECH` is used to indicate the language code for speech.
@@ -14,10 +14,10 @@ To add a new language, please update the following files:
       -  The language code used in Web Chat only indicates the written language.
       -  Thus, when performing text-to-speech, the language code will be remapped to the oral language.
       -  For example, the written language in Hong Kong is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
-   -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language supported Cognitive Services Speech Services.
+   -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language is supported by Cognitive Services Speech Services.
       -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate that the language is supported by Cognitive Services Speech-to-Text Service.
       -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate that the language is supported by Cognitive Services Text-to-Speech Service. If the service supports neural voices, set it to `"neural"`; otherwise, `true`
-      -  https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support
+      -  [https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support](List of supported languages)
 -  Update `/packages/component/src/Utils/normalizeLanguage.js` and add a normalization logic for ISO language.
    -  This is for cleaning up data provided by developers.
    -  For example, if the language starts with `ja`, it will be mapped to `ja-JP`.
@@ -77,7 +77,7 @@ Web Chat officially supports 44 languages translated by the Microsoft localizati
 Additional languages contributed and maintained by the community are always welcome.
 
 | Language Code | Language              | Name             |
-| ------------- | --------------------- | ---------------- |
+|---------------|-----------------------|------------------|
 | `ar-SA`       | Arabic (Saudi Arabia) | اَلْعَرَبِيَّةُ  |
 | `eu-ES`       | Basque                | euskara          |
 | `bg-BG`       | Bulgarian             | Български        |
@@ -102,7 +102,7 @@ Additional languages contributed and maintained by the community are always welc
 | `it-IT`       | Italian               | italiano         |
 | `ja-JP`       | Japanese              | 日本語           |
 | `kk-KZ`       | Kazakh                | Қазақ            |
-| `ko-kr`       | Korean                | 한국어           |
+| `ko-kr`       | Korean                | 한국어              |
 | `lv-LV`       | Latvian               | latviešu         |
 | `lt-LT`       | Lithuanian            | lietuvių         |
 | `ms-MY`       | Malay                 | Bahasa Melayu    |
@@ -125,10 +125,11 @@ Additional languages contributed and maintained by the community are always welc
 
 ### Community-contributed languages
 
-| Language Code | Language        | Name           | Translator                               |
-| ------------- | --------------- | -------------- | ---------------------------------------- |
-| `ar-EG`       | Egyptian Arabic | اللهجه المصريه | [@midineo](https://github.com/midineo)   |
-| `zh-HK`       | Cantonese       | 廣東話         | [@compulim](https://github.com/compulim) |
+| Language Code | Language         | Name            | Translator                               |
+|---------------|------------------|-----------------|------------------------------------------|
+| `ar-EG`       | Egyptian Arabic  | اللهجه المصريه  | [@midineo](https://github.com/midineo)   |
+| `ar-JO`       | Jordanian Arabic | اللهجة الأردنية | muminasaad, Odai Hatem AbuGaith          |
+| `yue`         | Cantonese        | 廣東話          | [@compulim](https://github.com/compulim) |
 
 ### JSON file format
 
