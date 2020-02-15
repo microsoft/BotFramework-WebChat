@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ScreenReaderText from '../ScreenReaderText';
+import ScreenReaderText from '../../ScreenReaderText';
 
-import useDateFormatter from '../hooks/useDateFormatter';
-import useLocalizer from '../hooks/useLocalizer';
+import useDateFormatter from '../../hooks/useDateFormatter';
+import useLocalizer from '../../hooks/useLocalizer';
 
 const AbsoluteTime = ({ value }) => {
   const localize = useLocalizer();

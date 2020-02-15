@@ -16,8 +16,8 @@ import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastTypingAt from './useLastTypingAt';
-import useLocalize from './useLocalize';
-import useLocalizeDate from './useLocalizeDate';
+import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
+import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';

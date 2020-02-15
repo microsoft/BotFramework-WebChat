@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ScreenReaderText from '../ScreenReaderText';
-import useDateFormatter from '../hooks/useDateFormatter';
-import useForceRenderAtInterval from '../hooks/internal/useForceRenderAtInterval';
-import useLocalizer from '../hooks/useLocalizer';
-import useRelativeTimeFormatter from '../hooks/useRelativeTimeFormatter';
+import ScreenReaderText from '../../ScreenReaderText';
+import useDateFormatter from '../../hooks/useDateFormatter';
+import useForceRenderAtInterval from '../../hooks/internal/useForceRenderAtInterval';
+import useLocalizer from '../../hooks/useLocalizer';
+import useRelativeTimeFormatter from '../../hooks/useRelativeTimeFormatter';
 
 const TIMER_INTERVAL = 60000;
 

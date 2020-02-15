@@ -77,7 +77,7 @@ Web Chat officially supports 44 languages translated by the Microsoft localizati
 Additional languages contributed and maintained by the community are always welcome.
 
 | Language Code | Language              | Name             |
-|---------------|-----------------------|------------------|
+| ------------- | --------------------- | ---------------- |
 | `ar-SA`       | Arabic (Saudi Arabia) | اَلْعَرَبِيَّةُ  |
 | `eu-ES`       | Basque                | euskara          |
 | `bg-BG`       | Bulgarian             | Български        |
@@ -102,7 +102,7 @@ Additional languages contributed and maintained by the community are always welc
 | `it-IT`       | Italian               | italiano         |
 | `ja-JP`       | Japanese              | 日本語           |
 | `kk-KZ`       | Kazakh                | Қазақ            |
-| `ko-kr`       | Korean                | 한국어              |
+| `ko-kr`       | Korean                | 한국어           |
 | `lv-LV`       | Latvian               | latviešu         |
 | `lt-LT`       | Lithuanian            | lietuvių         |
 | `ms-MY`       | Malay                 | Bahasa Melayu    |
@@ -126,7 +126,7 @@ Additional languages contributed and maintained by the community are always welc
 ### Community-contributed languages
 
 | Language Code | Language         | Name            | Translator                               |
-|---------------|------------------|-----------------|------------------------------------------|
+| ------------- | ---------------- | --------------- | ---------------------------------------- |
 | `ar-EG`       | Egyptian Arabic  | اللهجه المصريه  | [@midineo](https://github.com/midineo)   |
 | `ar-JO`       | Jordanian Arabic | اللهجة الأردنية | muminasaad, Odai Hatem AbuGaith          |
 | `yue`         | Cantonese        | 廣東話          | [@compulim](https://github.com/compulim) |
