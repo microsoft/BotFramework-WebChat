@@ -45,6 +45,8 @@ function* sendTypingIndicatorOnSetSendBox() {
           yield put(emitTypingIndicator());
 
           lastSend = Date.now();
+        } else {
+          lastSend = 0;
         }
       }
     );
