@@ -52,6 +52,38 @@ test('should return overrode string for non-existent ID', async () => {
   expect(actual).toMatchInlineSnapshot(`"Something new"`);
 });
 
+test('should throw if "id" is not string', async () => {
+  const { pageObjects } = await setupWebDriver();
+
+  await expect(pageObjects.runHook('useLocalizer', [], localize => localize({ abc: 123 }))).rejects.toThrow(
+    'useLocalizer: "id" must be a string.'
+  );
+});
+
+test('plural rules for "yue"', async () => {
+  // If "two", "few", "many" are not set, it should use the "yue" version of "other" instead.
+
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      locale: 'yue'
+    }
+  });
+
+  const actual = await pageObjects.runHook('useLocalizer', [{ plural: true }], localize =>
+    localize(
+      {
+        two: 'TOAST_ACCORDION_TWO',
+        few: 'TOAST_ACCORDION_FEW',
+        many: 'TOAST_ACCORDION_MANY',
+        other: 'TOAST_ACCORDION_OTHER'
+      },
+      2
+    )
+  );
+
+  expect(actual).toMatchInlineSnapshot(`"2 項通知：襟呢度睇詳情"`);
+});
+
 describe('plural rules', () => {
   let pageObjects;
 
@@ -122,25 +154,25 @@ describe('plural rules', () => {
   });
 
   test('should throw with "id" of string', async () => {
-    expect(
+    await expect(
       pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer('THIS_SHOULD_BE_MAP_INSTEAD', 1))
     ).rejects.toThrow('useLocalizer: Plural string must pass "id" as a map instead of string.');
   });
 
   test('should throw with "id.one" of number', async () => {
-    expect(
+    await expect(
       pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ one: 123, other: 'OTHER' }, 1))
     ).rejects.toThrow('useLocalizer: Plural string must have "id.one" of string or undefined.');
   });
 
   test('should throw with "id.other" not defined', async () => {
-    expect(
+    await expect(
       pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ one: 123 }, 1))
     ).rejects.toThrow('useLocalizer: Plural string must have "id.other" of string.');
   });
 
   test('should throw with "id.unknown"', async () => {
-    expect(
+    await expect(
       pageObjects.runHook('useLocalizer', [{ plural: true }], localizer =>
         localizer({ other: 'OTHER', unknown: 'UNKNOWN' }, 1)
       )
@@ -150,7 +182,7 @@ describe('plural rules', () => {
   });
 
   test('should throw with first argument of string', async () => {
-    expect(
+    await expect(
       pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ other: 'OTHER' }, 'abc'))
     ).rejects.toThrow('useLocalizer: Plural string must have first argument as a number.');
   });

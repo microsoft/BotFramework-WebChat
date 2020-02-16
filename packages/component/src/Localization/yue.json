@@ -10,13 +10,7 @@
   "CONNECTIVITY_STATUS_ALT_RECONNECTING": "網絡暫時斷咗，試緊再駁返…",
   "CONNECTIVITY_STATUS_ALT_RENDER_ERROR": "Render 出事，請睇下 console 或者同 bot 開發人員聯絡。",
 
-  "TOAST_ACCORDION_TWO": "$1 通知：襟呢度睇詳情",
-  "_TOAST_ACCORDION_TWO.comment": "$1 is the number of notifications. This is for plural rule of \"two\".",
-  "TOAST_ACCORDION_FEW": "$1 通知：襟呢度睇詳情",
-  "_TOAST_ACCORDION_FEW.comment": "$1 is the number of notifications. This is for plural rule of \"few\".",
-  "TOAST_ACCORDION_MANY": "$1 通知：襟呢度睇詳情",
-  "_TOAST_ACCORDION_MANY.comment": "$1 is the number of notifications. This is for plural rule of \"many\".",
-  "TOAST_ACCORDION_OTHER": "$1 通知：襟呢度睇詳情",
+  "TOAST_ACCORDION_OTHER": "$1 項通知：襟呢度睇詳情",
   "_TOAST_ACCORDION_OTHER.comment": "$1 is the number of notifications. This is for plural rule of \"other\".",
 
   "TOAST_ALT_ERROR": "錯誤：$1",

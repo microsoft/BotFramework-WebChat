@@ -292,12 +292,10 @@ const Composer = ({
     console.error(err);
   }, []);
 
-  const patchedLocalizedStrings = useMemo(() => {
-    const allStrings = getAllLocalizedStrings();
-    const { 'en-US': englishStrings, [patchedLanguage]: localizedStrings } = allStrings;
-
-    return { ...englishStrings, ...mergeStringsOverrides(localizedStrings, patchedLanguage, overrideLocalizedStrings) };
-  }, [overrideLocalizedStrings, patchedLanguage]);
+  const patchedLocalizedStrings = useMemo(
+    () => mergeStringsOverrides(getAllLocalizedStrings()[patchedLanguage], patchedLanguage, overrideLocalizedStrings),
+    [overrideLocalizedStrings, patchedLanguage]
+  );
 
   const localizedGlobalize = useMemo(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
@@ -330,11 +328,11 @@ const Composer = ({
       dir: patchedDir,
       directLine,
       disabled,
-      localizedGlobalizeState: [localizedGlobalize],
       grammars: patchedGrammars,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       language: patchedLanguage,
+      localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
       renderMarkdown,
       scrollToEnd,

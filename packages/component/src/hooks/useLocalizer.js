@@ -43,6 +43,8 @@ export default function useLocalizer({ plural } = {}) {
         }
 
         id = id[globalize.plural(args[0])] || id.other;
+      } else if (typeof id !== 'string') {
+        throw new Error('useLocalizer: "id" must be a string.');
       }
 
       return Object.entries(args).reduce(
