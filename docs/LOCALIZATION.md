@@ -65,11 +65,16 @@ window.WebChat.renderWebChat(
 
 ### User stories
 
-The localization feature is backed by these user stories:
+This localization feature will support the following user stories:
 
--  Translated by Microsoft localization team with automated pipeline
--  Overrideable by developers
-   -  Change the "Type your message" placeholder text
+-  Our strings will be automatically send thru a pipeline to Microsoft localization team, which they will translate the string and send us the pull request
+   -  The pipeline is implemented and owned by the localization team
+-  Strings localized by Microsoft localization team will be locked down
+   -  Web Chat team can recommend more suitable strings to localization team, it will go through validation and send back as a pull request
+-  Developers can override strings for their own setup of Web Chat, without forking our code
+   -  For example, developers can change the "Type your message" placeholder text through customization
+
+In the future, if we need to redesign or reimplement this feature, we need to make sure the new version will fulfill these user stories or update them as needed.
 
 ### Translated by Microsoft localization team
 
@@ -150,7 +155,7 @@ Developers may modify existing strings for customization purposes. One popular a
 All `useXXXFormatter` hooks are intended for internationalization using Unicode CLDR data
 
 -  `useByteFormatter` will format file size-related numbers into localized strings
--  `useDateFOrmatter` will format date in absolute format, similar to `useLocalizeDate`, but with an updated function signature. This hook does not use Unicode CLDR data
+-  `useDateFormatter` will format date in absolute format, similar to `useLocalizeDate`, but with an updated function signature. This hook does not use Unicode CLDR data
 -  `useRelativeTimeFormatter` will format time to relative format, using Unicode CLDR data
 -  `useLanguage` now accepts options to return oral language instead of written language
 
