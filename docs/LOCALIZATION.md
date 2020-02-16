@@ -24,6 +24,18 @@ To add a new language, please update the following files:
 -  Add a new language to `/packages/component/src/Localization/`.
    -  Copy `en-US.json` as the base template.
 
+### Designing new strings
+
+When designing new strings, please consider its localizability:
+
+-  Words with plural forms are not recommended
+   -  "Number of files uploaded: 10" is preferred over "10 files uploaded"
+   -  Some languages may have up to 6 variations of the same strings
+   -  Also true for ordinal, for example, "1st activity", "2nd activity", etc
+-  String concatenation are not recommended
+   -  Prefer to use template instead
+   -  Some languages may concatenate in a way that is different from English
+
 ## Updating strings of an existing language
 
 There are two types of supported languages:
