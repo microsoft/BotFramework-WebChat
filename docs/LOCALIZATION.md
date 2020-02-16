@@ -143,7 +143,7 @@ Additional validation is not required for languages that are contributed by the 
 
 ### Overrideable by developers
 
-Developers should have a way to modify existing strings. One of the popular ask is the modify the "Type your message" placeholder text in the message input box.
+Developers may modify existing strings for customization purposes. One popular ask is the modification of the "Type your message" placeholder text in the message input box.
 
 ### Hooks to streamline internationalization
 
