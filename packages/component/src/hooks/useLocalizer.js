@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import getAllLocalizedStrings from '../Localization/getAllLocalizedStrings';
 import useGlobalize from './internal/useGlobalize';
 import useLocalizedStrings from './internal/useLocalizedStrings';
-import { isObject } from 'util';
+import isObject from '../Utils/isObject';
 
 const DEFAULT_STRINGS = getAllLocalizedStrings()['en-US'];
 
