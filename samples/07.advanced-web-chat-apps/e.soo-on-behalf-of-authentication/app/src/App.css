@@ -1,0 +1,7 @@
+.sso__upperRight {
+  display: flex;
+  position: fixed;
+  right: 8px;
+  top: 8px;
+}
+
