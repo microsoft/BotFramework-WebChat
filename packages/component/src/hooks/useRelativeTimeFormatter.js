@@ -3,12 +3,12 @@
 import { useMemo } from 'react';
 
 import getLocaleString from '../Localization/getLocaleString';
-import useGlobalize from './internal/useGlobalize';
+import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizer from './useLocalizer';
 
 export default function useRelativeTimeFormatter() {
   const localize = useLocalizer();
-  const globalize = useGlobalize();
+  const [globalize] = useLocalizedGlobalize();
 
   return useMemo(() => {
     const relativeTimeFormatter = globalize.relativeTimeFormatter.bind(globalize);

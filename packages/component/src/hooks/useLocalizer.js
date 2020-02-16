@@ -1,20 +1,18 @@
 import { useCallback } from 'react';
 
 import getAllLocalizedStrings from '../Localization/getAllLocalizedStrings';
-import useGlobalize from './internal/useGlobalize';
+import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizedStrings from './internal/useLocalizedStrings';
 import isObject from '../Utils/isObject';
 
 const DEFAULT_STRINGS = getAllLocalizedStrings()['en-US'];
 
 export default function useLocalizer({ plural } = {}) {
-  const globalize = useGlobalize();
+  const [globalize] = useLocalizedGlobalize();
   const localizedStrings = useLocalizedStrings();
 
   return useCallback(
     (id, ...args) => {
-      let localizedString;
-
       if (plural) {
         if (!isObject(id)) {
           throw new Error('useLocalizer: Plural string must pass "id" as a map instead of string.');
@@ -47,10 +45,11 @@ export default function useLocalizer({ plural } = {}) {
         id = id[globalize.plural(args[0])] || id.other;
       }
 
-      localizedString = localizedStrings[id] || DEFAULT_STRINGS[id] || '';
-
-      return Object.entries(args).reduce((str, [index, arg]) => str.replace(`$${+index + 1}`, arg), localizedString);
+      return Object.entries(args).reduce(
+        (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
+        localizedStrings[id] || DEFAULT_STRINGS[id] || ''
+      );
     },
-    [localizedStrings]
+    [globalize, localizedStrings, plural]
   );
 }

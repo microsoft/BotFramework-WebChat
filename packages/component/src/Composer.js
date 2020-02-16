@@ -299,7 +299,7 @@ const Composer = ({
     return { ...englishStrings, ...mergeStringsOverrides(localizedStrings, patchedLanguage, overrideLocalizedStrings) };
   }, [overrideLocalizedStrings, patchedLanguage]);
 
-  const globalize = useMemo(() => {
+  const localizedGlobalize = useMemo(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
 
     return (
@@ -330,9 +330,9 @@ const Composer = ({
       dir: patchedDir,
       directLine,
       disabled,
-      globalize,
+      localizedGlobalizeState: [localizedGlobalize],
       grammars: patchedGrammars,
-      internalMarkdownIt,
+      internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       language: patchedLanguage,
       localizedStrings: patchedLocalizedStrings,
@@ -355,14 +355,14 @@ const Composer = ({
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
-      patchedDir,
       directLine,
       disabled,
       focusSendBoxContext,
-      globalize,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
+      localizedGlobalize,
+      patchedDir,
       patchedGrammars,
       patchedLanguage,
       patchedLocalizedStrings,

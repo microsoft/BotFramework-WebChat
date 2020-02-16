@@ -1,62 +1,22 @@
-/* eslint react/no-danger: "off" */
-
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
-import updateIn from 'simple-update-in';
+import React, { useCallback } from 'react';
 
-import useInternalMarkdownIt from '../../../hooks/internal/useInternalMarkdownIt';
+import InlineMarkdown from '../../../Utils/InlineMarkdown';
 import useLocalizer from '../../../hooks/useLocalizer';
-import walkMarkdownTokens from '../../../Utils/walkMarkdownTokens';
 
-function replaceAnchorWithButton(markdownTokens) {
-  return walkMarkdownTokens(markdownTokens, markdownToken => {
-    markdownToken = { ...markdownToken };
-
-    switch (markdownToken.type) {
-      case 'link_open':
-        markdownToken.tag = 'button';
-        markdownToken.attrs = updateIn(markdownToken.attrs, [([name]) => name === 'href'], ([, value]) => [
-          'data-ref',
-          value
-        ]);
-        break;
-
-      case 'link_close':
-        markdownToken.tag = 'button';
-        break;
-
-      default:
-        break;
-    }
-
-    return markdownToken;
-  });
-}
+const MARKDOWN_REFERENCES = ['RETRY'];
 
 const SendFailedRetry = ({ onRetryClick }) => {
+  const handleReference = useCallback(({ data }) => data === 'RETRY' && onRetryClick(), [onRetryClick]);
   const localize = useLocalizer();
 
   const sendFailedText = localize('ACTIVITY_STATUS_SEND_FAILED_RETRY');
 
-  const [markdownIt] = useInternalMarkdownIt();
-  const html = useMemo(() => {
-    const tree = markdownIt.parseInline(sendFailedText, { references: { RETRY: { href: '#retry' } } });
-
-    // Turn "<a href="#retry">Retry</a>" into "<button data-ref="#retry">Retry</button>"
-    const updatedTree = replaceAnchorWithButton(tree);
-
-    return { __html: markdownIt.renderer.render(updatedTree) };
-  }, [markdownIt, sendFailedText]);
-
-  const handleClick = useCallback(
-    event => {
-      event.stopPropagation();
-      event.target.getAttribute('data-ref') === '#retry' && onRetryClick();
-    },
-    [onRetryClick]
+  return (
+    <InlineMarkdown onReference={handleReference} references={MARKDOWN_REFERENCES}>
+      {sendFailedText}
+    </InlineMarkdown>
   );
-
-  return <span dangerouslySetInnerHTML={html} onClick={handleClick} />;
 };
 
 SendFailedRetry.propTypes = {

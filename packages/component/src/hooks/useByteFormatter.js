@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [1024, 1048576, 1073741824] }] */
 
 import { useMemo } from 'react';
-import useGlobalize from './internal/useGlobalize';
+import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 
 const KILOBYTE = 1024;
 const MEGABYTE = 1048576;
@@ -16,7 +16,7 @@ const SHORT_FORM = {
 };
 
 export default function useByteFormatter() {
-  const globalize = useGlobalize();
+  const [globalize] = useLocalizedGlobalize();
 
   return useMemo(() => {
     const unitFormatter = globalize.unitFormatter.bind(globalize);
