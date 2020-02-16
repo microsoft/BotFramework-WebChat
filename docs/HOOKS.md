@@ -392,17 +392,17 @@ const localize = useLocalize({ plural: true });
 // The following code will print "2 notifications" to console.
 
 console.log(
-  localize(
-    {
-      zero: 'No notifications',
-      one: 'A notification',
-      two: '$1 notifications',
-      few: '$1 notifications',
-      many: '$1 notifications',
-      other: '$1 notifications'
-    },
-    2
-  )
+   localize(
+      {
+         zero: 'No notifications',
+         one: 'A notification',
+         two: '$1 notifications',
+         few: '$1 notifications',
+         many: '$1 notifications',
+         other: '$1 notifications'
+      },
+      2
+   )
 );
 ```
 
