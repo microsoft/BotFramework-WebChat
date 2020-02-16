@@ -1,6 +1,8 @@
 /*eslint no-case-declarations: "off"*/
 /*eslint no-unused-vars: "off"*/
 
+import updateIn from 'simple-update-in';
+
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
 const DEFAULT_STATE = {};
@@ -14,13 +16,11 @@ export default function lastTypingAt(state = DEFAULT_STATE, { payload, type }) {
       }
     } = payload;
 
-    if (role === 'bot') {
+    if (role !== 'user') {
       if (activityType === 'typing') {
-        state = { ...state, [id]: Date.now() };
+        state = updateIn(state, [id], () => Date.now());
       } else if (activityType === 'message') {
-        const { [id]: last, ...nextState } = state;
-
-        state = nextState;
+        state = updateIn(state, [id]);
       }
     }
   }

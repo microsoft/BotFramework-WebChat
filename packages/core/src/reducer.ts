@@ -15,6 +15,7 @@ import sendTimeout from './reducers/sendTimeout';
 import sendTypingIndicator from './reducers/sendTypingIndicator';
 import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity';
 import suggestedActions from './reducers/suggestedActions';
+import typing from './reducers/typing';
 
 export default combineReducers({
   activities,
@@ -23,7 +24,6 @@ export default combineReducers({
   dictateInterims,
   dictateState,
   language,
-  lastTypingAt,
   notifications,
   readyState,
   referenceGrammarID,
@@ -31,5 +31,12 @@ export default combineReducers({
   sendTimeout,
   sendTypingIndicator,
   shouldSpeakIncomingActivity,
-  suggestedActions
+  suggestedActions,
+  typing,
+
+  // TODO: [P3] Take this deprecation code out when releasing on or after 2022-02-16
+  lastTypingAt,
+
+  // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+  sendTyping: sendTypingIndicator
 });
