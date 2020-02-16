@@ -18,9 +18,7 @@ test('should return string for "yue"', async () => {
 });
 
 test('should return string for default language', async () => {
-  const { pageObjects } = await setupWebDriver({
-    props: {}
-  });
+  const { pageObjects } = await setupWebDriver();
 
   const actual = await pageObjects.runHook('useLocalizer', [], localizer => localizer('TEXT_INPUT_SPEAK_BUTTON_ALT'));
 
@@ -28,9 +26,7 @@ test('should return string for default language', async () => {
 });
 
 test('should return empty string for non-existent ID', async () => {
-  const { pageObjects } = await setupWebDriver({
-    props: {}
-  });
+  const { pageObjects } = await setupWebDriver();
 
   const actual = await pageObjects.runHook('useLocalizer', [], localizer => localizer('NON_EXISTENT'));
 
@@ -61,7 +57,8 @@ test('should throw if "id" is not string', async () => {
 });
 
 test('plural rules for "yue"', async () => {
-  // If "two", "few", "many" are not set, it should use the "yue" version of "other" instead.
+  // "two", "few", "many" are not set in "yue".
+  // Make sure it use the "yue" version of "other", instead of "en" version of "other".
 
   const { pageObjects } = await setupWebDriver({
     props: {
