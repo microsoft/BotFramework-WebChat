@@ -45,7 +45,7 @@ function* sendTypingIndicatorOnSetSendBox() {
           yield put(emitTypingIndicator());
 
           lastSend = Date.now();
-        } else {
+        } else if (payload.activity.type === 'message') {
           lastSend = 0;
         }
       }

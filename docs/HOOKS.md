@@ -47,6 +47,7 @@ setSendBoxValue('Hello, World!');
 
 Following is the list of hooks supported by Web Chat API.
 
+-  [`useActiveTyping`](#useactivetyping)
 -  [`useActivities`](#useactivities)
 -  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
@@ -69,6 +70,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useLastTypingAt`](#uselasttypingat)
 -  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
+-  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
@@ -79,6 +81,8 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useRenderActivityStatus`](#userenderactivitystatus)
 -  [`useRenderAttachment`](#userenderattachment)
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
+-  [`useRenderToast`](#userendertoast)
+-  [`useRenderTypingIndicator`](#userendertypingindicator)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -101,6 +105,25 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
 -  [`useWebSpeechPonyfill`](#usewebspeechponyfill)
+
+## `useActiveTyping`
+
+```js
+interface Typing {
+  end: number;
+  name: string;
+  role: 'bot' | 'user';
+  start: number;
+}
+
+useActiveTyping(duration?: number): [{ [id: string]: Typing }]
+```
+
+This function will return a list of participants who are actively typing, including the start typing time and expected end typing time, the name and the role of the participant.
+
+If the participant send a message after the typing activity, the participant will be explicitly removed from the list. If no message or typing activity is received, the participant will not be removed from the list. However, since the hook always filter the list by `styleOptions.typingAnimationDuration`, participants who did not keep sending typing activity, will be removed from the result.
+
+The duration used for filtering the list can be overridden by passing the `duration` argument. If `Infinity` is passed, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent typing activity, but did not send a message activity afterward.
 
 ## `useActivities`
 
@@ -199,7 +222,7 @@ This function will return a function that, when called with a `Date` object, `nu
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
@@ -420,7 +443,7 @@ When called, this function will mark the activity as spoken and remove it from t
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
@@ -544,6 +567,36 @@ renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
+## `useRenderToast`
+
+```js
+interface Notification {
+  alt?: string;
+  id: string;
+  level: 'error' | 'info' | 'success' | 'warn' | string;
+  message: string;
+}
+
+useRenderToast(): ({ notification: Notification }) => React.Element
+```
+
+This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter. This function is a composition of `toastMiddleware`, which is passed as a prop.
+
+## `useRenderTypingIndicator`
+
+```js
+interface Typing {
+  end: number;
+  name: string;
+  role: 'bot' | 'user';
+  start: number;
+}
+
+useRenderTypingIndicator(): ({ activeTyping: { [id: string]: Typing }, typing: { [id: string]: Typing } }) => React.Element
+```
+
+This function is for rendering typing indicator for all participants. The caller will need to pass two list of participants as parameter: participants who are actively typing, and participants who did not explicitly stopped typing. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop.
+
 ## `useScrollToEnd`
 
 ```js
@@ -631,7 +684,7 @@ To modify this value, change the value in the style options prop passed to Web C
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
