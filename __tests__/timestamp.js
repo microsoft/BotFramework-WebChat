@@ -143,15 +143,46 @@ test('change send timeout on-the-fly', async () => {
 
   await driver.executeScript(() => window.WebChatTest.clock.tick(5000));
 
+  await driver.wait(
+    new Condition('turn into "Send failed. Retry.', driver =>
+      driver.executeScript(
+        () =>
+          document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+          'Send failed. Retry.'
+      )
+    ),
+    timeouts.ui
+  );
+
   // After 5 seconds, it should show timeout.
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ styleOptions: { sendTimeout: 10000 } });
 
+  await driver.wait(
+    new Condition('turn into "Sending"', driver =>
+      driver.executeScript(
+        () => document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText === 'Sending'
+      )
+    ),
+    timeouts.ui
+  );
+
   // After changing the send timeout to 10 seconds, it should show "sending".
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await driver.executeScript(() => window.WebChatTest.clock.tick(5000));
+
+  await driver.wait(
+    new Condition('turn into "Send failed. Retry.', driver =>
+      driver.executeScript(
+        () =>
+          document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+          'Send failed. Retry.'
+      )
+    ),
+    timeouts.ui
+  );
 
   // After 10 seconds, it should show timeout again.
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
