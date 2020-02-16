@@ -10,7 +10,7 @@ export default async function executePromiseScript(driver, fn, ...args) {
         .apply(null, args)
         .then(
           result => callback({ result }),
-          error => callback({ error })
+          ({ message, stack }) => callback({ error: { message, stack } })
         );
     },
     fn + '',

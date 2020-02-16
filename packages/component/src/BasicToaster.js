@@ -57,12 +57,18 @@ function sortNotifications(map) {
 }
 
 const PASSTHRU_FN = value => value;
+const TOAST_ACCORDION_IDS = {
+  two: 'TOAST_ACCORDION_TWO',
+  few: 'TOAST_ACCORDION_FEW',
+  many: 'TOAST_ACCORDION_MANY',
+  other: 'TOAST_ACCORDION_OTHER'
+};
 
 const BasicToaster = () => {
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
-  const localize = useLocalizer();
+  const localizeWithPlural = useLocalizer({ plural: true });
   const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);
   const headerElementId = useMemo(() => `webchat__toaster__header__${randomId()}`, []);
   const renderToast = useRenderToast();
@@ -116,7 +122,7 @@ const BasicToaster = () => {
             <NotificationIcon className="webchat__toaster__expandLevelIcon" level={highestLevel} />
           </div>
           <div className="webchat__toaster__expandText">
-            {localize('TOAST_ACCORDION_OTHER', sortedNotificationsWithChildren.length)}
+            {localizeWithPlural(TOAST_ACCORDION_IDS, sortedNotificationsWithChildren.length)}
           </div>
           <div aria-hidden={true} className="webchat__toaster__expandIcon">
             <div className="webchat__toaster__expandIconFocus">{expanded ? <CollapseIcon /> : <ExpandIcon />}</div>

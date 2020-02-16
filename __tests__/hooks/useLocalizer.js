@@ -51,3 +51,107 @@ test('should return overrode string for non-existent ID', async () => {
 
   expect(actual).toMatchInlineSnapshot(`"Something new"`);
 });
+
+describe('plural rules', () => {
+  let pageObjects;
+
+  beforeEach(async () => {
+    pageObjects = (
+      await setupWebDriver({
+        props: {
+          overrideLocalizedStrings: {
+            ZERO: 'Zero: $1',
+            ONE: 'One: $1',
+            TWO: 'Two: $1',
+            FEW: 'Few: $1',
+            MANY: 'Many: $1',
+            OTHER: 'Other: $1'
+          }
+        }
+      })
+    ).pageObjects;
+  });
+
+  test('should return plural string of one', async () => {
+    const actual = await pageObjects.runHook('useLocalizer', [{ plural: true }], localizer =>
+      localizer(
+        {
+          zero: 'ZERO',
+          one: 'ONE',
+          two: 'TWO',
+          few: 'FEW',
+          many: 'MANY',
+          other: 'OTHER'
+        },
+        1
+      )
+    );
+
+    expect(actual).toMatchInlineSnapshot(`"One: 1"`);
+  });
+
+  test('should return plural string of other', async () => {
+    const actual = await pageObjects.runHook('useLocalizer', [{ plural: true }], localizer =>
+      localizer(
+        {
+          zero: 'ZERO',
+          one: 'ONE',
+          two: 'TWO',
+          few: 'FEW',
+          many: 'MANY',
+          other: 'OTHER'
+        },
+        2
+      )
+    );
+
+    expect(actual).toMatchInlineSnapshot(`"Other: 2"`);
+  });
+
+  test('should return plural string which fallback to other', async () => {
+    const actual = await pageObjects.runHook('useLocalizer', [{ plural: true }], localizer =>
+      localizer(
+        {
+          other: 'OTHER'
+        },
+        1
+      )
+    );
+
+    expect(actual).toMatchInlineSnapshot(`"Other: 1"`);
+  });
+
+  test('should throw with "id" of string', async () => {
+    expect(
+      pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer('THIS_SHOULD_BE_MAP_INSTEAD', 1))
+    ).rejects.toThrow('useLocalizer: Plural string must pass "id" as a map instead of string.');
+  });
+
+  test('should throw with "id.one" of number', async () => {
+    expect(
+      pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ one: 123, other: 'OTHER' }, 1))
+    ).rejects.toThrow('useLocalizer: Plural string must have "id.one" of string or undefined.');
+  });
+
+  test('should throw with "id.other" not defined', async () => {
+    expect(
+      pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ one: 123 }, 1))
+    ).rejects.toThrow('useLocalizer: Plural string must have "id.other" of string.');
+  });
+
+  test('should throw with "id.unknown"', async () => {
+    expect(
+      pageObjects.runHook('useLocalizer', [{ plural: true }], localizer =>
+        localizer({ other: 'OTHER', unknown: 'UNKNOWN' }, 1)
+      )
+    ).rejects.toThrow(
+      'useLocalizer: Plural string "id" must be either "zero", "one", "two", "few", "many", "other". But not "unknown".'
+    );
+  });
+
+  test('should throw with first argument of string', async () => {
+    expect(
+      pageObjects.runHook('useLocalizer', [{ plural: true }], localizer => localizer({ other: 'OTHER' }, 'abc'))
+    ).rejects.toThrow('useLocalizer: Plural string must have first argument as a number.');
+  });
+});
