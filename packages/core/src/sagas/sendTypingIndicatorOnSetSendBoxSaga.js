@@ -25,7 +25,7 @@ function* sendTypingIndicatorOnSetSendBox() {
   }
 
   for (;;) {
-    let lastSend = 0;
+    let lastSend = -Infinity;
     const task = yield takeLatest(
       ({ payload, type }) =>
         (type === SET_SEND_BOX && payload.text) ||
@@ -46,7 +46,7 @@ function* sendTypingIndicatorOnSetSendBox() {
 
           lastSend = Date.now();
         } else if (payload.activity.type === 'message') {
-          lastSend = 0;
+          lastSend = -Infinity;
         }
       }
     );

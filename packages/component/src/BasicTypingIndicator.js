@@ -9,10 +9,11 @@ function useTypingIndicatorVisible() {
 
 const BasicTypingIndicator = () => {
   const [activeTyping] = useActiveTyping();
+  const [visible] = useTypingIndicatorVisible();
   const [typing] = useActiveTyping(Infinity);
   const renderTypingIndicator = useRenderTypingIndicator();
 
-  return renderTypingIndicator({ activeTyping, typing });
+  return renderTypingIndicator({ activeTyping, typing, visible });
 };
 
 export default BasicTypingIndicator;

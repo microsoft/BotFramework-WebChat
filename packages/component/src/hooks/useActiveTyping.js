@@ -4,29 +4,29 @@ import { useSelector } from '../WebChatReduxContext';
 import useForceRender from './internal/useForceRender';
 import useStyleOptions from './useStyleOptions';
 
-function useActiveTyping(typingAnimationDuration) {
+function useActiveTyping(expireAfter) {
   const now = Date.now();
 
-  const [{ typingAnimationDuration: typingAnimationDurationFromStyleOptions }] = useStyleOptions();
+  const [{ typingAnimationDuration }] = useStyleOptions();
   const forceRender = useForceRender();
   const typing = useSelector(({ typing }) => typing);
 
-  if (typeof typingAnimationDuration !== 'number') {
-    typingAnimationDuration = typingAnimationDurationFromStyleOptions;
+  if (typeof expireAfter !== 'number') {
+    expireAfter = typingAnimationDuration;
   }
 
   const activeTyping = Object.entries(typing).reduce((activeTyping, [id, { at, name, role }]) => {
-    const until = at + typingAnimationDuration;
+    const until = at + expireAfter;
 
     if (until > now) {
-      return { ...activeTyping, [id]: { end: until, name, role, start: at } };
+      return { ...activeTyping, [id]: { at, expireAt: until, name, role } };
     }
 
     return activeTyping;
   }, {});
 
-  const earliestEnd = Math.min(...Object.values(activeTyping).map(({ end }) => end)) || 0;
-  const timeToRender = earliestEnd && earliestEnd - now;
+  const earliestExpireAt = Math.min(...Object.values(activeTyping).map(({ expireAt }) => expireAt)) || 0;
+  const timeToRender = earliestExpireAt && earliestExpireAt - now;
 
   useEffect(() => {
     if (timeToRender && isFinite(timeToRender)) {

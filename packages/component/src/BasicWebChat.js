@@ -128,9 +128,9 @@ function createTypingIndicatorRenderer(additionalMiddleware) {
 
   return (...args) => {
     try {
-      return typingIndicatorMiddleware(({ activeTyping, typing }) => (
+      return typingIndicatorMiddleware(({ activeTyping, typing, visible }) => (
         <ErrorBox message="No renderer for typing indicator">
-          <pre>{JSON.stringify({ activeTyping, typing }, null, 2)}</pre>
+          <pre>{JSON.stringify({ activeTyping, typing, visible }, null, 2)}</pre>
         </ErrorBox>
       ))(...args);
     } catch ({ message, stack }) {
