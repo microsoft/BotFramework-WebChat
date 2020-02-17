@@ -12,27 +12,41 @@ import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ScrollToEndButton = ({ animating, className, sticky }) => {
-  const [direction] = useDirection();
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
-  const focusSendBox = useFocusSendBox();
-  const localize = useLocalizer();
-  const scrollToEnd = useScrollToEnd();
   const [activities] = useActivities();
+  const [direction] = useDirection();
+  const focusSendBox = useFocusSendBox();
   const handleClick = useCallback(() => {
     scrollToEnd();
     focusSendBox();
   }, [focusSendBox, scrollToEnd]);
+  const localize = useLocalizer();
+  const scrollToEnd = useScrollToEnd();
+
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
-  const lastActivityId = (activities[activities.length - 1] || {}).id;
-  const prevLastActivityIdRef = useRef(lastActivityId);
-  const { current: prevLastActivityId } = prevLastActivityIdRef;
+  // We ignore activity types other than "message"
+  const lastMessageActivity = [...activities].reverse().find(({ type }) => type === 'message');
+  const lastShownActivityId = (lastMessageActivity || {}).id;
+  const lastReadActivityIdRef = useRef(lastShownActivityId);
+
+  const { current: lastReadActivityId } = lastReadActivityIdRef;
 
   if (sticky) {
-    prevLastActivityIdRef.current = lastActivityId;
+    // If it is sticky, mark the activity ID as read.
+    lastReadActivityIdRef.current = lastShownActivityId;
   }
 
-  return !animating && !sticky && lastActivityId !== prevLastActivityId && (
+  // Don't show the button if:
+  // - The scroll bar is animating
+  //   - If not set, will cause flashy button when: 1. Scroll to top, 2. Send something, 3. The button flash when it scrolling down
+  // - It is already at the bottom (sticky)
+  // - The last activity ID has been read
+  if (animating || sticky || lastShownActivityId === lastReadActivityId) {
+    return false;
+  }
+
+  return (
     <button
       className={classNames(
         'webchat__scrollToEndButton',
