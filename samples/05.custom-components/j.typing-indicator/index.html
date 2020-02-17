@@ -48,12 +48,13 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-        window.WebChat.renderWebChat(
-          {
-            directLine: window.WebChat.createDirectLine({ token }),
-            sendTyping: true,
-            typingIndicatorMiddleware: () => next => ({ activeTyping }) => {
+        window.ReactDOM.render(
+          <ReactWebChat
+            directLine={window.WebChat.createDirectLine({ token })}
+            sendTypingIndicator={true}
+            typingIndicatorMiddleware={() => next => ({ activeTyping }) => {
               activeTyping = Object.values(activeTyping);
 
               return (
@@ -67,8 +68,8 @@
                   </span>
                 )
               );
-            }
-          },
+            }}
+          />,
           document.getElementById('webchat')
         );
 
