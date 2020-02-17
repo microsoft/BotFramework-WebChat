@@ -1,6 +1,12 @@
 import useActiveTyping from './hooks/useActiveTyping';
 import useRenderTypingIndicator from './hooks/useRenderTypingIndicator';
 
+function useTypingIndicatorVisible() {
+  const [activeTyping] = useActiveTyping();
+
+  return [!!Object.values(activeTyping).filter(({ role }) => role !== 'user').length];
+}
+
 const BasicTypingIndicator = () => {
   const [activeTyping] = useActiveTyping();
   const [typing] = useActiveTyping(Infinity);
@@ -11,4 +17,4 @@ const BasicTypingIndicator = () => {
 
 export default BasicTypingIndicator;
 
-export { useActiveTyping };
+export { useTypingIndicatorVisible };
