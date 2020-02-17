@@ -25,7 +25,7 @@ function useActiveTyping(expireAfter) {
     return activeTyping;
   }, {});
 
-  const earliestExpireAt = Math.min(...Object.values(activeTyping).map(({ expireAt }) => expireAt)) || 0;
+  const earliestExpireAt = Math.min(...Object.values(activeTyping).map(({ expireAt }) => expireAt));
   const timeToRender = earliestExpireAt && earliestExpireAt - now;
 
   useEffect(() => {
