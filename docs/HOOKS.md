@@ -604,9 +604,9 @@ useRenderTypingIndicator():
 
 This function is for rendering typing indicator for all participants. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop. The caller will pass the following arguments:
 
-- `activeTyping` lists participants who are actively typing.
-- `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
-- `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
+-  `activeTyping` lists participants who are actively typing.
+-  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
+-  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
 
 ## `useScrollToEnd`
 
