@@ -15,8 +15,8 @@ This sample shows how to customize the typing indicator
 
 # Things to try out
 
-- Type in the message box
-- Send `typing` or `typing 1` to the bot
+-  Type in the message box
+-  Send `typing` or `typing 1` to the bot
 
 # Code
 
@@ -103,9 +103,9 @@ Add the following CSS for styling the typing indicator:
 
 ```css
 .webchat__typingIndicator {
-  font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-  font-size: 14px;
-  padding: 10px;
+   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+   font-size: 14px;
+   padding: 10px;
 }
 ```
 
