@@ -41,7 +41,29 @@ describe('style options', () => {
   });
 
   test('hide scroll to bottom button', async () => {
-    const { driver, pageObjects } = await setupWebDriver();
+    const { driver, pageObjects } = await setupWebDriver({
+      createDirectLine: options => {
+        const workingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: new Observable(activityObserver => {
+            window.WebChatTest.activityObserver = activityObserver;
+
+            const subscription = workingDirectLine.activity$.subscribe({
+              complete: () => activityObserver.complete(),
+              error: value => activityObserver.error(value),
+              next: value => activityObserver.next(value)
+            });
+
+            return () => subscription.unsubscribe();
+          }),
+          connectionStatus$: workingDirectLine.connectionStatus$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          token: workingDirectLine.token
+        };
+      },
+      setup: () => window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js')
+    });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('markdown', { waitForSend: true });
@@ -49,6 +71,17 @@ describe('style options', () => {
     await driver.wait(scrollToBottomCompleted(), timeouts.ui);
 
     await pageObjects.scrollToTop();
+
+    await driver.executeScript(() => {
+      window.WebChatTest.activityObserver.next({
+        from: {
+          id: 'bot',
+          role: 'bot'
+        },
+        text: 'Hello, World!',
+        type: 'message'
+      });
+    });
 
     await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
