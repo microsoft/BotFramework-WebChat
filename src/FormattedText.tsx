@@ -23,7 +23,7 @@ export const FormattedText = (props: IFormattedTextProps) => {
 
 const renderPlainText = (text: string) => {
     const lines = text.replace('\r', '').split('\n');
-    const elements = lines.map((line, i) => <span key={i} dangerouslySetInnerHTML={{ __html: twemoji.parse(line)+'<br />' }} />);
+    const elements = lines.map((line, i) => <span key={i} dangerouslySetInnerHTML={{ __html: twemoji.parse(escapeHtml(line))+'<br />' }} />);
     return <span className="format-plain">{elements}</span>;
 }
 
@@ -78,3 +78,12 @@ const renderMarkdown = (
 
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
+
+function escapeHtml(unsafe: string) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
