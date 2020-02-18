@@ -60,7 +60,5 @@ export {
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  version,
-  // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-  setSendTyping
+  version
 };
