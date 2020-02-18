@@ -25,11 +25,6 @@ let config = {
       })
     ]
   },
-  module: {
-    // globalize was set up in a way that it is not compatible with Webpack on AMD but Bower.
-    // AMD is disabled and CommonJS used instead.
-    rules: [{ test: /globalize/i, parser: { amd: false } }]
-  },
   output: {
     filename: '[name].js',
     libraryTarget: 'umd',

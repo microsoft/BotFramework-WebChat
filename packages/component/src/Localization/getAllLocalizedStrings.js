@@ -1,6 +1,7 @@
 // Strings commented out are pending official translations
 
 import arEG from './ar-EG.json';
+import arJO from './ar-JO.json';
 import arSA from './ar-SA.json';
 import bgBG from './bg-BG.json';
 import caES from './ca-ES.json';
@@ -58,6 +59,7 @@ function getAllLocalizedStrings() {
     (localizedStrings = mergeLocalizedStrings(
       {
         'ar-EG': arEG,
+        'ar-JO': arJO,
         'ar-SA': arSA,
         'bg-BG': bgBG,
         'ca-ES': caES,

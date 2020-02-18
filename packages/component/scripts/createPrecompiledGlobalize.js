@@ -32,6 +32,9 @@ const formattersAndParsers = languages.reduce((formattersAndParsers, language) =
 const code = format(globalizeCompiler.compile(formattersAndParsers), { parser: 'babel' });
 const filename = join(__dirname, '../lib/Utils/PrecompiledGlobalize.js');
 
-writeFileSync(filename, code);
+// globalize-compiler is emitting AMD code, pointing to "globalize-runtime" instead of "globalize/dist/globalize-runtime"
+const patchedCode = code.replace(/\"globalize-runtime\//g, '"globalize/dist/globalize-runtime/');
+
+writeFileSync(filename, patchedCode);
 
 console.log(`Successfully compiled globalize to ${relative(process.cwd(), filename)}.`);
