@@ -67,7 +67,9 @@ ScrollToEndButton.defaultProps = {
 };
 
 ScrollToEndButton.propTypes = {
-  className: PropTypes.string
+  animating: PropTypes.bool.isRequired,
+  className: PropTypes.string,
+  sticky: PropTypes.bool.isRequired
 };
 
 const ConnectedScrollToEndButton = props => (
