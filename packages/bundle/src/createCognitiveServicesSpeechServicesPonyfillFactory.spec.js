@@ -45,7 +45,7 @@ test('upgrading string-based authorizationToken to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -65,7 +65,7 @@ test('upgrading Promise-based authorizationToken to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -85,7 +85,7 @@ test('upgrading function-based authorizationToken to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -105,7 +105,7 @@ test('upgrading Promise function-based authorizationToken to credentials', async
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -125,7 +125,7 @@ test('upgrading string-based subscriptionKey to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -145,7 +145,7 @@ test('upgrading string-based subscriptionKey to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -165,7 +165,7 @@ test('upgrading function-based subscriptionKey to credentials', async () => {
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
@@ -185,7 +185,7 @@ test('upgrading Promise function-based subscriptionKey to credentials', async ()
   });
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are being deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
+    `"botframework-webchat: \\"authorizationToken\\", \\"region\\", and \\"subscriptionKey\\" are deprecated and will be removed on or after 2020-12-17. Please use \\"credentials\\" instead."`
   );
 });
 
