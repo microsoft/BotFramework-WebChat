@@ -4,7 +4,6 @@
 import { call, cancel, put, select, take, takeLatest } from 'redux-saga/effects';
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
-import { SET_SEND_TYPING } from '../actions/setSendTyping';
 import { SET_SEND_TYPING_INDICATOR } from '../actions/setSendTypingIndicator';
 import { POST_ACTIVITY } from '../actions/postActivity';
 import emitTypingIndicator from '../actions/emitTypingIndicator';

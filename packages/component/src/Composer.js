@@ -196,6 +196,10 @@ const Composer = ({
   }, [dispatch, sendTimeout]);
 
   useEffect(() => {
+    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
+  }, [dispatch, sendTypingIndicator]);
+
+  useEffect(() => {
     dispatch(
       createConnectAction({
         directLine,

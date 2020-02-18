@@ -19,7 +19,6 @@ import setLanguage from './actions/setLanguage';
 import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
-import setSendTyping from './actions/setSendTyping';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
