@@ -78,6 +78,8 @@ export default function useSendFiles() {
     [
       enableUploadThumbnail,
       sendFiles,
+      trackEvent,
+      trackTiming,
       uploadThumbnailContentType,
       uploadThumbnailHeight,
       uploadThumbnailQuality,

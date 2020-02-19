@@ -1,13 +1,22 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { speechSynthesis } from './Speech/BypassSpeechSynthesisPonyfill';
 
 import useDebugDeps from './hooks/internal/useDebugDeps';
+import useLanguage from './hooks/useLanguage';
 import useTrackEvent from './hooks/useTrackEvent';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
+function useEffectWithCounter(fn, deps) {
+  const counterRef = useRef(0);
+  const cachedFn = useCallback(fn, deps);
+
+  useEffect(() => cachedFn(counterRef.current++), [cachedFn, ...deps]);
+}
+
 const Tracker = () => {
+  const [language] = useLanguage();
   const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const trackEvent = useTrackEvent();
 
@@ -23,16 +32,30 @@ const Tracker = () => {
   const speechSynthesisCapability =
     webSpeechPonyfill.speechSynthesis && webSpeechPonyfill.speechSynthesis !== speechSynthesis;
 
-  useEffect(() => {
-    trackEvent('capability.speechRecognition', { type: speechRecognitionCapability });
-  }, [trackEvent, speechRecognitionCapability]);
+  useEffectWithCounter(
+    numChange => {
+      trackEvent('prop:language', { numChange, language });
+    },
+    [language, trackEvent]
+  );
 
-  useEffect(() => {
-    trackEvent('capability.speechSynthesis', { type: speechSynthesisCapability });
-  }, [trackEvent, speechSynthesisCapability]);
+  useEffectWithCounter(
+    numChange => {
+      trackEvent('capability:speechRecognition', { numChange, type: speechRecognitionCapability });
+    },
+    [trackEvent, speechRecognitionCapability]
+  );
+
+  useEffectWithCounter(
+    numChange => {
+      trackEvent('capability:speechSynthesis', { numChange, type: speechSynthesisCapability });
+    },
+    [trackEvent, speechSynthesisCapability]
+  );
 
   useDebugDeps(
     {
+      language,
       speechRecognitionCapability,
       speechSynthesisCapability,
       trackEvent,
