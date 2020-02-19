@@ -3,17 +3,17 @@ import React from 'react';
 
 import TypingAnimation from '../../Assets/TypingAnimation';
 import useDirection from '../../hooks/useDirection';
-import useLocalize from '../../hooks/useLocalize';
+import useLocalizer from '../../hooks/useLocalizer';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const DotIndicator = () => {
   const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const animationAriaLabel = useLocalize('TypingIndicator');
+  const localize = useLocalizer();
 
   return (
     <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typingIndicator--rtl')}>
-      <TypingAnimation aria-label={animationAriaLabel} />
+      <TypingAnimation aria-label={localize('TYPING_INDICATOR_ALT')} />
     </div>
   );
 };
