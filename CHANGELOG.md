@@ -117,6 +117,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  `core-js@3.5.0`
 -  Resolves [#2748](https://github.com/microsoft/BotFramework-WebChat/issues/2748), updated build scripts and CI pipeline, by [@compulim](https://github.com/compulim), in PR [#2767](https://github.com/microsoft/BotFramework-WebChat/pull/2767)
 -  `component`: Bumps [`react-film@2.0.2`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)
+-  Removes `sendTyping` and deprecation notes in PR [#2845](https://github.com/microsoft/BotFramework-WebChat/pull/2845), by [@corinagum](https://github.com/corinagum), in PR [#2918](https://github.com/microsoft/BotFramework-WebChat/pull/2918)
 
 ### Samples
 

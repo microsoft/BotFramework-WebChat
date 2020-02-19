@@ -144,7 +144,6 @@ const Composer = ({
   selectVoice,
   sendBoxRef,
   sendTimeout,
-  sendTyping,
   sendTypingIndicator,
   styleOptions,
   styleSet,
@@ -159,18 +158,6 @@ const Composer = ({
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
-  const patchedSendTypingIndicator = useMemo(() => {
-    if (typeof sendTyping === 'undefined') {
-      return sendTypingIndicator;
-    }
-
-    // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-    console.warn(
-      'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
-    );
-
-    return sendTyping;
-  }, [sendTyping, sendTypingIndicator]);
 
   const patchedStyleOptions = useMemo(() => {
     const patchedStyleOptions = { ...styleOptions };
@@ -209,8 +196,8 @@ const Composer = ({
   }, [dispatch, sendTimeout]);
 
   useEffect(() => {
-    dispatch(setSendTypingIndicator(!!patchedSendTypingIndicator));
-  }, [dispatch, patchedSendTypingIndicator]);
+    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
+  }, [dispatch, sendTypingIndicator]);
 
   useEffect(() => {
     dispatch(
@@ -308,7 +295,7 @@ const Composer = ({
       scrollToEnd,
       selectVoice: patchedSelectVoice,
       sendBoxRef,
-      sendTypingIndicator: patchedSendTypingIndicator,
+      sendTypingIndicator,
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
@@ -332,7 +319,7 @@ const Composer = ({
       internalRenderMarkdownInline,
       patchedGrammars,
       patchedSelectVoice,
-      patchedSendTypingIndicator,
+      sendTypingIndicator,
       patchedStyleSet,
       renderMarkdown,
       scrollToEnd,
@@ -402,7 +389,6 @@ Composer.defaultProps = {
   selectVoice: undefined,
   sendBoxRef: undefined,
   sendTimeout: undefined,
-  sendTyping: undefined,
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
@@ -444,7 +430,6 @@ Composer.propTypes = {
     current: PropTypes.any
   }),
   sendTimeout: PropTypes.number,
-  sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,

@@ -4,7 +4,6 @@
 import { call, cancel, put, select, take, takeLatest } from 'redux-saga/effects';
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
-import { SET_SEND_TYPING } from '../actions/setSendTyping';
 import { SET_SEND_TYPING_INDICATOR } from '../actions/setSendTypingIndicator';
 import { POST_ACTIVITY } from '../actions/postActivity';
 import emitTypingIndicator from '../actions/emitTypingIndicator';
@@ -15,12 +14,7 @@ import whileConnected from './effects/whileConnected';
 const SEND_INTERVAL = 3000;
 
 function takeSendTypingIndicator(value) {
-  return take(
-    ({ payload, type }) =>
-      (type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value) ||
-      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      (type === SET_SEND_TYPING && !payload.sendTyping === !value)
-  );
+  return take(({ payload, type }) => type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value);
 }
 
 function* sendTypingIndicatorOnSetSendBox() {
