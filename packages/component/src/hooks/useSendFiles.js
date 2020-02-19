@@ -1,7 +1,11 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1024] }] */
+
 import { useCallback } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import useStyleOptions from '../hooks/useStyleOptions';
+import useTrackEvent from '../hooks/useTrackEvent';
+import useTrackTiming from '../hooks/useTrackTiming';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 async function makeThumbnail(file, width, height, contentType, quality) {
@@ -25,31 +29,50 @@ export default function useSendFiles() {
       uploadThumbnailWidth
     }
   ] = useStyleOptions();
+  const trackEvent = useTrackEvent();
+  const trackTiming = useTrackTiming();
 
   return useCallback(
     async files => {
       if (files && files.length) {
+        trackEvent('sendFiles', {
+          numAttachment: files.length
+        });
+
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
         //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-        sendFiles(
-          await Promise.all(
-            [].map.call(files, async file => ({
-              name: file.name,
-              size: file.size,
-              url: window.URL.createObjectURL(file),
-              ...(enableUploadThumbnail && {
-                thumbnail: await makeThumbnail(
+        const attachments = await Promise.all(
+          [].map.call(files, async file => {
+            let thumbnail;
+
+            if (enableUploadThumbnail) {
+              thumbnail = await trackTiming(
+                'makeThumbnail',
+                makeThumbnail(
                   file,
                   uploadThumbnailWidth,
                   uploadThumbnailHeight,
                   uploadThumbnailContentType,
                   uploadThumbnailQuality
                 )
-              })
-            }))
-          )
+              );
+            }
+
+            await trackEvent('sendFile', {
+              sizeInKB: Math.round(file.size / 1024)
+            });
+
+            return {
+              name: file.name,
+              size: file.size,
+              url: window.URL.createObjectURL(file),
+              ...(thumbnail && { thumbnail })
+            };
+          })
         );
+
+        sendFiles(attachments);
       }
     },
     [

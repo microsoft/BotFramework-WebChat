@@ -52,6 +52,7 @@ import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
+import Tracker from './Tracker';
 import WebChatReduxContext, { useDispatch } from './WebChatReduxContext';
 import WebChatUIContext from './WebChatUIContext';
 
@@ -164,6 +165,7 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
   scrollToEnd,
@@ -335,6 +337,7 @@ const Composer = ({
       language: patchedLanguage,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
+      onTelemetry,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
@@ -362,6 +365,7 @@ const Composer = ({
       internalMarkdownIt,
       internalRenderMarkdownInline,
       localizedGlobalize,
+      onTelemetry,
       patchedDir,
       patchedGrammars,
       patchedLanguage,
@@ -388,6 +392,7 @@ const Composer = ({
         {typeof children === 'function' ? children(context) : children}
       </SayComposer>
       <Dictation onError={dictationOnError} />
+      {onTelemetry && <Tracker />}
     </WebChatUIContext.Provider>
   );
 };
@@ -434,6 +439,7 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
   selectVoice: undefined,
@@ -474,6 +480,7 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
