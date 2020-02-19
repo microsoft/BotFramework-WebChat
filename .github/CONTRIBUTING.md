@@ -68,4 +68,4 @@ eslint and prettier will ensure that your code follows our linting guidelines wi
 
 ## Adding languages
 
-To add new language, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md).
+To add a new language to our localization list, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md).

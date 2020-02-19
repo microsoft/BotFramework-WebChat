@@ -79,11 +79,11 @@ window.WebChat.renderWebChat(
 
 This localization feature will support the following user stories:
 
--  Our strings will be automatically send thru a pipeline to Microsoft localization team, which they will translate the string and send us the pull request
+-  Web Chat UI strings will be automatically sent through a pipeline to the Microsoft localization team, which they will translate and perform a pull request for
    -  The pipeline is implemented and owned by the localization team
 -  Strings localized by Microsoft localization team will be locked down
-   -  Web Chat team can recommend more suitable strings to localization team, it will go through validation and send back as a pull request
--  Developers can override strings for their own setup of Web Chat, without forking our code
+   -  Web Chat team can recommend more suitable strings to localization team; the request will be reviewed and validated, then sent back as a pull request
+-  Developers can override strings for their own setup of Web Chat without forking our code
    -  For example, developers can change the "Type your message" placeholder text through customization
 
 In the future, if we need to redesign or reimplement this feature, we need to make sure the new version will fulfill these user stories or update them as needed.

@@ -382,7 +382,7 @@ useLocalizer({ plural: true }) => (identifiers: PluralRulesIdentifier, firstArgu
 
 Some localized strings may contains words that have multiple plural forms, for example, "1 notification" and "2 notifications".
 
-Web Chat support multiple plural forms based on [Unicode Plural Rules](http://cldr.unicode.org/index/cldr-spec/plural-rules). For a single string, you will need to specify up to 6 strings (zero, one, two, few, many, other). You must at least specify string that represent the "other" plural rule.
+Web Chat supports multiple plural forms based on [Unicode Plural Rules](http://cldr.unicode.org/index/cldr-spec/plural-rules). For a single string, you will need to specify up to 6 strings (zero, one, two, few, many, other). You must at least specify string that represent the "other" plural rule.
 
 The first argument must be a number and used to select which plural form to use. Only cardinal is supported at this time.
 
