@@ -87,24 +87,24 @@ First, implement a React component for the privacy policy toast without any logi
 
 ```js
 const PrivacyPolicyToast = () => {
-  return (
-    <div aria-label="Privacy policy" role="dialog" className="app__privacyPolicyToast">
-      <i aria-hidden={true} className="ms-Icon ms-Icon--Compare app__privacyPolicyToast__icon" />
-      <span>
-        Do you consent to our{' '}
-        <a href="https://privacy.microsoft.com/" rel="noopener noreferrer" target="_blank">
-          privacy policy
-        </a>
-        ?
-      </span>
-      <button className="app__privacyPolicyToast__button" type="button">
-        Yes
-      </button>{' '}
-      <button className="app__privacyPolicyToast__button" type="button">
-        No
-      </button>
-    </div>
-  );
+   return (
+      <div aria-label="Privacy policy" role="dialog" className="app__privacyPolicyToast">
+         <i aria-hidden={true} className="ms-Icon ms-Icon--Compare app__privacyPolicyToast__icon" />
+         <span>
+            Do you consent to our{' '}
+            <a href="https://privacy.microsoft.com/" rel="noopener noreferrer" target="_blank">
+               privacy policy
+            </a>
+            ?
+         </span>
+         <button className="app__privacyPolicyToast__button" type="button">
+            Yes
+         </button>{' '}
+         <button className="app__privacyPolicyToast__button" type="button">
+            No
+         </button>
+      </div>
+   );
 };
 ```
 
@@ -114,57 +114,57 @@ Then, style the toast using the following CSS:
 
 ```css
 @font-face {
-  font-family: 'FabricMDL2Icons';
-  src: url('data:application/octet-stream;base64,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')
-    format('truetype');
+   font-family: 'FabricMDL2Icons';
+   src: url('data:application/octet-stream;base64,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')
+      format('truetype');
 }
 
 .ms-Icon {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-family: 'FabricMDL2Icons';
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
+   -moz-osx-font-smoothing: grayscale;
+   -webkit-font-smoothing: antialiased;
+   display: inline-block;
+   font-family: 'FabricMDL2Icons';
+   font-style: normal;
+   font-weight: normal;
+   speak: none;
 }
 
 .ms-Icon--Compare:before {
-  content: '\F057';
+   content: '\F057';
 }
 
 .app__privacyPolicyToast {
-  align-items: center;
-  color: #105e7d;
-  display: flex;
-  font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-  font-size: 14px;
-  height: 100%;
+   align-items: center;
+   color: #105e7d;
+   display: flex;
+   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+   font-size: 14px;
+   height: 100%;
 }
 
 .app__privacyPolicyToast__icon {
-  text-align: center;
-  width: 36px;
+   text-align: center;
+   width: 36px;
 }
 
 .app__privacyPolicyToast__button {
-  appearance: none;
-  background-color: rgba(255, 255, 255, 0.8);
-  border: solid 1px rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
-  color: initial;
-  font-family: inherit;
-  font-size: inherit;
-  margin: 0 0 0 4px;
-  outline: 0;
+   appearance: none;
+   background-color: rgba(255, 255, 255, 0.8);
+   border: solid 1px rgba(0, 0, 0, 0.3);
+   border-radius: 3px;
+   color: initial;
+   font-family: inherit;
+   font-size: inherit;
+   margin: 0 0 0 4px;
+   outline: 0;
 }
 
 .app__privacyPolicyToast__button:hover {
-  background-color: rgba(0, 0, 0, 0.12);
+   background-color: rgba(0, 0, 0, 0.12);
 }
 
 .app__privacyPolicyToast__button:focus {
-  border-color: rgba(0, 0, 0, 0.7);
+   border-color: rgba(0, 0, 0, 0.7);
 }
 ```
 
@@ -337,9 +337,9 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
-- [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usesetnotification)
-- [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usedismissnotification)
+-  [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
+-  [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usesetnotification)
+-  [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usedismissnotification)
 
 ## Full list of Web Chat hosted samples
 
