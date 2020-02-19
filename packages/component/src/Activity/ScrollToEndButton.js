@@ -16,12 +16,13 @@ const ScrollToEndButton = ({ animating, className, sticky }) => {
   const [activities] = useActivities();
   const [direction] = useDirection();
   const focusSendBox = useFocusSendBox();
+  const localize = useLocalizer();
+  const scrollToEnd = useScrollToEnd();
+
   const handleClick = useCallback(() => {
     scrollToEnd();
     focusSendBox();
   }, [focusSendBox, scrollToEnd]);
-  const localize = useLocalizer();
-  const scrollToEnd = useScrollToEnd();
 
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
