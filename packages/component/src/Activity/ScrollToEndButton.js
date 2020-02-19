@@ -25,7 +25,7 @@ const ScrollToEndButton = ({ animating, className, sticky }) => {
 
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
-  // We ignore activity types other than "message"
+  // Ignore activity types other than "message"
   const lastMessageActivity = [...activities].reverse().find(({ type }) => type === 'message');
   const lastShownActivityId = (lastMessageActivity || {}).id;
   const lastReadActivityIdRef = useRef(lastShownActivityId);
@@ -39,7 +39,7 @@ const ScrollToEndButton = ({ animating, className, sticky }) => {
 
   // Don't show the button if:
   // - The scroll bar is animating
-  //   - If not set, will cause flashy button when: 1. Scroll to top, 2. Send something, 3. The button flash when it scrolling down
+  //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
   // - It is already at the bottom (sticky)
   // - The last activity ID has been read
   if (animating || sticky || lastShownActivityId === lastReadActivityId) {
