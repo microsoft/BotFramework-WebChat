@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../../../connectToWebChat';
+import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocusSendBox from '../../../hooks/useFocusSendBox';
-import useLocalize from '../../../hooks/useLocalize';
+import useLocalizer from '../../../hooks/useLocalizer';
 import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
 
@@ -33,8 +34,12 @@ const connectSendStatus = (...selectors) =>
 const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
+  const localize = useLocalizer();
   const postActivity = usePostActivity();
-  const localizedSending = useLocalize('Sending');
+
+  const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');
+
+  const label = localize('ACTIVITY_STATUS_SEND_STATUS_ALT', sendingText);
 
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
@@ -46,9 +51,10 @@ const SendStatus = ({ activity, sendState }) => {
 
   return (
     <React.Fragment>
+      <ScreenReaderText text={label} />
       <span aria-hidden={true} className={sendStatusStyleSet}>
         {sendState === SENDING ? (
-          localizedSending
+          sendingText
         ) : sendState === SEND_FAILED ? (
           <SendFailedRetry onRetryClick={handleRetryClick} />
         ) : (
@@ -66,7 +72,7 @@ SendStatus.propTypes = {
       state: PropTypes.string
     })
   }).isRequired,
-  sendState: PropTypes.string.isRequired
+  sendState: PropTypes.oneOf([SENDING, SEND_FAILED]).isRequired
 };
 
 export default SendStatus;

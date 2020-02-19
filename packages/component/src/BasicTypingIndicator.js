@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import TypingAnimation from './Assets/TypingAnimation';
 import useDirection from './hooks/useDirection';
 import useLastTypingAt from './hooks/useLastTypingAt';
-import useLocalize from './hooks/useLocalize';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -36,15 +35,13 @@ function useTypingIndicatorVisible() {
 
 const TypingIndicator = () => {
   const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
-  const [showTyping] = useTypingIndicatorVisible();
-
   const [direction] = useDirection();
-  const animationAriaLabel = useLocalize('TypingIndicator');
+  const [showTyping] = useTypingIndicatorVisible();
 
   return (
     showTyping && (
       <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' ? 'rtl' : '')}>
-        <TypingAnimation aria-label={animationAriaLabel} />
+        <TypingAnimation />
       </div>
     )
   );

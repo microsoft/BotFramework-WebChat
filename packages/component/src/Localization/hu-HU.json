@@ -1,0 +1,14 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "CONNECTIVITY_STATUS_ALT_SLOW_CONNECTION": "",
+  "CONNECTIVITY_STATUS_ALT_FATAL": "",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "nem sikerült elküldeni, [próbálja újra][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "küldés",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Figyelés…",
+  "TEXT_INPUT_PLACEHOLDER": "Írja be üzenetét",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Küldés",
+  "RECEIPT_CARD_TAX": "Adó",
+  "RECEIPT_CARD_TOTAL": "Összesen",
+  "RECEIPT_CARD_VAT": "ÁFA"
+}

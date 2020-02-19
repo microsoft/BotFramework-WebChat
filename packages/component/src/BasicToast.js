@@ -12,7 +12,7 @@ import randomId from './Utils/randomId';
 import ScreenReaderText from './ScreenReaderText';
 import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import useLocalize from './hooks/useLocalize';
+import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -26,9 +26,8 @@ const ROOT_CSS = css({
 const BasicToast = ({ notification: { alt, id, level, message } }) => {
   const [{ toast: toastStyleSet }] = useStyleSet();
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
-  const dismissButtonText = useLocalize('TOAST_DISMISS_BUTTON');
+  const localize = useLocalizer();
   const dismissNotification = useDismissNotification();
-  const toastTitleAlt = useLocalize('TOAST_TITLE_ALT');
   const renderMarkdownInline = useInternalRenderMarkdownInline();
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
@@ -37,7 +36,7 @@ const BasicToast = ({ notification: { alt, id, level, message } }) => {
   return (
     <div
       aria-describedby={contentId}
-      aria-label={toastTitleAlt}
+      aria-label={localize('TOAST_TITLE_ALT')}
       className={classNames(ROOT_CSS + '', toastStyleSet + '', {
         'webchat__toast--error': level === 'error',
         'webchat__toast--info': level === 'info',
@@ -52,7 +51,7 @@ const BasicToast = ({ notification: { alt, id, level, message } }) => {
       {!!alt && <ScreenReaderText text={alt} />}
       <div aria-hidden={!!alt} className="webchat__toast__text" dangerouslySetInnerHTML={html} id={contentId} />
       <button
-        aria-label={dismissButtonText}
+        aria-label={localize('TOAST_DISMISS_BUTTON')}
         className="webchat__toast__dismissButton"
         onClick={handleDismiss}
         type="button"

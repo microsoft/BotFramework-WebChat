@@ -14,9 +14,9 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
-import useLocalizeDate from '../hooks/useLocalizeDate';
+import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -87,6 +87,8 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
+  const formatDate = useDateFormatter();
+  const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {
@@ -104,18 +106,13 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const plainText = remarkStripMarkdown(text);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
-  const botRoleLabel = useLocalize('BotSent');
-  const userRoleLabel = useLocalize('UserSent');
-
-  const roleLabel = fromUser ? botRoleLabel : userRoleLabel;
-
-  const botAriaLabel = useLocalize('Bot said something', initials, plainText);
-  const userAriaLabel = useLocalize('User said something', initials, plainText);
-  const sentAtTimestamp = useLocalize('SentAt') + useLocalizeDate(timestamp);
-
-  const someoneSaidString = (fromUser ? userAriaLabel : botAriaLabel).trim();
-
-  const ariaLabel = someoneSaidString + (someoneSaidString.endsWith('.') ? '' : '.') + ' ' + sentAtTimestamp;
+  const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
+  const ariaLabel = localize(
+    fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
+    initials,
+    plainText,
+    formatDate(timestamp)
+  ).trim();
 
   return (
     <div

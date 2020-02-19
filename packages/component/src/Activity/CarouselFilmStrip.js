@@ -15,7 +15,7 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -91,15 +91,13 @@ const WebChatCarouselFilmStrip = ({
   nextVisibleActivity,
   scrollableRef
 }) => {
-  const [{ initials: botInitials }] = useAvatarForBot();
-  const [{ initials: userInitials }] = useAvatarForUser();
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
-  const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
-
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const botRoleLabel = useLocalize('BotSent');
-  const userRoleLabel = useLocalize('UserSent');
+  const localize = useLocalizer();
+  const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
 
   const {
     attachments = [],
@@ -114,7 +112,7 @@ const WebChatCarouselFilmStrip = ({
   const strippedActivityDisplayText = remarkStripMarkdown(activityDisplayText);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
-  const roleLabel = fromUser ? userRoleLabel : botRoleLabel;
+  const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
 
   return (
     <div

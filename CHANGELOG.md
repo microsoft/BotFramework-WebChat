@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  Localization
+   -  `locale` prop: `zh-YUE` has been renamed to `yue` to conform with Unicode standard. `zh-YUE` will continue to work with warnings
+   -  Most strings have been validated and retranslated by the Microsoft localization team, with the exception of English (US), Egyptian Arabic, Jordan Arabic, and Chinese Yue
+      -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md#overriding-localization-strings) for customization
+      -  String IDs have been refreshed and now use a standard format
+   -  `useLocalize` and `useLocalizeDate` is deprecated. Please use `useLocalizer` and `useDateFormatter` instead
+
 ### Added
 
 -  Resolves [#2753](https://github.com/microsoft/BotFramework-WebChat/issues/2753). Added support for updating an activity by the ID, by [@compulim](https://github.com/compulim) in PR [#2825](https://github.com/microsoft/BotFramework-WebChat/pull/2825)
@@ -29,10 +38,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2720](https://github.com/microsoft/BotFramework-WebChat/issues/2720), added customizable activity status using `activityStatusMiddleware` props, by [@compulim](https://github.com/compulim), in PR [#2788](https://github.com/microsoft/BotFramework-WebChat/pull/2788)
 -  Added default `onError` prop to the `Dictation` component, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2866](https://github.com/microsoft/BotFramework-WebChat/pull/2866)
 -  Resolves [#1976](https://github.com/microsoft/BotFramework-WebChat/issues/1976). Added RTL support with localization for Hebrew and Arabic, by [@corinagum](https://github.com/corinagum), in PR [#2890](https://github.com/microsoft/BotFramework-WebChat/pull/2890)
--  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755), added notification system and toast UI, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755). Added notification system and toast UI, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
    -  Please read [this article on how to use notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
    -  Slow connection timer can now be set using `styleOptions.slowConnectionAfter` (in milliseconds)
--  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871), moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871). Moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2756](https://github.com/microsoft/BotFramework-WebChat/issues/2756). Improved localizability and add override support for localized strings, by [@compulim](https://github.com/compulim) in PR [#2894](https://github.com/microsoft/BotFramework-WebChat/pull/2894)
+   -  Will be translated into 44 languages, plus 2 community-contributed translations
+   -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 
 ### Fixed
 
@@ -69,13 +81,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped all dependencies to latest versions, by [@corinagum](https://github.com/corinagum) in PR [#2740](https://github.com/microsoft/BotFramework-WebChat/pull/2740)
    -  Development dependencies
       -  Root package
-         -  `@babel/plugin-proposal-class-properties@7.7.4`
-         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
-         -  `@babel/plugin-transform-runtime@7.7.6`
-         -  `@babel/preset-env@7.7.6`
-         -  `@babel/preset-react@7.7.4`
-         -  `@babel/preset-typescript@7.7.4`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/plugin-proposal-class-properties@7.8.3`
+         -  `@babel/plugin-proposal-object-rest-spread@7.8.3`
+         -  `@babel/plugin-transform-runtime@7.8.3`
+         -  `@babel/preset-env@7.8.4`
+         -  `@babel/preset-react@7.8.3`
+         -  `@babel/preset-typescript@7.8.3`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
          -  `coveralls@3.0.9`
          -  `husky@3.1.0`
@@ -83,14 +95,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  `lerna@3.19.0`
          -  `lint-staged@9.5.0`
       -  Other packages
-         -  `@babel/cli@7.7.5`
-         -  `@babel/core@7.7.5`
-         -  `@babel/plugin-proposal-class-properties@7.7.4`
-         -  `@babel/plugin-proposal-object-rest-spread@7.7.4`
-         -  `@babel/plugin-transform-runtime@7.7.6`
-         -  `@babel/preset-env@7.7.6`
-         -  `@babel/preset-react@7.7.4`
-         -  `@babel/preset-typescript@7.7.4`
+         -  `@babel/cli@7.8.4`
+         -  `@babel/core@7.8.4`
+         -  `@babel/plugin-proposal-class-properties@7.8.3`
+         -  `@babel/plugin-proposal-object-rest-spread@7.8.3`
+         -  `@babel/plugin-transform-runtime@7.8.3`
+         -  `@babel/preset-env@7.8.4`
+         -  `@babel/preset-react@7.8.3`
+         -  `@babel/preset-typescript@7.8.3`
          -  `@types/node@12.12.18`
          -  `@types/react@16.8.25`
          -  `@typescript-eslint/eslint-plugin@2.12.0`
@@ -107,13 +119,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `core`
          -  `math-random@1.0.4`
       -  `bundle`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
          -  `sanitize-html@1.20.0`
       -  `component`
          -  `sanitize-html@1.20.1`
       -  `embed`
-         -  `@babel/runtime@7.7.6`
+         -  `@babel/runtime@7.8.4`
          -  `core-js@3.5.0`
 -  Resolves [#2748](https://github.com/microsoft/BotFramework-WebChat/issues/2748), updated build scripts and CI pipeline, by [@compulim](https://github.com/compulim), in PR [#2767](https://github.com/microsoft/BotFramework-WebChat/pull/2767)
 -  `component`: Bumps [`react-film@2.0.2`](https://npmjs.com/package/react-film/), by [@tdurnford](https://github.com/tdurnford) in PR [#2801](https://github.com/microsoft/BotFramework-WebChat/pull/2801)

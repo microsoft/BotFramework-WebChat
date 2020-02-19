@@ -1,0 +1,12 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Neizdevās nosūtīt, [Mēģināt vēlreiz][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Nosūtīšana",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Klausoties…",
+  "TEXT_INPUT_PLACEHOLDER": "Ierakstiet savu ziņu",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Sūtīt",
+  "RECEIPT_CARD_TAX": "Nodoklis",
+  "RECEIPT_CARD_TOTAL": "Kopsumma",
+  "RECEIPT_CARD_VAT": "VAT"
+}

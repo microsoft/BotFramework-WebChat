@@ -65,3 +65,7 @@ npm run eslint
 ```
 
 eslint and prettier will ensure that your code follows our linting guidelines without too much effort. If you have any questions about this process, please feel free to leave comments in your Pull Request.
+
+## Adding languages
+
+To add a new language to our localization list, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md).

@@ -1,13 +1,13 @@
 import { css } from 'glamor';
-import { format } from 'bytes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useByteFormatter from '../hooks/useByteFormatter';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -27,13 +27,15 @@ const ROOT_CSS = css({
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
-  const formattedSize = typeof size === 'number' && format(size);
+  const formatByte = useByteFormatter();
+
+  const localizedSize = typeof size === 'number' && formatByte(size);
 
   return (
     <React.Fragment>
       <div aria-hidden={true} className="webchat__fileContent__badge">
         <div className="webchat__fileContent__fileName">{fileName}</div>
-        {!!formattedSize && <div className="webchat__fileContent__size">{formattedSize}</div>}
+        {!!localizedSize && <div className="webchat__fileContent__size">{localizedSize}</div>}
       </div>
       {downloadIcon && (
         <DownloadIcon
@@ -60,16 +62,23 @@ FileContentBadge.propTypes = {
 };
 
 const FileContent = ({ className, href, fileName, size }) => {
-  const formattedSize = format(size);
-
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
+  const localize = useLocalizer();
+  const localizeBytes = useByteFormatter();
 
-  const downloadLabel = useLocalize('Download file');
-  const uploadLabel = useLocalize('Upload file');
-  const downloadFileWithFileSizeLabel = useLocalize('DownloadFileWithFileSize', downloadLabel, fileName, formattedSize);
-  const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', uploadLabel, fileName, formattedSize);
+  const localizedSize = typeof size === 'number' && localizeBytes(size);
 
-  const alt = href ? downloadFileWithFileSizeLabel : uploadFileWithFileSizeLabel;
+  const alt = localize(
+    href
+      ? localizedSize
+        ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
+        : 'FILE_CONTENT_DOWNLOADABLE_ALT'
+      : localizedSize
+      ? 'FILE_CONTENT_WITH_SIZE_ALT'
+      : 'FILE_CONTENT_ALT',
+    fileName,
+    localizedSize
+  );
 
   return (
     <div

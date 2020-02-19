@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 
 import useDirection from '../hooks/useDirection';
 import useFocusSendBox from '../hooks/useFocusSendBox';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -14,6 +14,7 @@ const ScrollToEndButton = ({ className }) => {
   const [direction] = useDirection();
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const focusSendBox = useFocusSendBox();
+  const localize = useLocalizer();
   const scrollToEnd = useScrollToEnd();
 
   const handleClick = useCallback(() => {
@@ -32,7 +33,7 @@ const ScrollToEndButton = ({ className }) => {
       onClick={handleClick}
       type="button"
     >
-      {useLocalize('New messages')}
+      {localize('TRANSCRIPT_NEW_MESSAGES')}
     </button>
   );
 };

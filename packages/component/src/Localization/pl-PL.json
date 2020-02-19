@@ -1,0 +1,15 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "wysłanie nieudane, [wyślij ponownie][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "wysyłanie",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Słuchanie…",
+  "SPEECH_INPUT_STARTING": "",
+  "TEXT_INPUT_PLACEHOLDER": "Wpisz swoją wiadomość",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Wyślij",
+  "TEXT_INPUT_SPEAK_BUTTON_ALT": "Mów",
+  "TEXT_INPUT_UPLOAD_BUTTON_ALT": "Wyślij plik",
+  "RECEIPT_CARD_TAX": "Podatek",
+  "RECEIPT_CARD_TOTAL": "Razem",
+  "RECEIPT_CARD_VAT": "VAT"
+}

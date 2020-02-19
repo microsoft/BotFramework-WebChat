@@ -1,9 +1,7 @@
 import useWebChatUIContext from './useWebChatUIContext';
 
 function useInternalMarkdownIt() {
-  const { internalMarkdownIt } = useWebChatUIContext();
-
-  return [internalMarkdownIt];
+  return useWebChatUIContext().internalMarkdownItState;
 }
 
 export default useInternalMarkdownIt;

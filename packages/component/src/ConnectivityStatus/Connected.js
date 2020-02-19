@@ -1,13 +1,12 @@
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 
 const ConnectivityStatusConnected = () => {
-  const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
-  const connectedNotificationText = useLocalize('CONNECTED_NOTIFICATION');
+  const localize = useLocalizer();
 
-  return <ScreenReaderText text={connectivityStatusLabelText + connectedNotificationText} />;
+  return <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', localize('CONNECTIVITY_STATUS_ALT_CONNECTED'))} />;
 };
 
 export default ConnectivityStatusConnected;

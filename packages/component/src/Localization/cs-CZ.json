@@ -1,0 +1,14 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "nepodařilo se odeslat, [opakovat][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Odesílání",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Poslouchám…",
+  "TEXT_INPUT_PLACEHOLDER": "Napište svou zprávu",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Odeslat",
+  "TEXT_INPUT_SPEAK_BUTTON_ALT": "Použít hlas",
+  "TEXT_INPUT_UPLOAD_BUTTON_ALT": "Nahrát soubor",
+  "RECEIPT_CARD_TAX": "Daň z prod.",
+  "RECEIPT_CARD_TOTAL": "Celkem",
+  "RECEIPT_CARD_VAT": "DPH"
+}

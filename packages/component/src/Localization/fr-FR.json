@@ -1,0 +1,23 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_TIMESTAMP_JUST_NOW": "À l'instant",
+  "ACTIVITY_STATUS_TIMESTAMP_ONE_MINUTE_AGO": "À l'instant",
+  "ACTIVITY_STATUS_TIMESTAMP_ONE_HOUR_AGO": "À l'instant",
+  "ACTIVITY_STATUS_TIMESTAMP_TODAY": "À l'instant",
+  "ACTIVITY_STATUS_TIMESTAMP_YESTERDAY": "À l'instant",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Échec d'envoi, [Réessayer][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Envoi…",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Écoute…",
+  "SPEECH_INPUT_STARTING": "Démarrage…",
+  "TEXT_INPUT_PLACEHOLDER": "Saisissez votre message",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Envoyer",
+  "TEXT_INPUT_SPEAK_BUTTON_ALT": "Parlez",
+  "TEXT_INPUT_UPLOAD_BUTTON_ALT": "Envoyer fichier",
+  "TRANSCRIPT_NEW_MESSAGES": "Nouveaux messages",
+  "CAROUSEL_FLIPPER_LEFT_ALT": "Gauche",
+  "CAROUSEL_FLIPPER_RIGHT_ALT": "Droite",
+  "RECEIPT_CARD_TAX": "Taxe",
+  "RECEIPT_CARD_TOTAL": "Total",
+  "RECEIPT_CARD_VAT": "TVA"
+}
