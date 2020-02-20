@@ -101,6 +101,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSubmitSendBox`](#usesubmitsendbox)
 -  [`useSuggestedActions`](#usesuggestedactions)
 -  [`useTimeoutForSend`](#usetimeoutforsend)
+-  [`useTrackDimension`](#usetrackdimension)
+-  [`useTrackEvent`](#usetrackevent)
+-  [`useTrackException`](#usetrackexception)
+-  [`useTrackTiming`](#usetracktiming)
 -  [`useUserID`](#useuserid)
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
@@ -926,3 +930,38 @@ This function derives the visibility of the typing indicator via:
 
 -  `typingAnimationDuration` value specified in style options, in milliseconds
 -  Values from the `useLastTypingAt` hook
+
+## Telemetry
+
+### `useTrackDimension`
+
+```js
+useTrackDimension(): (name: string, data?: string) => void
+```
+
+This function will add, update, or remove a dimension from telemetry. If `undefined` is passed to `value`, the dimension will be removed. This hook will not trigger `onTelemetry` handler.
+
+### `useTrackEvent`
+
+```js
+useTrackEvent(): (name: string, data?: string, value?: number) => void
+```
+
+This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered.
+
+### `useTrackException`
+
+```js
+useTrackException(): (error: Error) => void
+```
+
+This function will emit an exception measurement. When called, the `onTelemetry` handler will be triggered.
+
+### `useTrackTiming`
+
+```js
+useTrackTiming(): (name: string, fn: function) => void
+useTrackTiming(): (name: string, promise: Promise) => void
+```
+
+This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or rejct, the `onTelemetry` handler will be triggered again with a `timingend` event.

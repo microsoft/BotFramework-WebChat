@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import useReadTelemetryDimensions from './useReadTelemetryDimensions';
+import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useTrackException() {

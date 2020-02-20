@@ -2,7 +2,7 @@
 
 In Web Chat 4.8, telemetry system is introduced. Developers can opt into this feature by implementing their own telemetry collection adapter and start pumping measurements into telemetry services of their choice.
 
-Microsoft do not collect or receive any telemetry measurements for Web Chat, on both CDN and NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policy to the end-user to explain their data collection policy.
+Microsoft do not collect or receive any telemetry measurements for Web Chat on both CDN and NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policy to the end-user to explain their data collection policy and provide a prompt.
 
 ## Measurements
 
@@ -56,6 +56,8 @@ The following operations are timed:
 
 ## Data collection
 
+> For data collection, you must comply to your local regulations and may often need to provide a privacy policy to your end-user.
+
 To collect measurements, you will need to pass an `onTelemetry` handler as a prop to Web Chat. The event emitted will be one of the types below:
 
 ```ts
@@ -90,38 +92,18 @@ interface TelemetryTimingEndMeasurementEvent extends TelemetryMeasurementEvent {
 }
 ```
 
+Web Chat may emit a large number of dimensions and measurements to your `onTelemetry` handler. As your telemetry service provider may limit number of dimensions and measurements for a single session or property, you are advised to pick and choose the data you needed before transmitting them to your provider.
+
 ## Hooks
 
 To emit custom measurements through the `onTelemetry` handler, you can use one of the following hooks.
 
-### Events
+- [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
+- [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackevent) to emit an event
+- [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackexception) to emit an exception
+- [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
 
-```ts
-useTrackEvent() =>
-  (
-    name: string,
-    data?: string
-  ) => void;
-```
-
-### Exceptions
-
-```ts
-useTrackException() =>
-  (
-    error: Exception
-  ) => void;
-```
-
-### Timing
-
-```ts
-useTrackTiming() =>
-  (
-    name: string
-  ) =>
-    (() => void | Promise);
-```
+Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#telemetry) for API references.
 
 ## Samples
 

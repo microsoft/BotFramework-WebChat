@@ -311,21 +311,21 @@ const Composer = ({
   }, [patchedLocalizedStrings]);
 
   const trackDimension = useCallback(
-    (name, value) => {
+    (name, data) => {
       if (!name || typeof name !== 'string') {
         return console.warn('botframework-webchat: Telemetry dimension name must be a string. Ignoring.');
       }
 
-      const type = typeof value;
+      const type = typeof data;
 
       if (type !== 'string' && type !== 'undefined') {
-        return console.warn('botframework-webchat: Telemetry dimension value must be a string or undefined. Ignoring.');
+        return console.warn('botframework-webchat: Telemetry dimension data must be a string or undefined. Ignoring.');
       }
 
       telemetryDimensionsRef.current = updateIn(
         telemetryDimensionsRef.current,
         [name],
-        type === 'undefined' ? value : () => value
+        type === 'undefined' ? data : () => data
       );
     },
     [telemetryDimensionsRef]

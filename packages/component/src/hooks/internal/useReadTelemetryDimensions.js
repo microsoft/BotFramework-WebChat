@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useReadTelemetryDimensions() {
   const { telemetryDimensionsRef } = useWebChatUIContext();

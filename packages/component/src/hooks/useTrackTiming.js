@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import randomId from '../Utils/randomId';
-import useReadTelemetryDimensions from './useReadTelemetryDimensions';
+import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useTrackTiming() {
@@ -30,19 +30,21 @@ export default function useTrackTiming() {
       onTelemetry && onTelemetry(timingStartEvent);
 
       const startTime = Date.now();
-      const result = await (typeof functionOrPromise === 'function' ? functionOrPromise() : functionOrPromise);
-      const duration = Date.now() - startTime;
 
-      const timingEndEvent = new Event('timingend');
+      try {
+        return await (typeof functionOrPromise === 'function' ? functionOrPromise() : functionOrPromise);
+      } finally {
+        const duration = Date.now() - startTime;
 
-      timingEndEvent.dimensions = readTelemetryDimensions();
-      timingEndEvent.duration = duration;
-      timingEndEvent.name = name;
-      timingStartEvent.timingId = timingId;
+        const timingEndEvent = new Event('timingend');
 
-      onTelemetry && onTelemetry(timingEndEvent);
+        timingEndEvent.dimensions = readTelemetryDimensions();
+        timingEndEvent.duration = duration;
+        timingEndEvent.name = name;
+        timingStartEvent.timingId = timingId;
 
-      return result;
+        onTelemetry && onTelemetry(timingEndEvent);
+      }
     },
     [onTelemetry]
   );
