@@ -169,6 +169,13 @@
             envelope.isStorageUseDisabled = true;
 
             // TODO: Add conversation ID to session ID
+
+            // envelope.authenticatedUserId = '...';
+            // envelope.context.user.id = '...';
+            // envelope.context.session.id = '...';
+            // envelope.context.application.ver = '...';
+            // envelope.context.application.build = '...';
+            // envelope.context.device.language = '...';
           });
         }
 
@@ -185,7 +192,8 @@
             anonymize_ip: true,
             cookie_update: false,
             custom_map: {
-              dimension1: 'prop:locale'
+              dimension1: 'version',
+              dimension2: 'prop:locale'
             },
             user_id: 'john-doe'
           });

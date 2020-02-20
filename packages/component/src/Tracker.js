@@ -6,7 +6,6 @@ import { speechSynthesis } from './Speech/BypassSpeechSynthesisPonyfill';
 import useDebugDeps from './hooks/internal/useDebugDeps';
 import useLanguage from './hooks/useLanguage';
 import useTrackDimension from './hooks/useTrackDimension';
-import useTrackEvent from './hooks/useTrackEvent';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 function useEffectWithCounter(fn, deps) {
@@ -20,7 +19,6 @@ const Tracker = () => {
   const [language] = useLanguage();
   const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const trackDimension = useTrackDimension();
-  const trackEvent = useTrackEvent();
 
   // TODO: Track how many of them customized the following:
   // - activityMiddleware
@@ -46,16 +44,16 @@ const Tracker = () => {
 
   useEffect(() => {
     // TODO: Differentiate between Cognitive Services and browser speech
-    trackDimension('capability:speechRecognition', !!speechRecognitionCapability + '');
+    trackDimension('prop:speechRecognition', !!speechRecognitionCapability + '');
   }, [trackDimension, speechRecognitionCapability]);
 
   useEffect(() => {
     // TODO: Differentiate between Cognitive Services and browser speech
-    trackDimension('capability:speechSynthesis', !!speechSynthesisCapability + '');
+    trackDimension('prop:speechSynthesis', !!speechSynthesisCapability + '');
   }, [trackDimension, speechSynthesisCapability]);
 
   useEffect(() => {
-    trackDimension('capability:downscaleImage:webWorker', !!supportWorker() + '');
+    trackDimension('capability:downscaleImage:workerType', supportWorker() ? 'web worker' : 'main');
   }, [trackDimension]);
 
   useDebugDeps(
@@ -63,7 +61,6 @@ const Tracker = () => {
       language,
       speechRecognitionCapability,
       speechSynthesisCapability,
-      trackEvent,
       webSpeechPonyfill
     },
     '<Tracker>'
