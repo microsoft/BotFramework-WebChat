@@ -8,7 +8,7 @@ export default function useSubmitSendBox() {
   return (...args) => {
     const [method = 'keyboard'] = args;
 
-    trackEvent('submitSendBox', { method });
+    trackEvent('submitSendBox', method);
 
     return submitSendBox(...args);
   };

@@ -35,9 +35,7 @@ export default function useSendFiles() {
   return useCallback(
     async files => {
       if (files && files.length) {
-        trackEvent('sendFiles', {
-          numAttachment: files.length
-        });
+        trackEvent('sendFiles');
 
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
@@ -58,10 +56,6 @@ export default function useSendFiles() {
                 )
               );
             }
-
-            await trackEvent('sendFile', {
-              sizeInKB: Math.round(file.size / 1024)
-            });
 
             return {
               name: file.name,

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Collect telemetry using Google Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
+    <script src="/webchat.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119462943-6"></script>
+    <script type="text/javascript">
+      var sdkInstance = 'appInsightsSDK';
+      window[sdkInstance] = 'appInsights';
+      var aiName = window[sdkInstance],
+        aisdk =
+          window[aiName] ||
+          (function(e) {
+            function n(e) {
+              t[e] = function() {
+                var n = arguments;
+                t.queue.push(function() {
+                  t[e].apply(t, n);
+                });
+              };
+            }
+            var t = { config: e };
+            t.initialize = !0;
+            var i = document,
+              a = window;
+            setTimeout(function() {
+              var n = i.createElement('script');
+              (n.src = e.url || 'https://az416426.vo.msecnd.net/scripts/b/ai.2.min.js'),
+                i.getElementsByTagName('script')[0].parentNode.appendChild(n);
+            });
+            try {
+              t.cookie = i.cookie;
+            } catch (e) {}
+            (t.queue = []), (t.version = 2);
+            for (
+              var r = ['Event', 'PageView', 'Exception', 'Trace', 'DependencyData', 'Metric', 'PageViewPerformance'];
+              r.length;
+
+            )
+              n('track' + r.pop());
+            n('startTrackPage'), n('stopTrackPage');
+            var s = 'Track' + r[0];
+            if (
+              (n('start' + s),
+              n('stop' + s),
+              n('addTelemetryInitializer'),
+              n('setAuthenticatedUserContext'),
+              n('clearAuthenticatedUserContext'),
+              n('flush'),
+              (t.SeverityLevel = { Verbose: 0, Information: 1, Warning: 2, Error: 3, Critical: 4 }),
+              !(
+                !0 === e.disableExceptionTracking ||
+                (e.extensionConfig &&
+                  e.extensionConfig.ApplicationInsightsAnalytics &&
+                  !0 === e.extensionConfig.ApplicationInsightsAnalytics.disableExceptionTracking)
+              ))
+            ) {
+              n('_' + (r = 'onerror'));
+              var o = a[r];
+              (a[r] = function(e, n, i, a, s) {
+                var c = o && o(e, n, i, a, s);
+                return !0 !== c && t['_' + r]({ message: e, url: n, lineNumber: i, columnNumber: a, error: s }), c;
+              }),
+                (e.autoExceptionInstrumented = !0);
+            }
+            return t;
+          })({
+            instrumentationKey: '4fddb9d8-2f69-4b67-b6a8-21222ea963d1'
+          });
+      (window[aiName] = aisdk), aisdk.queue && 0 === aisdk.queue.length && aisdk.trackPageView({});
+    </script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function() {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        initializeGoogleAnalytics();
+        initializeApplicationInsights();
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const directLine = window.WebChat.createDirectLine({ token });
+
+        const handleTelemetry = event => {
+          const { data, dimensions, duration, error, name, type } = event;
+
+          console.group(`onTelemetry ("${type}")`);
+          console.log({ name, data, dimensions, duration, error });
+          console.groupEnd();
+
+          if (type === 'event') {
+            appInsights.trackEvent({
+              name,
+              properties: { ...dimensions, data }
+            });
+
+            gtag('event', name, {
+              ...dimensions,
+              event_label: data
+            });
+          } else if (type === 'exception') {
+            gtag('event', 'exception', { description: error });
+
+            appInsights.trackException({ exception: error });
+          } else if (type === 'timingstart') {
+            appInsights.startTrackEvent(name);
+          } else if (type === 'timingend') {
+            gtag('event', 'timing_complete', { name, value: duration });
+
+            // Application Insights modify the "dimensions" argument. We clone it to prevent it from being modified.
+            appInsights.stopTrackEvent(name, { ...dimensions });
+          }
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            onTelemetry: handleTelemetry
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+
+        // Integration with Google Analytics
+
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+
+        function initializeApplicationInsights() {
+          appInsights.addTelemetryInitializer(envelope => {
+            envelope.accountId = 'john-doe';
+            envelope.disableExceptionTracking = true;
+            envelope.disableAjaxTracking = true;
+            envelope.disableCorrelationHeaders = true;
+            envelope.isCookieUseDisabled = true;
+            envelope.isStorageUseDisabled = true;
+          });
+        }
+
+        function initializeGoogleAnalytics() {
+          window.dataLayer = window.dataLayer || [];
+
+          gtag('js', new Date());
+
+          // This sample focus on integration only. We do not want to collect any of your data when you use this sample.
+          // We are anonymizing your identity as much as we know.
+          gtag('config', 'UA-119462943-6', {
+            allow_ad_personalization_signals: false,
+            allow_google_signals: false,
+            anonymize_ip: true,
+            cookie_update: false,
+            custom_map: {
+              dimension1: 'prop:locale'
+            },
+            user_id: 'john-doe'
+          });
+        }
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

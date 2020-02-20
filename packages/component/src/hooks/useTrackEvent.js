@@ -1,29 +1,29 @@
 import { useCallback } from 'react';
 
+import useReadTelemetryDimensions from './useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
-
-function isObject(obj) {
-  return [].toString.call(obj) === '[object Object]';
-}
 
 export default function useTrackEvent() {
   const { onTelemetry } = useWebChatUIContext();
+  const readTelemetryDimensions = useReadTelemetryDimensions();
 
   return useCallback(
-    (name, dataOrValue) => {
+    (name, data) => {
       if (!name || typeof name !== 'string') {
-        return console.warn('botframework-webchat: "name" passed to "useTrackEvent" hook must be a string.');
-      }
-
-      const type = typeof dataOrValue;
-
-      if (type !== 'number' && type !== 'undefined' && !isObject(dataOrValue)) {
+        return console.warn('botframework-webchat: "name" passed to "useTrackEvent" hook must be a string. Ignoring.');
+      } else if (typeof data !== 'string' && typeof data === 'undefined') {
         return console.warn(
-          `botframework-webchat: "dataOrValue" passed to "useTrackEvent" must be of a number, plain object, or undefined. Ignoring event "${type}".`
+          'botframework-webchat: "data" passed to "useTrackEvent" hook must be a string or undefined. Ignoring.'
         );
       }
 
-      onTelemetry && onTelemetry('event', name, dataOrValue);
+      const event = new Event('event');
+
+      event.data = data;
+      event.dimensions = readTelemetryDimensions();
+      event.name = name;
+
+      onTelemetry && onTelemetry(event);
     },
     [onTelemetry]
   );

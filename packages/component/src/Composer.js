@@ -8,7 +8,8 @@ import { css } from 'glamor';
 import { Provider } from 'react-redux';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import updateIn from 'simple-update-in';
 
 import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
 import isObject from './Utils/isObject';
@@ -182,6 +183,7 @@ const Composer = ({
   webSpeechPonyfillFactory
 }) => {
   const dispatch = useDispatch();
+  const telemetryDimensionsRef = useRef({});
   const [referenceGrammarID] = useReferenceGrammarID();
   const [dictateAbortable, setDictateAbortable] = useState();
 
@@ -308,6 +310,27 @@ const Composer = ({
     );
   }, [patchedLocalizedStrings]);
 
+  const trackDimension = useCallback(
+    (name, value) => {
+      if (!name || typeof name !== 'string') {
+        return console.warn('botframework-webchat: Telemetry dimension name must be a string. Ignoring.');
+      }
+
+      const type = typeof value;
+
+      if (type !== 'string' && type !== 'undefined') {
+        return console.warn('botframework-webchat: Telemetry dimension value must be a string or undefined. Ignoring.');
+      }
+
+      telemetryDimensionsRef.current = updateIn(
+        telemetryDimensionsRef.current,
+        [name],
+        type === 'undefined' ? value : () => value
+      );
+    },
+    [telemetryDimensionsRef]
+  );
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -344,8 +367,10 @@ const Composer = ({
       sendBoxRef,
       sendTypingIndicator,
       setDictateAbortable,
+      trackDimension,
       styleOptions,
       styleSet: patchedStyleSet,
+      telemetryDimensionsRef,
       toastRenderer,
       typingIndicatorRenderer,
       userID,
@@ -377,7 +402,9 @@ const Composer = ({
       scrollToEnd,
       sendBoxRef,
       setDictateAbortable,
+      trackDimension,
       styleOptions,
+      telemetryDimensionsRef,
       toastRenderer,
       typingIndicatorRenderer,
       userID,

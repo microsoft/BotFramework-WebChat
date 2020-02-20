@@ -1,19 +1,26 @@
 import { useCallback } from 'react';
 
+import useReadTelemetryDimensions from './useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useTrackException() {
   const { onTelemetry } = useWebChatUIContext();
+  const readTelemetryDimensions = useReadTelemetryDimensions();
 
   return useCallback(
     error => {
       if (!(error instanceof Error)) {
         return console.warn(
-          `botframework-webchat: useTrackException can only track exception of type Error, ignoring exception.`
+          'botframework-webchat: "error" passed to "useTrackException" must be specified and of type Error. Ignoring.'
         );
       }
 
-      onTelemetry && onTelemetry('exception', error);
+      const event = new Event('exception');
+
+      event.dimensions = { ...readTelemetryDimensions() };
+      event.error = error;
+
+      onTelemetry && onTelemetry(event);
     },
     [onTelemetry]
   );

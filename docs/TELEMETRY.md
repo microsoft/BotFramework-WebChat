@@ -1,6 +1,6 @@
 # Telemetry system
 
-## Type of metrics
+## Type of measurements
 
 ### Events
 
@@ -14,7 +14,7 @@
 onTelemetry(
   'event',
   name: string,
-  dataOrValue?: object | number
+  data?: string
 ) => void;
 
 onTelemetry(
@@ -23,9 +23,14 @@ onTelemetry(
 ) => void;
 
 onTelemetry(
-  'timing',
+  'timingstart',
+  name: string
+) => void;
+
+onTelemetry(
+  'timingend',
   name: string,
-  processingTime: number
+  duration: number
 ) => void;
 ```
 
@@ -39,7 +44,7 @@ onTelemetry(
 useTrackEvent() =>
   (
     name: string,
-    dataOrValue?: object | number
+    data?: string
   ) => void;
 ```
 
@@ -59,5 +64,12 @@ useTrackTiming() =>
   (
     name: string
   ) =>
-    () => void;
+    (() => void | Promise);
 ```
+
+## Samples
+
+### Google Analytics
+
+- 20 custom dimensions
+- 500 event hits per session
