@@ -1,3 +1,4 @@
+import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
@@ -28,6 +29,8 @@ import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
+import useRenderToast from './useRenderToast';
+import useRenderTypingIndicator from './useRenderTypingIndicator';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
@@ -57,6 +60,7 @@ import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 
 export {
+  useActiveTyping,
   useActivities,
   useAvatarForBot,
   useAvatarForUser,
@@ -89,6 +93,8 @@ export {
   useRenderActivityStatus,
   useRenderAttachment,
   useRenderMarkdownAsHTML,
+  useRenderToast,
+  useRenderTypingIndicator,
   useScrollToEnd,
   useSendBoxSpeechInterimsVisible,
   useSendBoxValue,

@@ -16,6 +16,7 @@ import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddle
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
+import createCoreTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
@@ -122,12 +123,35 @@ function createToastRenderer(additionalMiddleware) {
   };
 }
 
+function createTypingIndicatorRenderer(additionalMiddleware) {
+  const typingIndicatorMiddleware = concatMiddleware(additionalMiddleware, createCoreTypingIndicatorMiddleware())({});
+
+  return (...args) => {
+    try {
+      return typingIndicatorMiddleware(({ activeTyping, typing, visible }) => (
+        <ErrorBox message="No renderer for typing indicator">
+          <pre>{JSON.stringify({ activeTyping, typing, visible }, null, 2)}</pre>
+        </ErrorBox>
+      ))(...args);
+    } catch ({ message, stack }) {
+      console.error({ message, stack });
+
+      return (
+        <ErrorBox message="Failed to render typing indicator">
+          <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
+        </ErrorBox>
+      );
+    }
+  };
+}
+
 const BasicWebChat = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentMiddleware,
   className,
   toastMiddleware,
+  typingIndicatorMiddleware,
   ...otherProps
 }) => {
   const sendBoxRef = useRef();
@@ -137,6 +161,9 @@ const BasicWebChat = ({
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
   const toastRenderer = useMemo(() => createToastRenderer(toastMiddleware), [toastMiddleware]);
+  const typingIndicatorRenderer = useMemo(() => createTypingIndicatorRenderer(typingIndicatorMiddleware), [
+    typingIndicatorMiddleware
+  ]);
 
   return (
     <Composer
@@ -145,6 +172,7 @@ const BasicWebChat = ({
       attachmentRenderer={attachmentRenderer}
       sendBoxRef={sendBoxRef}
       toastRenderer={toastRenderer}
+      typingIndicatorRenderer={typingIndicatorRenderer}
       {...otherProps}
     >
       {({ styleSet }) => (
