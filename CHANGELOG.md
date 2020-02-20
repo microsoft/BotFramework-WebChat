@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2756](https://github.com/microsoft/BotFramework-WebChat/issues/2756). Improved localizability and add override support for localized strings, by [@compulim](https://github.com/compulim) in PR [#2894](https://github.com/microsoft/BotFramework-WebChat/pull/2894)
    -  Will be translated into 44 languages, plus 2 community-contributed translations
    -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
+-  Added localization for 44 languages, by [@LiweiMa](https://github.com/LiweiMa), in PR [#2929](https://github.com/microsoft/BotFramework-WebChat/pull/2929   
 
 ### Fixed
 
