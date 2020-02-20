@@ -80,7 +80,8 @@
 
           // The following code is needed only for Web Chat < 4.8.
           // Starting from 4.8, we will support the newer "credentials" option, which is preferred over "authorizationToken" and "region".
-          authorizationToken: () => fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
+          authorizationToken: () =>
+            fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
           region: fetchSpeechServicesCredentials().then(({ region }) => region)
         });
 

@@ -25,7 +25,7 @@ function* sendTypingIndicatorOnSetSendBox() {
   }
 
   for (;;) {
-    let lastSend = 0;
+    let lastSend = -Infinity;
     const task = yield takeLatest(
       ({ payload, type }) =>
         (type === SET_SEND_BOX && payload.text) ||
@@ -34,7 +34,7 @@ function* sendTypingIndicatorOnSetSendBox() {
         // When the user type, and then post the activity at t = 1500, we still have a pending typing indicator at t = 3000.
         // This code is to cancel the typing indicator at t = 3000.
         (type === POST_ACTIVITY && payload.activity.type !== 'typing'),
-      function*({ type }) {
+      function*({ payload, type }) {
         if (type === SET_SEND_BOX) {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 
@@ -45,6 +45,8 @@ function* sendTypingIndicatorOnSetSendBox() {
           yield put(emitTypingIndicator());
 
           lastSend = Date.now();
+        } else if (payload.activity.type === 'message') {
+          lastSend = -Infinity;
         }
       }
     );

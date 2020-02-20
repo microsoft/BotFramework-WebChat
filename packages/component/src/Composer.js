@@ -174,6 +174,7 @@ const Composer = ({
   styleOptions,
   styleSet,
   toastRenderer,
+  typingIndicatorRenderer,
   userID,
   username,
   webSpeechPonyfillFactory
@@ -343,6 +344,7 @@ const Composer = ({
       styleOptions,
       styleSet: patchedStyleSet,
       toastRenderer,
+      typingIndicatorRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -373,6 +375,7 @@ const Composer = ({
       setDictateAbortable,
       styleOptions,
       toastRenderer,
+      typingIndicatorRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -440,6 +443,7 @@ Composer.defaultProps = {
   styleOptions: {},
   styleSet: undefined,
   toastRenderer: undefined,
+  typingIndicatorRenderer: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -482,6 +486,7 @@ Composer.propTypes = {
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
   toastRenderer: PropTypes.func,
+  typingIndicatorRenderer: PropTypes.func,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

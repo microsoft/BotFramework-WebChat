@@ -2,10 +2,11 @@ export default function createTypingIndicatorStyle({ paddingRegular }) {
   return {
     paddingBottom: paddingRegular,
 
-    '&:not(.rtl)': {
+    '&:not(.webchat__typingIndicator--rtl)': {
       paddingLeft: paddingRegular
     },
-    '&.rtl': {
+
+    '&.webchat__typingIndicator--rtl': {
       paddingRight: paddingRegular
     }
   };

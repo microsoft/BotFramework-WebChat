@@ -1,52 +1,21 @@
-import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
-
-import TypingAnimation from './Assets/TypingAnimation';
-import useDirection from './hooks/useDirection';
-import useLastTypingAt from './hooks/useLastTypingAt';
-import useStyleOptions from './hooks/useStyleOptions';
-import useStyleSet from './hooks/useStyleSet';
+import useActiveTyping from './hooks/useActiveTyping';
+import useRenderTypingIndicator from './hooks/useRenderTypingIndicator';
 
 function useTypingIndicatorVisible() {
-  const [lastTypingAt] = useLastTypingAt();
+  const [activeTyping] = useActiveTyping();
 
-  const [{ typingAnimationDuration }] = useStyleOptions();
-
-  const last = Math.max(Object.values(lastTypingAt));
-  const typingAnimationTimeRemaining = last ? Math.max(0, typingAnimationDuration - Date.now() + last) : 0;
-
-  const [value, setValue] = useState(typingAnimationTimeRemaining > 0);
-
-  useEffect(() => {
-    let timeout;
-
-    if (typingAnimationTimeRemaining > 0) {
-      setValue(true);
-      timeout = setTimeout(() => setValue(false), typingAnimationTimeRemaining);
-    } else {
-      setValue(false);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [typingAnimationTimeRemaining]);
-
-  return [value];
+  return [!!Object.values(activeTyping).filter(({ role }) => role !== 'user').length];
 }
 
-const TypingIndicator = () => {
-  const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
-  const [direction] = useDirection();
-  const [showTyping] = useTypingIndicatorVisible();
+const BasicTypingIndicator = () => {
+  const [activeTyping] = useActiveTyping();
+  const [visible] = useTypingIndicatorVisible();
+  const [typing] = useActiveTyping(Infinity);
+  const renderTypingIndicator = useRenderTypingIndicator();
 
-  return (
-    showTyping && (
-      <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' ? 'rtl' : '')}>
-        <TypingAnimation />
-      </div>
-    )
-  );
+  return renderTypingIndicator({ activeTyping, typing, visible });
 };
 
-export default TypingIndicator;
+export default BasicTypingIndicator;
 
 export { useTypingIndicatorVisible };

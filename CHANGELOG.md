@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md#overriding-localization-strings) for customization
       -  String IDs have been refreshed and now use a standard format
    -  `useLocalize` and `useLocalizeDate` is deprecated. Please use `useLocalizer` and `useDateFormatter` instead
+-  Customizable typing indicator: data and hook related to typing indicator are being revamped in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
+   -  `lastTypingAt` reducer is deprecated, use `typing` instead. The newer reducer contains typing indicator from the user
+   -  `useLastTypingAt()` hook is deprecated, use `useActiveTyping(duration?: number)` instead. For all typing information, pass `Infinity` to `duration` argument
 
 ### Added
 
@@ -46,6 +49,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Will be translated into 44 languages, plus 2 community-contributed translations
    -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 -  Added localization for 44 languages, by [@LiweiMa](https://github.com/LiweiMa), in PR [#2929](https://github.com/microsoft/BotFramework-WebChat/pull/2929   
+
+-  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added customization for typing activity, by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
+
 
 ### Fixed
 
@@ -138,6 +144,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bump samples to Web Chat 4.7.0, by [@compulim](https://github.com/compulim) in PR [#2726](https://github.com/microsoft/BotFramework-WebChat/issues/2726)
 -  Resolves [#2641](https://github.com/microsoft/BotFramework-WebChat/issues/2641). Reorganize Web Chat samples, by [@corinagum](https://github.com/corinagum), in PR [#2762](https://github.com/microsoft/BotFramework-WebChat/pull/2762)
 -  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755), added "how to use notification and customize the toast UI" sample, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
+-  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added [Customize Typing Indicator Demo](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/j.typing-indicator), by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
 
 ## [4.7.1] - 2019-12-13
 
