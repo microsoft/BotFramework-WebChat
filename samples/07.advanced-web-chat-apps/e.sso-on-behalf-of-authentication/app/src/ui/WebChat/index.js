@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import ReactWebChat, { createDirectLine, createStore, hooks } from 'botframework-webchat';
+import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 
 import OAuthContext from '../../oauth/Context';
 import fetchJSON from '../../utils/fetchJSON';

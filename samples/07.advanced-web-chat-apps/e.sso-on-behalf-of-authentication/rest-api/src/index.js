@@ -32,7 +32,6 @@ server.use(restify.plugins.queryParser());
 const proxy = httpProxy.createProxyServer();
 
 // Registering routes.
-server.get('/api/aad/oauth/authorize', require('./routes/aad/oauth/authorize'));
 server.get('/api/aad/oauth/callback', require('./routes/aad/oauth/callback'));
 server.get('/api/aad/settings', require('./routes/aad/settings'));
 server.get('/api/directline/token', require('./routes/directLine/token'));

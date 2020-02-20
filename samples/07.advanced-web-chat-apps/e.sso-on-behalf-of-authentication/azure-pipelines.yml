@@ -8,7 +8,7 @@ trigger:
       - sample-sso
   paths:
     include:
-      - samples/07.advanced-web-chat-apps/b.sso-for-enterprise
+      - samples/07.advanced-web-chat-apps/e.sso-on-behalf-of-authentication
 
 steps:
   - task: DockerInstaller@0
@@ -20,7 +20,7 @@ steps:
     displayName: "Build builder container"
     inputs:
       command: build
-      Dockerfile: "samples/07.advanced-web-chat-apps/b.sso-for-enterprise/Dockerfile"
+      Dockerfile: "samples/07.advanced-web-chat-apps/e.sso-on-behalf-of-authentication/Dockerfile"
       arguments: "-t builder"
 
   - task: Docker@2
@@ -41,7 +41,7 @@ steps:
       command: rm
       arguments: "builder-image"
 
-  - bash: "cp samples/07.advanced-web-chat-apps/b.sso-for-enterprise/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile"
+  - bash: "cp samples/07.advanced-web-chat-apps/e.sso-on-behalf-of-authentication/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile"
     displayName: "Copy Dockerfile"
 
   - task: PublishBuildArtifacts@1
