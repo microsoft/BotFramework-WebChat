@@ -35,8 +35,5 @@ export default combineReducers({
   typing,
 
   // TODO: [P3] Take this deprecation code out when releasing on or after 2022-02-16
-  lastTypingAt,
-
-  // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-  sendTyping: sendTypingIndicator
+  lastTypingAt
 });
