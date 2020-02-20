@@ -108,21 +108,26 @@
         const directLine = window.WebChat.createDirectLine({ token });
 
         const handleTelemetry = event => {
-          const { data, dimensions, duration, error, name, type } = event;
+          const { data, dimensions, duration, error, name, type, value } = event;
 
           console.group(`onTelemetry ("${type}")`);
-          console.log({ name, data, dimensions, duration, error });
+          console.log({ name, data, value, dimensions, duration, error });
           console.groupEnd();
 
           if (type === 'event') {
             appInsights.trackEvent({
               name,
-              properties: { ...dimensions, data }
+              properties: {
+                ...dimensions,
+                ...(typeof data === 'undefined' ? {} : { data }),
+                ...(typeof value === 'undefined' ? {} : { value })
+              }
             });
 
             gtag('event', name, {
               ...dimensions,
-              event_label: data
+              event_label: data,
+              value
             });
           } else if (type === 'exception') {
             gtag('event', 'exception', { description: error });
@@ -162,6 +167,8 @@
             envelope.disableCorrelationHeaders = true;
             envelope.isCookieUseDisabled = true;
             envelope.isStorageUseDisabled = true;
+
+            // TODO: Add conversation ID to session ID
           });
         }
 

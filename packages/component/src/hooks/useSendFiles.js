@@ -35,6 +35,8 @@ export default function useSendFiles() {
   return useCallback(
     async files => {
       if (files && files.length) {
+        files = [].slice.call(files);
+
         trackEvent('sendFiles');
 
         // TODO: [P3] We need to find revokeObjectURL on the UI side
@@ -46,7 +48,7 @@ export default function useSendFiles() {
 
             if (enableUploadThumbnail) {
               thumbnail = await trackTiming(
-                'makeThumbnail',
+                'sendFiles:makeThumbnail',
                 makeThumbnail(
                   file,
                   uploadThumbnailWidth,
@@ -67,6 +69,13 @@ export default function useSendFiles() {
         );
 
         sendFiles(attachments);
+
+        trackEvent('sendFiles:numFile', undefined, files.length);
+        trackEvent(
+          'sendFiles:sumSizeInKB',
+          undefined,
+          Math.round(files.reduce((total, { size }) => total + size, 0) / 1024)
+        );
       }
     },
     [
