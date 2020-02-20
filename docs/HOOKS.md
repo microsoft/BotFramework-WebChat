@@ -121,9 +121,9 @@ useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 
 This function will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
 
-If the participant send a message after the typing activity, the participant will be explicitly removed from the list. If no message or typing activity is received, the participant is considered inactive and not listed in the result. To keep typing indicator active, participants should send typing activity continuously.
+If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 
-The inactivity timer can be overridden by passing the `expireAfter` argument. If `Infinity` is passed, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent typing activity, but did not send a message activity afterward.
+The `expireAfter` argument can override the inactivity timer. If `expireAfter` is `Infinity`, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent a typing activity, but did not send a message activity afterward.
 
 > This hook will trigger render of your component if one or more typing information is expired or removed.
 
@@ -582,7 +582,7 @@ interface Notification {
 useRenderToast(): ({ notification: Notification }) => React.Element
 ```
 
-This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter. This function is a composition of `toastMiddleware`, which is passed as a prop.
+This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter to the function. This function is a composition of `toastMiddleware`, which is passed as a prop to Web Chat.
 
 ## `useRenderTypingIndicator`
 
@@ -602,9 +602,9 @@ useRenderTypingIndicator():
   }) => React.Element
 ```
 
-This function is for rendering typing indicator for all participants. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop. The caller will pass the following arguments:
+This function is for rendering typing indicator for all participants of the conversation. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop to Web Chat. The caller will pass the following arguments:
 
--  `activeTyping` lists participants who are actively typing.
+-  `activeTyping` lists of participants who are actively typing.
 -  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
 -  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
 
