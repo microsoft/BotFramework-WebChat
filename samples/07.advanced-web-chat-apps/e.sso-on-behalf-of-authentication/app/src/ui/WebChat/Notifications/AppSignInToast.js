@@ -8,9 +8,9 @@ import OAuthContext from '../../../oauth/Context';
 const { useDismissNotification, useSetNotification } = hooks;
 
 export const AppSignInToast = ({ notification }) => {
+  const { id } = notification;
   const { onSignIn } = useContext(OAuthContext);
   const [authenticating, setAuthenticating] = useState();
-  const { id } = notification;
 
   const dismissNotification = useDismissNotification();
   const setNotification = useSetNotification();

@@ -48,7 +48,7 @@ const WebChat = () => {
   const toastMiddleware = useCallback(
     () => next => ({ notification, ...otherArgs }) => {
       const { id } = notification;
-      console.log(id);
+
       if (id === 'signin') {
         return onSignIn ? (
           <AppSignInToast notification={notification} />

@@ -7,24 +7,19 @@ import OAuthContext from '../../../oauth/Context';
 
 const { useActivities, useDismissNotification, usePostActivity, useSetNotification } = hooks;
 
-const AUTHENTICATING = 'AUTHENTICATING';
-const AUTHENTICATION_PENDING = 'AUTHENTICATION_PENDING';
-
 export const BotSignInToast = ({ notification }) => {
   const {
     data: { content },
     id
   } = notification;
-  const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
+  const [authenticating, setAuthenticating] = useState();
   const { acquireToken, getAccount, onSignIn } = useContext(OAuthContext);
-  const [authenticationStatus, setAuthenticationStatus] = useState(AUTHENTICATION_PENDING);
+  const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
   const { current: invokeId } = useRef(
     Math.random()
       .toString(36)
       .substr(2, 10)
   );
-
-  console.log(content);
 
   const [activities] = useActivities();
   const dismissNotification = useDismissNotification();
@@ -73,10 +68,10 @@ export const BotSignInToast = ({ notification }) => {
   }, [activities]);
 
   useEffect(() => {
-    if (authenticationStatus === AUTHENTICATING) {
+    if (authenticating) {
       (async function() {
         try {
-          const token = await exchangeToken('api://61598522-abf1-49ba-bbb4-3fb89f4ad9a6/ReadUser');
+          const token = await exchangeToken(uri /** 'api://61598522-abf1-49ba-bbb4-3fb89f4ad9a6/ReadUser' */);
           token &&
             postActivity({
               channelData: { invokeId },
@@ -99,17 +94,17 @@ export const BotSignInToast = ({ notification }) => {
         }
       })();
     }
-  }, [authenticationStatus]);
+  }, [authenticating]);
 
   const handleAgreeClick = useCallback(() => {
-    authenticationStatus !== AUTHENTICATING && setAuthenticationStatus(AUTHENTICATING);
-  }, [authenticationStatus, setAuthenticationStatus]);
+    !authenticating && setAuthenticating(true);
+  }, [authenticating, setAuthenticating]);
 
   return (
     <div aria-label="Sign in" role="dialog" className="app__signInNotification">
       <i aria-hidden={true} className="ms-Icon ms-Icon--Signin app__signInNotification__icon" />
       {'Allow the bot to access your account? '}
-      {authenticationStatus === AUTHENTICATION_PENDING && (
+      {!authenticating ? (
         <React.Fragment>
           <button className="app__signInNotification__button" onClick={handleAgreeClick} type="button">
             Yes
@@ -118,8 +113,9 @@ export const BotSignInToast = ({ notification }) => {
             No
           </button>
         </React.Fragment>
+      ) : (
+        <Spinner styles={{ root: { paddingLeft: '8px' } }} />
       )}
-      {authenticationStatus === AUTHENTICATING && <Spinner styles={{ root: { paddingLeft: '8px' } }} />}
     </div>
   );
 };
