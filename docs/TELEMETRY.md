@@ -8,12 +8,12 @@ Microsoft do not collect or receive any telemetry measurements for Web Chat, on 
 
 We simplified our measurements to make it suitable for popular telemetry services:
 
-- Dimensions are environment information, including browser capabilities and options passed to Web Chat
-- Events will include a name, optional string data, and optional non-negative finite integer value
-- Exceptions will include the JavaScript error object
-- Timings will fire two events, `timingstart` and `timingend`
-   - `timingstart` will include a name
-   - `timingend` will include a name, and duration measured in milliseconds
+-  Dimensions are environment information, including browser capabilities and options passed to Web Chat
+-  Events will include a name, optional string data, and optional non-negative finite integer value
+-  Exceptions will include the JavaScript error object
+-  Timings will fire two events, `timingstart` and `timingend`
+   -  `timingstart` will include a name
+   -  `timingend` will include a name, and duration measured in milliseconds
 
 Feature updates on minor versions may introduce new or remove outdated measurements. To better understand user behaviors with different set of measurements, developers are advised to tag their telemetry data with Web Chat version.
 
@@ -22,7 +22,7 @@ Feature updates on minor versions may introduce new or remove outdated measureme
 The following information will be emitted on every measurement. Dimensions may change during the session.
 
 | Name                                   | Description                                                                              |
-|----------------------------------------|------------------------------------------------------------------------------------------|
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `prop:locale`                          | Locale specified                                                                         |
 | `prop:locale:numChange`                | Number of times locale has changed                                                       |
 | `prop:speechRecognition`               | `"false"` if speech recognition is switched off                                          |
@@ -38,7 +38,7 @@ Some telemetry services may have limited number of dimensions. For example, Goog
 When the following hooks are called, one or more event measurements will be emitted.
 
 | Hooks              | Events                  | Description                                               |
-|--------------------|-------------------------|-----------------------------------------------------------|
+| ------------------ | ----------------------- | --------------------------------------------------------- |
 | `useSendFiles`     | `sendFiles`             | Emit when the user uploading files                        |
 | `useSendFiles`     | `sendFiles:numFile`     | Number of files uploaded                                  |
 | `useSendFiles`     | `sendFiles:sumSizeInKB` | Total file size in kilobytes                              |
@@ -51,7 +51,7 @@ When the following hooks are called, one or more event measurements will be emit
 The following operations are timed:
 
 | Timing                    | Description                                                                       |
-|---------------------------|-----------------------------------------------------------------------------------|
+| ------------------------- | --------------------------------------------------------------------------------- |
 | `sendFiles:makeThumbnail` | Time used to generate thumbnail for every uploading image via `useSendFiles` hook |
 
 ## Data collection
@@ -59,30 +59,34 @@ The following operations are timed:
 To collect measurements, you will need to pass an `onTelemetry` handler as a prop to Web Chat. The event emitted will be one of the types below:
 
 ```ts
-interface TelemetryEventMeasurementEvent {
-  type: 'event';
-  dimensions: any;
-  name: string;
-  data?: string;
-  value?: number;
+interface TelemetryMeasurementEvent {
+   type: string;
+   dimension: any;
 }
 
-interface TelemetryExceptionMeasurementEvent {
-  type: 'exception';
-  error: Error;
+interface TelemetryEventMeasurementEvent extends TelemetryMeasurementEvent {
+   type: 'event';
+   name: string;
+   data?: string;
+   value?: number;
 }
 
-interface TelemetryTimingStartMeasurementEvent {
-  type: 'timingstart';
-  name: string;
-  timingId: string;
+interface TelemetryExceptionMeasurementEvent extends TelemetryMeasurementEvent {
+   type: 'exception';
+   error: Error;
 }
 
-interface TelemetryTimingEndMeasurementEvent {
-  type: 'timingend';
-  name: string;
-  timingId: string;
-  duration: number;
+interface TelemetryTimingStartMeasurementEvent extends TelemetryMeasurementEvent {
+   type: 'timingstart';
+   name: string;
+   timingId: string;
+}
+
+interface TelemetryTimingEndMeasurementEvent extends TelemetryMeasurementEvent {
+   type: 'timingend';
+   name: string;
+   timingId: string;
+   duration: number;
 }
 ```
 
