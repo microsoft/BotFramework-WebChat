@@ -9,6 +9,11 @@ import { Provider } from 'react-redux';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
+import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
+import isObject from './Utils/isObject';
+import normalizeLanguage from './Utils/normalizeLanguage';
+import PrecompiledGlobalize from './Utils/PrecompiledGlobalize';
 import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
@@ -126,6 +131,26 @@ function createFocusSendBoxContext({ sendBoxRef }) {
   };
 }
 
+function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStrings) {
+  if (!overrideLocalizedStrings) {
+    return localizedStrings;
+  } else if (typeof overrideLocalizedStrings === 'function') {
+    const merged = overrideLocalizedStrings(localizedStrings, language);
+
+    if (!isObject(merged)) {
+      throw new Error('botframework-webchat: overrideLocalizedStrings function must return an object.');
+    }
+
+    return merged;
+  }
+
+  if (!isObject(overrideLocalizedStrings)) {
+    throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, an object, or falsy.');
+  }
+
+  return { ...localizedStrings, ...overrideLocalizedStrings };
+}
+
 const Composer = ({
   activityRenderer,
   activityStatusRenderer,
@@ -139,12 +164,12 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  overrideLocalizedStrings,
   renderMarkdown,
   scrollToEnd,
   selectVoice,
   sendBoxRef,
   sendTimeout,
-  sendTyping,
   sendTypingIndicator,
   styleOptions,
   styleSet,
@@ -158,19 +183,8 @@ const Composer = ({
   const [dictateAbortable, setDictateAbortable] = useState();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
+  const patchedLanguage = useMemo(() => normalizeLanguage(locale), [locale]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
-  const patchedSendTypingIndicator = useMemo(() => {
-    if (typeof sendTyping === 'undefined') {
-      return sendTypingIndicator;
-    }
-
-    // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-    console.warn(
-      'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
-    );
-
-    return sendTyping;
-  }, [sendTyping, sendTypingIndicator]);
 
   const patchedStyleOptions = useMemo(() => {
     const patchedStyleOptions = { ...styleOptions };
@@ -201,16 +215,16 @@ const Composer = ({
   }, [groupTimestamp, sendTimeout, styleOptions]);
 
   useEffect(() => {
-    dispatch(setLanguage(locale));
-  }, [dispatch, locale]);
+    dispatch(setLanguage(patchedLanguage));
+  }, [dispatch, patchedLanguage]);
 
   useEffect(() => {
     typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
   }, [dispatch, sendTimeout]);
 
   useEffect(() => {
-    dispatch(setSendTypingIndicator(!!patchedSendTypingIndicator));
-  }, [dispatch, patchedSendTypingIndicator]);
+    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
+  }, [dispatch, sendTypingIndicator]);
 
   useEffect(() => {
     dispatch(
@@ -278,6 +292,19 @@ const Composer = ({
     console.error(err);
   }, []);
 
+  const patchedLocalizedStrings = useMemo(
+    () => mergeStringsOverrides(getAllLocalizedStrings()[patchedLanguage], patchedLanguage, overrideLocalizedStrings),
+    [overrideLocalizedStrings, patchedLanguage]
+  );
+
+  const localizedGlobalize = useMemo(() => {
+    const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
+
+    return (
+      GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en-US')
+    );
+  }, [patchedLocalizedStrings]);
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -302,13 +329,16 @@ const Composer = ({
       directLine,
       disabled,
       grammars: patchedGrammars,
-      internalMarkdownIt,
+      internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
+      language: patchedLanguage,
+      localizedGlobalizeState: [localizedGlobalize],
+      localizedStrings: patchedLocalizedStrings,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
       sendBoxRef,
-      sendTypingIndicator: patchedSendTypingIndicator,
+      sendTypingIndicator,
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
@@ -323,16 +353,19 @@ const Composer = ({
       attachmentRenderer,
       cardActionContext,
       dictateAbortable,
-      patchedDir,
       directLine,
       disabled,
       focusSendBoxContext,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
+      localizedGlobalize,
+      patchedDir,
       patchedGrammars,
+      patchedLanguage,
+      patchedLocalizedStrings,
       patchedSelectVoice,
-      patchedSendTypingIndicator,
+      sendTypingIndicator,
       patchedStyleSet,
       renderMarkdown,
       scrollToEnd,
@@ -398,11 +431,11 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
   selectVoice: undefined,
   sendBoxRef: undefined,
   sendTimeout: undefined,
-  sendTyping: undefined,
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
@@ -437,6 +470,7 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
   selectVoice: PropTypes.func,
@@ -444,7 +478,6 @@ Composer.propTypes = {
     current: PropTypes.any
   }),
   sendTimeout: PropTypes.number,
-  sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,

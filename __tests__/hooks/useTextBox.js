@@ -27,7 +27,6 @@ test('calling submit should scroll to end', async () => {
 
   await pageObjects.scrollToTop();
 
-  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[1]('Hello, World!'));

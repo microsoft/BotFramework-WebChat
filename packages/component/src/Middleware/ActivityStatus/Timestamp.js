@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import AbsoluteTime from '../../Utils/AbsoluteTime';
-import RelativeTime from '../../Utils/RelativeTime';
+import AbsoluteTime from './AbsoluteTime';
+import RelativeTime from './RelativeTime';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 
@@ -13,7 +13,7 @@ const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, classNa
 
   timestampStyleSet &&
     console.warn(
-      'Web Chat: styleSet.timestamp is being deprecated. Please use styleSet.sendStatus. This deprecation migration will be removed on or after December 31, 2021.'
+      'botframework-webchat: "styleSet.timestamp" is deprecated. Please use "styleSet.sendStatus". This deprecation migration will be removed on or after December 31, 2021.'
     );
 
   return (

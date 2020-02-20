@@ -26,24 +26,6 @@ test('Send typing indicator', async () => {
   await driver.wait(typingActivityReceived(), timeouts.directLine);
 });
 
-// TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-test('Send typing indicator using deprecated props', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    props: { sendTyping: true }
-  });
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.sendMessageViaSendBox('echo-typing', { waitForSend: true });
-
-  const input = await driver.findElement(By.css('input[type="text"]'));
-
-  await input.sendKeys('ABC');
-
-  // Typing indicator takes longer to come back
-  await driver.wait(typingActivityReceived(), timeouts.directLine);
-});
-
 test('typing indicator should display in SendBox', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { typingAnimationBackgroundImage } } });
 

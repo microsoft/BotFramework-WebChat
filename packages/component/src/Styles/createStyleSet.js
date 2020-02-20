@@ -79,7 +79,7 @@ export default function createStyleSet(options) {
 
   if (bubbleBorder) {
     console.warn(
-      'Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.'
+      'botframework-webchat: "styleSet.bubbleBorder" is deprecated and will be removed on or after 2020-07-17. Please use "bubbleBorderColor", "bubbleBorderStyle", and, "bubbleBorderWidth.'
     );
 
     const { color, style, width } = parseBorder(bubbleBorder);
@@ -99,7 +99,7 @@ export default function createStyleSet(options) {
 
   if (bubbleFromUserBorder) {
     console.warn(
-      'Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.'
+      'botframework-webchat: "styleSet.bubbleFromUserBorder" is deprecated and will be removed on or after 2020-07-17. Please use "bubbleFromUserBorderColor", "bubbleFromUserBorderStyle", and, "bubbleFromUserBorderWidth".'
     );
 
     const { color, style, width } = parseBorder(bubbleFromUserBorder);
@@ -119,7 +119,7 @@ export default function createStyleSet(options) {
 
   if (suggestedActionBorder) {
     console.warn(
-      'Web Chat: styleSet.suggestedActionBorder is being deprecated. Please use suggestedActionBorderColor, suggestedActionBorderStyle, and, suggestedActionBorderWidth.'
+      'botframework-webchat: "styleSet.suggestedActionBorder" is deprecated and will be removed on or after 2020-09-11. Please use "suggestedActionBorderColor", "suggestedActionBorderStyle", and, "suggestedActionBorderWidth".'
     );
 
     const { color, style, width } = parseBorder(suggestedActionBorder);
@@ -139,7 +139,7 @@ export default function createStyleSet(options) {
 
   if (suggestedActionDisabledBorder) {
     console.warn(
-      'Web Chat: styleSet.suggestedActionDisabledBorder is being deprecated. Please use suggestedActionDisabledBorderColor, suggestedActionDisabledBorderStyle, and, suggestedActionDisabledBorderWidth.'
+      'botframework-webcaht: "styleSet.suggestedActionDisabledBorder" is deprecated and will be removed on or after 2020-09-11. Please use "suggestedActionDisabledBorderColor", "suggestedActionDisabledBorderStyle", and, "suggestedActionDisabledBorderWidth".'
     );
 
     const { color, style, width } = parseBorder(suggestedActionDisabledBorder);

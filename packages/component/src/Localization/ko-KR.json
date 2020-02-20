@@ -1,0 +1,12 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "전송할 수 없습니다. [재전송하세요][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "전송중",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "수신중…",
+  "TEXT_INPUT_PLACEHOLDER": "메세지를 입력하세요",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "전송",
+  "RECEIPT_CARD_TAX": "세액",
+  "RECEIPT_CARD_TOTAL": "합계",
+  "RECEIPT_CARD_VAT": "부가세"
+}

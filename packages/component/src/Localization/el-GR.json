@@ -1,0 +1,12 @@
+{
+  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "αποτυχία, [δοκιμή][RETRY].",
+  "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "αποστολή",
+  "FILE_CONTENT_ALT": "'$1'",
+  "SPEECH_INPUT_LISTENING": "Ακούγοντας…",
+  "TEXT_INPUT_PLACEHOLDER": "Πληκτρολόγηση μηνύματος",
+  "TEXT_INPUT_SEND_BUTTON_ALT": "Αποστολή",
+  "RECEIPT_CARD_TAX": "ΦΠΑ",
+  "RECEIPT_CARD_TOTAL": "Σύνολο",
+  "RECEIPT_CARD_VAT": "VAT"
+}

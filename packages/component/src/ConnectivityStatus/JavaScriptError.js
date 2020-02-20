@@ -4,18 +4,19 @@ import React from 'react';
 import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import useDirection from '../hooks/useDirection';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ConnectivityStatusJavaScriptError = () => {
   const [{ errorNotification: errorNotificationStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const connectivityStatusLabelText = useLocalize('ConnectivityStatus');
-  const renderErrorNotificationText = useLocalize('RENDER_ERROR_NOTIFICATION');
+  const localize = useLocalizer();
+
+  const renderErrorNotificationText = localize('CONNECTIVITY_STATUS_ALT_RENDER_ERROR');
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={connectivityStatusLabelText + renderErrorNotificationText} />
+      <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', renderErrorNotificationText)} />
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', errorNotificationStyleSet + '')}

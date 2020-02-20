@@ -1,7 +1,9 @@
 import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
+import useByteFormatter from './useByteFormatter';
 import useConnectivityStatus from './useConnectivityStatus';
+import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
@@ -14,12 +16,14 @@ import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastTypingAt from './useLastTypingAt';
-import useLocalize from './useLocalize';
-import useLocalizeDate from './useLocalizeDate';
+import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
+import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
+import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
+import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
@@ -56,7 +60,9 @@ export {
   useActivities,
   useAvatarForBot,
   useAvatarForUser,
+  useByteFormatter,
   useConnectivityStatus,
+  useDateFormatter,
   useDebouncedNotifications,
   useDictateInterims,
   useDictateState,
@@ -71,12 +77,14 @@ export {
   useLastTypingAt,
   useLocalize,
   useLocalizeDate,
+  useLocalizer,
   useMarkActivityAsSpoken,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
+  useRelativeTimeFormatter,
   useRenderActivity,
   useRenderActivityStatus,
   useRenderAttachment,

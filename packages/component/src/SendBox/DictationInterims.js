@@ -10,7 +10,7 @@ import { Constants } from 'botframework-webchat-core';
 import connectToWebChat from '../connectToWebChat';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
-import useLocalize from '../hooks/useLocalize';
+import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -36,13 +36,11 @@ const DictationInterims = ({ className }) => {
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
-
-  const listeningText = useLocalize('Listening\u2026');
-  const startingText = useLocalize('Starting\u2026');
+  const localize = useLocalizer();
 
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
-      {dictateState === STARTING && startingText}
+      {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
     </p>
   ) : (
     dictateState === DICTATING &&
@@ -57,7 +55,7 @@ const DictationInterims = ({ className }) => {
         </p>
       ) : (
         <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
-          {listeningText}
+          {localize('SPEECH_INPUT_LISTENING')}
         </p>
       ))
   );

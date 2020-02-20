@@ -52,7 +52,9 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 -  [`useAvatarForBot`](#useavatarforbot)
 -  [`useAvatarForUser`](#useavatarforuser)
+-  [`useByteFormatter`](#useByteFormatter)
 -  [`useConnectivityStatus`](#useconnectivitystatus)
+-  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
@@ -65,12 +67,14 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
 -  [`useLastTypingAt`](#uselasttypingat)
--  [`useLocalize`](#uselocalize)
+-  [`useLocalize`](#uselocalize) (Deprecated)
+-  [`useLocalizer`](#useLocalizer)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
+-  [`useRelativeTimeFormatter`](#useRelativeTimeFormatter)
 -  [`useRenderActivity`](#userenderactivity)
 -  [`useRenderActivityStatus`](#userenderactivitystatus)
 -  [`useRenderAttachment`](#userenderattachment)
@@ -152,6 +156,16 @@ This function will return the image and initials of the user. Both image and ini
 
 To set the avatar for the user, change the props passed to Web Chat via style options.
 
+## `useByteFormatter`
+
+> New in 4.9.0.
+
+```js
+useByteFormatter() => (bytes: number) => string
+```
+
+This function will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+
 ## `useConnectivityStatus`
 
 ```js
@@ -168,6 +182,16 @@ This function will return the Direct Line connectivity status:
 -  `reconnecting`: Reconnecting after interruption
 -  `sagaerror`: Errors on JavaScript renderer; please see the browser's console
 -  `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
+
+## `useDateFormatter`
+
+> New in 4.9.0.
+
+```js
+useDateFormatter() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
 
 ## `useDebouncedNotification`
 
@@ -289,11 +313,17 @@ To control the `groupTimestamp` state, change the props passed to Web Chat via s
 
 ## `useLanguage`
 
-```js
-useLanguage(): [string]
+```ts
+type LanguageOptions = 'speech';
+
+useLanguage(options?: LanguageOptions): [string]
 ```
 
 This function will return the language of the UI. All UI components should honor this value.
+
+If no options are passed, the return value will be the written language.
+
+If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
 To modify this value, change the value in the `locale` prop passed to Web Chat.
 
@@ -315,9 +345,66 @@ This property is computed on every incoming activity.
 useLocalize(identifier: string) => string
 ```
 
+> This function is deprecated. Developers should migrate to [`useLocalizer`](#useLocalizer).
+
 This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useLocalizer`
+
+> New in 4.9.0.
+
+```js
+interface LocalizerOptions {
+  plural: Boolean;
+}
+
+useLocalizer(options: LocalizerOptions) => (identifier: string, ...arguments: string[]) => string
+```
+
+This function, when called, will return a localized string represented by the identifier and its arguments. It honors the language settings from the `useLanguage` hook.
+
+### Plural form
+
+```js
+interface PluralRulesIdentifier {
+  zero?: string,
+  one?: string,
+  two?: string,
+  few?: string,
+  many?: string,
+  other: string
+}
+
+useLocalizer({ plural: true }) => (identifiers: PluralRulesIdentifier, firstArgument: number, ...otherArguments: string[]) => string
+```
+
+Some localized strings may contains words that have multiple plural forms, for example, "1 notification" and "2 notifications".
+
+Web Chat supports multiple plural forms based on [Unicode Plural Rules](http://cldr.unicode.org/index/cldr-spec/plural-rules). For a single string, you will need to specify up to 6 strings (zero, one, two, few, many, other). You must at least specify string that represent the "other" plural rule.
+
+The first argument must be a number and used to select which plural form to use. Only cardinal is supported at this time.
+
+```js
+const localize = useLocalize({ plural: true });
+
+// The following code will print "2 notifications" to console.
+
+console.log(
+   localize(
+      {
+         zero: 'No notifications',
+         one: 'A notification',
+         two: '$1 notifications',
+         few: '$1 notifications',
+         many: '$1 notifications',
+         other: '$1 notifications'
+      },
+      2
+   )
+);
+```
 
 ## `useMarkActivityAsSpoken`
 
@@ -380,6 +467,16 @@ useReferenceGrammarId(): [string]
 When called, this function will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
 
 This value is not controllable and is passed to Web Chat from the Direct Line channel.
+
+## `useRelativeTimeFormatter`
+
+> New in 4.9.0.
+
+```js
+useRelativeTimeFormatter() => (dateOrString: (Date | number | string)) => string
+```
+
+This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useRenderActivity`
 

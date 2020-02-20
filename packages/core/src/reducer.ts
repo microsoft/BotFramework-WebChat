@@ -31,8 +31,5 @@ export default combineReducers({
   sendTimeout,
   sendTypingIndicator,
   shouldSpeakIncomingActivity,
-  suggestedActions,
-
-  // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-  sendTyping: sendTypingIndicator
+  suggestedActions
 });
