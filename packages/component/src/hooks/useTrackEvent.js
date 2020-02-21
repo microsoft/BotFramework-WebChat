@@ -21,16 +21,18 @@ export default function useTrackEvent() {
         return console.warn('botframework-webchat: "name" passed to "useTrackEvent" hook must be a string.');
       }
 
-      if (isObject(data)) {
-        if (!Object.values(data).every(value => isNonNegativeFiniteNumberOrString(value))) {
+      if (typeof data !== 'undefined') {
+        if (isObject(data)) {
+          if (!Object.values(data).every(value => isNonNegativeFiniteNumberOrString(value))) {
+            return console.warn(
+              'botframework-webchat: Every value in "data" map passed to "useTrackEvent" hook must be a non-negative finite number or string.'
+            );
+          }
+        } else if (!isNonNegativeFiniteNumberOrString(data)) {
           return console.warn(
-            'botframework-webchat: Every value in "data" map passed to "useTrackEvent" hook must be a non-negative finite number or string.'
+            'botframework-webchat: "data" passed to "useTrackEvent" hook must be a non-negative finite number or string.'
           );
         }
-      } else if (!isNonNegativeFiniteNumberOrString(data)) {
-        return console.warn(
-          'botframework-webchat: "data" passed to "useTrackEvent" hook must be a non-negative finite number or string.'
-        );
       }
 
       const event = new Event('event');

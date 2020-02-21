@@ -100,11 +100,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      window['ga-disable-UA-119462943-6'] = true;
-
-      appInsights.addTelemetryInitializer(envelope => {
-        envelope.disableTelemetry = true;
-      });
+      // window['ga-disable-UA-119462943-6'] = true;
     </script>
     <script>
       (async function() {
@@ -133,7 +129,10 @@
             const appInsightsData =
               typeof data === 'number' || typeof data === 'string'
                 ? { [name]: data }
-                : Object.entries(data).reduce((data, [key, value]) => ({ ...data, [`${name}:${key}`]: value }), {});
+                : Object.entries(data || {}).reduce(
+                    (data, [key, value]) => ({ ...data, [`${name}:${key}`]: value }),
+                    {}
+                  );
 
             appInsights.trackEvent({
               name,
@@ -143,7 +142,8 @@
               }
             });
 
-            const googleAnalyticsData = typeof data === 'number' || typeof data === 'string' ? { '': data } : data;
+            const googleAnalyticsData =
+              typeof data === 'number' || typeof data === 'string' || typeof data === 'undefined' ? { '': data } : data;
 
             if (googleAnalyticsData) {
               for (const [key, value] of Object.entries(googleAnalyticsData)) {
@@ -152,24 +152,29 @@
                 if (typeof value === 'number') {
                   gtag('event', eventName, {
                     ...dimensions,
+                    event_category: 'Web Chat',
                     value
                   });
                 } else {
                   gtag('event', eventName, {
                     ...dimensions,
+                    event_category: 'Web Chat',
                     event_label: value
                   });
                 }
               }
             }
           } else if (type === 'exception') {
-            gtag('event', 'exception', { description: error });
+            gtag('event', 'exception', {
+              description: error,
+              event_category: 'Web Chat'
+            });
 
             appInsights.trackException({ exception: error });
           } else if (type === 'timingstart') {
             appInsights.startTrackEvent(name);
           } else if (type === 'timingend') {
-            gtag('event', 'timing_complete', { ...dimensions, name, value: duration });
+            gtag('event', 'timing_complete', { ...dimensions, event_category: 'Web Chat', name, value: duration });
 
             // Application Insights modify the "dimensions" argument. We clone it to prevent it from being modified.
             appInsights.stopTrackEvent(name, { ...dimensions });
