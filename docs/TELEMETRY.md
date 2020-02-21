@@ -29,7 +29,7 @@ Feature updates on minor versions may introduce new or remove outdated measureme
 The following information will be emitted on every measurement. Dimensions may change during the session.
 
 | Name                                   | Description                                                                              |
-|----------------------------------------|------------------------------------------------------------------------------------------|
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `prop:locale`                          | Locale specified in props, normalized                                                    |
 | `prop:speechRecognition`               | `"false"` if speech recognition is switched off                                          |
 | `prop:speechSynthesis`                 | `"false"` if speech synthesis is switched off                                            |
@@ -44,7 +44,7 @@ Some telemetry services may have limited number of dimensions. For example, Goog
 When the following hooks are called, one or more event measurements will be emitted.
 
 | Hooks              | Events          | Data          | Data type | Description                                               |
-|--------------------|-----------------|---------------|-----------|-----------------------------------------------------------|
+| ------------------ | --------------- | ------------- | --------- | --------------------------------------------------------- |
 | `useSendFiles`     | `sendFiles`     |               |           | Emit when the user uploading files                        |
 |                    |                 | `numFile`     | `number`  | Number of files uploaded                                  |
 |                    |                 | `sumSizeInKB` | `number`  | Total file size in kilobytes                              |
@@ -54,7 +54,7 @@ When the following hooks are called, one or more event measurements will be emit
 ### Other events
 
 | Name   | Description                                |
-|--------|--------------------------------------------|
+| ------ | ------------------------------------------ |
 | `init` | Emit when telemetry system has initialized |
 
 ### Exceptions
@@ -64,7 +64,7 @@ When the following hooks are called, one or more event measurements will be emit
 The following operations are timed:
 
 | Timing                    | Description                                                                       |
-|---------------------------|-----------------------------------------------------------------------------------|
+| ------------------------- | --------------------------------------------------------------------------------- |
 | `sendFiles:makeThumbnail` | Time used to generate thumbnail for every uploading image via `useSendFiles` hook |
 
 ## Data collection
