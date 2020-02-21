@@ -4,6 +4,13 @@ In Web Chat 4.8, a new telemetry system is introduced. Developers can opt into t
 
 Microsoft do not collect or receive any telemetry measurements for Web Chat on both CDN and NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policy to the end-user to explain their data collection policy and provide a prompt.
 
+## Collection
+
+We have 2 samples for collecting telemetry measurements:
+
+-  [Collecting telemetry measurements using Azure Application Insights](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights)
+-  [Collecting telemetry measurements using Google Analytics](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics)
+
 ## Measurements
 
 We simplified our measurements to make it suitable for popular telemetry services:
@@ -24,7 +31,6 @@ The following information will be emitted on every measurement. Dimensions may c
 | Name                                   | Description                                                                              |
 |----------------------------------------|------------------------------------------------------------------------------------------|
 | `prop:locale`                          | Locale specified in props, normalized                                                    |
-| `prop:locale:numChange`                | Number of times `prop:locale` has changed                                                |
 | `prop:speechRecognition`               | `"false"` if speech recognition is switched off                                          |
 | `prop:speechSynthesis`                 | `"false"` if speech synthesis is switched off                                            |
 | `capability:downscaleImage:workerType` | `"web worker"` if the browser support Web Worker and offline canvas, otherwise, `"main"` |
@@ -111,10 +117,3 @@ To emit custom measurements through the `onTelemetry` handler, you can use one o
 -  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
 
 Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#telemetry) for API references.
-
-## Samples
-
-### Google Analytics
-
--  20 custom dimensions
--  500 event hits per session
