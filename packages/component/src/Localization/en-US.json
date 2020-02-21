@@ -1,5 +1,5 @@
 {
-  "_.comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
+  "_comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
   "ACTIVITY_BOT_SAID": "Bot $1 said, $2. Sent at $3.",
   "_ACTIVITY_BOT_SAID.comment": "$1 is the initials for the bot (e.g. \"JD\"), and $2 is user-generated content, the actual message.",
   "ACTIVITY_ERROR_BOX_TITLE": "Error message",
