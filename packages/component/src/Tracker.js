@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { checkSupport as supportWorker } from './Utils/downscaleImageToDataURLUsingWorker';
 import { speechSynthesis } from './Speech/BypassSpeechSynthesisPonyfill';
@@ -8,13 +8,6 @@ import useLanguage from './hooks/useLanguage';
 import useTrackDimension from './hooks/useTrackDimension';
 import useTrackEvent from './hooks/useTrackEvent';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
-
-function useEffectWithCounter(fn, deps) {
-  const counterRef = useRef(0);
-  const cachedFn = useCallback(fn, deps);
-
-  useEffect(() => cachedFn(counterRef.current++), [cachedFn, ...deps]);
-}
 
 const Tracker = () => {
   const [language] = useLanguage();
@@ -36,13 +29,9 @@ const Tracker = () => {
 
   // TODO: [TEST] We should not emit "prop:language" again if "onTelemetry" change.
   //       Once telemetry data is sent, it is gone.
-  useEffectWithCounter(
-    numChange => {
-      trackDimension('prop:locale', language);
-      trackDimension('prop:locale:numChange', numChange);
-    },
-    [language, trackDimension]
-  );
+  useEffect(() => {
+    trackDimension('prop:locale', language);
+  }, [language, trackDimension]);
 
   useEffect(() => {
     // TODO: Differentiate between Cognitive Services and browser speech

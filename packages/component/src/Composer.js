@@ -313,13 +313,13 @@ const Composer = ({
   const trackDimension = useCallback(
     (name, data) => {
       if (!name || typeof name !== 'string') {
-        return console.warn('botframework-webchat: Telemetry dimension name must be a string. Ignoring.');
+        return console.warn('botframework-webchat: Telemetry dimension name must be a string.');
       }
 
       const type = typeof data;
 
       if (type !== 'string' && type !== 'undefined') {
-        return console.warn('botframework-webchat: Telemetry dimension data must be a string or undefined. Ignoring.');
+        return console.warn('botframework-webchat: Telemetry dimension data must be a string or undefined.');
       }
 
       telemetryDimensionsRef.current = updateIn(
