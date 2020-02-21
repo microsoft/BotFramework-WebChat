@@ -945,11 +945,11 @@ This function will add, update, or remove a dimension from telemetry. If `undefi
 
 ```js
 useTrackEvent(): (
-  name: string,
-  data?:
-    number |
-    string |
-    { [key: string]: number | string }
+   name: string,
+   data?:
+      number |
+      string |
+      { [key: string]: number | string }
 ) => void
 ```
 
