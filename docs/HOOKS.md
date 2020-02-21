@@ -944,10 +944,18 @@ This function will add, update, or remove a dimension from telemetry. If `undefi
 ### `useTrackEvent`
 
 ```js
-useTrackEvent(): (name: string, data?: string, value?: number) => void
+useTrackEvent(): (
+  name: string,
+  data?:
+    number |
+    string |
+    { [key: string]: number | string }
+) => void
 ```
 
 This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered.
+
+All numeric data passed to `data` must be a non-negative finite number.
 
 ### `useTrackException`
 

@@ -3,21 +3,33 @@ import { useCallback } from 'react';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
+function isNonNegativeFiniteNumberOrString(value) {
+  return (typeof value === 'number' && isFinite(value) && value >= 0) || typeof value === 'string';
+}
+
+function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
 export default function useTrackEvent() {
   const { onTelemetry } = useWebChatUIContext();
   const readTelemetryDimensions = useReadTelemetryDimensions();
 
   return useCallback(
-    (name, data, value) => {
+    (name, data) => {
       if (!name || typeof name !== 'string') {
-        return console.warn('botframework-webchat: "name" passed to "useTrackEvent" hook must be a string. Ignoring.');
-      } else if (typeof data !== 'string' && typeof data !== 'undefined') {
+        return console.warn('botframework-webchat: "name" passed to "useTrackEvent" hook must be a string.');
+      }
+
+      if (isObject(data)) {
+        if (!Object.values(data).every(value => isNonNegativeFiniteNumberOrString(value))) {
+          return console.warn(
+            'botframework-webchat: Every value in "data" map passed to "useTrackEvent" hook must be a non-negative finite number or string.'
+          );
+        }
+      } else if (!isNonNegativeFiniteNumberOrString(data)) {
         return console.warn(
-          'botframework-webchat: "data" passed to "useTrackEvent" hook must be a string or undefined. Ignoring.'
-        );
-      } else if ((typeof value !== 'number' || value < 0 || !isFinite(value)) && typeof value !== 'undefined') {
-        return console.warn(
-          'botframework-webchat: "value" passed to "useTrackEvent" hook must be a non-negative finite number or undefined. Ignoring.'
+          'botframework-webchat: "data" passed to "useTrackEvent" hook must be a non-negative finite number or string.'
         );
       }
 
@@ -26,7 +38,6 @@ export default function useTrackEvent() {
       event.data = data;
       event.dimensions = readTelemetryDimensions();
       event.name = name;
-      event.value = value;
 
       onTelemetry && onTelemetry(event);
     },

@@ -1,6 +1,6 @@
 # Telemetry system
 
-In Web Chat 4.8, telemetry system is introduced. Developers can opt into this feature by implementing their own telemetry collection adapter and start pumping measurements into telemetry services of their choice.
+In Web Chat 4.8, a new telemetry system is introduced. Developers can opt into this feature by implementing their own telemetry collection adapter and start pumping measurements into telemetry services of their choice.
 
 Microsoft do not collect or receive any telemetry measurements for Web Chat on both CDN and NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policy to the end-user to explain their data collection policy and provide a prompt.
 
@@ -22,9 +22,9 @@ Feature updates on minor versions may introduce new or remove outdated measureme
 The following information will be emitted on every measurement. Dimensions may change during the session.
 
 | Name                                   | Description                                                                              |
-| -------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `prop:locale`                          | Locale specified                                                                         |
-| `prop:locale:numChange`                | Number of times locale has changed                                                       |
+|----------------------------------------|------------------------------------------------------------------------------------------|
+| `prop:locale`                          | Locale specified in props, normalized                                                    |
+| `prop:locale:numChange`                | Number of times `prop:locale` has changed                                                |
 | `prop:speechRecognition`               | `"false"` if speech recognition is switched off                                          |
 | `prop:speechSynthesis`                 | `"false"` if speech synthesis is switched off                                            |
 | `capability:downscaleImage:workerType` | `"web worker"` if the browser support Web Worker and offline canvas, otherwise, `"main"` |
@@ -38,7 +38,7 @@ Some telemetry services may have limited number of dimensions. For example, Goog
 When the following hooks are called, one or more event measurements will be emitted.
 
 | Hooks              | Events                  | Description                                               |
-| ------------------ | ----------------------- | --------------------------------------------------------- |
+|--------------------|-------------------------|-----------------------------------------------------------|
 | `useSendFiles`     | `sendFiles`             | Emit when the user uploading files                        |
 | `useSendFiles`     | `sendFiles:numFile`     | Number of files uploaded                                  |
 | `useSendFiles`     | `sendFiles:sumSizeInKB` | Total file size in kilobytes                              |
@@ -51,7 +51,7 @@ When the following hooks are called, one or more event measurements will be emit
 The following operations are timed:
 
 | Timing                    | Description                                                                       |
-| ------------------------- | --------------------------------------------------------------------------------- |
+|---------------------------|-----------------------------------------------------------------------------------|
 | `sendFiles:makeThumbnail` | Time used to generate thumbnail for every uploading image via `useSendFiles` hook |
 
 ## Data collection
@@ -98,10 +98,10 @@ Web Chat may emit a large number of dimensions and measurements to your `onTelem
 
 To emit custom measurements through the `onTelemetry` handler, you can use one of the following hooks.
 
-- [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
-- [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackevent) to emit an event
-- [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackexception) to emit an exception
-- [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
+-  [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
+-  [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackevent) to emit an event
+-  [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackexception) to emit an exception
+-  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
 
 Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#telemetry) for API references.
 

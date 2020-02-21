@@ -6,6 +6,7 @@ import { speechSynthesis } from './Speech/BypassSpeechSynthesisPonyfill';
 import useDebugDeps from './hooks/internal/useDebugDeps';
 import useLanguage from './hooks/useLanguage';
 import useTrackDimension from './hooks/useTrackDimension';
+import useTrackEvent from './hooks/useTrackEvent';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 function useEffectWithCounter(fn, deps) {
@@ -19,6 +20,7 @@ const Tracker = () => {
   const [language] = useLanguage();
   const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const trackDimension = useTrackDimension();
+  const trackEvent = useTrackEvent();
 
   // TODO: Track how many of them customized the following:
   // - activityMiddleware
@@ -55,6 +57,10 @@ const Tracker = () => {
   useEffect(() => {
     trackDimension('capability:downscaleImage:workerType', supportWorker() ? 'web worker' : 'main');
   }, [trackDimension]);
+
+  useEffect(() => {
+    trackEvent('init');
+  }, [trackEvent]);
 
   useDebugDeps(
     {

@@ -12,11 +12,11 @@ export default function useTrackTiming() {
     async (name, functionOrPromise) => {
       if (!name || typeof name !== 'string') {
         return console.warn(
-          'botframework-webchat: "name" passed to "useTrackTiming" hook must be specified and of type string. Ignoring.'
+          'botframework-webchat: "name" passed to "useTrackTiming" hook must be specified and of type string.'
         );
       } else if (typeof functionOrPromise !== 'function' && typeof functionOrPromise.then !== 'function') {
         return console.warn(
-          'botframework-webchat: "functionOrPromise" passed to "useTrackTiming" hook must be specified, of type function or Promise. Ignoring.'
+          'botframework-webchat: "functionOrPromise" passed to "useTrackTiming" hook must be specified, of type function or Promise.'
         );
       }
 

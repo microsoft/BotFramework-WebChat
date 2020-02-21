@@ -71,7 +71,13 @@
             }
             return t;
           })({
-            instrumentationKey: '4fddb9d8-2f69-4b67-b6a8-21222ea963d1'
+            disableAjaxTracking: true,
+            disableCorrelationHeaders: true,
+            disableExceptionTracking: true,
+            // disableTelemetry: true,
+            instrumentationKey: '4fddb9d8-2f69-4b67-b6a8-21222ea963d1',
+            isCookieUseDisabled: true,
+            isStorageUseDisabled: true
           });
       (window[aiName] = aisdk), aisdk.queue && 0 === aisdk.queue.length && aisdk.trackPageView({});
     </script>
@@ -94,18 +100,27 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
+      window['ga-disable-UA-119462943-6'] = true;
+
+      appInsights.addTelemetryInitializer(envelope => {
+        envelope.disableTelemetry = true;
+      });
+    </script>
+    <script>
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-        initializeGoogleAnalytics();
-        initializeApplicationInsights();
-
+        const { content: webChatUIVersion } =
+          document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        const { conversationID, token, userID } = await res.json();
         const directLine = window.WebChat.createDirectLine({ token });
+
+        initializeApplicationInsights();
+        initializeGoogleAnalytics();
 
         const handleTelemetry = event => {
           const { data, dimensions, duration, error, name, type, value } = event;
@@ -115,20 +130,38 @@
           console.groupEnd();
 
           if (type === 'event') {
+            const appInsightsData =
+              typeof data === 'number' || typeof data === 'string'
+                ? { [name]: data }
+                : Object.entries(data).reduce((data, [key, value]) => ({ ...data, [`${name}:${key}`]: value }), {});
+
             appInsights.trackEvent({
               name,
               properties: {
                 ...dimensions,
-                ...(typeof data === 'undefined' ? {} : { data }),
-                ...(typeof value === 'undefined' ? {} : { value })
+                ...appInsightsData
               }
             });
 
-            gtag('event', name, {
-              ...dimensions,
-              event_label: data,
-              value
-            });
+            const googleAnalyticsData = typeof data === 'number' || typeof data === 'string' ? { '': data } : data;
+
+            if (googleAnalyticsData) {
+              for (const [key, value] of Object.entries(googleAnalyticsData)) {
+                const eventName = key ? `${name}:${key}` : name;
+
+                if (typeof value === 'number') {
+                  gtag('event', eventName, {
+                    ...dimensions,
+                    value
+                  });
+                } else {
+                  gtag('event', eventName, {
+                    ...dimensions,
+                    event_label: value
+                  });
+                }
+              }
+            }
           } else if (type === 'exception') {
             gtag('event', 'exception', { description: error });
 
@@ -136,7 +169,7 @@
           } else if (type === 'timingstart') {
             appInsights.startTrackEvent(name);
           } else if (type === 'timingend') {
-            gtag('event', 'timing_complete', { name, value: duration });
+            gtag('event', 'timing_complete', { ...dimensions, name, value: duration });
 
             // Application Insights modify the "dimensions" argument. We clone it to prevent it from being modified.
             appInsights.stopTrackEvent(name, { ...dimensions });
@@ -160,22 +193,10 @@
         }
 
         function initializeApplicationInsights() {
+          // https://github.com/microsoft/ApplicationInsights-JS/blob/master/API-reference.md#addTelemetryInitializer
           appInsights.addTelemetryInitializer(envelope => {
-            envelope.accountId = 'john-doe';
-            envelope.disableExceptionTracking = true;
-            envelope.disableAjaxTracking = true;
-            envelope.disableCorrelationHeaders = true;
-            envelope.isCookieUseDisabled = true;
-            envelope.isStorageUseDisabled = true;
-
-            // TODO: Add conversation ID to session ID
-
-            // envelope.authenticatedUserId = '...';
-            // envelope.context.user.id = '...';
-            // envelope.context.session.id = '...';
-            // envelope.context.application.ver = '...';
-            // envelope.context.application.build = '...';
-            // envelope.context.device.language = '...';
+            envelope.accountId = userID;
+            envelope.data = { ...envelope.data, 'version:webchat:ui': webChatUIVersion };
           });
         }
 
@@ -195,7 +216,7 @@
               dimension1: 'version',
               dimension2: 'prop:locale'
             },
-            user_id: 'john-doe'
+            user_id: userID
           });
         }
       })().catch(err => console.error(err));

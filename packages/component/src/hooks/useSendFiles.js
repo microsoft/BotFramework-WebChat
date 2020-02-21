@@ -37,8 +37,6 @@ export default function useSendFiles() {
       if (files && files.length) {
         files = [].slice.call(files);
 
-        trackEvent('sendFiles');
-
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
         //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
@@ -70,12 +68,10 @@ export default function useSendFiles() {
 
         sendFiles(attachments);
 
-        trackEvent('sendFiles:numFile', undefined, files.length);
-        trackEvent(
-          'sendFiles:sumSizeInKB',
-          undefined,
-          Math.round(files.reduce((total, { size }) => total + size, 0) / 1024)
-        );
+        trackEvent('sendFiles', {
+          numFiles: files.length,
+          sumSizeInKB: Math.round(files.reduce((total, { size }) => total + size, 0) / 1024)
+        });
       }
     },
     [
