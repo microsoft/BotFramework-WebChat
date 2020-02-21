@@ -46,6 +46,6 @@ export default function useTrackTiming() {
         onTelemetry && onTelemetry(timingEndEvent);
       }
     },
-    [onTelemetry]
+    [onTelemetry, readTelemetryDimensions]
   );
 }

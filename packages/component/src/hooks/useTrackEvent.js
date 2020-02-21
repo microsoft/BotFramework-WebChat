@@ -43,6 +43,6 @@ export default function useTrackEvent() {
 
       onTelemetry && onTelemetry(event);
     },
-    [onTelemetry]
+    [onTelemetry, readTelemetryDimensions]
   );
 }

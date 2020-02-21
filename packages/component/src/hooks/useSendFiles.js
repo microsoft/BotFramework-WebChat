@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [1024] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
 import { useCallback } from 'react';
 

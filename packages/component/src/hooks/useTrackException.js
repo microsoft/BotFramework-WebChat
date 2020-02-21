@@ -22,6 +22,6 @@ export default function useTrackException() {
 
       onTelemetry && onTelemetry(event);
     },
-    [onTelemetry]
+    [onTelemetry, readTelemetryDimensions]
   );
 }
