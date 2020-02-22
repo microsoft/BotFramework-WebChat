@@ -52,7 +52,7 @@ function createActivityRenderer(additionalMiddleware) {
       })(...args);
     } catch (err) {
       const FailedRenderActivity = () => (
-        <ErrorBox message="Failed to render activity">
+        <ErrorBox error={err} message="Failed to render activity">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
@@ -71,7 +71,7 @@ function createActivityStatusRenderer(additionalMiddleware) {
       return activityStatusMiddleware(() => false)(...args);
     } catch ({ message, stack }) {
       return (
-        <ErrorBox message="Failed to render activity status">
+        <ErrorBox error={err} message="Failed to render activity status">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -92,7 +92,7 @@ function createAttachmentRenderer(additionalMiddleware) {
       ))(...args);
     } catch (err) {
       return (
-        <ErrorBox message="Failed to render attachment">
+        <ErrorBox error={err} message="Failed to render attachment">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
@@ -115,7 +115,7 @@ function createToastRenderer(additionalMiddleware) {
       console.error({ message, stack });
 
       return (
-        <ErrorBox message="Failed to render notification">
+        <ErrorBox error={err} message="Failed to render notification">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -137,7 +137,7 @@ function createTypingIndicatorRenderer(additionalMiddleware) {
       console.error({ message, stack });
 
       return (
-        <ErrorBox message="Failed to render typing indicator">
+        <ErrorBox error={err} message="Failed to render typing indicator">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );

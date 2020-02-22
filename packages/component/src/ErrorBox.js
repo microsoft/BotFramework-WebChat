@@ -4,10 +4,16 @@ import React from 'react';
 import ScreenReaderText from './ScreenReaderText';
 import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
+import useTrackException from './hooks/useTrackException';
 
-const ErrorBox = ({ children, message }) => {
+const ErrorBox = ({ children, error, message }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
+  const trackException = useTrackException();
+
+  useEffect(() => {
+    trackException(error || new Error(message));
+  }, [error, message, trackException]);
 
   return (
     <React.Fragment>
@@ -22,11 +28,13 @@ const ErrorBox = ({ children, message }) => {
 
 ErrorBox.defaultProps = {
   children: undefined,
+  error: undefined,
   message: ''
 };
 
 ErrorBox.propTypes = {
   children: PropTypes.any,
+  error: PropTypes.instanceOf(Error),
   message: PropTypes.string
 };
 
