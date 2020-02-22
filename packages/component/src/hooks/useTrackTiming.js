@@ -2,11 +2,13 @@ import { useCallback } from 'react';
 
 import randomId from '../Utils/randomId';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
+import useTrackException from './useTrackException';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useTrackTiming() {
   const { onTelemetry } = useWebChatUIContext();
   const readTelemetryDimensions = useReadTelemetryDimensions();
+  const trackException = useTrackException();
 
   return useCallback(
     async (name, functionOrPromise) => {
@@ -33,6 +35,10 @@ export default function useTrackTiming() {
 
       try {
         return await (typeof functionOrPromise === 'function' ? functionOrPromise() : functionOrPromise);
+      } catch (err) {
+        trackException(err);
+
+        throw err;
       } finally {
         const duration = Date.now() - startTime;
 
