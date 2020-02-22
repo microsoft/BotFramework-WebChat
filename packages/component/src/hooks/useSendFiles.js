@@ -8,13 +8,15 @@ import useTrackEvent from '../hooks/useTrackEvent';
 import useTrackTiming from '../hooks/useTrackTiming';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
+function canMakeThumbnail({ name }) {
+  return /\.(gif|jpe?g|png)$/iu.test(name);
+}
+
 async function makeThumbnail(file, width, height, contentType, quality) {
-  if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
-    try {
-      return await downscaleImageToDataURL(file, width, height, contentType, quality);
-    } catch (error) {
-      console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
-    }
+  try {
+    return await downscaleImageToDataURL(file, width, height, contentType, quality);
+  } catch (error) {
+    console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
   }
 }
 
@@ -44,7 +46,7 @@ export default function useSendFiles() {
           [].map.call(files, async file => {
             let thumbnail;
 
-            if (enableUploadThumbnail) {
+            if (enableUploadThumbnail && canMakeThumbnail(file)) {
               thumbnail = await trackTiming(
                 'sendFiles:makeThumbnail',
                 makeThumbnail(
