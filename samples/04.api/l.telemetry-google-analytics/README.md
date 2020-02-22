@@ -331,6 +331,8 @@ Here is the finished `index.html`:
 
 [`04.api/k.telemetry-application-insights`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights) is a sample that will collect telemetry measurements into your own instance of Azure Application Insights.
 
+[Google Analytics gtag.js Documentation](https://developers.google.com/analytics/devguides/collection/gtagjs)
+
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)

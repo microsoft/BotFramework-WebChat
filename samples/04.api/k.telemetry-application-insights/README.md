@@ -254,6 +254,8 @@ Here is the finished `index.html`:
 
 [`04.api/l.telemetry-google-analytics`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics) is a sample that will collect telemetry measurements into your own instance of Google Analytics.
 
+[Application Insights JavaScript SDK API References](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/API-reference.md)
+
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
