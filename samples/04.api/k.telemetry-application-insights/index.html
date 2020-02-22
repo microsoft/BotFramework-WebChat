@@ -54,6 +54,7 @@
 
         const handleTelemetry = event => {
           const { data, dimensions, duration, error, name, type } = event;
+          const fullName = `webchat:${name}`;
 
           console.group(`onTelemetry ("${type}")`);
           console.log({ name, data, dimensions, duration, error });
@@ -71,7 +72,7 @@
                   );
 
             appInsights.trackEvent({
-              name,
+              name: fullName,
               properties: {
                 ...dimensions,
                 ...appInsightsData
@@ -80,10 +81,10 @@
           } else if (type === 'exception') {
             appInsights.trackException({ exception: error });
           } else if (type === 'timingstart') {
-            appInsights.startTrackEvent(name);
+            appInsights.startTrackEvent(fullName);
           } else if (type === 'timingend') {
             // Application Insights modify the "dimensions" argument. We need to clone it to prevent it from being modified.
-            appInsights.stopTrackEvent(name, { ...dimensions });
+            appInsights.stopTrackEvent(fullName, { ...dimensions });
           }
         };
 
