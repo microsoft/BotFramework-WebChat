@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Will be translated into 44 languages, plus 2 community-contributed translations
    -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 -  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added customization for typing activity, by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
+-  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
 
 ### Fixed
 
