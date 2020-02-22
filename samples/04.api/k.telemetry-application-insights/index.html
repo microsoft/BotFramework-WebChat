@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Collect telemetry using Google Analytics</title>
+    <title>Web Chat: Collect telemetry using Application Insights</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"></script>
     <style>
       html,
       body {
@@ -30,7 +29,7 @@
     <script>
       var sdkInstance="appInsightsSDK";window[sdkInstance]="appInsights";var aiName=window[sdkInstance],aisdk=window[aiName]||function(e){function n(e){t[e]=function(){var n=arguments;t.queue.push(function(){t[e].apply(t,n)})}}var t={config:e};t.initialize=!0;var i=document,a=window;setTimeout(function(){var n=i.createElement("script");n.src=e.url||"https://az416426.vo.msecnd.net/scripts/b/ai.2.min.js",i.getElementsByTagName("script")[0].parentNode.appendChild(n)});try{t.cookie=i.cookie}catch(e){}t.queue=[],t.version=2;for(var r=["Event","PageView","Exception","Trace","DependencyData","Metric","PageViewPerformance"];r.length;)n("track"+r.pop());n("startTrackPage"),n("stopTrackPage");var s="Track"+r[0];if(n("start"+s),n("stop"+s),n("setAuthenticatedUserContext"),n("clearAuthenticatedUserContext"),n("flush"),!(!0===e.disableExceptionTracking||e.extensionConfig&&e.extensionConfig.ApplicationInsightsAnalytics&&!0===e.extensionConfig.ApplicationInsightsAnalytics.disableExceptionTracking)){n("_"+(r="onerror"));var o=a[r];a[r]=function(e,n,i,a,s){var c=o&&o(e,n,i,a,s);return!0!==c&&t["_"+r]({message:e,url:n,lineNumber:i,columnNumber:a,error:s}),c},e.autoExceptionInstrumented=!0}return t}(
       {
-          instrumentationKey:"INSTRUMENTATION_KEY"
+        instrumentationKey:"INSTRUMENTATION_KEY"
       }
       );window[aiName]=aisdk,aisdk.queue&&0===aisdk.queue.length&&aisdk.trackPageView({});
     </script>
@@ -43,22 +42,22 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { conversationID, token, userID } = await res.json();
-        const { content: webChatUIVersion } =
-          document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
 
         const telemetryInitializer = () => {
-          // The following code will add user ID and Web Chat version to the custom dimensions
-          appInsights.addTelemetryInitializer(envelope => {
-            envelope.accountId = userID;
-            envelope.data = { ...envelope.data, 'version:webchat:ui': webChatUIVersion };
-          });
+          const { content: webChatUIVersion } =
+            document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
+
+          appInsights.properties.context.application.ver = webChatUIVersion;
+          appInsights.properties.context.session.acquisitionDate = Date.now();
+          appInsights.properties.context.session.id = conversationID;
+          appInsights.properties.context.user.accountId = userID;
         };
 
         aisdk.queue ? aisdk.queue.push(telemetryInitializer) : telemetryInitializer();
 
         const handleTelemetry = event => {
           const { data, dimensions, duration, error, name, type } = event;
-          const fullName = `webchat:${name}`;
+          const fullName = `webchatui:${name}`;
 
           console.group(`onTelemetry ("${type}")`);
           console.log({ name, data, dimensions, duration, error });
