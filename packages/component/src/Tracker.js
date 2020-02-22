@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 
 import { checkSupport as supportWorker } from './Utils/downscaleImageToDataURLUsingWorker';
@@ -62,10 +61,6 @@ const Tracker = () => {
   );
 
   return false;
-};
-
-Tracker.propTypes = {
-  onTelemetry: PropTypes.func.isRequired
 };
 
 export default Tracker;

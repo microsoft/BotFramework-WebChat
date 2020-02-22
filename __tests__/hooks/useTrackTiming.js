@@ -2,7 +2,7 @@ import { timeouts } from '../constants.json';
 
 import uiConnected from '../setup/conditions/uiConnected';
 
-describe('useTrackEvent', () => {
+describe('useTrackTiming', () => {
   let driver;
   let pageObjects;
 
@@ -22,17 +22,24 @@ describe('useTrackEvent', () => {
               type
             });
         }
-      }
+      },
+      setup: () =>
+        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js').then(() => {
+          window.WebChatTest.clock = lolex.install();
+        })
     });
 
     driver = setup.driver;
     pageObjects = setup.pageObjects;
 
+    await driver.executeScript(() => window.WebChatTest.clock.tick(400));
     await driver.wait(uiConnected(), timeouts.directLine);
   });
 
-  test('should track simple event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello'));
+  test('should track timing for function', async () => {
+    await expect(
+      pageObjects.runHook('useTrackTiming', [], trackTiming => trackTiming('ping', () => 123))
+    ).resolves.toBe(123);
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
@@ -46,20 +53,41 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
-          "name": "hello",
-          "type": "event",
+          "name": "ping",
+          "type": "timingstart",
+        },
+        Object {
+          "data": null,
+          "dimensions": Object {
+            "capability:downscaleImage:workerType": "web worker",
+            "prop:locale": "en-US",
+            "prop:speechRecognition": "false",
+            "prop:speechSynthesis": "false",
+          },
+          "duration": 0,
+          "error": null,
+          "name": "ping",
+          "type": "timingend",
         },
       ]
     `);
   });
 
-  test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 123));
+  test('should track timing for Promise', async () => {
+    await pageObjects.runHook('useTrackTiming', [], trackTiming => {
+      trackTiming('ping', new Promise(resolve => setTimeout(() => resolve(123), 1000))).then(result => {
+        window.WebChatTest.result = result;
+      });
+    });
+
+    await driver.executeScript(() => window.WebChatTest.clock.tick(1000));
+
+    await expect(driver.executeScript(() => window.WebChatTest.result)).resolves.toBe(123);
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
-          "data": 123,
+          "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "prop:locale": "en-US",
@@ -68,75 +96,23 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
-          "name": "hello",
-          "type": "event",
+          "name": "ping",
+          "type": "timingstart",
         },
-      ]
-    `);
-  });
-
-  test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 'aloha'));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
         Object {
-          "data": "aloha",
+          "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
           },
-          "duration": null,
+          "duration": 1000,
           "error": null,
-          "name": "hello",
-          "type": "event",
+          "name": "ping",
+          "type": "timingend",
         },
       ]
     `);
-  });
-
-  test('should track complex event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { one: 1, hello: 'aloha' }));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "data": Object {
-            "hello": "aloha",
-            "one": 1,
-          },
-          "dimensions": Object {
-            "capability:downscaleImage:workerType": "web worker",
-            "prop:locale": "en-US",
-            "prop:speechRecognition": "false",
-            "prop:speechSynthesis": "false",
-          },
-          "duration": null,
-          "error": null,
-          "name": "hello",
-          "type": "event",
-        },
-      ]
-    `);
-  });
-
-  test('should not track event with boolean data', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', true));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
-  });
-
-  test('should not track event with incompatible complex data', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { truthy: true }));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
-  });
-
-  test('should not track event with invalid name', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent(123));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
   });
 });

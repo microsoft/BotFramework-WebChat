@@ -2,7 +2,7 @@ import { timeouts } from '../constants.json';
 
 import uiConnected from '../setup/conditions/uiConnected';
 
-describe('useTrackEvent', () => {
+describe('useTrackDimension', () => {
   let driver;
   let pageObjects;
 
@@ -31,8 +31,51 @@ describe('useTrackEvent', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
   });
 
-  test('should track simple event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello'));
+  test('should track string dimension', async () => {
+    await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello', 'aloha'));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
+
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.length)).resolves.toBe(1);
+
+    await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello'));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping2'));
+
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "data": null,
+          "dimensions": Object {
+            "capability:downscaleImage:workerType": "web worker",
+            "hello": "aloha",
+            "prop:locale": "en-US",
+            "prop:speechRecognition": "false",
+            "prop:speechSynthesis": "false",
+          },
+          "duration": null,
+          "error": null,
+          "name": "ping",
+          "type": "event",
+        },
+        Object {
+          "data": null,
+          "dimensions": Object {
+            "capability:downscaleImage:workerType": "web worker",
+            "prop:locale": "en-US",
+            "prop:speechRecognition": "false",
+            "prop:speechSynthesis": "false",
+          },
+          "duration": null,
+          "error": null,
+          "name": "ping2",
+          "type": "event",
+        },
+      ]
+    `);
+  });
+
+  test('should not track invalid dimension name', async () => {
+    await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension(123, 'hello'));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
@@ -46,20 +89,21 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
-          "name": "hello",
+          "name": "ping",
           "type": "event",
         },
       ]
     `);
   });
 
-  test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 123));
+  test('should not track invalid dimension value', async () => {
+    await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello', 123));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
-          "data": 123,
+          "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "prop:locale": "en-US",
@@ -68,75 +112,10 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
-          "name": "hello",
+          "name": "ping",
           "type": "event",
         },
       ]
     `);
-  });
-
-  test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 'aloha'));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "data": "aloha",
-          "dimensions": Object {
-            "capability:downscaleImage:workerType": "web worker",
-            "prop:locale": "en-US",
-            "prop:speechRecognition": "false",
-            "prop:speechSynthesis": "false",
-          },
-          "duration": null,
-          "error": null,
-          "name": "hello",
-          "type": "event",
-        },
-      ]
-    `);
-  });
-
-  test('should track complex event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { one: 1, hello: 'aloha' }));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "data": Object {
-            "hello": "aloha",
-            "one": 1,
-          },
-          "dimensions": Object {
-            "capability:downscaleImage:workerType": "web worker",
-            "prop:locale": "en-US",
-            "prop:speechRecognition": "false",
-            "prop:speechSynthesis": "false",
-          },
-          "duration": null,
-          "error": null,
-          "name": "hello",
-          "type": "event",
-        },
-      ]
-    `);
-  });
-
-  test('should not track event with boolean data', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', true));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
-  });
-
-  test('should not track event with incompatible complex data', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { truthy: true }));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
-  });
-
-  test('should not track event with invalid name', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent(123));
-
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
   });
 });
