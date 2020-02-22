@@ -14,7 +14,7 @@ const Tracker = () => {
   const trackDimension = useTrackDimension();
   const trackEvent = useTrackEvent();
 
-  // TODO: Track how many of them customized the following:
+  // TODO: [P2] #2937 Track how many of them customized the following:
   // - activityMiddleware
   // - activityStatusMiddleware
   // - attachmentMiddleware
@@ -26,19 +26,17 @@ const Tracker = () => {
   const speechSynthesisCapability =
     webSpeechPonyfill.speechSynthesis && webSpeechPonyfill.speechSynthesis !== speechSynthesis;
 
-  // TODO: [TEST] We should not emit "prop:language" again if "onTelemetry" change.
-  //       Once telemetry data is sent, it is gone.
   useEffect(() => {
     trackDimension('prop:locale', language);
   }, [language, trackDimension]);
 
   useEffect(() => {
-    // TODO: Differentiate between Cognitive Services and browser speech
+    // TODO: [P2] #2937 Differentiate between Cognitive Services and browser speech
     trackDimension('prop:speechRecognition', !!speechRecognitionCapability + '');
   }, [trackDimension, speechRecognitionCapability]);
 
   useEffect(() => {
-    // TODO: Differentiate between Cognitive Services and browser speech
+    // TODO: [P2] #2937 Differentiate between Cognitive Services and browser speech
     trackDimension('prop:speechSynthesis', !!speechSynthesisCapability + '');
   }, [trackDimension, speechSynthesisCapability]);
 
