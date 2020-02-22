@@ -2,6 +2,8 @@ import { timeouts } from '../constants.json';
 
 import uiConnected from '../setup/conditions/uiConnected';
 
+jest.setTimeout(timeouts.test);
+
 describe('useTrackException', () => {
   let driver;
   let pageObjects;
