@@ -77,33 +77,34 @@
         margin-left: 0.4em;
       }
 
-      .app__customAvatar {
+      .app__avatarWithOnlineStatus {
         position: relative;
       }
 
-      .app__customAvatar .app__customAvatar__status {
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status {
         background-color: White;
         border-radius: 50%;
         border: solid 2px White;
         bottom: -2px;
         height: 10px;
         position: absolute;
+        transition: background-color 200ms;
         width: 10px;
       }
 
-      .app__customAvatar:not(.app__customAvatar--rtl) .app__customAvatar__status {
+      .app__avatarWithOnlineStatus:not(.app__avatarWithOnlineStatus--rtl) .app__avatarWithOnlineStatus__status {
         right: -2px;
       }
 
-      .app__customAvatar.app__customAvatar--rtl .app__customAvatar__status {
+      .app__avatarWithOnlineStatus.app__avatarWithOnlineStatus--rtl .app__avatarWithOnlineStatus__status {
         left: -2px;
       }
 
-      .app__customAvatar .app__customAvatar__status.app__customAvatar__status--online {
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--online {
         background-color: #090;
       }
 
-      .app__customAvatar .app__customAvatar__status.app__customAvatar__status--busy {
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--busy {
         background-color: Red;
       }
     </style>
@@ -322,30 +323,42 @@
           );
         };
 
-        const CustomAvatar = ({ children }) => {
+        const PortraitAvatar = ({ fromUser }) => {
+          const style = useMemo(() => ({ borderRadius: 4 }), []);
+
+          return <img src={fromUser ? 'user.jpg' : 'bot.jpg'} style={style} />;
+        };
+
+        const AvatarWithOnlineStatus = ({ children }) => {
           const [direction] = useDirection();
           const { onlineStatus, showOnlineStatus } = useContext(AppContext);
 
           return (
-            <div className={`app__customAvatar${direction === 'rtl' ? ' app__customAvatar--rtl' : ''}`}>
+            <div
+              className={`app__avatarWithOnlineStatus${direction === 'rtl' ? ' app__avatarWithOnlineStatus--rtl' : ''}`}
+            >
               {children}
               {showOnlineStatus && (
-                <div className={`app__customAvatar__status app__customAvatar__status--${onlineStatus}`} />
+                <div
+                  className={`app__avatarWithOnlineStatus__status app__avatarWithOnlineStatus__status--${onlineStatus}`}
+                />
               )}
             </div>
           );
         };
 
-        const avatarMiddleware = () => next => ({ activity, styleOptions, ...otherArgs }) => {
+        const avatarMiddleware = () => next => ({ activity, fromUser, styleOptions, ...otherArgs }) => {
           const { text = '' } = activity;
 
           if (~text.indexOf('1')) {
             return false;
+          } else if (~text.indexOf('2')) {
+            return <PortraitAvatar fromUser={fromUser} />;
           }
 
-          const renderNext = next({ activity, styleOptions, ...otherArgs });
+          const renderNext = next({ activity, fromUser, styleOptions, ...otherArgs });
 
-          return renderNext && (() => <CustomAvatar>{renderNext()}</CustomAvatar>);
+          return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
         };
 
         ReactDOM.render(<App />, document.getElementById('app'));

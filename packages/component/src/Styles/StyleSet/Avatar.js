@@ -1,8 +1,7 @@
-export default function createAvatarStyle({ avatarSize }) {
+export default function createAvatarStyle({ avatarRadius, avatarSize }) {
   return {
-    borderRadius: '50%',
+    borderRadius: avatarRadius,
     height: avatarSize,
-    overflow: 'hidden',
     width: avatarSize
   };
 }

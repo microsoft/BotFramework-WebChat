@@ -7,7 +7,6 @@ export default function createInitialsAvatarStyle({
 }) {
   return {
     alignItems: 'center',
-    borderRadius: '50%',
     color: 'White',
     fontFamily: primaryFont,
     height: avatarSize,

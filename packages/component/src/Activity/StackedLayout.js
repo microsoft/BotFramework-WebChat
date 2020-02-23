@@ -124,12 +124,12 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
         {
           'webchat__stackedLayout--fromUser': fromUser,
           webchat__stacked_extra_left_indent:
-            (direction !== 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize) ||
-            (direction === 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize),
+            (direction !== 'rtl' && fromUser && !renderAvatar && bubbleNubSize) ||
+            (direction === 'rtl' && !fromUser && !renderAvatar && bubbleFromUserNubSize),
           webchat__stacked_extra_right_indent:
-            (direction !== 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize) ||
-            (direction === 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize),
-          webchat__stacked_indented_content: initials && !indented,
+            (direction !== 'rtl' && !fromUser && !renderAvatar && bubbleFromUserNubSize) ||
+            (direction === 'rtl' && fromUser && !renderAvatar && bubbleNubSize),
+          webchat__stacked_indented_content: renderAvatar && !indented,
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}

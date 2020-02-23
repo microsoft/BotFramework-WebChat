@@ -8,6 +8,7 @@ import InitialsAvatar from '../../Avatar/InitialsAvatar';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const ROOT_CSS = css({
+  overflow: 'hidden',
   position: 'relative',
 
   '> *': {
