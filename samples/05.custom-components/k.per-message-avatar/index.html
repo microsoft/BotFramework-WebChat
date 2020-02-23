@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Per-message avatar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
+    <script src="/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+      }
+
+      #webchat {
+        flex: 1;
+        height: 100%;
+        width: 100%;
+      }
+
+      #commandBar {
+        background-color: #ffc;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        margin: 10px;
+        overflow: hidden;
+        padding: 2px;
+        position: relative;
+      }
+
+      #commandBar > header {
+        background-color: DarkGreen;
+        border-radius: 0 0 0 4px;
+        color: White;
+        font-size: 11px;
+        padding: 0px 4px 2px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      #commandBar > label {
+        align-items: center;
+        display: flex;
+        padding: 4px;
+      }
+
+      #commandBar > label > input {
+        font-size: initial;
+        margin-right: 0.4em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="commandBar">
+      <header>Options</header>
+      <label><input id="bot--roundBubble" type="checkbox" />Bot: Round bubble</label>
+      <label><input id="bot--showBubbleNub" type="checkbox" />Bot: Show bubble nub</label>
+      <label><input checked id="bot--showDefaultAvatar" type="checkbox" />Bot: Show default avatar</label>
+      <label><input id="user--roundBubble" type="checkbox" />User: Round bubble</label>
+      <label><input id="user--showBubbleNub" type="checkbox" />User: Show bubble nub</label>
+      <label><input checked id="user--showDefaultAvatar" type="checkbox" />User: Show default avatar</label>
+      <label><input id="locale--arEG" type="checkbox" />Locale: Egyptian Arabic</label>
+    </div>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function() {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const directLine = window.WebChat.createDirectLine({ token });
+        const styleOptions = {
+          botAvatarImage:
+            'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
+          botAvatarInitials: 'BF',
+          userAvatarImage: 'https://github.com/compulim.png?size=64',
+          userAvatarInitials: 'WC'
+        };
+
+        const avatarMiddleware = () => next => ({ activity, styleOptions, ...otherArgs }) => {
+          if (~activity.text.indexOf('1')) {
+            return false;
+          }
+
+          return next({ activity, styleOptions, ...otherArgs });
+        };
+
+        document.querySelector('#commandBar').addEventListener('change', () => {
+          renderWebChat();
+        });
+
+        function createStyleOptions() {
+          const botRoundBubble = document.querySelector('#bot--roundBubble').checked;
+          const botShowBubbleNub = document.querySelector('#bot--showBubbleNub').checked;
+          const botShowDefaultAvatar = document.querySelector('#bot--showDefaultAvatar').checked;
+          const userRoundBubble = document.querySelector('#user--roundBubble').checked;
+          const userShowBubbleNub = document.querySelector('#user--showBubbleNub').checked;
+          const userShowDefaultAvatar = document.querySelector('#user--showDefaultAvatar').checked;
+
+          return {
+            ...(botRoundBubble ? { bubbleBorderRadius: 20 } : {}),
+            ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
+            ...(botShowDefaultAvatar
+              ? {
+                  botAvatarImage:
+                    'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
+                  botAvatarInitials: 'BF'
+                }
+              : {}),
+            ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20 } : {}),
+            ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
+            ...(userShowDefaultAvatar
+              ? {
+                  userAvatarImage: 'https://github.com/compulim.png?size=64',
+                  userAvatarInitials: 'WC'
+                }
+              : {})
+          };
+        }
+
+        function renderWebChat() {
+          const localeEgyptianArabic = document.querySelector('#locale--arEG').checked;
+
+          window.WebChat.renderWebChat(
+            {
+              avatarMiddleware,
+              directLine,
+              ...(localeEgyptianArabic ? { locale: 'ar-EG' } : {}),
+              styleOptions: createStyleOptions()
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        renderWebChat();
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

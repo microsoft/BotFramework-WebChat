@@ -19,21 +19,21 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
     },
     '&:not(.webchat__stacked--rtl)': {
       '&:not(.from-user)': {
-        '&.webchat__stacked_indented_content > .avatar': {
+        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginRight: paddingRegular
         },
 
-        '& > .content > .webchat__stacked_item_indented': {
+        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
           marginLeft: paddingRegular
         }
       },
 
       '&.from-user': {
-        '&.webchat__stacked_indented_content > .avatar': {
+        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginLeft: paddingRegular
         },
 
-        '& > .content > .webchat__stacked_item_indented': {
+        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
           marginRight: paddingRegular
         }
       }
@@ -41,27 +41,27 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
 
     '&.webchat__stacked--rtl': {
       '&:not(.from-user)': {
-        '&.webchat__stacked_indented_content > .avatar': {
+        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginLeft: paddingRegular
         },
 
-        '& > .content > .webchat__stacked_item_indented': {
+        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
           marginRight: paddingRegular
         }
       },
 
       '&.from-user': {
-        '&.webchat__stacked_indented_content > .avatar': {
+        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginRight: paddingRegular
         },
 
-        '& > .content > .webchat__stacked_item_indented': {
+        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
           marginLeft: paddingRegular
         }
       }
     },
 
-    '& > .content': {
+    '& > .webchat__stackedLayout__content': {
       '& > .webchat__row': {
         '& > .bubble, & > .timestamp': {
           maxWidth: bubbleMaxWidth

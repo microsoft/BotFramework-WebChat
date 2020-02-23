@@ -1,6 +1,5 @@
-export default function createAvatarStyle({ avatarSize }) {
+export default function createImageAvatarStyle({ avatarSize }) {
   return {
-    borderRadius: '50%',
     height: avatarSize,
     overflow: 'hidden',
     width: avatarSize

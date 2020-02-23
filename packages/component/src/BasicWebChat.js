@@ -15,6 +15,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createCoreAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createCoreTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
@@ -69,6 +70,19 @@ function createActivityRenderer(additionalMiddleware) {
       );
 
       return FailedRenderActivity;
+    }
+  };
+}
+
+// TODO: [P2] #2859 We should move these into <Composer>
+function createAvatarRenderer(additionalMiddleware) {
+  const avatarMiddleware = concatMiddleware(additionalMiddleware, createCoreAvatarMiddleware())({});
+
+  return (...args) => {
+    try {
+      return avatarMiddleware(() => false)(...args);
+    } catch (err) {
+      console.error('Failed to render avatar', err);
     }
   };
 }
@@ -166,6 +180,7 @@ const BasicWebChat = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentMiddleware,
+  avatarMiddleware,
   className,
   toastMiddleware,
   typingIndicatorMiddleware,
@@ -177,6 +192,7 @@ const BasicWebChat = ({
     activityStatusMiddleware
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
+  const avatarRenderer = useMemo(() => createAvatarRenderer(avatarMiddleware), [avatarMiddleware]);
   const toastRenderer = useMemo(() => createToastRenderer(toastMiddleware), [toastMiddleware]);
   const typingIndicatorRenderer = useMemo(() => createTypingIndicatorRenderer(typingIndicatorMiddleware), [
     typingIndicatorMiddleware
@@ -187,6 +203,7 @@ const BasicWebChat = ({
       activityRenderer={activityRenderer}
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
+      avatarRenderer={avatarRenderer}
       sendBoxRef={sendBoxRef}
       toastRenderer={toastRenderer}
       typingIndicatorRenderer={typingIndicatorRenderer}
@@ -214,6 +231,7 @@ BasicWebChat.defaultProps = {
   ...Composer.defaultProps,
   activityMiddleware: undefined,
   attachmentMiddleware: undefined,
+  avatarMiddleware: undefined,
   className: ''
 };
 
@@ -221,5 +239,6 @@ BasicWebChat.propTypes = {
   ...Composer.propTypes,
   activityMiddleware: PropTypes.func,
   attachmentMiddleware: PropTypes.func,
+  avatarMiddleware: PropTypes.func,
   className: PropTypes.string
 };

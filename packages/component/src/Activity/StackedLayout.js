@@ -18,17 +18,18 @@ import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
+import useRenderAvatar from '../hooks/useRenderAvatar';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& > .avatar': {
+  '& > .webchat__stackedLayout__avatar': {
     flexShrink: 0
   },
 
-  '& > .content': {
+  '& > .webchat__stackedLayout__content': {
     flexGrow: 1,
     overflow: 'hidden',
 
@@ -54,7 +55,7 @@ const ROOT_CSS = css({
   '&.from-user': {
     flexDirection: 'row-reverse',
 
-    '& > .content > .webchat__row': {
+    '& > .webchat__stackedLayout__content > .webchat__row': {
       flexDirection: 'row-reverse'
     }
   }
@@ -90,6 +91,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
+  const renderAvatar = useRenderAvatar({ activity });
 
   const {
     attachments = [],
@@ -128,13 +130,13 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           webchat__stacked_extra_right_indent:
             (direction !== 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize) ||
             (direction === 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize),
-          webchat__stacked_indented_content: initials && !indented
+          webchat__stacked_indented_content: initials && !indented,
+          'webchat__stacked--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
     >
-      {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
-      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
-      <div className="content">
+      {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
+      <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
           <div className="webchat__row message">
             <ScreenReaderText text={ariaLabel} />
