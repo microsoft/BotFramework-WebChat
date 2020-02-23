@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
-import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -52,7 +51,7 @@ const ROOT_CSS = css({
     flexShrink: 0
   },
 
-  '&.from-user': {
+  '&.webchat__stackedLayout--fromUser': {
     flexDirection: 'row-reverse',
 
     '& > .webchat__stackedLayout__content > .webchat__row': {
@@ -121,9 +120,9 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
-        direction === 'rtl' ? 'webchat__stacked--rtl' : '',
+        direction === 'rtl' ? 'webchat__stackedLayout--rtl' : '',
         {
-          'from-user': fromUser,
+          'webchat__stackedLayout--fromUser': fromUser,
           webchat__stacked_extra_left_indent:
             (direction !== 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize) ||
             (direction === 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize),
@@ -131,7 +130,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
             (direction !== 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize) ||
             (direction === 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize),
           webchat__stacked_indented_content: initials && !indented,
-          'webchat__stacked--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
+          'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
     >

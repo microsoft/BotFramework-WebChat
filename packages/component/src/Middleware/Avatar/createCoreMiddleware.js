@@ -29,10 +29,10 @@ const DefaultAvatar = ({ fromUser }) => {
 };
 
 export default function createCoreAvatarMiddleware() {
-  return concatMiddleware(() => next => ({ fromUser, styleOptions }) => {
+  return concatMiddleware(() => () => ({ fromUser, styleOptions }) => {
     const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
 
-    if (fromUser ? botAvatarImage || botAvatarInitials : userAvatarImage || userAvatarInitials) {
+    if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
       return () => <DefaultAvatar fromUser={fromUser} />;
     }
 

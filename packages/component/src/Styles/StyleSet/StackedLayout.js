@@ -17,8 +17,8 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
     '&:not(.webchat__stacked_extra_right_indent)': {
       marginRight: paddingRegular
     },
-    '&:not(.webchat__stacked--rtl)': {
-      '&:not(.from-user)': {
+    '&:not(.webchat__stackedLayout--rtl)': {
+      '&:not(.webchat__stackedLayout--fromUser)': {
         '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginRight: paddingRegular
         },
@@ -28,7 +28,7 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
         }
       },
 
-      '&.from-user': {
+      '&.webchat__stackedLayout--fromUser': {
         '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginLeft: paddingRegular
         },
@@ -39,8 +39,8 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
       }
     },
 
-    '&.webchat__stacked--rtl': {
-      '&:not(.from-user)': {
+    '&.webchat__stackedLayout--rtl': {
+      '&:not(.webchat__stackedLayout--fromUser)': {
         '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginLeft: paddingRegular
         },
@@ -50,7 +50,7 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
         }
       },
 
-      '&.from-user': {
+      '&.webchat__stackedLayout--fromUser': {
         '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
           marginRight: paddingRegular
         },

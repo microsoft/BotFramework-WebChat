@@ -5,11 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
+      "type": "vscode-edge-devtools.debug",
       "request": "launch",
-      "name": "Launch Chrome",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
+      "name": "Launch Microsoft Edge and open the Elements tool",
+      "url": "http://localhost:5000/samples/",
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "webpack-internal:///../*": "${webRoot}/packages/*",
+        "webpack://botframework-webchat/bundle:///*": "${webRoot}/packages/bundle/*",
+        "webpack://botframework-webchat/component:///*": "${webRoot}/packages/component/*",
+        "webpack://botframework-webchat/core:///*": "${webRoot}/packages/core/*"
+      }
     }
   ]
 }
