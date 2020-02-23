@@ -189,7 +189,7 @@
 
           const styleOptions = useMemo(
             () => ({
-              ...(botRoundBubble ? { bubbleBorderRadius: 20 } : {}),
+              ...(botRoundBubble ? { bubbleBorderRadius: 20, bubbleNubOffset: 5 } : {}),
               ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
               ...(botShowDefaultAvatar
                 ? {
@@ -198,7 +198,7 @@
                     botAvatarInitials: 'BF'
                   }
                 : {}),
-              ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20 } : {}),
+              ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20, bubbleFromUserNubOffset: 5 } : {}),
               ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
               ...(userShowDefaultAvatar
                 ? {

@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 
-function isPositive(value) {
+function isZeroOrPositive(value) {
   return 1 / value >= 0;
 }
 
@@ -25,8 +25,8 @@ export default function createBubbleStyle({
   messageActivityWordBreak,
   paddingRegular
 }) {
-  const botNubUpSideDown = !isPositive(bubbleNubOffset);
-  const userNubUpSideDown = !isPositive(bubbleFromUserNubOffset);
+  const botNubUpSideDown = !isZeroOrPositive(bubbleNubOffset);
+  const userNubUpSideDown = !isZeroOrPositive(bubbleFromUserNubOffset);
 
   const botNubCornerRadius = Math.min(bubbleBorderRadius, Math.abs(bubbleNubOffset));
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
@@ -52,15 +52,17 @@ export default function createBubbleStyle({
         minHeight: bubbleMinHeight - bubbleBorderWidth * 2
       },
 
-      '&.webchat__bubble_has_nub > .webchat__bubble__content': {
-        // Hide border radius if there is a nub on the top/bottom left corner
-        ...(bubbleNubSize && botNubUpSideDown ? { borderBottomLeftRadius: botNubCornerRadius } : {}),
-        ...(bubbleNubSize && !botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
-      },
-
       '&:not(.webchat__bubble--rtl)': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleNubSize
+            ? {
+                marginLeft: paddingRegular,
+
+                // Hide border radius if there is a nub on the top/bottom left corner
+                ...(botNubUpSideDown ? { borderBottomLeftRadius: botNubCornerRadius } : {}),
+                ...(!botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
+              }
+            : {}
         },
 
         '& > .webchat__bubble__nub': {
@@ -70,7 +72,15 @@ export default function createBubbleStyle({
 
       '&.webchat__bubble--rtl': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleNubSize
+            ? {
+                marginRight: paddingRegular,
+
+                // Hide border radius if there is a nub on the top/bottom right corner
+                ...(botNubUpSideDown ? { borderBottomRightRadius: botNubCornerRadius } : {}),
+                ...(!botNubUpSideDown ? { borderTopRightRadius: botNubCornerRadius } : {})
+              }
+            : {}
         },
 
         '& > .webchat__bubble__nub': {
@@ -80,9 +90,9 @@ export default function createBubbleStyle({
       },
 
       '& > .webchat__bubble__nub': {
-        bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
+        bottom: isZeroOrPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
-        top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
+        top: isZeroOrPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
         width: bubbleNubSize,
 
         '& > g > path': {
@@ -104,15 +114,16 @@ export default function createBubbleStyle({
         minHeight: bubbleMinHeight - bubbleFromUserBorderWidth * 2
       },
 
-      '&.webchat__bubble_has_nub > .webchat__bubble__content': {
-        // Hide border radius if there is a nub on the top/bottom right corner
-        ...(bubbleFromUserNubSize && userNubUpSideDown ? { borderBottomRightRadius: userNubCornerRadius } : {}),
-        ...(bubbleFromUserNubSize && !userNubUpSideDown ? { borderTopRightRadius: userNubCornerRadius } : {})
-      },
-
       '&:not(.webchat__bubble--rtl)': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleFromUserNubSize ? { marginRight: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleFromUserNubSize
+            ? {
+                marginRight: paddingRegular,
+                // Hide border radius if there is a nub on the top/bottom right corner
+                ...(userNubUpSideDown ? { borderBottomRightRadius: userNubCornerRadius } : {}),
+                ...(!userNubUpSideDown ? { borderTopRightRadius: userNubCornerRadius } : {})
+              }
+            : {}
         },
 
         '& > .webchat__bubble__nub': {
@@ -122,7 +133,14 @@ export default function createBubbleStyle({
 
       '&.webchat__bubble--rtl': {
         '&.webchat__bubble_has_nub': {
-          '& > .webchat__bubble__content': bubbleFromUserNubSize ? { marginLeft: paddingRegular } : {}
+          '& > .webchat__bubble__content': bubbleFromUserNubSize
+            ? {
+                marginLeft: paddingRegular,
+                // Hide border radius if there is a nub on the top/bottom left corner
+                ...(userNubUpSideDown ? { borderBottomLeftRadius: userNubCornerRadius } : {}),
+                ...(!userNubUpSideDown ? { borderTopLeftRadius: userNubCornerRadius } : {})
+              }
+            : {}
         },
 
         '& > .webchat__bubble__nub': {
@@ -133,8 +151,8 @@ export default function createBubbleStyle({
 
       '& > .webchat__bubble__nub': {
         height: bubbleFromUserNubSize,
-        bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
-        top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
+        bottom: isZeroOrPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
+        top: isZeroOrPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
         width: bubbleFromUserNubSize,
 
         '& > g > path': {
