@@ -7,6 +7,9 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
+    <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
     <script src="/webchat.js"></script>
     <style>
@@ -16,18 +19,23 @@
       }
 
       body {
-        display: flex;
-        flex-direction: column;
+        height: 100%;
         margin: 0;
       }
 
-      #webchat {
+      #app {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      #app > :not(.app__commandBar) {
         flex: 1;
         overflow: hidden;
         width: 100%;
       }
 
-      #commandBar {
+      .app__commandBar {
         background-color: #ffc;
         border: solid 1px rgba(0, 0, 0, 0.1);
         border-radius: 4px;
@@ -42,7 +50,7 @@
         position: relative;
       }
 
-      #commandBar > header {
+      .app__commandBar .app__commandBar__header {
         background-color: #090;
         border-radius: 0 0 0 4px;
         color: White;
@@ -53,31 +61,56 @@
         top: 0;
       }
 
-      #commandBar > label {
+      .app__commandBar .app__commandBar__label {
         align-items: center;
         display: flex;
         padding: 4px;
       }
 
-      #commandBar > label > input {
-        font-size: initial;
+      .app__commandBar .app__commandBar__checkBox,
+      .app__commandBar .app__commandBar__select {
+        font-size: inherit;
         margin-right: 0.4em;
+      }
+
+      .app__commandBar .app__commandBar__select {
+        margin-left: 0.4em;
+      }
+
+      .app__customAvatar {
+        position: relative;
+      }
+
+      .app__customAvatar .app__customAvatar__status {
+        background-color: White;
+        border-radius: 50%;
+        border: solid 2px White;
+        bottom: -2px;
+        height: 10px;
+        position: absolute;
+        width: 10px;
+      }
+
+      .app__customAvatar:not(.app__customAvatar--rtl) .app__customAvatar__status {
+        right: -2px;
+      }
+
+      .app__customAvatar.app__customAvatar--rtl .app__customAvatar__status {
+        left: -2px;
+      }
+
+      .app__customAvatar .app__customAvatar__status.app__customAvatar__status--online {
+        background-color: #090;
+      }
+
+      .app__customAvatar .app__customAvatar__status.app__customAvatar__status--busy {
+        background-color: Red;
       }
     </style>
   </head>
   <body>
-    <div id="commandBar">
-      <header>Options</header>
-      <label><input id="bot--roundBubble" type="checkbox" />Bot: Round bubble</label>
-      <label><input id="bot--showBubbleNub" type="checkbox" />Bot: Show bubble nub</label>
-      <label><input checked id="bot--showDefaultAvatar" type="checkbox" />Bot: Show default avatar</label>
-      <label><input id="user--roundBubble" type="checkbox" />User: Round bubble</label>
-      <label><input id="user--showBubbleNub" type="checkbox" />User: Show bubble nub</label>
-      <label><input checked id="user--showDefaultAvatar" type="checkbox" />User: Show default avatar</label>
-      <label><input id="locale--arEG" type="checkbox" />Locale: Egyptian Arabic</label>
-    </div>
-    <div id="webchat" role="main"></div>
-    <script>
+    <div id="app" role="main"></div>
+    <script type="text/babel">
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -86,7 +119,6 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const directLine = window.WebChat.createDirectLine({ token });
         const styleOptions = {
           botAvatarImage:
             'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
@@ -95,64 +127,228 @@
           userAvatarInitials: 'WC'
         };
 
+        const { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } = window.React;
+        const {
+          ReactWebChat,
+          hooks: { useDirection }
+        } = window.WebChat;
+
+        const AppContext = createContext();
+
+        const App = () => {
+          const [botRoundBubble, setBotRoundBubble] = useState(false);
+          const [botShowBubbleNub, setBotShowBubbleNub] = useState(false);
+          const [botShowDefaultAvatar, setBotShowDefaultAvatar] = useState(true);
+          const [onlineStatus, setOnlineStatus] = useState('online');
+          const [rightToLeft, setRightToLeft] = useState(false);
+          const [showOnlineStatus, setShowOnlineStatus] = useState(true);
+          const [userRoundBubble, setUserRoundBubble] = useState(false);
+          const [userShowBubbleNub, setUserShowBubbleNub] = useState(false);
+          const [userShowDefaultAvatar, setUserShowDefaultAvatar] = useState(true);
+          const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
+
+          const handleBotRoundBubbleChange = useCallback(({ target: { checked } }) => setBotRoundBubble(checked), [
+            setBotRoundBubble
+          ]);
+
+          const handleBotShowBubbleNubChange = useCallback(({ target: { checked } }) => setBotShowBubbleNub(checked), [
+            setBotShowBubbleNub
+          ]);
+
+          const handleBotShowDefaultAvatarChange = useCallback(
+            ({ target: { checked } }) => setBotShowDefaultAvatar(checked),
+            [setBotShowDefaultAvatar]
+          );
+
+          const handleUserRoundBubbleChange = useCallback(({ target: { checked } }) => setUserRoundBubble(checked), [
+            setUserRoundBubble
+          ]);
+
+          const handleUserShowBubbleNubChange = useCallback(
+            ({ target: { checked } }) => setUserShowBubbleNub(checked),
+            [setUserShowBubbleNub]
+          );
+
+          const handleUserShowDefaultAvatarChange = useCallback(
+            ({ target: { checked } }) => setUserShowDefaultAvatar(checked),
+            [setUserShowDefaultAvatar]
+          );
+
+          const handleRightToLeftChange = useCallback(({ target: { checked } }) => setRightToLeft(checked), [
+            setRightToLeft
+          ]);
+
+          const handleShowOnlineStatusChange = useCallback(({ target: { checked } }) => setShowOnlineStatus(checked), [
+            setShowOnlineStatus
+          ]);
+
+          const handleOnlineStatusChange = useCallback(({ target: { value } }) => setOnlineStatus(value), [
+            setOnlineStatus
+          ]);
+
+          const styleOptions = useMemo(
+            () => ({
+              ...(botRoundBubble ? { bubbleBorderRadius: 20 } : {}),
+              ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
+              ...(botShowDefaultAvatar
+                ? {
+                    botAvatarImage:
+                      'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
+                    botAvatarInitials: 'BF'
+                  }
+                : {}),
+              ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20 } : {}),
+              ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
+              ...(userShowDefaultAvatar
+                ? {
+                    userAvatarImage: 'https://github.com/compulim.png?size=64',
+                    userAvatarInitials: 'WC'
+                  }
+                : {})
+            }),
+            [
+              botRoundBubble,
+              botShowBubbleNub,
+              botShowDefaultAvatar,
+              userRoundBubble,
+              userShowBubbleNub,
+              userShowDefaultAvatar
+            ]
+          );
+
+          const context = useMemo(
+            () => ({
+              onlineStatus,
+              showOnlineStatus
+            }),
+            [onlineStatus, showOnlineStatus]
+          );
+
+          return (
+            <React.Fragment>
+              <AppContext.Provider value={context}>
+                <div className="app__commandBar">
+                  <header className="app__commandBar__header">Options</header>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botRoundBubble}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotRoundBubbleChange}
+                      type="checkbox"
+                    />
+                    Bot: Round bubble
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botShowBubbleNub}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotShowBubbleNubChange}
+                      type="checkbox"
+                    />
+                    Bot: Show bubble nub
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botShowDefaultAvatar}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotShowDefaultAvatarChange}
+                      type="checkbox"
+                    />
+                    Bot: Show default avatar
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userRoundBubble}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserRoundBubbleChange}
+                      type="checkbox"
+                    />
+                    User: Round bubble
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userShowBubbleNub}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserShowBubbleNubChange}
+                      type="checkbox"
+                    />
+                    User: Show bubble nub
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userShowDefaultAvatar}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserShowDefaultAvatarChange}
+                      type="checkbox"
+                    />
+                    User: Show default avatar
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={rightToLeft}
+                      className="app__commandBar__checkBox"
+                      onChange={handleRightToLeftChange}
+                      type="checkbox"
+                    />
+                    Locale: Egyptian Arabic
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={showOnlineStatus}
+                      className="app__commandBar__checkBox"
+                      onChange={handleShowOnlineStatusChange}
+                      type="checkbox"
+                    />
+                    Show status:
+                    <select
+                      disabled={!showOnlineStatus}
+                      className="app__commandBar__select"
+                      onChange={handleOnlineStatusChange}
+                      value={onlineStatus}
+                    >
+                      <option value="online">Online</option>
+                      <option value="busy">Busy</option>
+                    </select>
+                  </label>
+                </div>
+                <ReactWebChat
+                  avatarMiddleware={avatarMiddleware}
+                  directLine={directLine}
+                  locale={rightToLeft ? 'ar-EG' : undefined}
+                  styleOptions={styleOptions}
+                />
+              </AppContext.Provider>
+            </React.Fragment>
+          );
+        };
+
+        const CustomAvatar = ({ children }) => {
+          const [direction] = useDirection();
+          const { onlineStatus, showOnlineStatus } = useContext(AppContext);
+
+          return (
+            <div className={`app__customAvatar${direction === 'rtl' ? ' app__customAvatar--rtl' : ''}`}>
+              {children}
+              {showOnlineStatus && (
+                <div className={`app__customAvatar__status app__customAvatar__status--${onlineStatus}`} />
+              )}
+            </div>
+          );
+        };
+
         const avatarMiddleware = () => next => ({ activity, styleOptions, ...otherArgs }) => {
-          if (~(activity.text || '').indexOf('1')) {
+          const { text = '' } = activity;
+
+          if (~text.indexOf('1')) {
             return false;
           }
 
-          return next({ activity, styleOptions, ...otherArgs });
+          const renderNext = next({ activity, styleOptions, ...otherArgs });
+
+          return renderNext && (() => <CustomAvatar>{renderNext()}</CustomAvatar>);
         };
 
-        document.querySelector('#commandBar').addEventListener('change', () => {
-          renderWebChat();
-        });
-
-        function createStyleOptions() {
-          const botRoundBubble = document.querySelector('#bot--roundBubble').checked;
-          const botShowBubbleNub = document.querySelector('#bot--showBubbleNub').checked;
-          const botShowDefaultAvatar = document.querySelector('#bot--showDefaultAvatar').checked;
-          const userRoundBubble = document.querySelector('#user--roundBubble').checked;
-          const userShowBubbleNub = document.querySelector('#user--showBubbleNub').checked;
-          const userShowDefaultAvatar = document.querySelector('#user--showDefaultAvatar').checked;
-
-          return {
-            ...(botRoundBubble ? { bubbleBorderRadius: 20 } : {}),
-            ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
-            ...(botShowDefaultAvatar
-              ? {
-                  botAvatarImage:
-                    'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
-                  botAvatarInitials: 'BF'
-                }
-              : {}),
-            ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20 } : {}),
-            ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
-            ...(userShowDefaultAvatar
-              ? {
-                  userAvatarImage: 'https://github.com/compulim.png?size=64',
-                  userAvatarInitials: 'WC'
-                }
-              : {})
-          };
-        }
-
-        function renderWebChat() {
-          const localeEgyptianArabic = document.querySelector('#locale--arEG').checked;
-
-          window.WebChat.renderWebChat(
-            {
-              avatarMiddleware,
-              directLine,
-              ...(localeEgyptianArabic ? { locale: 'ar-EG' } : {}),
-              styleOptions: createStyleOptions()
-            },
-            document.getElementById('webchat')
-          );
-        }
-
-        renderWebChat();
-
-        document.querySelector('#webchat > *').focus();
+        ReactDOM.render(<App />, document.getElementById('app'));
       })().catch(err => console.error(err));
     </script>
   </body>
