@@ -75,19 +75,6 @@ function createActivityRenderer(additionalMiddleware) {
 }
 
 // TODO: [P2] #2859 We should move these into <Composer>
-function createAvatarRenderer(additionalMiddleware) {
-  const avatarMiddleware = concatMiddleware(additionalMiddleware, createCoreAvatarMiddleware())({});
-
-  return (...args) => {
-    try {
-      return avatarMiddleware(() => false)(...args);
-    } catch (err) {
-      console.error('Failed to render avatar', err);
-    }
-  };
-}
-
-// TODO: [P2] #2859 We should move these into <Composer>
 function createActivityStatusRenderer(additionalMiddleware) {
   const activityStatusMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityStatusMiddleware())({});
 
@@ -123,6 +110,19 @@ function createAttachmentRenderer(additionalMiddleware) {
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
+    }
+  };
+}
+
+// TODO: [P2] #2859 We should move these into <Composer>
+function createAvatarRenderer(additionalMiddleware) {
+  const avatarMiddleware = concatMiddleware(additionalMiddleware, createCoreAvatarMiddleware())({});
+
+  return (...args) => {
+    try {
+      return avatarMiddleware(() => false)(...args);
+    } catch (err) {
+      console.error('Failed to render avatar', err);
     }
   };
 }
