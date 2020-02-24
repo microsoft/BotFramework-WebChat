@@ -26,7 +26,7 @@ const DEFAULT_OPTIONS = {
   primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
 
   // Avatar
-  avatarRadius: '50%',
+  avatarBorderRadius: '50%',
   avatarSize: 40,
   botAvatarBackgroundColor: undefined, // defaults to accent color
   botAvatarImage: '',
