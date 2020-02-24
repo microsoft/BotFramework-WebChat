@@ -9,7 +9,7 @@ import uiConnected from './setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 describe('customizable avatar', () => {
-  const defaultProps = {
+  const createDefaultProps = () => ({
     avatarMiddleware: () => next => args => {
       const { activity } = args;
       const { text = '' } = activity;
@@ -45,27 +45,32 @@ describe('customizable avatar', () => {
       userAvatarBackgroundColor: '#F77',
       userAvatarInitials: 'WW'
     }
-  };
+  });
 
-  const fullCustomizedProps = {
-    ...defaultProps,
-    styleOptions: {
-      ...defaultProps.styleOptions,
-      bubbleBorderColor: 'Black',
-      bubbleBorderRadius: 10,
-      bubbleFromUserBorderColor: 'Black',
-      bubbleFromUserBorderRadius: 10,
-      bubbleFromUserNubOffset: 5,
-      bubbleFromUserNubSize: 10,
-      bubbleNubOffset: 5,
-      bubbleNubSize: 10
-    }
+  const createFullCustomizedProps = args => {
+    const props = createDefaultProps(args);
+
+    return {
+      ...props,
+      styleOptions: {
+        ...props.styleOptions,
+        bubbleBorderColor: 'Black',
+        bubbleBorderRadius: 10,
+        bubbleFromUserBorderColor: 'Black',
+        bubbleFromUserBorderRadius: 10,
+        bubbleFromUserNubOffset: 5,
+        bubbleFromUserNubSize: 10,
+        bubbleNubOffset: 5,
+        bubbleNubSize: 10
+      }
+    };
   };
 
   test('with default avatar', async () => {
+    const props = createDefaultProps();
     const { driver, pageObjects } = await setupWebDriver({
       height: 768,
-      props: defaultProps
+      props
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -79,7 +84,9 @@ describe('customizable avatar', () => {
     await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.updateProps({
+      ...props,
       styleOptions: {
+        ...props.styleOptions,
         botAvatarInitials: undefined,
         userAvatarInitials: undefined
       }
@@ -89,9 +96,10 @@ describe('customizable avatar', () => {
   });
 
   test('with default avatar, bubble nub, and round bubble', async () => {
+    const props = createFullCustomizedProps();
     const { driver, pageObjects } = await setupWebDriver({
       height: 768,
-      props: fullCustomizedProps
+      props
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -105,11 +113,69 @@ describe('customizable avatar', () => {
     await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.updateProps({
-      ...fullCustomizedProps,
+      ...props,
       styleOptions: {
-        ...fullCustomizedProps.styleOptions,
+        ...props.styleOptions,
         botAvatarInitials: undefined,
         userAvatarInitials: undefined
+      }
+    });
+
+    await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('with default avatar only on one side', async () => {
+    let props = createDefaultProps();
+
+    props = { ...props, styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
+
+    const { driver, pageObjects } = await setupWebDriver({
+      props
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('normal');
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+
+    props = createDefaultProps();
+    props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
+
+    await pageObjects.updateProps({
+      ...props,
+      styleOptions: {
+        ...props.styleOptions,
+        botAvatarInitials: undefined
+      }
+    });
+
+    await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('with default avatar, bubble nub, and round bubble only on one side', async () => {
+    let props = createFullCustomizedProps();
+
+    props = { ...props, styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
+
+    const { driver, pageObjects } = await setupWebDriver({
+      props
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('normal');
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+
+    props = createFullCustomizedProps();
+    props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
+
+    await pageObjects.updateProps({
+      ...props,
+      styleOptions: {
+        ...props.styleOptions,
+        botAvatarInitials: undefined
       }
     });
 
@@ -119,7 +185,7 @@ describe('customizable avatar', () => {
   describe('in RTL', () => {
     test('with default avatar', async () => {
       const props = {
-        ...defaultProps,
+        ...createDefaultProps(),
         locale: 'ar-EG'
       };
 
@@ -152,7 +218,7 @@ describe('customizable avatar', () => {
 
     test('with default avatar, bubble nub, and round bubble', async () => {
       const props = {
-        ...fullCustomizedProps,
+        ...createFullCustomizedProps(),
         locale: 'ar-EG'
       };
 
@@ -177,6 +243,64 @@ describe('customizable avatar', () => {
           ...props.styleOptions,
           botAvatarInitials: undefined,
           userAvatarInitials: undefined
+        }
+      });
+
+      await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+    });
+
+    test('with default avatar only on one side', async () => {
+      let props = createDefaultProps();
+
+      props = { ...props, locale: 'ar-EG', styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
+
+      const { driver, pageObjects } = await setupWebDriver({
+        props
+      });
+
+      await driver.wait(uiConnected(), timeouts.directLine);
+      await pageObjects.sendMessageViaSendBox('normal');
+      await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+      await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+
+      props = createDefaultProps();
+      props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
+
+      await pageObjects.updateProps({
+        ...props,
+        styleOptions: {
+          ...props.styleOptions,
+          botAvatarInitials: undefined
+        }
+      });
+
+      await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+    });
+
+    test('with default avatar, bubble nub, and round bubble only on one side', async () => {
+      let props = createFullCustomizedProps();
+
+      props = { ...props, locale: 'ar-EG', styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
+
+      const { driver, pageObjects } = await setupWebDriver({
+        props
+      });
+
+      await driver.wait(uiConnected(), timeouts.directLine);
+      await pageObjects.sendMessageViaSendBox('normal');
+      await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+      await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+
+      props = createFullCustomizedProps();
+      props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
+
+      await pageObjects.updateProps({
+        ...props,
+        styleOptions: {
+          ...props.styleOptions,
+          botAvatarInitials: undefined
         }
       });
 
