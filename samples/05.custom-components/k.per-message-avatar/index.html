@@ -120,13 +120,6 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const styleOptions = {
-          botAvatarImage:
-            'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
-          botAvatarInitials: 'BF',
-          userAvatarImage: 'https://github.com/compulim.png?size=64',
-          userAvatarInitials: 'WC'
-        };
 
         const { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } = window.React;
         const {
@@ -146,7 +139,14 @@
           const [userRoundBubble, setUserRoundBubble] = useState(false);
           const [userShowBubbleNub, setUserShowBubbleNub] = useState(false);
           const [userShowDefaultAvatar, setUserShowDefaultAvatar] = useState(true);
+          const [botDefaultAvatarType, setBotDefaultAvatarType] = useState('image');
+          const [userDefaultAvatarType, setUserDefaultAvatarType] = useState('image');
           const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
+
+          const handleBotDefaultAvatarTypeChange = useCallback(
+            ({ target: { value } }) => setBotDefaultAvatarType(value),
+            [setBotDefaultAvatarType]
+          );
 
           const handleBotRoundBubbleChange = useCallback(({ target: { checked } }) => setBotRoundBubble(checked), [
             setBotRoundBubble
@@ -159,6 +159,11 @@
           const handleBotShowDefaultAvatarChange = useCallback(
             ({ target: { checked } }) => setBotShowDefaultAvatar(checked),
             [setBotShowDefaultAvatar]
+          );
+
+          const handleUserDefaultAvatarTypeChange = useCallback(
+            ({ target: { value } }) => setUserDefaultAvatarType(value),
+            [setUserDefaultAvatarType]
           );
 
           const handleUserRoundBubbleChange = useCallback(({ target: { checked } }) => setUserRoundBubble(checked), [
@@ -193,24 +198,36 @@
               ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
               ...(botShowDefaultAvatar
                 ? {
-                    botAvatarImage:
-                      'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
-                    botAvatarInitials: 'BF'
+                    botAvatarBackgroundColor: '#77F',
+                    botAvatarInitials: 'BF',
+                    ...(botDefaultAvatarType === 'image'
+                      ? {
+                          botAvatarImage:
+                            'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0'
+                        }
+                      : {})
                   }
                 : {}),
               ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20, bubbleFromUserNubOffset: 5 } : {}),
               ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
               ...(userShowDefaultAvatar
                 ? {
-                    userAvatarImage: 'https://github.com/compulim.png?size=64',
-                    userAvatarInitials: 'WC'
+                    userAvatarBackgroundColor: '#F77',
+                    userAvatarInitials: 'WC',
+                    ...(userDefaultAvatarType === 'image'
+                      ? {
+                          userAvatarImage: 'https://github.com/compulim.png?size=64'
+                        }
+                      : {})
                   }
                 : {})
             }),
             [
+              botDefaultAvatarType,
               botRoundBubble,
               botShowBubbleNub,
               botShowDefaultAvatar,
+              userDefaultAvatarType,
               userRoundBubble,
               userShowBubbleNub,
               userShowDefaultAvatar
@@ -256,6 +273,15 @@
                       type="checkbox"
                     />
                     Bot: Show default avatar
+                    <select
+                      className="app__commandBar__select"
+                      disabled={!botShowDefaultAvatar}
+                      onChange={handleBotDefaultAvatarTypeChange}
+                      value={botDefaultAvatarType}
+                    >
+                      <option value="image">Image and initials</option>
+                      <option value="initials">Initials only</option>
+                    </select>
                   </label>
                   <label className="app__commandBar__label">
                     <input
@@ -283,6 +309,15 @@
                       type="checkbox"
                     />
                     User: Show default avatar
+                    <select
+                      className="app__commandBar__select"
+                      disabled={!userShowDefaultAvatar}
+                      onChange={handleUserDefaultAvatarTypeChange}
+                      value={userDefaultAvatarType}
+                    >
+                      <option value="image">Image and initials</option>
+                      <option value="initials">Initials only</option>
+                    </select>
                   </label>
                   <label className="app__commandBar__label">
                     <input
