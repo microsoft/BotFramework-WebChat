@@ -22,7 +22,7 @@ We simplified our measurements to make it suitable for popular telemetry service
    -  `timingstart` will include a name
    -  `timingend` will include a name, and duration measured in milliseconds
 
-Feature updates on minor versions may introduce new or remove outdated measurements. To better understand user behaviors with different set of measurements, developers are advised to tag their telemetry data with the Web Chat version.
+Feature updates on minor versions may introduce new or remove outdated measurements. To better understand user behaviors with a different set of measurements, developers are advised to tag their telemetry data with the Web Chat version.
 
 ### Dimensions
 
@@ -33,11 +33,11 @@ The following information will be emitted on every measurement. Dimensions may c
 | `prop:locale`                          | Locale specified in props, normalized                                                    |
 | `prop:speechRecognition`               | `"false"` if speech recognition is switched off                                          |
 | `prop:speechSynthesis`                 | `"false"` if speech synthesis is switched off                                            |
-| `capability:downscaleImage:workerType` | `"web worker"` if the browser support Web Worker and offline canvas, otherwise, `"main"` |
+| `capability:downscaleImage:workerType` | `"web worker"` if the browser supports Web Worker and offline canvas, otherwise, `"main"` |
 
 > `prop:speechRecognition` and `prop:speechSynthesis` do not represent browser capabilities on Speech Recognition and Speech Synthesis.
 
-Some telemetry services may have limited number of dimensions. For example, Google Analytics has a limit of [20 custom dimensions](https://support.google.com/analytics/answer/2709828?hl=en) and [500 events per session](https://support.google.com/analytics/answer/9267744?hl=en). As Web Chat may introduce more dimensions later, developers are advised to pick dimensions they needed before sending to their services.
+Some telemetry services may have a limited number of dimensions. For example, Google Analytics has a limit of [20 custom dimensions](https://support.google.com/analytics/answer/2709828?hl=en) and [500 events per session](https://support.google.com/analytics/answer/9267744?hl=en). As Web Chat may introduce more dimensions later, developers are advised to pick dimensions they need before sending to their services.
 
 ### Events for hooks
 
@@ -45,7 +45,7 @@ When the following hooks are called, one or more event measurements will be emit
 
 | Hooks              | Events          | Data          | Data type | Description                                               |
 | ------------------ | --------------- | ------------- | --------- | --------------------------------------------------------- |
-| `useSendFiles`     | `sendFiles`     |               |           | Emit when the user uploading files                        |
+| `useSendFiles`     | `sendFiles`     |               |           | Emitted when the user uploading files                        |
 |                    |                 | `numFile`     | `number`  | Number of files uploaded                                  |
 |                    |                 | `sumSizeInKB` | `number`  | Total file size in kilobytes                              |
 | `useSubmitSendBox` | `submitSendBox` |               |           | Emit when the user submit send box                        |
