@@ -184,3 +184,22 @@ describe('customizable avatar', () => {
     });
   });
 });
+
+test('customize size and roundness of avatar', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        avatarBorderRadius: '20%',
+        avatarSize: 64,
+        botAvatarInitials: 'WC',
+        userAvatarInitials: 'WW'
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('normal');
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+  await expect(driver.takeScreenshot()).resolves.toMatchImageSnapshot(imageSnapshotOptions);
+});
