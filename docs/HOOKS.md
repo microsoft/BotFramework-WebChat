@@ -939,7 +939,7 @@ This function derives the visibility of the typing indicator via:
 useTrackDimension(): (name: string, data?: string) => void
 ```
 
-This function will add, update, or remove a dimension from telemetry. If `undefined` is passed to `value`, the dimension will be removed. This hook will not trigger `onTelemetry` handler.
+This function will add, update, or remove a dimension from telemetry. If `undefined` is passed to `data`, the dimension will be removed. This hook will not trigger `onTelemetry` handler.
 
 ### `useTrackEvent`
 
