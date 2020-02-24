@@ -6,20 +6,22 @@ export default function createInitialsAvatarStyle({
   userAvatarBackgroundColor
 }) {
   return {
-    alignItems: 'center',
-    color: 'White',
-    fontFamily: primaryFont,
-    height: avatarSize,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: avatarSize,
+    '&.webchat__initialsAvatar': {
+      alignItems: 'center',
+      color: 'White',
+      fontFamily: primaryFont,
+      height: avatarSize,
+      justifyContent: 'center',
+      overflow: 'hidden',
+      width: avatarSize,
 
-    '&.from-user': {
-      backgroundColor: userAvatarBackgroundColor || accent
-    },
+      '&.webchat__initialsAvatar--fromUser': {
+        backgroundColor: userAvatarBackgroundColor || accent
+      },
 
-    '&:not(.from-user)': {
-      backgroundColor: botAvatarBackgroundColor || accent
+      '&:not(.webchat__initialsAvatar--fromUser)': {
+        backgroundColor: botAvatarBackgroundColor || accent
+      }
     }
   };
 }

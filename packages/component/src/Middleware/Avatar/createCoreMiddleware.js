@@ -22,7 +22,15 @@ const DefaultAvatar = ({ fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
 
   return (
-    <div aria-hidden={true} className={classNames(ROOT_CSS + '', 'webchat__defaultAvatar', avatarStyleSet + '')}>
+    <div
+      aria-hidden={true}
+      className={classNames(
+        ROOT_CSS + '',
+        'webchat__defaultAvatar',
+        fromUser && 'webchat__defaultAvatar--fromUser',
+        avatarStyleSet + ''
+      )}
+    >
       <InitialsAvatar fromUser={fromUser} />
       <ImageAvatar fromUser={fromUser} />
     </div>

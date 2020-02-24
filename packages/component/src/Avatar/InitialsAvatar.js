@@ -22,7 +22,14 @@ const InitialsAvatar = ({ fromUser }) => {
   const [{ initialsAvatar: initialsAvatarStyleSet }] = useStyleSet();
 
   return (
-    <div className={classNames(ROOT_CSS + '', 'webchat__initialsAvatar', initialsAvatarStyleSet + '')}>
+    <div
+      className={classNames(
+        ROOT_CSS + '',
+        'webchat__initialsAvatar',
+        fromUser && 'webchat__initialsAvatar--fromUser',
+        initialsAvatarStyleSet + ''
+      )}
+    >
       <div className="webchat__initialsAvatar__initials">{fromUser ? avatarInitialsForUser : avatarInitialsForBot}</div>
     </div>
   );
