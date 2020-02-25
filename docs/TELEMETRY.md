@@ -61,16 +61,16 @@ When the following hooks are called, one or more event measurements will be emit
 
 When the following conditions are met, an exception measurement will be emitted:
 
-- An `<ErrorBox>` component is rendered
-   - Failed to render an activity
-   - Failed to render an activity status
-   - Failed to render an attachment
-   - Failed to render a notification toast
-   - Failed to render the typing indicator
-- Activity renderer not found for a type of activity
-- Toast renderer not found for a type of notification
-- No typing indicator renderers were registered
-- Any exceptions raised while calling `useTrackTiming`
+-  An `<ErrorBox>` component is rendered
+   -  Failed to render an activity
+   -  Failed to render an activity status
+   -  Failed to render an attachment
+   -  Failed to render a notification toast
+   -  Failed to render the typing indicator
+-  Activity renderer not found for a type of activity
+-  Toast renderer not found for a type of notification
+-  No typing indicator renderers were registered
+-  Any exceptions raised while calling `useTrackTiming`
 
 ### Timings
 
@@ -96,10 +96,7 @@ interface TelemetryEventMeasurementEvent extends TelemetryMeasurementEvent {
    type: 'event';
    name: string;
    level: 'debug' | 'info' | 'warn' | 'error';
-   data?:
-      number |
-      string |
-      { [key: string]: number | string };
+   data?: number | string | { [key: string]: number | string };
 }
 
 interface TelemetryExceptionMeasurementEvent extends TelemetryMeasurementEvent {

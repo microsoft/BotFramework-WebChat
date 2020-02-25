@@ -965,14 +965,14 @@ Log levels can be specified using: `debug`, `error`, `info`, `warn`. If log leve
 
 ```js
 const MyComponent = () => {
-  const trackEvent = useTrackEvent();
+   const trackEvent = useTrackEvent();
 
-  trackEvent('This event will have default of level "info".');
+   trackEvent('This event will have default of level "info".');
 
-  trackEvent.debug('This event will be of level "debug".');
-  trackEvent.error('This event will be of level "error".');
-  trackEvent.info('This event will be of level "info".');
-  trackEvent.warn('This event will be of level "warn".');
+   trackEvent.debug('This event will be of level "debug".');
+   trackEvent.error('This event will be of level "error".');
+   trackEvent.info('This event will be of level "info".');
+   trackEvent.warn('This event will be of level "warn".');
 };
 ```
 
