@@ -56,7 +56,7 @@
         aisdk.queue ? aisdk.queue.push(telemetryInitializer) : telemetryInitializer();
 
         const handleTelemetry = event => {
-          const { data, dimensions, duration, error, name, type } = event;
+          const { data, dimensions, duration, error, fatal, level, name, type } = event;
           const fullName = `webchatui:${name}`;
 
           console.group(`onTelemetry ("${type}")`);
@@ -78,7 +78,8 @@
               name: fullName,
               properties: {
                 ...dimensions,
-                ...appInsightsData
+                ...appInsightsData,
+                'webchat:level': level
               }
             });
           } else if (type === 'exception') {

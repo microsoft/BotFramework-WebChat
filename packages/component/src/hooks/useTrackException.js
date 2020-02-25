@@ -8,10 +8,10 @@ export default function useTrackException() {
   const readTelemetryDimensions = useReadTelemetryDimensions();
 
   return useCallback(
-    error => {
+    (error, fatal = true) => {
       if (!(error instanceof Error)) {
         return console.warn(
-          'botframework-webchat: "error" passed to "useTrackException" must be specified and of type Error. Ignoring.'
+          'botframework-webchat: "error" passed to "useTrackException" must be specified and of type Error.'
         );
       }
 
@@ -19,6 +19,7 @@ export default function useTrackException() {
 
       event.dimensions = { ...readTelemetryDimensions() };
       event.error = error;
+      event.fatal = !!fatal;
 
       onTelemetry && onTelemetry(event);
     },

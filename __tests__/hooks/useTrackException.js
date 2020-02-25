@@ -12,7 +12,7 @@ describe('useTrackException', () => {
     const setup = await setupWebDriver({
       props: {
         onTelemetry: event => {
-          const { data, dimensions, duration, error, name, type } = event;
+          const { data, dimensions, duration, error, fatal, name, type } = event;
 
           name !== 'init' &&
             (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
@@ -20,6 +20,7 @@ describe('useTrackException', () => {
               dimensions,
               duration,
               error: error.message,
+              fatal,
               name,
               type
             });
@@ -48,6 +49,32 @@ describe('useTrackException', () => {
           },
           "duration": null,
           "error": "artificial error",
+          "fatal": true,
+          "name": null,
+          "type": "exception",
+        },
+      ]
+    `);
+  });
+
+  test('should track non-fatal exception', async () => {
+    await pageObjects.runHook('useTrackException', [], trackException =>
+      trackException(new Error('non-fatal error'), false)
+    );
+
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "data": null,
+          "dimensions": Object {
+            "capability:downscaleImage:workerType": "web worker",
+            "prop:locale": "en-US",
+            "prop:speechRecognition": "false",
+            "prop:speechSynthesis": "false",
+          },
+          "duration": null,
+          "error": "non-fatal error",
+          "fatal": false,
           "name": null,
           "type": "exception",
         },

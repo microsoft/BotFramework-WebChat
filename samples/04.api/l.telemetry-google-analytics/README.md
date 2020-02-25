@@ -75,7 +75,7 @@ Add an event handler to receive telemetry measurements from Web Chat and log the
       gtag('config', 'GA_MEASUREMENT_ID');
 
 +     const handleTelemetry = event => {
-+       const { data, dimensions, duration, error, name, type } = event;
++       const { data, dimensions, duration, error, fatal, name, type } = event;
 +
 +       console.group(`onTelemetry ("${type}")`);
 +       console.log({ name, data, dimensions, duration, error });
@@ -120,7 +120,7 @@ Events with multiple properties will be expanded into multiple events.
       gtag('config', 'GA_MEASUREMENT_ID');
 
       const handleTelemetry = event => {
-        const { data, dimensions, duration, error, name, type } = event;
+        const { data, dimensions, duration, error, fatal, name, type } = event;
 
         console.group(`onTelemetry ("${type}")`);
         console.log({ name, data, dimensions, duration, error });
@@ -148,7 +148,8 @@ Events with multiple properties will be expanded into multiple events.
 +       } else if (type === 'exception') {
 +         gtag('event', 'exception', {
 +           ...dimensions,
-+           description: error
++           description: error,
++           fatal
 +         });
 +       } else if (type === 'timingend') {
 +         gtag('event', 'timing_complete', {
@@ -272,7 +273,7 @@ Here is the finished `index.html`:
 +         });
 +
 +         const handleTelemetry = event => {
-+           const { data, dimensions, duration, error, name, type } = event;
++           const { data, dimensions, duration, error, fatal, name, type } = event;
 +
 +           console.group(`onTelemetry ("${type}")`);
 +           console.log({ name, data, dimensions, duration, error });
@@ -300,7 +301,8 @@ Here is the finished `index.html`:
 +           } else if (type === 'exception') {
 +             gtag('event', 'exception', {
 +               ...dimensions,
-+               description: error
++               description: error,
++               fatal
 +             });
 +           } else if (type === 'timingend') {
 +             gtag('event', 'timing_complete', {

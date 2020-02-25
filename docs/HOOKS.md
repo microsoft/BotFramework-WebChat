@@ -944,23 +944,42 @@ This function will add, update, or remove a dimension from telemetry. If `undefi
 ### `useTrackEvent`
 
 ```js
-useTrackEvent(): (
-   name: string,
-   data?:
-      number |
-      string |
-      { [key: string]: number | string }
-) => void
+type EventData =
+  number |
+  string |
+  { [key: string]: number | string };
+
+useTrackEvent():
+  (name: string, data?: EventData) => void &
+  {
+    debug: (name: string, data?: EventData) => void,
+    error: (name: string, data?: EventData) => void,
+    info: (name: string, data?: EventData) => void,
+    warn: (name: string, data?: EventData) => void
+  }
 ```
 
-This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered.
+This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered. All numeric data passed to `data` must be a non-negative finite number.
 
-All numeric data passed to `data` must be a non-negative finite number.
+Log levels can be specified using: `debug`, `error`, `info`, `warn`. If log level is not specified, it will default to `info`.
+
+```js
+const MyComponent = () => {
+  const trackEvent = useTrackEvent();
+
+  trackEvent('This event will have default of level "info".');
+
+  trackEvent.debug('This event will be of level "debug".');
+  trackEvent.error('This event will be of level "error".');
+  trackEvent.info('This event will be of level "info".');
+  trackEvent.warn('This event will be of level "warn".');
+};
+```
 
 ### `useTrackException`
 
 ```js
-useTrackException(): (error: Error) => void
+useTrackException(): (error: Error, fatal?: boolean = true) => void
 ```
 
 This function will emit an exception measurement. When called, the `onTelemetry` handler will be triggered.
@@ -974,4 +993,4 @@ useTrackTiming(): (name: string, promise: Promise) => void
 
 This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
 
-If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook.
+If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a fatal error.

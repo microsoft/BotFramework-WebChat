@@ -12,7 +12,7 @@ describe('useTrackEvent', () => {
     const setup = await setupWebDriver({
       props: {
         onTelemetry: event => {
-          const { data, dimensions, duration, error, name, type } = event;
+          const { data, dimensions, duration, error, level, name, type } = event;
 
           name !== 'init' &&
             (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
@@ -20,6 +20,7 @@ describe('useTrackEvent', () => {
               dimensions,
               duration,
               error,
+              level,
               name,
               type
             });
@@ -48,6 +49,30 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
+          "level": "info",
+          "name": "hello",
+          "type": "event",
+        },
+      ]
+    `);
+  });
+
+  test('should track simple event using info explicitly', async () => {
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.info('hello'));
+
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "data": null,
+          "dimensions": Object {
+            "capability:downscaleImage:workerType": "web worker",
+            "prop:locale": "en-US",
+            "prop:speechRecognition": "false",
+            "prop:speechSynthesis": "false",
+          },
+          "duration": null,
+          "error": null,
+          "level": "info",
           "name": "hello",
           "type": "event",
         },
@@ -56,7 +81,7 @@ describe('useTrackEvent', () => {
   });
 
   test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 123));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.warn('hello', 123));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
@@ -70,6 +95,7 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
+          "level": "warn",
           "name": "hello",
           "type": "event",
         },
@@ -78,7 +104,7 @@ describe('useTrackEvent', () => {
   });
 
   test('should track numeric event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', 'aloha'));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.debug('hello', 'aloha'));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
@@ -92,6 +118,7 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
+          "level": "debug",
           "name": "hello",
           "type": "event",
         },
@@ -100,7 +127,7 @@ describe('useTrackEvent', () => {
   });
 
   test('should track complex event', async () => {
-    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { one: 1, hello: 'aloha' }));
+    await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.error('hello', { one: 1, hello: 'aloha' }));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
       Array [
@@ -117,6 +144,7 @@ describe('useTrackEvent', () => {
           },
           "duration": null,
           "error": null,
+          "level": "error",
           "name": "hello",
           "type": "event",
         },

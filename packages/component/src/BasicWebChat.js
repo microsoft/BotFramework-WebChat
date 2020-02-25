@@ -46,7 +46,7 @@ const SilentError = ({ err, message }) => {
   const trackException = useTrackException();
 
   useEffect(() => {
-    trackException(err || new Error(message));
+    trackException(err || new Error(message), false);
   }, [err, message, trackException]);
 
   return false;

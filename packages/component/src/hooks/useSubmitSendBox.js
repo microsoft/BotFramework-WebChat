@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import useTrackEvent from './useTrackEvent';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
@@ -5,11 +7,14 @@ export default function useSubmitSendBox() {
   const { submitSendBox } = useWebChatUIContext();
   const trackEvent = useTrackEvent();
 
-  return (...args) => {
-    const [method = 'keyboard'] = args;
+  return useCallback(
+    (...args) => {
+      const [method = 'keyboard'] = args;
 
-    trackEvent('submitSendBox', method);
+      trackEvent('submitSendBox', method);
 
-    return submitSendBox(...args);
-  };
+      return submitSendBox(...args);
+    },
+    [submitSendBox, trackEvent]
+  );
 }

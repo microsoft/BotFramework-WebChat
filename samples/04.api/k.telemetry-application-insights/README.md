@@ -77,7 +77,7 @@ For classifications, all measurements will be prefixed with `webchat:`.
   const { token } = await res.json();
 
   const handleTelemetry = event => {
-    const { data, dimensions, duration, error, name, type } = event;
+    const { data, dimensions, duration, error, level, name, type } = event;
 +   const fullName = `webchatui:${name}`;
 
     console.group(`onTelemetry ("${type}")`);
@@ -97,7 +97,8 @@ For classifications, all measurements will be prefixed with `webchat:`.
 +       name: fullName,
 +       properties: {
 +         ...dimensions,
-+         ...appInsightsData
++         ...appInsightsData,
++         'webchat:level': level
 +       }
 +     });
 +   } else if (type === 'exception') {
@@ -199,7 +200,7 @@ Here is the finished `index.html`:
 +         aisdk.queue ? aisdk.queue.push(telemetryInitializer) : telemetryInitializer();
 +
 +         const handleTelemetry = event => {
-+           const { data, dimensions, duration, error, name, type } = event;
++           const { data, dimensions, duration, error, level, name, type } = event;
 +           const fullName = `webchatui:${name}`;
 +
 +           console.group(`onTelemetry ("${type}")`);
@@ -221,7 +222,8 @@ Here is the finished `index.html`:
 +               name: fullName,
 +               properties: {
 +                 ...dimensions,
-+                 ...appInsightsData
++                 ...appInsightsData,
++                 'webchat:level': level
 +               }
 +             });
 +           } else if (type === 'exception') {

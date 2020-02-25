@@ -59,7 +59,7 @@
         });
 
         const handleTelemetry = event => {
-          const { data, dimensions, duration, error, name, type } = event;
+          const { data, dimensions, duration, error, fatal, name, type } = event;
 
           console.group(`onTelemetry ("${type}")`);
           console.log({ name, data, dimensions, duration, error });
@@ -87,7 +87,8 @@
           } else if (type === 'exception') {
             gtag('event', 'exception', {
               ...dimensions,
-              description: error
+              description: error,
+              fatal
             });
           } else if (type === 'timingend') {
             gtag('event', 'timing_complete', {
