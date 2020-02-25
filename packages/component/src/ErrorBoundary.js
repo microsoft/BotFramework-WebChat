@@ -4,8 +4,6 @@ import React from 'react';
 class ErrorBoundary extends React.Component {
   // Currently, all errors caught are fatal errors.
   // We will bubble up the error and let React unmount us.
-  static getDerivedStateFromError() {}
-
   componentDidCatch(error) {
     const { onError } = this.props;
     const errorEvent = new ErrorEvent('error', { error });
