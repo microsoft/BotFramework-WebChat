@@ -23,5 +23,5 @@ export default function useRenderAvatar({ activity }) {
     }
 
     return result;
-  }, [activity, styleOptions]);
+  }, [activity, avatarRenderer, styleOptions]);
 }

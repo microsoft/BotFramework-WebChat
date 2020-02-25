@@ -84,7 +84,7 @@ const connectStackedLayout = (...selectors) =>
 const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const formatDate = useDateFormatter();

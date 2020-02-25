@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import concatMiddleware from '../concatMiddleware';
@@ -37,11 +38,16 @@ const DefaultAvatar = ({ fromUser }) => {
   );
 };
 
+DefaultAvatar.propTypes = {
+  fromUser: PropTypes.bool.isRequired
+};
+
 export default function createCoreAvatarMiddleware() {
   return concatMiddleware(() => () => ({ fromUser, styleOptions }) => {
     const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
 
     if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
+      // eslint-disable-next-line react/display-name
       return () => <DefaultAvatar fromUser={fromUser} />;
     }
 
