@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
+import ErrorBoundary from './ErrorBoundary';
 import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
 import isObject from './Utils/isObject';
 import normalizeLanguage from './Utils/normalizeLanguage';
@@ -425,17 +426,31 @@ const Composer = ({
 };
 
 // We will create a Redux store if it was not passed in
-const ComposeWithStore = ({ store, ...props }) => {
+const ComposeWithStore = ({ onTelemetry, store, ...props }) => {
+  const handleError = useCallback(
+    ({ error }) => {
+      const event = new Event('exception');
+
+      event.error = error;
+      event.fatal = true;
+
+      onTelemetry && onTelemetry(event);
+    },
+    [onTelemetry]
+  );
+
   const memoizedStore = useMemo(() => store || createStore(), [store]);
 
   return (
-    <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ScrollToBottomComposer>
-        <ScrollToBottomFunctionContext.Consumer>
-          {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
-        </ScrollToBottomFunctionContext.Consumer>
-      </ScrollToBottomComposer>
-    </Provider>
+    <ErrorBoundary onError={handleError}>
+      <Provider context={WebChatReduxContext} store={memoizedStore}>
+        <ScrollToBottomComposer>
+          <ScrollToBottomFunctionContext.Consumer>
+            {({ scrollToEnd }) => <Composer onTelemetry={onTelemetry} scrollToEnd={scrollToEnd} {...props} />}
+          </ScrollToBottomFunctionContext.Consumer>
+        </ScrollToBottomComposer>
+      </Provider>
+    </ErrorBoundary>
   );
 };
 

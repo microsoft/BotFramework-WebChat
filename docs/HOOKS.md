@@ -993,4 +993,4 @@ useTrackTiming(): (name: string, promise: Promise) => void
 
 This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
 
-If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a fatal error.
+If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a non-fatal error.

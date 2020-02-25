@@ -36,7 +36,7 @@ export default function useTrackTiming() {
       try {
         return await (typeof functionOrPromise === 'function' ? functionOrPromise() : functionOrPromise);
       } catch (err) {
-        trackException(err);
+        trackException(err, false);
 
         throw err;
       } finally {
