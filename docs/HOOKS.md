@@ -949,14 +949,13 @@ type EventData =
   string |
   { [key: string]: number | string };
 
-useTrackEvent():
-  (name: string, data?: EventData) => void &
-  {
-    debug: (name: string, data?: EventData) => void,
-    error: (name: string, data?: EventData) => void,
-    info: (name: string, data?: EventData) => void,
-    warn: (name: string, data?: EventData) => void
-  }
+useTrackEvent(): {
+  (name: string, data?: EventData): void;
+  debug: (name: string, data?: EventData) => void;
+  error: (name: string, data?: EventData) => void;
+  info: (name: string, data?: EventData) => void;
+  warn: (name: string, data?: EventData) => void;
+}
 ```
 
 This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered. All numeric data passed to `data` must be a non-negative finite number.
