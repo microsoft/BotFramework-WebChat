@@ -19,17 +19,18 @@ const ROOT_CSS = css({
   }
 });
 
-const DefaultAvatar = ({ fromUser }) => {
+const DefaultAvatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
 
   return (
     <div
-      aria-hidden={true}
+      aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
         'webchat__defaultAvatar',
         fromUser && 'webchat__defaultAvatar--fromUser',
-        avatarStyleSet + ''
+        avatarStyleSet + '',
+        className
       )}
     >
       <InitialsAvatar fromUser={fromUser} />
@@ -38,7 +39,14 @@ const DefaultAvatar = ({ fromUser }) => {
   );
 };
 
+DefaultAvatar.defaultProps = {
+  'aria-hidden': true,
+  className: ''
+};
+
 DefaultAvatar.propTypes = {
+  'aria-hidden': PropTypes.bool,
+  className: PropTypes.string,
   fromUser: PropTypes.bool.isRequired
 };
 
@@ -54,3 +62,5 @@ export default function createCoreAvatarMiddleware() {
     return false;
   });
 }
+
+export { DefaultAvatar };
