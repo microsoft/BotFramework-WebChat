@@ -2,7 +2,7 @@
 
 In Web Chat 4.8, a new telemetry system is introduced. Developers can opt into this feature by implementing their own telemetry collection adapter and start pumping measurements into telemetry services of their choice.
 
-Microsoft **does not** collect or receive any telemetry measurements for Web Chat on either CDN and NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policies to the end-user to explain their data collection policy and provide a prompt.
+Microsoft **does not** collect or receive any telemetry measurements for Web Chat on either the CDN or the NPM releases. Developers must provide their own telemetry collection adapter to start collecting data. Under local regulations, they may be required to provide privacy policies to the end-user to explain their data collection policy and provide a prompt.
 
 ## Collection
 
