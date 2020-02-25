@@ -89,6 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2946](https://github.com/microsoft/BotFramework-WebChat/issues/2946). Updated JSON filenames for localization strings, by [@compulim](https://github.com/compulim) in PR [#2949](https://github.com/microsoft/BotFramework-WebChat/pull/2949)
 -  Fixes [#2560](https://github.com/microsoft/BotFramework-WebChat/issues/2560). Bumped to [`react-dictate-button@1.2.2`](https://npmjs.com/package/react-dictate-button) to workaround [a bug from Angular/zone.js](https://github.com/angular/angular/issues/31750), by [@compulim](https://github.com/compulim) in PR [#2960](https://github.com/microsoft/BotFramework-WebChat/issues/2960)
 -  Fixes [#2923](https://github.com/microsoft/BotFramework-WebChat/issues/2923). Added `download` attribute to file attachment (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#2963](https://github.com/microsoft/BotFramework-WebChat/pull/2963)
+-  Fixes [#2904](https://github.com/microsoft/BotFramework-WebChat/issues/2904). Fixed border radius when rendering bubble nub in RTL, by [@compulim](https://github.com/compulim) in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 
 ### Changed
 
