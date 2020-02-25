@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 class ErrorBoundary extends React.Component {
-  // Currently, we do not show any error screen.
-  // We will propagate the error to React to let it unmount Web Chat.
+  // Currently, all errors caught are fatal errors.
+  // We will bubble up the error and let React unmount us.
   static getDerivedStateFromError() {}
 
   componentDidCatch(error) {
