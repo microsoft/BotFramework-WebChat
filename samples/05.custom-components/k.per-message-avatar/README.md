@@ -28,8 +28,8 @@ This sample shows how to customize avatar on a per-message basis.
 
 This sample is separated into 2 phases:
 
-- Adding online status
-- Rendering a custom avatar
+-  Adding online status
+-  Rendering a custom avatar
 
 ### Creating an online status component
 
@@ -65,28 +65,28 @@ Then, add the stylesheet for the online status icon:
 
 ```css
 .app__avatarWithOnlineStatus {
-  display: flex;
-  position: relative;
+   display: flex;
+   position: relative;
 }
 
 .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status {
-  background-color: White;
-  border-radius: 50%;
-  border: solid 2px White;
-  bottom: -2px;
-  height: 10px;
-  position: absolute;
-  right: -2px;
-  transition: background-color 200ms;
-  width: 10px;
+   background-color: White;
+   border-radius: 50%;
+   border: solid 2px White;
+   bottom: -2px;
+   height: 10px;
+   position: absolute;
+   right: -2px;
+   transition: background-color 200ms;
+   width: 10px;
 }
 
 .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--online {
-  background-color: #090;
+   background-color: #090;
 }
 
 .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--busy {
-  background-color: Red;
+   background-color: Red;
 }
 ```
 
@@ -201,7 +201,7 @@ First, add a `<PortraitAvatar>` component, which house the rectangular avatar im
 
 ```js
 const PortraitAvatar = ({ fromUser }) => {
-  return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
+   return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
 };
 ```
 
@@ -209,7 +209,7 @@ Along with its stylesheet:
 
 ```css
 .app__portraitAvatar {
-  border-radius: 4px;
+   border-radius: 4px;
 }
 ```
 
