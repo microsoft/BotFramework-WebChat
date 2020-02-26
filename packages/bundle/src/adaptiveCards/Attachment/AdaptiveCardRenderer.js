@@ -206,7 +206,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
   ]);
 
   return error ? (
-    <ErrorBox message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
+    <ErrorBox error={error} message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (

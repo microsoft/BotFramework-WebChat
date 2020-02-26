@@ -4,7 +4,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
@@ -19,6 +19,7 @@ import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createCoreTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
+import useTrackException from './hooks/useTrackException';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -41,18 +42,28 @@ const TRANSCRIPT_CSS = css({
   flex: 1
 });
 
+const SilentError = ({ err, message }) => {
+  const trackException = useTrackException();
+
+  useEffect(() => {
+    trackException(err || new Error(message), false);
+  }, [err, message, trackException]);
+
+  return false;
+};
+
 // TODO: [P2] We should move these into <Composer>
 function createActivityRenderer(additionalMiddleware) {
   const activityMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityMiddleware())({});
 
   return (...args) => {
     try {
-      return activityMiddleware(({ activity }) => () => {
-        console.warn(`No activity found for type "${activity.type}".`);
-      })(...args);
+      return activityMiddleware(({ activity }) => () => (
+        <SilentError message={`No activity found for type "${activity.type}".`} />
+      ))(...args);
     } catch (err) {
       const FailedRenderActivity = () => (
-        <ErrorBox message="Failed to render activity">
+        <ErrorBox error={err} message="Failed to render activity">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
@@ -69,9 +80,11 @@ function createActivityStatusRenderer(additionalMiddleware) {
   return (...args) => {
     try {
       return activityStatusMiddleware(() => false)(...args);
-    } catch ({ message, stack }) {
+    } catch (err) {
+      const { message, stack } = err;
+
       return (
-        <ErrorBox message="Failed to render activity status">
+        <ErrorBox error={err} message="Failed to render activity status">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -92,7 +105,7 @@ function createAttachmentRenderer(additionalMiddleware) {
       ))(...args);
     } catch (err) {
       return (
-        <ErrorBox message="Failed to render attachment">
+        <ErrorBox error={err} message="Failed to render attachment">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
@@ -111,11 +124,13 @@ function createToastRenderer(additionalMiddleware) {
           <pre>{JSON.stringify(notification, null, 2)}</pre>
         </ErrorBox>
       ))(...args);
-    } catch ({ message, stack }) {
+    } catch (err) {
+      const { message, stack } = err;
+
       console.error({ message, stack });
 
       return (
-        <ErrorBox message="Failed to render notification">
+        <ErrorBox error={err} message="Failed to render notification">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -133,11 +148,13 @@ function createTypingIndicatorRenderer(additionalMiddleware) {
           <pre>{JSON.stringify({ activeTyping, typing, visible }, null, 2)}</pre>
         </ErrorBox>
       ))(...args);
-    } catch ({ message, stack }) {
+    } catch (err) {
+      const { message, stack } = err;
+
       console.error({ message, stack });
 
       return (
-        <ErrorBox message="Failed to render typing indicator">
+        <ErrorBox error={err} message="Failed to render typing indicator">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );

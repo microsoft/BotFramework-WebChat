@@ -101,6 +101,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSubmitSendBox`](#usesubmitsendbox)
 -  [`useSuggestedActions`](#usesuggestedactions)
 -  [`useTimeoutForSend`](#usetimeoutforsend)
+-  [`useTrackDimension`](#usetrackdimension)
+-  [`useTrackEvent`](#usetrackevent)
+-  [`useTrackException`](#usetrackexception)
+-  [`useTrackTiming`](#usetracktiming)
 -  [`useUserID`](#useuserid)
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
@@ -926,3 +930,66 @@ This function derives the visibility of the typing indicator via:
 
 -  `typingAnimationDuration` value specified in style options, in milliseconds
 -  Values from the `useLastTypingAt` hook
+
+## Telemetry
+
+### `useTrackDimension`
+
+```js
+useTrackDimension(): (name: string, data?: string) => void
+```
+
+This function will add, update, or remove a dimension from telemetry. If `undefined` is passed to `data`, the dimension will be removed. This hook will not trigger `onTelemetry` handler.
+
+### `useTrackEvent`
+
+```js
+type EventData =
+  number |
+  string |
+  { [key: string]: number | string };
+
+useTrackEvent(): {
+  (name: string, data?: EventData): void;
+  debug: (name: string, data?: EventData) => void;
+  error: (name: string, data?: EventData) => void;
+  info: (name: string, data?: EventData) => void;
+  warn: (name: string, data?: EventData) => void;
+}
+```
+
+This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered. All numeric data passed to `data` must be a non-negative finite number.
+
+Log levels can be specified using: `debug`, `error`, `info`, `warn`. If log level is not specified, it will default to `info`.
+
+```js
+const MyComponent = () => {
+   const trackEvent = useTrackEvent();
+
+   trackEvent('This event will have default of level "info".');
+
+   trackEvent.debug('This event will be of level "debug".');
+   trackEvent.error('This event will be of level "error".');
+   trackEvent.info('This event will be of level "info".');
+   trackEvent.warn('This event will be of level "warn".');
+};
+```
+
+### `useTrackException`
+
+```js
+useTrackException(): (error: Error, fatal?: boolean = true) => void
+```
+
+This function will emit an exception measurement. When called, the `onTelemetry` handler will be triggered.
+
+### `useTrackTiming`
+
+```js
+useTrackTiming(): (name: string, fn: function) => void
+useTrackTiming(): (name: string, promise: Promise) => void
+```
+
+This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
+
+If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a non-fatal error.

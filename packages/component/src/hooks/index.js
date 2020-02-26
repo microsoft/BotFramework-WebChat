@@ -49,6 +49,10 @@ import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
 import useTimeoutForSend from './useTimeoutForSend';
+import useTrackDimension from './useTrackDimension';
+import useTrackEvent from './useTrackEvent';
+import useTrackException from './useTrackException';
+import useTrackTiming from './useTrackTiming';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -116,6 +120,10 @@ export {
   useTextBoxSubmit,
   useTextBoxValue,
   useTimeoutForSend,
+  useTrackDimension,
+  useTrackEvent,
+  useTrackException,
+  useTrackTiming,
   useTypingIndicatorVisible,
   useUserID,
   useUsername,
