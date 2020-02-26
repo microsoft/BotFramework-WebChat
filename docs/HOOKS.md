@@ -926,10 +926,7 @@ useTypingIndicatorVisible(): [boolean]
 
 This function will return whether the typing indicator should be visible or not. This function is time-sensitive, meaning that the value will change as time passes.
 
-This function derives the visibility of the typing indicator via:
-
--  `typingAnimationDuration` value specified in style options, in milliseconds
--  Values from the `useLastTypingAt` hook
+This function derives the visibility of the typing indicator via values from the [`useActiveTyping`](#useactivetyping) hook. Active typing from user is ignored.
 
 ## Telemetry
 

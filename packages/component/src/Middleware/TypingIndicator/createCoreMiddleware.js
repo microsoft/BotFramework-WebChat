@@ -20,5 +20,5 @@ const DotIndicator = () => {
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware() {
-  return () => () => ({ activeTyping }) => !!Object.keys(activeTyping).length && <DotIndicator />;
+  return () => () => ({ visible }) => visible && <DotIndicator />;
 }
