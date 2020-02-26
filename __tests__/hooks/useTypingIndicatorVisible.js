@@ -29,6 +29,16 @@ test('getter should return false when typing indicator is not shown', async () =
   expect(typingIndicatorVisible).toBeFalsy();
 });
 
+test('getter should return false when user is typing', async () => {
+  const { pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
+
+  await pageObjects.typeOnSendBox('Hello, World!');
+
+  const [typingIndicatorVisible] = await pageObjects.runHook('useTypingIndicatorVisible');
+
+  expect(typingIndicatorVisible).toBeFalsy();
+});
+
 test('setter should be falsy', async () => {
   const { pageObjects } = await setupWebDriver();
   const [_, setTypingIndicatorVisible] = await pageObjects.runHook('useTypingIndicatorVisible');

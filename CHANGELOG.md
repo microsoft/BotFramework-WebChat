@@ -213,6 +213,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2718](https://github.com/microsoft/BotFramework-WebChat/issues/2718). Add `Object.is` polyfill for IE11, by [@compulim](https://github.com/compulim) in PR [#2719](https://github.com/microsoft/BotFramework-WebChat/pull/2719)
 -  Fixes [#2723](https://github.com/microsoft/BotFramework-WebChat/issues/2723). Fix `renderMarkdown` should not be called if it is `undefined` in minimal bundle, by [@compulim](https://github.com/compulim) in PR [#2724](https://github.com/microsoft/BotFramework-WebChat/pull/2724)
 -  Fixes [#2655](https://github.com/microsoft/BotFramework-WebChat/issues/2655). "Taking longer than usual to connect" should not show up after reconnect succeeded, by [@curiousite](https://github.com/Curiousite) and [@compulim](https://github.com/compulim) in PR [#2656](https://github.com/microsoft/BotFramework-WebChat/pull/2656)
+-  Fixes [#2942](https://github.com/microsoft/BotFramework-WebChat/issues/2942). Fix typing indicator should not show up for the user, by [@compulim](https://github.com/compulim) in PR [#2950](https://github.com/microsoft/BotFramework-WebChat/pull/2950)
 
 ### Changed
 
