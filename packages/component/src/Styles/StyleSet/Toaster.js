@@ -135,15 +135,22 @@ export default function createToasterStyle({
       padding: 0
     },
 
-    '& .webchat__toaster__listItem': {
-      height: toasterHeight
+    '& .webchat__toaster__listItem:first-child:last-child': {
+      height: toasterHeight,
+      overflow: 'hidden',
+
+      '& .webchat__toast__text': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      }
     },
 
     '& .webchat__toaster__listItem:not(:first-child), & .webchat__toaster__listItem:not(:last-child)': {
       borderBottomColor: toastSeparatorColor,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
-      minHeight: 0
+      minHeight: 32
     }
   };
 }
