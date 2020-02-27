@@ -70,7 +70,9 @@ describe('customizable avatar', () => {
     const props = createDefaultProps();
     const { driver, pageObjects } = await setupWebDriver({
       height: 768,
-      props
+      props,
+      // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -99,7 +101,9 @@ describe('customizable avatar', () => {
     const props = createFullCustomizedProps();
     const { driver, pageObjects } = await setupWebDriver({
       height: 768,
-      props
+      props,
+      // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -130,7 +134,9 @@ describe('customizable avatar', () => {
     props = { ...props, styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
 
     const { driver, pageObjects } = await setupWebDriver({
-      props
+      props,
+      // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -159,7 +165,9 @@ describe('customizable avatar', () => {
     props = { ...props, styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
 
     const { driver, pageObjects } = await setupWebDriver({
-      props
+      props,
+      // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+      useProductionBot: true
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -191,7 +199,9 @@ describe('customizable avatar', () => {
 
       const { driver, pageObjects } = await setupWebDriver({
         height: 768,
-        props
+        props,
+        // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+        useProductionBot: true
       });
 
       await driver.wait(uiConnected(), timeouts.directLine);
@@ -224,7 +234,9 @@ describe('customizable avatar', () => {
 
       const { driver, pageObjects } = await setupWebDriver({
         height: 768,
-        props
+        props,
+        // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+        useProductionBot: true
       });
 
       await driver.wait(uiConnected(), timeouts.directLine);
@@ -255,7 +267,9 @@ describe('customizable avatar', () => {
       props = { ...props, locale: 'ar-EG', styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
 
       const { driver, pageObjects } = await setupWebDriver({
-        props
+        props,
+        // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+        useProductionBot: true
       });
 
       await driver.wait(uiConnected(), timeouts.directLine);
@@ -284,7 +298,9 @@ describe('customizable avatar', () => {
       props = { ...props, locale: 'ar-EG', styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
 
       const { driver, pageObjects } = await setupWebDriver({
-        props
+        props,
+        // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+        useProductionBot: true
       });
 
       await driver.wait(uiConnected(), timeouts.directLine);
@@ -318,7 +334,9 @@ test('customize size and roundness of avatar', async () => {
         botAvatarInitials: 'WC',
         userAvatarInitials: 'WW'
       }
-    }
+    },
+    // TODO: [P1] #2954 Currently, offline MockBot has bugs that randomize the activity order.
+    useProductionBot: true
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
