@@ -12,7 +12,6 @@ export default function createToastStyle({
   toastWarnColor
 }) {
   return {
-    alignItems: 'center',
     fontFamily: primaryFont,
     fontSize: toastFontSize,
     minHeight: toasterHeight,
@@ -79,6 +78,7 @@ export default function createToastStyle({
     },
 
     '& .webchat__toast__text': {
+      alignSelf: 'center',
       paddingBottom: toastTextPadding,
       paddingTop: toastTextPadding
     }
