@@ -17,7 +17,7 @@ To add a new language, please update the following files:
    -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language is supported by Cognitive Services Speech Services.
       -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate that the language is supported by Cognitive Services Speech-to-Text Service.
       -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate that the language is supported by Cognitive Services Text-to-Speech Service. If the service supports neural voices, set it to `"neural"`; otherwise, `true`
-      -  [https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support](List of supported languages)
+      -  [List of supported languages](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support)
 -  Update [`/packages/component/src/Utils/normalizeLanguage.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Utils/normalizeLanguage.js) and add a normalization logic for ISO language.
    -  This is for cleaning up data provided by developers.
    -  For example, if the language starts with `ja`, it will be mapped to `ja-JP`.
