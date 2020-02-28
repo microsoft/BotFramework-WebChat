@@ -58,9 +58,19 @@ test('show ZIP files with contentUrl', async () => {
   ).resolves.toEqual('https://example.org/');
   await expect(
     driver.executeScript(() =>
+      document.querySelector('[role="listitem"]:nth-child(1) a[target="_blank"]').getAttribute('download')
+    )
+  ).resolves.toEqual('empty.zip');
+  await expect(
+    driver.executeScript(() =>
       document.querySelector('[role="listitem"]:nth-child(2) a[target="_blank"]').getAttribute('href')
     )
   ).resolves.toEqual('https://example.org/');
+  await expect(
+    driver.executeScript(() =>
+      document.querySelector('[role="listitem"]:nth-child(2) a[target="_blank"]').getAttribute('download')
+    )
+  ).resolves.toEqual('empty.zip');
 });
 
 test('show ZIP files without contentUrl', async () => {
@@ -110,5 +120,8 @@ test('show ZIP files without contentUrl', async () => {
   ).resolves.toBeFalsy();
   await expect(
     driver.executeScript(() => !!document.querySelector('[role="listitem"]:nth-child(2) a'))
+  ).resolves.toBeFalsy();
+  await expect(
+    driver.executeScript(() => !!document.querySelector('[role="listitem"]:nth-child(1) a'))
   ).resolves.toBeFalsy();
 });

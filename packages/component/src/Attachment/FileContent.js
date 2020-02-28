@@ -90,6 +90,7 @@ const FileContent = ({ className, href, fileName, size }) => {
         <a
           aria-hidden={true}
           className="webchat__fileContent__buttonLink"
+          download={fileName}
           href={href}
           rel="noopener noreferrer"
           target="_blank"
