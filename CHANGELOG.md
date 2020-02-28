@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Customizable typing indicator: data and hook related to typing indicator are being revamped in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
    -  `lastTypingAt` reducer is deprecated, use `typing` instead. The newer reducer contains typing indicator from the user
    -  `useLastTypingAt()` hook is deprecated, use `useActiveTyping(duration?: number)` instead. For all typing information, pass `Infinity` to `duration` argument
+- Customizable timestamp
+   -  Previously, we use `timestampClassName` to control if the activity should show timestamp or not. The `timestampClassName` was added as a `class` attribute the DOM element which contains the timestamp
+   -  Today, we pass `activity` and `nextVisibleActivity` to the middleware, so the `activityRendererMiddleware` make the decision about timestamp visibility. For example, developers can group timestamp based on activity type
 
 ### Added
 
