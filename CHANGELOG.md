@@ -83,6 +83,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2757](https://github.com/microsoft/BotFramework-WebChat/issues/2757). New message indicator should only show up for new messages, by [@compulim](https://github.com/compulim) in PR [#2915](https://github.com/microsoft/BotFramework-WebChat/pull/2915)
 -  Fixes [#2945](https://github.com/microsoft/BotFramework-WebChat/issues/2945). Toast should not overlap with each other, by [@compulim](https://github.com/compulim) in PR [#2952](https://github.com/microsoft/BotFramework-WebChat/pull/2952)
 -  Fixes [#2946](https://github.com/microsoft/BotFramework-WebChat/issues/2946). Updated JSON filenames for localization strings, by [@compulim](https://github.com/compulim) in PR [#2949](https://github.com/microsoft/BotFramework-WebChat/pull/2949)
+-  Fixes [#2560](https://github.com/microsoft/BotFramework-WebChat/issues/2560). Bumped to [`react-dictate-button@1.2.2`](https://npmjs.com/package/react-dictate-button) to workaround [a bug from Angular/zone.js](https://github.com/angular/angular/issues/31750), by [@compulim](https://github.com/compulim) in PR [#2960](https://github.com/microsoft/BotFramework-WebChat/issues/2960)
 
 ### Changed
 
@@ -131,6 +132,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  `core-js@3.5.0`
          -  `sanitize-html@1.20.0`
       -  `component`
+         -  `react-dictate-button@1.2.2`
          -  `sanitize-html@1.20.1`
       -  `embed`
          -  `@babel/runtime@7.8.4`
