@@ -4,14 +4,24 @@
     <title>Web Chat: Customizable avatar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
-      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
-      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
     <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
     <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+
+    <!--
+      This feature is currently in development build and not released yet.
+      Instead of using latest official release on CDN, we are pointing to our daily release on GitHub.
+    -->
     <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
     <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"></script>
+
     <style>
       html,
       body {
