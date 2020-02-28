@@ -14,7 +14,7 @@ provided by the bot. You will only need to do this once across all repos using o
 >
 > Forking Web Chat to make your own customizations means you will lose access to our latest updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
 
-To build Web Chat, you will need to make sure both your Node.js and NPM is latest version (either LTS or current).
+To build Web Chat, you will need to make sure both your Node.js and NPM is latest version (either LTS or current, must be `>= 12`).
 
 ## Preparing the build
 
