@@ -366,6 +366,10 @@ Here is the finished `index.html`:
 
 [Comprehensive live demo for customizable avatar](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/k.per-message-avatar/comprehensive.html)
 
+[Demonstrates how to display initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/c.display-sender-initials)
+
+[Demonstrates how to display images and initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/d.display-sender-images)
+
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
