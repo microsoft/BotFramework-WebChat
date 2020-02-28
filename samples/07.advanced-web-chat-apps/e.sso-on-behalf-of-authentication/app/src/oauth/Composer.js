@@ -33,11 +33,11 @@ const Composer = ({
 }) => {
   const [accessToken, setAccessToken] = useState();
   const [avatarURL, setAvatarURL] = useState();
-  const [msal, setMsal] = useState();
+  const [msal, setMSAL] = useState();
   const [name, setName] = useState();
 
   const acquireToken = useCallback(
-    async (request = GRAPH_REQUESTS.LOGIN) => {
+    (request = GRAPH_REQUESTS.LOGIN) => {
       if (msal) {
         return msal.acquireTokenSilent(request).catch(error => {
           if (requiresInteraction(error)) {
@@ -49,7 +49,7 @@ const Composer = ({
     [msal]
   );
 
-  const getAccount = useCallback(() => (msal ? msal.getAccount() : undefined), [msal]);
+  const getAccount = useCallback(() => msal && msal.getAccount(), [msal]);
 
   const onSignIn = useMemo(() => {
     return !accessToken && msal
@@ -67,14 +67,16 @@ const Composer = ({
       : undefined;
   }, [accessToken, acquireToken, msal, onError, setAccessToken]);
 
-  const onSignOut = useMemo(() => {
-    return accessToken && msal
-      ? () => {
-          msal.logout();
-          setAccessToken('');
-        }
-      : undefined;
-  }, [accessToken, setAccessToken, msal]);
+  const onSignOut = useMemo(
+    () =>
+      accessToken && msal
+        ? () => {
+            msal.logout();
+            setAccessToken('');
+          }
+        : undefined,
+    [accessToken, setAccessToken, msal]
+  );
 
   // If access token change, we will refresh the profile name and picture from Azure AD
   useMemo(async () => {
@@ -90,19 +92,19 @@ const Composer = ({
   useEffect(() => {
     (async function() {
       try {
-        const { clientId, redirectUri, tenantId } = await fetchJSON('/api/aad/settings');
+        const { clientId, redirectURI, tenantId } = await fetchJSON('/api/aad/settings');
         const msalConfig = {
           auth: {
             clientId,
             authority: `https://login.microsoftonline.com/${tenantId}`,
-            redirectUri
+            redirectUri: redirectURI
           },
           cache: {
             cacheLocation: 'localStorage'
           }
         };
 
-        setMsal(new UserAgentApplication(msalConfig));
+        setMSAL(new UserAgentApplication(msalConfig));
       } catch (err) {
         throw new Error('OAuth: Failed to fetch settings');
       }

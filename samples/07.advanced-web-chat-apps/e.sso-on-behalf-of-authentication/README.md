@@ -1,6 +1,5 @@
 # Single sign-on demo for On Behalf Of Authentication using OAuth
 
-
 # Description
 
 In this demo, we will show you how to authorize a user to access resources on an enterprise app with a bot using [Microsoft Graph](https://developer.microsoft.com/en-us/graph/).
@@ -60,13 +59,14 @@ To host this demo, you will need to clone the code and run locally.
       -  `AAD_OAUTH_TENANT_ID=abcd1234-abcd-1234-efgh-5678abcdefgh`
 -  Update App Registration Manifest
    1. Select the "Manifest" blade
-      1.  Set `accessTokenAcceptedVersion` to `2`
-      2.  Set `oauth2AllowImplicitFlow` to `true`
-- Enable ID Tokens
-    1. Select the "Authentication" Blade
-       1. Towards the bottom of the "Web" section, check the box next to "ID tokens" under "Implicit grant"
+      1. Set `accessTokenAcceptedVersion` to `2`
+      2. Set `oauth2AllowImplicitFlow` to `true`
+-  Enable ID Tokens
+   1. Select the "Authentication" Blade
+      1. Towards the bottom of the "Web" section, check the box next to "ID tokens" under "Implicit grant"
 
 ## Setup OAuth via Azure Active Directory for the Bot
+
 -  Go to your [Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
 -  Create a new application
    1. Select "App registrations"
@@ -78,7 +78,7 @@ To host this demo, you will need to clone the code and run locally.
    -  Click "Register"
 -  Update App Registration Manifest
    1. Select the "Manifest" blade
-      1.  Set `accessTokenAcceptedVersion` to `2`
+      1. Set `accessTokenAcceptedVersion` to `2`
 -  Create a new client secret
    1. Select the "Certificates & secretes" blade
    2. Click the "New client secret"
@@ -97,14 +97,11 @@ To host this demo, you will need to clone the code and run locally.
             2. Check the box next to the scope we added in the previous step under "Authorized scopes"
             3. Click "Add application"
 
-
-
 ## Setup Azure Bot Services
 
 > We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
 You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
-
 
 1. Add OAuth Connection for the bot to the Bot Channel Registration
    1. In the Bot Channel Registration open the settings blade
@@ -112,7 +109,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
       1. Add new Connection Setting
          1. Set the connection "name"
          2. Set the "Service Provider" to "Azure Active Directory 2"
-         3. Add the Client Id, Client secret, and Tenant Id from [setting up the OAuth connection for the Bot](#setup-oauth-via-azure-active-directory-for-the-bot)
+         3. Add the Client ID, Client secret, and Tenant ID from [setting up the OAuth connection for the Bot](#setup-oauth-via-azure-active-directory-for-the-bot)
 2. Save the Microsoft App ID, password, and OAuth connection name to `/bot/.env`
    -  `MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd`
    -  `MicrosoftAppPassword=a1b2c3d4e5f6`
@@ -146,7 +143,8 @@ During development, you will run your bot locally. Azure Bot Services will send 
 -  Send any message to bot
    -  If you are not logged into the website, Web Chat will notify you to sign in.
    -  Once you are signed in Web Chat will notify you to authorize the bot to access your account.
--  Send 'loggout' to the bot to sign out of the bot and the website
+-  Send 'logout' to the bot to sign out of the bot and the website
+
 # Code
 
 -  `/app/` is the React app built using `create-react-app` scaffold
@@ -162,11 +160,10 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 # Overview
 
-
 ## Assumptions
 
 -  Developer has an existing enterprise web app that uses OAuth to access protected resources
-   -  We assume the website uses the [`msal`](https://www.npmjs.com/package/msal) npm package to authenticate users
+   -  We assume the website uses the [`MSAL.js`](https://www.npmjs.com/package/msal) npm package to authenticate users
 
 ## Goals
 
@@ -224,6 +221,7 @@ After having signed in on this app, click the profile photo on the upper-right h
 
 ## Related articles
 
+-  [Microsoft identity platform and OAuth 2.0 On-Behalf-Of flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow)
 -  [RFC 6749: The OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
 -  [RFC 6819: OAuth 2.0 Threat Model and Security Considerations](https://tools.ietf.org/html/rfc6819)
 -  [RFC 7636: Proof Key for Code Exchange by OAuth Public Clients](https://tools.ietf.org/html/rfc7636)

@@ -10,7 +10,7 @@ const {
   WaterfallDialog
 } = require('botbuilder-dialogs');
 const { LogoutDialog } = require('./logoutDialog');
-const { OAuthHelpers } = require('../oAuthHelpers');
+const { OAuthHelpers } = require('../OAuthHelpers');
 
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 const OAUTH_PROMPT = 'oAuthPrompt';
@@ -100,16 +100,14 @@ class MainDialog extends LogoutDialog {
 
       // If we have the token use the user is authenticated so we may use it to make API calls.
       if (tokenResponse && tokenResponse.token) {
-        const parts = (step.values.command || '').toLowerCase().split(' ');
-
-        const command = parts[0];
+        const [command, emailAddress] = (step.values.command || '').toLowerCase().split(' ');
 
         switch (command) {
           case 'me':
             await OAuthHelpers.listMe(step.context, tokenResponse);
             break;
           case 'send':
-            await OAuthHelpers.sendMail(step.context, tokenResponse, parts[1]);
+            await OAuthHelpers.sendMail(step.context, tokenResponse, emailAddress);
             break;
           case 'recent':
             await OAuthHelpers.listRecentMail(step.context, tokenResponse);

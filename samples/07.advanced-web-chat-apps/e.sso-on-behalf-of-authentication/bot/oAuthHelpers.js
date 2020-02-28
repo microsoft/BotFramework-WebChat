@@ -17,7 +17,7 @@ class OAuthHelpers {
    * @param {TokenResponse} tokenResponse A response that includes a user token.
    * @param {string} emailAddress The email address of the recipient.
    */
-  static async sendMail(context, tokenResponse, emailAddress) {
+  static async sendMail(context, { token }, emailAddress) {
     if (!context) {
       throw new Error('OAuthHelpers.sendMail(): `context` cannot be undefined.');
     }
@@ -25,13 +25,13 @@ class OAuthHelpers {
       throw new Error('OAuthHelpers.sendMail(): `tokenResponse` cannot be undefined.');
     }
 
-    const client = new SimpleGraphClient(tokenResponse.token);
-    const me = await client.getMe();
+    const client = new SimpleGraphClient(token);
+    const { displayName } = await client.getMe();
 
     await client.sendMail(
       emailAddress,
       'Message from a bot!',
-      `Hi there! I had this message sent from a bot. - Your friend, ${me.displayName}`
+      `Hi there! I had this message sent from a bot. - Your friend, ${displayName}`
     );
     await context.sendActivity(`I sent a message to ${emailAddress} from your account.`);
   }
@@ -51,9 +51,9 @@ class OAuthHelpers {
 
     // Pull in the data from Microsoft Graph.
     const client = new SimpleGraphClient(tokenResponse.token);
-    const me = await client.getMe();
+    const { displayName } = await client.getMe();
 
-    await context.sendActivity(`You are ${me.displayName}.`);
+    await context.sendActivity(`You are ${displayName}.`);
   }
 
   /**
@@ -61,7 +61,7 @@ class OAuthHelpers {
    * @param {TurnContext} context A TurnContext instance containing all the data needed for processing this conversation turn.
    * @param {TokenResponse} tokenResponse A response that includes a user token.
    */
-  static async listRecentMail(context, tokenResponse) {
+  static async listRecentMail(context, { token }) {
     if (!context) {
       throw new Error('OAuthHelpers.listRecentMail(): `context` cannot be undefined.');
     }
@@ -69,24 +69,23 @@ class OAuthHelpers {
       throw new Error('OAuthHelpers.listRecentMail(): `tokenResponse` cannot be undefined.');
     }
 
-    var client = new SimpleGraphClient(tokenResponse.token);
-    var response = await client.getRecentMail();
-    var messages = response.value;
-    if (Array.isArray(messages)) {
-      let numberOfMessages = messages.length;
-      if (messages.length > 5) {
-        numberOfMessages = 5;
-      }
+    const client = new SimpleGraphClient(token);
+    const { value: messages } = await client.getRecentMail();
 
+    if (Array.isArray(messages)) {
       const reply = { attachments: [], attachmentLayout: AttachmentLayoutTypes.Carousel };
-      for (let cnt = 0; cnt < numberOfMessages; cnt++) {
-        const mail = messages[cnt];
+
+      for (const { bodyPreview, from, subject } of messages.splice(0, 5)) {
+        const {
+          emailAddress: { address, name }
+        } = from;
+
         const card = CardFactory.heroCard(
-          mail.subject,
-          mail.bodyPreview,
+          subject,
+          bodyPreview,
           [{ alt: 'Outlook Logo', url: 'https://botframeworksamples.blob.core.windows.net/samples/OutlookLogo.jpg' }],
           [],
-          { subtitle: `${mail.from.emailAddress.name} <${mail.from.emailAddress.address}>` }
+          { subtitle: `${name} <${address}>` }
         );
         reply.attachments.push(card);
       }

@@ -6,7 +6,7 @@ module.exports = (_, res) => {
   res.json({
     authorizeURL: '/api/aad/oauth/authorize',
     clientId: AAD_OAUTH_CLIENT_ID,
-    redirectUri: AAD_OAUTH_REDIRECT_URI,
+    redirectURI: AAD_OAUTH_REDIRECT_URI,
     tenantId: AAD_OAUTH_TENANT_ID
   });
 };

@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import { hooks } from 'botframework-webchat';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
+import random from 'math-random';
 
 import './index.css';
 import OAuthContext from '../../../oauth/Context';
@@ -16,7 +17,7 @@ export const BotSignInToast = ({ notification }) => {
   const { acquireToken, getAccount, onSignIn } = useContext(OAuthContext);
   const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
   const { current: invokeId } = useRef(
-    Math.random()
+    random()
       .toString(36)
       .substr(2, 10)
   );
@@ -27,12 +28,12 @@ export const BotSignInToast = ({ notification }) => {
   const setNotification = useSetNotification();
 
   const exchangeToken = useCallback(
-    async resourceUri => {
+    async resourceURI => {
       const user = getAccount();
       if (!user) {
         await onSignIn();
       }
-      const { accessToken } = await acquireToken({ scopes: [resourceUri] });
+      const { accessToken } = await acquireToken({ scopes: [resourceURI] });
       return accessToken;
     },
     [acquireToken, getAccount]
@@ -61,7 +62,7 @@ export const BotSignInToast = ({ notification }) => {
         setNotification({
           id: 'signinsuccessful',
           level: 'success',
-          message: 'The bot was authenticated successfully'
+          message: 'The bot was authenticated successfully.'
         });
       }
     }
@@ -89,12 +90,12 @@ export const BotSignInToast = ({ notification }) => {
             id: 'traditionalbotauthentication',
             data: { content },
             level: 'error',
-            message: 'Authenticating the bot failed'
+            message: 'Authenticating the bot failed.'
           });
         }
       })();
     }
-  }, [authenticating]);
+  }, [authenticating, dismissNotification, postActivity, setNotification]);
 
   const handleAgreeClick = useCallback(() => {
     !authenticating && setAuthenticating(true);

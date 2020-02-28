@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 
-import OAuthContext from '../../oauth/Context';
-import fetchJSON from '../../utils/fetchJSON';
 import { AppSignInToast, BotSignInToast, TraditionalBotAuthenticationToast } from './Notifications';
+import fetchJSON from '../../utils/fetchJSON';
+import OAuthContext from '../../oauth/Context';
 import './index.css';
 
 const WebChat = () => {
@@ -32,7 +32,7 @@ const WebChat = () => {
                 data: { content },
                 id: 'signin',
                 level: 'info',
-                message: 'Please signin to the app'
+                message: 'Please sign in to the app.'
               }
             });
 
