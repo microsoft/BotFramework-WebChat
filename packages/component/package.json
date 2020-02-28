@@ -63,7 +63,7 @@
     "math-random": "^1.0.4",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
-    "react-dictate-button": "^1.2.1",
+    "react-dictate-button": "^1.2.2",
     "react-film": "^2.0.2",
     "react-redux": "^7.1.1",
     "react-say": "^2.0.0",
