@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `useLastTypingAt()` hook is deprecated, use `useActiveTyping(duration?: number)` instead. For all typing information, pass `Infinity` to `duration` argument
 -  Customizable activity status: new `nextVisibleActivity` to control activity status visibility
    -  Previously, we use `timestampClassName` to control if the activity should show or hide timestamp. The `timestampClassName` was added as a `class` attribute the DOM element which contains the timestamp
-   -  Today, we pass `activity` and `nextVisibleActivity` to the middleware, so the `activityRendererMiddleware` can decide whether the timestamp should be shown or not. For example, developers can group timestamp based on activity type
+   -  Today, `activity` and `nextVisibleActivity` are passed to the middleware, so the `activityRendererMiddleware` can decide whether the timestamp should be shown or not. For example, developers can group timestamp based on activity type
 
 ### Added
 
