@@ -96,7 +96,7 @@ Then, creates an avatar middleware that will render `<AvatarWithOnlineStatus>` o
 
 `avatarMiddleware` should only return a function or `false`. If the avatar is hidden, it should return `false`. Otherwise, it should return a function, which when called, will render the avatar.
 
-In the following sample, `renderAvatar` is the original avatar of type `false | () => React.Element`. If the avatar should not be showed, `renderAvatar` will be `false` and the middleware return it. Otherwise, `renderAvatar` will be `() => React.Element`. The middleware will return `<AvatarWithOnlineStatus>` with the result of calling `renderAvatar()`.
+In the following sample, `renderAvatar` is the original avatar of type `false | () => React.Element`. If the avatar should not be shown, `renderAvatar` will be `false` and the middleware return it. Otherwise, `renderAvatar` will be: `() => React.Element`. The middleware will return `<AvatarWithOnlineStatus>` with the result of calling `renderAvatar()`.
 
 We will also add `botAvatarInitials` and `userAvatarInitials` as `styleOptions`.
 
@@ -197,7 +197,7 @@ Also, update the stylesheet with RTL awareness. In RTL mode, the online status i
 
 The second part of this sample will show how to customize the avatar using a rectangular image.
 
-First, add a `<PortraitAvatar>` component, which house the rectangular avatar image. This component will show different avatar image for bot and user.
+First, add a `<PortraitAvatar>` component, which houses the rectangular avatar image. This component will show different avatar images for bot and user.
 
 ```js
 const PortraitAvatar = ({ fromUser }) => {
