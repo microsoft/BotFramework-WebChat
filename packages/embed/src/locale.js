@@ -50,20 +50,19 @@ const AZURE_LOCALE_MAPPING = {
 };
 
 function normalize(language) {
-  if (language === 'en') {
-    return 'en-US';
-  }
-
-  const azureLocaleMatch = AZURE_LOCALE_PATTERN.exec(language);
-  const javaScriptLocaleMatch = JAVASCRIPT_LOCALE_PATTERN.exec(language);
   let result;
 
-  if (javaScriptLocaleMatch) {
-    result = language;
-  } else if (azureLocaleMatch) {
-    const mapping = AZURE_LOCALE_MAPPING[azureLocaleMatch[1]];
+  if (language !== 'en') {
+    const azureLocaleMatch = AZURE_LOCALE_PATTERN.exec(language);
+    const javaScriptLocaleMatch = JAVASCRIPT_LOCALE_PATTERN.exec(language);
 
-    result = mapping[azureLocaleMatch[4]] || mapping['*'];
+    if (javaScriptLocaleMatch) {
+      result = language;
+    } else if (azureLocaleMatch) {
+      const mapping = AZURE_LOCALE_MAPPING[azureLocaleMatch[1]];
+
+      result = mapping[azureLocaleMatch[4]] || mapping['*'];
+    }
   }
 
   return result || 'en-US';
