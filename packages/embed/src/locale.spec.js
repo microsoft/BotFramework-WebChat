@@ -1,15 +1,7 @@
 import { normalize, toAzureLocale } from './locale';
 
-test('Normalizing "ar.ar-eg"', () => {
-  expect(normalize('ar.ar-eg')).toBe('ar-EG');
-});
-
 test('Normalizing "en.en-us"', () => {
   expect(normalize('en.en-us')).toBe('en-US');
-});
-
-test('Normalizing "bg.bg-bg"', () => {
-  expect(normalize('bg.bg-bg')).toBe('bg-BG');
 });
 
 test('Normalizing "cs.cs-cz"', () => {
@@ -26,10 +18,6 @@ test('Normalizing "es.es-es"', () => {
 
 test('Normalizing "fr.fr-fr"', () => {
   expect(normalize('fr.fr-fr')).toBe('fr-FR');
-});
-
-test('Normalizing "he.he-IL"', () => {
-  expect(normalize('he.he-IL')).toBe('he-IL');
 });
 
 test('Normalizing "hu.hu-hu"', () => {
@@ -77,11 +65,23 @@ test('Normalizing "tr.tr-tr"', () => {
 });
 
 test('Normalizing "zh-hans.zh-cn"', () => {
-  expect(normalize('zh-hans.zh-cn')).toBe('zh-HANS');
+  expect(normalize('zh-hans.zh-cn')).toBe('zh-Hans');
+});
+
+test('Normalizing "zh-hans.zh-sg"', () => {
+  expect(normalize('zh-hans.zh-sg')).toBe('zh-Hans-SG');
+});
+
+test('Normalizing "zh-hant.zh-hk"', () => {
+  expect(normalize('zh-hant.zh-hk')).toBe('zh-Hant-HK');
+});
+
+test('Normalizing "zh-hant.zh-mo"', () => {
+  expect(normalize('zh-hant.zh-mo')).toBe('zh-Hant-MO');
 });
 
 test('Normalizing "zh-hant.zh-tw"', () => {
-  expect(normalize('zh-hant.zh-tw')).toBe('zh-HANT');
+  expect(normalize('zh-hant.zh-tw')).toBe('zh-Hant');
 });
 
 test('Normalizing "en.zh-hk" should become "en-US"', () => {
@@ -92,58 +92,80 @@ test('Normalizing "en"', () => {
   expect(normalize('en')).toBe('en-US');
 });
 
-test('Normalizing "zh-HK"', () => {
-  expect(normalize('zh-HK')).toBe('zh-HK');
+test('Normalizing "zh-Hant-HK"', () => {
+  expect(normalize('zh-Hant-HK')).toBe('zh-Hant-HK');
 });
 
 test('Normalizing "*"', () => {
   expect(normalize('*')).toBe('en-US');
 });
 
-test('Convert "en-US" to Azure locale', () => {
-  expect(toAzureLocale('en-US')).toBe('en.en-us');
-});
-
 test('Convert "fr" to Azure locale', () => {
   expect(toAzureLocale('fr')).toBe('fr.fr-fr');
 });
 
-test('Convert "pt-BR" to Azure locale', () => {
-  expect(toAzureLocale('pt-BR')).toBe('pt-br.pt-br');
-});
-
-test('Convert "pt-PT" to Azure locale', () => {
-  expect(toAzureLocale('pt-PT')).toBe('pt-pt.pt-pt');
-});
-
-test('Convert "zh-CN" to Azure locale', () => {
-  expect(toAzureLocale('zh-CN')).toBe('zh-hans.zh-cn');
-});
-
-test('Convert "zh-HANT" to Azure locale', () => {
-  expect(toAzureLocale('zh-HANT')).toBe('zh-hant.zh-tw');
-});
-
-test('Convert "zh-HANS" to Azure locale', () => {
-  expect(toAzureLocale('zh-HANS')).toBe('zh-hans.zh-cn');
-});
-
-test('Convert "zh-HK" to Azure locale', () => {
-  expect(toAzureLocale('zh-HK')).toBe('zh-hant.zh-hk');
-});
-
-test('Convert "zh-MO" to Azure locale', () => {
-  expect(toAzureLocale('zh-MO')).toBe('zh-hant.zh-mo');
-});
-
-test('Convert "zh-SG" to Azure locale', () => {
-  expect(toAzureLocale('zh-SG')).toBe('zh-hans.zh-sg');
-});
-
-test('Convert "zh-TW" to Azure locale', () => {
-  expect(toAzureLocale('zh-TW')).toBe('zh-hant.zh-tw');
-});
-
 test('Convert "*" to Azure locale', () => {
   expect(toAzureLocale('*')).toEqual(undefined);
+});
+
+test('Convert all Azure supported languages to Azure locale', () => {
+  const expected = {
+    'ar-EG': undefined,
+    'ar-JO': undefined,
+    'ar-SA': undefined,
+    'bg-BG': undefined,
+    'ca-ES': undefined,
+    'cs-CZ': 'cs.cs-cz',
+    'da-DK': undefined,
+    'de-DE': 'de.de-de',
+    'el-GR': undefined,
+    'en-US': 'en.en-us',
+    'es-ES': 'es.es-es',
+    'et-EE': undefined,
+    'eu-ES': undefined,
+    'fi-FI': undefined,
+    'fr-FR': 'fr.fr-fr',
+    'gl-ES': undefined,
+    'he-IL': undefined,
+    'hi-IN': undefined,
+    'hr-HR': undefined,
+    'hu-HU': 'hu.hu-hu',
+    'id-ID': undefined,
+    'it-IT': 'it.it-it',
+    'ja-JP': 'ja.ja-jp',
+    'kk-KZ': undefined,
+    'ko-KR': 'ko.ko-kr',
+    'lt-LT': undefined,
+    'lv-LV': undefined,
+    'ms-MY': undefined,
+    'nb-NO': undefined,
+    'nl-NL': 'nl.nl-nl',
+    'pl-PL': 'pl.pl-pl',
+    'pt-BR': 'pt-br.pt-br',
+    'pt-PT': 'pt-pt.pt-pt',
+    'ro-RO': undefined,
+    'ru-RU': 'ru.ru-ru',
+    'sk-SK': undefined,
+    'sl-SI': undefined,
+    'sr-Cyrl': undefined,
+    'sr-Latn': undefined,
+    'sv-SE': 'sv.sv-se',
+    'th-TH': undefined,
+    'tr-TR': 'tr.tr-tr',
+    'uk-UA': undefined,
+    'vi-VN': undefined,
+    yue: 'zh-hant.zh-hk',
+    'zh-Hans': 'zh-hans.zh-cn',
+    'zh-Hans-SG': 'zh-hans.zh-sg',
+    'zh-Hant': 'zh-hant.zh-tw',
+    'zh-Hant-HK': 'zh-hant.zh-hk',
+    'zh-Hant-MO': 'zh-hant.zh-mo'
+  };
+
+  const actual = Object.keys(expected).reduce(
+    (actual, language) => ({ ...actual, [language]: toAzureLocale(language) }),
+    {}
+  );
+
+  expect(actual).toEqual(expected);
 });

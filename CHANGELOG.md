@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added customization for typing activity, by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
 -  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
 -  Resolves [#2857](https://github.com/microsoft/BotFramework-WebChat/issues/2857). Added the ability to customize the avatar on a per activity basis, by [@compulim](https://github.com/compulim), in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
+-  Resolves [#2944](https://github.com/microsoft/BotFramework-WebChat/issues/2944). Updated Azure locale mapping in embed page, by [@compulim](https://github.com/compulim) in PR [#2965](https://github.com/microsoft/BotFramework-WebChat/pull/2965)
 
 ### Fixed
 

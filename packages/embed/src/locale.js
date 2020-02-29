@@ -1,4 +1,4 @@
-// Supported Azure languages as of 2019-04-25
+// Supported Azure languages as of 2020-02-28
 // The first part is language (localization), the second part is regional format (internationalization)
 
 // en.en-us
@@ -18,46 +18,51 @@
 // sv.sv-se
 // tr.tr-tr
 // zh-hans.zh-cn
+// zh-hans.zh-sg
+// zh-hant.zh-hk
+// zh-hant.zh-mo
 // zh-hant.zh-tw
 
 // Please note that Arabic and Hebrew are not currently supported by Azure
 
-const AZURE_LOCALE_PATTERN = /^(([a-z]{2})(-[a-z]{2,})?)\.([a-z]{2})/;
-const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})-([A-Z]{2,})?$/;
+const AZURE_LOCALE_PATTERN = /^(([a-z]{2})(-[a-z]{2,})?)\.(([a-z]{2})(-[a-z]{2,})?)/;
+const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})(-([A-Z][\w]+))*$/;
 
 const AZURE_LOCALE_MAPPING = {
-  ar: 'ar-EG',
-  bg: 'bg-BG',
-  cs: 'cs-CZ',
-  de: 'de-DE',
-  en: 'en-US',
-  es: 'es-ES',
-  fr: 'fr-FR',
-  he: 'he-IL',
-  hu: 'hu-HU',
-  it: 'it-IT',
-  ja: 'ja-JP',
-  ko: 'ko-KR',
-  nl: 'nl-NL',
-  pl: 'pl-PL',
-  'pt-br': 'pt-BR',
-  'pt-pt': 'pt-PT',
-  ru: 'ru-RU',
-  sv: 'sv-SE',
-  tr: 'tr-TR',
-  'zh-hans': 'zh-HANS',
-  'zh-hant': 'zh-HANT'
+  cs: { '*': 'cs-CZ' },
+  de: { '*': 'de-DE' },
+  en: { '*': 'en-US' },
+  es: { '*': 'es-ES' },
+  fr: { '*': 'fr-FR' },
+  hu: { '*': 'hu-HU' },
+  it: { '*': 'it-IT' },
+  ja: { '*': 'ja-JP' },
+  ko: { '*': 'ko-KR' },
+  nl: { '*': 'nl-NL' },
+  pl: { '*': 'pl-PL' },
+  'pt-br': { '*': 'pt-BR' },
+  'pt-pt': { '*': 'pt-PT' },
+  ru: { '*': 'ru-RU' },
+  sv: { '*': 'sv-SE' },
+  tr: { '*': 'tr-TR' },
+  'zh-hans': { 'zh-sg': 'zh-Hans-SG', '*': 'zh-Hans' },
+  'zh-hant': { 'zh-hk': 'zh-Hant-HK', 'zh-mo': 'zh-Hant-MO', '*': 'zh-Hant' }
 };
 
 function normalize(language) {
-  const azureLocaleMatch = AZURE_LOCALE_PATTERN.exec(language);
-  const javaScriptLocaleMatch = JAVASCRIPT_LOCALE_PATTERN.exec(language);
   let result;
 
-  if (javaScriptLocaleMatch) {
-    result = language;
-  } else if (azureLocaleMatch) {
-    result = AZURE_LOCALE_MAPPING[azureLocaleMatch[1]];
+  if (language !== 'en') {
+    const azureLocaleMatch = AZURE_LOCALE_PATTERN.exec(language);
+    const javaScriptLocaleMatch = JAVASCRIPT_LOCALE_PATTERN.exec(language);
+
+    if (javaScriptLocaleMatch) {
+      result = language;
+    } else if (azureLocaleMatch) {
+      const mapping = AZURE_LOCALE_MAPPING[azureLocaleMatch[1]];
+
+      result = mapping[azureLocaleMatch[4]] || mapping['*'];
+    }
   }
 
   return result || 'en-US';
@@ -75,26 +80,33 @@ function toAzureLocale(language) {
     case 'pt-PT':
       return 'pt-pt.pt-pt';
 
-    case 'zh-CN':
-    case 'zh-SG':
-      return `zh-hans.${language.toLowerCase()}`;
+    case 'yue':
+    case 'zh-Hant-HK':
+      return 'zh-hant.zh-hk';
 
-    case 'zh-HANS':
+    case 'zh-Hans':
       return 'zh-hans.zh-cn';
 
-    case 'zh-HANT':
+    case 'zh-Hans-SG':
+      return `zh-hans.zh-sg`;
+
+    case 'zh-Hant':
       return 'zh-hant.zh-tw';
 
-    case 'zh-HK':
-    case 'zh-MO':
-    case 'zh-TW':
-      return `zh-hant.${language.toLowerCase()}`;
+    case 'zh-Hant-MO':
+      return 'zh-hant.zh-mo';
   }
 
-  const match = JAVASCRIPT_LOCALE_PATTERN.exec(language);
+  if (
+    Object.keys(AZURE_LOCALE_MAPPING).some(azureLocaleFirstPart =>
+      language.toLowerCase().startsWith(azureLocaleFirstPart)
+    )
+  ) {
+    const match = JAVASCRIPT_LOCALE_PATTERN.exec(language);
 
-  if (match) {
-    return `${match[1]}.${match[1]}-${match[2].toLowerCase()}`;
+    if (match) {
+      return `${match[1]}.${match[1]}-${match[3].toLowerCase()}`;
+    }
   }
 }
 
