@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 -  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added customization for typing activity, by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
 -  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
+-  Resolves [#2857](https://github.com/microsoft/BotFramework-WebChat/issues/2857). Added the ability to customize the avatar on a per activity basis, by [@compulim](https://github.com/compulim), in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 
 ### Fixed
 
@@ -88,6 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2946](https://github.com/microsoft/BotFramework-WebChat/issues/2946). Updated JSON filenames for localization strings, by [@compulim](https://github.com/compulim) in PR [#2949](https://github.com/microsoft/BotFramework-WebChat/pull/2949)
 -  Fixes [#2560](https://github.com/microsoft/BotFramework-WebChat/issues/2560). Bumped to [`react-dictate-button@1.2.2`](https://npmjs.com/package/react-dictate-button) to workaround [a bug from Angular/zone.js](https://github.com/angular/angular/issues/31750), by [@compulim](https://github.com/compulim) in PR [#2960](https://github.com/microsoft/BotFramework-WebChat/issues/2960)
 -  Fixes [#2923](https://github.com/microsoft/BotFramework-WebChat/issues/2923). Added `download` attribute to file attachment (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#2963](https://github.com/microsoft/BotFramework-WebChat/pull/2963)
+-  Fixes [#2904](https://github.com/microsoft/BotFramework-WebChat/issues/2904). Fixed border radius when rendering bubble nub in RTL, by [@compulim](https://github.com/compulim) in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 
 ### Changed
 
@@ -152,6 +154,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755), added "how to use notification and customize the toast UI" sample, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
 -  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added [Customize Typing Indicator Demo](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/j.typing-indicator), by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
 -  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry collection using Azure Application Insights](https://microsoft.github.io/BotFramework-WebChat/04.api/k.telemetry-application-insights) and [telemetry collection using Google Analytics](https://microsoft.github.io/BotFramework-WebChat/04.api/l.telemetry-google-analytics), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
+-  Resolves [#2857](https://github.com/microsoft/BotFramework-WebChat/issues/2857). Added [Customize Avatar Demo](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/k.per-message-avatar), by [@compulim](https://github.com/compulim), in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 
 ## [4.7.1] - 2019-12-13
 

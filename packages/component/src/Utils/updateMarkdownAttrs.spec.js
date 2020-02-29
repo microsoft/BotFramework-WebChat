@@ -1,8 +1,10 @@
 // TODO: [P4] Object.fromEntries is not on Node.js 11.*
 //       If all devs are on Node.js >= 12.0, we can remove "core-js"
-import 'core-js/features/object/from-entries';
+import fromEntries from 'core-js/features/object/from-entries';
 
 import updateMarkdownAttrs from './updateMarkdownAttrs';
+
+Object.fromEntries = fromEntries;
 
 test('add "rel" and "target" attributes', () => {
   const token = {

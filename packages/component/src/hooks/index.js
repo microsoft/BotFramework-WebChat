@@ -28,6 +28,7 @@ import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
+import useRenderAvatar from './useRenderAvatar';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
@@ -96,6 +97,7 @@ export {
   useRenderActivity,
   useRenderActivityStatus,
   useRenderAttachment,
+  useRenderAvatar,
   useRenderMarkdownAsHTML,
   useRenderToast,
   useRenderTypingIndicator,

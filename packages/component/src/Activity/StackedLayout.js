@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
-import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -18,17 +17,18 @@ import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
+import useRenderAvatar from '../hooks/useRenderAvatar';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& > .avatar': {
+  '& > .webchat__stackedLayout__avatar': {
     flexShrink: 0
   },
 
-  '& > .content': {
+  '& > .webchat__stackedLayout__content': {
     flexGrow: 1,
     overflow: 'hidden',
 
@@ -51,10 +51,10 @@ const ROOT_CSS = css({
     flexShrink: 0
   },
 
-  '&.from-user': {
+  '&.webchat__stackedLayout--fromUser': {
     flexDirection: 'row-reverse',
 
-    '& > .content > .webchat__row': {
+    '& > .webchat__stackedLayout__content > .webchat__row': {
       flexDirection: 'row-reverse'
     }
   }
@@ -84,12 +84,13 @@ const connectStackedLayout = (...selectors) =>
 const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
+  const renderAvatar = useRenderAvatar({ activity });
 
   const {
     attachments = [],
@@ -119,22 +120,22 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
-        direction === 'rtl' ? 'webchat__stacked--rtl' : '',
+        direction === 'rtl' ? 'webchat__stackedLayout--rtl' : '',
         {
-          'from-user': fromUser,
+          'webchat__stackedLayout--fromUser': fromUser,
           webchat__stacked_extra_left_indent:
-            (direction !== 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize) ||
-            (direction === 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize),
+            (direction !== 'rtl' && fromUser && !renderAvatar && bubbleNubSize) ||
+            (direction === 'rtl' && !fromUser && !renderAvatar && bubbleFromUserNubSize),
           webchat__stacked_extra_right_indent:
-            (direction !== 'rtl' && !fromUser && !userAvatarInitials && bubbleFromUserNubSize) ||
-            (direction === 'rtl' && fromUser && !botAvatarInitials && bubbleNubSize),
-          webchat__stacked_indented_content: initials && !indented
+            (direction !== 'rtl' && !fromUser && !renderAvatar && bubbleFromUserNubSize) ||
+            (direction === 'rtl' && fromUser && !renderAvatar && bubbleNubSize),
+          webchat__stacked_indented_content: renderAvatar && !indented,
+          'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
     >
-      {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
-      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
-      <div className="content">
+      {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
+      <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
           <div className="webchat__row message">
             <ScreenReaderText text={ariaLabel} />
