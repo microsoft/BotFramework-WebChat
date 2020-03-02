@@ -39,6 +39,7 @@ export default function createToastStyle({
     '& .webchat__toast__iconBox': {
       alignItems: 'center',
       display: 'flex',
+      flexShrink: 0,
       height: toasterHeight,
       justifyContent: 'center',
       width: toastIconWidth
