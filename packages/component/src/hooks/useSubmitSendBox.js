@@ -9,7 +9,7 @@ export default function useSubmitSendBox() {
 
   return useCallback(
     (...args) => {
-      // We cannot use spread operator as it broke in Angular.
+      // We cannot use spread operator as it broken in Angular.
       const method = args[0] || 'keyboard';
 
       trackEvent('submitSendBox', method);
