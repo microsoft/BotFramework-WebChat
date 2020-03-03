@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import createCustomEvent from '../Utils/createCustomEvent';
 import randomId from '../Utils/randomId';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useTrackException from './useTrackException';
@@ -23,13 +24,15 @@ export default function useTrackTiming() {
       }
 
       const timingId = randomId();
-      const timingStartEvent = new Event('timingstart');
 
-      timingStartEvent.dimensions = readTelemetryDimensions();
-      timingStartEvent.name = name;
-      timingStartEvent.timingId = timingId;
-
-      onTelemetry && onTelemetry(timingStartEvent);
+      onTelemetry &&
+        onTelemetry(
+          createCustomEvent('timingstart', {
+            dimensions: readTelemetryDimensions(),
+            name,
+            timingId
+          })
+        );
 
       const startTime = Date.now();
 
@@ -42,14 +45,15 @@ export default function useTrackTiming() {
       } finally {
         const duration = Date.now() - startTime;
 
-        const timingEndEvent = new Event('timingend');
-
-        timingEndEvent.dimensions = readTelemetryDimensions();
-        timingEndEvent.duration = duration;
-        timingEndEvent.name = name;
-        timingStartEvent.timingId = timingId;
-
-        onTelemetry && onTelemetry(timingEndEvent);
+        onTelemetry &&
+          onTelemetry(
+            createCustomEvent('timingend', {
+              dimensions: readTelemetryDimensions(),
+              duration,
+              name,
+              timingId
+            })
+          );
       }
     },
     [onTelemetry, readTelemetryDimensions, trackException]

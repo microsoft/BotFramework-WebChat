@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
+import createCustomEvent from '../Utils/createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -104,14 +105,7 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
       const href = event.target.getAttribute('data-markdown-href');
 
-      if (href) {
-        const referenceEvent = new Event('reference');
-
-        // referenceEvent.data = ref;
-        referenceEvent.data = hrefToRef[href];
-
-        onReference && onReference(referenceEvent);
-      }
+      href && onReference && onReference(createCustomEvent('reference', { data: hrefToRef[href] }));
     },
     [hrefToRef, onReference]
   );
