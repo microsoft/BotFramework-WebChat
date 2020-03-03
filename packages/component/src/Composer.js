@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
+import createCustomEvent from './Utils/createCustomEvent';
 import ErrorBoundary from './ErrorBoundary';
 import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
 import isObject from './Utils/isObject';
@@ -432,12 +433,7 @@ const Composer = ({
 const ComposeWithStore = ({ onTelemetry, store, ...props }) => {
   const handleError = useCallback(
     ({ error }) => {
-      const event = new Event('exception');
-
-      event.error = error;
-      event.fatal = true;
-
-      onTelemetry && onTelemetry(event);
+      onTelemetry && onTelemetry(createCustomEvent('exception', { error, fatal: true }));
     },
     [onTelemetry]
   );
@@ -458,10 +454,12 @@ const ComposeWithStore = ({ onTelemetry, store, ...props }) => {
 };
 
 ComposeWithStore.defaultProps = {
+  onTelemetry: undefined,
   store: undefined
 };
 
 ComposeWithStore.propTypes = {
+  onTelemetry: PropTypes.func,
   store: PropTypes.any
 };
 

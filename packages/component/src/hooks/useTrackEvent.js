@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import createCustomEvent from '../Utils/createCustomEvent';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
@@ -35,14 +36,8 @@ export default function useTrackEvent() {
         }
       }
 
-      const event = new Event('event');
-
-      event.data = data;
-      event.dimensions = readTelemetryDimensions();
-      event.level = level;
-      event.name = name;
-
-      onTelemetry && onTelemetry(event);
+      onTelemetry &&
+        onTelemetry(createCustomEvent('event', { data, dimensions: readTelemetryDimensions(), level, name }));
     },
     [onTelemetry, readTelemetryDimensions]
   );
