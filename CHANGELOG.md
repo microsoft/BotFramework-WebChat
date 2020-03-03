@@ -93,6 +93,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2904](https://github.com/microsoft/BotFramework-WebChat/issues/2904). Fixed border radius when rendering bubble nub in RTL, by [@compulim](https://github.com/compulim) in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 -  Fixes [#2966](https://github.com/microsoft/BotFramework-WebChat/issues/2966). Collapsed toast should show at most 2 lines of text, by [@compulim](https://github.com/compulim) in PR [#2967](https://github.com/microsoft/BotFramework-WebChat/issues/2967)
 -  Fixes [#2941](https://github.com/microsoft/BotFramework-WebChat/issues/2941), [#2921](https://github.com/microsoft/BotFramework-WebChat/issues/2921), and [#2948](https://github.com/microsoft/BotFramework-WebChat/issues/2948). Update documentation and fix redux sample, by [@corinagum](https://github.com/corinagum) in PR [#2968](https://github.com/microsoft/BotFramework-WebChat/pull/2968)
+-  Fixes [#2972](https://github.com/microsoft/BotFramework-WebChat/issues/2972). Compatibility fix for IE11, by [@compulim](https://github.com/compulim) in PR [#2973](https://github.com/microsoft/BotFramework-WebChat/pull/2973)
 
 ### Changed
 
