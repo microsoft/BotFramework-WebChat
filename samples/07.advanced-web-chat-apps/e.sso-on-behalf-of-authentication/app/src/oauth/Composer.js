@@ -32,6 +32,7 @@ const Composer = ({
   }
 }) => {
   const [accessToken, setAccessToken] = useState();
+  const [authenticating, setAuthenticating] = useState();
   const [avatarURL, setAvatarURL] = useState();
   const [msal, setMSAL] = useState();
   const [name, setName] = useState();
@@ -55,17 +56,22 @@ const Composer = ({
     return !accessToken && msal
       ? async () => {
           try {
-            const loginResponse = await msal.loginPopup(GRAPH_REQUESTS.LOGIN);
-            if (loginResponse) {
-              const { accessToken } = await acquireToken();
-              setAccessToken(accessToken);
+            if (!authenticating) {
+              setAuthenticating(true);
+              const loginResponse = await msal.loginPopup(GRAPH_REQUESTS.LOGIN);
+              if (loginResponse) {
+                const { accessToken } = await acquireToken();
+                setAccessToken(accessToken);
+              }
+              setAuthenticating(false);
             }
           } catch (error) {
             onError(error);
+            setAuthenticating(false);
           }
         }
       : undefined;
-  }, [accessToken, acquireToken, msal, onError, setAccessToken]);
+  }, [accessToken, acquireToken, authenticating, msal, onError, setAccessToken, setAuthenticating]);
 
   const onSignOut = useMemo(
     () =>
