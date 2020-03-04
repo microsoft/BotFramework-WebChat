@@ -73,16 +73,19 @@ const Composer = ({
       : undefined;
   }, [accessToken, acquireToken, authenticating, msal, onError, setAccessToken, setAuthenticating]);
 
-  const onSignOut = useMemo(
-    () =>
-      accessToken && msal
-        ? () => {
-            msal.logout();
-            setAccessToken('');
-          }
-        : undefined,
-    [accessToken, setAccessToken, msal]
-  );
+  const onSignOut = useMemo(() => {
+    if (!msal) {
+      setAccessToken('');
+      return;
+    }
+
+    return accessToken
+      ? () => {
+          msal.logout();
+          setAccessToken('');
+        }
+      : undefined;
+  }, [accessToken, setAccessToken, msal]);
 
   // If access token change, we will refresh the profile name and picture from Azure AD
   useMemo(async () => {
