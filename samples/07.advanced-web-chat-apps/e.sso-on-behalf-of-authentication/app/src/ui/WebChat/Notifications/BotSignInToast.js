@@ -72,7 +72,7 @@ export const BotSignInToast = ({ notification }) => {
     if (authenticating) {
       (async function() {
         try {
-          const token = await exchangeToken(uri /** 'api://61598522-abf1-49ba-bbb4-3fb89f4ad9a6/ReadUser' */);
+          const token = await exchangeToken(uri);
           token &&
             postActivity({
               channelData: { invokeId },
