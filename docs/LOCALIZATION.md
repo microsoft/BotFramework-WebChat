@@ -21,6 +21,7 @@ To add a new language, please update the following files:
 -  Update [`/packages/component/src/Utils/normalizeLanguage.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Utils/normalizeLanguage.js) and add a normalization logic for ISO language.
    -  This is for cleaning up data provided by developers.
    -  For example, if the language starts with `ja`, it will be mapped to `ja-JP`.
+   -  Add a test to [`normalizeLanguage.spec.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/normalizeLanguage.spec.js)
 -  Add a new language to [`/packages/component/src/Localization/`](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src/Localization).
    -  Copy `en-US.json` as the base template.
    -  Add to [`getAllLocalizedStrings.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/getAllLocalizedStrings.js)
