@@ -77,9 +77,9 @@ export default function normalizeLanguage(language) {
     return 'sk-SK';
   } else if (language.startsWith('sl')) {
     return 'sl-SI';
-  } else if (language.startsWith('sr-Cyrl')) {
+  } else if (language.startsWith('sr-cyrl')) {
     return 'sr-Cyrl';
-  } else if (language.startsWith('sr-Latn')) {
+  } else if (language.startsWith('sr-latn')) {
     return 'sr-Latn';
   } else if (language.startsWith('sv')) {
     return 'sv-SE';
@@ -102,9 +102,9 @@ export default function normalizeLanguage(language) {
     return 'zh-Hant';
   } else if (language === 'zh-hant-hk' || language === 'zh-hk') {
     return 'zh-Hant-HK';
-  } else if (language === 'zh-mo') {
+  } else if (language === 'zh-hant-mo' || language === 'zh-mo') {
     return 'zh-Hant-MO';
-  } else if (language === 'zh-sg') {
+  } else if (language === 'zh-hans-sg' || language === 'zh-sg') {
     return 'zh-Hans-SG';
   } else if (language.startsWith('zh')) {
     return 'zh-Hans';
