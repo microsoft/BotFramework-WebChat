@@ -1,4 +1,4 @@
-import { By, Key } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
