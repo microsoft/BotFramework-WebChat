@@ -144,6 +144,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  `core-js@3.5.0`
          -  `sanitize-html@1.20.0`
       -  `component`
+         -  `microsoft-cognitiveservices-speech-sdk@1.9.1`
          -  `sanitize-html@1.20.1`
       -  `embed`
          -  `@babel/runtime@7.8.4`
