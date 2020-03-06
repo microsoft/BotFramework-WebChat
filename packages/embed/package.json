@@ -48,7 +48,7 @@
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
+    "@babel/runtime": "^7.8.7",
     "core-js": "^3.6.4",
     "url-search-params-polyfill": "^7.0.0",
     "whatwg-fetch": "^3.0.0"

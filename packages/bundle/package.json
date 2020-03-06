@@ -29,7 +29,7 @@
     "start:webpack": "npm run build:webpack -- --watch"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
+    "@babel/runtime": "^7.8.7",
     "adaptivecards": "1.2.5",
     "botframework-directlinejs": "^0.11.6",
     "botframework-directlinespeech-sdk": "0.0.0-0",
@@ -43,7 +43,7 @@
     "microsoft-speech-browser-sdk": "^0.0.12",
     "prop-types": "^15.7.2",
     "sanitize-html": "^1.20.0",
-    "url-search-params-polyfill": "^7.0.0",
+    "url-search-params-polyfill": "^8.0.0",
     "web-speech-cognitive-services": "^6.0.0",
     "whatwg-fetch": "^3.0.0"
   },
