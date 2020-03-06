@@ -85,17 +85,17 @@ First, create an async function `fetchCredentials`. When called, it will fetch t
 
 ```js
 const fetchCredentials = async () => {
-  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-    method: 'POST'
-  });
+   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+      method: 'POST'
+   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch authorization token and region.');
-  }
+   if (!res.ok) {
+      throw new Error('Failed to fetch authorization token and region.');
+   }
 
-  const { region, token: authorizationToken } = await res.json();
+   const { region, token: authorizationToken } = await res.json();
 
-  return { authorizationToken, region };
+   return { authorizationToken, region };
 };
 ```
 

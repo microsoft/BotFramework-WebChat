@@ -110,8 +110,7 @@ Here is the finished `index.html`:
       </script>
     </body>
   </html>
-
-````
+```
 
 # Further reading
 

@@ -48,7 +48,10 @@ We'll start by using our old v3 `index.html` as our starting point.
    </head>
    <body>
       <div id="bot"></div>
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+      <script
+         crossorigin="anonymous"
+         src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"
+      ></script>
       <script>
          BotChat.App(
             {

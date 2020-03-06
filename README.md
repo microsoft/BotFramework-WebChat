@@ -68,7 +68,10 @@ Here is how how you can add Web Chat control to your website:
 <!DOCTYPE html>
 <html>
    <head>
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script
+         crossorigin="anonymous"
+         src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"
+      ></script>
       <style>
          html,
          body {
