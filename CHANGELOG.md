@@ -22,6 +22,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985)
+   -  Development dependencies
+      -  Root package
+         - [`@azure/storage-blob@12.1.0`](https://npmjs.com/package/@azure/storage-blob)
+         - [`@babel/plugin-proposal-class-properties@7.8.3`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+         - [`@babel/plugin-proposal-object-rest-spread@7.8.3`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+         - [`@babel/plugin-transform-runtime@7.8.3`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+         - [`@babel/preset-env@7.8.7`](https://npmjs.com/package/@babel/preset-env)
+         - [`@babel/preset-react@7.8.3`](https://npmjs.com/package/@babel/preset-react)
+         - [`@babel/preset-typescript@7.8.3`](https://npmjs.com/package/@babel/preset-typescript)
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`babel-jest@25.1.0`](https://npmjs.com/package/babel-jest)
+         - [`concurrently@5.1.0`](https://npmjs.com/package/concurrently)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+         - [`cross-env@7.0.2`](https://npmjs.com/package/cross-env)
+         - [`get-port@5.1.1`](https://npmjs.com/package/get-port)
+         - [`husky@4.2.3`](https://npmjs.com/package/husky)
+         - [`jest@25.1.0`](https://npmjs.com/package/jest)
+         - [`jest-image-snapshot@2.12.0`](https://npmjs.com/package/jest-image-snapshot)
+         - [`lerna@3.20.2`](https://npmjs.com/package/lerna)
+         - [`lint-staged@10.0.8`](https://npmjs.com/package/lint-staged)
+         - [`selenium-webdriver@4.0.0-alpha.7`](https://npmjs.com/package/selenium-webdriver)
+      -  Other packages
+         - [`@babel/core@7.8.7`](https://npmjs.com/package/@babel/core)
+         - [`@babel/preset-env@7.8.7`](https://npmjs.com/package/@babel/preset-env)
+         - [`babel-jest@25.1.0`](https://npmjs.com/package/babel-jest)
+         - [`babel-plugin-istanbul@6.0.0`](https://npmjs.com/package/babel-plugin-istanbul)
+         - [`concurrently@5.1.0`](https://npmjs.com/package/concurrently)
+         - [`eslint-plugin-prettier@3.1.2`](https://npmjs.com/package/eslint-plugin-prettier)
+         - [`eslint-plugin-react-hooks@2.5.0`](https://npmjs.com/package/eslint-plugin-react-hooks)
+         - [`eslint-plugin-react@7.18.3`](https://npmjs.com/package/eslint-plugin-react)
+         - [`eslint@6.8.0`](https://npmjs.com/package/eslint)
+         - [`terser-webpack-plugin@2.3.5`](https://npmjs.com/package/terser-webpack-plugin)
+         - [`typescript@3.8.3`](https://npmjs.com/package/typescript)
+         - [`webpack-cli@3.3.11`](https://npmjs.com/package/webpack-cli)
+         - [`webpack-stats-plugin@0.3.1`](https://npmjs.com/package/webpack-stats-plugin)
+         - [`webpack@4.42.0`](https://npmjs.com/package/webpack)
+   -  Production dependencies
+      -  `core`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`redux-saga@1.1.3`](https://npmjs.com/package/redux-saga)
+      -  `bundle`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+         - [`url-search-params-polyfill@8.0.0`](https://npmjs.com/package/url-search-params-polyfill)
+      -  `component`
+         - [`react-redux@7.2.0`](https://npmjs.com/package/react-redux)
+         - [`redux@4.0.5`](https://npmjs.com/package/redux)
+      -  `directlinespeech`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+      -  `embed`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+
 ## [4.8.0] - 2020-03-05
 
 ### Breaking changes
