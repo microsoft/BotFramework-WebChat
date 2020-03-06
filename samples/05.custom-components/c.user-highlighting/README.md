@@ -91,24 +91,24 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 ```diff
   <!DOCTYPE html>
   <html lang="en-US">
-
     <head>
       <title>Web Chat: Custom attachment with GitHub Stargazers</title>
-
-      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-      <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
-      <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
-
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+      <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
+      <script crossorigin="anonymous" src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <style>
         html,
         body {
-          height: 100%
+          height: 100%;
         }
 
-        body { margin: 0 }
+        body {
+          margin: 0;
+        }
 
         #webchat {
           height: 100%;
@@ -130,7 +130,6 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 +       }
       </style>
     </head>
-
     <body>
       <div id="webchat" role="main"></div>
       <script type="text/babel">
@@ -166,7 +165,6 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
         })().catch(err => console.error(err));
       </script>
     </body>
-
   </html>
 ```
 

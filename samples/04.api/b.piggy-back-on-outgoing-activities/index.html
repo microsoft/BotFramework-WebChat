@@ -3,20 +3,22 @@
   <head>
     <title>Web Chat: Inject data on post activity</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <!-- We are using simple-update-in package to simplify demo code. -->
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"
+    ></script>
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-
-    <!-- We are using simple-update-in package to simplify demo code. -->
-    <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
         height: 100%;
       }
+
       body {
         margin: 0;
       }

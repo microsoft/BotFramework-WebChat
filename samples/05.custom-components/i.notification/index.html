@@ -4,14 +4,16 @@
     <title>Web Chat: Notification system</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
@@ -118,7 +120,8 @@
               payload: {
                 id: 'very long',
                 level: 'info',
-                message: 'Velit anim sunt cupidatat aliquip fugiat eiusmod cillum. Sit est elit deserunt laborum do laborum consectetur velit velit. Cillum in consectetur sint ullamco dolore adipisicing id nostrud amet dolore in reprehenderit. Sint mollit proident elit do deserunt eu exercitation ullamco consectetur duis nisi. Ipsum adipisicing reprehenderit commodo deserunt proident magna. Nulla aliquip fugiat officia consequat esse nulla ea velit sint enim.'
+                message:
+                  'Velit anim sunt cupidatat aliquip fugiat eiusmod cillum. Sit est elit deserunt laborum do laborum consectetur velit velit. Cillum in consectetur sint ullamco dolore adipisicing id nostrud amet dolore in reprehenderit. Sint mollit proident elit do deserunt eu exercitation ullamco consectetur duis nisi. Ipsum adipisicing reprehenderit commodo deserunt proident magna. Nulla aliquip fugiat officia consequat esse nulla ea velit sint enim.'
               }
             });
           }

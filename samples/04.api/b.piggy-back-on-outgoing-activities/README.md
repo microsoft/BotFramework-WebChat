@@ -34,29 +34,33 @@ If you haven't viewed it already, review and understanding of sample 11, which t
 In this sample, we will be using the package `simple-update-in` to update our immutable action objects. Let's add the minified js file from unpkg.com to the `<head>` of our html:
 
 ```diff
-…
-<head>
-  <title>Web Chat: Inject data on post activity</title>
-  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-+ <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
-…
+  …
+  <head>
+    <title>Web Chat: Inject data on post activity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++   <script
++     crossorigin="anonymous"
++     src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"
++   ></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  …
 ```
 
 This will allow us to use middleware to customize `DIRECT_LINE/POST_ACTIVITY` by updating the action with deep cloning.
 
 ```diff
-…
-const store = window.WebChat.createStore(
-   {},
-   ({ dispatch }) => next => action => {
-   if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
-+     action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
-   }
+  …
+  const store = window.WebChat.createStore(
+    {},
+    ({ dispatch }) => next => action => {
+      if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
++       action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
+      }
 
-   return next(action);
-   }
-);
-…
+      return next(action);
+    }
+  );
+  …
 ```
 
 All 'DIRECT_LINE/POST_ACTIVITY' sent on this bot will now have an email added to the channel data.
@@ -66,60 +70,63 @@ All 'DIRECT_LINE/POST_ACTIVITY' sent on this bot will now have an email added to
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Inject data on post activity</title>
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Inject data on post activity</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script crossorigin="anonymous" src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+        body {
+          margin: 0;
+        }
 
-    <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
++         const store = window.WebChat.createStore(
++           {},
++           ({ dispatch }) => next => action => {
++             if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
++               action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
++             }
 
-+       const store = window.WebChat.createStore(
-+         {},
-+         ({ dispatch }) => next => action => {
-+           if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
-
-+             action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
++             return next(action);
 +           }
++         );
 
-+           return next(action);
-+         }
-+       );
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           store
+          }, document.getElementById('webchat'));
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         store
-        }, document.getElementById('webchat'));
+          store.dispatch({
+            type: 'WEB_CHAT/SET_SEND_BOX',
+            payload: { text: 'channel-data' }
+          });
 
-        store.dispatch({
-          type: 'WEB_CHAT/SET_SEND_BOX',
-          payload: { text: 'channel-data' }
-        });
-
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
-
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

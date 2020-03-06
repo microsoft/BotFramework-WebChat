@@ -44,64 +44,72 @@ This sample starts with the [minimal-bundle CDN sample](./../02.b.getting-starte
 First, add the Markdown-It dependency to our `head`.
 
 ```diff
-…
-<head>
-   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
-+  <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
-</head>
-…
+  …
+  <head>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
++   <script crossorigin="anonymous" src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
+  </head>
+  …
 ```
 
 > For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat-minimal.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
 
 Next, add and bind the markdown-it object to `renderMarkdown`:
 
-````diff
-…
- directLine: window.WebChat.createDirectLine({ token }),
-+         renderMarkdown: markdownIt.render.bind(markdownIt)
-        }, document.getElementById('webchat'));
-…
+```diff
+  …
+  directLine: window.WebChat.createDirectLine({ token }),
++   renderMarkdown: markdownIt.render.bind(markdownIt)
+  }, document.getElementById('webchat'));
+  …
+```
 
 ## Completed code
 
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Minimal bundle with Markdown</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
-+   <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Minimal bundle with Markdown</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++     <script crossorigin="anonymous" src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
-        const markdownIt = window.markdownit();
+        body {
+          margin: 0;
+        }
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         renderMarkdown: markdownIt.render.bind(markdownIt)
-        }, document.getElementById('webchat'));
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
+          const markdownIt = window.markdownit();
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           renderMarkdown: markdownIt.render.bind(markdownIt)
+          }, document.getElementById('webchat'));
+
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 
 ````
 

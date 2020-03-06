@@ -190,7 +190,7 @@ Here is the finished `index.html`:
    <head>
       <title>Web Chat: Customize send timeout</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <style>
          html,
          body {

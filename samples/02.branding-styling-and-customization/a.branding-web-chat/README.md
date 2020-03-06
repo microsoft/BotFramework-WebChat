@@ -66,13 +66,13 @@ Add the initials for both the user and the bot. The new object should look like 
 Finally, make sure the `styleOptions` object is passed into Web Chat, like so:
 
 ```diff
-…
-window.WebChat.renderWebChat({
--       directLine: window.WebChat.createDirectLine({ token })
-+       directLine: window.WebChat.createDirectLine({ token }),
-+       styleOptions
- }, document.getElementById('webchat'));
- …
+  …
+  window.WebChat.renderWebChat({
+-   directLine: window.WebChat.createDirectLine({ token })
++   directLine: window.WebChat.createDirectLine({ token }),
++   styleOptions
+  }, document.getElementById('webchat'));
+  …
 ```
 
 That's it!
@@ -82,46 +82,53 @@ That's it!
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Avatar with images and initials</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Avatar with images and initials</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+        body {
+          margin: 0;
+        }
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
+          https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-+       const styleOptions = {
-+         botAvatarInitials: 'BF',
-+         userAvatarInitials: 'WC'
-+       };
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-        window.WebChat.renderWebChat({
--         directLine: window.WebChat.createDirectLine({ token })
-+         directLine: window.WebChat.createDirectLine({ token }),
-+         styleOptions
-        }, document.getElementById('webchat'));
++         const styleOptions = {
++           botAvatarInitials: 'BF',
++           userAvatarInitials: 'WC'
++         };
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          window.WebChat.renderWebChat({
+-           directLine: window.WebChat.createDirectLine({ token })
++           directLine: window.WebChat.createDirectLine({ token }),
++           styleOptions
+          }, document.getElementById('webchat'));
+
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Other modifications

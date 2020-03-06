@@ -54,44 +54,52 @@ Modify the Web Chat object by passing the timestamp into `renderWebChat`
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Configurable timestamp grouping</title>
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Configurable timestamp grouping</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      'use strict';
+        body {
+          margin: 0;
+        }
 
-+     const groupTimestamp = false;
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        'use strict';
 
-      (async function () {
++       const groupTimestamp = false;
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        (async function () {
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         styleOptions: {
-+           groupTimestamp
-+         }
-        }, document.getElementById('webchat'));
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           styleOptions: {
++             groupTimestamp
++           }
+          }, document.getElementById('webchat'));
 
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

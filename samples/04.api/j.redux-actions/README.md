@@ -42,46 +42,48 @@ const store = window.WebChat.createStore({}, ({ dispatch } => next => action => 
 Expand your middleware method to filter the activities you want to listen for (in this case, incoming activities). When the incoming activity is received, the activities will be further filtered to wait for the `activity.name` of `'sample:backchannel'`
 
 ```diff
-const store = window.WebChat.createStore(
-  {},
-  ({ dispatch }) => next => action => {
-+   if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'){
-+     const { activity } = action.payload;
+  const store = window.WebChat.createStore(
+    {},
+    ({ dispatch }) => next => action => {
++     if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'){
++       const { activity } = action.payload;
 
-+     if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-+       //…
++       if (activity.type === 'event' && activity.name === 'sample:backchannel') {
++         //…
++       }
 +     }
+
+      return next(action);
 +   }
-+   }
-    return next(action)
-  }
+  })
 ```
 
 Next you need to add the code that the app will intercept with, in this case the alert.
 
 ```diff
-const store = window.WebChat.createStore(
-  {},
-  ({ dispatch }) => next => action => {
-    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'){
-      const { activity } = action.payload;
+  const store = window.WebChat.createStore(
+    {},
+    ({ dispatch }) => next => action => {
+      if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'){
+        const { activity } = action.payload;
 
-      if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-+       alert(JSON.stringify(activity, null, 2));
+        if (activity.type === 'event' && activity.name === 'sample:backchannel') {
++         alert(JSON.stringify(activity, null, 2));
+        }
       }
+
+      return next(action)
     }
-    }
-    return next(action)
-  }
+  );
 ```
 
 Finally, pass in your new store to the Web Chat render method, and that's it.
 
 ```diff
-window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-+ store
-}, document.getElementById('webchat'));
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   store
+  }, document.getElementById('webchat'));
 ```
 
 ## Completed code
@@ -89,55 +91,60 @@ window.WebChat.renderWebChat({
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Custom Redux store</title>
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Custom Redux store</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+        body {
+          margin: 0;
+        }
 
-      #webchat,
-      #webchat > * {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-+       const store = window.WebChat.createStore(
-+         {},
-+         ({ dispatch }) => next => action => {
-+           if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-+             const { activity } = action.payload;
++         const store = window.WebChat.createStore(
++           {},
++           ({ dispatch }) => next => action => {
++             if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
++               const { activity } = action.payload;
 
-+             if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-+               alert(JSON.stringify(activity, null, 2));
++               if (activity.type === 'event' && activity.name === 'sample:backchannel') {
++                 alert(JSON.stringify(activity, null, 2));
++               }
 +             }
+
++             return next(action);
 +           }
++         );
 
-+           return next(action);
-+         }
-+       );
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           store
+          }, document.getElementById('webchat'));
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         store
-        }, document.getElementById('webchat'));
-
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

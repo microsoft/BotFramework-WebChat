@@ -34,26 +34,26 @@ This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.f
 The first chunk of new code in this sample is simply to invoke the card inputs and suggested actions commands to the store. You can use this code to similarly dispatch the commands you need to display in your presentation.
 
 ```diff
-+const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-+  if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-+    dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
-+    dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
-+  }
-+  return next(action);
-+});
++ const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
++   if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
++     dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
++     dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
++   }
++   return next(action);
++ });
 ```
 
 Disable the Web Chat component, pass in your instance of the store, and hide the Send Box via `styleOptions`.
 
 ```diff
-window.WebChat.renderWebChat({
-   directLine: window.WebChat.createDirectLine({ token }),
-+  disabled: true,
-+  store,
-+  styleOptions: {
-+    hideSendBox: true
-+  }
-}, document.getElementById('webchat'));
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   disabled: true,
++   store,
++   styleOptions: {
++     hideSendBox: true
++   }
+  }, document.getElementById('webchat'));
 ```
 
 ## Completed code
@@ -61,48 +61,55 @@ window.WebChat.renderWebChat({
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Presentation mode</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Presentation mode</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
-+       const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-+         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-+           dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
-+           dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
-+         }
+        body {
+          margin: 0;
+        }
 
-+         return next(action);
-+       });
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
++         const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
++           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
++             dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
++             dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
++           }
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         disabled: true,
-+         store,
-+         styleOptions: {
-+           hideSendBox: true
-+         }
-        }, document.getElementById('webchat'));
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
++           return next(action);
++         });
+
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           disabled: true,
++           store,
++           styleOptions: {
++             hideSendBox: true
++           }
+          }, document.getElementById('webchat'));
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

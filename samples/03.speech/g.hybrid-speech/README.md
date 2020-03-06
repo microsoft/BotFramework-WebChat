@@ -94,10 +94,17 @@ Here is the finished `index.html`:
   <html lang="en-US">
     <head>
       <title>Web Chat: Hybrid speech engine using JavaScript</title>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <style>
-        html, body { height: 100% }
-        body { margin: 0 }
+        html,
+        body {
+          height: 100%;
+        }
+
+        body {
+          margin: 0;
+        }
 
         #webchat {
           height: 100%;

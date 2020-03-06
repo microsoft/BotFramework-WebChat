@@ -184,15 +184,14 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 ```diff
    <!DOCTYPE html>
    <html lang="en-US">
-
       <head>
          <title>Web Chat: Decorates bot activity with upvote and downvote buttons</title>
          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-         <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-         <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-         <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
-         <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+         <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+         <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+         <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+         <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
+         <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
          <style>
             html,
             body {
@@ -203,11 +202,11 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
                margin: 0;
             }
 
-+           #webchat {
-+              height: 100%;
-+              width: 100%;
-+           }
-+
+            #webchat {
+               height: 100%;
+               width: 100%;
+            }
+
 +           .botActivityDecorator {
 +              min-height: 60px;
 +              position: relative;
@@ -232,7 +231,6 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 +           }
          </style>
       </head>
-
       <body>
          <div id="webchat" role="main"></div>
          <script type="text/babel">
@@ -304,7 +302,6 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
             })().catch(err => console.error(err));
          </script>
       </body>
-
    </html>
 ```
 

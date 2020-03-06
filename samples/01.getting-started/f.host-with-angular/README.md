@@ -33,7 +33,7 @@ We'll start by adding the CDN to the head of our Angular application's `index.ht
 ```diff
 …
 <head>
-+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
++  <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 </head>
 …
 ```

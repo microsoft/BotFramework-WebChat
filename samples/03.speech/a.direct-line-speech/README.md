@@ -85,17 +85,17 @@ First, create an async function `fetchCredentials`. When called, it will fetch t
 
 ```js
 const fetchCredentials = async () => {
-   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-      method: 'POST'
-   });
+  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+    method: 'POST'
+  });
 
-   if (!res.ok) {
-      throw new Error('Failed to fetch authorization token and region.');
-   }
+  if (!res.ok) {
+    throw new Error('Failed to fetch authorization token and region.');
+  }
 
-   const { region, token: authorizationToken } = await res.json();
+  const { region, token: authorizationToken } = await res.json();
 
-   return { authorizationToken, region };
+  return { authorizationToken, region };
 };
 ```
 
@@ -123,65 +123,62 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
 ## Completed code
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Using Direct Line Speech</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-<head>
-  <title>Web Chat: Using Direct Line Speech</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
+        body {
+          margin: 0;
+        }
 
-    body {
-      margin: 0;
-    }
-
-    #webchat {
-      height: 100%;
-      width: 100%;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="webchat" role="main"></div>
-  <script>
-    (async function () {
-+     const fetchCredentials = async () => {
-+       const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-+         method: 'POST'
-+       });
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        (async function () {
++         const fetchCredentials = async () => {
++           const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
++             method: 'POST'
++           });
 +
-+       if (!res.ok) {
-+         throw new Error('Failed to fetch authorization token and region.');
-+       }
++           if (!res.ok) {
++             throw new Error('Failed to fetch authorization token and region.');
++           }
 +
-+       const { region, token: authorizationToken } = await res.json();
++           const { region, token: authorizationToken } = await res.json();
 +
-+       return { authorizationToken, region };
-+     };
++           return { authorizationToken, region };
++         };
 
-+     const adapters = await window.WebChat.createDirectLineSpeechAdapters({
-+       fetchCredentials
-+     });
++         const adapters = await window.WebChat.createDirectLineSpeechAdapters({
++           fetchCredentials
++         });
 
-      window.WebChat.renderWebChat(
-        {
-+         ...adapters
-        },
-        document.getElementById('webchat')
-      );
+          window.WebChat.renderWebChat(
+            {
++             ...adapters
+            },
+            document.getElementById('webchat')
+          );
 
-      document.querySelector('#webchat > *').focus();
-    })().catch(err => console.error(err));
-  </script>
-</body>
-
-</html>
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

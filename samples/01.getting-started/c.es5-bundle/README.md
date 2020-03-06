@@ -57,12 +57,12 @@ We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full
 Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
 
 ```diff
-…
-<head>
-+ <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-</head>
-…
+  …
+  <head>
++   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+-   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  </head>
+  …
 ```
 
 ## Completed code
@@ -70,45 +70,50 @@ Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Cha
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++     <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+-     <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-+   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
--   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+        body {
+          margin: 0;
+        }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      window.fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
-        .then(function (res) {
-          return res.json();
-        })
-        .then(function (json) {
-          const token = json.token;
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        window.fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (json) {
+            const token = json.token;
 
-          window.WebChat.renderWebChat({
-            directLine: window.WebChat.createDirectLine({
-              token: token
-            })
-          }, document.getElementById('webchat'));
+            window.WebChat.renderWebChat({
+              directLine: window.WebChat.createDirectLine({
+                token: token
+              })
+            }, document.getElementById('webchat'));
 
-          document.querySelector('#webchat > *').focus();
-        });
-    </script>
-  </body>
-</html>
-
+            document.querySelector('#webchat > *').focus();
+          });
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading

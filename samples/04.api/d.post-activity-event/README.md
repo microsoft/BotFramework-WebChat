@@ -51,60 +51,61 @@ Finally, let's connect the button to Web Chat by adding an event listener and di
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Programmatic access to post activity</title>
-    <!--
-      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
-      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
-    -->
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Programmatic access to post activity</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html,
+        body {
+          height: 100%;
+        }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
+        body {
+          margin: 0;
+        }
 
-      #helpButton {
-        left: 10px;
-        position: absolute;
-        top: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-+   <button id="helpButton" type="button">Help</button>
-    <script>
-      (async function () {
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
++       #helpButton {
++         left: 10px;
++         position: absolute;
++         top: 10px;
++       }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
++     <button id="helpButton" type="button">Help</button>
+      <script>
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-+       const store = window.WebChat.createStore();
++         const store = window.WebChat.createStore();
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         store
-        }, document.getElementById('webchat'));
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           store
+          }, document.getElementById('webchat'));
 
-+       document.querySelector('#helpButton').addEventListener('click', () => {
-+         store.dispatch({
-+           type: 'WEB_CHAT/SEND_MESSAGE',
-+           payload: { text: 'help' }
++         document.querySelector('#helpButton').addEventListener('click', () => {
++           store.dispatch({
++             type: 'WEB_CHAT/SEND_MESSAGE',
++             payload: { text: 'help' }
++           });
 +         });
-+       });
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
-
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading
