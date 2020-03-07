@@ -78,7 +78,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `embed`
          - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
          - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
-- Bumped Chrome Docker image to `3.141.59-zirconium`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+- Bumped Chrome Docker image to `3.141.59-zirconium` (Chrome 80.0.3987.106), by [@compulim](https://github.com/compulim) in PR [#2992](https://github.com/microsoft/BotFramework-WebChat/pull/2992)
 
 ## [4.8.0] - 2020-03-05
 
