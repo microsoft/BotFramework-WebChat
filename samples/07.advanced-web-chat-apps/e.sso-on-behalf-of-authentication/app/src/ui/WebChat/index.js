@@ -25,18 +25,22 @@ const WebChat = () => {
             (action.payload.activity.attachments || []).find(
               ({ contentType }) => contentType === 'application/vnd.microsoft.card.oauth'
             ) || {};
-          if (content) {
-            dispatch({
-              type: 'WEB_CHAT/SET_NOTIFICATION',
-              payload: {
-                data: { content },
-                id: 'signin',
-                level: 'info',
-                message: 'Please sign in to the app.'
-              }
-            });
 
-            return false;
+          if (content) {
+            const { tokenExchangeResource: { uri } = {} } = content;
+            if (uri) {
+              dispatch({
+                type: 'WEB_CHAT/SET_NOTIFICATION',
+                payload: {
+                  data: { content },
+                  id: 'signin',
+                  level: 'info',
+                  message: 'Please sign in to the app.'
+                }
+              });
+
+              return false;
+            }
           }
         }
 

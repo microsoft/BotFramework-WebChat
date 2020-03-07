@@ -1,8 +1,7 @@
 {
   "lerna": "3.19.0",
   "packages": [
-    "packages/*",
-    "samples/07.advanced-web-chat-apps/e.sso-on-behalf-of-authentication/app"
+    "packages/*"
   ],
   "version": "0.0.0"
 }
