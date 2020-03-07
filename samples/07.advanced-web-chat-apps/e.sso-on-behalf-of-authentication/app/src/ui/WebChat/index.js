@@ -28,6 +28,7 @@ const WebChat = () => {
 
           if (content) {
             const { tokenExchangeResource: { uri } = {} } = content;
+
             if (uri) {
               dispatch({
                 type: 'WEB_CHAT/SET_NOTIFICATION',
