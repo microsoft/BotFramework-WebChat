@@ -2,7 +2,8 @@
   "imageSnapshotOptions": {
     "customDiffConfig": {
       "threshold": 0.14
-    }
+    },
+    "noColors": true
   },
   "timeouts": {
     "directLine": 15000,
