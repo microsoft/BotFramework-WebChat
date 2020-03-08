@@ -78,6 +78,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `embed`
          - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
          - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+         
+## Samples
+-  Resolves [#2806](https://github.com/microsoft/BotFramework-WebChat/issues/2806), added [Single sign-on with On Behalf Of Token Authentication](https://webchat-sample-obo.azurewebsites.net/) sample, by [@tdurnford](https://github.com/tdurnford) in [#2865](https://github.com/microsoft/BotFramework-WebChat/pull/2865)
 
 ## [4.8.0] - 2020-03-05
 
