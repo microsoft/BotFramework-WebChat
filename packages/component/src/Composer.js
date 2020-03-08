@@ -8,8 +8,11 @@ import { css } from 'glamor';
 import { Provider } from 'react-redux';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import updateIn from 'simple-update-in';
 
+import createCustomEvent from './Utils/createCustomEvent';
+import ErrorBoundary from './ErrorBoundary';
 import getAllLocalizedStrings from './Localization/getAllLocalizedStrings';
 import isObject from './Utils/isObject';
 import normalizeLanguage from './Utils/normalizeLanguage';
@@ -52,6 +55,7 @@ import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
+import Tracker from './Tracker';
 import WebChatReduxContext, { useDispatch } from './WebChatReduxContext';
 import WebChatUIContext from './WebChatUIContext';
 
@@ -155,6 +159,7 @@ const Composer = ({
   activityRenderer,
   activityStatusRenderer,
   attachmentRenderer,
+  avatarRenderer,
   cardActionMiddleware,
   children,
   dir,
@@ -164,6 +169,7 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
   scrollToEnd,
@@ -174,11 +180,13 @@ const Composer = ({
   styleOptions,
   styleSet,
   toastRenderer,
+  typingIndicatorRenderer,
   userID,
   username,
   webSpeechPonyfillFactory
 }) => {
   const dispatch = useDispatch();
+  const telemetryDimensionsRef = useRef({});
   const [referenceGrammarID] = useReferenceGrammarID();
   const [dictateAbortable, setDictateAbortable] = useState();
 
@@ -305,6 +313,27 @@ const Composer = ({
     );
   }, [patchedLocalizedStrings]);
 
+  const trackDimension = useCallback(
+    (name, data) => {
+      if (!name || typeof name !== 'string') {
+        return console.warn('botframework-webchat: Telemetry dimension name must be a string.');
+      }
+
+      const type = typeof data;
+
+      if (type !== 'string' && type !== 'undefined') {
+        return console.warn('botframework-webchat: Telemetry dimension data must be a string or undefined.');
+      }
+
+      telemetryDimensionsRef.current = updateIn(
+        telemetryDimensionsRef.current,
+        [name],
+        type === 'undefined' ? data : () => data
+      );
+    },
+    [telemetryDimensionsRef]
+  );
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -324,6 +353,7 @@ const Composer = ({
       activityRenderer,
       activityStatusRenderer,
       attachmentRenderer,
+      avatarRenderer,
       dictateAbortable,
       dir: patchedDir,
       directLine,
@@ -334,15 +364,19 @@ const Composer = ({
       language: patchedLanguage,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
+      onTelemetry,
       renderMarkdown,
       scrollToEnd,
       selectVoice: patchedSelectVoice,
       sendBoxRef,
       sendTypingIndicator,
       setDictateAbortable,
+      trackDimension,
       styleOptions,
       styleSet: patchedStyleSet,
+      telemetryDimensionsRef,
       toastRenderer,
+      typingIndicatorRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -351,6 +385,7 @@ const Composer = ({
       activityRenderer,
       activityStatusRenderer,
       attachmentRenderer,
+      avatarRenderer,
       cardActionContext,
       dictateAbortable,
       directLine,
@@ -360,6 +395,7 @@ const Composer = ({
       internalMarkdownIt,
       internalRenderMarkdownInline,
       localizedGlobalize,
+      onTelemetry,
       patchedDir,
       patchedGrammars,
       patchedLanguage,
@@ -371,8 +407,11 @@ const Composer = ({
       scrollToEnd,
       sendBoxRef,
       setDictateAbortable,
+      trackDimension,
       styleOptions,
+      telemetryDimensionsRef,
       toastRenderer,
+      typingIndicatorRenderer,
       userID,
       username,
       webSpeechPonyfill
@@ -385,30 +424,42 @@ const Composer = ({
         {typeof children === 'function' ? children(context) : children}
       </SayComposer>
       <Dictation onError={dictationOnError} />
+      {onTelemetry && <Tracker />}
     </WebChatUIContext.Provider>
   );
 };
 
 // We will create a Redux store if it was not passed in
-const ComposeWithStore = ({ store, ...props }) => {
+const ComposeWithStore = ({ onTelemetry, store, ...props }) => {
+  const handleError = useCallback(
+    ({ error }) => {
+      onTelemetry && onTelemetry(createCustomEvent('exception', { error, fatal: true }));
+    },
+    [onTelemetry]
+  );
+
   const memoizedStore = useMemo(() => store || createStore(), [store]);
 
   return (
-    <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ScrollToBottomComposer>
-        <ScrollToBottomFunctionContext.Consumer>
-          {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
-        </ScrollToBottomFunctionContext.Consumer>
-      </ScrollToBottomComposer>
-    </Provider>
+    <ErrorBoundary onError={handleError}>
+      <Provider context={WebChatReduxContext} store={memoizedStore}>
+        <ScrollToBottomComposer>
+          <ScrollToBottomFunctionContext.Consumer>
+            {({ scrollToEnd }) => <Composer onTelemetry={onTelemetry} scrollToEnd={scrollToEnd} {...props} />}
+          </ScrollToBottomFunctionContext.Consumer>
+        </ScrollToBottomComposer>
+      </Provider>
+    </ErrorBoundary>
   );
 };
 
 ComposeWithStore.defaultProps = {
+  onTelemetry: undefined,
   store: undefined
 };
 
 ComposeWithStore.propTypes = {
+  onTelemetry: PropTypes.func,
   store: PropTypes.any
 };
 
@@ -423,6 +474,7 @@ Composer.defaultProps = {
   activityRenderer: undefined,
   activityStatusRenderer: undefined,
   attachmentRenderer: undefined,
+  avatarRenderer: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   dir: 'auto',
@@ -431,6 +483,7 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
   selectVoice: undefined,
@@ -440,6 +493,7 @@ Composer.defaultProps = {
   styleOptions: {},
   styleSet: undefined,
   toastRenderer: undefined,
+  typingIndicatorRenderer: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -449,6 +503,7 @@ Composer.propTypes = {
   activityRenderer: PropTypes.func,
   activityStatusRenderer: PropTypes.func,
   attachmentRenderer: PropTypes.func,
+  avatarRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
   dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
@@ -470,6 +525,7 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
@@ -482,6 +538,7 @@ Composer.propTypes = {
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
   toastRenderer: PropTypes.func,
+  typingIndicatorRenderer: PropTypes.func,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
-import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -17,6 +16,7 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
+import useRenderAvatar from '../hooks/useRenderAvatar';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -32,7 +32,7 @@ const ROOT_CSS = css({
     display: 'none'
   },
 
-  '& > .avatar': {
+  '& > .webchat__carouselFilmStrip__avatar': {
     flexShrink: 0
   },
 
@@ -98,6 +98,7 @@ const WebChatCarouselFilmStrip = ({
   const [direction] = useDirection();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
+  const renderAvatar = useRenderAvatar({ activity });
 
   const {
     attachments = [],
@@ -128,7 +129,7 @@ const WebChatCarouselFilmStrip = ({
       )}
       ref={scrollableRef}
     >
-      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
+      {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">

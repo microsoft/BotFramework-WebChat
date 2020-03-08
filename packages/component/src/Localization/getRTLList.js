@@ -34,7 +34,7 @@
 // 'zh-YUE'
 
 export default function getRTLList() {
-  const rtlList = ['ar-EG', 'ar-JO', 'he-IL'];
+  const rtlList = ['ar-EG', 'ar-JO', 'ar-SA', 'he-IL'];
 
   return rtlList;
 }

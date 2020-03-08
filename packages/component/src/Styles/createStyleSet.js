@@ -12,6 +12,8 @@ import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
 import createFileContentStyle from './StyleSet/FileContent';
+import createImageAvatarStyle from './StyleSet/ImageAvatar';
+import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -183,6 +185,8 @@ export default function createStyleSet(options) {
     errorBox: createErrorBoxStyle(options),
     errorNotification: createErrorNotificationStyle(options),
     fileContent: createFileContentStyle(options),
+    imageAvatar: createImageAvatarStyle(options),
+    initialsAvatar: createInitialsAvatarStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     options: {
       ...options,

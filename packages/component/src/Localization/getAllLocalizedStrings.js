@@ -36,17 +36,18 @@ import ptPT from './pt-PT.json';
 import roRO from './ro-RO.json';
 import ruRU from './ru-RU.json';
 import skSK from './sk-SK.json';
-import slSL from './sl-SL.json';
-import srCyrl from './sr-Cyrl.json';
-import srLatn from './sr-Latn.json';
+import slSI from './sl-SI.json';
+import srCyrlCS from './sr-Cyrl-CS.json';
+import srLatnCS from './sr-Latn-CS.json';
 import svSE from './sv-SE.json';
 import thTH from './th-TH.json';
 import trTR from './tr-TR.json';
 import ukUA from './uk-UA.json';
 import viVN from './vi-VN.json';
 import yue from './yue.json';
-import zhHans from './zh-Hans.json';
-import zhHant from './zh-Hant.json';
+import zhCN from './zh-CN.json';
+import zhHK from './zh-HK.json';
+import zhTW from './zh-TW.json';
 
 import bundledOverrides from './overrides.json';
 import mergeLocalizedStrings from './mergeLocalizedStrings';
@@ -94,20 +95,20 @@ function getAllLocalizedStrings() {
         'ro-RO': roRO,
         'ru-RU': ruRU,
         'sk-SK': skSK,
-        'sl-SL': slSL,
-        'sr-Cyrl': srCyrl,
-        'sr-Latn': srLatn,
+        'sl-SI': slSI,
+        'sr-Cyrl': srCyrlCS,
+        'sr-Latn': srLatnCS,
         'sv-SE': svSE,
         'th-TH': thTH,
         'tr-TR': trTR,
         'uk-UA': ukUA,
         'vi-VN': viVN,
         yue,
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-        'zh-Hans-SG': zhHans,
-        'zh-Hant-HK': zhHant,
-        'zh-Hant-MO': zhHant
+        'zh-Hans': zhCN,
+        'zh-Hant': zhTW,
+        'zh-Hans-SG': zhCN,
+        'zh-Hant-HK': zhHK,
+        'zh-Hant-MO': zhTW
       },
       bundledOverrides
     ))

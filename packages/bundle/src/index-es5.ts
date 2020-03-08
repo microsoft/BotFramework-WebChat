@@ -19,6 +19,7 @@ import 'core-js/features/object/is';
 import 'core-js/features/object/values';
 import 'core-js/features/promise';
 import 'core-js/features/promise/finally';
+import 'core-js/features/set';
 import 'core-js/features/string/ends-with';
 import 'core-js/features/string/starts-with';
 import 'core-js/features/symbol';

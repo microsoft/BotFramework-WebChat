@@ -47,6 +47,7 @@ setSendBoxValue('Hello, World!');
 
 Following is the list of hooks supported by Web Chat API.
 
+-  [`useActiveTyping`](#useactivetyping)
 -  [`useActivities`](#useactivities)
 -  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
@@ -69,6 +70,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useLastTypingAt`](#uselasttypingat)
 -  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
+-  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`usePerformCardAction`](#useperformcardaction)
@@ -79,6 +81,8 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useRenderActivityStatus`](#userenderactivitystatus)
 -  [`useRenderAttachment`](#userenderattachment)
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
+-  [`useRenderToast`](#userendertoast)
+-  [`useRenderTypingIndicator`](#userendertypingindicator)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -97,10 +101,35 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSubmitSendBox`](#usesubmitsendbox)
 -  [`useSuggestedActions`](#usesuggestedactions)
 -  [`useTimeoutForSend`](#usetimeoutforsend)
+-  [`useTrackDimension`](#usetrackdimension)
+-  [`useTrackEvent`](#usetrackevent)
+-  [`useTrackException`](#usetrackexception)
+-  [`useTrackTiming`](#usetracktiming)
 -  [`useUserID`](#useuserid)
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
 -  [`useWebSpeechPonyfill`](#usewebspeechponyfill)
+
+## `useActiveTyping`
+
+```js
+interface Typing {
+  at: number;
+  expireAt: number;
+  name: string;
+  role: 'bot' | 'user';
+}
+
+useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
+```
+
+This function will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
+
+If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
+
+The `expireAfter` argument can override the inactivity timer. If `expireAfter` is `Infinity`, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent a typing activity, but did not send a message activity afterward.
+
+> This hook will trigger render of your component if one or more typing information is expired or removed.
 
 ## `useActivities`
 
@@ -199,7 +228,7 @@ This function will return a function that, when called with a `Date` object, `nu
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
@@ -420,7 +449,7 @@ When called, this function will mark the activity as spoken and remove it from t
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
@@ -544,6 +573,45 @@ renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
+## `useRenderToast`
+
+```js
+interface Notification {
+  alt?: string;
+  id: string;
+  level: 'error' | 'info' | 'success' | 'warn' | string;
+  message: string;
+}
+
+useRenderToast(): ({ notification: Notification }) => React.Element
+```
+
+This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter to the function. This function is a composition of `toastMiddleware`, which is passed as a prop to Web Chat.
+
+## `useRenderTypingIndicator`
+
+```js
+interface Typing {
+  at: number;
+  expireAt: number;
+  name: string;
+  role: 'bot' | 'user';
+}
+
+useRenderTypingIndicator():
+  ({
+    activeTyping: { [id: string]: Typing },
+    typing: { [id: string]: Typing },
+    visible: boolean
+  }) => React.Element
+```
+
+This function is for rendering typing indicator for all participants of the conversation. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop to Web Chat. The caller will pass the following arguments:
+
+-  `activeTyping` lists of participants who are actively typing.
+-  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
+-  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
+
 ## `useScrollToEnd`
 
 ```js
@@ -631,7 +699,7 @@ To modify this value, change the value in the style options prop passed to Web C
 interface Notification {
   alt?: string;
   id: string;
-  level: 'error' | 'info' | 'success' | 'warn';
+  level: 'error' | 'info' | 'success' | 'warn' | string;
   message: string;
 }
 
@@ -858,7 +926,67 @@ useTypingIndicatorVisible(): [boolean]
 
 This function will return whether the typing indicator should be visible or not. This function is time-sensitive, meaning that the value will change as time passes.
 
-This function derives the visibility of the typing indicator via:
+This function derives the visibility of the typing indicator via values from the [`useActiveTyping`](#useactivetyping) hook. Active typing from user is ignored.
 
--  `typingAnimationDuration` value specified in style options, in milliseconds
--  Values from the `useLastTypingAt` hook
+## Telemetry
+
+### `useTrackDimension`
+
+```js
+useTrackDimension(): (name: string, data?: string) => void
+```
+
+This function will add, update, or remove a dimension from telemetry. If `undefined` is passed to `data`, the dimension will be removed. This hook will not trigger `onTelemetry` handler.
+
+### `useTrackEvent`
+
+```js
+type EventData =
+  number |
+  string |
+  { [key: string]: number | string };
+
+useTrackEvent(): {
+  (name: string, data?: EventData): void;
+  debug: (name: string, data?: EventData) => void;
+  error: (name: string, data?: EventData) => void;
+  info: (name: string, data?: EventData) => void;
+  warn: (name: string, data?: EventData) => void;
+}
+```
+
+This function will emit an event measurement. When called, the `onTelemetry` handler will be triggered. All numeric data passed to `data` must be a non-negative finite number.
+
+Log levels can be specified using: `debug`, `error`, `info`, `warn`. If log level is not specified, it will default to `info`.
+
+```js
+const MyComponent = () => {
+   const trackEvent = useTrackEvent();
+
+   trackEvent('This event will have default of level "info".');
+
+   trackEvent.debug('This event will be of level "debug".');
+   trackEvent.error('This event will be of level "error".');
+   trackEvent.info('This event will be of level "info".');
+   trackEvent.warn('This event will be of level "warn".');
+};
+```
+
+### `useTrackException`
+
+```js
+useTrackException(): (error: Error, fatal?: boolean = true) => void
+```
+
+This function will emit an exception measurement. When called, the `onTelemetry` handler will be triggered.
+
+### `useTrackTiming`
+
+```js
+useTrackTiming(): (name: string, fn: function) => void
+useTrackTiming(): (name: string, promise: Promise) => void
+```
+
+This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
+
+If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a non-fatal error.

@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"></script>
     <style>
       html,
       body {
@@ -57,7 +57,7 @@
         display: flex;
         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
         font-size: 14px;
-        height: 100%;
+        min-height: 32px;
       }
 
       .app__privacyPolicyToast__icon {
@@ -110,6 +110,15 @@
                 data: { accepted: false },
                 id: 'privacypolicy',
                 level: 'info'
+              }
+            });
+
+            dispatch({
+              type: 'WEB_CHAT/SET_NOTIFICATION',
+              payload: {
+                id: 'very long',
+                level: 'info',
+                message: 'Velit anim sunt cupidatat aliquip fugiat eiusmod cillum. Sit est elit deserunt laborum do laborum consectetur velit velit. Cillum in consectetur sint ullamco dolore adipisicing id nostrud amet dolore in reprehenderit. Sint mollit proident elit do deserunt eu exercitation ullamco consectetur duis nisi. Ipsum adipisicing reprehenderit commodo deserunt proident magna. Nulla aliquip fugiat officia consequat esse nulla ea velit sint enim.'
               }
             });
           }

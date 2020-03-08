@@ -9,7 +9,7 @@ import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalize, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
+const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -69,7 +69,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
   const [{ HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [disabled] = useDisabled();
-  const errorMessage = useLocalize('Adaptive Card render error');
+  const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
@@ -206,7 +206,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
   ]);
 
   return error ? (
-    <ErrorBox message={errorMessage}>
+    <ErrorBox error={error} message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (

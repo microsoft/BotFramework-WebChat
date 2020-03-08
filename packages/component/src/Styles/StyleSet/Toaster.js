@@ -123,6 +123,10 @@ export default function createToasterStyle({
       width: toasterHeight
     },
 
+    '& .webchat__toaster__expandText': {
+      padding: '6px 0'
+    },
+
     '& .webchat__toaster__expandLevelIconBox, & .webchat__toaster__expandIcon': {
       alignItems: 'center',
       display: 'flex',
@@ -135,15 +139,15 @@ export default function createToasterStyle({
       padding: 0
     },
 
-    '& .webchat__toaster__listItem': {
-      height: toasterHeight
+    '& .webchat__toaster__listItem:first-child:last-child': {
+      overflow: 'hidden'
     },
 
     '& .webchat__toaster__listItem:not(:first-child), & .webchat__toaster__listItem:not(:last-child)': {
       borderBottomColor: toastSeparatorColor,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
-      minHeight: 0
+      minHeight: 32
     }
   };
 }

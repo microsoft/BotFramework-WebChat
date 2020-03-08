@@ -12,34 +12,55 @@ This repository contains code for the Bot Framework Web Chat component. The Bot 
 
 This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
 
+<hr />
+
+# Version notes
+
+> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
+
 ## Upgrading to 4.6.0
 
 Starting from Web Chat 4.6.0, Web Chat requires React 16.8.6 or up.
 
 Although we recommend that you upgrade your host app at your earliest convenience, we understand that host app may need some time before its React dependencies are updated, especially in regards to huge applications.
 
-If your app is not ready for React 16.8.6 yet, you can follow [this sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/g.hybrid-react-npm) to dual-host React in your app.
+If your app is not ready for React 16.8.6 yet, you can follow the [hybrid React sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/g.hybrid-react-npm) to dual-host React in your app.
 
 ## Speech changes in Web Chat 4.5.0
 
-There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to this section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
+There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to the section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
 
 ## Migrating from Web Chat v3 to v4
 
 [View migration docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/MIGRATION.md) to learn about migrating from Web Chat v3.
 
-# How to use
+<hr />
 
-> For previous versions of Web Chat (v3), visit the [Web Chat v3 branch](https://github.com/microsoft/BotFramework-WebChat/tree/v3) documentation.
+# How to use
 
 First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
 Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal. Then use the secret to [generate a token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) and pass it to your Web Chat.
 
+## Connect a client app to bot
+
+Web Chat provides UI on top of the Direct Line and Direct Line Speech Channels. There are two ways to connect to your bot through HTTP calls from the client: by sending the Bot secret or generating a token via the secret.
+
+<!-- TODO: https://github.com/microsoft/BotFramework-WebChat/issues/2151 (ongoing) -->
+<!-- Update the following paragraph and the API table (`directline`) with new documentation when updated docs are published  -->
+
+We strongly recommend using the token API instead of providing the app with your secret. To learn more about why, see the [authentication documentation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) on the [token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-api-reference?view=azure-bot-service-4.0) and client security.
+
+For further reading, please see the following links:
+
+-  Using Web Chat with [Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+
+-  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+
 ## Integrate with JavaScript
 
-Web Chat is designed to integrate with your existing website using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
+Web Chat is designed to integrate with your existing website using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability options.
 
-You can use the full, typical webchat package that contains the most typically used features.
+You can use the full, typical Web Chat package (called full-feature bundle) that contains the most typically used features.
 
 Here is how how you can add Web Chat control to your website:
 
@@ -84,7 +105,11 @@ Here is how how you can add Web Chat control to your website:
 </html>
 ```
 
-> `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
+> `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
+
+> Assigning `userID` as a static value is not recommended since this will cause all users to share state. Please see the [`API userID entry`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/API.md#userID) for more information.
+
+More information on localization can be found in the [Localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md) documentation.
 
 ![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
@@ -111,11 +136,7 @@ export default () => {
 
 See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react/).
 
-## Integrate with Cognitive Services Speech Services
-
-You can use Cognitive Services Speech Services to add bi-directional speech functionality to Web Chat. Please refer to this article about [using Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md) for details.
-
-# Customize Web Chat UI
+# Customizing the Web Chat UI
 
 Web Chat is designed to be customizable without forking the source code. The table below outlines what kind of customizations you can achieve when you are importing Web Chat in different ways. This list is not exhaustive.
 
@@ -141,11 +162,13 @@ Bot Framework has many activity types, but not all are supported in Web Chat. [V
 
 [View the complete list of Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) for more ideas on customizing Web Chat.
 
-# Web Chat API Reference
+# Further reading
 
-[View the API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) for implementing Web Chat.
+## API Reference
 
-# Browser compatibility
+View the [API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) for implementing Web Chat.
+
+## Browser compatibility
 
 Web Chat supports the latest 2 versions of modern browsers like Chrome, Edge, and FireFox.
 If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle).
@@ -157,20 +180,23 @@ Please note, however:
 -  Web Chat has no plan to support samples for IE11 (ES5).
    -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
-# How to connect a client app to bot
+## Localization
 
-Web Chat provides UI on top of the Direct Line and Direct Line Speech Channels. There are two ways to connect to your bot through HTTP calls from the client: by sending the Bot secret or generating a token via the secret.
+View the [localization documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md) for implementing in Web Chat.
 
-<!-- TODO: https://github.com/microsoft/BotFramework-WebChat/issues/2151 -->
-<!-- Update the following paragraph and the API table (`directline`) with new documentation when updated docs are published  -->
+## Notifications
 
-We strongly recommend using the token API instead of providing the app with your secret. To learn more about why, see the [authentication documentation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) on the [token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-api-reference?view=azure-bot-service-4.0) and client security.
+View the [notification documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md) for implementing in Web Chat.
 
-For further reading, please see the following links:
+## Telemetry
 
--  [Using Web Chat with Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+View the [telemetry documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md) for implementing in Web Chat.
 
--  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+## Speech: Integrate with Cognitive Services Speech Services
+
+You can use Cognitive Services Speech Services to add bi-directional speech functionality to Web Chat. Please refer to the [Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md) documentation for details.
+
+<hr />
 
 # How to test with Web Chat's latest bits
 

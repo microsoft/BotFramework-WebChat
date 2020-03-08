@@ -4,7 +4,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
@@ -15,9 +15,12 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createCoreAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createCoreToastMiddleware from './Middleware/Toast/createCoreMiddleware';
+import createCoreTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
+import useTrackException from './hooks/useTrackException';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -40,18 +43,28 @@ const TRANSCRIPT_CSS = css({
   flex: 1
 });
 
+const SilentError = ({ err, message }) => {
+  const trackException = useTrackException();
+
+  useEffect(() => {
+    trackException(err || new Error(message), false);
+  }, [err, message, trackException]);
+
+  return false;
+};
+
 // TODO: [P2] We should move these into <Composer>
 function createActivityRenderer(additionalMiddleware) {
   const activityMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityMiddleware())({});
 
   return (...args) => {
     try {
-      return activityMiddleware(({ activity }) => () => {
-        console.warn(`No activity found for type "${activity.type}".`);
-      })(...args);
+      return activityMiddleware(({ activity }) => () => (
+        <SilentError message={`No activity found for type "${activity.type}".`} />
+      ))(...args);
     } catch (err) {
       const FailedRenderActivity = () => (
-        <ErrorBox message="Failed to render activity">
+        <ErrorBox error={err} message="Failed to render activity">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
@@ -68,9 +81,11 @@ function createActivityStatusRenderer(additionalMiddleware) {
   return (...args) => {
     try {
       return activityStatusMiddleware(() => false)(...args);
-    } catch ({ message, stack }) {
+    } catch (err) {
+      const { message, stack } = err;
+
       return (
-        <ErrorBox message="Failed to render activity status">
+        <ErrorBox error={err} message="Failed to render activity status">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -91,10 +106,23 @@ function createAttachmentRenderer(additionalMiddleware) {
       ))(...args);
     } catch (err) {
       return (
-        <ErrorBox message="Failed to render attachment">
+        <ErrorBox error={err} message="Failed to render attachment">
           <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
+    }
+  };
+}
+
+// TODO: [P2] #2859 We should move these into <Composer>
+function createAvatarRenderer(additionalMiddleware) {
+  const avatarMiddleware = concatMiddleware(additionalMiddleware, createCoreAvatarMiddleware())({});
+
+  return (...args) => {
+    try {
+      return avatarMiddleware(() => false)(...args);
+    } catch (err) {
+      console.error('Failed to render avatar', err);
     }
   };
 }
@@ -110,11 +138,37 @@ function createToastRenderer(additionalMiddleware) {
           <pre>{JSON.stringify(notification, null, 2)}</pre>
         </ErrorBox>
       ))(...args);
-    } catch ({ message, stack }) {
+    } catch (err) {
+      const { message, stack } = err;
+
       console.error({ message, stack });
 
       return (
-        <ErrorBox message="Failed to render notification">
+        <ErrorBox error={err} message="Failed to render notification">
+          <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
+        </ErrorBox>
+      );
+    }
+  };
+}
+
+function createTypingIndicatorRenderer(additionalMiddleware) {
+  const typingIndicatorMiddleware = concatMiddleware(additionalMiddleware, createCoreTypingIndicatorMiddleware())({});
+
+  return (...args) => {
+    try {
+      return typingIndicatorMiddleware(({ activeTyping, typing, visible }) => (
+        <ErrorBox message="No renderer for typing indicator">
+          <pre>{JSON.stringify({ activeTyping, typing, visible }, null, 2)}</pre>
+        </ErrorBox>
+      ))(...args);
+    } catch (err) {
+      const { message, stack } = err;
+
+      console.error({ message, stack });
+
+      return (
+        <ErrorBox error={err} message="Failed to render typing indicator">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
@@ -126,8 +180,10 @@ const BasicWebChat = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentMiddleware,
+  avatarMiddleware,
   className,
   toastMiddleware,
+  typingIndicatorMiddleware,
   ...otherProps
 }) => {
   const sendBoxRef = useRef();
@@ -136,15 +192,21 @@ const BasicWebChat = ({
     activityStatusMiddleware
   ]);
   const attachmentRenderer = useMemo(() => createAttachmentRenderer(attachmentMiddleware), [attachmentMiddleware]);
+  const avatarRenderer = useMemo(() => createAvatarRenderer(avatarMiddleware), [avatarMiddleware]);
   const toastRenderer = useMemo(() => createToastRenderer(toastMiddleware), [toastMiddleware]);
+  const typingIndicatorRenderer = useMemo(() => createTypingIndicatorRenderer(typingIndicatorMiddleware), [
+    typingIndicatorMiddleware
+  ]);
 
   return (
     <Composer
       activityRenderer={activityRenderer}
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
+      avatarRenderer={avatarRenderer}
       sendBoxRef={sendBoxRef}
       toastRenderer={toastRenderer}
+      typingIndicatorRenderer={typingIndicatorRenderer}
       {...otherProps}
     >
       {({ styleSet }) => (
@@ -169,6 +231,7 @@ BasicWebChat.defaultProps = {
   ...Composer.defaultProps,
   activityMiddleware: undefined,
   attachmentMiddleware: undefined,
+  avatarMiddleware: undefined,
   className: ''
 };
 
@@ -176,5 +239,6 @@ BasicWebChat.propTypes = {
   ...Composer.propTypes,
   activityMiddleware: PropTypes.func,
   attachmentMiddleware: PropTypes.func,
+  avatarMiddleware: PropTypes.func,
   className: PropTypes.string
 };

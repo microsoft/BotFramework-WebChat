@@ -1,3 +1,4 @@
+import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
@@ -27,7 +28,10 @@ import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
+import useRenderAvatar from './useRenderAvatar';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
+import useRenderToast from './useRenderToast';
+import useRenderTypingIndicator from './useRenderTypingIndicator';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
@@ -46,6 +50,10 @@ import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
 import useTimeoutForSend from './useTimeoutForSend';
+import useTrackDimension from './useTrackDimension';
+import useTrackEvent from './useTrackEvent';
+import useTrackException from './useTrackException';
+import useTrackTiming from './useTrackTiming';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -57,6 +65,7 @@ import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 
 export {
+  useActiveTyping,
   useActivities,
   useAvatarForBot,
   useAvatarForUser,
@@ -88,7 +97,10 @@ export {
   useRenderActivity,
   useRenderActivityStatus,
   useRenderAttachment,
+  useRenderAvatar,
   useRenderMarkdownAsHTML,
+  useRenderToast,
+  useRenderTypingIndicator,
   useScrollToEnd,
   useSendBoxSpeechInterimsVisible,
   useSendBoxValue,
@@ -110,6 +122,10 @@ export {
   useTextBoxSubmit,
   useTextBoxValue,
   useTimeoutForSend,
+  useTrackDimension,
+  useTrackEvent,
+  useTrackException,
+  useTrackTiming,
   useTypingIndicatorVisible,
   useUserID,
   useUsername,
