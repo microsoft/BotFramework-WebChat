@@ -1,0 +1,39 @@
+{
+  "name": "single-sign-on-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "base64-arraybuffer": "^0.2.0",
+    "botframework-webchat": "^4.8.0",
+    "math-random": "^1.0.4",
+    "office-ui-fabric-react": "^7.86.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-scripts": "^3.4.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "http-proxy-middleware": "^0.20.0"
+  }
+}
