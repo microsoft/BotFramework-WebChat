@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolves [#2897](https://github.com/microsoft/BotFramework-WebChat/issues/2897). Moved from JUnit to VSTest reporter with file attachments, by [@compulim](https://github.com/compulim) in PR [#2990](https://github.com/microsoft/BotFramework-WebChat/pull/2990)
+
 ### Changed
 
 -  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985)
