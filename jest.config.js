@@ -29,6 +29,25 @@ module.exports = {
             .filter(value => value)
             .join(' › ')
       }
+    ],
+    [
+      'jest-trx-results-processor',
+      {
+        outputFile: 'coverage/result.trx',
+        postProcessTestResult: [
+          (testSuiteResult, testResult, testResultNode) => {
+            testResult.failureMessages.forEach(message => {
+              const match = /^See diff for details: (.*)/m.exec(message);
+
+              match &&
+                testResultNode
+                  .ele('ResultFiles')
+                  .ele('ResultFile')
+                  .att('path', match[1]);
+            });
+          }
+        ]
+      }
     ]
   ],
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup/preSetupTestFramework.js'],
