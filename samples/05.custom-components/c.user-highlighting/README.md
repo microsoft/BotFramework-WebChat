@@ -88,84 +88,79 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 ## Completed code
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Custom attachment with GitHub Stargazers</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
-        }
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Custom attachment with GitHub Stargazers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        body {
-          margin: 0;
-        }
+      body {
+        margin: 0;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-+       .highlightedActivity--bot {
-+         border-left-color: Red;
-+         border-left-style: solid;
-+         border-left-width: 5px;
-+         margin-left: 8px;
-+       }
-+
-+       .highlightedActivity--user {
-+         border-right-color: Green;
-+         border-right-style: solid;
-+         border-right-width: 5px;
-+         margin-right: 8px;
-+       }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-        (async function () {
-          'use strict';
+      .highlightedActivity--bot {
+        border-left-color: Red;
+        border-left-style: solid;
+        border-left-width: 5px;
+        margin-left: 8px;
+      }
 
-          // In this demo, we are using Direct Line token from MockBot.
-          // To talk to your bot, you should use the token exchanged using your Direct Line secret.
-          // You should never put the Direct Line secret in the browser or client app.
-          // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+      .highlightedActivity--user {
+        border-right-color: Green;
+        border-right-style: solid;
+        border-right-width: 5px;
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
+        'use strict';
 
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          const { token } = await res.json();
-          const { ReactWebChat } = window.WebChat;
-+         const activityMiddleware = () => next => card => {
-+           return (
-+             children =>
-+               <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>
-+                 {next(card)(children)}
-+               </div>
-+           );
-+         };
-
-          window.ReactDOM.render(
-            <ReactWebChat
-+             activityMiddleware={ activityMiddleware }
-              directLine={ window.WebChat.createDirectLine({ token }) }
-            />,
-            document.getElementById('webchat')
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
+        const activityMiddleware = () => next => card => {
+          return children => (
+            <div
+              className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}
+            >
+              {next(card)(children)}
+            </div>
           );
+        };
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        window.ReactDOM.render(
+          <ReactWebChat
+            activityMiddleware={activityMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading

@@ -238,128 +238,128 @@ Lastly, modify the middleware to use the new `<PortraitAvatar>`:
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Customizable avatar</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
-        }
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Customizable avatar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 
-        body {
-          margin: 0;
-        }
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
+      body {
+        margin: 0;
+      }
 
-+       .app__avatarWithOnlineStatus {
-+         display: flex;
-+         position: relative;
-+       }
-+
-+       .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status {
-+         background-color: White;
-+         border-radius: 50%;
-+         border: solid 2px White;
-+         bottom: -2px;
-+         height: 10px;
-+         position: absolute;
-+         transition: background-color 200ms;
-+         width: 10px;
-+       }
-+
-+       .app__avatarWithOnlineStatus:not(.app__avatarWithOnlineStatus--rtl) .  app__avatarWithOnlineStatus__status {
-+         right: -2px;
-+       }
-+
-+       .app__avatarWithOnlineStatus.app__avatarWithOnlineStatus--rtl .  app__avatarWithOnlineStatus__status {
-+         left: -2px;
-+       }
-+
-+       .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.  app__avatarWithOnlineStatus__status--online {
-+         background-color: #090;
-+       }
-+
-+       .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.  app__avatarWithOnlineStatus__status--busy {
-+         background-color: Red;
-+       }
-+
-+       .app__portraitAvatar {
-+         border-radius: 4px;
-+       }
-      </style>
-    </head>
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-    <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-        (async function() {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {   method: 'POST' });
-          const { token } = await res.json();
--         const { ReactWebChat } = window.WebChat;
-+         const { useMemo } = window.React;
-+         const {
-+           ReactWebChat,
-+           hooks: { useDirection }
-+         } = window.WebChat;
+      .app__avatarWithOnlineStatus {
+        display: flex;
+        position: relative;
+      }
 
-+         const AvatarWithOnlineStatus = ({ children, onlineStatus }) => {
-+           const [direction] = useDirection();
-+
-+           return (
-+             <div
-+               className={`app__avatarWithOnlineStatus${direction === 'rtl' ? '   app__avatarWithOnlineStatus--rtl' : ''}`}
-+             >
-+               {children}
-+               {onlineStatus && (
-+                 <div
-+                   className={`app__avatarWithOnlineStatus__status   app__avatarWithOnlineStatus__status--${onlineStatus}`}
-+                 />
-+               )}
-+             </div>
-+           );
-+         };
-+
-+         const PortraitAvatar = ({ fromUser }) => {
-+           return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
-+         };
-+
-+         const avatarMiddleware = () => next => ({ fromUser, ...otherArgs }) => {
-+           const renderAvatar = next({ fromUser, ...otherArgs });
-+
-+           return () => (
-+             <AvatarWithOnlineStatus onlineStatus="online">
-+               <PortraitAvatar fromUser={fromUser} />
-+             </AvatarWithOnlineStatus>
-+           );
-+         };
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status {
+        background-color: White;
+        border-radius: 50%;
+        border: solid 2px White;
+        bottom: -2px;
+        height: 10px;
+        position: absolute;
+        transition: background-color 200ms;
+        width: 10px;
+      }
 
-          window.ReactDOM.render(
--           <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
-+           <ReactWebChat
-+             avatarMiddleware={avatarMiddleware}
-+             directLine={window.WebChat.createDirectLine({ token })}
-+             styleOptions={{ botAvatarInitials: 'WC', userAvatarInitials: 'WW' }}
-+           />,
-            document.getElementById('webchat')
+      .app__avatarWithOnlineStatus:not(.app__avatarWithOnlineStatus--rtl) .app__avatarWithOnlineStatus__status {
+        right: -2px;
+      }
+
+      .app__avatarWithOnlineStatus.app__avatarWithOnlineStatus--rtl .app__avatarWithOnlineStatus__status {
+        left: -2px;
+      }
+
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--online {
+        background-color: #090;
+      }
+
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--busy {
+        background-color: Red;
+      }
+
+      .app__portraitAvatar {
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { useMemo } = window.React;
+        const {
+          ReactWebChat,
+          hooks: { useDirection }
+        } = window.WebChat;
+
+        const AvatarWithOnlineStatus = ({ children, onlineStatus }) => {
+          const [direction] = useDirection();
+
+          return (
+            <div
+              className={`app__avatarWithOnlineStatus${direction === 'rtl' ? ' app__avatarWithOnlineStatus--rtl' : ''}`}
+            >
+              {children}
+              {onlineStatus && (
+                <div
+                  className={`app__avatarWithOnlineStatus__status app__avatarWithOnlineStatus__status--${onlineStatus}`}
+                />
+              )}
+            </div>
           );
+        };
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        const PortraitAvatar = ({ fromUser }) => {
+          return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
+        };
+
+        const avatarMiddleware = () => next => ({ fromUser, ...otherArgs }) => {
+          const renderAvatar = next({ fromUser, ...otherArgs });
+
+          return () => (
+            <AvatarWithOnlineStatus onlineStatus="online">
+              <PortraitAvatar fromUser={fromUser} />
+            </AvatarWithOnlineStatus>
+          );
+        };
+
+        window.ReactDOM.render(
+          <ReactWebChat
+            avatarMiddleware={avatarMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+            styleOptions={{ botAvatarInitials: 'WC', userAvatarInitials: 'WW' }}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading

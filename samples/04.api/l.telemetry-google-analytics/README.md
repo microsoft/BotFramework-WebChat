@@ -219,114 +219,112 @@ Record conversation ID, user ID, and Web Chat UI version into the metadata of me
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Collect telemetry using Google Analytics</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Collect telemetry using Google Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_IDD"></script>
+    <script>
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { conversationID, token, userID } = await res.json();
+        const { content: webChatUIVersion } =
+          document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
+
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+          dataLayer.push(arguments);
         }
 
-        body {
-          margin: 0;
-        }
+        gtag('js', new Date());
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-+     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-      <script>
-        (async function() {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
--         const { token } = await res.json();
-+         const { conversationID, token, userID } = await res.json();
-+         const { content: webChatUIVersion } =
-+           document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
-+
-+         window.dataLayer = window.dataLayer || [];
-+
-+         function gtag() {
-+           dataLayer.push(arguments);
-+         }
-+
-+         gtag('js', new Date());
-+
-+         gtag('config', 'GA_MEASUREMENT_ID', {
-+           custom_map: {
-+             dimension1: 'version',
-+             dimension2: 'prop:locale'
-+           },
-+
-+           event_category: 'Web Chat UI',
-+           user_id: userID,
-+           version: webChatUIVersion
-+         });
-+
-+         const handleTelemetry = event => {
-+           const { data, dimensions, duration, error, fatal, name, type } = event;
-+
-+           console.group(`onTelemetry ("${type}")`);
-+           console.log({ name, data, dimensions, duration, error });
-+           console.groupEnd();
-+
-+           if (type === 'event') {
-+             const googleAnalyticsData =
-+               typeof data === 'number' || typeof data === 'string' || typeof data === 'undefined' ? { '': data } : data;
-+
-+             for (const [key, value] of Object.entries(googleAnalyticsData)) {
-+               const eventName = key ? `${name}:${key}` : name;
-+
-+               if (typeof value === 'number') {
-+                 gtag('event', eventName, {
-+                   ...dimensions,
-+                   value
-+                 });
-+               } else {
-+                 gtag('event', eventName, {
-+                   ...dimensions,
-+                   event_label: value
-+                 });
-+               }
-+             }
-+           } else if (type === 'exception') {
-+             gtag('event', 'exception', {
-+               ...dimensions,
-+               description: error,
-+               fatal
-+             });
-+           } else if (type === 'timingend') {
-+             gtag('event', 'timing_complete', {
-+               ...dimensions,
-+               name,
-+               value: duration
-+             });
-+           }
-+         };
+        gtag('config', 'GA_MEASUREMENT_IDD', {
+          custom_map: {
+            dimension1: 'version',
+            dimension2: 'prop:locale'
+          },
 
-          window.WebChat.renderWebChat(
-            {
--             directLine: window.WebChat.createDirectLine({ token })
-+             directLine: window.WebChat.createDirectLine({ token }),
-+             onTelemetry: handleTelemetry
-            },
-            document.getElementById('webchat')
-          );
+          event_category: 'Web Chat UI',
+          user_id: userID,
+          version: webChatUIVersion
+        });
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        const handleTelemetry = event => {
+          const { data, dimensions, duration, error, fatal, name, type } = event;
+
+          console.group(`onTelemetry ("${type}")`);
+          console.log({ name, data, dimensions, duration, error });
+          console.groupEnd();
+
+          if (type === 'event') {
+            const googleAnalyticsData =
+              typeof data === 'number' || typeof data === 'string' || typeof data === 'undefined' ? { '': data } : data;
+
+            for (const [key, value] of Object.entries(googleAnalyticsData)) {
+              const eventName = key ? `${name}:${key}` : name;
+
+              if (typeof value === 'number') {
+                gtag('event', eventName, {
+                  ...dimensions,
+                  value
+                });
+              } else {
+                gtag('event', eventName, {
+                  ...dimensions,
+                  event_label: value
+                });
+              }
+            }
+          } else if (type === 'exception') {
+            gtag('event', 'exception', {
+              ...dimensions,
+              description: error,
+              fatal
+            });
+          } else if (type === 'timingend') {
+            gtag('event', 'timing_complete', {
+              ...dimensions,
+              name,
+              value: duration
+            });
+          }
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            onTelemetry: handleTelemetry
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading

@@ -113,75 +113,75 @@ Add the following CSS for styling the typing indicator:
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Customizing typing indicator</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
-        }
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Customizing typing indicator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        body {
-          margin: 0;
-        }
+      body {
+        margin: 0;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-+       .webchat__typingIndicator {
-+         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-+         font-size: 14px;
-+         padding: 10px;
-+       }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-        (async function() {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          const { token } = await res.json();
-          const { ReactWebChat } = window.WebChat;
+      .webchat__typingIndicator {
+        font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+        font-size: 14px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
 
-          window.ReactDOM.render(
--           <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
-+           <ReactWebChat
-+             directLine={window.WebChat.createDirectLine({ token })}
-+             sendTypingIndicator={true}
-+             typingIndicatorMiddleware={() => next => ({ activeTyping }) => {
-+               activeTyping = Object.values(activeTyping);
-+
-+               return (
-+                 !!activeTyping.length && (
-+                   <span className="webchat__typingIndicator">
-+                     Currently typing:{' '}
-+                     {activeTyping
-+                       .map(({ role }) => role)
-+                       .sort()
-+                       .join(', ')}
-+                   </span>
-+                 )
-+               );
-+             }}
-+           />,
-            document.getElementById('webchat')
-          );
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        window.ReactDOM.render(
+          <ReactWebChat
+            directLine={window.WebChat.createDirectLine({ token })}
+            sendTypingIndicator={true}
+            typingIndicatorMiddleware={() => next => ({ activeTyping }) => {
+              activeTyping = Object.values(activeTyping);
+
+              return (
+                !!activeTyping.length && (
+                  <span className="webchat__typingIndicator">
+                    Currently typing:{' '}
+                    {activeTyping
+                      .map(({ role }) => role)
+                      .sort()
+                      .join(', ')}
+                  </span>
+                )
+              );
+            }}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading

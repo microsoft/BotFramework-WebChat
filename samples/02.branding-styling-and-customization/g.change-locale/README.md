@@ -115,80 +115,47 @@ Here is the finished `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Change locale</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script
-         crossorigin="anonymous"
-         src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"
-      ></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
+  <head>
+    <title>Web Chat: Integrate with React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-         body {
-            margin: 0;
-         }
+      body {
+        margin: 0;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script>
-         (async function() {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-            const { token } = await res.json();
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-            const { useMemo, useState } = window.React;
-            const { createDirectLine, createStore, ReactWebChat } = window.WebChat;
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-            const App = () => {
-               const [locale, setLocale] = useState(navigator.language);
-               const directLine = useMemo(() => createDirectLine({ token }), []);
-               const store = useMemo(
-                  () =>
-                     createStore({}, () => next => action => {
-                        if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-                           const {
-                              activity: {
-                                 from: { role },
-                                 text,
-                                 type
-                              }
-                           } = action.payload;
+        window.ReactDOM.render(
+          <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
+          document.getElementById('webchat')
+        );
 
-                           if (
-                              role === 'bot' &&
-                              type === 'message' &&
-                              (text === 'en-US' || text === 'ja-JP' || text === 'zh-HK')
-                           ) {
-                              setLocale(text);
-                           }
-                        }
-
-                        return next(action);
-                     }),
-                  []
-               );
-
-               return <ReactWebChat directLine={directLine} locale={locale} store={store} />;
-            };
-
-            window.ReactDOM.render(<App />, document.getElementById('webchat'));
-
-            document.querySelector('#webchat > *').focus();
-         })().catch(err => console.error(err));
-      </script>
-   </body>
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
 

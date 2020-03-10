@@ -187,121 +187,119 @@ Here is the finished `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Customize send timeout</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script
-         crossorigin="anonymous"
-         src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"
-      ></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
-         body {
-            margin: 0;
-         }
+  <head>
+    <title>Web Chat: Customize send timeout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
+      body {
+        margin: 0;
+      }
 
-         #buttonBar {
-            display: flex;
-            flex-wrap: wrap;
-            left: 10px;
-            margin: 0;
-            position: absolute;
-            top: 10px;
-         }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-         #buttonBar > a {
-            background-color: White;
-            border: solid 2px #0063b1;
-            color: #0063b1;
-            font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-            font-size: 80%;
-            margin: 0 10px 10px 0;
-            padding: 5px 8px;
-            text-decoration: none;
-         }
+      #buttonBar {
+        display: flex;
+        flex-wrap: wrap;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 10px;
+      }
 
-         #buttonBar > a.selected {
-            background-color: #0063b1;
-            color: White;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <p id="buttonBar">
-         <a href="#retry=default">Default retry</a>
-         <a href="#retry=false">Show retry immediately</a>
-         <a href="#retry=1000">Show retry after 1 second</a>
-         <a href="#retry=5000">Show retry after 5 seconds</a>
-         <a href="#retry=120000">Show retry after 2 minutes</a>
-         <a href="#retry=fn">Custom retry</a>
-      </p>
-      <script>
-         (async function() {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-            const { token } = await res.json();
-            const directLine = window.WebChat.createDirectLine({ token });
+      #buttonBar > a {
+        background-color: White;
+        border: solid 2px #0063b1;
+        color: #0063b1;
+        font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 80%;
+        margin: 0 10px 10px 0;
+        padding: 5px 8px;
+        text-decoration: none;
+      }
 
-            function getHash() {
-               const hash = new URLSearchParams((location.hash || '').substr(1));
-               const hashJSON = {};
+      #buttonBar > a.selected {
+        background-color: #0063b1;
+        color: White;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <p id="buttonBar">
+      <a href="#retry=default">Default retry</a>
+      <a href="#retry=false">Show retry immediately</a>
+      <a href="#retry=1000">Show retry after 1 second</a>
+      <a href="#retry=5000">Show retry after 5 seconds</a>
+      <a href="#retry=120000">Show retry after 2 minutes</a>
+      <a href="#retry=fn">Custom retry</a>
+    </p>
+    <script>
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const directLine = window.WebChat.createDirectLine({ token });
 
-               for (const [key, value] of hash.entries()) {
-                  hashJSON[key] = value;
-               }
+        function getHash() {
+          const hash = new URLSearchParams((location.hash || '').substr(1));
+          const hashJSON = {};
 
-               return hashJSON;
-            }
+          for (const [key, value] of hash.entries()) {
+            hashJSON[key] = value;
+          }
 
-            function renderWebChat() {
-               const { retry } = getHash();
-               const sendTimeout =
-                  retry === 'fn'
-                     ? activity => {
-                          console.group('Running custom function to evaluate send timeout for activity.');
-                          console.log(activity);
-                          console.log('Returning 2 seconds.');
-                          console.groupEnd();
+          return hashJSON;
+        }
 
-                          return 2000;
-                       }
-                     : retry === 'false'
-                     ? false
-                     : +retry || undefined;
+        function renderWebChat() {
+          const { retry } = getHash();
+          const sendTimeout =
+            retry === 'fn'
+              ? activity => {
+                  console.group('Running custom function to evaluate send timeout for activity.');
+                  console.log(activity);
+                  console.log('Returning 2 seconds.');
+                  console.groupEnd();
 
-               console.log(
-                  `Using send timeout value of ${
-                     typeof sendTimeout === 'function' ? 'custom function' : JSON.stringify(sendTimeout)
-                  }`
-               );
+                  return 2000;
+                }
+              : retry === 'false'
+              ? false
+              : +retry || undefined;
 
-               window.WebChat.renderWebChat(
-                  {
-                     directLine,
-                     styleOptions: {
-                        sendTimeout
-                     }
-                  },
-                  document.getElementById('webchat')
-               );
-            }
+          console.log(
+            `Using send timeout value of ${
+              typeof sendTimeout === 'function' ? 'custom function' : JSON.stringify(sendTimeout)
+            }`
+          );
 
-            window.addEventListener('hashchange', renderWebChat);
+          window.WebChat.renderWebChat(
+            {
+              directLine,
+              styleOptions: {
+                sendTimeout
+              }
+            },
+            document.getElementById('webchat')
+          );
+        }
 
-            renderWebChat();
+        window.addEventListener('hashchange', renderWebChat);
 
-            document.querySelector('#webchat > *').focus();
-         })().catch(err => console.error(err));
-      </script>
-   </body>
+        renderWebChat();
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
 

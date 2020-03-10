@@ -118,94 +118,91 @@ Here is the finished `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Integrate with React</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script
-         crossorigin="anonymous"
-         src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"
-      ></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
+  <head>
+    <title>Web Chat: Customize activity status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
 
-         body {
-            margin: 0;
-         }
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
+      body {
+        margin: 0;
+      }
 
-         .activityStatus {
-            color: #767676;
-            font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-         }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-         .activityStatus__sendStatus,
-         .activityStatus__timestampPretext {
-            font-size: 80%;
-         }
+      .activityStatus {
+        color: #767676;
+        font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+      }
 
-         .activityStatus__timestampContent {
-            text-transform: lowercase;
-         }
-      </style>
-   </head>
+      .activityStatus__sendStatus,
+      .activityStatus__timestampPretext {
+        font-size: 80%;
+      }
 
-   <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-         (async function() {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-            const { token } = await res.json();
-            const { ReactWebChat } = window.WebChat;
+      .activityStatus__timestampContent {
+        text-transform: lowercase;
+      }
+    </style>
+  </head>
 
-            const activityStatusMiddleware = () => next => args => {
-               const {
-                  activity: {
-                     from: { role }
-                  },
-                  sendState,
-                  sameTimestampGroup
-               } = args;
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
 
-               if (sendState === 'sending') {
-                  return <span className="activityStatus activityStatus__sendStatus">Sending&hellip;</span>;
-               } else if (sendState === 'send failed') {
-                  return <span className="activityStatus">Send failed.</span>;
-               } else if (!sameTimestampGroup) {
-                  return (
-                     <span className="activityStatus activityStatus__timestamp">
-                        <span className="activityStatus__timestampPretext">
-                           {role === 'user' ? 'User at ' : 'Bot at '}
-                        </span>
-                        <span className="activityStatus__timestampContent">{next(args)}</span>
-                     </span>
-                  );
-               }
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-               return next(args);
-            };
+        const activityStatusMiddleware = () => next => args => {
+          const {
+            activity: {
+              from: { role }
+            },
+            sendState,
+            sameTimestampGroup
+          } = args;
 
-            window.ReactDOM.render(
-               <ReactWebChat
-                  activityStatusMiddleware={activityStatusMiddleware}
-                  directLine={window.WebChat.createDirectLine({ token })}
-               />,
-               document.getElementById('webchat')
+          if (sendState === 'sending') {
+            return <span className="activityStatus activityStatus__sendStatus">Sending&hellip;</span>;
+          } else if (sendState === 'send failed') {
+            return <span className="activityStatus">Send failed.</span>;
+          } else if (!sameTimestampGroup) {
+            return (
+              <span className="activityStatus activityStatus__timestamp">
+                <span className="activityStatus__timestampPretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
+                <span className="activityStatus__timestampContent">{next(args)}</span>
+              </span>
             );
+          }
 
-            document.querySelector('#webchat > *').focus();
-         })().catch(err => console.error(err));
-      </script>
-   </body>
+          return next(args);
+        };
+
+        window.ReactDOM.render(
+          <ReactWebChat
+            activityStatusMiddleware={activityStatusMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
 

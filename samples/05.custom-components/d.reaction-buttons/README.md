@@ -181,128 +181,133 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
 ## Completed code
 
-```diff
-   <!DOCTYPE html>
-   <html lang="en-US">
-      <head>
-         <title>Web Chat: Decorates bot activity with upvote and downvote buttons</title>
-         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-         <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-         <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-         <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-         <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
-         <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-         <style>
-            html,
-            body {
-               height: 100%;
-            }
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Decorate bot activity with upvote and downvote buttons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-            body {
-               margin: 0;
-            }
+      body {
+        margin: 0;
+      }
 
-            #webchat {
-               height: 100%;
-               width: 100%;
-            }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-+           .botActivityDecorator {
-+              min-height: 60px;
-+              position: relative;
-+           }
-+
-+           .botActivityDecorator .botActivityDecorator__content {
-+              padding-left: 40px;
-+           }
-+
-+           .botActivityDecorator .botActivityDecorator__buttonBar {
-+              list-style-type: none;
-+              margin: 0 0 0 10px;
-+              padding: 0;
-+              position: absolute;
-+           }
-+
-+           .botActivityDecorator .botActivityDecorator__buttonBar .botActivityDecorator__button {
-+              background: White;
-+              border: solid 1px #E6E6E6;
-+              margin-bottom: 2px;
-+              padding: 2px 5px 5px;
-+           }
-         </style>
-      </head>
-      <body>
-         <div id="webchat" role="main"></div>
-         <script type="text/babel">
-            (async function () {
-               'use strict';
+      .botActivityDecorator {
+        min-height: 60px;
+        position: relative;
+      }
 
-               const {
-+                 hooks: { usePostActivity },
-                  ReactWebChat
-               } = window.WebChat;
+      .botActivityDecorator .botActivityDecorator__content {
+        padding-left: 40px;
+      }
 
-+              const { useCallback } = window.React;
+      .botActivityDecorator .botActivityDecorator__buttonBar {
+        list-style-type: none;
+        margin: 0 0 0 10px;
+        padding: 0;
+        position: absolute;
+      }
 
-+              const BotActivityDecorator = ({ activityID, children }) => {
-+                 const postActivity = usePostActivity();
-+
-+                 const handleDownvoteButton = useCallback(() => {
-+                    postActivity({
-+                       type: 'messageReaction',
-+                       reactionsAdded: [{ activityID, helpful: -1 }]
-+                    });
-+                 }, [activityID, postActivity]);
-+
-+                 const handleUpvoteButton = useCallback(() => {
-+                    postActivity({
-+                       type: 'messageReaction',
-+                       reactionsAdded: [{ activityID, helpful: 1 }]
-+                    });
-+                 }, [activityID, postActivity]);
-+
-+                 return (
-+                    <div className="botActivityDecorator">
-+                       <ul className="botActivityDecorator__buttonBar">
-+                          <li>
-+                             <button className="botActivityDecorator__button" onClick={handleUpvoteButton}>👍</button>
-+                          </li>
-+                          <li>
-+                             <button className="botActivityDecorator__button" onClick={handleDownvoteButton}>👎</button>
-+                          </li>
-+                       </ul>
-+                       <div className="botActivityDecorator__content">{children}</div>
-+                    </div>
-+                 );
-+              };
+      .botActivityDecorator .botActivityDecorator__buttonBar .botActivityDecorator__button {
+        background: White;
+        border: solid 1px #e6e6e6;
+        margin-bottom: 2px;
+        padding: 2px 5px 5px;
+      }
+    </style>
+  </head>
 
-               const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-               const { token } = await res.json();
-+              const activityMiddleware = () => next => card => {
-+                 if (card.activity.from.role === 'bot') {
-+                    return children => (
-+                       <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
-+                          {next(card)(children)}
-+                       </BotActivityDecorator>
-+                    );
-+                 }
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel">
+      (async function() {
+        'use strict';
 
-                  return next(card);
-               };
+        const {
+          hooks: { usePostActivity },
+          ReactWebChat
+        } = window.WebChat;
 
-               window.ReactDOM.render(
-                  <ReactWebChat
-+                    activityMiddleware={activityMiddleware}
-                     directLine={window.WebChat.createDirectLine({ token })}
-                  />,
-                  document.getElementById('webchat')
-               );
+        const { useCallback } = window.React;
 
-               document.querySelector('#webchat > *').focus();
-            })().catch(err => console.error(err));
-         </script>
-      </body>
-   </html>
+        const BotActivityDecorator = ({ activityID, children }) => {
+          const postActivity = usePostActivity();
+
+          const handleDownvoteButton = useCallback(() => {
+            postActivity({
+              type: 'messageReaction',
+              reactionsAdded: [{ activityID, helpful: -1 }]
+            });
+          }, [activityID, postActivity]);
+
+          const handleUpvoteButton = useCallback(() => {
+            postActivity({
+              type: 'messageReaction',
+              reactionsAdded: [{ activityID, helpful: 1 }]
+            });
+          }, [activityID, postActivity]);
+
+          return (
+            <div className="botActivityDecorator">
+              <ul className="botActivityDecorator__buttonBar">
+                <li>
+                  <button className="botActivityDecorator__button" onClick={handleUpvoteButton}>
+                    👍
+                  </button>
+                </li>
+                <li>
+                  <button className="botActivityDecorator__button" onClick={handleDownvoteButton}>
+                    👎
+                  </button>
+                </li>
+              </ul>
+              <div className="botActivityDecorator__content">{children}</div>
+            </div>
+          );
+        };
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const activityMiddleware = () => next => card => {
+          if (card.activity.from.role === 'bot') {
+            return children => (
+              <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
+                {next(card)(children)}
+              </BotActivityDecorator>
+            );
+          }
+
+          return next(card);
+        };
+
+        window.ReactDOM.render(
+          <ReactWebChat
+            activityMiddleware={activityMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading

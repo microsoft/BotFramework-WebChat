@@ -53,53 +53,112 @@ Modify the Web Chat object by passing the timestamp into `renderWebChat`
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Configurable timestamp grouping</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Configurable timestamp grouping</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 0;
+      }
+
+      #webchat {
+        flex: 1;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+
+      #buttonBar {
+        display: flex;
+        flex-wrap: wrap;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 10px;
+      }
+
+      #buttonBar > a {
+        border: solid 2px #0063b1;
+        color: #0063b1;
+        font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 80%;
+        margin: 0 10px 10px 0;
+        padding: 5px 8px;
+        text-decoration: none;
+      }
+
+      #buttonBar > a.selected {
+        background-color: #0063b1;
+        color: White;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+
+    <p id="buttonBar">
+      <a href="?ts=default">Default grouping</a>
+      <a href="?ts=false">Don't show timestamp</a>
+      <a href="?ts=0">Don't group</a>
+      <a href="?ts=2000">Group by 2 seconds</a>
+      <a href="?ts=300000">Group by 5 minutes</a>
+    </p>
+
+    <script>
+      'use strict';
+
+      const groupTimestamp = new URLSearchParams(window.location.search).get('ts') || 'default';
+
+      document.querySelectorAll('#buttonBar > a').forEach(hyperlink => {
+        if (hyperlink.getAttribute('href') === `?ts=${groupTimestamp}`) {
+          hyperlink.className = 'selected';
         }
+      });
 
-        body {
-          margin: 0;
-        }
+      (async function() {
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script>
-        'use strict';
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'timestamp' } });
+          }
 
-+       const groupTimestamp = false;
+          return next(action);
+        });
 
-        (async function () {
-
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          const { token } = await res.json();
-
-          window.WebChat.renderWebChat({
+        window.WebChat.renderWebChat(
+          {
             directLine: window.WebChat.createDirectLine({ token }),
-+           styleOptions: {
-+             groupTimestamp
-+           }
-          }, document.getElementById('webchat'));
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+            styleOptions: {
+              groupTimestamp:
+                groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp
+            },
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
 
 # Further reading
