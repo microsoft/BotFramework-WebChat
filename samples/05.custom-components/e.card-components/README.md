@@ -118,7 +118,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
@@ -141,7 +141,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
   </head>
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel">
+    <script type="text/babel" data-presets="es2015.react,stage-3">
       const GitHubRepositoryAttachment = props => (
         <div style={{ fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif", margin: 20, textAlign: 'center' }}>
           <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true">

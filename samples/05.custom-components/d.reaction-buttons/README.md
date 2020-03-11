@@ -187,7 +187,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
   <head>
     <title>Web Chat: Decorate bot activity with upvote and downvote buttons</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
@@ -234,7 +234,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel">
+    <script type="text/babel" data-presets="es2015.react,stage-3">
       (async function() {
         'use strict';
 

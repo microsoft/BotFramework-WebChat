@@ -213,7 +213,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
   <head>
     <title>Web Chat: Password input activity</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
@@ -274,7 +274,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
 
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel">
+    <script type="text/babel" data-presets="es2015.react,stage-3">
       (async function() {
         'use strict';
 

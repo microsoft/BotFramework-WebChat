@@ -121,7 +121,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Customize activity status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
 
@@ -159,7 +159,7 @@ Here is the finished `index.html`:
 
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel">
+    <script type="text/babel" data-presets="es2015.react,stage-3">
       (async function() {
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
