@@ -1,0 +1,35 @@
+{
+  "name": "testharness",
+  "version": "0.0.0-0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel --out-dir lib src",
+    "build:webpack": "webpack-cli",
+    "prestart": "npm run build:babel",
+    "start": "concurrently --kill-others --names \"babel,webpack\" \"npm run start:babel\" \"npm run start:webpack\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start:webpack": "npm run build:webpack -- --watch"
+  },
+  "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/runtime": "^7.8.7",
+    "concurrently": "^5.1.0",
+    "core-js": "^3.6.4",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "expect": "^25.1.0",
+    "math-random": "^1.0.4",
+    "p-defer": "^3.0.0",
+    "simple-update-in": "^2.1.1"
+  }
+}

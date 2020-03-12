@@ -10,6 +10,7 @@ services:
     depends_on:
     - selenium-hub
     - webchat
+    - webchat2
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
@@ -23,6 +24,7 @@ services:
     depends_on:
     - selenium-hub
     - webchat
+    - webchat2
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
@@ -36,6 +38,7 @@ services:
     depends_on:
     - selenium-hub
     - webchat
+    - webchat2
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
@@ -49,6 +52,7 @@ services:
     depends_on:
     - selenium-hub
     - webchat
+    - webchat2
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
@@ -59,7 +63,7 @@ services:
     image: selenium/hub:3.141.59-zirconium
     container_name: selenium-hub
     ports:
-      - "4444:4444"
+    - "4444:4444"
 
   webchat:
     build:
@@ -67,3 +71,10 @@ services:
       dockerfile: Dockerfile-testharness
     ports:
     - "5080:80"
+
+  webchat2:
+    build:
+      context: ./
+      dockerfile: Dockerfile-testharness2
+    ports:
+    - "5081:80"

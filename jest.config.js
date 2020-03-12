@@ -50,8 +50,16 @@ module.exports = {
       }
     ]
   ],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup/preSetupTestFramework.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/__tests__/setup/preSetupTestFramework.js',
+    '<rootDir>/__tests__/setup/setupImageSnapshot.js',
+    '<rootDir>/__tests__/setup/setupTimeout.js',
+    '<rootDir>/__tests__/html/__jest__/setupPageProcessor.js'
+  ],
   testPathIgnorePatterns: [
+    '<rootDir>/__tests__/html/__assets__',
+    '<rootDir>/__tests__/html/__setup__',
+    '<rootDir>/__tests__/html/WebChatEnvironment.js',
     '<rootDir>/__tests__/setup/',
     '<rootDir>/packages/directlinespeech/__tests__/utilities/',
     '<rootDir>/packages/playground/',
