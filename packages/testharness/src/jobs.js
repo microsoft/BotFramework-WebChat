@@ -1,44 +1,48 @@
 import createDeferred from 'p-defer';
+
 import uniqueId from './utils/uniqueId';
 
 const actions = [];
-let nextPushDeferred;
 
 function post(action) {
   const deferred = createDeferred();
+  const id = uniqueId();
 
-  action = { ...action, deferred, id: uniqueId() };
-
-  actions.push(action);
-  nextPushDeferred && nextPushDeferred.resolve();
+  actions.push({ ...action, deferred, id });
 
   return deferred.promise;
 }
 
 function acquire() {
-  const [first] = actions.filter(action => !action.busy);
+  const [firstAction] = actions;
 
-  if (first) {
-    first.busy = true;
+  if (firstAction) {
+    const { id, payload, type } = firstAction;
 
-    return first;
+    return { id, payload, type };
   }
 }
 
 function resolve(id, result) {
-  const index = actions.findIndex(action => action.id === id);
-  const action = actions[index];
+  const [firstAction] = actions;
 
-  actions.splice(index, 1);
-  action.deferred.resolve(result);
+  if (!firstAction || id !== firstAction.id) {
+    throw new Error(`No jobs found with ID "${id}" to resolve. Got ${actions.map(({ id }) => id).join(', ')}`);
+  }
+
+  firstAction.deferred.resolve(result);
+  actions.shift();
 }
 
 function reject(id, error) {
-  const index = actions.findIndex(action => action.id === id);
-  const action = actions[index];
+  const [firstAction] = actions;
 
-  actions.splice(index, 1);
-  action.deferred.reject(error);
+  if (id !== firstAction.id) {
+    throw new Error(`No jobs found with ID "${id}" to reject. Got ${actions.map(({ id }) => id).join(', ')}`);
+  }
+
+  firstAction.deferred.reject(error);
+  actions.shift();
 }
 
 export { acquire, post, resolve, reject };

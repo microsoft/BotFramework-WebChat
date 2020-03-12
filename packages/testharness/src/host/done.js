@@ -1,10 +1,7 @@
 import { post } from '../jobs';
 
-export default async function done({ ignoreConsoleError = false } = {}) {
+export default async function done() {
   await post({
-    type: 'done',
-    payload: {
-      ignoreConsoleError
-    }
+    type: 'done'
   });
 }

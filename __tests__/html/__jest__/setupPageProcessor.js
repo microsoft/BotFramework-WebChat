@@ -1,11 +1,9 @@
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { join } from 'path';
+import createDeferred from 'p-defer';
 
 import { imageSnapshotOptions } from '../../constants.json';
-
-function sleep(durationInMS = 100) {
-  return new Promise(resolve => setTimeout(resolve, durationInMS));
-}
+import createJobObservable from './createJobObservable';
 
 const toMatchImageSnapshot = configureToMatchImageSnapshot({
   ...imageSnapshotOptions,
@@ -13,7 +11,7 @@ const toMatchImageSnapshot = configureToMatchImageSnapshot({
 });
 
 expect.extend({
-  async toRunToCompletion(driver) {
+  async toRunToCompletion(driver, { ignoreConsoleError = false, ignorePageError = false } = {}) {
     const webChatLoaded = await driver.executeScript(() => !!window.WebChat);
     const webChatTestLoaded = await driver.executeScript(() => !!window.WebChatTest);
 
@@ -31,40 +29,17 @@ expect.extend({
       );
     }
 
-    const abortPromise = new Promise(resolve =>
-      global.abortSignal.addEventListener('abort', () => resolve({ type: 'abort' }))
-    );
+    const jobObservable = createJobObservable(driver, { ignorePageError });
+    const pageResultDeferred = createDeferred();
 
-    let numConsoleError = 0;
+    const subscription = jobObservable.subscribe({
+      complete: async () => {
+        const numConsoleError = await driver.executeScript(
+          () => window.WebChatTest.getConsoleHistory().filter(({ level }) => level === 'error').length
+        );
 
-    for (;;) {
-      const result = await Promise.race([driver.executeScript(() => window.WebChatTest.jobs.acquire()), abortPromise]);
-
-      if (!result) {
-        await sleep(50);
-        continue;
-      }
-
-      const { id, type } = result;
-
-      if (type === 'abort') {
-        // Jest will complain if failing after teardown, saying "Caught error after test environment was torn down".
-        return { pass: true };
-      } else if (type === 'console') {
-        const { args, level } = result.payload;
-        const message = args.join(' ');
-
-        // Do not print Babel warning "You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/".
-        if (!~message.indexOf('in-browser Babel transformer')) {
-          console.log(`[${level}] ${message}`);
-        }
-
-        if (level === 'error') {
-          numConsoleError++;
-        }
-      } else if (type === 'done') {
-        if (!result.payload.ignoreConsoleError && numConsoleError) {
-          return {
+        if (!ignoreConsoleError && numConsoleError) {
+          pageResultDeferred.resolve({
             message: () =>
               this.utils.matcherHint('toRunToCompletion', undefined, undefined, {
                 comment:
@@ -73,31 +48,50 @@ expect.extend({
                 promise: this.promise
               }),
             pass: false
-          };
+          });
+        } else {
+          pageResultDeferred.resolve({
+            message: () =>
+              this.utils.matcherHint('toRunToCompletion', undefined, undefined, {
+                comment: payload.ignoreConsoleError
+                  ? 'run to completion and ignore any console.error'
+                  : 'run to completion without any console.error',
+                isNot: this.isNot,
+                promise: this.promise
+              }),
+            pass: true
+          });
         }
+      },
+      error: error => {
+        pageResultDeferred.reject(error);
+      },
+      next: async ({ deferred, job }) => {
+        try {
+          if (job.type === 'snapshot') {
+            const result = toMatchImageSnapshot.call(this, await driver.takeScreenshot());
 
-        return {
-          message: () =>
-            this.utils.matcherHint('toRunToCompletion', undefined, undefined, {
-              comment: result.payload.ignoreConsoleError
-                ? 'run to completion and ignore any console.error'
-                : 'run to completion without any console.error',
-              isNot: this.isNot,
-              promise: this.promise
-            }),
-          pass: true
-        };
-      } else if (type === 'error') {
-        throw new Error(`The page emitted an "error" event. ${result.payload.error}`);
-      } else if (type === 'snapshot') {
-        const result = toMatchImageSnapshot.call(this, await driver.takeScreenshot());
-
-        if (!result.pass) {
-          return result;
+            if (result.pass) {
+              deferred.resolve();
+            } else {
+              pageResultDeferred.resolve(result);
+              deferred.reject(new Error(typeof result.message === 'function' ? result.message() : result.message));
+            }
+          } else {
+            throw new Error(`Unknown job type "${job.type}".`);
+          }
+        } catch (err) {
+          deferred.reject(err);
         }
-
-        await driver.executeScript(id => window.WebChatTest.jobs.resolve(id), id);
       }
-    }
+    });
+
+    global.abortSignal.addEventListener('abort', () => pageResultDeferred.resolve({ pass: true }));
+
+    const result = await pageResultDeferred.promise;
+
+    subscription.unsubscribe();
+
+    return result;
   }
 });

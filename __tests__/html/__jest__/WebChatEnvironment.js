@@ -52,11 +52,14 @@ class WebChatEnvironment extends NodeEnvironment {
       }
 
       this.currentSessionId = (await driver.getSession()).getId();
+      this.currentDriver = driver;
 
       if (DOCKER) {
-        await driver.get(new URL(`?wd=1`, new URL(url, 'http://webchat2/')));
+        // For unknown reason, if we use ?wd=1, it will be removed.
+        // But when we use #wd=1, it kept.
+        await driver.get(new URL(`#wd=1`, new URL(url, 'http://webchat2/')));
       } else {
-        await driver.get(new URL(url, `http://localhost:${port}/`));
+        await driver.get(new URL(url, `http://localhost:${port}/`).href);
       }
 
       return { driver };
@@ -64,9 +67,19 @@ class WebChatEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    await super.teardown();
-
     this.abortController.abort();
+
+    if (this.currentDriver) {
+      const consoleHistory = await this.currentDriver.executeScript(() => window.WebChatTest.getConsoleHistory());
+
+      consoleHistory.forEach(({ args, level }) => {
+        const message = args.join(' ');
+
+        if (!~message.indexOf('in-browser Babel transformer')) {
+          console.log(`[${level}] ${message}`);
+        }
+      });
+    }
 
     if (this.currentSessionId) {
       // Using JSON Wire Protocol to kill Web Driver.
@@ -83,6 +96,8 @@ class WebChatEnvironment extends NodeEnvironment {
     }
 
     this.currentSessionId = null;
+
+    await super.teardown();
   }
 }
 

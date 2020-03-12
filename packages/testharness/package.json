@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "npm run build:babel && npm run build:webpack",
-    "build:babel": "babel --out-dir lib src",
+    "build:babel": "babel src --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,webpack\" \"npm run start:babel\" \"npm run start:webpack\"",

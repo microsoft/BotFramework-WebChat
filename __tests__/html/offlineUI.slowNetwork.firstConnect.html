@@ -17,9 +17,9 @@
     <script crossorigin="anonymous" src="https://unpkg.com/lolex@4/lolex.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      (async function() {
-        const { conditions, createStore, host, pageObjects, updateIn, timeouts, token } = window.WebChatTest;
+      const { conditions, createStore, host, pageObjects, updateIn, timeouts, token } = window.WebChatTest;
 
+      (async function() {
         function createDirectLineForTest(options) {
           // This part of code is running in the JavaScript VM in Chromium.
           // This variable must be declared within scope
@@ -74,7 +74,6 @@
 
         await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
         await pageObjects.wait(conditions.connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
-
         await host.snapshot();
 
         updateProps(props => updateIn(props, ['styleOptions', 'slowConnectionAfter'], () => 20000));
@@ -87,7 +86,11 @@
         await pageObjects.wait(conditions.connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
         await host.snapshot();
         await host.done();
-      })().catch(err => console.error(err));
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
     </script>
   </body>
 </html>

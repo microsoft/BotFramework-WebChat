@@ -16,9 +16,9 @@
     <div id="webchat"></div>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      (async function() {
-        const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
+      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
 
+      (async function() {
         const store = createStore({}, ({ dispatch }) => next => action => {
           if (
             action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' &&
@@ -53,8 +53,12 @@
         await pageObjects.wait(conditions.connectivityStatusShown(/render error/iu), timeouts.ui);
 
         await host.snapshot();
-        await host.done({ ignoreConsoleError: true });
-      })().catch(err => console.error(err));
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
     </script>
   </body>
 </html>

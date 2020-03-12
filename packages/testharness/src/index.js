@@ -10,16 +10,18 @@ import * as jobs from './jobs';
 import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import createStore, { getActionHistory, getState } from './utils/createStore';
+import pageError from './host/pageError';
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
-import subscribeConsole from './utils/subscribeConsole';
+import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
 
 export {
   conditions,
   createStore,
   expect,
   getActionHistory,
+  getConsoleHistory,
   getState,
   host,
   jobs,
@@ -32,9 +34,9 @@ export {
 
 const log = console.log.bind(console);
 
-function parseURLSearchParams(search) {
+function parseURLParams(search) {
   return search
-    .replace(/^\?/, '')
+    .replace(/^[#\?]/, '')
     .split('&')
     .reduce((params, keyValue) => {
       const [key, value] = keyValue.split('=');
@@ -49,7 +51,9 @@ function parseURLSearchParams(search) {
 }
 
 // If not running under WebDriver, we handle all jobs here.
-if (!('wd' in parseURLSearchParams(location.search))) {
+const webDriverMode = 'wd' in parseURLParams(location.hash);
+
+if (!webDriverMode) {
   runAsyncInterval(async () => {
     const job = jobs.acquire();
 
@@ -58,7 +62,7 @@ if (!('wd' in parseURLSearchParams(location.search))) {
 
       switch (type) {
         case 'console':
-          log(`WebChatTest: [${job.payload.type}] ${job.payload.args.join('\n')}`);
+          log(`WebChatTest: [${job.payload.level}] ${job.payload.args.join('\n')}`);
           break;
 
         case 'done':
@@ -79,14 +83,9 @@ if (!('wd' in parseURLSearchParams(location.search))) {
     }
   }, 100);
 } else {
-  window.addEventListener('error', ({ error }) => {
-    jobs.post({
-      type: 'error',
-      payload: { error: error && error + '' }
-    });
-  });
+  window.addEventListener('error', ({ error }) => jobs.post(pageError(error)));
 }
 
 subscribeConsole();
 
-console.log('Test harness loaded.');
+!webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');

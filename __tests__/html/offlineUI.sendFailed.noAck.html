@@ -17,21 +17,21 @@
     <script crossorigin="anonymous" src="https://unpkg.com/lolex@4/lolex.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      function allOutgoingMessagesFailed() {
-        return {
-          message: 'All outgoing messages to fail sending',
-          fn: () => {
-            const { activities } = WebChatTest.getState();
-
-            return activities
-              .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-              .every(({ channelData: { state } }) => state === 'send failed');
-          }
-        };
-      }
+      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
 
       (async function() {
-        const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
+        function allOutgoingMessagesFailed() {
+          return {
+            message: 'All outgoing messages to fail sending',
+            fn: () => {
+              const { activities } = WebChatTest.getState();
+
+              return activities
+                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
+                .every(({ channelData: { state } }) => state === 'send failed');
+            }
+          };
+        }
 
         function createDirectLineForTest(options) {
           const workingDirectLine = window.WebChat.createDirectLine(options);
@@ -93,7 +93,11 @@
 
         await host.snapshot();
         await host.done();
-      })().catch(err => console.error(err));
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
     </script>
   </body>
 </html>

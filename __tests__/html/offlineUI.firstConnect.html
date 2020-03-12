@@ -17,9 +17,9 @@
     <script crossorigin="anonymous" src="https://unpkg.com/lolex@4/lolex.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      (async function() {
-        const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
+      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
 
+      (async function() {
         function createDirectLineForTest(options) {
           const UNINITIALIZED = 0;
           const workingDirectLine = window.WebChat.createDirectLine(options);
@@ -58,7 +58,11 @@
 
         await host.snapshot();
         await host.done();
-      })().catch(err => console.error(err));
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
     </script>
   </body>
 </html>
