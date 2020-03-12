@@ -2,7 +2,7 @@ const { join } = require('path');
 
 module.exports = {
   entry: './lib/index',
-  mode: 'development',
+  mode: 'production',
   output: {
     filename: 'testharness.js',
     library: 'WebChatTest',
