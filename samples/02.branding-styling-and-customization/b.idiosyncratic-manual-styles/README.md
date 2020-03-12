@@ -109,6 +109,7 @@ Here is the finished `index.html`:
           bubbleBackground: 'rgba(0, 0, 255, .1)',
           bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
         });
+
         styleSet.textContent = Object.assign({}, styleSet.textContent, {
           fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
           fontWeight: 'bold'

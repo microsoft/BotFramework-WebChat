@@ -141,7 +141,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
   </head>
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel" data-presets="es2015.react,stage-3">
+    <script type="text/babel" data-presets="es2015,react,stage-3">
       const GitHubRepositoryAttachment = props => (
         <div style={{ fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif", margin: 20, textAlign: 'center' }}>
           <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true">

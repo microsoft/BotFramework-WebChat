@@ -159,7 +159,7 @@ Here is the finished `index.html`:
 
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel" data-presets="es2015.react,stage-3">
+    <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });

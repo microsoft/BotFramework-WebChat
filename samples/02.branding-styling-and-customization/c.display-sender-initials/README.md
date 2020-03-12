@@ -39,8 +39,8 @@ Add the initials for both the user and the bot. The new object should look like 
   const { token } = await res.json();
 - const styleOptions = {};
 + const styleOptions = {
-+  botAvatarInitials: 'BF',
-+  userAvatarInitials: 'WC'
++   botAvatarInitials: 'BF',
++   userAvatarInitials: 'WC'
 + };
 ```
 

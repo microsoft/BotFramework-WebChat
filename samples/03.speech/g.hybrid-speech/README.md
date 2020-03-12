@@ -60,10 +60,10 @@ Create two ponyfills, one from Speech Services and the other from Web Speech.
 Combine into one ponyfill the features you want to pull from Web Speech and Speech Services respectively
 
 ```diff
-…
-+ return options => {
-+   const speechServicesPonyfill = speechServicesPonyfillFactory(options);
-+   const webSpeechPonyfill = webSpeechPonyfillFactory(options);
+  …
++   return options => {
++     const speechServicesPonyfill = speechServicesPonyfillFactory(options);
++     const webSpeechPonyfill = webSpeechPonyfillFactory(options);
 +
 +   return {
 +     SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,

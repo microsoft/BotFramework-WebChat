@@ -131,7 +131,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
   </head>
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel" data-presets="es2015.react,stage-3">
+    <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
         'use strict';
 

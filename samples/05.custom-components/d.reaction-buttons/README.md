@@ -77,26 +77,26 @@ Next, build our CSS and apply class names to our component.
 Then, apply the style sheet to our React component.
 
 ```diff
-   const BotActivityDecorator = ({ children }) => {
-      return (
--        <div>
-+        <div className="botActivityDecorator">
--           <ul>
-+           <ul className="botActivityDecorator__buttonBar">
-               <li>
--                 <button>👍</button>
-+                 <button className="botActivityDecorator__button">👍</button>
-               </li>
-               <li>
--                 <button>👎</button>
-+                 <button className="botActivityDecorator__button">👎</button>
-               </li>
-            </ul>
+  const BotActivityDecorator = ({ children }) => {
+    return (
+-     <div>
++       <div className="botActivityDecorator">
+-         <ul>
++         <ul className="botActivityDecorator__buttonBar">
+            <li>
+-             <button>👍</button>
++             <button className="botActivityDecorator__button">👍</button>
+            </li>
+            <li>
+-             <button>👎</button>
++             <button className="botActivityDecorator__button">👎</button>
+            </li>
+          </ul>
 -           <div>{children}</div>
 +           <div className="botActivityDecorator__content">{children}</div>
-         </div>
-      );
-   };
+      </div>
+    );
+  };
 ```
 
 Then, add business logic to the component:
@@ -107,48 +107,48 @@ Then, add business logic to the component:
 The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostback` function.
 
 ```diff
--  const { ReactWebChat } = window.WebChat;
-+  const {
-+     hooks: { usePostActivity },
-+     ReactWebChat
-+  } = window.WebChat;
+- const { ReactWebChat } = window.WebChat;
++ const {
++   hooks: { usePostActivity },
++   ReactWebChat
++ } = window.WebChat;
 +
-+  const { useCallback } = window.React;
++ const { useCallback } = window.React;
 
--  const BotActivityDecorator = ({ children }) => {
-+  const BotActivityDecorator = ({ activityID, children }) => {
-+     const postActivity = usePostActivity();
+- const BotActivityDecorator = ({ children }) => {
++ const BotActivityDecorator = ({ activityID, children }) => {
++   const postActivity = usePostActivity();
 +
-+     const handleDownvoteButton = useCallback(() => {
-+        postActivity({
-+           type: 'messageReaction',
-+           reactionsAdded: [{ activityID, helpful: -1 }]
-+        });
-+     }, [activityID, postActivity]);
++   const handleDownvoteButton = useCallback(() => {
++     postActivity({
++       type: 'messageReaction',
++         reactionsAdded: [{ activityID, helpful: -1 }]
++     });
++   }, [activityID, postActivity]);
 +
-+     const handleUpvoteButton = useCallback(() => {
-+        postActivity({
-+           type: 'messageReaction',
-+           reactionsAdded: [{ activityID, helpful: 1 }]
-+        });
-+     }, [activityID, postActivity]);
++   const handleUpvoteButton = useCallback(() => {
++     postActivity({
++       type: 'messageReaction',
++       reactionsAdded: [{ activityID, helpful: 1 }]
++     });
++   }, [activityID, postActivity]);
 
-      return (
-         <div className="botActivityDecorator">
-            <ul className="botActivityDecorator__buttonBar">
-               <li>
--                 <button className="botActivityDecorator__button">👍</button>
-+                 <button className="botActivityDecorator__button" onClick={handleUpvoteButton}>👍</button>
-               </li>
-               <li>
--                 <button className="botActivityDecorator__button">👎</button>
-+                 <button className="botActivityDecorator__button" onClick={handleDownvoteButton}>👎</button>
-               </li>
-            </ul>
-            <div className="botActivityDecorator__content">{children}</div>
-         </div>
-      );
-   };
+    return (
+      <div className="botActivityDecorator">
+        <ul className="botActivityDecorator__buttonBar">
+          <li>
+-           <button className="botActivityDecorator__button">👍</button>
++           <button className="botActivityDecorator__button" onClick={handleUpvoteButton}>👍</button>
+          </li>
+          <li>
+-           <button className="botActivityDecorator__button">👎</button>
++           <button className="botActivityDecorator__button" onClick={handleDownvoteButton}>👎</button>
+          </li>
+        </ul>
+        <div className="botActivityDecorator__content">{children}</div>
+      </div>
+    );
+  };
 ```
 
 Next let's build the `activityMiddleware` that will filter which activities are being rendered with the new component, `BotActivityDecorator`.
@@ -170,12 +170,12 @@ const activityMiddleware = () => next => card => {
 Make sure `activityMiddleware` is passed into the the Web Chat component, and that's it.
 
 ```diff
-   window.ReactDOM.render(
-      <ReactWebChat
-+        activityMiddleware={activityMiddleware}
-         directLine={window.WebChat.createDirectLine({ token })}
-      />,
-      document.getElementById('webchat')
+  window.ReactDOM.render(
+    <ReactWebChat
++     activityMiddleware={activityMiddleware}
+      directLine={window.WebChat.createDirectLine({ token })}
+    />,
+    document.getElementById('webchat')
    );
 ```
 
@@ -234,7 +234,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
   <body>
     <div id="webchat" role="main"></div>
-    <script type="text/babel" data-presets="es2015.react,stage-3">
+    <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
         'use strict';
 

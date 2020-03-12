@@ -108,8 +108,8 @@ Next, the code to render Web Chat must be updated in the body. Note that MockBot
 +       }, document.getElementById('webchat'));
 +     })();
     </script>
-    …
   </body>
+  …
 ```
 
 ## Styling and Adding features

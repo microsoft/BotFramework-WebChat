@@ -56,7 +56,7 @@ Create a ponyfill factory from Speech Services.
 Then return a new ponyfill factory that will call the one from Speech Services, but partially return the result.
 
 ```diff
-…
+  …
 +   return options => {
 +     const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 +
@@ -65,8 +65,7 @@ Then return a new ponyfill factory that will call the one from Speech Services, 
 +       SpeechRecognition: speechServicesPonyfill.SpeechRecognition
 +     };
 +   };
-  };
-
+  …
 ```
 
 Finally, pass your new ponyfill factory into `renderWebChat`.

@@ -34,10 +34,10 @@ This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.f
 First, we want to add the `styleOptions` object to our `index.html` page. This object will be passed into Web Chat.
 
 ```diff
-…
-  const { token } = await res.json();
-+ const styleOptions = {};
-…
+  …
+    const { token } = await res.json();
++   const styleOptions = {};
+  …
 ```
 
 Add the images and (if desired) the initials for both the user and the bot. The new object should look like the following:
