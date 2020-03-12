@@ -1,9 +1,10 @@
 const { Builder } = require('selenium-webdriver');
 const { Options } = require('selenium-webdriver/chrome');
+const { relative } = require('path');
+const { URL } = require('url');
 const AbortController = require('abort-controller');
 const fetch = require('node-fetch');
 const NodeEnvironment = require('jest-environment-node');
-const { URL } = require('url');
 
 const hostServe = require('./hostServe');
 const indent = require('./indent');
@@ -16,6 +17,7 @@ class WebChatEnvironment extends NodeEnvironment {
     super(config, context);
 
     this.abortController = new AbortController();
+    this.relativeTestPath = relative(process.cwd(), context.testPath);
   }
 
   async setup() {
@@ -55,13 +57,11 @@ class WebChatEnvironment extends NodeEnvironment {
       this.currentSessionId = (await driver.getSession()).getId();
       this.currentDriver = driver;
 
-      if (DOCKER) {
-        // For unknown reason, if we use ?wd=1, it will be removed.
-        // But when we use #wd=1, it kept.
-        await driver.get(new URL(`#wd=1`, new URL(url, 'http://webchat2/')));
-      } else {
-        await driver.get(new URL(url, `http://localhost:${port}/`).href);
-      }
+      // For unknown reason, if we use ?wd=1, it will be removed.
+      // But when we use #wd=1, it kept.
+      const absoluteURL = DOCKER ? new URL(`#wd=1`, new URL(url, 'http://webchat2/')):new URL(url, `http://localhost:${port}/`);
+
+      await driver.get(absoluteURL);
 
       return { driver };
     };
@@ -73,19 +73,25 @@ class WebChatEnvironment extends NodeEnvironment {
     if (this.currentDriver) {
       const consoleHistory = await this.currentDriver.executeScript(() => window.WebChatTest.getConsoleHistory());
 
+      const lines = [];
+
       consoleHistory.forEach(({ args, level }) => {
         const message = args.join(' ');
 
         if (!~message.indexOf('in-browser Babel transformer')) {
-          console.log(indent(`📃 [${level}] ${message}`));
+          lines.push(`📃 [${level}] ${message}`);
         }
       });
 
-      const currentConditionMessage = await this.currentDriver.executeScript(() => window.WebChatTest.currentCondition && window.WebChatTest.currentCondition.message);
+      const currentConditionMessage = await this.currentDriver.executeScript(
+        () => window.WebChatTest.currentCondition && window.WebChatTest.currentCondition.message
+      );
 
       if (currentConditionMessage) {
-        console.log(indent(`\n❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`));
+        lines.push(`\n❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`);
       }
+
+      lines.length && console.log(indent([`💬 ${this.relativeTestPath}`, indent(lines.join('\n'), 2), ''].join('\n')));
     }
 
     if (this.currentSessionId) {
