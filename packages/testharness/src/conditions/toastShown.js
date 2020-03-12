@@ -1,3 +1,5 @@
+import getToastElements from '../elements/toasts';
+
 export default function toastShown(message) {
   const conditionMessage =
     typeof message === 'number'
@@ -11,9 +13,7 @@ export default function toastShown(message) {
   return {
     message: conditionMessage,
     fn: () => {
-      const targetMessages = [].map.call(document.querySelectorAll(`.webchat__toaster__listItem`), ({ innerText }) =>
-        innerText.trim()
-      );
+      const targetMessages = [].map.call(getToastElements(), ({ innerText }) => innerText.trim());
 
       if (typeof message === 'number') {
         return targetMessages.length === message;

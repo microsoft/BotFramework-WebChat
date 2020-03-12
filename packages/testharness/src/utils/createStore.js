@@ -1,5 +1,5 @@
 let actionHistory;
-let lastStore;
+let activeStore;
 
 function concatMiddleware(...middlewares) {
   return options => {
@@ -23,7 +23,7 @@ export default function(initialState = {}, ...middleware) {
     initialState,
     concatMiddleware(store => {
       actionHistory = [];
-      lastStore = store;
+      activeStore = store;
 
       return next => action => {
         actionHistory.push(action);
@@ -32,6 +32,14 @@ export default function(initialState = {}, ...middleware) {
       };
     }, ...middleware)
   );
+}
+
+function dispatch(...args) {
+  if (!activeStore) {
+    throw new Error('WebChatTest: Please use "window.WebChatTest.createStore" when initializing Web Chat.');
+  }
+
+  return activeStore.dispatch(...args);
 }
 
 function getActionHistory() {
@@ -43,11 +51,11 @@ function getActionHistory() {
 }
 
 function getState() {
-  if (!lastStore) {
+  if (!activeStore) {
     throw new Error('WebChatTest: Please use "window.WebChatTest.createStore" when initializing Web Chat.');
   }
 
-  return lastStore.getState();
+  return activeStore.getState();
 }
 
-export { getActionHistory, getState };
+export { dispatch, getActionHistory, getState };

@@ -6,11 +6,12 @@ const AbortController = require('abort-controller');
 const fetch = require('node-fetch');
 const NodeEnvironment = require('jest-environment-node');
 
+const { browserName } = require('../../constants.json');
 const hostServe = require('./hostServe');
 const indent = require('./indent');
 const serveJSON = require('../serve.json');
 
-const DOCKER = true;
+const DOCKER = browserName === 'chrome-docker';
 
 class WebChatEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -59,7 +60,9 @@ class WebChatEnvironment extends NodeEnvironment {
 
       // For unknown reason, if we use ?wd=1, it will be removed.
       // But when we use #wd=1, it kept.
-      const absoluteURL = DOCKER ? new URL(`#wd=1`, new URL(url, 'http://webchat2/')):new URL(url, `http://localhost:${port}/`);
+      const absoluteURL = DOCKER
+        ? new URL(`#wd=1`, new URL(url, 'http://webchat2/'))
+        : new URL(url, `http://localhost:${port}/`);
 
       await driver.get(absoluteURL);
 
@@ -91,7 +94,7 @@ class WebChatEnvironment extends NodeEnvironment {
         lines.push(`\n❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`);
       }
 
-      lines.length && console.log(indent([`💬 ${this.relativeTestPath}`, indent(lines.join('\n'), 2), ''].join('\n')));
+      lines.length && console.log(indent([`💬 ${this.relativeTestPath}`, indent(lines.join('\n'), 2)].join('\n')));
     }
 
     if (this.currentSessionId) {

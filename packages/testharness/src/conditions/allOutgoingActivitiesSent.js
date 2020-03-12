@@ -1,12 +1,10 @@
-import { getState } from '../utils/createStore';
+import getActivities from '../pageObjects/getActivities';
 
 export default function allOutgoingActivitiesSent() {
   return {
     message: 'all outgoing activities to be sent',
     fn: () => {
-      const { activities } = getState();
-
-      return activities
+      return getActivities()
         .filter(({ from: { role } }) => role === 'user')
         .every(({ channelData: { state } }) => state === 'sent');
     }

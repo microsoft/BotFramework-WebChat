@@ -1,4 +1,4 @@
-import { getActionHistory } from '../utils/createStore';
+import getActionHistory from '../pageObjects/internal/getActionHistory';
 
 export default function actionDispatched(type) {
   return {

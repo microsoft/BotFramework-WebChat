@@ -1,4 +1,5 @@
 {
+  "browserName": "chrome-docker",
   "imageSnapshotOptions": {
     "customDiffConfig": {
       "threshold": 0.14

@@ -1,4 +1,4 @@
-import getSendBoxTextBox from './getSendBoxTextBox';
+import getSendBoxTextBoxElement from '../elements/sendBoxTextBox';
 import sleep from '../utils/sleep';
 
 const { Simulate } = window.ReactTestUtils;
@@ -28,7 +28,7 @@ async function sendKeys(element, ...args) {
 }
 
 export default async function typeOnSendBox(...args) {
-  const textBox = getSendBoxTextBox();
+  const textBox = getSendBoxTextBoxElement();
 
   await sendKeys(textBox, ...args);
 }

@@ -23,13 +23,11 @@
         function allOutgoingMessagesFailed() {
           return {
             message: 'All outgoing messages to fail sending',
-            fn: () => {
-              const { activities } = WebChatTest.getState();
-
-              return activities
+            fn: () =>
+              pageObjects
+                .getActivities()
                 .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed');
-            }
+                .every(({ channelData: { state } }) => state === 'send failed')
           };
         }
 

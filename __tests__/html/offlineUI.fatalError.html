@@ -23,7 +23,8 @@
           if (
             action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' &&
             action.payload.activity &&
-            action.payload.activity.text === 'error'
+            action.payload.activity.from.role === 'bot' &&
+            action.payload.activity.type === 'message'
           ) {
             // We are dispatching an invalid action that would cause Web Chat core to fail, producing a fatal error.
             dispatch({

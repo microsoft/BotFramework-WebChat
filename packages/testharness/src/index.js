@@ -1,15 +1,14 @@
-// import '@babel/runtime';
-
 import expect from 'expect';
 import updateIn from 'simple-update-in';
 
 import { timeouts } from './constants';
 import * as conditions from './conditions/index';
+import * as elements from './elements/index';
 import * as host from './host/index';
 import * as jobs from './jobs';
 import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
-import createStore, { getActionHistory, getState } from './utils/createStore';
+import createStore, { getActionHistory } from './utils/createStore';
 import pageError from './host/pageError';
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
@@ -19,10 +18,10 @@ import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subsc
 export {
   conditions,
   createStore,
+  elements,
   expect,
   getActionHistory,
   getConsoleHistory,
-  getState,
   host,
   jobs,
   pageObjects,

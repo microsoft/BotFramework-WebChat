@@ -1,3 +1,5 @@
+import getActivityElements from '../elements/activities';
+
 export default function minNumActivitiesShown(numActivities) {
   return {
     message: `${numActivities} activities is shown`,
@@ -7,7 +9,7 @@ export default function minNumActivitiesShown(numActivities) {
       // This activity is invisible and should not count towards "minNumActivitiesShown".
 
       const numActivitiesShown = [].reduce.call(
-        document.querySelectorAll('[role="listitem"]'),
+        getActivityElements(),
         (numActivitiesShown, child) => numActivitiesShown + (child.children.length ? 1 : 0),
         0
       );

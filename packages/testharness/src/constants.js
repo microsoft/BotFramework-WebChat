@@ -11,7 +11,6 @@ const timeouts = {
   navigation: 10000,
   postActivity: 30000,
   scrollToBottom: 2000,
-  test: 60000,
   ui: 1000
 };
 

@@ -1,6 +1,6 @@
 const CSS_SELECTOR = '[role="form"] > * > form > input[type="text"]';
 
-export default function getSendBoxTextBox() {
+export default function sendBoxTextBox() {
   return document.querySelector(CSS_SELECTOR);
 }
 

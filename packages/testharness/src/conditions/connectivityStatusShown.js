@@ -1,4 +1,4 @@
-import getConnectivityStatus from '../pageObjects/getConnectivityStatus';
+import getConnectivityStatusElement from '../elements/connectivityStatus';
 
 export default function connectivityStatusShown(message) {
   return {
@@ -7,7 +7,7 @@ export default function connectivityStatusShown(message) {
         ? `for connectivity status that match ${message}`
         : `for connectivity status "${message}"`,
     fn: async () => {
-      const connectivityStatus = getConnectivityStatus();
+      const connectivityStatus = getConnectivityStatusElement();
 
       if (!connectivityStatus) {
         return false;
