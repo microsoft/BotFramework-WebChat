@@ -6,6 +6,7 @@ const NodeEnvironment = require('jest-environment-node');
 const { URL } = require('url');
 
 const hostServe = require('./hostServe');
+const indent = require('./indent');
 const serveJSON = require('../serve.json');
 
 const DOCKER = true;
@@ -76,9 +77,15 @@ class WebChatEnvironment extends NodeEnvironment {
         const message = args.join(' ');
 
         if (!~message.indexOf('in-browser Babel transformer')) {
-          console.log(`[${level}] ${message}`);
+          console.log(indent(`📃 [${level}] ${message}`));
         }
       });
+
+      const currentConditionMessage = await this.currentDriver.executeScript(() => window.WebChatTest.currentCondition && window.WebChatTest.currentCondition.message);
+
+      if (currentConditionMessage) {
+        console.log(indent(`\n❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`));
+      }
     }
 
     if (this.currentSessionId) {
