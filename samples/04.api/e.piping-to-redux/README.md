@@ -57,27 +57,22 @@ if (color) {
 
 > This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
 
-Here is `dispatchIncomingActivityMiddleware` with differences from [04.api/j.redux-actions](./../j.redux-actions) highlighted:
+Here is `dispatchIncomingActivityMiddleware`:
 
-```diff
-  export default function (dispatch) {
-    return () => next => action => {
-      if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-        const { activity } = action.payload;
+```js
+export default function(dispatch) {
+  return () => next => action => {
+    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+      const { activity } = action.payload;
 
-        if (
-+         activity.type === 'event'
-+         && activity.from.role === 'bot'
-+         && activity.name === 'redux action'
-        ) {
-  +       dispatch(activity.value);
-        }
+      if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
+        dispatch(activity.value);
       }
+    }
 
-      return next(action);
-    };
-  }
-
+    return next(action);
+  };
+}
 ```
 
 The next part of our focus is in the `redux` directory. Note that in `store.js`, we are building a new store with our additional reducer from `reducer.js`.
@@ -124,15 +119,15 @@ Below are the completed `.js` files, with the difference after create-react-app 
 
   class App extends React.Component {
     render() {
-  +   const { props: {
-  +     backgroundColor,
-  +     dispatch
-  +   } } = this;
++     const { props: {
++       backgroundColor,
++       dispatch
++     } } = this;
 
       return (
-  +    <div id="app" style={{ backgroundColor }}>
-  +       <ReactWebChat appDispatch={ dispatch } />
-  +     </div>
++      <div id="app" style={{ backgroundColor }}>
++         <ReactWebChat appDispatch={ dispatch } />
++       </div>
       )
     }
   }
