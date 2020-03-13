@@ -145,11 +145,7 @@ Here is the finished `index.html`:
         async function createSpeechRecognitionOnlyPonyfillFactory() {
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
             {
-              credentials: fetchSpeechServicesCredentials,
-
-              authorizationToken: () =>
-                fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
-              region: fetchSpeechServicesCredentials().then(({ region }) => region)
+              credentials: fetchSpeechServicesCredentials
             }
           );
 

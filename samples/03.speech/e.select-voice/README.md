@@ -109,11 +109,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
         });
         const { token } = await directLineTokenResponse.json();
         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          credentials: fetchSpeechServicesCredentials,
-
-          authorizationToken: () =>
-            fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
-          region: fetchSpeechServicesCredentials().then(({ region }) => region)
+          credentials: fetchSpeechServicesCredentials
         });
 
         window.WebChat.renderWebChat(

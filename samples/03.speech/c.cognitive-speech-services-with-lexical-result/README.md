@@ -32,8 +32,8 @@ The main change you will need to make, regardless of whether you are using the s
   const { region, token: authorizationToken } = await res.json();
 
   webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+   authorizationToken: fetchSpeechServicesToken,
-+   region: await fetchSpeechServicesRegion()
+-   credentials: fetchSpeechServicesCredentials
++   credentials: fetchSpeechServicesCredentials,
 +   textNormalization: 'lexical'
   });
 ```

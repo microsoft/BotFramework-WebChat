@@ -95,11 +95,7 @@ Cognitive Services Speech Services has published a new API to provide speech rec
         const { token } = await res.json();
 
         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          credentials: fetchSpeechServicesCredentials,
-
-          authorizationToken: () =>
-            fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
-          region: fetchSpeechServicesCredentials().then(({ region }) => region)
+          credentials: fetchSpeechServicesCredentials
         });
 
         window.WebChat.renderWebChat(
