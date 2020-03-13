@@ -4,7 +4,7 @@
 
 describe('notification toast', () => {
   test('should show privacy policy', async () => {
-    const { driver } = await loadPage('toast.html');
+    const { driver } = await loadHTMLTest('toast.html');
 
     await expect(driver).resolves.toRunToCompletion();
   });
