@@ -149,10 +149,7 @@ Here is the finished `index.html`:
         async function createHybridPonyfillFactory({ credentials }) {
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
             {
-              credentials,
-              authorizationToken: () =>
-                fetchSpeechServicesCredentials().then(({ authorizationToken }) => authorizationToken),
-              region: fetchSpeechServicesCredentials().then(({ region }) => region)
+              credentials
             }
           );
 
