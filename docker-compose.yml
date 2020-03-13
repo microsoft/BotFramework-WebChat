@@ -64,7 +64,6 @@ services:
     container_name: selenium-hub
     environment:
     - GRID_BROWSER_TIMEOUT=60
-    - GRID_NEW_SESSION_WAIT_TIMEOUT=10
     - GRID_TIMEOUT=60
     ports:
     - "4444:4444"

@@ -7,7 +7,8 @@ module.exports = {
     '!<rootDir>/packages/playground/**',
     '!<rootDir>/samples/**'
   ],
-  coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
+  coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
+  // coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
   globals: {
     npm_package_version: '0.0.0-0.jest'
   },
@@ -54,6 +55,7 @@ module.exports = {
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTimeout.js',
+    '<rootDir>/__tests__/html/__jest__/setupLoadHTMLTest.js',
     '<rootDir>/__tests__/html/__jest__/setupPageProcessor.js'
   ],
   testPathIgnorePatterns: [

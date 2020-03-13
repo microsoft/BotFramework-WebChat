@@ -4,7 +4,7 @@
 
 describe('offline UI', () => {
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
-    const { driver } = await loadPage('offlineUI.sendFailed.notSend.html');
+    const { driver } = await loadHTMLTest('offlineUI.sendFailed.notSend.html');
 
     await expect(driver).resolves.toRunToCompletion();
   });

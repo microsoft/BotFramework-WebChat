@@ -4,7 +4,7 @@
 
 describe('offline UI', () => {
   test('should display the "Connecting..." connectivity status when connecting for the first time', async () => {
-    const { driver } = await loadPage('offlineUI.firstConnect.html');
+    const { driver } = await loadHTMLTest('offlineUI.firstConnect.html');
 
     await expect(driver).resolves.toRunToCompletion();
   });
