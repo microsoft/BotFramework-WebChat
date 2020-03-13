@@ -80,9 +80,7 @@ Here is the finished `index.html`:
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token }),
-
             sendTypingIndicator: true,
-
             store
           },
           document.getElementById('webchat')

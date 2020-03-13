@@ -118,7 +118,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
