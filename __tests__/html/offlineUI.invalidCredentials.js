@@ -3,9 +3,6 @@
  */
 
 describe('offline UI', () => {
-  test('should show "unable to connect" UI when credentials are incorrect', async () => {
-    const { driver } = await loadHTMLTest('offlineUI.invalidCredentials.html');
-
-    await expect(driver).resolves.toRunToCompletion();
-  });
+  test('should show "unable to connect" UI when credentials are incorrect', () =>
+    runHTMLTest('offlineUI.invalidCredentials.html'));
 });

@@ -3,9 +3,6 @@
  */
 
 describe('offline UI', () => {
-  test('should show "Taking longer than usual to connect" UI when reconnection is slow', async () => {
-    const { driver } = await loadHTMLTest('offlineUI.slowNetwork.reconnect.html');
-
-    await expect(driver).resolves.toRunToCompletion();
-  });
+  test('should show "Taking longer than usual to connect" UI when reconnection is slow', () =>
+    runHTMLTest('offlineUI.slowNetwork.reconnect.html'));
 });

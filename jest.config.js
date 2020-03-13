@@ -55,8 +55,7 @@ module.exports = {
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTimeout.js',
-    '<rootDir>/__tests__/html/__jest__/setupLoadHTMLTest.js',
-    '<rootDir>/__tests__/html/__jest__/setupPageProcessor.js'
+    '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js'
   ],
   testPathIgnorePatterns: [
     '<rootDir>/__tests__/html/assets',
