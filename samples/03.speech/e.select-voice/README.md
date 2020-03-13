@@ -56,7 +56,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
   <head>
     <title>Web Chat: Selecting voice</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script origin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
