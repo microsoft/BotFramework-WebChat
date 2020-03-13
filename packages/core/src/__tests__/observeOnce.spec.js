@@ -16,9 +16,7 @@ describe('observeOnce', () => {
   beforeEach(() => {
     unsubscribe = jest.fn();
     observable = {
-      subscribe: jest.fn((...args) => {
-        const { complete, error, next } = args;
-
+      subscribe: jest.fn(({ complete, error, next }) => {
         onComplete = complete;
         onError = error;
         onNext = next;
