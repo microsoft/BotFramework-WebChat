@@ -68,6 +68,7 @@ Finally, make sure the `styleOptions` object is passed into Web Chat, like so:
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -120,6 +121,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

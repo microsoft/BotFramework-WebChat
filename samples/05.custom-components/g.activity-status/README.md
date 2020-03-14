@@ -115,6 +115,7 @@ Lastly, set the CSS so the customized timestamp looks fleshed out.
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -205,6 +206,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

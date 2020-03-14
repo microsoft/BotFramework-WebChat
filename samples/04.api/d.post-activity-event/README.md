@@ -50,6 +50,7 @@ Finally, let's connect the button to Web Chat by adding an event listener and di
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -111,6 +112,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

@@ -40,6 +40,7 @@ The `index.html` page in the migration directory has two main goals.
 
 We'll start by using our old v3 `index.html` as our starting point.
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -66,6 +67,7 @@ We'll start by using our old v3 `index.html` as our starting point.
    </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 > This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
@@ -156,7 +158,8 @@ Finally, we will add basic styling since there is no longer a stylesheet include
 
 Here is the finished `index.html`:
 
-```js
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
@@ -199,6 +202,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

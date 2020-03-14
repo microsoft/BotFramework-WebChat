@@ -181,6 +181,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -309,6 +310,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

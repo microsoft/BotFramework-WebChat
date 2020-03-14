@@ -30,6 +30,7 @@ In this sample, we will build a new React component that will be shown when we r
 Let's start by building the React component called `PasswordInputActivity`.
 This component will render a simple form that asks the user to input their Two-Factor Authentication code.
 
+<!-- prettier-ignore-start -->
 ```jsx
 const PasswordInputActivity = () => {
    return (
@@ -48,9 +49,11 @@ const PasswordInputActivity = () => {
 };
 }
 ```
+<!-- prettier-ignore-end -->
 
 Next, build the CSS and apply class names to the component.
 
+<!-- prettier-ignore-start -->
 ```css
 .passwordInput {
    margin: 10px;
@@ -89,6 +92,7 @@ Next, build the CSS and apply class names to the component.
    color: White;
 }
 ```
+<!-- prettier-ignore-end -->
 
 Then, apply the style sheet to our React component.
 
@@ -208,6 +212,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -362,6 +367,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

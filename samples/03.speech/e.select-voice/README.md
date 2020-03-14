@@ -50,6 +50,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -131,6 +132,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

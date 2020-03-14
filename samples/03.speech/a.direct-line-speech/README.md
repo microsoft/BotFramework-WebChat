@@ -122,6 +122,7 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -181,6 +182,7 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

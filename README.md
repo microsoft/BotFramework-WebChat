@@ -64,6 +64,7 @@ You can use the full, typical Web Chat package (called full-feature bundle) that
 
 Here is how how you can add Web Chat control to your website:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html>
@@ -107,6 +108,7 @@ Here is how how you can add Web Chat control to your website:
    </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
 

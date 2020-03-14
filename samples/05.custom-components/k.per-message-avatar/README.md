@@ -63,6 +63,7 @@ The component supports two online status: `"online"` and `"busy"`.
 
 Then, add the stylesheet for the online status icon:
 
+<!-- prettier-ignore-start -->
 ```css
 .app__avatarWithOnlineStatus {
    display: flex;
@@ -89,6 +90,7 @@ Then, add the stylesheet for the online status icon:
    background-color: Red;
 }
 ```
+<!-- prettier-ignore-end -->
 
 ### Create an avatar middleware
 
@@ -199,19 +201,23 @@ The second part of this sample will show how to customize the avatar using a rec
 
 First, add a `<PortraitAvatar>` component, which houses the rectangular avatar image. This component will show different avatar images for bot and user.
 
+<!-- prettier-ignore-start -->
 ```js
 const PortraitAvatar = ({ fromUser }) => {
    return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
 };
 ```
+<!-- prettier-ignore-end -->
 
 Along with its stylesheet:
 
+<!-- prettier-ignore-start -->
 ```css
 .app__portraitAvatar {
    border-radius: 4px;
 }
 ```
+<!-- prettier-ignore-end -->
 
 Lastly, modify the middleware to use the new `<PortraitAvatar>`:
 
@@ -238,6 +244,7 @@ Lastly, modify the middleware to use the new `<PortraitAvatar>`:
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -361,6 +368,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

@@ -29,7 +29,8 @@ This sample shows how to replace Web Chat's store to clear the conversation.
 
 This sample demonstrates how to clear the conversation data and start a new conversation with the user after the conversation has sat idle for a set time. To accomplish this, we created a custom hook - `useTimer` - that takes a callback as a parameter, which is called when the timer expires, and returns an array containing the time remaining in milliseconds - `timeRemaining` - and a method to set the time remaining - `setTimeRemaining`.
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 import { useEffect, useState } from 'react';
 
 export default function useTimer(fn, step = 1000) {
@@ -50,10 +51,12 @@ export default function useTimer(fn, step = 1000) {
    return [timeRemaining, setTimeRemaining];
 }
 ```
+<!-- prettier-ignore-end -->
 
 We also created a custom store middleware that resets the timer by calling `setTimeRemaining` with the default time interval when the user submits the send box.
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 setStore(
    createStore({}, ({ dispatch }) => next => action => {
       if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
@@ -73,10 +76,12 @@ setStore(
    })
 );
 ```
+<!-- prettier-ignore-end -->
 
 If the user stops participating in the conversation and the timer expires, we will replace the store to clear the conversation data. However, when the store is replaced, Web Chat dispatches a `'DIRECT_LINE/DISCONNECT'`, so we also need to request a new token. The `initConversation` method handles both replacing the custom store and requesting a new Direct Line token to start a new conversation with the bot. This function is passed to the `useTimer` hook so the conversation will be restarted when the timer expires.
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 const initConversation = useCallback(() => {
    setStore(
       createStore({}, ({ dispatch }) => next => action => {
@@ -109,12 +114,14 @@ useEffect(initConversation, []);
 
 const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
 ```
+<!-- prettier-ignore-end -->
 
 ## Completed Code
 
 Here is the finished `App.js`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 
@@ -169,6 +176,8 @@ function App() {
 
 export default App;
 ```
+
+<!-- prettier-ignore-end -->
 
 # Further reading
 

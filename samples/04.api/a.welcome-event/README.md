@@ -52,6 +52,7 @@ if (context.activity.name === 'webchat/join') {
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -109,6 +110,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

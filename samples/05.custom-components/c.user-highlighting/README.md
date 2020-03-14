@@ -48,6 +48,7 @@ First, let's style our new containers using glamor. The container for activities
 
 Next, create the `activityMiddleware` which will be passed into the bot. We will return the content of the activity with a new wrapper that will display our new classes when the correct criterion are met.
 
+<!-- prettier-ignore-start -->
 ```js
 const activityMiddleware = () => next => card => {
   return children => (
@@ -57,6 +58,7 @@ const activityMiddleware = () => next => card => {
   );
 };
 ```
+<!-- prettier-ignore-end -->
 
 Since we know we want to filter by the role value in the activity, we will use a ternary statement to differentiate between `'user'` and the bot. That check should look be: `card.activity.from.role`
 
@@ -88,6 +90,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -162,6 +165,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

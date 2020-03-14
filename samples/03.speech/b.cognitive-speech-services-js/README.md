@@ -36,6 +36,7 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 
 ### Using authorization token
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -112,6 +113,7 @@ Cognitive Services Speech Services has published a new API to provide speech rec
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

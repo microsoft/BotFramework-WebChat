@@ -49,6 +49,7 @@ Note that this is the component that builds up the other components we will crea
 
 `useEffect` and `useState` hooks are used to create the Direct Line Speech adapter set asynchronously. After the adapter set are created, they will be used to create the container.
 
+<!-- prettier-ignore-start -->
 ```jsx
 const [directLineSpeechAdapters, setDirectLineSpeechAdapters] = useState();
 
@@ -69,11 +70,13 @@ return (
    )
 );
 ```
+<!-- prettier-ignore-end -->
 
 ## `SmartDisplay.js`
 
 [`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user clicks on the microphone button, it will mark the last bot activity as read.
 
+<!-- prettier-ignore-start -->
 ```jsx
 const SmartDisplay = () => {
    const [lastBotActivity] = useLastBotActivity();
@@ -94,11 +97,13 @@ const SmartDisplay = () => {
    );
 };
 ```
+<!-- prettier-ignore-end -->
 
 ## `Clock.js`
 
 [`Clock.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/Clock.js) will set up the clock. The time will be updated every second using `useInterval` hook, and forecast fetched from https://api.weather.gov/ on initial render. Other notification icons are dummy.
 
+<!-- prettier-ignore-start -->
 ```jsx
 function useInterval(fn, intervalMS = 1000) {
    useEffect(() => {
@@ -148,6 +153,7 @@ const Clock = () => {
    );
 };
 ```
+<!-- prettier-ignore-end -->
 
 ## `MicrophoneButton.js`
 
@@ -161,6 +167,7 @@ const Clock = () => {
 
 The `MicrophoneButton.js` leveraged logic from various Web Chat hooks, which are also used internally by Web Chat to drive its standard components.
 
+<!-- prettier-ignore-start -->
 ```jsx
 const CustomMicrophoneButton = ({ onClick }) => {
    const [interimsVisible] = useSendBoxSpeechInterimsVisible();
@@ -183,11 +190,13 @@ const CustomMicrophoneButton = ({ onClick }) => {
    );
 };
 ```
+<!-- prettier-ignore-end -->
 
 ## `SpeechInterims.js`
 
 [`SpeechInterims.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/SpeechInterims.js) formats and shows speech interims by the user. The interims could come in multiple parts.
 
+<!-- prettier-ignore-start -->
 ```js
 const CustomDictationInterims = () => {
    const [dictateInterims] = useDictateInterims();
@@ -203,6 +212,7 @@ const CustomDictationInterims = () => {
    );
 };
 ```
+<!-- prettier-ignore-end -->
 
 ## `BotResponse.js`
 
@@ -213,6 +223,7 @@ const CustomDictationInterims = () => {
 -  Using [`react-film`](https://npmjs.com/package/react-film) for the carousel of attachments
 -  Using [`<SpeakActivity>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Activity/Speak.js) for synthesizing the bot response as speech
 
+<!-- prettier-ignore-start -->
 ```jsx
 const BotResponse = ({ lastReadActivityID }) => {
    const [interimsVisible] = useSendBoxSpeechInterimsVisible();
@@ -243,6 +254,7 @@ const BotResponse = ({ lastReadActivityID }) => {
    );
 };
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

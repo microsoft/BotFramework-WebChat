@@ -388,6 +388,7 @@ export default App;
 
 Completed `MinimizableWebChat.js`
 
+<!-- prettier-ignore-start -->
 ```jsx
 import React from 'react';
 import { createStore, createStyleSet } from 'botframework-webchat';
@@ -494,9 +495,11 @@ export default class extends React.Component {
    }
 }
 ```
+<!-- prettier-ignore-end -->
 
 Completed `WebChat.js`
 
+<!-- prettier-ignore-start -->
 ```jsx
 import memoize from 'memoize-one';
 import React from 'react';
@@ -547,6 +550,7 @@ export default class extends React.Component {
    }
 }
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

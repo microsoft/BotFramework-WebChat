@@ -76,6 +76,7 @@ Then, register a custom component to override the existing typing indicator:
 
 The `activeTyping` argument is a map of participants who are actively typing:
 
+<!-- prettier-ignore-start -->
 ```js
 {
   mockbot: {
@@ -92,6 +93,7 @@ The `activeTyping` argument is a map of participants who are actively typing:
   }
 }
 ```
+<!-- prettier-ignore-end -->
 
 `start` is the time when Web Chat receive the typing indicator from this participant. `end` is the time when the typing indicator should be hidden because the participant stopped typing, but did not send their message.
 
@@ -101,6 +103,7 @@ When a message is received from a participant who is actively typing, their entr
 
 Add the following CSS for styling the typing indicator:
 
+<!-- prettier-ignore-start -->
 ```css
 .webchat__typingIndicator {
    font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
@@ -108,11 +111,13 @@ Add the following CSS for styling the typing indicator:
    padding: 10px;
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## Completed code
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -183,6 +188,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

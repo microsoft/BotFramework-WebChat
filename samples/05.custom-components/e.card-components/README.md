@@ -30,7 +30,8 @@ When the command `sample:github-repository` is sent to Mock Bot, the bot will se
 
 Let's take a look at the activity with attachments to be sent from Mock Bot:
 
-```
+<!-- prettier-ignore-start -->
+```js
 {
     type: 'message',
     attachmentLayout: 'carousel',
@@ -55,11 +56,13 @@ Let's take a look at the activity with attachments to be sent from Mock Bot:
     }]
   }
 ```
+<!-- prettier-ignore-end -->
 
 We will be taking advantage of the activity's `contentType`, `owner` and `repo` data.
 
 Let's build the structure of our component to render on GitHub repository attachments.
 
+<!-- prettier-ignore-start -->
 ```jsx
 const GitHubRepositoryAttachment = props => (
    <div>
@@ -69,6 +72,7 @@ const GitHubRepositoryAttachment = props => (
    </div>
 );
 ```
+<!-- prettier-ignore-end -->
 
 Next, add the GitHub octocat svg and pull in information from `props` in our anchor. Then add styling to the containing `div`.
 
@@ -84,6 +88,7 @@ Next, add the GitHub octocat svg and pull in information from `props` in our anc
 
 Next we'll create our `attachmentMiddleware` and use our `<GitHubRepositoryAttachment>` component like so:
 
+<!-- prettier-ignore-start -->
 ```jsx
 const attachmentMiddleware = () => next => card => {
    switch (card.attachment.contentType) {
@@ -97,6 +102,7 @@ const attachmentMiddleware = () => next => card => {
    }
 };
 ```
+<!-- prettier-ignore-end -->
 
 Finally, make sure the attachmentMiddleware is added to the Web Chat render method. That's it!
 
@@ -112,6 +118,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
 
 ## Completed code
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -197,6 +204,7 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

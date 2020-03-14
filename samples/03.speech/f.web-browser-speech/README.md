@@ -95,7 +95,6 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
-
 <!-- prettier-ignore-end -->
 
 # Further Reading
