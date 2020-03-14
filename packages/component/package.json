@@ -60,7 +60,6 @@
     "glamor": "^2.20.40",
     "globalize": "^1.4.2",
     "markdown-it": "^10.0.0",
-    "markdown-it-attrs": "^3.0.2",
     "math-random": "^1.0.4",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",

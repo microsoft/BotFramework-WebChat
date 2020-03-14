@@ -2,6 +2,7 @@
 
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
+import markdownItAttrs from 'markdown-it-attrs';
 import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
@@ -53,7 +54,7 @@ const customMarkdownIt = new MarkdownIt({
   linkify: true,
   typographer: true,
   xhtmlOut: true
-}).use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
+}).use(iterator, markdownItAttrs, 'url_new_win', 'link_open', (tokens, index) => {
   // TODO: [P4] This is copied from v3 and looks clunky
   //       We should refactor this code
   const targetAttrIndex = tokens[index].attrIndex('target');
