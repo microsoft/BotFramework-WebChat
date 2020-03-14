@@ -140,7 +140,6 @@ Here is the finished `index.html`:
 ```
 <!-- prettier-ignore-end -->
 
-
 # Further reading
 
 ## Full list of Web Chat hosted samples

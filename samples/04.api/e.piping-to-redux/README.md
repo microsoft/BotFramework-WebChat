@@ -34,31 +34,34 @@ For a general overview of the `App.js` and `WebChat.js` files in `src`, please r
 
 Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions](./../j.redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
 
+<!-- prettier-ignore-start -->
 ```jsx
 color = color.trim();
 
 if (color) {
-   const action = {
-      type: 'SET_BACKGROUND_COLOR',
-      payload: { color }
-   };
+  const action = {
+    type: 'SET_BACKGROUND_COLOR',
+    payload: { color }
+  };
 
-   context.sendActivity({
-      type: 'message',
-      text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
-         action,
-         null,
-         2
-      )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
-      ...SUGGESTED_ACTIONS
-   });
+  context.sendActivity({
+    type: 'message',
+    text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
+      action,
+      null,
+      2
+    )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
+    ...SUGGESTED_ACTIONS
+  });
 }
 ```
+<!-- prettier-ignore-end -->
 
 > This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
 
 Here is `dispatchIncomingActivityMiddleware`:
 
+<!-- prettier-ignore-start -->
 ```js
 export default function(dispatch) {
   return () => next => action => {
@@ -74,6 +77,7 @@ export default function(dispatch) {
   };
 }
 ```
+<!-- prettier-ignore-end -->
 
 The next part of our focus is in the `redux` directory. Note that in `store.js`, we are building a new store with our additional reducer from `reducer.js`.
 
@@ -99,17 +103,16 @@ Below are the completed `.js` files, with the difference after create-react-app 
   import store from './redux/store';
 
   ReactDOM.render(
-  + <Provider store={ store }>
++   <Provider store={ store }>
       <App />
-  + </Provider>,
++   </Provider>,
     document.getElementById('root')
   );
 
   registerServiceWorker();
+```
 
-  ```
-
-  `App.js`:
+`App.js`:
 
 ```diff
   import { connect } from 'react-redux';
@@ -135,10 +138,9 @@ Below are the completed `.js` files, with the difference after create-react-app 
   export default connect(
   + ({ backgroundColor }) => ({ backgroundColor })
   )(App)
+```
 
-  ```
-
-  `WebChat.js`:
+`WebChat.js`:
 
 ```diff
   import React from 'react';
@@ -200,21 +202,23 @@ Below are the completed `.js` files, with the difference after create-react-app 
 
 Completed code for `dispatchIncomingActivityMiddleware.js`:
 
+<!-- prettier-ignore-start -->
 ```js
 export default function(dispatch) {
-   return () => next => action => {
-      if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-         const { activity } = action.payload;
+  return () => next => action => {
+    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+      const { activity } = action.payload;
 
-         if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
-            dispatch(activity.value);
-         }
+      if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
+        dispatch(activity.value);
       }
+    }
 
-      return next(action);
-   };
+    return next(action);
+  };
 }
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 
