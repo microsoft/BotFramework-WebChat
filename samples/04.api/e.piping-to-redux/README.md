@@ -136,7 +136,7 @@ Below are the completed `.js` files, with the difference after create-react-app 
   }
 
   export default connect(
-  + ({ backgroundColor }) => ({ backgroundColor })
++   ({ backgroundColor }) => ({ backgroundColor })
   )(App)
 ```
 
