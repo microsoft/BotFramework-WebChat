@@ -35,7 +35,7 @@ For a general overview of the `App.js` and `WebChat.js` files in `src`, please r
 Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions](./../j.redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 color = color.trim();
 
 if (color) {

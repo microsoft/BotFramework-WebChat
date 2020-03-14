@@ -40,13 +40,15 @@ On your bot, you will need to add a filter to post the welcome message when `web
 
 Mock Bot welcome message:
 
+<!-- prettier-ignore-start -->
 ```js
 if (context.activity.name === 'webchat/join') {
-   await context.sendActivity(
-      `Got \`webchat/join\` event, your language is \`${(context.activity.value || {}).language}\``
-   );
+  await context.sendActivity(
+    `Got \`webchat/join\` event, your language is \`${(context.activity.value || {}).language}\``
+  );
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## Completed Code
 

@@ -10,6 +10,7 @@ Markdown is supported for the message. When using Markdown, you are responsible 
 
 ### Using Redux actions
 
+<!-- prettier-ignore-start -->
 ```js
 dispatch({
   type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -21,9 +22,11 @@ dispatch({
   }
 });
 ```
+<!-- prettier-ignore-end -->
 
 ### Using React hooks
 
+<!-- prettier-ignore-start -->
 ```js
 const setNotification = useSetNotification();
 
@@ -34,6 +37,7 @@ setNotification({
   message: 'Please read our [privacy policy](https://privacy.microsoft.com/).'
 });
 ```
+<!-- prettier-ignore-end -->
 
 ## Dismissing a notification
 
@@ -41,24 +45,28 @@ To dismiss a notification, you will need to pass the `id` to identify individual
 
 ### Using Redux actions
 
+<!-- prettier-ignore-start -->
 ```js
 dispatch({
-   type: 'WEB_CHAT/DISMISS_NOTIFICATION',
-   payload: {
-      id: 'your-id'
-   }
+  type: 'WEB_CHAT/DISMISS_NOTIFICATION',
+  payload: {
+    id: 'your-id'
+  }
 });
 ```
+<!-- prettier-ignore-end -->
 
 ### Using React hooks
 
+<!-- prettier-ignore-start -->
 ```js
 const setNotification = useSetNotification();
 
 setNotification({
-   id: 'your-id'
+  id: 'your-id'
 });
 ```
+<!-- prettier-ignore-end -->
 
 ## User experience
 
@@ -100,6 +108,7 @@ Developers can hide our toaster and implement their own notification UI from scr
 
 To customizing the appearance of toast, developers can pass a prop named `toastMiddleware` with the following middleware signature:
 
+<!-- prettier-ignore-start -->
 ```js
 interface NotificationRendererArgs {
   notification: Notification
@@ -110,6 +119,7 @@ interface NotificationRendererArgs {
     (notificationRenderArg: NotificationRendererArgs) =>
       element: (ReactElement | false)
 ```
+<!-- prettier-ignore-end -->
 
 -  If the middleware will render the notification, it should return a `ReactElement`
 -  If the middleware will hide the notification, it should return `false`
@@ -117,20 +127,22 @@ interface NotificationRendererArgs {
 
 Please note that arguments passed to the middleware may change from time to time. Developers should pass all arguments to the next middleware. The recommended code pattern is:
 
+<!-- prettier-ignore-start -->
 ```js
 const middleware = () => next => (...args) => {
-   const [
-      {
-         notification: { id, message }
-      }
-   ] = args;
+  const [
+    {
+      notification: { id, message }
+    }
+  ] = args;
 
-   if (id === 'mynotification') {
-      return <div>{message}</div>;
-   }
+  if (id === 'mynotification') {
+    return <div>{message}</div>;
+  }
 
-   return next(...args);
+  return next(...args);
 };
 ```
+<!-- prettier-ignore-end -->
 
 When customizing toast appearance, developers are also responsible for its accessibility and localizability.

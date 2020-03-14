@@ -29,50 +29,54 @@ In this sample, we will build a new React component that decorates the `activity
 
 Let's start by building the React Component called `BotActivityDecorator`. It will have upvote and downvote buttons and render its children inside a `<div>` element. The bot activity will be rendered inside the inner container.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 const BotActivityDecorator = ({ children }) => {
-   return (
-      <div>
-         <ul>
-            <li>
-               <button>👍</button>
-            </li>
-            <li>
-               <button>👎</button>
-            </li>
-         </ul>
-         <div>{children}</div>
-      </div>
-   );
+  return (
+    <div>
+      <ul>
+        <li>
+          <button>👍</button>
+        </li>
+        <li>
+          <button>👎</button>
+        </li>
+      </ul>
+      <div>{children}</div>
+    </div>
+  );
 };
 ```
+<!-- prettier-ignore-end -->
 
 Next, build our CSS and apply class names to our component.
 
+<!-- prettier-ignore-start -->
 ```css
 .botActivityDecorator {
-   min-height: 60px;
-   position: relative;
+  min-height: 60px;
+  position: relative;
 }
 
 .botActivityDecorator .botActivityDecorator__content {
-   padding-left: 40px;
+  padding-left: 40px;
 }
 
 .botActivityDecorator .botActivityDecorator__buttonBar {
-   list-style-type: none;
-   margin: 0 0 0 10px;
-   padding: 0;
-   position: absolute;
+  list-style-type: none;
+  margin: 0 0 0 10px;
+  padding: 0;
+  position: absolute;
 }
 
 .botActivityDecorator .botActivityDecorator__buttonBar .botActivityDecorator__button {
-   background: White;
-   border: solid 1px #e6e6e6;
-   margin-bottom: 2px;
-   padding: 2px 5px 5px;
+  background: White;
+  border: solid 1px #e6e6e6;
+  margin-bottom: 2px;
+  padding: 2px 5px 5px;
 }
 ```
+<!-- prettier-ignore-end -->
 
 Then, apply the style sheet to our React component.
 
@@ -153,19 +157,21 @@ The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPos
 
 Next let's build the `activityMiddleware` that will filter which activities are being rendered with the new component, `BotActivityDecorator`.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 const activityMiddleware = () => next => card => {
-   if (card.activity.from.role === 'bot') {
-      return children => (
-         <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
-            {next(card)(children)}
-         </BotActivityDecorator>
-      );
-   } else {
-      return next(card);
-   }
+  if (card.activity.from.role === 'bot') {
+    return children => (
+      <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
+        {next(card)(children)}
+      </BotActivityDecorator>
+    );
+  } else {
+    return next(card);
+  }
 };
 ```
+<!-- prettier-ignore-end -->
 
 Make sure `activityMiddleware` is passed into the the Web Chat component, and that's it.
 

@@ -34,9 +34,11 @@ First, create your timestamp variable, which you will pass into Web Chat to indi
 -  Set to `1000` to hide timestamps if they are less than 1 second apart. This can be adjusted (in milliseconds) to any desired number
 -  Set to `0` to show a timestamp with every message
 
+<!-- prettier-ignore-start -->
 ```js
 const groupTimestamp = false;
 ```
+<!-- prettier-ignore-end -->
 
 Modify the Web Chat object by passing the timestamp into `renderWebChat`
 

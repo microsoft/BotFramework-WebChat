@@ -31,23 +31,22 @@ Let's start by building the React component called `PasswordInputActivity`.
 This component will render a simple form that asks the user to input their Two-Factor Authentication code.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const PasswordInputActivity = () => {
-   return (
-      <div>
-         <form>
-            <label>
-               <span>Please input your 2FA code</span>
-               <input
-                  autoFocus={true}
-                  type="password"
-               />
-            </label>
-         </form>
-      </div>
-   );
+  return (
+    <div>
+      <form>
+        <label>
+          <span>Please input your 2FA code</span>
+          <input
+            autoFocus={true}
+            type="password"
+          />
+        </label>
+      </form>
+    </div>
+  );
 };
-}
 ```
 <!-- prettier-ignore-end -->
 
@@ -56,40 +55,40 @@ Next, build the CSS and apply class names to the component.
 <!-- prettier-ignore-start -->
 ```css
 .passwordInput {
-   margin: 10px;
+  margin: 10px;
 }
 
 .passwordInput .passwordInput__form {
-   background-color: Red;
-   border-radius: 3px;
-   color: White;
-   display: flex;
-   font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
-   padding: 5px;
+  background-color: Red;
+  border-radius: 3px;
+  color: White;
+  display: flex;
+  font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+  padding: 5px;
 }
 
 .passwordInput .passwordInput__box {
-   display: flex;
-   flex: 1;
+  display: flex;
+  flex: 1;
 }
 
 .passwordInput .passwordInput__label {
-   padding: 10px;
+  padding: 10px;
 }
 
 .passwordInput .passwordInput__input {
-   border: 0px;
-   border-radius: 3px;
-   flex: 1;
-   letter-spacing: 0.5em;
-   outline: 0;
-   padding: 0 10px;
-   width: 100%;
+  border: 0px;
+  border-radius: 3px;
+  flex: 1;
+  letter-spacing: 0.5em;
+  outline: 0;
+  padding: 0 10px;
+  width: 100%;
 }
 
 .passwordInput .passwordInput__input:disabled {
-   background-color: rgba(255, 255, 255, 0.5);
-   color: White;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: White;
 }
 ```
 <!-- prettier-ignore-end -->

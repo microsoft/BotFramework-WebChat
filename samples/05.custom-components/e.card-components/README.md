@@ -31,30 +31,30 @@ When the command `sample:github-repository` is sent to Mock Bot, the bot will se
 Let's take a look at the activity with attachments to be sent from Mock Bot:
 
 <!-- prettier-ignore-start -->
-```js
+```json
 {
-    type: 'message',
-    attachmentLayout: 'carousel',
-    attachments: [{
-      content: {
-        owner: 'Microsoft',
-        repo: 'BotFramework-WebChat'
-      },
-      contentType: 'application/vnd.microsoft.botframework.samples.github-repository'
-    }, {
-      content: {
-        owner: 'Microsoft',
-        repo: 'BotFramework-Emulator'
-      },
-      contentType: 'application/vnd.microsoft.botframework.samples.github-repository'
-    }, {
-      content: {
-        owner: 'Microsoft',
-        repo: 'BotFramework-DirectLineJS'
-      },
-      contentType: 'application/vnd.microsoft.botframework.samples.github-repository'
-    }]
-  }
+  "type": "message",
+  "attachmentLayout": "carousel",
+  "attachments": [{
+    "content": {
+      "owner": "Microsoft",
+      "repo": "BotFramework-WebChat"
+    },
+    "contentType": "application/vnd.microsoft.botframework.samples.github-repository"
+  }, {
+    "content": {
+      "owner": "Microsoft",
+      "repo": "BotFramework-Emulator"
+    },
+    "contentType": "application/vnd.microsoft.botframework.samples.github-repository"
+  }, {
+    "content": {
+      "owner": "Microsoft",
+      "repo": "BotFramework-DirectLineJS"
+    },
+    "contentType": "application/vnd.microsoft.botframework.samples.github-repository"
+  }]
+}
 ```
 <!-- prettier-ignore-end -->
 
@@ -63,13 +63,13 @@ We will be taking advantage of the activity's `contentType`, `owner` and `repo` 
 Let's build the structure of our component to render on GitHub repository attachments.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const GitHubRepositoryAttachment = props => (
-   <div>
-      <p>
-         <a>[GitHub repo link]</a>
-      </p>
-   </div>
+  <div>
+    <p>
+      <a>[GitHub repo link]</a>
+    </p>
+  </div>
 );
 ```
 <!-- prettier-ignore-end -->
@@ -89,17 +89,17 @@ Next, add the GitHub octocat svg and pull in information from `props` in our anc
 Next we'll create our `attachmentMiddleware` and use our `<GitHubRepositoryAttachment>` component like so:
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const attachmentMiddleware = () => next => card => {
-   switch (card.attachment.contentType) {
-      case 'application/vnd.microsoft.botframework.samples.github-repository':
-         return (
-            <GitHubRepositoryAttachment owner={card.attachment.content.owner} repo={card.attachment.content.repo} />
-         );
+  switch (card.attachment.contentType) {
+    case 'application/vnd.microsoft.botframework.samples.github-repository':
+      return (
+        <GitHubRepositoryAttachment owner={card.attachment.content.owner} repo={card.attachment.content.repo} />
+      );
 
-      default:
-         return next(card);
-   }
+    default:
+      return next(card);
+  }
 };
 ```
 <!-- prettier-ignore-end -->

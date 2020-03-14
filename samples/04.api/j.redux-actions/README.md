@@ -35,9 +35,11 @@ To see the bot actions you are able to intercept, please take a look at the [act
 
 First, set up the store via the `createStore` method, which will be passed into the rendering of Web Chat. The first parameter is the initial state, which you can initialize as an empty object (`{}`) and the second is the middleware we will be applying.
 
+<!-- prettier-ignore-start -->
 ```js
 const store = window.WebChat.createStore({}, ({ dispatch } => next => action => next(action)));
 ```
+<!-- prettier-ignore-end -->
 
 Expand your middleware method to filter the activities you want to listen for (in this case, incoming activities). When the incoming activity is received, the activities will be further filtered to wait for the `activity.name` of `'sample:backchannel'`
 

@@ -83,21 +83,23 @@ The authorization token is generated using subscription key. To secure the token
 
 First, create an async function `fetchCredentials`. When called, it will fetch the authorization token from the server. In this sample, the token is fetched from the demo bot, Mock Bot. The function will return `authorizationToken` and `region` in a JavaScript object.
 
+<!-- prettier-ignore-start -->
 ```js
 const fetchCredentials = async () => {
-   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-      method: 'POST'
-   });
+  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+    method: 'POST'
+  });
 
-   if (!res.ok) {
-      throw new Error('Failed to fetch authorization token and region.');
-   }
+  if (!res.ok) {
+    throw new Error('Failed to fetch authorization token and region.');
+  }
 
-   const { region, token: authorizationToken } = await res.json();
+  const { region, token: authorizationToken } = await res.json();
 
-   return { authorizationToken, region };
+  return { authorizationToken, region };
 };
 ```
+<!-- prettier-ignore-end -->
 
 Then, pass the function as an option to the Direct Line Speech SDK. The name of the option is `fetchCredentials`.
 

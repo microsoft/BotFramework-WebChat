@@ -204,7 +204,7 @@ First, add a `<PortraitAvatar>` component, which houses the rectangular avatar i
 <!-- prettier-ignore-start -->
 ```js
 const PortraitAvatar = ({ fromUser }) => {
-   return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
+  return <img className="app__portraitAvatar" src={fromUser ? 'user.jpg' : 'bot.jpg'} />;
 };
 ```
 <!-- prettier-ignore-end -->
@@ -214,7 +214,7 @@ Along with its stylesheet:
 <!-- prettier-ignore-start -->
 ```css
 .app__portraitAvatar {
-   border-radius: 4px;
+  border-radius: 4px;
 }
 ```
 <!-- prettier-ignore-end -->

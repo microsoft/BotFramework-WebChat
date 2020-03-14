@@ -22,17 +22,21 @@ There are a few features unique to `<iframe>`:
 
 To use the embed page, you will need the site secret from your Azure Bot Services page. Once you have the secret, add the following to your page.
 
+<!-- prettier-ignore-start -->
 ```html
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?s=your-site-secret"></iframe>
 ```
+<!-- prettier-ignore-end -->
 
 **For production use, we strongly recommend that you use token retrieval instead of your secret.** Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token from your secret.
 
 With a token (instead of a secret), your `<iframe>` will look like the following:
 
+<!-- prettier-ignore-start -->
 ```html
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?t=your-site-token"></iframe>
 ```
+<!-- prettier-ignore-end -->
 
 Please refer to the [supported parameters](#what-url-parameters-are-supported) for list of URL parameters supported.
 
@@ -78,13 +82,15 @@ In order to test your local build, you can use Fiddler to modify the traffic to 
 
 Append the following code in the FiddlerScript `OnBeforeRequest` function.
 
+<!-- prettier-ignore-start -->
 ```js
 if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/')) {
-   oSession['x-replywithfile'] =
-      'C:\\Users\\JohnDoe\\Source\\Repos\\BotFramework-WebChat\\packages\\embed\\dist\\index.html';
-   oSession['ui-backcolor'] = 'Yellow';
+  oSession['x-replywithfile'] =
+    'C:\\Users\\JohnDoe\\Source\\Repos\\BotFramework-WebChat\\packages\\embed\\dist\\index.html';
+  oSession['ui-backcolor'] = 'Yellow';
 }
 ```
+<!-- prettier-ignore-end -->
 
 This code snippet will intercept all requests designated for https://webchat.botframework.com/embed/your-bot-id/. Instead of serving the request from webchat.botframework.com, with the script, Fiddler will serve the content from your local file at C:\Users\JohnDoe\...\index.html instead.
 
@@ -94,17 +100,19 @@ Append the following code in the FiddlerScript `OnPeekAtResponseHeaders` functio
 
 When combined with the FiddlerScript above, "Test in Web Chat" in Azure Portal will point to the locally-developed version of the Web Chat page.
 
+<!-- prettier-ignore-start -->
 ```js
 if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id?features=webchatpreview&t=')) {
-   oSession['ui-backcolor'] = 'Yellow';
-   oSession.oResponse.headers.HTTPResponseCode = 302;
-   oSession.oResponse.headers.HTTPResponseStatus = '302 Moved';
-   oSession.oResponse.headers.Add(
-      'location',
-      oSession.PathAndQuery.replace('your-bot-id?', 'your-bot-id/?b=your-bot-id&v=4.3&')
-   );
+  oSession['ui-backcolor'] = 'Yellow';
+  oSession.oResponse.headers.HTTPResponseCode = 302;
+  oSession.oResponse.headers.HTTPResponseStatus = '302 Moved';
+  oSession.oResponse.headers.Add(
+    'location',
+    oSession.PathAndQuery.replace('your-bot-id?', 'your-bot-id/?b=your-bot-id&v=4.3&')
+  );
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## FAQs
 

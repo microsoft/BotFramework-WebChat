@@ -38,9 +38,11 @@ This sample creates a new ponyfill factory by using speech-to-text engine from C
 
 Create an async factory called `createSpeechRecognitionOnlyPonyfillFactory` that will build our hybrid.
 
+<!-- prettier-ignore-start -->
 ```js
 async function createSpeechRecognitionOnlyPonyfillFactory() {…}
 ```
+<!-- prettier-ignore-end -->
 
 Create a ponyfill factory from Speech Services.
 

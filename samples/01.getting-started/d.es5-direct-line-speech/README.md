@@ -39,23 +39,25 @@ This sample starts with the [ES5 bundle CDN sample](./../01.getting-started/c.es
 
 First, we will remove the existing fetch token call with a `fetchCredentials` function, which asynchronously returns a JavaScript object of `{ authorizationToken: string, region: string }` in a Promise fashion.
 
+<!-- prettier-ignore-start -->
 ```js
 const fetchCredentials = function() {
-   return window
-      .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-         method: 'POST'
-      })
-      .then(function(res) {
-         return res.json();
-      })
-      .then(function(json) {
-         return {
-            authorizationToken: json.token,
-            region: json.region
-         };
-      });
+  return window
+    .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+      method: 'POST'
+    })
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(json) {
+      return {
+        authorizationToken: json.token,
+        region: json.region
+      };
+    });
 };
 ```
+<!-- prettier-ignore-end -->
 
 Next we will create a Direct Line Speech adapter set with the `fetchCredentials` function asynchronously and use the adapter set to initialize Web Chat.
 

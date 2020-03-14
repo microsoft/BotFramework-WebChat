@@ -77,19 +77,19 @@ Then, register a custom component to override the existing typing indicator:
 The `activeTyping` argument is a map of participants who are actively typing:
 
 <!-- prettier-ignore-start -->
-```js
+```json
 {
-  mockbot: {
-    name: 'MockBot',
-    role: 'bot',
-    start: 1581905716840,
-    end: 1581905766840
+  "mockbot": {
+    "name": "MockBot",
+    "role": "bot",
+    "start": 1581905716840,
+    "end": 1581905766840
   },
-  dl_a1b2c3d: {
-    name: 'John Doe',
-    role: 'user',
-    start: 1581905716840,
-    end: 1581905766840
+  "dl_a1b2c3d": {
+    "name": "John Doe",
+    "role": "user",
+    "start": 1581905716840,
+    "end": 1581905766840
   }
 }
 ```
@@ -106,9 +106,9 @@ Add the following CSS for styling the typing indicator:
 <!-- prettier-ignore-start -->
 ```css
 .webchat__typingIndicator {
-   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-   font-size: 14px;
-   padding: 10px;
+  font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+  font-size: 14px;
+  padding: 10px;
 }
 ```
 <!-- prettier-ignore-end -->

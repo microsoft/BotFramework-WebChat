@@ -34,21 +34,21 @@ This sample demonstrates how to clear the conversation data and start a new conv
 import { useEffect, useState } from 'react';
 
 export default function useTimer(fn, step = 1000) {
-   const [timeRemaining, setTimeRemaining] = useState();
+  const [timeRemaining, setTimeRemaining] = useState();
 
-   useEffect(() => {
-      let timeout;
-      if (timeRemaining > 0) {
-         timeout = setTimeout(() => setTimeRemaining(ms => (ms > step ? ms - step : 0)), step);
-      } else if (timeRemaining === 0) {
-         setTimeRemaining();
-         fn();
-      }
+  useEffect(() => {
+    let timeout;
+    if (timeRemaining > 0) {
+      timeout = setTimeout(() => setTimeRemaining(ms => (ms > step ? ms - step : 0)), step);
+    } else if (timeRemaining === 0) {
+      setTimeRemaining();
+      fn();
+    }
 
-      return () => clearTimeout(timeout);
-   }, [fn, timeRemaining, setTimeRemaining, step]);
+    return () => clearTimeout(timeout);
+  }, [fn, timeRemaining, setTimeRemaining, step]);
 
-   return [timeRemaining, setTimeRemaining];
+  return [timeRemaining, setTimeRemaining];
 }
 ```
 <!-- prettier-ignore-end -->
@@ -58,22 +58,22 @@ We also created a custom store middleware that resets the timer by calling `setT
 <!-- prettier-ignore-start -->
 ```js
 setStore(
-   createStore({}, ({ dispatch }) => next => action => {
-      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-         dispatch({
-            type: 'WEB_CHAT/SEND_EVENT',
-            payload: {
-               name: 'webchat/join',
-               value: { language: window.navigator.language }
-            }
-         });
-      } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-         // Reset the timer when the user sends an activity
-         setTimeRemaining(TIME_INTERVAL);
-      }
+  createStore({}, ({ dispatch }) => next => action => {
+    if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+      dispatch({
+        type: 'WEB_CHAT/SEND_EVENT',
+        payload: {
+          name: 'webchat/join',
+          value: { language: window.navigator.language }
+        }
+      });
+    } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+      // Reset the timer when the user sends an activity
+      setTimeRemaining(TIME_INTERVAL);
+    }
 
-      return next(action);
-   })
+    return next(action);
+  })
 );
 ```
 <!-- prettier-ignore-end -->
@@ -83,31 +83,31 @@ If the user stops participating in the conversation and the timer expires, we wi
 <!-- prettier-ignore-start -->
 ```js
 const initConversation = useCallback(() => {
-   setStore(
-      createStore({}, ({ dispatch }) => next => action => {
-         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({
-               type: 'WEB_CHAT/SEND_EVENT',
-               payload: {
-                  name: 'webchat/join',
-                  value: { language: window.navigator.language }
-               }
-            });
-         } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-            // Reset the timer when the user sends an activity
-            setTimeRemaining(TIME_INTERVAL);
-         }
+  setStore(
+    createStore({}, ({ dispatch }) => next => action => {
+      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+        dispatch({
+          type: 'WEB_CHAT/SEND_EVENT',
+          payload: {
+            name: 'webchat/join',
+            value: { language: window.navigator.language }
+          }
+        });
+      } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+        // Reset the timer when the user sends an activity
+        setTimeRemaining(TIME_INTERVAL);
+      }
 
-         return next(action);
-      })
-   );
+      return next(action);
+    })
+  );
 
-   (async function() {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-      const { token } = await res.json();
+  (async function() {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
 
-      setDirectLine(createDirectLine({ token }));
-   })().catch(error => console.log(error));
+    setDirectLine(createDirectLine({ token }));
+  })().catch(error => console.log(error));
 }, [setStore, setDirectLine]);
 
 useEffect(initConversation, []);
@@ -132,51 +132,50 @@ import useTimer from './utils/useTimer';
 const TIME_INTERVAL = 30000;
 
 function App() {
-   const [directLine, setDirectLine] = useState(createDirectLine({}));
-   const [store, setStore] = useState();
+  const [directLine, setDirectLine] = useState(createDirectLine({}));
+  const [store, setStore] = useState();
 
-   const initConversation = useCallback(() => {
-      setStore(
-         createStore({}, ({ dispatch }) => next => action => {
-            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-               dispatch({
-                  type: 'WEB_CHAT/SEND_EVENT',
-                  payload: {
-                     name: 'webchat/join',
-                     value: { language: window.navigator.language }
-                  }
-               });
-            } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-               setTimeRemaining(TIME_INTERVAL);
+  const initConversation = useCallback(() => {
+    setStore(
+      createStore({}, ({ dispatch }) => next => action => {
+        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+          dispatch({
+            type: 'WEB_CHAT/SEND_EVENT',
+            payload: {
+              name: 'webchat/join',
+              value: { language: window.navigator.language }
             }
+          });
+        } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+          setTimeRemaining(TIME_INTERVAL);
+        }
 
-            return next(action);
-         })
-      );
+        return next(action);
+      })
+    );
 
-      (async function() {
-         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-         const { token } = await res.json();
+    (async function() {
+      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const { token } = await res.json();
 
-         setDirectLine(createDirectLine({ token }));
-      })().catch(error => console.log(error));
-   }, [setStore, setDirectLine]);
+      setDirectLine(createDirectLine({ token }));
+    })().catch(error => console.log(error));
+  }, [setStore, setDirectLine]);
 
-   useEffect(initConversation, []);
+  useEffect(initConversation, []);
 
-   const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
+  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
 
-   return (
-      <div className="App">
-         <Timer timeRemaining={timeRemaining} />
-         <ReactWebChat className="chat" directLine={directLine} store={store} />
-      </div>
-   );
+  return (
+    <div className="App">
+      <Timer timeRemaining={timeRemaining} />
+      <ReactWebChat className="chat" directLine={directLine} store={store} />
+    </div>
+  );
 }
 
 export default App;
 ```
-
 <!-- prettier-ignore-end -->
 
 # Further reading

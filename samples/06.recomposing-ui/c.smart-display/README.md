@@ -50,24 +50,24 @@ Note that this is the component that builds up the other components we will crea
 `useEffect` and `useState` hooks are used to create the Direct Line Speech adapter set asynchronously. After the adapter set are created, they will be used to create the container.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const [directLineSpeechAdapters, setDirectLineSpeechAdapters] = useState();
 
 useEffect(() => {
-   (async () =>
-      setDirectLineSpeechAdapters(
-         await createDirectLineSpeechAdapters({
-            fetchCredentials: fetchCognitiveServicesCredentials
-         })
-      ))();
+  (async () =>
+    setDirectLineSpeechAdapters(
+      await createDirectLineSpeechAdapters({
+        fetchCredentials: fetchCognitiveServicesCredentials
+      })
+    ))();
 }, [setDirectLineSpeechAdapters]);
 
 return (
-   !!directLineSpeechAdapters && (
-      <Composer {...directLineSpeechAdapters}>
-         <SmartDisplay />
-      </Composer>
-   )
+  !!directLineSpeechAdapters && (
+    <Composer {...directLineSpeechAdapters}>
+      <SmartDisplay />
+    </Composer>
+  )
 );
 ```
 <!-- prettier-ignore-end -->
@@ -77,24 +77,24 @@ return (
 [`SmartDisplay.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/SmartDisplay.js) will set up all the components for smart display, including clock, speech interims, bot response, and microphone button. The component will also keep track of the last read activity. When the user clicks on the microphone button, it will mark the last bot activity as read.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const SmartDisplay = () => {
-   const [lastBotActivity] = useLastBotActivity();
-   const [lastReadActivityID, setLastReadActivityID] = useState();
+  const [lastBotActivity] = useLastBotActivity();
+  const [lastReadActivityID, setLastReadActivityID] = useState();
 
-   const handleMicrophoneButtonClick = useCallback(() => {
-      lastBotActivity && setLastReadActivityID(lastBotActivity.id);
-   }, [lastBotActivity, setLastReadActivityID]);
+  const handleMicrophoneButtonClick = useCallback(() => {
+    lastBotActivity && setLastReadActivityID(lastBotActivity.id);
+  }, [lastBotActivity, setLastReadActivityID]);
 
-   return (
-      <div className="App-SmartDisplay">
-         <Clock />
-         <BlurLens />
-         <SpeechInterims />
-         <BotResponse lastReadActivityID={lastReadActivityID} />
-         <MicrophoneButton onClick={handleMicrophoneButtonClick} />
-      </div>
-   );
+  return (
+    <div className="App-SmartDisplay">
+      <Clock />
+      <BlurLens />
+      <SpeechInterims />
+      <BotResponse lastReadActivityID={lastReadActivityID} />
+      <MicrophoneButton onClick={handleMicrophoneButtonClick} />
+    </div>
+  );
 };
 ```
 <!-- prettier-ignore-end -->
@@ -104,53 +104,53 @@ const SmartDisplay = () => {
 [`Clock.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/06.recomposing-ui/c.smart-display/src/Clock.js) will set up the clock. The time will be updated every second using `useInterval` hook, and forecast fetched from https://api.weather.gov/ on initial render. Other notification icons are dummy.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 function useInterval(fn, intervalMS = 1000) {
-   useEffect(() => {
-      if (fn && intervalMS) {
-         const interval = setInterval(fn, intervalMS);
+  useEffect(() => {
+    if (fn && intervalMS) {
+      const interval = setInterval(fn, intervalMS);
 
-         return () => clearInterval(interval);
-      }
-   }, [fn, intervalMS]);
+      return () => clearInterval(interval);
+    }
+  }, [fn, intervalMS]);
 }
 
 const Clock = () => {
-   const [clock, setClock] = useState(Date.now());
-   const [temperatureInFahrenheit, setTemperatureInFahrenheit] = useState();
+  const [clock, setClock] = useState(Date.now());
+  const [temperatureInFahrenheit, setTemperatureInFahrenheit] = useState();
 
-   useEffect(() => {
-      (async () => {
-         const res = await fetch(WEATHER_FORECAST_URL, {
-            headers: { accept: 'application/geo+json' }
-         });
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(WEATHER_FORECAST_URL, {
+        headers: { accept: 'application/geo+json' }
+      });
 
-         if (res.ok) {
-            const {
-               properties: {
-                  periods: [firstPeriod]
-               }
-            } = await res.json();
+      if (res.ok) {
+        const {
+          properties: {
+            periods: [firstPeriod]
+          }
+        } = await res.json();
 
-            setTemperatureInFahrenheit(firstPeriod.temperature);
-         }
-      })();
-   }, []);
+        setTemperatureInFahrenheit(firstPeriod.temperature);
+      }
+    })();
+  }, []);
 
-   useInterval(() => setClock(Date.now()), 1000);
+  useInterval(() => setClock(Date.now()), 1000);
 
-   return (
-      <div className="App-Clock">
-         <div className="App-Clock-Text">
-            {Intl.DateTimeFormat('en-US', { hour12: false, timeStyle: 'short' }).format(new Date(clock))}
-         </div>
-         {!!temperatureInFahrenheit && (
-            <Notification icon="PartlyCloudyDay">{temperatureInFahrenheit}&deg;F</Notification>
-         )}
-         <Notification icon="Mail">2</Notification>
-         <Notification icon="SkypeForBusinessLogo">1</Notification>
+  return (
+    <div className="App-Clock">
+      <div className="App-Clock-Text">
+        {Intl.DateTimeFormat('en-US', { hour12: false, timeStyle: 'short' }).format(new Date(clock))}
       </div>
-   );
+      {!!temperatureInFahrenheit && (
+        <Notification icon="PartlyCloudyDay">{temperatureInFahrenheit}&deg;F</Notification>
+      )}
+      <Notification icon="Mail">2</Notification>
+      <Notification icon="SkypeForBusinessLogo">1</Notification>
+    </div>
+  );
 };
 ```
 <!-- prettier-ignore-end -->
@@ -168,26 +168,26 @@ const Clock = () => {
 The `MicrophoneButton.js` leveraged logic from various Web Chat hooks, which are also used internally by Web Chat to drive its standard components.
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const CustomMicrophoneButton = ({ onClick }) => {
-   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
-   const [disabled] = useMicrophoneButtonDisabled();
-   const click = useMicrophoneButtonClick();
+  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
+  const [disabled] = useMicrophoneButtonDisabled();
+  const click = useMicrophoneButtonClick();
 
-   const handleClick = useCallback(() => {
-      click();
-      onClick && onClick();
-   }, [click, onClick]);
+  const handleClick = useCallback(() => {
+    click();
+    onClick && onClick();
+  }, [click, onClick]);
 
-   return (
-      <button
-         className={classNames('App-MicrophoneButton', { dictating: interimsVisible })}
-         disabled={disabled}
-         onClick={handleClick}
-      >
-         <i className="ms-Icon ms-Icon--Microphone" />
-      </button>
-   );
+  return (
+    <button
+      className={classNames('App-MicrophoneButton', { dictating: interimsVisible })}
+      disabled={disabled}
+      onClick={handleClick}
+    >
+      <i className="ms-Icon ms-Icon--Microphone" />
+    </button>
+  );
 };
 ```
 <!-- prettier-ignore-end -->
@@ -199,17 +199,17 @@ const CustomMicrophoneButton = ({ onClick }) => {
 <!-- prettier-ignore-start -->
 ```js
 const CustomDictationInterims = () => {
-   const [dictateInterims] = useDictateInterims();
-   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
+  const [dictateInterims] = useDictateInterims();
+  const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
-   return (
-      speechInterimsVisible && (
-         <div className="App-SpeechInterims">
-            {!!speechInterimsVisible &&
-               dictateInterims.map((interim, index) => <span key={index}>{interim}&nbsp;</span>)}
-         </div>
-      )
-   );
+  return (
+    speechInterimsVisible && (
+      <div className="App-SpeechInterims">
+        {!!speechInterimsVisible &&
+          dictateInterims.map((interim, index) => <span key={index}>{interim}&nbsp;</span>)}
+      </div>
+    )
+  );
 };
 ```
 <!-- prettier-ignore-end -->
@@ -224,34 +224,34 @@ const CustomDictationInterims = () => {
 -  Using [`<SpeakActivity>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Activity/Speak.js) for synthesizing the bot response as speech
 
 <!-- prettier-ignore-start -->
-```jsx
+```js
 const BotResponse = ({ lastReadActivityID }) => {
-   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
-   const [lastBotActivity] = useLastBotActivity();
+  const [interimsVisible] = useSendBoxSpeechInterimsVisible();
+  const [lastBotActivity] = useLastBotActivity();
 
-   const renderAttachment = useMemo(() => {
-      return createAdaptiveCardsAttachmentMiddleware()()(() => false);
-   }, []);
+  const renderAttachment = useMemo(() => {
+    return createAdaptiveCardsAttachmentMiddleware()()(() => false);
+  }, []);
 
-   return (
-      !interimsVisible &&
-      !!lastBotActivity &&
-      lastBotActivity.id !== lastReadActivityID && (
-         <div className="App-BotResponse">
-            {!!lastBotActivity.text && <div className="App-BotResponse-Activity">{lastBotActivity.text}</div>}
-            <Film className="App-BotResponse-Attachments" showScrollBar={false}>
-               {(lastBotActivity.attachments || []).map((attachment, index) => (
-                  <div className="App-BotResponse-Attachment" key={index}>
-                     {renderAttachment({ activity: lastBotActivity, attachment })}
-                  </div>
-               ))}
-            </Film>
-            {lastBotActivity.channelData && lastBotActivity.channelData.speak && (
-               <SpeakActivity activity={lastBotActivity} />
-            )}
-         </div>
-      )
-   );
+  return (
+    !interimsVisible &&
+    !!lastBotActivity &&
+    lastBotActivity.id !== lastReadActivityID && (
+      <div className="App-BotResponse">
+        {!!lastBotActivity.text && <div className="App-BotResponse-Activity">{lastBotActivity.text}</div>}
+        <Film className="App-BotResponse-Attachments" showScrollBar={false}>
+          {(lastBotActivity.attachments || []).map((attachment, index) => (
+            <div className="App-BotResponse-Attachment" key={index}>
+              {renderAttachment({ activity: lastBotActivity, attachment })}
+            </div>
+          ))}
+        </Film>
+        {lastBotActivity.channelData && lastBotActivity.channelData.speak && (
+          <SpeakActivity activity={lastBotActivity} />
+        )}
+      </div>
+    )
+  );
 };
 ```
 <!-- prettier-ignore-end -->

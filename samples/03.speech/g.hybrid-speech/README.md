@@ -40,9 +40,11 @@ This sample creates a new ponyfill factory by combining the browser speech engin
 
 Create an async factory called `createHybridPonyfillFactory` that will build our hybrid.
 
+<!-- prettier-ignore-start -->
 ```js
 async function createHybridPonyfillFactory({ authorizationToken, region }) {…}
 ```
+<!-- prettier-ignore-end -->
 
 Create two ponyfills, one from Speech Services and the other from Web Speech.
 
