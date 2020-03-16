@@ -7,7 +7,7 @@ import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
-    a: ['href', 'name', 'target', 'title'],
+    a: ['href', 'name', 'target', 'title', 'aria-label'],
     img: ['alt', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -54,7 +54,7 @@ const customMarkdownIt = new MarkdownIt({
   linkify: true,
   typographer: true,
   xhtmlOut: true
-}).use(iterator, markdownItAttrs, 'url_new_win', 'link_open', (tokens, index) => {
+}).use(markdownItAttrs, iterator, 'url_new_win', 'link_open', (tokens, index) => {
   // TODO: [P4] This is copied from v3 and looks clunky
   //       We should refactor this code
   const targetAttrIndex = tokens[index].attrIndex('target');

@@ -43,16 +43,23 @@ describe('renderMarkdown', () => {
     );
   });
 
+  it('should render aria-labels', () => {
+    const options = { markdownRespectCRLF: true };
+    expect(renderMarkdown('[example](sample.com){aria-label="Sample label"}', options)).toBe(
+      '<p><a href="sample.com" aria-label="Sample label">example</a></p>\n'
+    );
+  });
+
   it('should render sip protocol links correctly', () => {
     const options = { markdownRespectCRLF: true };
-    expect(renderMarkdown(`[example@test.com](sip:example@test.com)`, options)).toBe(
+    expect(renderMarkdown(`[example@test.com](sip:example@test.com){target=_blank}`, options)).toBe(
       '<p><a href="sip:example@test.com" target="_blank">example@test.com</a></p>\n'
     );
   });
 
   it('should render tel protocol links correctly', () => {
     const options = { markdownRespectCRLF: true };
-    expect(renderMarkdown(`[(505)503-4455](tel:505-503-4455)`, options)).toBe(
+    expect(renderMarkdown(`[(505)503-4455](tel:505-503-4455){target=_blank}`, options)).toBe(
       '<p><a href="tel:505-503-4455" target="_blank">(505)503-4455</a></p>\n'
     );
   });
