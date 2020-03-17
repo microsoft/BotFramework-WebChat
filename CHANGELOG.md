@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2897](https://github.com/microsoft/BotFramework-WebChat/issues/2897). Moved from JUnit to VSTest reporter with file attachments, by [@compulim](https://github.com/compulim) in PR [#2990](https://github.com/microsoft/BotFramework-WebChat/pull/2990)
+-  Added `aria-label` attribute support for built-in Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
 
 ### Fixed
 
