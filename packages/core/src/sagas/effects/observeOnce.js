@@ -8,7 +8,11 @@ export default function observeOnceEffect(observable) {
       return yield call(
         () =>
           new Promise((resolve, reject) => {
-            subscription = observable.subscribe(resolve, reject, resolve);
+            subscription = observable.subscribe({
+              complete: resolve,
+              error: reject,
+              next: resolve
+            });
           })
       );
     } finally {

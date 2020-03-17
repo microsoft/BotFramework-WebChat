@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2897](https://github.com/microsoft/BotFramework-WebChat/issues/2897). Moved from JUnit to VSTest reporter with file attachments, by [@compulim](https://github.com/compulim) in PR [#2990](https://github.com/microsoft/BotFramework-WebChat/pull/2990)
+-  Added `aria-label` attribute support for built-in Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
+
+### Fixed
+
+-  Fixes [#2989](https://github.com/microsoft/BotFramework-WebChat/issues/2989). Fix `observeOnce` to use ES Observable call pattern, by [@compulim](https://github.com/compulim) in PR [#2993](https://github.com/microsoft/BotFramework-WebChat/pull/2993)
 
 ### Changed
 
@@ -82,8 +87,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `embed`
          - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
          - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
-- Bumped Chrome Docker image to `3.141.59-zirconium` (Chrome 80.0.3987.106), by [@compulim](https://github.com/compulim) in PR [#2992](https://github.com/microsoft/BotFramework-WebChat/pull/2992)
-         
+-  Bumped Chrome Docker image to `3.141.59-zirconium` (Chrome 80.0.3987.106), by [@compulim](https://github.com/compulim) in PR [#2992](https://github.com/microsoft/BotFramework-WebChat/pull/2992)
+-  Added `4.8.0` to `embed/servicingPlan.json`, by [@compulim](https://github.com/compulim) in PR [#2986](https://github.com/microsoft/BotFramework-WebChat/pull/2986)
+
 ## Samples
 -  Resolves [#2806](https://github.com/microsoft/BotFramework-WebChat/issues/2806), added [Single sign-on with On Behalf Of Token Authentication](https://webchat-sample-obo.azurewebsites.net/) sample, by [@tdurnford](https://github.com/tdurnford) in [#2865](https://github.com/microsoft/BotFramework-WebChat/pull/2865)
 
