@@ -7,7 +7,7 @@ import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
-    a: ['href', 'name', 'target', 'title', 'aria-label'],
+    a: ['aria-label', 'href', 'name', 'target', 'title'],
     img: ['alt', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
