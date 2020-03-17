@@ -25,11 +25,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2897](https://github.com/microsoft/BotFramework-WebChat/issues/2897). Moved from JUnit to VSTest reporter with file attachments, by [@compulim](https://github.com/compulim) in PR [#2990](https://github.com/microsoft/BotFramework-WebChat/pull/2990)
--  Added `aria-label` attribute support for built-in Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
+-  Added `aria-label` attribute support for default Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
 
 ### Fixed
 
 -  Fixes [#2989](https://github.com/microsoft/BotFramework-WebChat/issues/2989). Fix `observeOnce` to use ES Observable call pattern, by [@compulim](https://github.com/compulim) in PR [#2993](https://github.com/microsoft/BotFramework-WebChat/pull/2993)
+-  Fixes [#3024](https://github.com/microsoft/BotFramework-WebChat/issues/3024). Using bridge package [`markdown-it-attrs-es5`](https://npmjs.com/package/markdown-it-attrs-es5) for consuming [`markdown-it-attrs`](https://npmjs.com/package/markdown-it-attrs) for IE11, by [@compulim](https://github.com/compulim) in PR [#3025](https://github.com/microsoft/BotFramework-WebChat/pull/3025)
 
 ### Changed
 
