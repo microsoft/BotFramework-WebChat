@@ -12,8 +12,12 @@ export type AppProps = ChatProps & {theme?: Theme, header?: {textWhenCollapsed?:
 export const App = (props: AppProps, container?: HTMLElement) => {
     konsole.log("BotChat.App props", props);
 
-    // FEEDYOU generate user ID if not present in props
-    props.user = {...{id: MakeId(), name: 'Uživatel'}, ...props.user};
+    // FEEDYOU generate user ID if not present in props, make sure its always string
+    props.user = {
+        name: "Uživatel",
+        ...props.user,
+        id: props.user && props.user.id ? "" + props.user.id : MakeId()
+    };
     props.showUploadButton = props.hasOwnProperty('showUploadButton') ? props.showUploadButton : false;
     props.resize = props.hasOwnProperty('resize') ? props.resize : 'detect';
     props.locale = props.hasOwnProperty('locale') ? props.locale : 'cs-cz';
