@@ -19,7 +19,7 @@ test('Load Web Chat v4', async () => {
         styleOptions: {
           botAvatarImage: 'https://webchat.botframework.com/images/default-bot-icon.png'
         },
-        userId: 'u-12345',
+        userID: 'u-12345',
         username: 'William'
       });
 
@@ -41,7 +41,7 @@ test('Load Web Chat v4', async () => {
     {
       botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
       directLineURL: 'https://directline.botframework.com',
-      userId: 'u-12345',
+      userID: 'u-12345',
       webSocket: true
     },
     {
