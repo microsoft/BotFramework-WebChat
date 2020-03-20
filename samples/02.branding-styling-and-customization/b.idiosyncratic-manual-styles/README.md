@@ -40,7 +40,7 @@ This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.f
 First, we want to overwrite the current `styleSet` by using the `createStyleSet` method. Once you have your `styleSet` object, you can add changes to any object in `createStyleSet`.
 
 ```diff
-…
+  …
   const { token } = await res.json();
 + const styleSet = window.WebChat.createStyleSet({
 + bubbleBackground: 'rgba(0, 0, 255, .1)',
@@ -55,19 +55,19 @@ First, we want to overwrite the current `styleSet` by using the `createStyleSet`
 +     fontWeight: 'bold'
 +   }
 + );
-…
+  …
 ```
 
 Finally, make sure the `styleSet` object is passed into Web Chat, like so:
 
 ```diff
-…
-window.WebChat.renderWebChat({
--       directLine: window.WebChat.createDirectLine({ token })
-+       directLine: window.WebChat.createDirectLine({ token }),
-+       styleSet
- }, document.getElementById('webchat'));
- …
+  …
+  window.WebChat.renderWebChat({
+-   directLine: window.WebChat.createDirectLine({ token })
++   directLine: window.WebChat.createDirectLine({ token }),
++   styleSet
+  }, document.getElementById('webchat'));
+  …
 ```
 
 That's it!
@@ -76,15 +76,23 @@ That's it!
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Custom style set</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -95,29 +103,26 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const styleSet = window.WebChat.createStyleSet({
+          bubbleBackground: 'rgba(0, 0, 255, .1)',
+          bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+        });
 
-+       const styleSet = window.WebChat.createStyleSet({
-+         bubbleBackground: 'rgba(0, 0, 255, .1)',
-+         bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
-+       });
+        styleSet.textContent = Object.assign({}, styleSet.textContent, {
+          fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
+          fontWeight: 'bold'
+        });
 
-+       styleSet.textContent = Object.assign(
-+         {},
-+         styleSet.textContent,
-+         {
-+           fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-+           fontWeight: 'bold'
-+         }
-+       );
-
-        window.WebChat.renderWebChat({
--         directLine: window.WebChat.createDirectLine({ token })
-+         directLine: window.WebChat.createDirectLine({ token }),
-+         styleSet
-        }, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            styleSet
+          },
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
@@ -125,6 +130,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

@@ -276,23 +276,25 @@ This integration code is excerpted from the sample named ["Integrating with Cogn
 
 > To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should _always use authorization token_ for production environment.
 
+<!-- prettier-ignore-start -->
 ```js
 const { createCognitiveServicesSpeechServicesPonyfillFactory, createDirectLine, renderWebChat } = window.WebChat;
 
 renderWebChat(
-   {
-      directLine: createDirectLine({
-         secret: 'YOUR_DIRECT_LINE_SECRET'
-      }),
-      locale: 'en-US',
-      webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-         region: 'YOUR_REGION',
-         subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
-      })
-   },
-   document.getElementById('webchat')
+  {
+    directLine: createDirectLine({
+      secret: 'YOUR_DIRECT_LINE_SECRET'
+    }),
+    locale: 'en-US',
+    webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
+      region: 'YOUR_REGION',
+      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+    })
+  },
+  document.getElementById('webchat')
 );
 ```
+<!-- prettier-ignore-end -->
 
 After adding the ponyfill factory, you should be able to see the microphone button in Web Chat, which indicates that speech is enabled.
 
@@ -317,6 +319,7 @@ Instead of synthesizing text, Web Chat can also synthesize [Speech Synthesis Mar
 
 When the bot sends the activity, include the SSML in the `speak` property.
 
+<!-- prettier-ignore-start -->
 ```xml
 <speak
   version="1.0"
@@ -332,6 +335,7 @@ When the bot sends the activity, include the SSML in the `speak` property.
   </voice>
 </speak>
 ```
+<!-- prettier-ignore-end -->
 
 > The SSML code snippet above is using neural voice "JessaNeural" for expression, which is only supported in some regions.
 

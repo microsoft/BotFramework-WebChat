@@ -64,46 +64,52 @@ You can use the full, typical Web Chat package (called full-feature bundle) that
 
 Here is how how you can add Web Chat control to your website:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html>
-   <head>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
-         body {
-            margin: 0;
-         }
+  <head>
+    <script
+      crossorigin="anonymous"
+      src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"
+    ></script>
+    <style>
+      html,
+      body {
+         height: 100%;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script>
-         window.WebChat.renderWebChat(
-            {
-               directLine: window.WebChat.createDirectLine({
-                  token: 'YOUR_DIRECT_LINE_TOKEN'
-               }),
-               userID: 'YOUR_USER_ID',
-               username: 'Web Chat User',
-               locale: 'en-US',
-               botAvatarInitials: 'WC',
-               userAvatarInitials: 'WW'
-            },
-            document.getElementById('webchat')
-         );
-      </script>
-   </body>
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      window.WebChat.renderWebChat(
+        {
+          directLine: window.WebChat.createDirectLine({
+            token: 'YOUR_DIRECT_LINE_TOKEN'
+          }),
+          userID: 'YOUR_USER_ID',
+          username: 'Web Chat User',
+          locale: 'en-US',
+          botAvatarInitials: 'WC',
+          userAvatarInitials: 'WW'
+        },
+        document.getElementById('webchat')
+      );
+    </script>
+  </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
 
@@ -121,16 +127,18 @@ For full customizability, you can use React to recompose components of Web Chat.
 
 To install the production build from NPM, run `npm install botframework-webchat`.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React, { useMemo } from 'react';
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 
 export default () => {
-   const directLine = useMemo(() => createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }), []);
+  const directLine = useMemo(() => createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }), []);
 
-   return <ReactWebChat directLine={directLine} userID="YOUR_USER_ID" />;
+  return <ReactWebChat directLine={directLine} userID="YOUR_USER_ID" />;
 };
 ```
+<!-- prettier-ignore-end -->
 
 > You can also run `npm install botframework-webchat@master` to install a development build that is synced with Web Chat's GitHub `master` branch.
 

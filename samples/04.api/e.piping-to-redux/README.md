@@ -34,51 +34,50 @@ For a general overview of the `App.js` and `WebChat.js` files in `src`, please r
 
 Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions](./../j.redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 color = color.trim();
 
 if (color) {
-   const action = {
-      type: 'SET_BACKGROUND_COLOR',
-      payload: { color }
-   };
+  const action = {
+    type: 'SET_BACKGROUND_COLOR',
+    payload: { color }
+  };
 
-   context.sendActivity({
-      type: 'message',
-      text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
-         action,
-         null,
-         2
-      )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
-      ...SUGGESTED_ACTIONS
-   });
+  context.sendActivity({
+    type: 'message',
+    text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
+      action,
+      null,
+      2
+    )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
+    ...SUGGESTED_ACTIONS
+  });
 }
 ```
+<!-- prettier-ignore-end -->
 
 > This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
 
-Here is `dispatchIncomingActivityMiddleware` with differences from [04.api/j.redux-actions](./../j.redux-actions) highlighted:
+Here is `dispatchIncomingActivityMiddleware`:
 
-```diff
-export default function (dispatch) {
+<!-- prettier-ignore-start -->
+```js
+export default function(dispatch) {
   return () => next => action => {
     if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
       const { activity } = action.payload;
 
-      if (
-+       activity.type === 'event'
-+       && activity.from.role === 'bot'
-+       && activity.name === 'redux action'
-      ) {
-+       dispatch(activity.value);
+      if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
+        dispatch(activity.value);
       }
     }
 
     return next(action);
   };
 }
-
 ```
+<!-- prettier-ignore-end -->
 
 The next part of our focus is in the `redux` directory. Note that in `store.js`, we are building a new store with our additional reducer from `reducer.js`.
 
@@ -93,133 +92,133 @@ Below are the completed `.js` files, with the difference after create-react-app 
 `index.js`:
 
 ```diff
-import { Provider } from 'react-redux';
-import React from 'react';
-import ReactDOM from 'react-dom';
+  import { Provider } from 'react-redux';
+  import React from 'react';
+  import ReactDOM from 'react-dom';
 
-import './index.css';
+  import './index.css';
 
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import store from './redux/store';
+  import App from './App';
+  import registerServiceWorker from './registerServiceWorker';
+  import store from './redux/store';
 
-ReactDOM.render(
-+ <Provider store={ store }>
-    <App />
-+ </Provider>,
-  document.getElementById('root')
-);
+  ReactDOM.render(
++   <Provider store={ store }>
+      <App />
++   </Provider>,
+    document.getElementById('root')
+  );
 
-registerServiceWorker();
-
+  registerServiceWorker();
 ```
 
 `App.js`:
 
 ```diff
-import { connect } from 'react-redux';
-import React from 'react';
+  import { connect } from 'react-redux';
+  import React from 'react';
 
-import ReactWebChat from './WebChat';
+  import ReactWebChat from './WebChat';
 
-class App extends React.Component {
-  render() {
-+   const { props: {
-+     backgroundColor,
-+     dispatch
-+   } } = this;
+  class App extends React.Component {
+    render() {
++     const { props: {
++       backgroundColor,
++       dispatch
++     } } = this;
 
-    return (
-+    <div id="app" style={{ backgroundColor }}>
-+       <ReactWebChat appDispatch={ dispatch } />
-+     </div>
-    )
+      return (
++      <div id="app" style={{ backgroundColor }}>
++         <ReactWebChat appDispatch={ dispatch } />
++       </div>
+      )
+    }
   }
-}
 
-export default connect(
-+ ({ backgroundColor }) => ({ backgroundColor })
-)(App)
-
+  export default connect(
++   ({ backgroundColor }) => ({ backgroundColor })
+  )(App)
 ```
 
 `WebChat.js`:
 
 ```diff
-import React from 'react';
+  import React from 'react';
 
-import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
-import dispatchIncomingActivityMiddleware from './dispatchIncomingActivityMiddleware';
+  import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
+  import dispatchIncomingActivityMiddleware from './dispatchIncomingActivityMiddleware';
 
-export default class extends React.Component {
-  constructor(props) {
-    super(props);
+  export default class extends React.Component {
+    constructor(props) {
+      super(props);
 
-+   this.store = createStore(
-+     {},
-+     dispatchIncomingActivityMiddleware(props.appDispatch)
-+   );
++     this.store = createStore(
++       {},
++       dispatchIncomingActivityMiddleware(props.appDispatch)
++     );
 
-    this.state = {};
+      this.state = {};
+    }
+
+    componentDidMount() {
+      this.fetchToken();
+      this.setSendBox();
+    }
+
+    async fetchToken() {
+      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const { token } = await res.json();
+
+      this.setState(() => ({
+        directLine: createDirectLine({ token })
+      }));
+    }
+
+    setSendBox() {
+      this.store.dispatch({
+        type: 'WEB_CHAT/SET_SEND_BOX',
+        payload: { text: 'sample:redux-middleware' }
+      });
+    }
+
+    render() {
+      return (
+        this.state.directLine ?
+          <ReactWebChat
+            className="chat"
++         directLine={ this.state.directLine }
++           store={ this.store }
++           styleOptions={{
++             backgroundColor: 'Transparent'
++           }}
+          />
+        :
+          <div>Connecting to bot&hellip;</div>
+      );
+    }
   }
-
-  componentDidMount() {
-    this.fetchToken();
-    this.setSendBox();
-  }
-
-  async fetchToken() {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-    const { token } = await res.json();
-
-    this.setState(() => ({
-      directLine: createDirectLine({ token })
-    }));
-  }
-
-  setSendBox() {
-    this.store.dispatch({
-      type: 'WEB_CHAT/SET_SEND_BOX',
-      payload: { text: 'sample:redux-middleware' }
-    });
-  }
-
-  render() {
-    return (
-      this.state.directLine ?
-        <ReactWebChat
-          className="chat"
-+        directLine={ this.state.directLine }
-+         store={ this.store }
-+         styleOptions={{
-+           backgroundColor: 'Transparent'
-+         }}
-        />
-      :
-        <div>Connecting to bot&hellip;</div>
-    );
-  }
-}
 
 ```
 
 Completed code for `dispatchIncomingActivityMiddleware.js`:
 
+<!-- prettier-ignore-start -->
 ```js
 export default function(dispatch) {
-   return () => next => action => {
-      if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-         const { activity } = action.payload;
+  return () => next => action => {
+    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+      const { activity } = action.payload;
 
-         if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
-            dispatch(activity.value);
-         }
+      if (activity.type === 'event' && activity.from.role === 'bot' && activity.name === 'redux action') {
+        dispatch(activity.value);
       }
+    }
 
-      return next(action);
-   };
+    return next(action);
+  };
 }
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

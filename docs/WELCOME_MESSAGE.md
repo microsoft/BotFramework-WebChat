@@ -12,48 +12,53 @@ In the example below, the user ID is added to the token request and the welcome 
 
 ### Web Chat
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 (async function() {
-   // Note, for the simplicity of this example, we are generating the Direct Line token on client side;
-   // however, this is not a recommended practice and you should create and manage your tokens from the server.
-   // You should never put the Direct Line secret in the browser or client app.
-   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
-   const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
-   const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
-      body: JSON.stringify({ user: { id: 'dl_user_id', name: 'username' } }),
-      headers: {
-         Authorization: `Bearer ${secret}`,
-         'Content-type': 'application/json'
-      },
-      method: 'POST'
-   });
-   const { token } = await res.json();
+  // Note, for the simplicity of this example, we are generating the Direct Line token on client side;
+  // however, this is not a recommended practice and you should create and manage your tokens from the server.
+  // You should never put the Direct Line secret in the browser or client app.
+  // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+  const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
+  const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+    body: JSON.stringify({ user: { id: 'dl_user_id', name: 'username' } }),
+    headers: {
+      Authorization: `Bearer ${secret}`,
+      'Content-type': 'application/json'
+    },
+    method: 'POST'
+  });
+  const { token } = await res.json();
 
-   window.WebChat.renderWebChat(
-      {
-         directLine: window.WebChat.createDirectLine({ token })
-      },
-      document.getElementById('webchat')
-   );
+  window.WebChat.renderWebChat(
+    {
+      directLine: window.WebChat.createDirectLine({ token })
+    },
+    document.getElementById('webchat')
+  );
 
-   document.querySelector('#webchat > *').focus();
+  document.querySelector('#webchat > *').focus();
 })().catch(err => console.error(err));
 ```
+<!-- prettier-ignore-end -->
 
 ### Bot Framework SDK v4 (Node.js)
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 this.onMembersAdded(async (context, next) => {
-   const { membersAdded } = context.activity;
+  const { membersAdded } = context.activity;
 
-   for (let member of membersAdded) {
-      if (member.id !== context.activity.recipient.id) {
-         await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
-      }
-   }
-   await next();
+  for (let member of membersAdded) {
+    if (member.id !== context.activity.recipient.id) {
+      await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
+    }
+  }
+
+  await next();
 });
 ```
+<!-- prettier-ignore-end -->
 
 ### Tokens, User IDs, and iFrames
 
@@ -68,68 +73,75 @@ Generally, users anticipate the bot to send a welcome message before they send a
 
 ### Web Chat
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 (async function() {
-   // Note, for the simplicity of this example, we are generating the Direct Line token on client side;
-   // however, this is not a recommended practice and you should create and manage your tokens from the server.
-   // You should never put the Direct Line secret in the browser or client app.
-   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
-   const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
-   const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
-      headers: {
-         Authorization: `Bearer ${secret}`
-      },
-      method: 'POST'
-   });
-   const { token } = await res.json();
+  // Note, for the simplicity of this example, we are generating the Direct Line token on client side;
+  // however, this is not a recommended practice and you should create and manage your tokens from the server.
+  // You should never put the Direct Line secret in the browser or client app.
+  // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+  const secret = '<DIRECT_LINE_SECRET> | <WEB_CHAT_SECRET>';
+  const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+    headers: {
+      Authorization: `Bearer ${secret}`
+    },
+    method: 'POST'
+  });
+  const { token } = await res.json();
 
-   const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-         dispatch({
-            type: 'WEB_CHAT/SEND_EVENT',
-            payload: {
-               name: 'webchat/join'
-            }
-         });
-      }
-      return next(action);
-   });
+  const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+    if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+      dispatch({
+        type: 'WEB_CHAT/SEND_EVENT',
+        payload: {
+          name: 'webchat/join'
+        }
+      });
+    }
 
-   window.WebChat.renderWebChat(
-      {
-         directLine: window.WebChat.createDirectLine({ token }),
-         store
-      },
-      document.getElementById('webchat')
-   );
+    return next(action);
+  });
 
-   document.querySelector('#webchat > *').focus();
+  window.WebChat.renderWebChat(
+    {
+      directLine: window.WebChat.createDirectLine({ token }),
+      store
+    },
+    document.getElementById('webchat')
+  );
+
+  document.querySelector('#webchat > *').focus();
 })().catch(err => console.error(err));
 ```
+<!-- prettier-ignore-end -->
 
 ### Bot Framework SDK v4 (Node.js)
 
-```javascript
+<!-- prettier-ignore-start -->
+```js
 this.onEvent(async (context, next) => {
-   if (context.activity.name === 'webchat/join') {
-      await context.sendActivity('Back Channel Welcome Message!');
-   }
-   await next();
+  if (context.activity.name === 'webchat/join') {
+    await context.sendActivity('Back Channel Welcome Message!');
+  }
+
+  await next();
 });
 
 this.onMembersAdded(async (context, next) => {
-   const { channelId, membersAdded } = context.activity;
+  const { channelId, membersAdded } = context.activity;
 
-   if (channelId !== 'directline' && channelId !== 'webchat') {
-      for (let member of membersAdded) {
-         if (member.id !== context.activity.recipient.id) {
-            await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
-         }
+  if (channelId !== 'directline' && channelId !== 'webchat') {
+    for (let member of membersAdded) {
+      if (member.id !== context.activity.recipient.id) {
+        await context.sendActivity('Welcome Message from `onMembersAdded` handler!');
       }
-   }
-   await next();
+    }
+  }
+
+  await next();
 });
 ```
+<!-- prettier-ignore-end -->
 
 For more details regarding backchannel welcome events in Web Chat, take a look at this [sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/a.welcome-event).
 

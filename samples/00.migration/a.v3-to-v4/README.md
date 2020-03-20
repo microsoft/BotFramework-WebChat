@@ -40,6 +40,7 @@ The `index.html` page in the migration directory has two main goals.
 
 We'll start by using our old v3 `index.html` as our starting point.
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -47,8 +48,11 @@ We'll start by using our old v3 `index.html` as our starting point.
       <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
    </head>
    <body>
-      <div id="bot" />
-      <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+      <div id="bot"></div>
+      <script
+         crossorigin="anonymous"
+         src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"
+      ></script>
       <script>
          BotChat.App(
             {
@@ -63,21 +67,22 @@ We'll start by using our old v3 `index.html` as our starting point.
    </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 > This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
 Our first change is to update the CDN the webpage uses from v3 to v4.
 
 ```diff
-…
- <head>
--  <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
-+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  …
+  <head>
+-   <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
++   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
   </head>
   <body>
--   <div id="bot" />
-+   <div id="webchat" role="main" />
--   <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+-   <div id="bot"></div>
++   <div id="webchat" role="main"></div>
+-   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
 …
 ```
 
@@ -86,27 +91,27 @@ Next, the code to render Web Chat must be updated in the body. Note that MockBot
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 ```diff
-…
-<body>
-  <div id="webchat" role="main"></div>
-  <script>
--   BotChat.App({
--     directLine: { secret: direct_line_secret },
--     user: { id: 'userid' },
--     bot: { id: 'botid' },
--     resize: 'detect'
--   }, document.getElementById("bot"));
-+   (async function () {
-+     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+     const { token } = await res.json();
+  …
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+-     BotChat.App({
+-       directLine: { secret: direct_line_secret },
+-       user: { id: 'userid' },
+-       bot: { id: 'botid' },
+-       resize: 'detect'
+-     }, document.getElementById("bot"));
++     (async function () {
++       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++       const { token } = await res.json();
 +
-+     window.WebChat.renderWebChat({
-+       directLine: window.WebChat.createDirectLine({ token })
-+     }, document.getElementById('webchat'));
-+   })();
-  </script>
-…
-</body>
++       window.WebChat.renderWebChat({
++         directLine: window.WebChat.createDirectLine({ token })
++       }, document.getElementById('webchat'));
++     })();
+    </script>
+  </body>
+  …
 ```
 
 ## Styling and Adding features
@@ -117,23 +122,29 @@ MockBot also features an autofocus on the Web Chat container, as well as push of
 
 ```diff
   (async function () {
-…
-- })();
-+   document.querySelector('#webchat > *').focus();
-+ })().catch(err => console.error(err));
-</script>
+    …
+-   })();
++     document.querySelector('#webchat > *').focus();
++   })().catch(err => console.error(err));
+  </script>
 ```
 
 Finally, we will add basic styling since there is no longer a stylesheet included on our page.
 
 ```diff
-…
+  …
   <head>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 +   <style>
-+     html, body { height: 100% }
-+     body { margin: 0 }
-
++     html,
++     body {
++       height: 100%;
++     }
++
++     body {
++       margin: 0;
++     }
++
 +     #webchat {
 +       height: 100%;
 +       width: 100%;
@@ -147,38 +158,51 @@ Finally, we will add basic styling since there is no longer a stylesheet include
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle</title>
-+   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-+   <style>
-+     html, body { height: 100% }
-+     body { margin: 0 }
-+     #webchat {
-+       height: 100%;
-+       width: 100%;
-+     }
-+   </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-+   <div id="webchat" role="main"></div>
-+   <script>
-+    (async function () {
-+      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+      const { token } = await res.json();
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
 
-+      window.WebChat.renderWebChat({
-+        directLine: window.WebChat.createDirectLine({ token })
-+      }, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token })
+          },
+          document.getElementById('webchat')
+        );
 
-+      document.querySelector('#webchat > *').focus();
-+    })().catch(err => console.error(err));
-+   </script>
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
   </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

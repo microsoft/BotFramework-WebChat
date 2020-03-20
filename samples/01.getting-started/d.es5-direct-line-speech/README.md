@@ -39,23 +39,25 @@ This sample starts with the [ES5 bundle CDN sample](./../01.getting-started/c.es
 
 First, we will remove the existing fetch token call with a `fetchCredentials` function, which asynchronously returns a JavaScript object of `{ authorizationToken: string, region: string }` in a Promise fashion.
 
+<!-- prettier-ignore-start -->
 ```js
 const fetchCredentials = function() {
-   return window
-      .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-         method: 'POST'
-      })
-      .then(function(res) {
-         return res.json();
-      })
-      .then(function(json) {
-         return {
-            authorizationToken: json.token,
-            region: json.region
-         };
-      });
+  return window
+    .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+      method: 'POST'
+    })
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(json) {
+      return {
+        authorizationToken: json.token,
+        region: json.region
+      };
+    });
 };
 ```
+<!-- prettier-ignore-end -->
 
 Next we will create a Direct Line Speech adapter set with the `fetchCredentials` function asynchronously and use the adapter set to initialize Web Chat.
 
@@ -81,56 +83,59 @@ Next we will create a Direct Line Speech adapter set with the `fetchCredentials`
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Avatar with images and initials</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
-         body {
-            margin: 0;
-         }
+  <head>
+    <title>Web Chat: Full-featured bundle with ES5 polyfills and Direct Line Speech channel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script>
-         const fetchCredentials = function() {
-            return window
-               .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-                  method: 'POST'
-               })
-               .then(function(res) {
-                  return res.json();
-               })
-               .then(function(json) {
-                  return {
-                     authorizationToken: json.token,
-                     region: json.region
-                  };
-               });
-         };
+      body {
+        margin: 0;
+      }
 
-         window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
-            window.WebChat.renderWebChat(Object.assign({}, adapters), document.getElementById('webchat'));
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      const fetchCredentials = function() {
+        return window
+          .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+            method: 'POST'
+          })
+          .then(function(res) {
+            return res.json();
+          })
+          .then(function(json) {
+            return {
+              authorizationToken: json.token,
+              region: json.region
+            };
+          });
+      };
 
-            document.querySelector('#webchat > *').focus();
-         });
-      </script>
-   </body>
+      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
+        window.WebChat.renderWebChat(Object.assign({}, adapters), document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+      });
+    </script>
+  </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

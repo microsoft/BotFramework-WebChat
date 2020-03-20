@@ -38,9 +38,11 @@ This sample creates a new ponyfill factory by using speech-to-text engine from C
 
 Create an async factory called `createSpeechRecognitionOnlyPonyfillFactory` that will build our hybrid.
 
+<!-- prettier-ignore-start -->
 ```js
 async function createSpeechRecognitionOnlyPonyfillFactory() {…}
 ```
+<!-- prettier-ignore-end -->
 
 Create a ponyfill factory from Speech Services.
 
@@ -56,7 +58,7 @@ Create a ponyfill factory from Speech Services.
 Then return a new ponyfill factory that will call the one from Speech Services, but partially return the result.
 
 ```diff
-…
+  …
 +   return options => {
 +     const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 +
@@ -65,8 +67,7 @@ Then return a new ponyfill factory that will call the one from Speech Services, 
 +       SpeechRecognition: speechServicesPonyfill.SpeechRecognition
 +     };
 +   };
-  };
-
+  …
 ```
 
 Finally, pass your new ponyfill factory into `renderWebChat`.
@@ -82,102 +83,100 @@ Finally, pass your new ponyfill factory into `renderWebChat`.
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Speech recognition only</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
-        }
-        body {
-          margin: 0;
-        }
+<!-- prettier-ignore-start -->
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Speech recognition only</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script>
-        function createFetchSpeechServicesCredentials() {
-          let expireAfter = 0;
-          let lastPromise;
+      body {
+        margin: 0;
+      }
 
-          return () => {
-            const now = Date.now();
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      function createFetchSpeechServicesCredentials() {
+        let expireAfter = 0;
+        let lastPromise;
 
-            if (now > expireAfter) {
-              expireAfter = now + 300000;
-              lastPromise = fetch(
-                'https://webchat-mockbot.azurewebsites.net/speechservices/token',
-                { method: 'POST' }
-              ).then(
-                res => res.json(),
-                err => {
-                  expireAfter = 0;
+        return () => {
+          const now = Date.now();
 
-                  return Promise.reject(err);
-                }
-              );
+          if (now > expireAfter) {
+            expireAfter = now + 300000;
+            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
+              method: 'POST'
+            }).then(
+              res => res.json(),
+              err => {
+                expireAfter = 0;
+
+                return Promise.reject(err);
+              }
+            );
+          }
+
+          return lastPromise;
+        };
+      }
+
+      const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+
+      (async function() {
+
+        const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+          method: 'POST'
+        });
+
+        const { token } = await directLineTokenRes.json();
+
+        async function createSpeechRecognitionOnlyPonyfillFactory() {
+          const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
+            {
+              credentials: fetchSpeechServicesCredentials
             }
+          );
 
-            return lastPromise;
+          return options => {
+            const speechServicesPonyfill = speechServicesPonyfillFactory(options);
+
+            return {
+              SpeechGrammarList: speechServicesPonyfill.SpeechGrammarList,
+              SpeechRecognition: speechServicesPonyfill.SpeechRecognition
+            };
           };
         }
 
-        const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            webSpeechPonyfillFactory: await createSpeechRecognitionOnlyPonyfillFactory()
+          },
+          document.getElementById('webchat')
+        );
 
-        (async function() {
-          const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
-            method: 'POST'
-          });
-
-          const { token } = await directLineTokenRes.json();
-
--         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
--           credentials: fetchSpeechServicesCredentials
--         });
-
-+         async function createSpeechRecognitionOnlyPonyfillFactory() {
-+           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
-+             {
-+               credentials: fetchSpeechServicesCredentials
-+             }
-+           );
-+
-+           return options => {
-+             const speechServicesPonyfill = speechServicesPonyfillFactory(options);
-+
-+             return {
-+               SpeechGrammarList: speechServicesPonyfill.SpeechGrammarList,
-+               SpeechRecognition: speechServicesPonyfill.SpeechRecognition
-+             };
-+           };
-+         }
-
-          window.WebChat.renderWebChat(
-            {
-              directLine: window.WebChat.createDirectLine({ token }),
--             webSpeechPonyfillFactory
-+             webSpeechPonyfillFactory: await createSpeechRecognitionOnlyPonyfillFactory()
-            },
-            document.getElementById('webchat')
-          );
-
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further Reading
 

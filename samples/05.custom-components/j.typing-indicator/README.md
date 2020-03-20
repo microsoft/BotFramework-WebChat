@@ -76,22 +76,24 @@ Then, register a custom component to override the existing typing indicator:
 
 The `activeTyping` argument is a map of participants who are actively typing:
 
-```js
+<!-- prettier-ignore-start -->
+```json
 {
-  mockbot: {
-    name: 'MockBot',
-    role: 'bot',
-    start: 1581905716840,
-    end: 1581905766840
+  "mockbot": {
+    "name": "MockBot",
+    "role": "bot",
+    "start": 1581905716840,
+    "end": 1581905766840
   },
-  dl_a1b2c3d: {
-    name: 'John Doe',
-    role: 'user',
-    start: 1581905716840,
-    end: 1581905766840
+  "dl_a1b2c3d": {
+    "name": "John Doe",
+    "role": "user",
+    "start": 1581905716840,
+    "end": 1581905766840
   }
 }
 ```
+<!-- prettier-ignore-end -->
 
 `start` is the time when Web Chat receive the typing indicator from this participant. `end` is the time when the typing indicator should be hidden because the participant stopped typing, but did not send their message.
 
@@ -101,88 +103,92 @@ When a message is received from a participant who is actively typing, their entr
 
 Add the following CSS for styling the typing indicator:
 
+<!-- prettier-ignore-start -->
 ```css
 .webchat__typingIndicator {
-   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-   font-size: 14px;
-   padding: 10px;
+  font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+  font-size: 14px;
+  padding: 10px;
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## Completed code
 
 Here is the finished `index.html`:
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Customizing typing indicator</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html,
-        body {
-          height: 100%;
-        }
+<!-- prettier-ignore-start -->
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Customizing typing indicator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        body {
-          margin: 0;
-        }
+      body {
+        margin: 0;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
 
-+       .webchat__typingIndicator {
-+         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
-+         font-size: 14px;
-+         padding: 10px;
-+       }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script type="text/babel">
-        (async function() {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          const { token } = await res.json();
-          const { ReactWebChat } = window.WebChat;
+      .webchat__typingIndicator {
+        font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+        font-size: 14px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel" data-presets="es2015,react,stage-3">
+      (async function() {
 
-          window.ReactDOM.render(
--           <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
-+           <ReactWebChat
-+             directLine={window.WebChat.createDirectLine({ token })}
-+             sendTypingIndicator={true}
-+             typingIndicatorMiddleware={() => next => ({ activeTyping }) => {
-+               activeTyping = Object.values(activeTyping);
-+
-+               return (
-+                 !!activeTyping.length && (
-+                   <span className="webchat__typingIndicator">
-+                     Currently typing:{' '}
-+                     {activeTyping
-+                       .map(({ role }) => role)
-+                       .sort()
-+                       .join(', ')}
-+                   </span>
-+                 )
-+               );
-+             }}
-+           />,
-            document.getElementById('webchat')
-          );
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const { ReactWebChat } = window.WebChat;
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        window.ReactDOM.render(
+          <ReactWebChat
+            directLine={window.WebChat.createDirectLine({ token })}
+            sendTypingIndicator={true}
+            typingIndicatorMiddleware={() => next => ({ activeTyping }) => {
+              activeTyping = Object.values(activeTyping);
+
+              return (
+                !!activeTyping.length && (
+                  <span className="webchat__typingIndicator">
+                    Currently typing:{' '}
+                    {activeTyping
+                      .map(({ role }) => role)
+                      .sort()
+                      .join(', ')}
+                  </span>
+                )
+              );
+            }}
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

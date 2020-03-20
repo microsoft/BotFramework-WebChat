@@ -36,72 +36,84 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 
 ### Using authorization token
 
-```diff
-  <!DOCTYPE html>
-  <html lang="en-US">
-    <head>
-      <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-        html, body { height: 100% }
-        body { margin: 0 }
+<!-- prettier-ignore-start -->
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-        #webchat {
-          height: 100%;
-          width: 100%;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="webchat" role="main"></div>
-      <script>
-+       function createFetchSpeechServicesCredentials() {
-+         let expireAfter = 0;
-+         let lastPromise;
-+
-+         return () => {
-+           const now = Date.now();
-+
-+           if (now > expireAfter) {
-+             expireAfter = now + 300000;
-+             lastPromise = fetch(
-+               'https://webchat-mockbot.azurewebsites.net/speechservices/token',
-+               { method: 'POST' }
-+             ).then(
-+               res => res.json(),
-+               err => {
-+                 expireAfter = 0;
-+
-+                 return Promise.reject(err);
-+               }
-+             );
-+           }
-+
-+           return lastPromise;
-+         };
-+       }
-+
-+       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+      body {
+        margin: 0;
+      }
 
-        (async function () {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          const { token } = await res.json();
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      function createFetchSpeechServicesCredentials() {
+        let expireAfter = 0;
+        let lastPromise;
 
-+         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+           credentials: fetchSpeechServicesCredentials
-+         });
+        return () => {
+          const now = Date.now();
 
-          window.WebChat.renderWebChat({
+          if (now > expireAfter) {
+            expireAfter = now + 300000;
+            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
+              method: 'POST'
+            }).then(
+              res => res.json(),
+              err => {
+                expireAfter = 0;
+
+                return Promise.reject(err);
+              }
+            );
+          }
+
+          return lastPromise;
+        };
+      }
+
+      const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+
+      (async function() {
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          credentials: fetchSpeechServicesCredentials
+        });
+
+        window.WebChat.renderWebChat(
+          {
             directLine: window.WebChat.createDirectLine({ token }),
-+           webSpeechPonyfillFactory
-          }, document.getElementById('webchat'));
+            webSpeechPonyfillFactory
+          },
+          document.getElementById('webchat')
+        );
 
-          document.querySelector('#webchat > *').focus();
-        })().catch(err => console.error(err));
-      </script>
-    </body>
-  </html>
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

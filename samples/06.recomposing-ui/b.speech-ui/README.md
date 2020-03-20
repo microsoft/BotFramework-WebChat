@@ -65,15 +65,18 @@ We will be using the node package manager, and installing several dependencies i
 
 Let's set up the project.
 
+<!-- prettier-ignore-start -->
 ```sh
 cd C:\Users\You\Documents
 npx create-react-app 06.recomposing-ui/b.speech-ui
 cd 06.recomposing-ui/b.speech-ui
 npm i botframework-webchat
 ```
+<!-- prettier-ignore-end -->
 
 Note that once `create-react-app` finishes running, you should have the following directories and files:
 
+<!-- prettier-ignore-start -->
 ```sh
 .git
 node_modules
@@ -84,6 +87,7 @@ package.json
 README.md
 yarn.lock
 ```
+<!-- prettier-ignore-end -->
 
 > The `build` directory will also be visible if you are referencing the project within your local Web Chat repo.
 
@@ -91,12 +95,14 @@ Your source code will be located inside the `src` directory. When `npm start` is
 
 Create the following files in `src`:
 
+<!-- prettier-ignore-start -->
 ```sh
 CustomDictation.js
 CustomMicrophoneButton.js
 fetchSpeechToken.js
 LastBotActivity.js
 ```
+<!-- prettier-ignore-end -->
 
 Open the project in your preferred IDE.
 
@@ -105,28 +111,30 @@ Let's first work on fetching the Speech Services token, which we will need to re
 1. Initialize the variables `RENEW_EVERY`, `fetchPromise`, and `lastFetch`. These will be used to calculate the time between fetches, and return the token to the parent component, `App.js`.
 1. `fetch` will be called if the token is unknown, or if the `RENEW_EVERY` duration (300 seconds) has passed.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 const RENEW_EVERY = 300000;
 let fetchPromise,
-   lastFetch = 0;
+  lastFetch = 0;
 
 export default function() {
-   const now = Date.now();
+  const now = Date.now();
 
-   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
-         .then(res => res.json())
-         .then(({ token }) => token)
-         .catch(() => {
-            lastFetch = 0;
-         });
+  if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
+    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token)
+      .catch(() => {
+        lastFetch = 0;
+      });
 
-      lastFetch = now;
-   }
+    lastFetch = now;
+  }
 
-   return fetchPromise;
+  return fetchPromise;
 }
 ```
+<!-- prettier-ignore-end -->
 
 This component is finished and can be imported into `App.js`.
 
@@ -135,6 +143,7 @@ Next, let's create our Microphone Button. Web Chat already has a built-in Microp
 1. In `CustomMicrophoneButton.js`, import `React` and `{ Components }` from `botframework-webchat`. We will also import the Microphone icon
 1. Extract `connectMicrophoneButton` from `Components.
 
+<!-- prettier-ignore-start -->
 ```js
 import classNames from 'classnames';
 import React from 'react';
@@ -144,16 +153,19 @@ import MicrophoneIcon from './MicrophoneIcon';
 
 const { connectMicrophoneButton } = Components;
 ```
+<!-- prettier-ignore-end -->
 
 Next we will export a new `connectMicrophoneButton` method that will display the Microphone icon in a button and make it large.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
-   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
-      <MicrophoneIcon size="10vmin" />
-   </button>
+  <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+    <MicrophoneIcon size="10vmin" />
+  </button>
 ));
 ```
+<!-- prettier-ignore-end -->
 
 This component is finished and can now be imported into `App.js`.
 
@@ -165,28 +177,30 @@ We want to import the pieces that make up dictation, but we will render them dif
 1. Extract `connectDictationInterims` from Components and `DictateState`, `DICTATING`, and `STARTING` from `Constants`
 1. Modify the function `connectDictationInterims()` to render a paragraph that displays what speech is being detected, to be sent to the bot.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 
 import { Components, Constants } from 'botframework-webchat';
 
 const { connectDictationInterims } = Components;
 const {
-   DictateState: { DICTATING, STARTING }
+  DictateState: { DICTATING, STARTING }
 } = Constants;
 
 export default connectDictationInterims()(
-   ({ className, dictateInterims, dictateState }) =>
-      (dictateState === STARTING || dictateState === DICTATING) &&
-      !!dictateInterims.length && (
-         <p className={className}>
-            {dictateInterims.map((interim, index) => (
-               <span key={index}>{interim}&nbsp;</span>
-            ))}
-         </p>
-      )
+  ({ className, dictateInterims, dictateState }) =>
+    (dictateState === STARTING || dictateState === DICTATING) &&
+    !!dictateInterims.length && (
+      <p className={className}>
+        {dictateInterims.map((interim, index) => (
+          <span key={index}>{interim}&nbsp;</span>
+        ))}
+      </p>
+    )
 );
 ```
+<!-- prettier-ignore-end -->
 
 Next is the `LastBotActivity`, which will be displayed in place of a transcript.
 
@@ -194,7 +208,8 @@ Next is the `LastBotActivity`, which will be displayed in place of a transcript.
 1. Extract `SpeakActivity` from `Components`
 1. Modify the function `connectToWebChat`, which will show the latest activity text from the bot as well as speak it.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 
 import { connectToWebChat, Components } from 'botframework-webchat';
@@ -202,29 +217,31 @@ import { connectToWebChat, Components } from 'botframework-webchat';
 const { SpeakActivity } = Components;
 
 export default connectToWebChat(({ activities }) => ({
-   activity: activities
-      .slice()
-      .reverse()
-      .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
+  activity: activities
+    .slice()
+    .reverse()
+    .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
 }))(
-   ({ activity }) =>
-      !!activity && (
-         <React.Fragment>
-            <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
-         </React.Fragment>
-      )
+  ({ activity }) =>
+    !!activity && (
+      <React.Fragment>
+        <p>{activity.text}</p>
+        {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+      </React.Fragment>
+    )
 );
 ```
+<!-- prettier-ignore-end -->
 
 Finally, let's return to `App.js`. Your imports should look like the following:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import './App.css';
 import {
-   Components,
-   createDirectLine,
-   createCognitiveServicesSpeechServicesPonyfillFactory
+  Components,
+  createDirectLine,
+  createCognitiveServicesSpeechServicesPonyfillFactory
 } from 'botframework-webchat';
 import React, { Component } from 'react';
 
@@ -235,9 +252,11 @@ import LastBotActivity from './LastBotActivity';
 
 const { Composer } = Components;
 ```
+<!-- prettier-ignore-end -->
 
 Create and export the React App Component. Then set up the constructor, which will initialize the `state` of `directLine` as `null`
 
+<!-- prettier-ignore-start -->
 ```js
 export default class App extends Component {
   constructor(props) {
@@ -249,11 +268,13 @@ export default class App extends Component {
   }
 …
 ```
+<!-- prettier-ignore-end -->
 
 We want to use the `componentDidMount()` lifecycle method to handle fetching a token from Mock Bot. It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit this [tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 We will also use our newly made component, `fetchSpeechServicesToken`, with a hard-coded region to build up the `webSpeechPonyfillFactory` in the creation of DirectLine.
 
+<!-- prettier-ignore-start -->
 ```js
 async componentDidMount() {
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -270,6 +291,7 @@ async componentDidMount() {
   }));
 }
 ```
+<!-- prettier-ignore-end -->
 
 Next we'll build the render method for App.
 
@@ -277,7 +299,8 @@ Next we'll build the render method for App.
 1. `<Composer>` will be rendered when directLine is not falsy
 1. Inside the Composer, we will use our newly made components'
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 render() {
   const {
     state: { directLine }
@@ -299,6 +322,7 @@ render() {
   );
 }
 ```
+<!-- prettier-ignore-end -->
 
 This brings all of our new components together cohesively into the app.
 
@@ -306,12 +330,13 @@ This brings all of our new components together cohesively into the app.
 
 `App.js`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import './App.css';
 import {
-   Components,
-   createDirectLine,
-   createCognitiveServicesSpeechServicesPonyfillFactory
+  Components,
+  createDirectLine,
+  createCognitiveServicesSpeechServicesPonyfillFactory
 } from 'botframework-webchat';
 import React, { Component } from 'react';
 
@@ -323,54 +348,56 @@ import LastBotActivity from './LastBotActivity';
 const { Composer } = Components;
 
 export default class App extends Component {
-   constructor(props) {
-      super(props);
+  constructor(props) {
+    super(props);
 
-      this.state = {
-         directLine: null
-      };
-   }
+    this.state = {
+      directLine: null
+    };
+  }
 
-   async componentDidMount() {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-      const { token } = await res.json();
+  async componentDidMount() {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
 
-      this.setState(() => ({
-         directLine: createDirectLine({
-            token,
-            webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
-               region: 'westus',
-               token: fetchSpeechServicesToken
-            })
-         })
-      }));
-   }
+    this.setState(() => ({
+      directLine: createDirectLine({
+        token,
+        webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
+          region: 'westus',
+          token: fetchSpeechServicesToken
+        })
+      })
+    }));
+  }
 
-   render() {
-      const {
-         state: { directLine }
-      } = this;
+  render() {
+    const {
+      state: { directLine }
+    } = this;
 
-      return (
-         !!directLine && (
-            <Composer directLine={directLine}>
-               <div className="App">
-                  <header className="App-header">
-                     <CustomMicrophoneButton className="App-speech-button" />
-                     <CustomDictationInterims className="App-speech-interims" />
-                     <LastBotActivity className="App-bot-activity" />
-                  </header>
-               </div>
-            </Composer>
-         )
-      );
-   }
+    return (
+      !!directLine && (
+        <Composer directLine={directLine}>
+          <div className="App">
+            <header className="App-header">
+              <CustomMicrophoneButton className="App-speech-button" />
+              <CustomDictationInterims className="App-speech-interims" />
+              <LastBotActivity className="App-bot-activity" />
+            </header>
+          </div>
+        </Composer>
+      )
+    );
+  }
 }
 ```
+<!-- prettier-ignore-end -->
 
 `LastBotActivity`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 
 import { connectToWebChat, Components } from 'botframework-webchat';
@@ -378,49 +405,53 @@ import { connectToWebChat, Components } from 'botframework-webchat';
 const { SpeakActivity } = Components;
 
 export default connectToWebChat(({ activities }) => ({
-   activity: activities
-      .slice()
-      .reverse()
-      .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
+  activity: activities
+    .slice()
+    .reverse()
+    .find(({ from: { role }, type }) => role === 'bot' && type === 'message')
 }))(
-   ({ activity }) =>
-      !!activity && (
-         <React.Fragment>
-            <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
-         </React.Fragment>
-      )
+  ({ activity }) =>
+    !!activity && (
+      <React.Fragment>
+        <p>{activity.text}</p>
+        {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+      </React.Fragment>
+    )
 );
 ```
+<!-- prettier-ignore-end -->
 
 `CustomDictationInterims`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 
 import { Components, Constants } from 'botframework-webchat';
 
 const { connectDictationInterims } = Components;
 const {
-   DictateState: { DICTATING, STARTING }
+  DictateState: { DICTATING, STARTING }
 } = Constants;
 
 export default connectDictationInterims()(
-   ({ className, dictateInterims, dictateState }) =>
-      (dictateState === STARTING || dictateState === DICTATING) &&
-      !!dictateInterims.length && (
-         <p className={className}>
-            {dictateInterims.map((interim, index) => (
-               <span key={index}>{interim}&nbsp;</span>
-            ))}
-         </p>
-      )
+  ({ className, dictateInterims, dictateState }) =>
+    (dictateState === STARTING || dictateState === DICTATING) &&
+    !!dictateInterims.length && (
+      <p className={className}>
+        {dictateInterims.map((interim, index) => (
+          <span key={index}>{interim}&nbsp;</span>
+        ))}
+      </p>
+    )
 );
 ```
+<!-- prettier-ignore-end -->
 
 `CustomMicrophoneButton`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import classNames from 'classnames';
 import React from 'react';
 import { Components } from 'botframework-webchat';
@@ -430,36 +461,39 @@ import MicrophoneIcon from './MicrophoneIcon';
 const { connectMicrophoneButton } = Components;
 
 export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
-   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
-      <MicrophoneIcon size="10vmin" />
-   </button>
+  <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+    <MicrophoneIcon size="10vmin" />
+  </button>
 ));
 ```
+<!-- prettier-ignore-end -->
 
 `fetchSpeechServicesToken`:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 const RENEW_EVERY = 300000;
 let fetchPromise,
-   lastFetch = 0;
+  lastFetch = 0;
 
 export default function() {
-   const now = Date.now();
+  const now = Date.now();
 
-   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
-         .then(res => res.json())
-         .then(({ token }) => token)
-         .catch(() => {
-            lastFetch = 0;
-         });
+  if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
+    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token)
+      .catch(() => {
+        lastFetch = 0;
+      });
 
-      lastFetch = now;
-   }
+    lastFetch = now;
+  }
 
-   return fetchPromise;
+  return fetchPromise;
 }
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 
