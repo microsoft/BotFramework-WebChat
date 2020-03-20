@@ -649,7 +649,7 @@ renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
 ```
 <!-- prettier-ignore-end -->
 
-To modify this value, change the value in the style options prop passed to Web Chat.
+The Markdown engine can be reconfigured by passing `renderMarkdown` prop to Web Chat. The default engine is a customized [Markdown-It](https://npmjs.com/package/markdown-it) with [HTML sanitizer](https://npmjs.com/package/sanitize-html) and [support `aria-label` attribute](https://npmjs.com/package/markdown-it-attrs). The customization can be found in [bundle/src/renderMarkdown.js](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/bundle/src/renderMarkdown.js).
 
 ## `useRenderToast`
 

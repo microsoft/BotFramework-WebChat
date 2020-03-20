@@ -43,6 +43,13 @@ describe('renderMarkdown', () => {
     );
   });
 
+  it('should render aria-labels', () => {
+    const options = { markdownRespectCRLF: true };
+    expect(renderMarkdown('[example](sample.com){aria-label="Sample label"}', options)).toBe(
+      '<p><a href="sample.com" aria-label="Sample label" target="_blank">example</a></p>\n'
+    );
+  });
+
   it('should render sip protocol links correctly', () => {
     const options = { markdownRespectCRLF: true };
     expect(renderMarkdown(`[example@test.com](sip:example@test.com)`, options)).toBe(

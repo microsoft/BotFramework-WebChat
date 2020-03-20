@@ -37,6 +37,8 @@
     "botframework-webchat-core": "0.0.0-0",
     "core-js": "^3.6.4",
     "markdown-it": "^10.0.0",
+    "markdown-it-attrs": "^3.0.2",
+    "markdown-it-attrs-es5": "^1.0.0",
     "markdown-it-for-inline": "^0.1.1",
     "memoize-one": "^5.1.1",
     "microsoft-cognitiveservices-speech-sdk": "1.6.0",
