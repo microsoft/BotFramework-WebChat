@@ -72,7 +72,7 @@ const customMarkdownIt = new MarkdownIt({
     if (~relAttrIndex) {
       tokens[index].attrs[relAttrIndex][1] = 'noopener noreferrer';
     } else {
-      tokens[index].attrPush(['target', 'noopener noreferrer']);
+      tokens[index].attrPush(['rel', 'noopener noreferrer']);
     }
   });
 
