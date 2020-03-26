@@ -287,8 +287,10 @@ renderWebChat(
     }),
     locale: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      }
     })
   },
   document.getElementById('webchat')
@@ -395,8 +397,10 @@ In the following code, voice is selected based on the language of the synthesizi
 +     }
 +   }
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      }
     })
   }, document.getElementById('webchat'));
 ```
@@ -418,9 +422,12 @@ You will then need to modify your integration code as below.
     }),
     language: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
++     },
 +     speechRecognitionEndpointId: 'YOUR_ENDPOINT_ID',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
     })
   }, document.getElementById('webchat'));
 ```
@@ -443,9 +450,12 @@ You will then need to modify your integration code as below. The `selectVoice` f
     language: 'en-US',
 +   selectVoice: () => ({ voiceURI: 'YOUR_VOICE_MODEL_NAME' }),
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
++     },
 +     speechSynthesisDeploymentId: 'YOUR_DEPLOYMENT_ID',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
     })
   }, document.getElementById('webchat'));
 ```
@@ -463,9 +473,12 @@ To conserve bandwidth, you can set the text-to-speech audio format to one that c
     }),
     language: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
++     },
 +     speechSynthesisOutputFormat: 'audio-24khz-48kbitrate-mono-mp3',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
     })
   }, document.getElementById('webchat'));
 ```
@@ -487,8 +500,11 @@ To select different text normalization options, you will need to modify your int
     }),
     language: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'YOUR_REGION',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
++     },
 +     textNormalization: 'itn'
     })
   }, document.getElementById('webchat'));
@@ -507,23 +523,29 @@ By default, [Azure Cognitive Services will collect telemetry for service perform
     }),
     language: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
+      credentials: {
+        region: 'YOUR_REGION',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
++     },
 +     enableTelemtry: false,
-      region: 'YOUR_REGION',
-      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
     })
   }, document.getElementById('webchat'));
 ```
 
 ### Using authorization token
 
-This sample uses a subscription key for simplicity. If you need to use authorization token, you can pass a `Promise` function to the `authorizationToken` property. The function could potentially be a network call to your token server.
+This sample uses a subscription key for simplicity. If you need to use authorization token, you can pass a `Promise` function to the `credentials` property. The function could potentially be a network call to your token server.
 
 ```diff
-  async function fetchAuthorizationToken() {
-    const res = await fetch('/api/speechtoken');
+  async function fetchCredentials() {
+    const res = await fetch('/api/authorizationtoken');
 
     if (res.ok) {
-      return await res.text();
+      return {
+        authorizationToken: await res.text(),
+        region: 'westus2'
+      };
     } else {
       throw new Error('Failed to retrieve authorization token for Cognitive Services.');
     }
@@ -537,14 +559,16 @@ This sample uses a subscription key for simplicity. If you need to use authoriza
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
 +     // Note we are passing the function, not the result of the function call, as there is no () appended to it.
 +     // This function will be called every time the authorization token is being used.
-+     authorizationToken: fetchAuthorizationToken,
-      region: 'YOUR_REGION',
--     subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
++     credentials: fetchCredentials
+-     credentials: {
+-       region: 'YOUR_REGION',
+-       subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
     })
   }, document.getElementById('webchat'));
 ```
 
-The function `fetchAuthorizationToken` will be called _every time_ a token is needed. For simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
+The function `fetchCredentials` will be called _every time_ a token is needed. For simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
 
 ### Using two subscription keys for speech-to-text and text-to-speech
 
@@ -552,13 +576,17 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 
 ```diff
 + const speechToTextPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
-+   region: 'YOUR_STT_REGION',
-+   subscriptionKey: 'YOUR_STT_SUBSCRIPTION_KEY',
++   credentials: {
++     region: 'YOUR_STT_REGION',
++     subscriptionKey: 'YOUR_STT_SUBSCRIPTION_KEY'
++   }
 + });
 
 + const textToSpeechPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
-+   region: 'YOUR_TTS_REGION',
-+   subscriptionKey: 'YOUR_TTS_SUBSCRIPTION_KEY',
++   credentials: {
++     region: 'YOUR_TTS_REGION',
++     subscriptionKey: 'YOUR_TTS_SUBSCRIPTION_KEY'
++   }
 + });
 
   renderWebChat({
@@ -567,8 +595,10 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
     }),
     language: 'en-US',
 -   webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
--     region: 'YOUR_REGION',
--     subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
+-     credentials: {
+-       region: 'YOUR_REGION',
+-       subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+-     }
 -   })
 +   webSpeechPonyfillFactory: options => {
 +     const { SpeechGrammarList, SpeechRecognition } = speechToTextPonyfillFactory(options);
@@ -587,6 +617,29 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 > Note: it is correct that `speechSynthesis` is in camel-casing, while others are in Pascal-casing.
 
 Using this approach, you can also combine two polyfills of different types. For example, speech recognition powered by Cognitive Services with browser-supported speech synthesis. You can refer to our Web Chat sample [on hybrid speech][sample: using hybrid speech engine] to learn more.
+
+### Using sovereign cloud
+
+If you need to use sovereign cloud such as [Azure Government (United States)](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/sovereign-clouds#azure-government-united-states) or [Microsoft Azure China](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/sovereign-clouds#microsoft-azure-china), you will need to configure a specific host name. When generating an authorization token, you should use the corresponding token URL.
+
+For details on setting up sovereign cloud and their limitations, please refer to [this article](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/sovereign-clouds).
+
+```diff
+  renderWebChat({
+    directLine: createDirectLine({
+      secret: 'YOUR_DIRECT_LINE_SECRET'
+    }),
+    language: 'en-US',
+    webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
+      credentials: {
+-       region: 'westus2',
++       speechRecognitionHostname: 'virginia.stt.speech.azure.us',
++       speechSynthesisHostname: 'virginia.tts.speech.azure.us',
+        subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+      }
+    })
+  }, document.getElementById('webchat'));
+```
 
 ## Related articles
 

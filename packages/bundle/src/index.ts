@@ -7,7 +7,6 @@ import { Components as MinimalComponents, hooks, version } from './index-minimal
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
-import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
 import createStyleSet from './createFullStyleSet';
 import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
@@ -44,7 +43,6 @@ export default ReactWebChat;
 export {
   Components,
   createAdaptiveCardsAttachmentMiddleware,
-  createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLineSpeechAdapters,
   createStyleSet,
@@ -56,7 +54,6 @@ export {
 window['WebChat'] = {
   ...window['WebChat'],
   createAdaptiveCardsAttachmentMiddleware,
-  createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
   createDirectLineSpeechAdapters,

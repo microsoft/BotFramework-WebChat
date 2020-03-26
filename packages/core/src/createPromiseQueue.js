@@ -1,4 +1,4 @@
-import createDeferred from './createDeferred';
+import createDeferred from 'p-defer-es5';
 
 export default function createPromiseQueue() {
   let deferred;
