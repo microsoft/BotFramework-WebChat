@@ -30,33 +30,33 @@ The `index.html` page has one main goal:
 We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as our Web Chat template.
 
 ```diff
-…
-window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-+ cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
-+   const { type, value } = cardAction;
+  …
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
++     const { type, value } = cardAction;
 +
-+   switch (type) {
-+     case 'signin':
-+       const popup = window.open();
-+       const url = await getSignInUrl();
++     switch (type) {
++       case 'signin':
++         const popup = window.open();
++         const url = await getSignInUrl();
 +
-+       popup.location.href = url;
++         popup.location.href = url;
 +
-+       break;
++         break;
 +
-+     case 'openUrl':
-+       if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
-+         window.open(value, '_blank');
-+       }
++       case 'openUrl':
++         if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
++           window.open(value, '_blank');
++         }
 +
-+       break;
++         break;
 +
-+     default:
-+       return next({ cardAction, getSignInUrl });
-+   }
-  },
-…
++       default:
++         return next({ cardAction, getSignInUrl });
++     }
+    },
+  …
 ```
 
 To prevent getting blocked by a popup blocker, the `window.open()` must be called immediately inside `cardActionMiddleware`.
@@ -69,18 +69,25 @@ To prevent getting blocked by a popup blocker, the `window.open()` must be calle
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Browser-supported speech</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <title>Web Chat: Customize open URL behavior</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
 
-      #webchat,
-      #webchat > * {
+      body {
+        margin: 0;
+      }
+
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -89,44 +96,49 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
+
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        window.WebChat.renderWebChat({
--         directLine: window.WebChat.createDirectLine({ token })
-          directLine: window.WebChat.createDirectLine({ token }),
-+         cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
-+           const { type, value } = cardAction;
-+
-+           switch (type) {
-+             case 'signin':
-+               const popup = window.open();
-+               const url = await getSignInUrl();
-+
-+               popup.location.href = url;
-+
-+               break;
-+
-+             case 'openUrl':
-+               if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
-+                 window.open(value, '_blank');
-+               }
-+
-+               break;
-+
-+             default:
-+               return next({ cardAction, getSignInUrl });
-+           }
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+
+            cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+              const { type, value } = cardAction;
+
+              switch (type) {
+                case 'signin':
+                  const popup = window.open();
+                  const url = await getSignInUrl();
+
+                  popup.location.href = url;
+
+                  break;
+
+                case 'openUrl':
+                  if (confirm(`Do you want to open this URL?\n\n${value}`)) {
+                    window.open(value, '_blank');
+                  }
+
+                  break;
+
+                default:
+                  return next({ cardAction, getSignInUrl });
+              }
+            }
           },
-        }, document.getElementById('webchat'));
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>
 </html>
-
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

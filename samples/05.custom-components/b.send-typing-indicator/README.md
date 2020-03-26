@@ -28,28 +28,33 @@ This sample shows Web Chat users how to enable the typing indicator activity fro
 All you need to do is add the `sendTypingIndicator` option to the `renderWebChat` method. The default value is `false`.
 
 ```diff
- window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-+ sendTypingIndicator: true,
-
-}, document.getElementById('webchat'));
-
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   sendTypingIndicator: true
+  }, document.getElementById('webchat'));
 ```
 
 ## Completed code
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Send typing indicator</title>
-
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -60,23 +65,35 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         sendTypingIndicator: true,
-        }, document.getElementById('webchat'));
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing' } });
+          }
+
+          return next(action);
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            sendTypingIndicator: true,
+            store
+          },
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>
 </html>
-
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

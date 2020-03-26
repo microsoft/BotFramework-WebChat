@@ -34,7 +34,6 @@ First, we will set up our store to use middleware that will dispatch an event wh
       return next(action);
     }
   );
-
 ```
 
 Next, add an event listener to write to the console whenever `webchatincomingactivity` is detected, like so:
@@ -49,26 +48,33 @@ Next, add an event listener to write to the console whenever `webchatincomingact
 Make sure our new store is added to the render of Web Chat, and that's it!
 
 ```diff
-window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-+ store
-}, document.getElementById('webchat'));
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   store
+  }, document.getElementById('webchat'));
 ```
 
 ## Completed Code
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Incoming activity to JavaScript event</title>
-
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -79,43 +85,42 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // We are adding a new middleware to customize the behavior of DIRECT_LINE/INCOMING_ACTIVITY.
-        const store = window.WebChat.createStore(
-          {},
-          ({ dispatch }) => next => action => {
-+           if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-+             const event = new Event('webchatincomingactivity');
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+            const event = new Event('webchatincomingactivity');
 
-+             event.data = action.payload.activity;
-+             window.dispatchEvent(event);
-+           }
-
-            return next(action);
+            event.data = action.payload.activity;
+            window.dispatchEvent(event);
           }
+
+          return next(action);
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            store
+          },
+          document.getElementById('webchat')
         );
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         store
-        }, document.getElementById('webchat'));
-
-+       window.addEventListener('webchatincomingactivity', ({ data }) => {
-+         console.log(`Received an activity of type "${ data.type }":`);
-+         console.log(data);
-+       });
+        window.addEventListener('webchatincomingactivity', ({ data }) => {
+          console.log(`Received an activity of type "${data.type}":`);
+          console.log(data);
+        });
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>
 </html>
-
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

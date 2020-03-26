@@ -112,82 +112,84 @@ We will intercept all incoming activities. If the incoming activity is a message
 
 Here is the finished `index.html`:
 
+<!-- prettier-ignore-start -->
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-   <head>
-      <title>Web Chat: Change locale</title>
+  <head>
+    <title>Web Chat: Change locale</title>
 
-      <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
-      <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-      <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-      <style>
-         html,
-         body {
-            height: 100%;
-         }
+    <script src="https://unpkg.com/@babel/standalone@7.7.5/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-         body {
-            margin: 0;
-         }
+      body {
+        margin: 0;
+      }
 
-         #webchat {
-            height: 100%;
-            width: 100%;
-         }
-      </style>
-   </head>
-   <body>
-      <div id="webchat" role="main"></div>
-      <script>
-         (async function() {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-            const { token } = await res.json();
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function() {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
 
-            const { useMemo, useState } = window.React;
-            const { createDirectLine, createStore, ReactWebChat } = window.WebChat;
+        const { useMemo, useState } = window.React;
+        const { createDirectLine, createStore, ReactWebChat } = window.WebChat;
 
-            const App = () => {
-               const [locale, setLocale] = useState(navigator.language);
-               const directLine = useMemo(() => createDirectLine({ token }), []);
-               const store = useMemo(
-                  () =>
-                     createStore({}, () => next => action => {
-                        if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-                           const {
-                              activity: {
-                                 from: { role },
-                                 text,
-                                 type
-                              }
-                           } = action.payload;
+        const App = () => {
+          const [locale, setLocale] = useState(navigator.language);
+          const directLine = useMemo(() => createDirectLine({ token }), []);
+          const store = useMemo(
+            () =>
+              createStore({}, () => next => action => {
+                if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+                  const {
+                    activity: {
+                      from: { role },
+                        text,
+                        type
+                    }
+                  } = action.payload;
 
-                           if (
-                              role === 'bot' &&
-                              type === 'message' &&
-                              (text === 'en-US' || text === 'ja-JP' || text === 'zh-HK')
-                           ) {
-                              setLocale(text);
-                           }
-                        }
+                  if (
+                    role === 'bot' &&
+                    type === 'message' &&
+                    (text === 'en-US' || text === 'ja-JP' || text === 'zh-HK')
+                  ) {
+                    setLocale(text);
+                  }
+                }
 
-                        return next(action);
-                     }),
-                  []
-               );
+                return next(action);
+              }),
+            []
+          );
 
-               return <ReactWebChat directLine={directLine} locale={locale} store={store} />;
-            };
+          return <ReactWebChat directLine={directLine} locale={locale} store={store} />;
+        };
 
-            window.ReactDOM.render(<App />, document.getElementById('webchat'));
+        window.ReactDOM.render(<App />, document.getElementById('webchat'));
 
-            document.querySelector('#webchat > *').focus();
-         })().catch(err => console.error(err));
-      </script>
-   </body>
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

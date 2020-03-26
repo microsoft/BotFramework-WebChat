@@ -83,21 +83,23 @@ The authorization token is generated using subscription key. To secure the token
 
 First, create an async function `fetchCredentials`. When called, it will fetch the authorization token from the server. In this sample, the token is fetched from the demo bot, Mock Bot. The function will return `authorizationToken` and `region` in a JavaScript object.
 
+<!-- prettier-ignore-start -->
 ```js
 const fetchCredentials = async () => {
-   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-      method: 'POST'
-   });
+  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+    method: 'POST'
+  });
 
-   if (!res.ok) {
-      throw new Error('Failed to fetch authorization token and region.');
-   }
+  if (!res.ok) {
+    throw new Error('Failed to fetch authorization token and region.');
+  }
 
-   const { region, token: authorizationToken } = await res.json();
+  const { region, token: authorizationToken } = await res.json();
 
-   return { authorizationToken, region };
+  return { authorizationToken, region };
 };
 ```
+<!-- prettier-ignore-end -->
 
 Then, pass the function as an option to the Direct Line Speech SDK. The name of the option is `fetchCredentials`.
 
@@ -122,67 +124,67 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
 
 ## Completed code
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
+  <head>
+    <title>Web Chat: Using Direct Line Speech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
 
-<head>
-  <title>Web Chat: Using Direct Line Speech</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
+      body {
+        margin: 0;
+      }
 
-    body {
-      margin: 0;
-    }
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-    #webchat {
-      height: 100%;
-      width: 100%;
-    }
-  </style>
-</head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function() {
+        const fetchCredentials = async () => {
+          const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+            method: 'POST'
+          });
 
-<body>
-  <div id="webchat" role="main"></div>
-  <script>
-    (async function () {
-+     const fetchCredentials = async () => {
-+       const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-+         method: 'POST'
-+       });
-+
-+       if (!res.ok) {
-+         throw new Error('Failed to fetch authorization token and region.');
-+       }
-+
-+       const { region, token: authorizationToken } = await res.json();
-+
-+       return { authorizationToken, region };
-+     };
+          if (!res.ok) {
+            throw new Error('Failed to fetch authorization token and region.');
+          }
 
-+     const adapters = await window.WebChat.createDirectLineSpeechAdapters({
-+       fetchCredentials
-+     });
+          const { region, token: authorizationToken } = await res.json();
 
-      window.WebChat.renderWebChat(
-        {
-+         ...adapters
-        },
-        document.getElementById('webchat')
-      );
+          return { authorizationToken, region };
+        };
 
-      document.querySelector('#webchat > *').focus();
-    })().catch(err => console.error(err));
-  </script>
-</body>
+        const adapters = await window.WebChat.createDirectLineSpeechAdapters({
+          fetchCredentials
+        });
 
+        window.WebChat.renderWebChat(
+          {
+            ...adapters
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
 </html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

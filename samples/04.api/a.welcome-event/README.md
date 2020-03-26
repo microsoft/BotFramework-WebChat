@@ -21,7 +21,7 @@ This popular feature is often implemented as a welcome message from the bot.
 We will simply implement our own store and add an activity when `'DIRECT_LINE/CONNECT_FULFILLED'` events are detected, like so:
 
 ```diff
- const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+  const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
 +   if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
 +     dispatch({
 +       type: 'WEB_CHAT/SEND_EVENT',
@@ -40,28 +40,37 @@ On your bot, you will need to add a filter to post the welcome message when `web
 
 Mock Bot welcome message:
 
+<!-- prettier-ignore-start -->
 ```js
 if (context.activity.name === 'webchat/join') {
-   await context.sendActivity(
-      `Got \`webchat/join\` event, your language is \`${(context.activity.value || {}).language}\``
-   );
+  await context.sendActivity(
+    `Got \`webchat/join\` event, your language is \`${(context.activity.value || {}).language}\``
+  );
 }
 ```
+<!-- prettier-ignore-end -->
 
 ## Completed Code
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Send welcome event</title>
-
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -72,36 +81,38 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat"></div>
     <script>
-      (async function () {
-
+      (async function() {
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({
+              type: 'WEB_CHAT/SEND_EVENT',
+              payload: {
+                name: 'webchat/join',
+                value: { language: window.navigator.language }
+              }
+            });
+          }
 
-+       const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-+         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-+           dispatch({
-+             type: 'WEB_CHAT/SEND_EVENT',
-+             payload: {
-+               name: 'webchat/join',
-+               value: { language: window.navigator.language }
-+             }
-+           });
-+         }
-+         return next(action);
-+       });
+          return next(action);
+        });
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+        store
-        }, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            store
+          },
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>
 </html>
-
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

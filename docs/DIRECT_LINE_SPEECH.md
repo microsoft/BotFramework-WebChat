@@ -258,21 +258,23 @@ To secure the conversation, you will need to set up a REST API to generate the c
 
 In the following code snippets, we assume sending a HTTP POST request to https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token will return with a JSON with `authorizationToken` and `region`.
 
+<!-- prettier-ignore-start -->
 ```js
 const fetchCredentials = async () => {
-   const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-      method: 'POST'
-   });
+  const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+    method: 'POST'
+  });
 
-   if (!res.ok) {
-      throw new Error('Failed to fetch authorization token and region.');
-   }
+  if (!res.ok) {
+    throw new Error('Failed to fetch authorization token and region.');
+  }
 
-   const { authorizationToken, region } = await res.json();
+  const { authorizationToken, region } = await res.json();
 
-   return { authorizationToken, region };
+  return { authorizationToken, region };
 };
 ```
+<!-- prettier-ignore-end -->
 
 > Since the token expire after 10 minutes, it is advised to cache this token for 5 minutes. You can use either HTTP header `Cache-Control` on the REST API, or implement a memoization function in the browser.
 
@@ -280,18 +282,20 @@ const fetchCredentials = async () => {
 
 After you have the `fetchCredentials` function set up, you can pass it to `createDirectLineSpeechAdapters` function. This function will return a set of adapters that is used by Web Chat. It includes DirectLineJS adapter and Web Speech adapter.
 
+<!-- prettier-ignore-start -->
 ```js
 const adapters = await window.WebChat.createDirectLineSpeechAdapters({
-   fetchCredentials
+  fetchCredentials
 });
 
 window.WebChat.renderWebChat(
-   {
-      ...adapters
-   },
-   document.getElementById('webchat')
+  {
+    ...adapters
+  },
+  document.getElementById('webchat')
 );
 ```
+<!-- prettier-ignore-end -->
 
 > The code above will requires transpilation for browser which do not support the [spread operator](https://caniuse.com/#feat=mdn-javascript_operators_spread_spread_in_destructuring).
 

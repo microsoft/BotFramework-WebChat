@@ -2,7 +2,7 @@
 
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
-import markdownItAttrs from 'markdown-it-attrs';
+import markdownItAttrs from 'markdown-it-attrs-es5';
 import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
@@ -72,7 +72,7 @@ const customMarkdownIt = new MarkdownIt({
     if (~relAttrIndex) {
       tokens[index].attrs[relAttrIndex][1] = 'noopener noreferrer';
     } else {
-      tokens[index].attrPush(['target', 'noopener noreferrer']);
+      tokens[index].attrPush(['rel', 'noopener noreferrer']);
     }
   });
 

@@ -57,29 +57,38 @@ We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full
 Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
 
 ```diff
-…
-<head>
-+ <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-</head>
-…
+  …
+  <head>
++   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+-   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  </head>
+  …
 ```
 
 ## Completed code
 
 Here is the finished `index.html`:
 
-```diff
+<!-- prettier-ignore-start -->
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
-
-+   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
--   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      crossorigin="anonymous"
+      src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"
+    ></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -90,26 +99,30 @@ Here is the finished `index.html`:
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      window.fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
-        .then(function (res) {
+      window
+        .fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
+        .then(function(res) {
           return res.json();
         })
-        .then(function (json) {
+        .then(function(json) {
           const token = json.token;
 
-          window.WebChat.renderWebChat({
-            directLine: window.WebChat.createDirectLine({
-              token: token
-            })
-          }, document.getElementById('webchat'));
+          window.WebChat.renderWebChat(
+            {
+              directLine: window.WebChat.createDirectLine({
+                token: token
+              })
+            },
+            document.getElementById('webchat')
+          );
 
           document.querySelector('#webchat > *').focus();
         });
     </script>
   </body>
 </html>
-
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

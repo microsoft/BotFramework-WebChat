@@ -50,19 +50,89 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 
 ## Completed code
 
-```js
-window.WebChat.renderWebChat(
-   {
-      directLine: window.WebChat.createDirectLine({ token }),
-      selectVoice: (voices, activity) =>
-         activity.locale === 'zh-HK'
-            ? voices.find(({ name }) => /TracyRUS/iu.test(name))
-            : voices.find(({ name }) => /JessaNeural/iu.test(name)) || voices.find(({ name }) => /Jessa/iu.test(name)),
-      webSpeechPonyfillFactory
-   },
-   document.getElementById('webchat')
-);
+<!-- prettier-ignore-start -->
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Selecting voice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      function createFetchSpeechServicesCredentials() {
+        let expireAfter = 0;
+        let lastPromise;
+
+        return () => {
+          const now = Date.now();
+
+          if (now > expireAfter) {
+            expireAfter = now + 300000;
+            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
+              method: 'POST'
+            }).then(
+              res => res.json(),
+              err => {
+                expireAfter = 0;
+
+                return Promise.reject(err);
+              }
+            );
+          }
+
+          return lastPromise;
+        };
+      }
+
+      const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+
+      (async function() {
+        const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+          method: 'POST'
+        });
+        const { token } = await directLineTokenResponse.json();
+        const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          credentials: fetchSpeechServicesCredentials
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            selectVoice: (voices, activity) =>
+              activity.locale === 'zh-HK'
+                ? voices.find(({ name }) => /TracyRUS/iu.test(name))
+                : voices.find(({ name }) => /JessaNeural/iu.test(name)) ||
+                  voices.find(({ name }) => /Jessa/iu.test(name)),
+            webSpeechPonyfillFactory
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

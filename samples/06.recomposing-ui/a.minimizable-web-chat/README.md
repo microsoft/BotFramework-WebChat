@@ -74,11 +74,13 @@ First we will render Web Chat. To test, you can temporarily add `<WebChat>` to y
 
 In the `WebChat.js` file, import `memoize`, `React`, `ReactWebChat`, `createDirectLine`, and `createStyleSet` from our packages.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import memoize from 'memoize-one';
 import React from 'react';
 import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
 ```
+<!-- prettier-ignore-end -->
 
 Set up the component the same way you would set up a regular `React.Component`
 
@@ -86,7 +88,8 @@ Set up the component the same way you would set up a regular `React.Component`
 1. In the constructor you can set state and `createDirectLine` with your token. It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit this [tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 1. Inside render, be sure to return the `<ReactWebChat>` component.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 constructor(props) {
   super(props);
 
@@ -99,30 +102,33 @@ constructor(props) {
   };
 }
 
-  render() {
-    const {
-      props: { className, store, token },
-      state: { styleSet }
-    } = this;
+render() {
+  const {
+    props: { className, store, token },
+    state: { styleSet }
+  } = this;
 
-    return (
-      <ReactWebChat
-        className={ `${ className || '' } web-chat` }
-        directLine={ this.createDirectLine(token) }
-        store={ store }
-        styleSet={ styleSet }
-      />
-    );
-  }
+  return (
+    <ReactWebChat
+      className={ `${ className || '' } web-chat` }
+      directLine={ this.createDirectLine(token) }
+      store={ store }
+      styleSet={ styleSet }
+    />
+  );
+}
 ```
+<!-- prettier-ignore-end -->
 
 Create the React method `componentDidMount` and invoke `onFetchToken` from props if the `token` has not been passed from the parent component.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 componentDidMount() {
   !this.props.token && this.props.onFetchToken();
 }
 ```
+<!-- prettier-ignore-end -->
 
 > Note: `onFetchToken()` is a method that will be implemented in `MinimizableWebChat.js`.
 
@@ -130,12 +136,14 @@ Let's move on to building the `<MinimizableWebChat>` component.
 
 Import `React`, `createStore`, and `createStyleSet`. Then import your newly made component, `WebChat`.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 import { createStore, createStyleSet } from 'botframework-webchat';
 
 import WebChat from './WebChat';
 ```
+<!-- prettier-ignore-end -->
 
 1. Create the `render()` method
    1. Create the state object. It should track the following:
@@ -149,7 +157,8 @@ import WebChat from './WebChat';
       1. Render the `<WebChat>` component when the state is not minimized
       1. Create a header for the <WebChat> container with two buttons: one to switch sides of the window and the other to minimize the component
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 render() {
   const { state: {
     minimized,
@@ -205,13 +214,15 @@ render() {
   );
 }
 ```
+<!-- prettier-ignore-end -->
 
 1. Create the `constructor()`
    1. In the constructor, create the store with `createStore()`
    1. If the role of incoming activities is `'bot'`, set the state `newMessage: true`. This will be used to indicate when new messages have arrived to the bot when the chat is minimized
    1. Set the initial state.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 constructor(props) {
   super(props);
 
@@ -237,15 +248,18 @@ constructor(props) {
   };
 }
 ```
+<!-- prettier-ignore-end -->
 
 Next, let's build the helper functions. Those are:
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 handleFetchToken; // Fetch token from the server. This will happen when Web Chat is rendered
 handleMaximizeButtonClick; // Maximize Web Chat when button is clicked
 handleMinimizeButtonClick; // Minimize Web Chat when button is clicked
 handleSwitchButtonClick; // Toggle between left and right side of the screen when button is clicked
 ```
+<!-- prettier-ignore-end -->
 
 In the constructor, use `.bind()` to bind the methods to `this`
 
@@ -262,6 +276,7 @@ constructor(props) {
 
 Now we will implement each method:
 
+<!-- prettier-ignore-start -->
 ```js
 async handleFetchToken() {
   if (!this.state.token) {
@@ -292,6 +307,7 @@ handleSwitchButtonClick() {
   }));
 }
 ```
+<!-- prettier-ignore-end -->
 
 Then implement these methods into the component:
 
@@ -351,7 +367,6 @@ render() {
     </div>
   );
 }
-
 ```
 
 Let's move on to rendering the `<MinimizableWebChat>` component.
@@ -388,7 +403,8 @@ export default App;
 
 Completed `MinimizableWebChat.js`
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import React from 'react';
 import { createStore, createStyleSet } from 'botframework-webchat';
 
@@ -494,10 +510,12 @@ export default class extends React.Component {
    }
 }
 ```
+<!-- prettier-ignore-end -->
 
 Completed `WebChat.js`
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import memoize from 'memoize-one';
 import React from 'react';
 import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
@@ -547,6 +565,7 @@ export default class extends React.Component {
    }
 }
 ```
+<!-- prettier-ignore-end -->
 
 # Further reading
 

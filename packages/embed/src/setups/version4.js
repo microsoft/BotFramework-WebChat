@@ -25,8 +25,8 @@ export default async function setupVersionFamily4(
       styleOptions: {
         botAvatarImage: botIconURL
       },
-      userId,
-      username
+      userID: userId,
+      username: username
     },
     root
   );
