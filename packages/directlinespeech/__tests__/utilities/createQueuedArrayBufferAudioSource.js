@@ -11,18 +11,15 @@ import {
   // AudioStreamNodeErrorEvent,
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/AudioSourceEvents';
 
-import { EventSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/EventSource';
-
+import { createNoDashGuid } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
 import { Events } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Events';
-
+import { EventSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/EventSource';
 import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
-
 import { Stream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Stream';
 
-import { createNoDashGuid } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
-
 class QueuedArrayBufferAudioSource {
-  constructor(audioSourceId = createNoDashGuid()) {
+  constructor(audioFormat, audioSourceId = createNoDashGuid()) {
+    this._audioFormat = audioFormat;
     this._queue = [];
     this._id = audioSourceId;
     this._streams = {};
@@ -32,7 +29,6 @@ class QueuedArrayBufferAudioSource {
       Events.instance.onEvent(event);
     };
 
-    this._id = audioSourceId || createNoDashGuid();
     this._events = new EventSource();
 
     this.attach = this.attach.bind(this);
@@ -45,8 +41,12 @@ class QueuedArrayBufferAudioSource {
   }
 
   push(arrayBuffer) {
-    if (arrayBuffer.length > QueuedArrayBufferAudioSource.MAX_SIZE) {
-      const errorMsg = `ArrayBuffer exceeds the maximum allowed file size (${QueuedArrayBufferAudioSource.MAX_SIZE}).`;
+    // 10 seconds of audio in bytes =
+    // sample rate (bytes/second) * 600 (seconds) + 44 (size of the wave header).
+    const maxSize = this._audioFormat.samplesPerSec * 600 + 44;
+
+    if (arrayBuffer.length > maxSize) {
+      const errorMsg = `ArrayBuffer exceeds the maximum allowed file size (${maxSize}).`;
 
       this.onEvent(new AudioSourceErrorEvent(errorMsg, ''));
 
@@ -99,7 +99,7 @@ class QueuedArrayBufferAudioSource {
   }
 
   turnOff() {
-    Object.values(this._streams).forEach(stream => stream && !stream.isClosed() && stream.close());
+    Object.values(this._streams).forEach(stream => stream && !stream.isClosed && stream.close());
 
     this.onEvent(new AudioSourceOffEvent(this._id)); // no stream now
 
@@ -127,7 +127,7 @@ class QueuedArrayBufferAudioSource {
   }
 
   get format() {
-    return QueuedArrayBufferAudioSource.FILEFORMAT;
+    return PromiseHelper.fromResult(this._audioFormat);
   }
 
   get events() {
@@ -136,32 +136,19 @@ class QueuedArrayBufferAudioSource {
 
   get deviceInfo() {
     return PromiseHelper.fromResult({
-      bitspersample: QueuedArrayBufferAudioSource.FILEFORMAT.bitsPerSample,
-      channelcount: QueuedArrayBufferAudioSource.FILEFORMAT.channels,
+      bitspersample: this._audioFormat.bitsPerSample,
+      channelcount: this._audioFormat.channels,
       connectivity: 'Unknown',
       manufacturer: 'Speech SDK',
       model: 'File',
-      samplerate: QueuedArrayBufferAudioSource.FILEFORMAT.samplesPerSec,
+      samplerate: this._audioFormat.samplesPerSec,
       type: 'File'
     });
   }
 }
 
-// Recommended sample rate (bytes/second).
-
-QueuedArrayBufferAudioSource.SAMPLE_RATE = 16000 * 2; // 16 kHz * 16 bits
-
-// We should stream audio at no faster than 2x real-time (i.e., send five chunks
-// per second, with the chunk size == sample rate in bytes per second * 2 / 5).
-
-QueuedArrayBufferAudioSource.CHUNK_SIZE = (QueuedArrayBufferAudioSource.SAMPLE_RATE * 2) / 5;
-
-// 10 seconds of audio in bytes =
-// sample rate (bytes/second) * 600 (seconds) + 44 (size of the wave header).
-
-QueuedArrayBufferAudioSource.MAX_SIZE = QueuedArrayBufferAudioSource.SAMPLE_RATE * 600 + 44;
-QueuedArrayBufferAudioSource.FILEFORMAT = AudioStreamFormat.getWaveFormatPCM(16000, 16, 1);
-
-export default function createQueuedArrayBufferAudioSource() {
-  return new QueuedArrayBufferAudioSource();
+export default function createQueuedArrayBufferAudioSource(
+  audioFormat = AudioStreamFormat.getWaveFormatPCM(16000, 16, 1)
+) {
+  return new QueuedArrayBufferAudioSource(audioFormat);
 }
