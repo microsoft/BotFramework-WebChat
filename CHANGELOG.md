@@ -22,6 +22,82 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolves [#2897](https://github.com/microsoft/BotFramework-WebChat/issues/2897). Moved from JUnit to VSTest reporter with file attachments, by [@compulim](https://github.com/compulim) in PR [#2990](https://github.com/microsoft/BotFramework-WebChat/pull/2990)
+-  Added `aria-label` attribute support for default Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
+
+### Fixed
+
+-  Fixes [#2989](https://github.com/microsoft/BotFramework-WebChat/issues/2989). Fix `observeOnce` to use ES Observable call pattern, by [@compulim](https://github.com/compulim) in PR [#2993](https://github.com/microsoft/BotFramework-WebChat/pull/2993)
+-  Fixes [#3024](https://github.com/microsoft/BotFramework-WebChat/issues/3024). Using bridge package [`markdown-it-attrs-es5`](https://npmjs.com/package/markdown-it-attrs-es5) for consuming [`markdown-it-attrs`](https://npmjs.com/package/markdown-it-attrs) for IE11, by [@compulim](https://github.com/compulim) in PR [#3025](https://github.com/microsoft/BotFramework-WebChat/pull/3025)
+-  Fixes [#2818](https://github.com/microsoft/BotFramework-WebChat/issues/2818). Fix user ID is not set when passing to embed as query parameter, by [@p-nagpal](https://github.com/p-nagpal) in PR [#3031](https://github.com/microsoft/BotFramework-WebChat/pull/3031)
+-  Fixes [#3026](https://github.com/microsoft/BotFramework-WebChat/issues/3026). Fix link `rel` attribute in the `renderMarkdown` function, by [@tdurnford](https://github.com/tdurnford) in PR [#3033](https://github.com/microsoft/BotFramework-WebChat/pull/3033)
+
+### Changed
+
+-  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985)
+   -  Development dependencies
+      -  Root package
+         - [`@azure/storage-blob@12.1.0`](https://npmjs.com/package/@azure/storage-blob)
+         - [`@babel/plugin-proposal-class-properties@7.8.3`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+         - [`@babel/plugin-proposal-object-rest-spread@7.8.3`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+         - [`@babel/plugin-transform-runtime@7.8.3`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+         - [`@babel/preset-env@7.8.7`](https://npmjs.com/package/@babel/preset-env)
+         - [`@babel/preset-react@7.8.3`](https://npmjs.com/package/@babel/preset-react)
+         - [`@babel/preset-typescript@7.8.3`](https://npmjs.com/package/@babel/preset-typescript)
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`babel-jest@25.1.0`](https://npmjs.com/package/babel-jest)
+         - [`concurrently@5.1.0`](https://npmjs.com/package/concurrently)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+         - [`cross-env@7.0.2`](https://npmjs.com/package/cross-env)
+         - [`get-port@5.1.1`](https://npmjs.com/package/get-port)
+         - [`husky@4.2.3`](https://npmjs.com/package/husky)
+         - [`jest@25.1.0`](https://npmjs.com/package/jest)
+         - [`jest-image-snapshot@2.12.0`](https://npmjs.com/package/jest-image-snapshot)
+         - [`lerna@3.20.2`](https://npmjs.com/package/lerna)
+         - [`lint-staged@10.0.8`](https://npmjs.com/package/lint-staged)
+         - [`selenium-webdriver@4.0.0-alpha.7`](https://npmjs.com/package/selenium-webdriver)
+      -  Other packages
+         - [`@babel/core@7.8.7`](https://npmjs.com/package/@babel/core)
+         - [`@babel/preset-env@7.8.7`](https://npmjs.com/package/@babel/preset-env)
+         - [`babel-jest@25.1.0`](https://npmjs.com/package/babel-jest)
+         - [`babel-plugin-istanbul@6.0.0`](https://npmjs.com/package/babel-plugin-istanbul)
+         - [`concurrently@5.1.0`](https://npmjs.com/package/concurrently)
+         - [`eslint-plugin-prettier@3.1.2`](https://npmjs.com/package/eslint-plugin-prettier)
+         - [`eslint-plugin-react-hooks@2.5.0`](https://npmjs.com/package/eslint-plugin-react-hooks)
+         - [`eslint-plugin-react@7.18.3`](https://npmjs.com/package/eslint-plugin-react)
+         - [`eslint@6.8.0`](https://npmjs.com/package/eslint)
+         - [`terser-webpack-plugin@2.3.5`](https://npmjs.com/package/terser-webpack-plugin)
+         - [`typescript@3.8.3`](https://npmjs.com/package/typescript)
+         - [`webpack-cli@3.3.11`](https://npmjs.com/package/webpack-cli)
+         - [`webpack-stats-plugin@0.3.1`](https://npmjs.com/package/webpack-stats-plugin)
+         - [`webpack@4.42.0`](https://npmjs.com/package/webpack)
+   -  Production dependencies
+      -  `core`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`redux-saga@1.1.3`](https://npmjs.com/package/redux-saga)
+      -  `bundle`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+         - [`url-search-params-polyfill@8.0.0`](https://npmjs.com/package/url-search-params-polyfill)
+      -  `component`
+         - [`react-redux@7.2.0`](https://npmjs.com/package/react-redux)
+         - [`redux@4.0.5`](https://npmjs.com/package/redux)
+      -  `directlinespeech`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+      -  `embed`
+         - [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
+         - [`core-js@3.6.4`](https://npmjs.com/package/core-js)
+-  Bumped Chrome Docker image to `3.141.59-zirconium` (Chrome 80.0.3987.106), by [@compulim](https://github.com/compulim) in PR [#2992](https://github.com/microsoft/BotFramework-WebChat/pull/2992)
+-  Added `4.8.0` to `embed/servicingPlan.json`, by [@compulim](https://github.com/compulim) in PR [#2986](https://github.com/microsoft/BotFramework-WebChat/pull/2986)
+
+## Samples
+-  Resolves [#2806](https://github.com/microsoft/BotFramework-WebChat/issues/2806), added [Single sign-on with On Behalf Of Token Authentication](https://webchat-sample-obo.azurewebsites.net/) sample, by [@tdurnford](https://github.com/tdurnford) in [#2865](https://github.com/microsoft/BotFramework-WebChat/pull/2865)
+
+## [4.8.0] - 2020-03-05
+
 ### Breaking changes
 
 -  Localization
@@ -94,6 +170,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2966](https://github.com/microsoft/BotFramework-WebChat/issues/2966). Collapsed toast should show at most 2 lines of text, by [@compulim](https://github.com/compulim) in PR [#2967](https://github.com/microsoft/BotFramework-WebChat/issues/2967)
 -  Fixes [#2941](https://github.com/microsoft/BotFramework-WebChat/issues/2941), [#2921](https://github.com/microsoft/BotFramework-WebChat/issues/2921), and [#2948](https://github.com/microsoft/BotFramework-WebChat/issues/2948). Update documentation and fix redux sample, by [@corinagum](https://github.com/corinagum) in PR [#2968](https://github.com/microsoft/BotFramework-WebChat/pull/2968)
 -  Fixes [#2972](https://github.com/microsoft/BotFramework-WebChat/issues/2972). Compatibility fix for IE11, by [@compulim](https://github.com/compulim) in PR [#2973](https://github.com/microsoft/BotFramework-WebChat/pull/2973)
+-  Fixes [#2977](https://github.com/microsoft/BotFramework-WebChat/issues/2977). `sr-Cyrl` and `sr-Latn` should display Serbian texts, by [@compulim](https://github.com/compulim) in PR [#2978](https://github.com/microsoft/BotFramework-WebChat/pull/2978)
+-  Fixes [#2979](https://github.com/microsoft/BotFramework-WebChat/issues/2979). Lock `microsoft-cognitiveservices-speech-sdk` to `1.8.1`, by [@compulim](https://github.com/compulim) in PR [#2980](https://github.com/microsoft/BotFramework-WebChat/pull/2980)
 
 ### Changed
 

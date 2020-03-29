@@ -56,7 +56,7 @@ services:
     - /dev/shm:/dev/shm
 
   selenium-hub:
-    image: selenium/hub:3.141.59-yttrium
+    image: selenium/hub:3.141.59-zirconium
     container_name: selenium-hub
     ports:
       - "4444:4444"

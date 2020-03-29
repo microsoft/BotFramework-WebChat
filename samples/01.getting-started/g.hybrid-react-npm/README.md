@@ -34,15 +34,17 @@ The hosting app will tell the chat component when it is time to remove the DOM e
 
 In `chat-component` package, we created an entrypoint for rendering a React component to a specific DOM element. Note that we are using `react-dom@16.8.6` when mounting and unmounting the component to the DOM.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 import { render, unmountComponentAtNode } from 'react-dom';
 
 function renderChatComponent(props, node) {
-   render(<ChatComponent {...props} />, node);
+  render(<ChatComponent {...props} />, node);
 
-   return () => unmountComponentAtNode(node);
+  return () => unmountComponentAtNode(node);
 }
 ```
+<!-- prettier-ignore-end -->
 
 > This entrypoint will return a function, which, when called, will unmount the component. This function call can be [called multiple times to update the props](https://reactjs.org/docs/react-dom.html#render).
 
@@ -50,19 +52,21 @@ function renderChatComponent(props, node) {
 
 In the host application, we created a new component called `<ChatComponentWrapper>` and save the reference.
 
-```jsx
+<!-- prettier-ignore-start -->
+```js
 class ChatComponentWrapper extends React.Component {
-   constructor(props) {
-      super(props);
+  constructor(props) {
+    super(props);
 
-      this.saveChatComponentRef = ref => (this.chatComponentRef = ref);
-   }
+    this.saveChatComponentRef = ref => (this.chatComponentRef = ref);
+  }
 
-   render() {
-      return <div ref={this.saveChatComponentRef} />;
-   }
+  render() {
+    return <div ref={this.saveChatComponentRef} />;
+  }
 }
 ```
+<!-- prettier-ignore-end -->
 
 When `<ChatComponentWrapper>` is mounted or updated, we will call `chat-component` to do the rendering.
 
