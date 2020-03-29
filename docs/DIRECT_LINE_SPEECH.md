@@ -82,10 +82,10 @@ Direct Line Speech is not recommended to use on traditional websites where its p
     <tr>
       <td>STT</td>
       <td>Select input device</td>
-      <th>✔</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>✔</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>✔</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>✔</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
@@ -231,8 +231,9 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 1. <a name="notes-1"></a>[Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. <a name="notes-2"></a>As speech recognition is not working (see above), speech synthesis is not tested
 3. <a name="notes-3"></a>Cognitive Services currently has a bug on selecting a different device for audio recording
-   -  Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
-   -  Tracking bug at https://github.com/microsoft/BotFramework-WebChat/issues/2481
+   -  Fixed in [cognitive-services-speech-sdk-js#96](https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96)
+   -  Tracking bug at [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481)
+   -  This is fixed in [`microsoft-cognitiveservices-speech-sdk@>=1.10.0`](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.10.0)
 
 ## Requirements
 
