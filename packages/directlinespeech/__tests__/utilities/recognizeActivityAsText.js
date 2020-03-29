@@ -2,9 +2,11 @@ import readCognitiveServicesAudioStreamAsWAVArrayBuffer from './readCognitiveSer
 import recognizeRiffWaveArrayBuffer from './recognizeRiffWaveArrayBuffer';
 
 export default async function recognizeActivityAsText(activity) {
-  const riffWAVBuffer = await readCognitiveServicesAudioStreamAsWAVArrayBuffer(
-    activity.channelData.speechSynthesisUtterance.audioStream
-  );
+  const { audioStream } = activity.channelData.speechSynthesisUtterance;
 
-  return await recognizeRiffWaveArrayBuffer(riffWAVBuffer);
+  if (audioStream) {
+    const riffWAVBuffer = await readCognitiveServicesAudioStreamAsWAVArrayBuffer(audioStream);
+
+    return await recognizeRiffWaveArrayBuffer(riffWAVBuffer);
+  }
 }
