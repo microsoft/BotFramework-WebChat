@@ -1,0 +1,59 @@
+name: $(SourceBranchName).$(Date:yyMMdd)$(Rev:.r)
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+pr: none
+
+trigger:
+  batch: true
+  tags:
+    include:
+      - v*
+  branches:
+    include:
+      - master
+      - feature/*
+  
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: 'Install Node.js 10.x'
+
+  - script: |
+#     echo '//registry.npmjs.org/:_authToken=$(NPMTOKEN)' > .npmrc
+      npm install
+    displayName: 'NPM install'
+
+  - script: |
+      cd packages/server
+      npm run prepublish
+    displayName: 'NPM prepublish'
+
+  - task: CopyFiles@2
+    displayName: 'Copy builded files to staging area'
+    inputs:
+      contents: |
+        CognitiveServices.js
+        CognitiveServices.js.map
+        botchat-es5.js
+        botchat-es5.js.map
+        botchat-fullwindow.css
+        botchat.css
+        botchat.js
+        botchat.js.map
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+#  - task: ArchiveFiles@2
+#    displayName: 'Archive staged files'
+#    inputs:
+#      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/packages/server'
+#      archiveFile: '$(Build.ArtifactStagingDirectory)/build.zip'
+#      includeRootFolder: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish'
+    inputs:
+      artifactName: drop
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
