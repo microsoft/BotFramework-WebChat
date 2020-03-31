@@ -1,7 +1,7 @@
 name: $(SourceBranchName).$(Date:yyMMdd)$(Rev:.r)
 
 pool:
-  vmImage: 'Ubuntu 16.04'
+  name: 'Private VM'
 
 pr: none
 
