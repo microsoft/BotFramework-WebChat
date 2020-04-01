@@ -113,9 +113,9 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
 
           if (actionData && actionData.__isBotFrameworkCardAction) {
             const { cardAction } = actionData;
-            const { displayText, type, value } = cardAction;
+            const { displayText, text, type, value } = cardAction;
 
-            performCardAction({ displayText, type, value });
+            performCardAction({ displayText, text, type, value });
           } else {
             performCardAction({
               type: typeof action.data === 'string' ? 'imBack' : 'postBack',

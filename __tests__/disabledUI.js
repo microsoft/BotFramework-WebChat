@@ -1,5 +1,5 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
-import uiConnected from './setup/conditions/uiConnected.js';
+import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
