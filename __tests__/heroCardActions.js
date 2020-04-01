@@ -27,14 +27,6 @@ describe('hero card actions', () => {
         }, nthChild),
       timeouts.ui
     );
-
-    // const locator = By.css(`.ac-actionSet button:nth-child(${nthChild})`);
-
-    // await driver.wait(until.elementLocated(locator), timeouts.ui);
-
-    // const button = await driver.findElement(locator);
-
-    // await button.click();
   }
 
   beforeEach(async () => {
