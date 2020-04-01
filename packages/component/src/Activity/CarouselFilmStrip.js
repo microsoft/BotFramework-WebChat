@@ -14,6 +14,7 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
+import useElementId from '../hooks/internal/useElementId';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useRenderAvatar from '../hooks/useRenderAvatar';
@@ -97,6 +98,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
   const localize = useLocalizer();
+  const regionId = useElementId('carouselFilmStrip');
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
 
@@ -117,6 +119,7 @@ const WebChatCarouselFilmStrip = ({
 
   return (
     <div
+      aria-labelledby={regionId}
       className={classNames(
         ROOT_CSS + '',
         carouselFilmStripStyleSet + '',
@@ -127,12 +130,13 @@ const WebChatCarouselFilmStrip = ({
         },
         direction === 'rtl' ? 'webchat__carousel--rtl' : ''
       )}
+      role="region"
       ref={scrollableRef}
     >
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
-          <div className="message">
+          <div id={regionId} className="message">
             <ScreenReaderText text={roleLabel + ' ' + strippedActivityDisplayText} />
             <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
               {children({
