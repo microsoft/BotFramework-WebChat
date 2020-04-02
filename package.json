@@ -17,21 +17,10 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged --no-stash"
     }
   },
   "keywords": [],
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
-      "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
-      "prettier --write samples/**/*.{js,html}",
-      "git add"
-    ],
-    "*.{md}": [
-      "prettier --write **/**/*.md --tab-width 3 --single-quote true"
-    ]
-  },
   "scripts": {
     "bootstrap": "lerna bootstrap --ci",
     "build": "lerna run --ignore playground --stream build",
@@ -66,7 +55,7 @@
     "jest-junit": "^10.0.0",
     "jest-trx-results-processor": "^2.0.0",
     "lerna": "^3.20.2",
-    "lint-staged": "^10.0.8",
+    "lint-staged": "^10.1.1",
     "lolex": "^5.1.2",
     "node-fetch": "^2.6.0",
     "p-defer": "^3.0.0",
