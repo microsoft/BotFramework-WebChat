@@ -24,7 +24,7 @@ describe('speech recognition', () => {
     await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await pageObjects.startSpeechSynthesize();
-    await pageObjects.typeOnSendBox('Aloha!');
+    await pageObjects.typeInSendBox('Aloha!');
 
     await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
     await expect(pageObjects.isDictating()).resolves.toBeFalsy();

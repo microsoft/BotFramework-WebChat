@@ -13,7 +13,7 @@ test('calling submitSendBox should send the message in send box', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.typeOnSendBox('Hello, World!');
+  await pageObjects.typeInSendBox('Hello, World!');
   await pageObjects.runHook('useSubmitSendBox', [], submitSendBox => submitSendBox());
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);

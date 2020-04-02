@@ -12,7 +12,7 @@ test('getter should get the send box text', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.typeOnSendBox('Hello, World!');
+  await pageObjects.typeInSendBox('Hello, World!');
   await expect(pageObjects.runHook('useSendBoxValue', [], result => result[0])).resolves.toBe('Hello, World!');
 });
 

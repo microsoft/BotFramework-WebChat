@@ -89,7 +89,7 @@ test('should not show typing indicator for user', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.typeOnSendBox('Hello, World!');
+  await pageObjects.typeInSendBox('Hello, World!');
   await driver.wait(negationOf(typingIndicatorShown()), 2000);
 
   const base64PNG = await driver.takeScreenshot();

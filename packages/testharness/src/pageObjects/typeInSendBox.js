@@ -27,7 +27,7 @@ async function sendKeys(element, ...args) {
   }
 }
 
-export default async function typeOnSendBox(...args) {
+export default async function typeInSendBox(...args) {
   const textBox = getSendBoxTextBoxElement();
 
   await sendKeys(textBox, ...args);
