@@ -8,7 +8,6 @@ module.exports = {
     '!<rootDir>/samples/**'
   ],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
-  // coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
   globals: {
     npm_package_version: '0.0.0-0.jest'
   },

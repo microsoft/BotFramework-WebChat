@@ -6,8 +6,8 @@ module.exports = function mergeCoverageMap(...coverageMaps) {
 
   coverageMaps.forEach(coverageMap => Object.values(coverageMap || {}).forEach(addFileCoverage));
 
-  // map.toJSON() do not return a plain object but a serializable object.
-  // Jest expect a plain object, thus, we need to stringify/parse to make it a pure JSON.
+  // map.toJSON() does not return a plain object but a serializable object.
+  // Jest expects a plain object, thus, we need to stringify/parse to make it a pure JSON.
   // Otherwise, Jest will throw "Invalid file coverage object, missing keys, found:data".
   return JSON.parse(JSON.stringify(map.toJSON()));
 };
