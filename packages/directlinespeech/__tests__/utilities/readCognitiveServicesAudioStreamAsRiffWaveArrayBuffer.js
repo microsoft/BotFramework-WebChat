@@ -55,6 +55,74 @@ function formatAudioData({ bitsPerSample }, audioData) {
   }
 }
 
+function createRIFFWaveHeader(audioFormat, waveDataLength) {
+  const { bitsPerSample, channels, samplesPerSec } = audioFormat;
+  const buffer = new ArrayBuffer(44);
+  const bytesPerSample = bitsPerSample / 8;
+  const view = new DataView(buffer);
+
+  // RIFF identifier
+  setASCIIString(view, 0, 'RIFF');
+
+  // file length
+  view.setUint32(4, waveDataLength + 36, true);
+
+  // RIFF type & Format
+  setASCIIString(view, 8, 'WAVEfmt ');
+
+  // format chunk length
+  view.setUint32(16, 16, true);
+
+  // sample format (raw)
+  view.setUint16(20, 1, true);
+
+  // channel count
+  view.setUint16(22, channels, true);
+
+  // sample rate
+  view.setUint32(24, samplesPerSec, true);
+
+  // byte rate (sample rate * block align)
+  view.setUint32(28, samplesPerSec * channels * bytesPerSample, true);
+
+  // block align (channel count * bytes per sample)
+  view.setUint16(32, channels * bytesPerSample, true);
+
+  // bits per sample
+  view.setUint16(34, bitsPerSample, true);
+
+  // data chunk identifier
+  setASCIIString(view, 36, 'data');
+
+  // data chunk length
+  view.setUint32(40, waveDataLength, true);
+
+  return buffer;
+}
+
+function setASCIIString(view, offset, value) {
+  for (let i = 0; i < value.length; i++) {
+    view.setUint8(offset + i, value.charCodeAt(i));
+  }
+}
+
+function concatArrayBuffer(x, y) {
+  x = new Uint8Array(x);
+  y = new Uint8Array(y);
+
+  const concatenated = new Uint8Array(x.length + y.length);
+
+  for (let i = 0; i < x.length; i++) {
+    concatenated[i] = x[i];
+  }
+
+  for (let i = 0; i < y.length; i++) {
+    concatenated[i + x.length] = y[i];
+  }
+
+  return concatenated.buffer;
+}
+
 export default async function readCognitiveServicesAudioStreamAsRiffWaveArrayBuffer(
   audioStream,
   audioFormat = AudioStreamFormat.getDefaultInputFormat()
@@ -62,9 +130,8 @@ export default async function readCognitiveServicesAudioStreamAsRiffWaveArrayBuf
   const pcmArrayBuffer = await readAudioStreamAsPCMArrayBuffer(audioStream);
   const pcmFloatArray = formatAudioData(audioFormat, pcmArrayBuffer);
   const encoder = new RiffPcmEncoder(audioFormat.samplesPerSec, audioFormat.samplesPerSec);
+  const riffWaveArrayBuffer = encoder.encode(pcmFloatArray);
+  const riffWaveHeader = createRIFFWaveHeader(audioFormat, riffWaveArrayBuffer.byteLength);
 
-  // Note: Groove Music do not play the WAV file because it lack of file length.
-  //       VLC can play this WAV file.
-
-  return encoder.encode(true, pcmFloatArray);
+  return concatArrayBuffer(riffWaveHeader, riffWaveArrayBuffer);
 }

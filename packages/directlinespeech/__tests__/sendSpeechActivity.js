@@ -11,6 +11,8 @@ import subscribeAll from './utilities/observable/subscribeAll';
 import take from './utilities/observable/take';
 import waitForConnected from './utilities/waitForConnected';
 
+jest.setTimeout(15000);
+
 beforeEach(() => {
   global.AudioContext = MockAudioContext;
 });
