@@ -56,9 +56,11 @@ global.runHTMLTest = async (
     consoleHistory.forEach(({ args, level }) => {
       const message = args.join(' ');
 
-      if (!~message.indexOf('in-browser Babel transformer')) {
-        lines.push(`📃 [${level}] ${message}`);
+      if (~message.indexOf('in-browser Babel transformer') || (ignoreConsoleError && level === 'error')) {
+        return;
       }
+
+      lines.push(`📃 [${level}] ${message}`);
     });
 
     if (currentConditionMessage) {
