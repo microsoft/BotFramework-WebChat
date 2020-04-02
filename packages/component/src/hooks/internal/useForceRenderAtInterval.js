@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import random from 'math-random';
 
 import useTimer from './useTimer';
 
@@ -18,7 +19,13 @@ export default function useForceRenderAtInterval(origin, interval, fn) {
   const [timer, setTimer] = useState(nextTimer(origin, interval));
   const handler = useCallback(() => {
     fn && fn();
-    setTimer(nextTimer(origin, interval));
+
+    // Chrome may fire the setTimeout callback 1 ms before its original schedule.
+    // Thus, when we calculate the "next" value, it will have the same value as before.
+    // Sending the same value to useTimer(), it will not do another schedule because the value did not change.
+    // So, we are adding a bit randomness, so useTimer() should pick up the newer scheduled time.
+
+    setTimer(nextTimer(origin, interval) + random());
   }, [fn, origin, interval]);
 
   useTimer(timer, handler);
