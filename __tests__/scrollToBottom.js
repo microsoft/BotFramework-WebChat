@@ -134,6 +134,8 @@ test('show "New messages" button only when new message come', async () => {
   });
 
   await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+  await driver.wait(negationOf(scrollToBottomButtonVisible()), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
