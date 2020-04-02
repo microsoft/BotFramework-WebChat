@@ -2,7 +2,7 @@
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a Web Chat v3 to v4.
 
-> Note: This sample is **unrelated** to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md).
+> Note: This sample is **unrelated** to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](../../01.getting-started/a.full-bundle/README.md).
 
 # Test out the hosted sample
 

@@ -30,7 +30,7 @@ Direct Line Speech is a channel for communicating with a bot via a low-latency s
 
 ## Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](../../01.getting-started/a.full-bundle/README.md) as the base template.
 
 In this sample, we will switch the Web Chat protocol. Direct Line Speech is a channel for communicating with a bot via a low-latency speech-focused protocol. The channel is designed for real-time speech. Thus, _not all features in Web Chat are supported in this channel._
 
