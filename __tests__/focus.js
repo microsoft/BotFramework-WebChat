@@ -21,7 +21,7 @@ test('should not focus send box after clicking on send button', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.typeOnSendBox('echo 123');
+  await pageObjects.typeInSendBox('echo 123');
   await pageObjects.clickSendButton();
 
   await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
@@ -47,7 +47,7 @@ test('should focus send box after pressing ENTER to send message', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.typeOnSendBox('echo 123', Key.RETURN);
+  await pageObjects.typeInSendBox('echo 123', Key.RETURN);
 
   await driver.wait(sendBoxTextBoxFocused(), timeouts.ui);
 });

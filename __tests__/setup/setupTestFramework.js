@@ -1,26 +1,17 @@
 import { Builder } from 'selenium-webdriver';
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { createServer } from 'http';
 import { join } from 'path';
 import { promisify } from 'util';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
+import { browserName } from '../constants.json';
 import createPageObjects from './pageObjects/index';
 import marshal from './marshal';
 import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
 
-const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
-// const BROWSER_NAME = 'chrome-docker';
-// const BROWSER_NAME = 'chrome-local';
 const NUM_RETRIES = 3;
-
-expect.extend({
-  toMatchImageSnapshot: configureToMatchImageSnapshot({
-    customSnapshotsDir: join(__dirname, '../__image_snapshots__', BROWSER_NAME)
-  })
-});
 
 let driverPromise;
 let serverPromise;
@@ -34,7 +25,7 @@ global.setupWebDriver = async options => {
 
   if (!driverPromise) {
     driverPromise = retry(async () => {
-      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
+      let { baseURL, builder } = await setupTestEnvironment(browserName, new Builder(), options);
       const driver = builder.build();
 
       try {

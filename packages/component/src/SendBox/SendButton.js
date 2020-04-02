@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
@@ -22,8 +22,10 @@ const SendButton = () => {
   const localize = useLocalizer();
   const submitSendBox = useSubmitSendBox();
 
+  const handleClick = useCallback(() => submitSendBox(), [submitSendBox]);
+
   return (
-    <IconButton alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')} disabled={disabled} onClick={submitSendBox}>
+    <IconButton alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')} disabled={disabled} onClick={handleClick}>
       <SendIcon />
     </IconButton>
   );

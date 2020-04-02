@@ -28,7 +28,7 @@ test('getter should represent bot and user typing respectively', async () => {
 
   await expect(pageObjects.runHook('useActiveTyping')).resolves.toEqual([{}]);
 
-  await pageObjects.typeOnSendBox('typing 1');
+  await pageObjects.typeInSendBox('typing 1');
 
   activeTyping = await pageObjects.runHook('useActiveTyping');
 
@@ -41,7 +41,7 @@ test('getter should represent bot and user typing respectively', async () => {
     }
   ]);
 
-  await pageObjects.typeOnSendBox(Key.ENTER);
+  await pageObjects.typeInSendBox(Key.ENTER);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   activeTyping = await pageObjects.runHook('useActiveTyping');
@@ -55,7 +55,7 @@ test('getter should represent bot and user typing respectively', async () => {
     }
   ]);
 
-  await pageObjects.typeOnSendBox('.');
+  await pageObjects.typeInSendBox('.');
 
   activeTyping = await pageObjects.runHook('useActiveTyping');
 
@@ -93,7 +93,7 @@ test('getter should filter out inactive typing', async () => {
 
   await expect(pageObjects.runHook('useActiveTyping')).resolves.toEqual([{}]);
 
-  await pageObjects.typeOnSendBox('Hello, World!');
+  await pageObjects.typeInSendBox('Hello, World!');
 
   activeTyping = await pageObjects.runHook('useActiveTyping');
 

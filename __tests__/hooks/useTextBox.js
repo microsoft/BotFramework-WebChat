@@ -16,7 +16,7 @@ test('calling submit should scroll to end', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.typeOnSendBox('help');
+  await pageObjects.typeInSendBox('help');
 
   await expect(pageObjects.runHook('useTextBoxValue', [], textBoxValue => textBoxValue[0])).resolves.toBe('help');
 

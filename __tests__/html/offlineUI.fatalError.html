@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/react-dom@16.8.6/umd/react-dom-test-utils.development.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="text/babel" data-presets="es2015,stage-3">
+      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
+
+      (async function() {
+        const store = createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity) {
+            if (action.payload.activity.from.role === 'bot' && action.payload.activity.type === 'message') {
+              // We are dispatching an invalid action that would cause Web Chat core to fail, producing a fatal error.
+              dispatch({
+                type: 'DIRECT_LINE/POST_ACTIVITY',
+                payload: {}
+              });
+            } else if (action.payload.activity.from.role === 'user') {
+              // Do not send echo back because sometimes, we will receive it, and sometimes don't, due to race conditions in sagas.
+              // Better not sending all of them to make our test more reliable.
+              return;
+            }
+          }
+
+          return next(action);
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store,
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
+        await pageObjects.sendMessageViaSendBox('error', { waitForSend: false });
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.actionDispatched('WEB_CHAT/SAGA_ERROR'), timeouts.directLine);
+
+        // Wait until error status come up
+        await pageObjects.wait(conditions.connectivityStatusShown(/render error/iu), timeouts.ui);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
