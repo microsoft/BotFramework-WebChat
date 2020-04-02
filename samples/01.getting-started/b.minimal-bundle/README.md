@@ -40,7 +40,7 @@ The `index.html` page has two main goals.
 -  To import the Web Chat core bundle CDN script
 -  To render Web Chat
 
-This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](../a.full-bundle/README.md) as the base template.
 
 The only change needed in this sample is to change the Web Chat CDN from the full bundle to minimal bundle.
 

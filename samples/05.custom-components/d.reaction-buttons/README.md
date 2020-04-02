@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with Reaction Buttons
 
-This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../05.custom-components/c.user-highlighting) and creates more involved middleware that will alert the bot to helpful and unhelpful messages via reaction buttons. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
+This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../c.user-highlighting/README.md) and creates more involved middleware that will alert the bot to helpful and unhelpful messages via reaction buttons. This sample is implemented with React and makes changes that are based off of the [host with React sample][1].
 
 # Test out the hosted sample
 
@@ -23,7 +23,7 @@ This sample builds on top of the ideas expressed in sample [05.custom-components
 
 ## Overview
 
-We'll start by using the [host with React sample](../01.getting-started/e.host-with-react) as our Web Chat React template.
+We'll start by using the [host with React sample][1] as our Web Chat React template.
 
 In this sample, we will build a new React component that decorates the `activity` sent from the bot with two reaction buttons. Depending on which button is clicked, a new activity will be sent to the bot indicating which button the user has selected.
 
@@ -327,3 +327,5 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+
+  [1]: ../../01.getting-started/e.host-with-react/README.md

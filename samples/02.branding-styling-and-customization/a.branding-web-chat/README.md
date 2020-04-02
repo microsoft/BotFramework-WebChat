@@ -42,13 +42,13 @@ We provide these options to override for several reasons:
 ### My required changes are not all specified in `defaultStyleOptions.js`, what do I do now?
 
 -  Please feel free to [file a PR](https://github.com/microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
--  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [02.branding-styling-and-customization/b.idiosyncrating-manual-styles sample](../02.branding-styling-and-customization/b.idiosyncratic-manual-styles/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
+-  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [02.branding-styling-and-customization/b.idiosyncratic-manual-styles sample](../b.idiosyncratic-manual-styles/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
 
 ## Getting started
 
 ### Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](../../01.getting-started/a.full-bundle/README.md) as the base template.
 
 First, we want to add the `styleOptions` object to our `index.html` page and add the initials as values within the object. This object will be passed into Web Chat. The keys for the bot and user initials are `botAvatarInitials` and `userAvatarInitials`, respectively.
 

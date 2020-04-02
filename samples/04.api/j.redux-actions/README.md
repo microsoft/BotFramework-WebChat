@@ -25,7 +25,7 @@ A full-featured Web Chat with a custom Redux store where one can listen for all 
 
 ### Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](../../01.getting-started/a.full-bundle/README.md) as the base template.
 
 In this sample, we take advantage of the Web Chat (Redux) store to add custom functionality on the app hosting the bot when bot actions are sent. This means that your app can listen for the dispatch of actions from Web Chat, though you do not have the capability to modify the internal state of the store. Once your app receives the notification of that dispatch, you are free to add whatever customization your app requires.
 
@@ -158,7 +158,7 @@ Here is the finished `index.html`:
 
 -  Article on [Redux Middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6)
 
--  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/) | [Piping to Redux source code](./../04.api/e.piping-to-redux)
+-  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/) | [Piping to Redux source code](../../04.api/e.piping-to-redux/README.md)
 
 ## Full list of Web Chat hosted samples
 
