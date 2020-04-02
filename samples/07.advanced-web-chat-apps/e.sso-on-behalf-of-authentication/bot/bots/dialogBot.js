@@ -40,6 +40,10 @@ class DialogBot extends ActivityHandler {
       await next();
     });
   }
+
+  async onSignInInvoke(context) {
+    await this.dialog.run(context, this.dialogState);
+  }
 }
 
 module.exports.DialogBot = DialogBot;
