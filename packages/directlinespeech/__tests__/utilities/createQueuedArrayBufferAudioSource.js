@@ -17,6 +17,8 @@ import { EventSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/
 import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
 import { Stream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Stream';
 
+const CHUNK_SIZE = 4096;
+
 class QueuedArrayBufferAudioSource {
   constructor(audioFormat, audioSourceId = createNoDashGuid()) {
     this._audioFormat = audioFormat;
@@ -114,11 +116,15 @@ class QueuedArrayBufferAudioSource {
 
       const arrayBuffer = this._queue.shift();
 
-      stream.writeStreamChunk({
-        buffer: arrayBuffer,
-        isEnd: false,
-        timeReceived: Date.now()
-      });
+      const { byteLength } = arrayBuffer;
+
+      for (let i = 0; i < byteLength; i += CHUNK_SIZE) {
+        stream.writeStreamChunk({
+          buffer: arrayBuffer.slice(i, Math.min(i + CHUNK_SIZE, byteLength)),
+          isEnd: false,
+          timeReceived: Date.now()
+        });
+      }
 
       stream.close();
 

@@ -41,7 +41,7 @@ export default class DirectLineSpeech {
             ...activity,
             channelData: {
               ...activity.channelData,
-              ...(audioStream ? { speechSynthesisUtterance: new SpeechSynthesisAudioStreamUtterance(audioStream) } : {})
+              speechSynthesisUtterance: new SpeechSynthesisAudioStreamUtterance(audioStream)
             },
             from: {
               ...activity.from,
