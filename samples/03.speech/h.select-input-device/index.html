@@ -6,7 +6,7 @@
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
@@ -15,7 +15,7 @@
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script crossorigin="anonymous" src="/webchat.js"></script>
+    <script crossorigin="anonymous" src="/webchat-es5.js"></script>
     <style>
       html,
       body {
@@ -126,61 +126,102 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        const { createCognitiveServicesSpeechServicesPonyfillFactory, createDirectLine, ReactWebChat } = window.WebChat;
-        const { useCallback, useEffect, useMemo, useState } = window.React;
+        // Imports
+        const {
+          navigator: { mediaDevices },
+          React: { useCallback, useEffect, useMemo, useState },
+          WebChat: { createCognitiveServicesSpeechServicesPonyfillFactory, createDirectLine, ReactWebChat }
+        } = window;
 
         const App = () => {
-          const [audioInputDevices, setAudioInputDevices] = useState([]);
+          // List of audio input devices. The list is initially empty until the async function call finished.
+          // If the browser does not support media devices, we will set it to false to show an error message.
+          const [audioInputDevices, setAudioInputDevices] = useState(mediaDevices ? [] : false);
+
+          // Time when the device list change. This is used to trigger a re-enumeration of devices.
+          const [lastDeviceChangeAt, setLastDeviceChangeAt] = useState(0);
+
+          // Device ID of the audio input device selected by the user.
           const [selectedAudioInputDeviceId, setSelectedAudioInputDeviceId] = useState('default');
+
+          // Direct Line adapter instance will be kept across render.
           const directLine = useMemo(() => createDirectLine({ token }), [token]);
+
+          // Function instance to fetch credentials for Cognitive Services Speech Services. The instance is kept across render to cache the credentials.
           const fetchSpeechServicesCredentials = useMemo(() => createFetchSpeechServicesCredentials(), []);
 
           // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
           const webSpeechPonyfillFactory = useMemo(() =>
             createCognitiveServicesSpeechServicesPonyfillFactory(
               {
+                // Device ID of the audio input device to use.
+                audioInputDeviceId: selectedAudioInputDeviceId,
+
                 // We are passing the Promise function to the "credentials" field.
                 // This function will be called every time the token is being used.
-                audioInputDeviceId: selectedAudioInputDeviceId,
                 credentials: fetchSpeechServicesCredentials
               },
               [selectedAudioInputDeviceId, fetchSpeechServicesCredentials]
             )
           );
 
+          // When the user select a different device, we change the "selectedAudioInputDeviceId" based on their selection.
           const handleSelectedAudioInputDeviceIdChange = useCallback(({ target: { value } }) =>
             setSelectedAudioInputDeviceId(value)
           );
 
+          // When device is plugged/unplugged, we will re-enumerate the device list.
+          useEffect(() => {
+            // "mediaDevices" is undefined if the loaded page is not secure:
+            // 1. The page is not loaded via HTTPS, and;
+            // 2. The page is not loaded from localhost.
+            if (mediaDevices) {
+              const handleDeviceChange = () => setLastDeviceChangeAt(Date.now());
+
+              mediaDevices.addEventListener('devicechange', handleDeviceChange);
+
+              return () => mediaDevices.removeEventListener('devicechange', handleDeviceChange);
+            }
+          }, [setLastDeviceChangeAt]);
+
+          // Enumerate the device list on initial page load or when a device is plugged/unplugged.
           useEffect(() => {
             (async function() {
-              setAudioInputDevices(
-                (await navigator.mediaDevices.enumerateDevices()).filter(({ kind }) => kind === 'audioinput')
-              );
+              mediaDevices &&
+                setAudioInputDevices(
+                  // We will only list "audioinput" device.
+                  (await mediaDevices.enumerateDevices()).filter(({ kind }) => kind === 'audioinput')
+                );
             })();
-          }, [setAudioInputDevices]);
+          }, [lastDeviceChangeAt, setAudioInputDevices]);
 
           return (
             <React.Fragment>
               <div className="app__audio-input-devices" role="radiogroup">
                 <div className="app__audio-input-devices__header">Audio input devices</div>
-                <ul className="app__audio-input-devices__list">
-                  {audioInputDevices.map(({ deviceId, label }) => (
-                    <li className="app__audio-input-devices__list-item" key={deviceId}>
-                      <label className="app__audio-input-devices__device">
-                        <input
-                          checked={selectedAudioInputDeviceId === deviceId}
-                          className="app__audio-input-devices__radio-button"
-                          name="audio-input-device-id"
-                          onChange={handleSelectedAudioInputDeviceIdChange}
-                          type="radio"
-                          value={deviceId}
-                        />
-                        {label || deviceId}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
+                {audioInputDevices ? (
+                  <ul className="app__audio-input-devices__list">
+                    {audioInputDevices.map(({ deviceId, label }) => (
+                      <li className="app__audio-input-devices__list-item" key={deviceId}>
+                        <label className="app__audio-input-devices__device">
+                          <input
+                            checked={selectedAudioInputDeviceId === deviceId}
+                            className="app__audio-input-devices__radio-button"
+                            name="audio-input-device-id"
+                            onChange={handleSelectedAudioInputDeviceIdChange}
+                            type="radio"
+                            value={deviceId}
+                          />
+                          {label || deviceId}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div>
+                    Your browser does not support Web Audio or this page is not loaded via HTTPS or from localhost.
+                  </div>
+                )}
               </div>
               <ReactWebChat
                 className="webchat"
