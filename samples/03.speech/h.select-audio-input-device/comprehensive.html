@@ -130,6 +130,7 @@
         const {
           navigator: { mediaDevices },
           React: { useCallback, useEffect, useMemo, useState },
+          ReactDOM,
           WebChat: { createCognitiveServicesSpeechServicesPonyfillFactory, createDirectLine, ReactWebChat }
         } = window;
 
@@ -235,7 +236,7 @@
         // Pass a Web Speech ponyfill factory to renderWebChat.
         // You can also use your own speech engine given it is compliant to W3C Web Speech API: https://w3c.github.io/speech-api/.
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
-        window.ReactDOM.render(<App />, document.getElementById('app'));
+        ReactDOM.render(<App />, document.getElementById('app'));
       })().catch(err => console.error(err));
     </script>
   </body>
