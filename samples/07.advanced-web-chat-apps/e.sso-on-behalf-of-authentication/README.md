@@ -86,8 +86,8 @@ To host this demo, you will need to clone the code and run locally.
    1. Select the "Expose an API" blade
       1. Add a new scope for the bot
          1. Click the "Add a scope" button under "Scopes defined by this API"
-            1. Add a scope name
             1. Click "Save and continue"
+            1. Add a scope name
             1. Set "Who can consent?" to "Admins and users"
             1. Add an admin consent display name
             1. Add an admin consent description
