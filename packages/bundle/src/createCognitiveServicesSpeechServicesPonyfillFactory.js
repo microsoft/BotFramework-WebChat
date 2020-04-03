@@ -7,6 +7,7 @@ function resolveFunction(fnOrValue) {
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
+  audioInputDeviceId,
   authorizationToken,
   credentials,
   enableTelemetry,
@@ -37,11 +38,19 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     };
   }
 
+  if (audioConfig && audioInputDeviceId) {
+    console.warn(
+      'botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time, ignoring "audioInputDeviceId".'
+    );
+  }
+
   // HACK: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
   //       In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
   //       And on next recognition, they will re-use the AudioContext object.
   if (!audioConfig) {
-    audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    audioConfig = audioInputDeviceId
+      ? AudioConfig.fromMicrophoneInput(audioInputDeviceId)
+      : AudioConfig.fromDefaultMicrophoneInput();
 
     const source = audioConfig.privSource;
 
