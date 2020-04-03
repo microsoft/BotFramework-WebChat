@@ -89,8 +89,9 @@ introDialog?: {
 locale?: 'cs' | 'en' | 'sk' | 'sr' | 'hu' = 'cs', 
 userData?: object, // allows to preset some data we already know about user (email, phone, etc.)
 startOverTrigger?: (trigger: () => void) => void, // can be used to binding onclick event on element which can be used to restart conversation
-onConversationStarted?: (callback: (conversationId: string) => void) => void // can be used to store conversationId for new conversations (useful for history persistence)
-disableInputWhenNotNeeded?: boolean = false // disables input after messages with `inputHint==='ignoringInput`
+onConversationStarted?: (callback: (conversationId: string) => void) => void, // can be used to store conversationId for new conversations (useful for history persistence)
+disableInputWhenNotNeeded?: boolean = false, // disables input after messages with `inputHint==='ignoringInput`
+autoExpandTimeout?: number = null // auto expand in milliseconds (only in case when no element specified as second argument of BotChat.App())
 ```
 
 <!---
