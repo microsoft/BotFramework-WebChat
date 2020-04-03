@@ -101,8 +101,8 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
     timestamp
   } = activity;
 
-  const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
+  const fromUser = role === 'user';
 
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
