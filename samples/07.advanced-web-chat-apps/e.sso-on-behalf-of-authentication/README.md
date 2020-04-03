@@ -87,11 +87,12 @@ To host this demo, you will need to clone the code and run locally.
       1. Add a new scope for the bot
          1. Click the "Add a scope" button under "Scopes defined by this API"
             1. Add a scope name
-            2. Set "Who can consent?" to "Admins and users"
-            3. Add an admin consent display name
-            4. Add an admin consent description
-            5. Click "Add scope"
-            6. Save the Scope URL to configure authentication for the bot in the Bot Registration in the next section
+            1. Click "Save and continue"
+            1. Set "Who can consent?" to "Admins and users"
+            1. Add an admin consent display name
+            1. Add an admin consent description
+            1. Click "Add scope"
+            1. Save the Scope URL to configure authentication for the bot in the Bot Registration in the next section
                -  api://123a45b6-789c-01de-f23g-h4ij5k67a8bc/scope
       2. Add a client application
          1. Click the "Add a client application" under "Authorized client applications"
