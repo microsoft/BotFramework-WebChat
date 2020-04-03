@@ -36,6 +36,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3026](https://github.com/microsoft/BotFramework-WebChat/issues/3026). Fix link `rel` attribute in the `renderMarkdown` function, by [@tdurnford](https://github.com/tdurnford) in PR [#3033](https://github.com/microsoft/BotFramework-WebChat/pull/3033)
 -  Fixes [#2933](https://github.com/microsoft/BotFramework-WebChat/issues/2933). Fix `text` should not be ignored in `messageBack` action in hero card, by [@geea-develop](https://github.com/geea-develop) and [@compulim](https://github.com/compulim) in PR [#3003](https://github.com/microsoft/BotFramework-WebChat/pull/3003)
 -  Fixes [#2953](https://github.com/microsoft/BotFramework-WebChat/issues/2953). Direct Line Speech should not synthesize when the `speak` property is falsy, by [@compulim](https://github.com/compulim) in PR [#3059](https://github.com/microsoft/BotFramework-WebChat/pull/3059)
+-  Fixes [#3075](https://github.com/microsoft/BotFramework-WebChat/issues/3075). Fix usability issues around accessibility, by [@compulim](https://github.com/compulim) in PR [#3076](https://github.com/microsoft/BotFramework-WebChat/issue/3076)
+   -  Fix timestamp should not be narrated more than once.
+   -  Associate the activity text with its attachments, by adding a `role="region"` to the activity DOM element.
 
 ### Changed
 
