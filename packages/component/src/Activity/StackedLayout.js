@@ -103,11 +103,12 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
+
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
   const plainText = remarkStripMarkdown(text);
-  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-
   const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
+
   const ariaLabel = localize(
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
@@ -117,6 +118,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   return (
     <div
+      aria-label={ariaLabel}
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
@@ -133,12 +135,12 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
+      role="region"
     >
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
       <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
           <div className="webchat__row message">
-            <ScreenReaderText text={ariaLabel} />
             <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={!!indented}>
               {children({
                 activity,
