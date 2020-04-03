@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import createDeferred from 'p-defer';
+import createDeferred from 'p-defer-es5';
 import createTaskQueue from './createTaskQueue';
 
 function createTask() {

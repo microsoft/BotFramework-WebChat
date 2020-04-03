@@ -30,9 +30,9 @@ If you haven't viewed them already, review and understanding of samples 11 and 1
 
 # Overview
 
-For a general overview of the `App.js` and `WebChat.js` files in `src`, please review sample [06.recomposing-ui/a.minimizable-web-chat](./../../06.recomposing-ui/a.minimizable-web-chat)
+For a general overview of the `App.js` and `WebChat.js` files in `src`, please review sample [06.recomposing-ui/a.minimizable-web-chat][1]
 
-Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions](./../j.redux-actions). The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
+Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. This code is extremely similar to what we've seen in sample [04.api/j.redux-actions][2]. The middleware we build will filter activities and dispatch to the app's store and dispatch these actions to the bot. Note that Mock Bot has the following actions available to make changes to the DOM:
 
 <!-- prettier-ignore-start -->
 ```js
@@ -87,7 +87,7 @@ The next part of our focus is in the `redux` directory. Note that in `store.js`,
 
 ## Completed Code
 
-Below are the completed `.js` files, with the difference after create-react-app is run highlighted. Differences that were explained in `[06.recomposing-ui/a.minimizable-web-chat](./../../06.recomposing-ui/a.minimizable-web-chat)` are ignored.
+Below are the completed `.js` files, with the difference after create-react-app is run highlighted. Differences that were explained in `[06.recomposing-ui/a.minimizable-web-chat][1]` are ignored.
 
 `index.js`:
 
@@ -224,10 +224,13 @@ export default function(dispatch) {
 
 [Redux Documentation](https://redux.js.org/)
 
-[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions) | [Customization of Redux Actions source code](./../j.redux-actions)
+[Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/04.api/j.redux-actions) | [Customization of Redux Actions source code][2]
 
-[Minimizable Web Chat bot ](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat) | [Minimizable Web Chat source code](./../../06.recomposing-ui/a.minimizable-web-chat)
+[Minimizable Web Chat bot ](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat) | [Minimizable Web Chat source code][1]
 
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+
+  [1]: ../../06.recomposing-ui/a.minimizable-web-chat/README.md
+  [2]: ../j.redux-actions/README.md

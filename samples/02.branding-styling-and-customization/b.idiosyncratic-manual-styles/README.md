@@ -11,7 +11,7 @@ This sample introduces the ability to overwrite `createStyleSet`, which is the u
 # How to run
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/b.idiosyncrating-manual-styles` in command line
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/b.idiosyncratic-manual-styles` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -35,7 +35,7 @@ To see what style sets are overwrite-able, please look at the [`createStyleSet` 
 
 ### Goals of this bot
 
-This sample starts with the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](../../01.getting-started/a.full-bundle/README.md) as the base template.
 
 First, we want to overwrite the current `styleSet` by using the `createStyleSet` method. Once you have your `styleSet` object, you can add changes to any object in `createStyleSet`.
 

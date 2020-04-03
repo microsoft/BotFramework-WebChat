@@ -3,44 +3,56 @@
   <head>
     <title>Web Chat: Automated test harness</title>
     <script>
-    !function () {
-      'use strict';
+      !(function() {
+        'use strict';
 
-      const { console } = window;
-      const log = window.__console__ = [];
-      const push = (type, ...args) => {
-        log.push([type, args.join(' ')]);
-        console[type].apply(console, args);
-      };
+        const { console } = window;
+        const log = (window.__console__ = []);
+        const push = (type, ...args) => {
+          log.push([type, args.join(' ')]);
+          console[type].apply(console, args);
+        };
 
-      window.console = {
-        ...console,
+        window.console = {
+          ...console,
 
-        debug: push.bind(null, 'debug'),
-        error: push.bind(null, 'error'),
-        info: push.bind(null, 'info'),
-        log: push.bind(null, 'log'),
-        warn: push.bind(null, 'warn')
-      };
+          debug: push.bind(null, 'debug'),
+          error: push.bind(null, 'error'),
+          info: push.bind(null, 'info'),
+          log: push.bind(null, 'log'),
+          warn: push.bind(null, 'warn')
+        };
 
-      window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
-        push('onError', JSON.stringify({
-          colno,
-          error,
-          filename,
-          lineno,
-          message
-        }));
-      });
-    }();
+        window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
+          push(
+            'onError',
+            JSON.stringify({
+              colno,
+              error,
+              filename,
+              lineno,
+              message
+            })
+          );
+        });
+      })();
     </script>
     <!--
       For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
-      input, textarea, [contenteditable] { caret-color: Transparent; }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+      input,
+      textarea,
+      [contenteditable] {
+        caret-color: Transparent;
+      }
 
       #manualStart {
         background-color: Transparent;
@@ -57,7 +69,10 @@
       }
     </style>
     <script crossorigin="anonymous" src="https://tdurnford.github.io/BotFramework-Offline-MockBot/index.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"
+    ></script>
     <script crossorigin="anonymous" src="https://unpkg.com/simple-update-in"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -69,9 +84,10 @@
     <div id="webchat" role="main"></div>
     <script>
       function unmarshal({ __evalKeys, ...obj } = {}) {
-        __evalKeys && __evalKeys.forEach(key => {
-          obj[key] = eval(obj[key])();
-        });
+        __evalKeys &&
+          __evalKeys.forEach(key => {
+            obj[key] = eval(obj[key])();
+          });
 
         return obj;
       }
@@ -83,7 +99,9 @@
             payload: {
               activity: {
                 from: { id: 'bot' },
-                id: Math.random().toString(36).substr(2, 10),
+                id: Math.random()
+                  .toString(36)
+                  .substr(2, 10),
                 name: 'hook',
                 type: 'event',
                 value: { args, name, reject, resolve }
@@ -125,11 +143,21 @@
       async function main(options) {
         document.querySelector('#manualStart').remove();
 
-        let { createDirectLine, createStyleSet, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE, useProductionBot } = unmarshal(options);
+        let {
+          createDirectLine,
+          createStyleSet,
+          props,
+          setup,
+          storeInitialState = {},
+          storeMiddleware = PASSTHRU_MIDDLEWARE,
+          useProductionBot
+        } = unmarshal(options);
 
         props = unmarshal(props);
 
-        if (setup) { await setup(); }
+        if (setup) {
+          await setup();
+        }
 
         await loadScript('/webchat.js');
 
@@ -140,7 +168,10 @@
         } else {
           const { token } = await retry(async () => {
             try {
-              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST', timeout: 2000 });
+              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+                method: 'POST',
+                timeout: 2000
+              });
 
               return await res.json();
             } catch (err) {
@@ -155,7 +186,7 @@
           directLine = (createDirectLine || window.WebChat.createDirectLine)({ token });
         }
 
-        const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
+        const store = (window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
           const setupMiddleware = storeMiddleware(store);
 
           return next => {
@@ -167,31 +198,38 @@
               return processAction(action);
             };
           };
-        });
+        }));
 
         const activityMiddleware = () => next => card => {
           const { activity } = card;
 
           if (activity.type === 'event' && activity.name === 'hook') {
-            return children => React.createElement(() => {
-              const { args, name, reject, resolve } = activity.value;
+            return children =>
+              React.createElement(() => {
+                const { args, name, reject, resolve } = activity.value;
 
-              try {
-                const hookFn = window.WebChat.hooks[name];
+                try {
+                  const hookFn = window.WebChat.hooks[name];
 
-                if (!hookFn) {
-                  console.log(`No hooks named "${ name }" were found. Valid hooks are:`, Object.keys(window.WebChat.hooks).sort().map(name => `- ${ name }`).join('\n'));
+                  if (!hookFn) {
+                    console.log(
+                      `No hooks named "${name}" were found. Valid hooks are:`,
+                      Object.keys(window.WebChat.hooks)
+                        .sort()
+                        .map(name => `- ${name}`)
+                        .join('\n')
+                    );
 
-                  throw new Error(`No hooks named "${ name }" were found.`);
+                    throw new Error(`No hooks named "${name}" were found.`);
+                  }
+
+                  resolve(hookFn(args));
+                } catch (err) {
+                  reject(err);
                 }
 
-                resolve(hookFn(args));
-              } catch (err) {
-                reject(err);
-              }
-
-              return false;
-            });
+                return false;
+              });
           }
           return next(card);
         };

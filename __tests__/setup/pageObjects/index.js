@@ -24,7 +24,7 @@ import sendMessageViaSendBox from './sendMessageViaSendBox';
 import sendTextToClipboard from './sendTextToClipboard';
 import startSpeechSynthesize from './startSpeechSynthesize';
 import switchToYouTubeIFRAME from './switchToYouTubeIFRAME';
-import typeOnSendBox from './typeOnSendBox';
+import typeInSendBox from './typeInSendBox';
 import updateProps from './updateProps';
 
 function mapMap(map, mapper) {
@@ -64,7 +64,7 @@ export default function pageObjects(driver) {
       sendTextToClipboard,
       startSpeechSynthesize,
       switchToYouTubeIFRAME,
-      typeOnSendBox,
+      typeInSendBox,
       updateProps
     },
     fn => fn.bind(null, driver)

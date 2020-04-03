@@ -1,6 +1,6 @@
 # Sample - Adding Web Browser Speech
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN, with browser speech added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md).
+A simple web page with a maximized and full-featured Web Chat embed from a CDN, with browser speech added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample][1].
 
 # Test out the hosted sample
 
@@ -30,7 +30,7 @@ The `index.html` page has one main goal:
 
 -  To enable web browser speech to provide speech-to-text ability
 
-We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample][1] as our Web Chat template.
 
 > Web browser speech package is available in the Web Chat core bundle and the full bundle, and you can use either CDN in your bot.
 
@@ -104,3 +104,5 @@ Here is the finished `index.html`:
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+
+  [1]: ../../01.getting-started/a.full-bundle/README.md

@@ -42,7 +42,73 @@ Direct Line Speech is not recommended to use on traditional websites where its p
     </tr>
     <tr>
       <td>STT</td>
-      <td><a href="#custom-speech">Custom Speech</a> (<a href="#custom-speech-is-not-supported">Details</a>)</td>
+      <td><a href="#custom-speech">
+      Custom Speech</a> (<a href="#custom-speech-is-not-supported">Details</a>)</td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>
+      Interims/Partial Recognition
+      </td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Select language at initialization</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td><a href="#using-input-hint">Input hint</a></td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Select input device</td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Dynamic priming (<a href="#dynamic-priming-is-not-supported">Details</a>)</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Reference grammar ID (<a href="#reference-grammar-id-is-not-supported">Details</a>)</td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td></td>
+      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
+    </tr>
+    <tr>
+      <td>STT</td>
+      <td>Select language on-the-fly (<a href="#speech-recognition-language-cannot-be-switched-on-the-fly">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
@@ -68,69 +134,6 @@ Direct Line Speech is not recommended to use on traditional websites where its p
       <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
     </tr>
     <tr>
-      <td>STT</td>
-      <td>Interims</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Dynamic priming (<a href="#dynamic-priming-is-not-supported">Details</a>)</td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Reference grammar ID (<a href="#reference-grammar-id-is-not-supported">Details</a>)</td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Select language at initialization</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Select language on-the-fly (<a href="#speech-recognition-language-cannot-be-switched-on-the-fly">Details</a>)</td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td><a href="#using-input-hint">Input hint</a></td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
-      <td>STT</td>
-      <td>Select input device</td>
-      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>❌</th><td><a href="#notes-3"><sup>*3</sup></a></td>
-      <th>❌</th><td><a href="#notes-1"><sup>*1</sup></a></td>
-    </tr>
-    <tr>
       <td>TTS</td>
       <td>Basic synthesis using text</td>
       <th>✔</th><td>4.7</td>
@@ -151,15 +154,33 @@ Direct Line Speech is not recommended to use on traditional websites where its p
     <tr>
       <td>TTS</td>
       <td><a href="#custom-voice">Custom Voice</a> (<a href="#custom-voice-is-not-supported">Details</a>)</td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
-      <th>❌</th><td></td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
+      <th>✔</th><td></td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
       <td>TTS</td>
       <td><a href="#selecting-voice">Selecting voice/pitch/rate/volume</a></td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Override using "speak" property</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>✔</th><td>4.7</td>
+      <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
+    </tr>
+    <tr>
+      <td>TTS</td>
+      <td>Interrupt synthesis when clicking on microphone button</td>
       <th>✔</th><td>4.7</td>
       <th>✔</th><td>4.7</td>
       <th>✔</th><td>4.7</td>
@@ -186,29 +207,11 @@ Direct Line Speech is not recommended to use on traditional websites where its p
     </tr>
     <tr>
       <td>TTS</td>
-      <td>Override using "speak" property</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
-    </tr>
-    <tr>
-      <td>TTS</td>
       <td>Adaptive Cards using "speak" property (<a href="#attachments-are-not-synthesized">Details</a>)</td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
       <th>❌</th><td></td>
-      <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
-    </tr>
-    <tr>
-      <td>TTS</td>
-      <td>Interrupt synthesis when clicking on microphone button</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
-      <th>✔</th><td>4.7</td>
       <th>❓</th><td><a href="#notes-2"><sup>*2</sup></a></td>
     </tr>
     <tr>
@@ -228,8 +231,9 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 1. <a name="notes-1"></a>[Web View on iOS](https://developer.apple.com/documentation/webkit/wkwebview) is not a full browser. It does not have audio recording capabilities, which is required for Cognitive Services
 2. <a name="notes-2"></a>As speech recognition is not working (see above), speech synthesis is not tested
 3. <a name="notes-3"></a>Cognitive Services currently has a bug on selecting a different device for audio recording
-   -  Currently blocked by https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96
-   -  Tracking bug at https://github.com/microsoft/BotFramework-WebChat/issues/2481
+   -  Fixed in [cognitive-services-speech-sdk-js#96](https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/96)
+   -  Tracking bug at [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481)
+   -  This is fixed in [`microsoft-cognitiveservices-speech-sdk@>=1.10.0`](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.10.0)
 
 ## Requirements
 
@@ -371,9 +375,7 @@ After the user click on microphone button to start speech recognition, they cann
 
 ### Custom Speech is not supported
 
-> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2684) if this behavior is not desirable.
-
-Custom Speech is a feature for developers to train a custom speech model to improve speech recognition for uncommon words. This is not supported when using Direct Line Speech.
+Custom Speech is a feature for developers to train a custom speech model to improve speech recognition for uncommon words. You can set this up using the Speech SDK or in the Azure portal when configuring the Direct Line Speech channel.
 
 ### Dynamic priming is not supported
 
