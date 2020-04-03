@@ -18,6 +18,14 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
+  if (!window.navigator.mediaDevices) {
+    console.warn(
+      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded in via HTTPS or from localhost. Cognitive Services Speech Services will be disabled.'
+    );
+
+    return () => ({});
+  }
+
   if (!credentials && (authorizationToken || region || subscriptionKey)) {
     console.warn(
       'botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.'
@@ -67,7 +75,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   }
 
   return ({ referenceGrammarID } = {}) => {
-    const ponyfill = createPonyfill({
+    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = createPonyfill({
       audioConfig,
       credentials,
       enableTelemetry,
@@ -77,8 +85,6 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       speechSynthesisOutputFormat,
       textNormalization
     });
-
-    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = ponyfill;
 
     return {
       SpeechGrammarList,
