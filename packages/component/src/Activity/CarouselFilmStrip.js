@@ -13,6 +13,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
+import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
@@ -96,6 +97,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
+  const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
@@ -105,16 +107,18 @@ const WebChatCarouselFilmStrip = ({
     channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
-    textFormat
+    textFormat,
+    timestamp
   } = activity;
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
-  const strippedActivityDisplayText = remarkStripMarkdown(activityDisplayText);
+
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
-
+  const plainText = remarkStripMarkdown(activityDisplayText);
   const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
+
   const ariaLabel = localize(
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
