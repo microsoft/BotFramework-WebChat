@@ -6,6 +6,7 @@
     "base64-arraybuffer": "^0.2.0",
     "botframework-webchat": "^4.8.0",
     "math-random": "^1.0.4",
+    "msal": "^1.2.2",
     "office-ui-fabric-react": "^7.86.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",

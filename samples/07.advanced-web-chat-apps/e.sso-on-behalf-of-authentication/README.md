@@ -86,14 +86,17 @@ To host this demo, you will need to clone the code and run locally.
    1. Select the "Expose an API" blade
       1. Add a new scope for the bot
          1. Click the "Add a scope" button under "Scopes defined by this API"
+            1. Click "Save and continue"
             1. Add a scope name
-            2. Set "Who can consent?" to "Admins and users"
-            3. Add an admin consent display name
-            4. Add an admin consent description
-            5. Click "Add scope"
+            1. Set "Who can consent?" to "Admins and users"
+            1. Add an admin consent display name
+            1. Add an admin consent description
+            1. Click "Add scope"
+            1. Save the Scope URL to configure authentication for the bot in the Bot Registration in the next section
+               -  api://123a45b6-789c-01de-f23g-h4ij5k67a8bc/scope
       2. Add a client application
          1. Click the "Add a client application" under "Authorized client applications"
-            1. Set the client id to the Web Applications client id
+            1. Set the client id to the Web Applications client id (i.e. AAD_OAUTH_CLIENT_ID from above)
             2. Check the box next to the scope we added in the previous step under "Authorized scopes"
             3. Click "Add application"
 
@@ -110,6 +113,9 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
          1. Set the connection "name"
          2. Set the "Service Provider" to "Azure Active Directory 2"
          3. Add the Client ID, Client secret, and Tenant ID from [setting up the OAuth connection for the Bot](#setup-oauth-via-azure-active-directory-for-the-bot)
+         4. Set the "Token Exchange URL" to the scope URL that was created in the previous section
+            -  api://123a45b6-789c-01de-f23g-h4ij5k67a8bc/scope
+         5. Set the "Scopes" field to the scopes you want the bot to have permission to access (ie. user.read)
 2. Save the Microsoft App ID, password, and OAuth connection name to `/bot/.env`
    -  `MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd`
    -  `MicrosoftAppPassword=a1b2c3d4e5f6`
@@ -144,6 +150,8 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  If you are not logged into the website, Web Chat will notify you to sign in.
    -  Once you are signed in Web Chat will notify you to authorize the bot to access your account.
 -  Send 'logout' to the bot to sign out of the bot and the website
+
+Note, the first time the user authenticates the bot, they will have to sign in directly to the bot as well as the website. After this first interaction, the user can simply grant the bot access to their information without having to authenticate the bot again.
 
 # Code
 
