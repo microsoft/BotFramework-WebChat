@@ -14,7 +14,6 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
-import useElementId from '../hooks/internal/useElementId';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useRenderAvatar from '../hooks/useRenderAvatar';
@@ -98,7 +97,6 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
   const localize = useLocalizer();
-  const regionId = useElementId('carouselFilmStrip');
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
 
@@ -115,11 +113,18 @@ const WebChatCarouselFilmStrip = ({
   const strippedActivityDisplayText = remarkStripMarkdown(activityDisplayText);
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
+
   const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
+  const ariaLabel = localize(
+    fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
+    initials,
+    plainText,
+    formatDate(timestamp)
+  ).trim();
 
   return (
     <div
-      aria-labelledby={regionId}
+      aria-label={ariaLabel}
       className={classNames(
         ROOT_CSS + '',
         carouselFilmStripStyleSet + '',
@@ -136,8 +141,7 @@ const WebChatCarouselFilmStrip = ({
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
-          <div id={regionId} className="message">
-            <ScreenReaderText text={roleLabel + ' ' + strippedActivityDisplayText} />
+          <div className="message">
             <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,

@@ -7,7 +7,7 @@ import RelativeTime from './RelativeTime';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 
-const Timestamp = ({ activity: { timestamp }, className }) => {
+const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, className }) => {
   const [{ timestampFormat }] = useStyleOptions();
   const [{ timestamp: timestampStyleSet, sendStatus: sendStatusStyleSet }] = useStyleSet();
 
@@ -19,7 +19,7 @@ const Timestamp = ({ activity: { timestamp }, className }) => {
   return (
     !!timestamp && (
       <span
-        aria-hidden={true}
+        aria-hidden={ariaHidden}
         className={classNames((timestampStyleSet || '') + '', (sendStatusStyleSet || '') + '', (className || '') + '')}
       >
         {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
@@ -29,6 +29,7 @@ const Timestamp = ({ activity: { timestamp }, className }) => {
 };
 
 Timestamp.defaultProps = {
+  'aria-hidden': false,
   className: ''
 };
 
@@ -36,6 +37,7 @@ Timestamp.propTypes = {
   activity: PropTypes.shape({
     timestamp: PropTypes.string.isRequired
   }).isRequired,
+  'aria-hidden': PropTypes.bool,
   className: PropTypes.string
 };
 

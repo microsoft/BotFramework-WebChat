@@ -15,7 +15,6 @@ import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
-import useElementId from '../hooks/internal/useElementId';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useRenderAvatar from '../hooks/useRenderAvatar';
@@ -92,7 +91,6 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
-  const regionId = useElementId('stackedLayout');
 
   const {
     attachments = [],
@@ -119,7 +117,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   return (
     <div
-      aria-labelledby={regionId}
+      aria-label={ariaLabel}
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
@@ -142,7 +140,6 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
       <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
           <div className="webchat__row message" id={regionId}>
-            <ScreenReaderText text={ariaLabel} />
             <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={!!indented}>
               {children({
                 activity,
