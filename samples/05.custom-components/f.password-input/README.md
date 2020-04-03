@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with Password Input Activity
 
-A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../05.custom-components/c.user-highlighting) and shows a custom activity that accepts password input and submits it as a postback activity. This sample is implemented with React and makes changes that are based off of the [host with React sample](../01.getting-started/e.host-with-react).
+A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [05.custom-components/c.user-highlighting](../c.user-highlighting/README.md) and shows a custom activity that accepts password input and submits it as a postback activity. This sample is implemented with React and makes changes that are based off of the [host with React sample][1].
 
 # Test out the hosted sample
 
@@ -23,7 +23,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 ## Overview
 
-We'll start by using the [host with React sample](../01.getting-started/e.host-with-react) as our Web Chat React template.
+We'll start by using the [host with React sample][1] as our Web Chat React template.
 
 In this sample, we will build a new React component that will be shown when we receive an event activity from the bot named `passwordInput`. It will show a password box. When the user presses <kbd>ENTER</kbd> to submit the box, a post back activity will be sent back to the bot.
 
@@ -375,3 +375,5 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+
+  [1]: ../../01.getting-started/e.host-with-react/README.md

@@ -2,7 +2,7 @@
 
 > This is a great sample for first-time Web Chat users developing bots that must work on Internet Explorer 11.
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies. This sample makes changes that are based off of the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md).
+A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies. This sample makes changes that are based off of the [full-bundle CDN sample][1].
 
 ## Why use this bundle?
 
@@ -46,13 +46,13 @@ Polyfills are important for browsers that do not have native technology that is 
 
 ### Goals of this bot
 
-This code features the minimal scripting the bot needs to host a full-featured Web Chat, with IE11 backwards compatibility. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md).
+This code features the minimal scripting the bot needs to host a full-featured Web Chat, with IE11 backwards compatibility. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample][1].
 The `index.html` page has two main goals.
 
 -  To import the Web Chat full bundle CDN script
 -  To render Web Chat in Internet Explorer 11
 
-We'll start by using the [full-bundle CDN sample](./../01.getting-started/a.full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample][1] as our Web Chat template.
 
 Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
 
@@ -143,3 +143,5 @@ Check out the hosted samples and source code for other CDN bundle options below.
 ## Full list of Web Chat hosted samples
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+
+  [1]: ../a.full-bundle/README.md

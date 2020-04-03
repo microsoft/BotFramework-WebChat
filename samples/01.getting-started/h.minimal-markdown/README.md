@@ -39,7 +39,7 @@ The `index.html` page has two main goals.
 -  To import the Web Chat minimal bundle CDN script
 -  Enable markdown rendering
 
-This sample starts with the [minimal-bundle CDN sample](./../02.b.getting-started-minimal-bundle/README.md) as the base template.
+This sample starts with the [minimal-bundle CDN sample](../b.minimal-bundle/README.md) as the base template.
 
 First, add the Markdown-It dependency to our `head`.
 
