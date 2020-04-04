@@ -21,6 +21,8 @@ beforeEach(() => {
   createPonyfill = require('web-speech-cognitive-services/lib/SpeechServices');
   createCognitiveServicesSpeechServicesPonyfillFactory = require('./createCognitiveServicesSpeechServicesPonyfillFactory')
     .default;
+
+  window.navigator.mediaDevices = {};
 });
 
 afterEach(() => {

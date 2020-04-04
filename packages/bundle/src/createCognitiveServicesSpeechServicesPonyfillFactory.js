@@ -18,9 +18,9 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
-  if (!window.navigator.mediaDevices) {
+  if (!window.navigator.mediaDevices && !audioConfig) {
     console.warn(
-      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded in via HTTPS or from localhost. Cognitive Services Speech Services will be disabled.'
+      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded in via HTTPS or from localhost, Cognitive Services Speech Services will be disabled. However, you may pass a custom AudioConfig to enable speech in this environment.'
     );
 
     return () => ({});
