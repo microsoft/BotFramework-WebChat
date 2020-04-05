@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export default async function fetchAuthorizationToken({ region, subscriptionKey, tokenURL }) {
   if (!region && !tokenURL) {
     throw new Error('Either "region" or "tokenURL" must be specified.');

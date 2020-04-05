@@ -1,8 +1,9 @@
-import { EventIterator } from 'event-iterator';
-import babelPluginProposalAsyncGeneratorFunctions from '@babel/plugin-proposal-async-generator-functions';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import updateIn from 'simple-update-in';
+
+import { EventIterator } from './external/event-iterator';
+import BabelPluginProposalAsyncGeneratorFunctions from './external/@babel/plugin-proposal-async-generator-functions';
 
 import { timeouts } from './constants';
 import * as conditions from './conditions/index';
@@ -24,7 +25,10 @@ import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
 import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
 
-window.Babel.registerPlugin('@babel/plugin-proposal-async-generator-functions', babelPluginProposalAsyncGeneratorFunctions);
+window.Babel.registerPlugin(
+  '@babel/plugin-proposal-async-generator-functions',
+  BabelPluginProposalAsyncGeneratorFunctions
+);
 
 const log = console.log.bind(console);
 

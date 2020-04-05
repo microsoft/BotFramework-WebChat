@@ -3,9 +3,6 @@ const { join } = require('path');
 let config = {
   entry: './lib/index',
   mode: 'production',
-  // @babel/plugin-proposal-async-generator-functions is causing a false error because @babel/core import "fs" without the need to use it.
-  // We are emptying out "fs" to ignore the error.
-  node: { fs: 'empty' },
   output: {
     filename: 'testharness.js',
     library: 'WebChatTest',
@@ -27,6 +24,7 @@ if (node_env !== 'production' && node_env !== 'test') {
         ...((config.module || {}).rules || []),
         {
           enforce: 'pre',
+          exclude: [/external\//],
           include: [join(__dirname, './lib')],
           test: /\.js$/,
           use: ['source-map-loader']

@@ -1,3 +1,5 @@
+import AbortController from 'abort-controller-es5';
+
 import sleep from '../utils/sleep';
 
 export default async function wait(condition, timeout = 2000) {

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
@@ -18,7 +19,7 @@
     <script
       type="text/babel"
       data-plugins="@babel/plugin-proposal-async-generator-functions"
-      data-presets="es2015,stage-3"
+      data-presets="env,stage-3"
     >
       const {
         conditions,

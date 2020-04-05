@@ -1,4 +1,4 @@
-import { AudioStreamFormat } from 'microsoft-cognitiveservices-speech-sdk';
+import { AudioStreamFormat } from '../../external/microsoft-cognitiveservices-speech-sdk';
 
 import {
   AudioSourceErrorEvent,
@@ -9,13 +9,13 @@ import {
   AudioStreamNodeAttachingEvent,
   AudioStreamNodeDetachedEvent
   // AudioStreamNodeErrorEvent,
-} from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/AudioSourceEvents';
+} from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/AudioSourceEvents';
 
-import { createNoDashGuid } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
-import { Events } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Events';
-import { EventSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/EventSource';
-import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
-import { Stream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Stream';
+import { createNoDashGuid } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
+import { Events } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Events';
+import { EventSource } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/EventSource';
+import { PromiseHelper } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
+import { Stream } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Stream';
 
 const CHUNK_SIZE = 4096;
 

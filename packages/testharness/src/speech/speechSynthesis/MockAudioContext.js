@@ -1,4 +1,20 @@
-import EventTarget, { defineEventAttribute } from 'event-target-shim';
+import EventTarget, { defineEventAttribute } from 'event-target-shim-es5';
+
+function createCustomEvent(name) {
+  if (name === 'error') {
+    if (typeof ErrorEvent === 'function') {
+      return new ErrorEvent(name);
+    }
+  } else if (typeof CustomEvent === 'function') {
+    return new CustomEvent(name);
+  }
+
+  const event = document.createEvent('Event');
+
+  event.initEvent(name, true, true);
+
+  return event;
+}
 
 class MockAudioBuffer {
   constructor(channels, frames, samplesPerSec) {
@@ -37,7 +53,7 @@ class MockAudioBufferSource extends EventTarget {
       });
     }
 
-    this.dispatchEvent(new Event('ended'));
+    this.dispatchEvent(createCustomEvent('ended'));
   }
 
   stop(when) {
@@ -71,7 +87,7 @@ export default class MockAudioContext extends EventTarget {
 
   close() {
     this.state = 'closed';
-    this.dispatchEvent(new Event('statechange'));
+    this.dispatchEvent(createCustomEvent('statechange'));
   }
 
   createBufferSource() {
@@ -85,14 +101,14 @@ export default class MockAudioContext extends EventTarget {
   resume() {
     if (this.state === 'suspended') {
       this.state = 'running';
-      this.dispatchEvent(new Event('statechange'));
+      this.dispatchEvent(createCustomEvent('statechange'));
     }
   }
 
   suspend() {
     if (this.state === 'running') {
       this.state = 'suspended';
-      this.dispatchEvent(new Event('statechange'));
+      this.dispatchEvent(createCustomEvent('statechange'));
     }
   }
 

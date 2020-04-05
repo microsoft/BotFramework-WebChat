@@ -1,4 +1,4 @@
-import createDeferred from 'p-defer';
+import createDeferred from 'p-defer-es5';
 
 import uniqueId from './utils/uniqueId';
 
