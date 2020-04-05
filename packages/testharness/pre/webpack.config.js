@@ -1,3 +1,7 @@
+// Since some packages are not transpiled to ES5, we need to transpile them to ES5 to run under IE11.
+// As the transpilation will take about 30 seconds to complete, we don't want to toll on our current build.
+// Instead of adding to normal build, we are adding to `npm run postinstall`, emitting to /lib/external/**/*.js.
+
 const { join } = require('path');
 
 module.exports = {
