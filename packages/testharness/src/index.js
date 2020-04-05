@@ -1,3 +1,6 @@
+import { EventIterator } from 'event-iterator';
+import babelPluginProposalAsyncGeneratorFunctions from '@babel/plugin-proposal-async-generator-functions';
+import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import updateIn from 'simple-update-in';
 
@@ -8,7 +11,12 @@ import * as host from './host/index';
 import * as jobs from './jobs';
 import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
+import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createStore, { getActionHistory } from './utils/createStore';
+import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
+import iterateAsyncIterable from './utils/iterateAsyncIterable';
+import MockAudioContext from './speech/speechSynthesis/MockAudioContext';
+import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiffWaveArrayBuffer';
 import pageError from './host/pageError';
 import parseURLParams from './utils/parseURLParams';
 import runAsyncInterval from './utils/runAsyncInterval';
@@ -16,21 +24,7 @@ import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
 import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
 
-export {
-  conditions,
-  createStore,
-  elements,
-  expect,
-  getActionHistory,
-  getConsoleHistory,
-  host,
-  jobs,
-  pageObjects,
-  shareObservable,
-  timeouts,
-  token,
-  updateIn
-};
+window.Babel.registerPlugin('@babel/plugin-proposal-async-generator-functions', babelPluginProposalAsyncGeneratorFunctions);
 
 const log = console.log.bind(console);
 
@@ -73,3 +67,27 @@ if (!webDriverMode) {
 subscribeConsole();
 
 !webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
+
+export {
+  conditions,
+  createDeferred,
+  createQueuedArrayBufferAudioSource,
+  createStore,
+  elements,
+  EventIterator,
+  expect,
+  fetchSpeechData,
+  getActionHistory,
+  getConsoleHistory,
+  host,
+  iterateAsyncIterable,
+  jobs,
+  MockAudioContext,
+  pageObjects,
+  parseURLParams,
+  recognizeRiffWaveArrayBuffer,
+  shareObservable,
+  timeouts,
+  token,
+  updateIn
+};

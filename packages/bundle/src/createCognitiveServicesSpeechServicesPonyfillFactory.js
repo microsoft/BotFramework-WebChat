@@ -7,6 +7,7 @@ function resolveFunction(fnOrValue) {
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
+  audioContext,
   audioInputDeviceId,
   authorizationToken,
   credentials,
@@ -77,6 +78,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   return ({ referenceGrammarID } = {}) => {
     const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = createPonyfill({
       audioConfig,
+      audioContext,
       credentials,
       enableTelemetry,
       referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],

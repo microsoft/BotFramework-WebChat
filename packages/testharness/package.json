@@ -23,13 +23,20 @@
     "@babel/runtime": "^7.8.7",
     "concurrently": "^5.1.0",
     "core-js": "^3.6.4",
+    "source-map-loader": "^0.2.4",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@babel/plugin-proposal-async-generator-functions": "^7.8.3",
+    "base64-arraybuffer": "^0.2.0",
+    "event-iterator": "^1.2.0",
+    "event-target-shim": "^5.0.1",
     "expect": "^25.1.0",
     "math-random": "^1.0.4",
+    "microsoft-cognitiveservices-speech-sdk": "1.10.1",
     "p-defer": "^3.0.0",
+    "p-defer-es5": "^1.0.1",
     "simple-update-in": "^2.1.1"
   }
 }

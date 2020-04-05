@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/react-dom@16.8.6/umd/react-dom-test-utils.development.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script
+      type="text/babel"
+      data-plugins="@babel/plugin-proposal-async-generator-functions"
+      data-presets="es2015,stage-3"
+    >
+      const {
+        conditions,
+        createQueuedArrayBufferAudioSource,
+        createStore,
+        EventIterator,
+        expect,
+        fetchSpeechData,
+        host,
+        iterateAsyncIterable,
+        MockAudioContext,
+        recognizeRiffWaveArrayBuffer,
+        pageObjects,
+        shareObservable,
+        timeouts,
+        token
+      } = window.WebChatTest;
+
+      (async function() {
+        const queryParams = window.WebChatTest.parseURLParams(location.hash);
+        const { sa: speechAuthorizationToken, sr: speechRegion, ss: speechSubscriptionKey } = queryParams;
+
+        if (!speechRegion || !(speechAuthorizationToken || speechSubscriptionKey)) {
+          throw new Error(
+            'Speech region and authorization token or subscription key must be passed via hash, #sr=westus2&sa=a1b2c3d or #sr=westus2&ss=a1b2c3d.'
+          );
+        }
+
+        const speechCredentials = {
+          authorizationToken: speechAuthorizationToken,
+          region: speechRegion,
+          subscriptionKey: speechSubscriptionKey
+        };
+
+        let audioContext;
+
+        // EventIterator will only start listening when passed to for-await-of. This is correct behavior and follow the standard async iterator protocol.
+        // Since we construct the MockAudioContext in the iterable, we need to start the iteration sooner.
+        // The iterateAsyncIterable() will iterate the async iterable immediately and return a new iterable.
+        const bufferSourceAsyncIterable = iterateAsyncIterable(
+          new EventIterator((push, stop) => {
+            audioContext = new MockAudioContext({
+              bufferSourceStartHandler: async ({ target: { buffer } }) => {
+                if (buffer.byteLength < 500) {
+                  // Web Chat send a very short and silent MP3 to priming the speech engine. But Cognitive Services cannot recognize MP3, only WAV is supported.
+                  // We assume buffer shorter than 500 bytes is the priming.
+                  return push('');
+                }
+
+                push(await recognizeRiffWaveArrayBuffer({ arrayBuffer: buffer, credentials: speechCredentials }));
+                stop();
+              }
+            });
+          })
+        );
+
+        const audioConfig = createQueuedArrayBufferAudioSource();
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store: createStore(),
+            webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+              audioConfig,
+              audioContext,
+              credentials: speechCredentials,
+              speechSynthesisOutputFormat: 'riff-16khz-16bit-mono-pcm'
+            })
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        audioConfig.push(
+          await fetchSpeechData({
+            fetchCredentials: () => speechCredentials,
+            text: 'Hello World.'
+          })
+        );
+
+        await pageObjects.clickMicrophoneButton();
+        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        const recognizedTexts = [];
+
+        for await (const recognizedText of bufferSourceAsyncIterable) {
+          recognizedTexts.push(recognizedText);
+        }
+
+        expect(recognizedTexts).toEqual([
+          '',
+          "Unknown command I don't know. Hello world you can say help to learn more."
+        ]);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
