@@ -18,18 +18,7 @@ body {
   overflow: hidden;
 }
 
-#app .app__audio-input-devices__header {
-  background-color: #090;
-  border-radius: 0 0 0 4px;
-  color: White;
-  font-size: 11px;
-  padding: 0px 4px 2px;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-#app .app__audio-input-devices {
+#app .app__settings-panel {
   background-color: #ffc;
   border-radius: 4px;
   border: solid 1px rgba(0, 0, 0, 0.1);
@@ -44,21 +33,32 @@ body {
   position: relative;
 }
 
-#app .app__audio-input-devices__list {
+#app .app__settings-panel__header {
+  background-color: #090;
+  border-radius: 0 0 0 4px;
+  color: White;
+  font-size: 11px;
+  padding: 0px 4px 2px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+#app .app__settings-panel__list {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#app .app__audio-input-devices__list-item:not(:first-child) {
+#app .app__settings-panel__list-item:not(:first-child) {
   padding-top: 0.5em;
 }
 
-#app .app__audio-input-devices__device {
+#app .app__settings-panel__row {
   display: flex;
 }
 
-#app .app__audio-input-devices__radio-button {
+#app .app__settings-panel__radio-button {
   margin-left: 0;
   margin-right: 0.5em;
 }
