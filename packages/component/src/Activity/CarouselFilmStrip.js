@@ -140,7 +140,7 @@ const WebChatCarouselFilmStrip = ({
         direction === 'rtl' ? 'webchat__carousel--rtl' : ''
       )}
       ref={scrollableRef}
-      role="region"
+      role="group"
     >
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">

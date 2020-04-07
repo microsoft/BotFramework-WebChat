@@ -135,7 +135,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
-      role="region"
+      role="group"
     >
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
       <div className="webchat__stackedLayout__content">
