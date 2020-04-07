@@ -42,7 +42,7 @@
     "microsoft-cognitiveservices-speech-sdk": "1.6.0",
     "microsoft-speech-browser-sdk": "0.0.12",
     "prop-types": "15.7.2",
-    "sanitize-html": "1.20.0",
+    "sanitize-html": "1.20.1",
     "url-search-params-polyfill": "7.0.0",
     "web-speech-cognitive-services": "6.0.0",
     "whatwg-fetch": "3.0.0"
