@@ -117,7 +117,7 @@ const BasicTranscript = ({ className }) => {
         <ul
           aria-atomic="false"
           aria-live="polite"
-          aria-relevant="additions text"
+          aria-relevant="additions"
           className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
           role="list"
         >
