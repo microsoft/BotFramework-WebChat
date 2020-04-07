@@ -51,18 +51,18 @@
     "webpack-stats-plugin": "^0.3.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
-    "abort-controller": "^3.0.0",
+    "@babel/runtime": "7.8.4",
+    "abort-controller": "3.0.0",
     "abort-controller-es5": "1.0.1",
-    "base64-arraybuffer": "^0.2.0",
-    "core-js": "^3.5.0",
-    "event-as-promise": "^1.0.5",
-    "event-target-shim": "^5.0.1",
+    "base64-arraybuffer": "0.2.0",
+    "core-js": "3.5.0",
+    "event-as-promise": "1.0.5",
+    "event-target-shim": "5.0.1",
     "event-target-shim-es5": "1.0.1",
-    "math-random": "^1.0.4",
+    "math-random": "1.0.4",
     "microsoft-cognitiveservices-speech-sdk": "1.8.1",
-    "p-defer": "^3.0.0",
+    "p-defer": "3.0.0",
     "p-defer-es5": "1.0.1",
-    "web-speech-cognitive-services": "^6.0.0"
+    "web-speech-cognitive-services": "6.0.0"
   }
 }

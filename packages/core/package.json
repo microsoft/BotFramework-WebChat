@@ -43,12 +43,12 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
-    "jsonwebtoken": "^8.5.1",
-    "math-random": "^1.0.4",
+    "@babel/runtime": "7.8.4",
+    "jsonwebtoken": "8.5.1",
+    "math-random": "1.0.4",
     "mime": "2.4.4",
-    "redux": "^4.0.4",
+    "redux": "4.0.4",
     "redux-saga": "1.1.1",
-    "simple-update-in": "^2.1.1"
+    "simple-update-in": "2.1.1"
   }
 }
