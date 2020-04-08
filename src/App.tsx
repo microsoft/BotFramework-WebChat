@@ -7,9 +7,9 @@ export type Theme = {
     mainColor: string
 }
 
-export type AppProps = ChatProps & {theme?: Theme, header?: {textWhenCollapsed?: string, text: string}};
+export type AppProps = ChatProps & {theme?: Theme, header?: {textWhenCollapsed?: string, text: string}, autoExpandTimeout?: number};
 
-export const App = (props: AppProps, container?: HTMLElement) => {
+export const App = async (props: AppProps, container?: HTMLElement) => {
     konsole.log("BotChat.App props", props);
 
     // FEEDYOU generate user ID if not present in props, make sure its always string
@@ -28,6 +28,35 @@ export const App = (props: AppProps, container?: HTMLElement) => {
         themeStyle.type = 'text/css';
         themeStyle.appendChild(document.createTextNode(ThemeTemplate(props.theme)));
         document.head.appendChild(themeStyle);
+    }
+
+    // FEEDYOU fetch DL token from bot when no token or secret found
+    if (props.bot && props.bot.id && !props.botConnection && (!props.directLine || (!props.directLine.secret && !props.directLine.token))) {
+        // TODO test IE11 https://github.com/matthew-andrews/isomorphic-fetch
+        try {
+            const response = await fetch(`https://${props.bot.id}.azurewebsites.net/auth/directline/token`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    user: props.user,
+                })
+            })
+            const body = await response.json()
+            console.log('Token response', body)
+            props.directLine = {...(props.directLine || {}), token: body.token}
+
+            if (body.testMode && window.location.hash !== '#feedbot-test-mode') {
+                document.getElementsByTagName('body')[0].classList.add('feedbot-disabled')
+                return
+            } else {
+                document.getElementsByTagName('body')[0].classList.add('feedbot-enabled')
+            }
+        } catch (err) {
+            console.error('Token response error', err)
+        }
     }
 
     // FEEDYOU use twemoji to make emoji compatible
@@ -60,11 +89,11 @@ export const App = (props: AppProps, container?: HTMLElement) => {
         const header = document.createElement('div')
         header.className='feedbot-header'
         header.style.backgroundColor = props.theme && props.theme.mainColor ? props.theme.mainColor : '#e51836'
-        header.innerText = props.header.textWhenCollapsed || props.header.text || 'Chatbot'
+        header.innerText = props.header ? (props.header.textWhenCollapsed || props.header.text || 'Chatbot') : 'Chatbot'
         header.onclick = () => {
             wrapper.classList.toggle('collapsed');
             if (!rendered) {
-                header.innerText = props.header.text || 'Chatbot'
+                header.innerText = (props.header && props.header.text) || 'Chatbot'
                 render(props, container)
             }
         }
@@ -73,7 +102,13 @@ export const App = (props: AppProps, container?: HTMLElement) => {
         wrapper.appendChild(container)
         document.body.appendChild( wrapper );
 
-        // TODO autoExpandTimeout
+        if (props.autoExpandTimeout) {
+            setTimeout(() => {
+                if (wrapper.className.indexOf('collapsed') >= 0) {
+                    header.click()
+                }
+            }, props.autoExpandTimeout)
+        }
     } else {
         render(props, container) 
     }
@@ -99,6 +134,10 @@ export function MakeId() {
 }
 
 const ThemeTemplate = (theme: Theme) => `
+    body.feedbot-disabled div.feedbot {
+        display: none;
+    }
+
     .wc-app .wc-chatview-panel {
         top: 35px;
     }
@@ -162,6 +201,10 @@ const ThemeTemplate = (theme: Theme) => `
         position: fixed;
         right: 5%;
         bottom: 0px;
+
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     }
     
     .feedbot-wrapper.collapsed > .feedbot {
@@ -172,17 +215,30 @@ const ThemeTemplate = (theme: Theme) => `
         height: auto;
     }
 
+    .feedbot-wrapper.collapsed .feedbot-header {
+        padding-top: 10px;
+    }
+
     .feedbot-header {
         z-index: 10;
         color: white;
         line-height: 20px;
-        padding: 8px;
+        padding: 8px 8px 8px 12px;
         cursor: pointer;
     }
 
     .feedbot-header, .feedbot-wrapper {
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
+    }
+    
+    .wc-card {
+        border: 1px solid #d2dde5;
+        width: 198px;
+    }
+    
+    .wc-adaptive-card {
+        width: 214px; 
     }
   `
 

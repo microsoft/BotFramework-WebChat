@@ -238,7 +238,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                             }
                         }
                     };
-                    console.log('userData', newActivity.channelData.userData)
+                    console.log('User data', newActivity.channelData.userData)
                     return botConnection.postActivityOriginal(newActivity);
                 } else {
                     return botConnection.postActivityOriginal(activity);
