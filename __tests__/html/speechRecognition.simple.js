@@ -22,7 +22,8 @@ describe.each([
             region: COGNITIVE_SERVICES_REGION,
             subscriptionKey: COGNITIVE_SERVICES_SUBSCRIPTION_KEY
           }),
-          sr: COGNITIVE_SERVICES_REGION
+          sr: COGNITIVE_SERVICES_REGION,
+          t: 'directline'
         };
       } else {
         console.warn(
@@ -45,7 +46,8 @@ describe.each([
       if (COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
         queryParams = {
           sr: COGNITIVE_SERVICES_REGION,
-          ss: COGNITIVE_SERVICES_SUBSCRIPTION_KEY
+          ss: COGNITIVE_SERVICES_SUBSCRIPTION_KEY,
+          t: 'directline'
         };
       } else {
         return console.warn(

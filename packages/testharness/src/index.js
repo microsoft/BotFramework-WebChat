@@ -12,14 +12,17 @@ import * as host from './host/index';
 import * as jobs from './jobs';
 import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
+import concatArrayBuffer from './speech/concatArrayBuffer';
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createStore, { getActionHistory } from './utils/createStore';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
+import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
 import iterateAsyncIterable from './utils/iterateAsyncIterable';
 import MockAudioContext from './speech/speechSynthesis/MockAudioContext';
 import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiffWaveArrayBuffer';
 import pageError from './host/pageError';
 import parseURLParams from './utils/parseURLParams';
+import pcmWaveArrayBufferToRiffWaveArrayBuffer from './speech/pcmWaveArrayBufferToRiffWaveArrayBuffer';
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
@@ -73,6 +76,7 @@ subscribeConsole();
 !webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
 
 export {
+  concatArrayBuffer,
   conditions,
   createDeferred,
   createQueuedArrayBufferAudioSource,
@@ -81,6 +85,7 @@ export {
   EventIterator,
   expect,
   fetchSpeechData,
+  float32ArraysToPcmWaveArrayBuffer,
   getActionHistory,
   getConsoleHistory,
   host,
@@ -89,6 +94,7 @@ export {
   MockAudioContext,
   pageObjects,
   parseURLParams,
+  pcmWaveArrayBufferToRiffWaveArrayBuffer,
   recognizeRiffWaveArrayBuffer,
   shareObservable,
   timeouts,

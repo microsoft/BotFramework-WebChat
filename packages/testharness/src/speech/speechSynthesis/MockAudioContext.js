@@ -1,5 +1,7 @@
 import EventTarget, { defineEventAttribute } from 'event-target-shim-es5';
 
+import pcmWaveArrayBufferToFloat32Arrays from '../pcmWaveArrayBufferToFloat32Arrays';
+
 function createCustomEvent(name) {
   if (name === 'error') {
     if (typeof ErrorEvent === 'function') {
@@ -17,17 +19,37 @@ function createCustomEvent(name) {
 }
 
 class MockAudioBuffer {
-  constructor(channels, frames, samplesPerSec) {
-    this._channels = channels;
-    this._channelData = new Array(channels).fill().map(() => new Array(frames * samplesPerSec));
+  constructor(numberOfChannels, length, sampleRate) {
+    // Length is number of samples to keep. This does not count as bytes, but as number of sample-frame.
+    // Since each sample-frame contains all channels, this number is just numSeconds * sampleRate.
+    this._length = length;
+    this._numberOfChannels = numberOfChannels;
+    this._sampleRate = sampleRate;
+
+    const bufferSize = length * 4;
+
+    // In Web Audio API, it use Float32, that means the ArrayBuffer need to be 4x of number of samples.
+    this._channelData = new Array(numberOfChannels).fill().map(() => new ArrayBuffer(bufferSize));
+  }
+
+  copyToChannel(arrayBuffer, channel) {
+    new Float32Array(this.getChannelData(channel)).set(new Float32Array(arrayBuffer));
   }
 
   getChannelData(channel) {
     return this._channelData[channel];
   }
 
+  get length() {
+    return this._length;
+  }
+
   get numberOfChannels() {
-    return this._channels;
+    return this._numberOfChannels;
+  }
+
+  get sampleRate() {
+    return this._sampleRate;
   }
 }
 
@@ -116,7 +138,21 @@ export default class MockAudioContext extends EventTarget {
     if (this._audioDataDecoder) {
       return await this._audioDataDecoder(arrayBuffer);
     } else {
-      return arrayBuffer;
+      const header = [...new Uint8Array(arrayBuffer.slice(0, 3))];
+
+      if (header[0] === 73 && header[1] === 68 && header[2] === 51) {
+        // MP3 starts with "ID3" tag
+        console.log('MP3 is not supported; ignoring this audio data.');
+
+        return this.createBuffer(1, 0, 16000);
+      }
+
+      // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
+      const buffer = this.createBuffer(1, arrayBuffer.byteLength / 2, 16000);
+
+      new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
+
+      return buffer;
     }
   }
 }
