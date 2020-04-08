@@ -40,17 +40,7 @@ test('video', async () => {
   // Jump back and forth for 10 seconds, to get the buffering bar the same
   await driver
     .actions()
-    .sendKeys('j')
-    .perform();
-
-  await driver
-    .actions()
-    .sendKeys('l')
-    .perform();
-
-  await driver
-    .actions()
-    .sendKeys('j')
+    .sendKeys('jlljj')
     .perform();
 
   // Wait for YouTube play/pause/rewind animation to complete
