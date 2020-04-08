@@ -83,22 +83,23 @@
                 timer = setTimeout(async () => {
                   const pcmWaveArrayBuffer = concatArrayBuffer(...allBuffers);
 
+                  allBuffers = [];
+
                   if (pcmWaveArrayBuffer.byteLength) {
                     const riffWaveArrayBuffer = pcmWaveArrayBufferToRiffWaveArrayBuffer(pcmWaveArrayBuffer, {
                       channels: buffer.numberOfChannels,
                       samplesPerSec: buffer.sampleRate
                     });
 
-                    await host.saveFile(Date.now() + '-recognizing.wav', riffWaveArrayBuffer);
+                    const filename = await host.saveFile(Date.now() + '-recognizing.wav', riffWaveArrayBuffer);
 
-                    allBuffers = [];
-
-                    push(
-                      await recognizeRiffWaveArrayBuffer({
+                    push({
+                      filename,
+                      text: await recognizeRiffWaveArrayBuffer({
                         arrayBuffer: riffWaveArrayBuffer,
                         credentials: speechCredentials
                       })
-                    );
+                    });
 
                     stop();
                   }
@@ -151,13 +152,24 @@
         await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
 
-        const recognizedTexts = [];
+        const recognized = [];
 
-        for await (const recognizedText of bufferSourceAsyncIterable) {
-          recognizedTexts.push(recognizedText);
+        for await (const result of bufferSourceAsyncIterable) {
+          recognized.push(result);
         }
 
-        expect(recognizedTexts).toEqual(["Unknown command I don't know. Hello world you can say help to learn more."]);
+        try {
+          expect(recognized.map(({ text }) => text)).toEqual([
+            "Unknown command I don't know. Hello world you can say help to learn more."
+          ]);
+        } catch (err) {
+          const files = recognized.map(({ filename }) => `See diff for details: ${filename}`).join('\n');
+          const detailedError = new Error(err.message + '\n\n' + files);
+
+          detailedError.stack = files + '\n\n' + err.stack;
+
+          throw detailedError;
+        }
 
         await host.snapshot();
         await host.done();

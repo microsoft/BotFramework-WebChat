@@ -56,6 +56,8 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
     },
     next: async ({ deferred, job }) => {
       try {
+        let result;
+
         if (job.type === 'snapshot') {
           expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
         } else if (job.type === 'save file') {
@@ -63,12 +65,14 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
 
           await writeFile(filename, Buffer.from(job.payload.base64, 'base64'));
 
-          console.log(`See diff for details: ${filename}`);
+          console.log(`Saved to ${filename}`);
+
+          result = filename;
         } else {
           throw new Error(`Unknown job type "${job.type}".`);
         }
 
-        deferred.resolve();
+        deferred.resolve(result);
       } catch (err) {
         pageResultDeferred.reject(err);
         deferred.reject(err);

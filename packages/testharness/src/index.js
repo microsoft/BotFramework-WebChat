@@ -1,3 +1,4 @@
+import { decode } from 'base64-arraybuffer';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import updateIn from 'simple-update-in';
@@ -44,6 +45,7 @@ if (!webDriverMode) {
 
     if (job) {
       const { id, type } = job;
+      let result;
 
       switch (type) {
         case 'console':
@@ -60,8 +62,8 @@ if (!webDriverMode) {
           break;
 
         case 'save file':
-          log(`WebChatTest: Saving a file "${job.payload.filename}".`, job.payload.base64);
-          await sleep(500);
+          result = URL.createObjectURL(new Blob([decode(job.payload.base64)]));
+          log(`WebChatTest: Saving "${job.payload.filename}" to "${result}".`);
           break;
 
         default:
@@ -69,7 +71,7 @@ if (!webDriverMode) {
           break;
       }
 
-      jobs.resolve(id);
+      jobs.resolve(id, result);
     }
   }, 100);
 } else {
