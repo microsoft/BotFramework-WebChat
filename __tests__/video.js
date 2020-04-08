@@ -37,10 +37,10 @@ test('video', async () => {
   // Pause the video
   await clickButton(driver, By.css('button[aria-label="Pause (k)"]'));
 
-  // Jump back and forth for 10 seconds, to get the buffering bar the same
+  // Jump back for 10 seconds, to get the buffering bar the same
   await driver
     .actions()
-    .sendKeys('jlljj')
+    .sendKeys('j')
     .perform();
 
   // Wait for YouTube play/pause/rewind animation to complete
@@ -51,6 +51,10 @@ test('video', async () => {
     const spinner = document.querySelector('.ytp-spinner');
 
     spinner && spinner.remove();
+
+    const loadProgress = document.querySelector('.ytp-load-progress');
+
+    loadProgress && loadProgress.setAttribute('hidden', 'hidden');
   });
 
   const base64PNG = await driver.takeScreenshot();
