@@ -10,7 +10,7 @@ const {
   COGNITIVE_SERVICES_REGION,
   COGNITIVE_SERVICES_SUBSCRIPTION_KEY,
   DIRECT_LINE_SPEECH_REGION,
-  DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY
+  x: DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY
 } = process.env;
 
 describe.each([
@@ -52,7 +52,10 @@ describe.each([
           );
         }
 
-        const res = await fetch('https://webchat-waterbottle.azurewebsites.net/token/speechservices');
+        const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
+          headers: { origin: 'http://localhost' },
+          method: 'POST'
+        });
 
         if (!res.ok) {
           throw new Error(
