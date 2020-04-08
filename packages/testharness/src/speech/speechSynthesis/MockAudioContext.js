@@ -32,8 +32,8 @@ class MockAudioBuffer {
     this._channelData = new Array(numberOfChannels).fill().map(() => new ArrayBuffer(bufferSize));
   }
 
-  copyToChannel(arrayBuffer, channel) {
-    new Float32Array(this.getChannelData(channel)).set(new Float32Array(arrayBuffer));
+  copyToChannel(float32Array, channel) {
+    new Float32Array(this.getChannelData(channel)).set(float32Array);
   }
 
   getChannelData(channel) {

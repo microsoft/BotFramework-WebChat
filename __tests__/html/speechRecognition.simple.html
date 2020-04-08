@@ -97,9 +97,8 @@
                         credentials: speechCredentials
                       })
                     );
+
                     stop();
-                  } else {
-                    push('');
                   }
                 }, 1000);
               }
@@ -156,10 +155,7 @@
           recognizedTexts.push(recognizedText);
         }
 
-        expect(recognizedTexts).toEqual([
-          '',
-          "Unknown command I don't know. Hello world you can say help to learn more."
-        ]);
+        expect(recognizedTexts).toEqual(["Unknown command I don't know. Hello world you can say help to learn more."]);
 
         await host.snapshot();
         await host.done();

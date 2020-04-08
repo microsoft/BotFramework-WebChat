@@ -170,7 +170,7 @@ export default async function playCognitiveServicesStream(
       );
 
       // Queue to the buffering player.
-      player.push(upsampledMultiChannelArray.buffer);
+      player.push(upsampledMultiChannelArray);
     }
 
     abortPromise.catch(() => player.cancelAll());
