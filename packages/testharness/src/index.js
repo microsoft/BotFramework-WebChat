@@ -59,6 +59,11 @@ if (!webDriverMode) {
           await sleep(500);
           break;
 
+        case 'save file':
+          log(`WebChatTest: Saving a file "${job.payload.filename}".`, job.payload.base64);
+          await sleep(500);
+          break;
+
         default:
           log(`WebChatTest: Auto-resolving job "${type}".`);
           break;

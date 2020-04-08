@@ -89,6 +89,8 @@
                       samplesPerSec: buffer.sampleRate
                     });
 
+                    await host.saveFile(Date.now() + '-recognizing.wav', riffWaveArrayBuffer);
+
                     allBuffers = [];
 
                     push(
