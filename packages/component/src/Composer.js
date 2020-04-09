@@ -299,11 +299,10 @@ const Composer = ({
     console.error(err);
   }, []);
 
-  const patchedLocalizedStrings = useMemo(() => {
-    const normalizedLanguage = normalizeLanguage(locale);
-
-    return mergeStringsOverrides(getAllLocalizedStrings()[normalizedLanguage], locale, overrideLocalizedStrings);
-  }, [locale, overrideLocalizedStrings]);
+  const patchedLocalizedStrings = useMemo(
+    () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
+    [locale, overrideLocalizedStrings]
+  );
 
   const localizedGlobalize = useMemo(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
