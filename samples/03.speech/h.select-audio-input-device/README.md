@@ -52,6 +52,24 @@ To simplify the sample code, we are selecting an audio input device with the key
 
 For a comprehensive solution with user-selectable device list, please refer to [`comprehensive.html`](comprehensive.html).
 
+### Direct Line Speech
+
+If you are using Direct Line Speech, you should set `audioInputDeviceId` when calling `createDirectLineSpeechAdapters`.
+
+```diff
+  const adapters = await window.WebChat.createDirectLineSpeechAdapters({
++   audioInputDeviceId: selectedAudioInputDeviceId,
+    fetchCredentials: fetchDirectLineSpeechCredentials
+  });
+
+  window.WebChat.renderWebChat(
+    {
+      ...adapters
+    },
+    document.getElementById('webchat')
+  );
+```
+
 ## Completed code
 
 <!-- prettier-ignore-start -->
