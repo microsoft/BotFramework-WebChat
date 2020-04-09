@@ -265,15 +265,11 @@ const ThemeTemplate = (theme: Theme) => `
 
     @media (max-width: 450px) {
         .wc-card {
-          border: 1px solid #d2dde5;
-          width: 198px !important; }
+            border: 1px solid #d2dde5;
+            width: 198px !important; 
+        }
         .wc-adaptive-card {
-          width: 214px !important; } }
-      
-    @media (min-width: 768px) {
-    .wc-card {
-        border: 1px solid #d2dde5;
-        width: 398px !important; }
-    .wc-adaptive-card {
-        width: 414px !important; } }      
+            width: 214px !important;
+        }
+    }
   `
