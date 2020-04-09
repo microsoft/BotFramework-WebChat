@@ -195,9 +195,10 @@ const ThemeTemplate = (theme: Theme) => `
     .feedbot-wrapper {
         background-color: #fff;
         width: 450px;
+        min-width: 275px;
         max-width: 90%;
         height: 700px;
-        max-height: 75%;
+        max-height: 90%;
         position: fixed;
         right: 5%;
         bottom: 0px;
@@ -232,29 +233,47 @@ const ThemeTemplate = (theme: Theme) => `
         border-top-right-radius: 5px;
     }
     
+    .wc-suggested-actions .wc-hscroll > ul > li {
+        max-width: initial !important;
+    }
+
+    .wc-suggested-actions .wc-hscroll > ul {
+        text-align: center;
+    }
+
+    body .wc-suggested-actions .wc-hscroll > ul > li button {
+        color: white !important;
+        background-color: ${theme.mainColor} !important;
+        border-color: ${theme.mainColor} !important;
+        border-radius: 20px;
+        text-overflow: initial;
+    }
+
+    body .wc-suggested-actions .wc-hscroll > ul > li button:active {
+        color: ${theme.mainColor} !important;
+        background-color: white !important;
+        border-color: ${theme.mainColor} !important;
+    }
+
+    .wc-suggested-actions .wc-hscroll > ul > li button:focus, .wc-console .wc-mic, .wc-console .wc-send, .wc-app .wc-card button {
+        outline:0;
+    }
+
+    .wc-message-pane.show-actions .wc-message-groups {
+        top: 40px !important;
+    }
+
+    @media (max-width: 450px) {
+        .wc-card {
+          border: 1px solid #d2dde5;
+          width: 198px !important; }
+        .wc-adaptive-card {
+          width: 214px !important; } }
+      
+    @media (min-width: 768px) {
     .wc-card {
         border: 1px solid #d2dde5;
-        width: 198px;
-    }
-    
+        width: 398px !important; }
     .wc-adaptive-card {
-        width: 214px; 
-    }
+        width: 414px !important; } }      
   `
-
-  /*
-// TODO invert suggsted actions button colors
-  #bot .wc-suggested-actions .wc-hscroll > ul > li button, .wc-app .wc-card button {
-    color: white !important;
-    background-color: #D83838 !important;
-    border-color: #D83838 !important;
-    border-radius: 20px;
-}
-
-#bot .wc-suggested-actions .wc-hscroll > ul > li button:active, .wc-app .wc-card button:active {
-    color: #D83838 !important;
-    background-color: white !important;
-    border-color: #D83838 !important;
-}
-
-  */
