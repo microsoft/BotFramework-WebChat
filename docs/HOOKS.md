@@ -394,7 +394,7 @@ useLanguage(options?: LanguageOptions): [string]
 
 This function will return the language of the UI. All UI components should honor this value.
 
-If no options are passed, the return value will be the written language. And this value should be same as `props.locale` passed to `<ReactWebChat>` or `<Composer>`.
+If no options are passed, the return value will be the written language. This value should be the same as `props.locale` passed to `<ReactWebChat>` or `<Composer>`.
 
 If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
