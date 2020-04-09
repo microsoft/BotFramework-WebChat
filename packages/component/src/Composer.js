@@ -191,7 +191,6 @@ const Composer = ({
   const [dictateAbortable, setDictateAbortable] = useState();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
-  const patchedLanguage = useMemo(() => normalizeLanguage(locale), [locale]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
   const patchedStyleOptions = useMemo(() => {
@@ -223,8 +222,8 @@ const Composer = ({
   }, [groupTimestamp, sendTimeout, styleOptions]);
 
   useEffect(() => {
-    dispatch(setLanguage(patchedLanguage));
-  }, [dispatch, patchedLanguage]);
+    dispatch(setLanguage(locale));
+  }, [dispatch, locale]);
 
   useEffect(() => {
     typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
@@ -300,17 +299,16 @@ const Composer = ({
     console.error(err);
   }, []);
 
-  const patchedLocalizedStrings = useMemo(
-    () => mergeStringsOverrides(getAllLocalizedStrings()[patchedLanguage], patchedLanguage, overrideLocalizedStrings),
-    [overrideLocalizedStrings, patchedLanguage]
-  );
+  const patchedLocalizedStrings = useMemo(() => {
+    const normalizedLanguage = normalizeLanguage(locale);
+
+    return mergeStringsOverrides(getAllLocalizedStrings()[normalizedLanguage], locale, overrideLocalizedStrings);
+  }, [locale, overrideLocalizedStrings]);
 
   const localizedGlobalize = useMemo(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
 
-    return (
-      GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en-US')
-    );
+    return GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en');
   }, [patchedLocalizedStrings]);
 
   const trackDimension = useCallback(
@@ -361,7 +359,7 @@ const Composer = ({
       grammars: patchedGrammars,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
-      language: patchedLanguage,
+      language: locale,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
       onTelemetry,
@@ -394,11 +392,11 @@ const Composer = ({
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
+      locale,
       localizedGlobalize,
       onTelemetry,
       patchedDir,
       patchedGrammars,
-      patchedLanguage,
       patchedLocalizedStrings,
       patchedSelectVoice,
       sendTypingIndicator,
