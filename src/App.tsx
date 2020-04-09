@@ -202,6 +202,7 @@ const ThemeTemplate = (theme: Theme) => `
         position: fixed;
         right: 5%;
         bottom: 0px;
+        z-index: 10000;
 
         -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
         -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
