@@ -128,7 +128,6 @@ const WebChatCarouselFilmStrip = ({
 
   return (
     <div
-      aria-label={ariaLabel}
       className={classNames(
         ROOT_CSS + '',
         carouselFilmStripStyleSet + '',
@@ -142,6 +141,7 @@ const WebChatCarouselFilmStrip = ({
       ref={scrollableRef}
       role="group"
     >
+      <ScreenReaderText text={ariaLabel} />
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
@@ -155,7 +155,7 @@ const WebChatCarouselFilmStrip = ({
                 }
               })}
             </Bubble>
-            <div className="filler" />
+            <div aria-hidden={true} className="filler" />
           </div>
         )}
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>

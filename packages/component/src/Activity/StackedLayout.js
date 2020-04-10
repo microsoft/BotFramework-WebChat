@@ -118,7 +118,6 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   return (
     <div
-      aria-label={ariaLabel}
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
@@ -137,11 +136,12 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
       )}
       role="group"
     >
+      <ScreenReaderText text={ariaLabel} />
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
       <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
-          <div className="webchat__row message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={!!indented}>
+          <div aria-hidden={true} className="webchat__row message">
+            <Bubble className="bubble" fromUser={fromUser} nub={!!indented}>
               {children({
                 activity,
                 attachment: {
@@ -168,10 +168,10 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
         ))}
         <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
           {renderActivityStatus()}
-          <div className="filler" />
+          <div aria-hidden={true} className="filler" />
         </div>
       </div>
-      <div className="filler" />
+      <div aria-hidden={true} className="filler" />
     </div>
   );
 };
