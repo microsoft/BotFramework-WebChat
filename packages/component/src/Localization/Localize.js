@@ -4,6 +4,7 @@
 import deprecatingGetLocaleString from './getLocaleString';
 import getAllLocalizedStrings from './getAllLocalizedStrings';
 import getRTLList from './getRTLList';
+import normalizeLanguage from '../Utils/normalizeLanguage';
 import useLocalizer from '../hooks/useLocalizer';
 
 let deprecationNotesShown;
@@ -18,7 +19,8 @@ function localize(id, language, ...args) {
   }
 
   const allStrings = getAllLocalizedStrings();
-  const localizedStrings = allStrings[language];
+  const normalizedLanguage = normalizeLanguage(language);
+  const localizedStrings = allStrings[normalizedLanguage];
 
   return Object.entries(args).reduce(
     (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),

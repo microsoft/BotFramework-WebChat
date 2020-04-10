@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3075](https://github.com/microsoft/BotFramework-WebChat/issues/3075). Fix usability issues around accessibility, by [@compulim](https://github.com/compulim) in PR [#3076](https://github.com/microsoft/BotFramework-WebChat/issue/3076)
    -  Fix timestamp should not be narrated more than once.
    -  Associate the activity text with its attachments, by adding a `role="region"` to the activity DOM element.
+-  Fixes [#3074](https://github.com/microsoft/BotFramework-WebChat/issues/3074). Keep `props.locale` when sending to the bot, by [@compulim](https://github.com/compulim) in PR [#3095](https://github.com/microsoft/BotFramework-WebChat/issue/3095)
 
 ## [4.8.0] - 2020-03-05
 
