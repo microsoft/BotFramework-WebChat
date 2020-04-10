@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Fix timestamp should not be narrated more than once.
    -  Associate the activity text with its attachments, by adding a `role="region"` to the activity DOM element.
 -  Fixes [#3074](https://github.com/microsoft/BotFramework-WebChat/issues/3074). Keep `props.locale` when sending to the bot, by [@compulim](https://github.com/compulim) in PR [#3095](https://github.com/microsoft/BotFramework-WebChat/issue/3095)
+-  Fixes [#3096](https://github.com/microsoft/BotFramework-WebChat/issues/3096). Use `<ScreenReaderText>` instead of `aria-label` for message bubbles, by [@compulim](https://github.com/compulim) in PR [#3097](https://github.com/microsoft/BotFramework-WebChat/issue/3097)
 
 ### Changed
 

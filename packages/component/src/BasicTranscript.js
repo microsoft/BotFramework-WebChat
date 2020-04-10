@@ -113,7 +113,7 @@ const BasicTranscript = ({ className }) => {
   return (
     <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
-        <div className={FILLER_CSS} />
+        <div aria-hidden={true} className={FILLER_CSS} />
         <ul
           aria-atomic="false"
           aria-live="polite"
