@@ -65,6 +65,7 @@ const customMarkdownIt = new MarkdownIt({
       tokens[index].attrs[targetAttrIndex][1] = '_blank';
     } else {
       tokens[index].attrPush(['target', '_blank']);
+      tokens[index].attrPush(['title', 'Opens in a new window']);
     }
 
     const relAttrIndex = tokens[index].attrIndex('rel');
