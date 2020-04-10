@@ -7,7 +7,7 @@ import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
-    a: ['aria-label', 'href', 'name', 'target', 'title'],
+    a: ['aria-label', 'href', 'name', 'target', 'title', 'role', 'class'],
     img: ['alt', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -48,6 +48,10 @@ const SANITIZE_HTML_OPTIONS = {
   ]
 };
 
+function isExternal(url) {
+  return url.host !== window.location.host;
+}
+
 const customMarkdownIt = new MarkdownIt({
   breaks: false,
   html: false,
@@ -65,6 +69,13 @@ const customMarkdownIt = new MarkdownIt({
       tokens[index].attrs[targetAttrIndex][1] = '_blank';
     } else {
       tokens[index].attrPush(['target', '_blank']);
+      tokens[index].attrPush(['class', 'externalLink']);
+    }
+
+    const urlAttrIndex = tokens[index].attrIndex('href');
+    if (isExternal(urlAttrIndex)) {
+      tokens[index].attrPush(['title', 'Opens in a new window, external']);
+    } else {
       tokens[index].attrPush(['title', 'Opens in a new window']);
     }
 
