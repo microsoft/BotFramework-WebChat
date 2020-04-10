@@ -1,3 +1,5 @@
+const { relative } = require('path');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}',
@@ -36,6 +38,12 @@ module.exports = {
         outputFile: 'coverage/result.trx',
         postProcessTestResult: [
           (testSuiteResult, testResult, testResultNode) => {
+            // If you want to re-touch the test result, you can refer to source code from these links:
+            // - https://github.com/facebook/jest/blob/master/packages/jest-types/src/TestResult.ts
+            // - https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml#attachments-support
+            // - https://github.com/Microsoft/vstest/tree/master/src/Microsoft.TestPlatform.Extensions.TrxLogger
+            // - https://github.com/no23reason/jest-trx-results-processor/tree/master/src
+
             testResult.failureMessages.forEach(message => {
               const match = /^See diff for details: (.*)/m.exec(message);
 
@@ -45,6 +53,8 @@ module.exports = {
                   .ele('ResultFile')
                   .att('path', match[1]);
             });
+
+            testResultNode.att('testName', `${relative(__dirname, testSuiteResult.testFilePath)} › ${testResult.fullName}`);
           }
         ]
       }
