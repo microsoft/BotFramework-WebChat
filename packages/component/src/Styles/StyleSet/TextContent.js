@@ -24,6 +24,15 @@ export default function createTextContentStyle({ bubbleMaxWidth, bubbleMinHeight
       '& pre': {
         overflow: 'hidden'
       }
+    },
+    '& .externalLink': {
+      margin: 0,
+      padding: 0,
+      backgroundPosition: 'center right',
+      backgroundRepeat: 'no-repeat',
+      backgroundImage:
+        'linear-gradient(transparent,transparent),url(https://en.wikipedia.org/w/skins/Vector/resources/skins.vector.styles/images/external-link-ltr-icon.svg?b4b84)',
+      paddingRight: '13px'
     }
   };
 }
