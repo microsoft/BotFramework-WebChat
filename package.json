@@ -48,6 +48,7 @@
     "concurrently": "^5.1.0",
     "core-js": "^3.6.4",
     "cross-env": "^7.0.2",
+    "error-stack-parser": "^2.0.6",
     "get-port": "^5.1.1",
     "husky": "^4.2.3",
     "jest": "^25.1.0",
@@ -64,7 +65,9 @@
     "react-dom": "16.8.6",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "serve": "^11.3.0",
-    "serve-handler": "^6.1.2"
+    "serve-handler": "^6.1.2",
+    "strip-ansi": "^6.0.0",
+    "xmlbuilder": "^15.1.1"
   },
   "dependencies": {}
 }
