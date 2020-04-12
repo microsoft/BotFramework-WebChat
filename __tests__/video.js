@@ -40,7 +40,7 @@ test('video', async () => {
   // Rewind for 10 seconds
   await driver
     .actions()
-    .sendKeys('j')
+    // .sendKeys('j')
     .perform();
 
   // Wait for YouTube play/pause/rewind animation to complete
