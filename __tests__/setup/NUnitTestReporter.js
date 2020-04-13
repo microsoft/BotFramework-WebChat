@@ -126,8 +126,10 @@ class NUnitTestReporter {
 
                 filename &&
                   attachments.push({
-                    filePath: filename,
-                    description: basename(filename)
+                    attachment: {
+                      filePath: filename,
+                      description: basename(filename)
+                    }
                   });
               });
 
