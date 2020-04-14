@@ -65,12 +65,18 @@ const TOAST_ACCORDION_IDS = {
 };
 
 const BasicToaster = () => {
+  const instanceId = useMemo(randomId, []);
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
-  const expandableElementId = useMemo(() => `webchat__toaster__list__${randomId()}`, []);
-  const headerElementId = useMemo(() => `webchat__toaster__header__${randomId()}`, []);
+  const expandableElementId = useMemo(
+    () => (!expandable || expanded ? `webchat__toaster__list__${instanceId}` : undefined),
+    [expandable, expanded]
+  );
+  const headerElementId = useMemo(() => (expandable ? `webchat__toaster__header__${instanceId}` : undefined), [
+    expandable
+  ]);
   const renderToast = useRenderToast();
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
@@ -98,7 +104,7 @@ const BasicToaster = () => {
     <div
       aria-labelledby={headerElementId}
       aria-live="polite"
-      aria-relevant="additions text"
+      aria-relevant="all"
       className={classNames(ROOT_CSS + '', toasterStyleSet + '', 'webchat__toaster', {
         'webchat__toaster--expandable': expandable,
         'webchat__toaster--expanded': expanded,
@@ -132,7 +138,7 @@ const BasicToaster = () => {
       {(!expandable || expanded) && (
         <ul aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId} role="region">
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li className="webchat__toaster__listItem" key={id} role="none">
+            <li aria-atomic={true} className="webchat__toaster__listItem" key={id} role="none">
               {children}
             </li>
           ))}
