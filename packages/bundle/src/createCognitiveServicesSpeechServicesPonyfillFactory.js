@@ -21,7 +21,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
 }) {
   if (!window.navigator.mediaDevices && !audioConfig) {
     console.warn(
-      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded in via HTTPS or from localhost, Cognitive Services Speech Services will be disabled. However, you may pass a custom AudioConfig to enable speech in this environment.'
+      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded via HTTPS or localhost. Cognitive Services Speech Services is disabled. However, you may pass a custom AudioConfig to enable speech in this environment.'
     );
 
     return () => ({});
@@ -49,7 +49,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
 
   if (audioConfig && audioInputDeviceId) {
     console.warn(
-      'botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time, ignoring "audioInputDeviceId".'
+      'botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time; ignoring "audioInputDeviceId".'
     );
   }
 
