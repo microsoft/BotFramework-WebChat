@@ -4,6 +4,9 @@ import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs-es5';
 import sanitizeHTML from 'sanitize-html';
+import { hooks } from 'botframework-webchat-component';
+
+const { useLocalizer } = hooks;
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
@@ -72,11 +75,15 @@ const customMarkdownIt = new MarkdownIt({
       tokens[index].attrPush(['class', 'externalLink']);
     }
 
+    const localize = useLocalizer();
+    const internalLinkOpensInNewWindowString = localize('TEXT_LINK_OPENS_NEW_WINDOW_INTERNAL');
+    const externalLinkOpensInNewWindowString = localize('TEXT_LINK_OPENS_NEW_WINDOW_EXTERNAL');
+
     const urlAttrIndex = tokens[index].attrIndex('href');
     if (isExternal(urlAttrIndex)) {
-      tokens[index].attrPush(['title', 'Opens in a new window, external']);
+      tokens[index].attrPush(['title', externalLinkOpensInNewWindowString]);
     } else {
-      tokens[index].attrPush(['title', 'Opens in a new window']);
+      tokens[index].attrPush(['title', internalLinkOpensInNewWindowString]);
     }
 
     const relAttrIndex = tokens[index].attrIndex('rel');
