@@ -32,17 +32,9 @@ class QueuedArrayBufferAudioSource {
     };
 
     this._events = new EventSource();
-
-    this.attach = this.attach.bind(this);
-    this.detach = this.detach.bind(this);
-    this.id = this.id.bind(this);
-    this.push = this.push.bind(this);
-    this.turnOff = this.turnOff.bind(this);
-    this.turnOn = this.turnOn.bind(this);
-    this.upload = this.upload.bind(this);
   }
 
-  push(arrayBuffer) {
+  push = arrayBuffer => {
     // 10 seconds of audio in bytes =
     // sample rate (bytes/second) * 600 (seconds) + 44 (size of the wave header).
     const maxSize = this._audioFormat.samplesPerSec * 600 + 44;
@@ -56,20 +48,20 @@ class QueuedArrayBufferAudioSource {
     }
 
     this._queue.push(arrayBuffer);
-  }
+  };
 
-  turnOn() {
+  turnOn = () => {
     this.onEvent(new AudioSourceInitializingEvent(this._id)); // no stream id
     this.onEvent(new AudioSourceReadyEvent(this._id));
 
     return PromiseHelper.fromResult(true);
-  }
+  };
 
-  id() {
+  id = () => {
     return this._id;
-  }
+  };
 
-  attach(audioNodeId) {
+  attach = audioNodeId => {
     this.onEvent(new AudioStreamNodeAttachingEvent(this._id, audioNodeId));
 
     return this.upload(audioNodeId).onSuccessContinueWith(streamReader => {
@@ -88,9 +80,9 @@ class QueuedArrayBufferAudioSource {
         read: () => streamReader.read()
       };
     });
-  }
+  };
 
-  detach(audioNodeId) {
+  detach = audioNodeId => {
     if (audioNodeId && this._streams[audioNodeId]) {
       this._streams[audioNodeId].close();
 
@@ -98,17 +90,17 @@ class QueuedArrayBufferAudioSource {
 
       this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
     }
-  }
+  };
 
-  turnOff() {
+  turnOff = () => {
     Object.values(this._streams).forEach(stream => stream && !stream.isClosed && stream.close());
 
     this.onEvent(new AudioSourceOffEvent(this._id)); // no stream now
 
     return PromiseHelper.fromResult(true);
-  }
+  };
 
-  upload(audioNodeId) {
+  upload = audioNodeId => {
     return this.turnOn().onSuccessContinueWith(() => {
       const stream = new Stream(audioNodeId);
 
@@ -130,7 +122,7 @@ class QueuedArrayBufferAudioSource {
 
       return stream.getReader();
     });
-  }
+  };
 
   get format() {
     return PromiseHelper.fromResult(this._audioFormat);

@@ -2,9 +2,9 @@
 
 ## Description
 
-A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality that user can selects different audio input device.
+A simple page with integrated Web Chat, with speech-to-text and text-to-speech functionality that a user can test by selecting different audio devices.
 
-This is an extension of sample [03.speech/b.cognitive-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js).
+This is an extension of the sample [03.speech/b.cognitive-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js).
 
 # Test out the hosted sample
 
@@ -21,7 +21,7 @@ This is an extension of sample [03.speech/b.cognitive-speech-services-js](https:
 
 -  Click on microphone button
 -  Say "Tell me a story."
--  It should recognize as "Tell me a story."
+-  It should be recognized as "Tell me a story."
 
 # Code
 
