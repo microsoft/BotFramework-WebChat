@@ -139,7 +139,7 @@ const ThemeTemplate = (theme: Theme) => `
     }
 
     .wc-app .wc-chatview-panel {
-        top: 35px;
+        top: 45px;
     }
 
     .wc-app .wc-message-groups {
@@ -208,7 +208,7 @@ const ThemeTemplate = (theme: Theme) => `
         -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
         box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     }
-    
+
     .feedbot-wrapper.collapsed > .feedbot {
         display: none;
     }
@@ -221,19 +221,59 @@ const ThemeTemplate = (theme: Theme) => `
         padding-top: 10px;
     }
 
+    /* TODO finish - no blank space below suggested actions when input disabled
+    .feedbot-wrapper .wc-message-pane .wc-suggested-actions {
+        position: absolute;
+        bottom: 0px;
+        z-index: 10000;
+        background-color: white;
+    }
+
+    .feedbot-wrapper  .wc-message-pane.show-actions .wc-suggested-actions {
+        height: 50px;
+    }
+
+    .feedbot-wrapper .wc-message-pane.show-actions .wc-message-groups {
+        top: 0px;
+        transform: translateY(0px);
+    }
+
+    .feedbot-wrapper .wc-message-pane.has-upload-button .wc-message-groups {
+        transform: translateY(-30px);
+    }
+
+    .feedbot-wrapper .wc-console.disable-input .wc-textbox {
+        display: none;
+    }
+
+    .feedbot-wrapper .wc-console.disable-input {
+        background-color: white !important;
+    }*/
+
+    .feedbot-wrapper .wc-message-pane.show-actions .wc-message-groups {
+        top: 0px;
+        transform: translateY(-40px);
+    }
+
     .feedbot-header {
         z-index: 10;
         color: white;
-        line-height: 20px;
-        padding: 8px 8px 8px 12px;
+        line-height: 30px;
+        padding: 8px 8px 8px 16px;
         cursor: pointer;
+        font-size: 1.1em;
+        letter-spacing: 1px;
     }
 
     .feedbot-header, .feedbot-wrapper {
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
     }
-    
+
+    .feedbot-wrapper .wc-suggested-actions {
+        background-color: transparent;
+    }
+
     .wc-suggested-actions .wc-hscroll > ul > li {
         max-width: initial !important;
     }
@@ -260,10 +300,6 @@ const ThemeTemplate = (theme: Theme) => `
         outline:0;
     }
 
-    .wc-message-pane.show-actions .wc-message-groups {
-        top: 40px !important;
-    }
-
     @media (max-width: 450px) {
         .wc-card {
             border: 1px solid #d2dde5;
@@ -272,5 +308,32 @@ const ThemeTemplate = (theme: Theme) => `
         .wc-adaptive-card {
             width: 214px !important;
         }
+    }
+
+    .wc-message-from.wc-message-from-bot {
+        visibility: hidden;
+        height: 2px;
+    }
+
+    .wc-message-wrapper:not([data-activity-id='retry']) .wc-message-from {
+        visibility: hidden;
+        height: 2px;
+    }
+
+    .wc-message-wrapper:not([data-activity-id]) .wc-message-from {
+        visibility: visible;
+    }
+
+    .feedbot-wrapper .wc-message-content {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .feedbot-wrapper .wc-message-from-bot .wc-message-content {
+        color: #424242 !important;
+    }
+
+    .feedbot-wrapper .wc-carousel {
+        margin-top: 10px;
     }
   `
