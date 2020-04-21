@@ -209,6 +209,7 @@ export interface FormatState {
     themeColor: string;
     logoUrl: string;
     bottomOffset: number;
+    topOffset: number;
 }
 
 export type FormatAction = {
@@ -243,7 +244,8 @@ export const format: Reducer<FormatState> = (
         carouselMargin: undefined,
         themeColor: undefined,
         logoUrl: undefined,
-        bottomOffset: undefined
+        bottomOffset: undefined,
+        topOffset: undefined
     },
     action: FormatAction
 ) => {

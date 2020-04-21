@@ -334,6 +334,18 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
+                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset)) {
+                            const { bottomOffset, topOffset} = bot_display_options;
+
+                            this.store.dispatch({
+                                type: 'Set_Format_Options',
+                                formatOptions: {
+                                    bottomOffset,
+                                    topOffset
+                                }
+                            });
+                        }
+
                         if (bot_display_options && bot_display_options.logo_url) {
                             this.store.dispatch<ChatActions>({
                                 type: 'Set_Logo_Img',
@@ -459,9 +471,10 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
 
-        const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : undefined;
-        const height = `calc(100vh - ${bottomOffset}px - 20px)`;
-        const chatviewPanelStyle = bottomOffset ? { bottom: bottomOffset, height } : {};
+        const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : 109;
+        const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
+        const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
+        const chatviewPanelStyle = { bottom: bottomOffset, height };
 
         // only render real stuff after we know our dimensions
         return (
