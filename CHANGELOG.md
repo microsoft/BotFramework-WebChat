@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3074](https://github.com/microsoft/BotFramework-WebChat/issues/3074). Keep `props.locale` when sending to the bot, by [@compulim](https://github.com/compulim) in PR [#3095](https://github.com/microsoft/BotFramework-WebChat/issue/3095)
 -  Fixes [#3096](https://github.com/microsoft/BotFramework-WebChat/issues/3096). Use `<ScreenReaderText>` instead of `aria-label` for message bubbles, by [@compulim](https://github.com/compulim) in PR [#3097](https://github.com/microsoft/BotFramework-WebChat/issue/3097)
 -  Fixes [#2876](https://github.com/microsoft/BotFramework-WebChat/issues/2876). `messageBack` and `postBack` should send even if both `text` and `value` is falsy or `undefined`, by [@compulim](https://github.com/compulim) in PR [#3120](https://github.com/microsoft/BotFramework-WebChat/issues/3120)
+-  Fixes [#2668](https://github.com/microsoft/BotFramework-WebChat/issues/2668). Disable Web Audio on insecure connections, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/issue/3079)
 
 ### Changed
 
@@ -104,7 +105,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped Chrome Docker image to `3.141.59-zirconium` (Chrome 80.0.3987.106), by [@compulim](https://github.com/compulim) in PR [#2992](https://github.com/microsoft/BotFramework-WebChat/pull/2992)
 -  Added `4.8.0` to `embed/servicingPlan.json`, by [@compulim](https://github.com/compulim) in PR [#2986](https://github.com/microsoft/BotFramework-WebChat/pull/2986)
 -  Bumped `microsoft-cognitiveservices-speech-sdk@1.10.1` and `web-speech-cognitive-services@6.1.0`, by [@compulim](https://github.com/compulim) in PR [#3040](https://github.com/microsoft/BotFramework-WebChat/pull/3040)
--  Resolved [#2987](https://github.com/microsoft/BotFramework-WebChat/issue/2987), converged all references of [`microsoft-cognitiveservices-speech-sdk`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk) to reduce footprint, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/pull/3079)
+-  Resolved [#2886](https://github.com/microsoft/BotFramework-WebChat/issues/2886) and [#2987](https://github.com/microsoft/BotFramework-WebChat/issue/2987), converged all references of [`microsoft-cognitiveservices-speech-sdk`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk) to reduce footprint, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/pull/3079)
 
 ## Samples
 
