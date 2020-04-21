@@ -10,6 +10,7 @@ import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import createStore, { getActionHistory } from './utils/createStore';
 import pageError from './host/pageError';
+import parseURLParams from './utils/parseURLParams';
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
@@ -32,22 +33,6 @@ export {
 };
 
 const log = console.log.bind(console);
-
-function parseURLParams(search) {
-  return search
-    .replace(/^[#\?]/, '')
-    .split('&')
-    .reduce((params, keyValue) => {
-      const [key, value] = keyValue.split('=');
-      const decodedKey = decodeURIComponent(key);
-
-      if (key && key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
-        params[decodedKey] = decodeURIComponent(value);
-      }
-
-      return params;
-    }, {});
-}
 
 // If not running under WebDriver, we handle all jobs here.
 const webDriverMode = 'wd' in parseURLParams(location.hash);

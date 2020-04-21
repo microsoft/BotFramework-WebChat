@@ -7,6 +7,7 @@ import { SEND_POST_BACK } from '../actions/sendPostBack';
 import postActivity from '../actions/postActivity';
 import whileConnected from './effects/whileConnected';
 
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#post-back
 function* postActivityWithPostBack({ payload: { value } }) {
   yield put(
     postActivity({
@@ -21,7 +22,7 @@ function* postActivityWithPostBack({ payload: { value } }) {
 }
 
 function* sendPostBackToPostActivity() {
-  yield takeEvery(({ payload, type }) => type === SEND_POST_BACK && payload.value, postActivityWithPostBack);
+  yield takeEvery(SEND_POST_BACK, postActivityWithPostBack);
 }
 
 export default function* sendPostBackToPostActivitySaga() {
