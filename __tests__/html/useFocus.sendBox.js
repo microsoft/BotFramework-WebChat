@@ -3,6 +3,5 @@
  */
 
 describe('useFocus', () => {
-  test('on main', () => runHTMLTest('useFocus.main.html'));
   test('on send box', () => runHTMLTest('useFocus.sendBox.html'));
 });
