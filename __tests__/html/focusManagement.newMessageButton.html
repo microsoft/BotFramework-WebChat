@@ -21,17 +21,7 @@
     <div id="webchat"></div>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      const {
-        conditions,
-        createRunHookActivityMiddleware,
-        createStore,
-        elements,
-        expect,
-        host,
-        pageObjects,
-        timeouts,
-        token
-      } = window.WebChatTest;
+      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
       (async function() {
         const store = createStore();
@@ -57,7 +47,6 @@
 
         window.WebChat.renderWebChat(
           {
-            activityMiddleware: createRunHookActivityMiddleware(),
             directLine: hackedDirectLine,
             store
           },

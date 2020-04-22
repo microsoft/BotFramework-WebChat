@@ -21,7 +21,17 @@
     <div id="webchat"></div>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script type="text/babel" data-presets="es2015,stage-3">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+      const {
+        conditions,
+        createRunHookActivityMiddleware,
+        createStore,
+        elements,
+        expect,
+        host,
+        pageObjects,
+        timeouts,
+        token
+      } = window.WebChatTest;
 
       (async function() {
         const store = createStore();
@@ -36,13 +46,10 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
-        await pageObjects.clickNthSuggestedAction(1);
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
 
-        // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.querySelector(':focus')).toBe(elements.typeFocusSink());
+        // After clicking on new message button, it should focus back on the type focus sink.
+        expect(document.querySelector(':focus')).toBe(elements.sendBoxTextBox());
 
         await host.snapshot();
         await host.done();

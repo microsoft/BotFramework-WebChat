@@ -30,5 +30,10 @@ async function sendKeys(element, ...args) {
 export default async function typeInSendBox(...args) {
   const textBox = getSendBoxTextBoxElement();
 
+  textBox.focus();
+  Simulate.focus(textBox);
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
   await sendKeys(textBox, ...args);
 }
