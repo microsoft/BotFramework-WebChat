@@ -15,6 +15,7 @@ import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import concatArrayBuffer from './speech/concatArrayBuffer';
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
+import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
@@ -33,6 +34,23 @@ window.Babel.registerPlugin(
   '@babel/plugin-proposal-async-generator-functions',
   BabelPluginProposalAsyncGeneratorFunctions
 );
+
+export {
+  conditions,
+  createRunHookActivityMiddleware,
+  createStore,
+  elements,
+  expect,
+  getActionHistory,
+  getConsoleHistory,
+  host,
+  jobs,
+  pageObjects,
+  shareObservable,
+  timeouts,
+  token,
+  updateIn
+};
 
 const log = console.log.bind(console);
 

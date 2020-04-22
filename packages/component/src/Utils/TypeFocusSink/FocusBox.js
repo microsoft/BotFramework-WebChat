@@ -2,7 +2,7 @@
 /* eslint no-undefined: "off" */
 
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
 
 import Context from './Context';
 import getTabIndex from './getTabIndex';
@@ -10,7 +10,7 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }) => {
+const FocusBox = forwardRef(({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
     sendFocusRefPersist,
@@ -53,12 +53,18 @@ const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...other
 
   return (
     <Context.Provider value={context}>
-      <div {...otherProps} onKeyDownCapture={!disabled && handleKeyDownCapture} style={DEFAULT_STYLE} tabIndex={-1}>
+      <div
+        {...otherProps}
+        onKeyDownCapture={!disabled && handleKeyDownCapture}
+        ref={ref}
+        style={DEFAULT_STYLE}
+        tabIndex={-1}
+      >
         {typeof children === 'function' ? children({ focus }) : children}
       </div>
     </Context.Provider>
   );
-};
+});
 
 FocusBox.defaultProps = {
   children: undefined,

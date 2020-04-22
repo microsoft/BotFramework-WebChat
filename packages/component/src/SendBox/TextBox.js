@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
-import useFocusSendBox from '../hooks/useFocusSendBox';
+import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
@@ -63,7 +63,7 @@ const connectSendTextBox = (...selectors) =>
 
 function useTextBoxSubmit(setFocus) {
   const [sendBoxValue] = useSendBoxValue();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const scrollToEnd = useScrollToEnd();
   const submitSendBox = useSubmitSendBox();
 
@@ -71,9 +71,9 @@ function useTextBoxSubmit(setFocus) {
     if (sendBoxValue) {
       scrollToEnd();
       submitSendBox();
-      setFocus && focusSendBox();
+      setFocus && focus('sendBox');
     }
-  }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
+  }, [focus, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
 }
 
 function useTextBoxValue() {

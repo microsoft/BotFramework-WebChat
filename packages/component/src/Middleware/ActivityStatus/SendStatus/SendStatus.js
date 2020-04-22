@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../../../connectToWebChat';
 import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
-import useFocusSendBox from '../../../hooks/useFocusSendBox';
+import useFocus from '../../../hooks/useFocus';
 import useLocalizer from '../../../hooks/useLocalizer';
 import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
@@ -33,7 +33,7 @@ const connectSendStatus = (...selectors) =>
 
 const SendStatus = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const localize = useLocalizer();
   const postActivity = usePostActivity();
 
@@ -46,8 +46,8 @@ const SendStatus = ({ activity, sendState }) => {
 
     // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
     // We want to make sure the user stay inside Web Chat
-    focusSendBox();
-  }, [activity, focusSendBox, postActivity]);
+    focus();
+  }, [activity, focus, postActivity]);
 
   return (
     <React.Fragment>

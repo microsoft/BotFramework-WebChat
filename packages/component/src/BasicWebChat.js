@@ -186,6 +186,7 @@ const BasicWebChat = ({
   typingIndicatorMiddleware,
   ...otherProps
 }) => {
+  const mainFocusRef = useRef();
   const sendBoxRef = useRef();
   const activityRenderer = useMemo(() => createActivityRenderer(activityMiddleware), [activityMiddleware]);
   const activityStatusRenderer = useMemo(() => createActivityStatusRenderer(activityStatusMiddleware), [
@@ -204,6 +205,7 @@ const BasicWebChat = ({
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
       avatarRenderer={avatarRenderer}
+      mainFocusRef={mainFocusRef}
       sendBoxRef={sendBoxRef}
       toastRenderer={toastRenderer}
       typingIndicatorRenderer={typingIndicatorRenderer}
@@ -212,6 +214,7 @@ const BasicWebChat = ({
       {({ styleSet }) => (
         <TypeFocusSinkBox
           className={classNames(ROOT_CSS + '', styleSet.root + '', className + '')}
+          ref={mainFocusRef}
           role="complementary"
           sendFocusRef={sendBoxRef}
         >

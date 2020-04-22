@@ -12,6 +12,7 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
+import useFocus from './useFocus';
 import useFocusSendBox from './useFocusSendBox';
 import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
@@ -79,6 +80,7 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useFocus,
   useFocusSendBox,
   useGrammars,
   useGroupTimestamp,

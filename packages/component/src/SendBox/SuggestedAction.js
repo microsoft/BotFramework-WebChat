@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../connectToWebChat';
 import useDirection from '../hooks/useDirection';
 import useDisabled from '../hooks/useDisabled';
-import useFocusSendBox from '../hooks/useFocusSendBox';
+import useFocus from '../hooks/useFocus';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
 import useSuggestedActions from '../hooks/useSuggestedActions';
@@ -40,14 +40,14 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [disabled] = useDisabled();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const performCardAction = usePerformCardAction();
 
   const handleClick = useCallback(() => {
     performCardAction({ displayText, text, type, value });
     type === 'openUrl' && setSuggestedActions([]);
-    focusSendBox();
-  }, [displayText, focusSendBox, performCardAction, setSuggestedActions, text, type, value]);
+    focus();
+  }, [displayText, focus, performCardAction, setSuggestedActions, text, type, value]);
 
   return (
     <div aria-hidden={ariaHidden} className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>

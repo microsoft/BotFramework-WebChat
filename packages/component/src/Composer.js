@@ -125,10 +125,11 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   };
 }
 
-function createFocusSendBoxContext({ sendBoxRef }) {
+function createFocusContext({ mainFocusRef, sendBoxRef }) {
   return {
-    focusSendBox: () => {
-      const { current } = sendBoxRef || {};
+    focus: where => {
+      const ref = where === 'sendBox' ? sendBoxRef : mainFocusRef;
+      const { current } = ref || {};
 
       current && current.focus();
     }
@@ -169,6 +170,7 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  mainFocusRef,
   onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
@@ -272,7 +274,7 @@ const Composer = ({
     selectVoice
   ]);
 
-  const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
+  const focusContext = useMemo(() => createFocusContext({ mainFocusRef, sendBoxRef }), [mainFocusRef, sendBoxRef]);
 
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
@@ -345,7 +347,7 @@ const Composer = ({
   const context = useMemo(
     () => ({
       ...cardActionContext,
-      ...focusSendBoxContext,
+      ...focusContext,
       ...hoistedDispatchers,
       activityRenderer,
       activityStatusRenderer,
@@ -387,7 +389,7 @@ const Composer = ({
       dictateAbortable,
       directLine,
       disabled,
-      focusSendBoxContext,
+      focusContext,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -522,6 +524,9 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  mainFocusRef: PropTypes.shape({
+    current: PropTypes.any
+  }),
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
