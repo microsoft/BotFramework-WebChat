@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/react-dom@16.8.6/umd/react-dom-test-utils.development.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      :focus {
+        background-color: cyan !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script crossorigin="anonymous" src="https://unpkg.com/lolex@4/lolex.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="text/babel" data-presets="es2015,stage-3">
+      const { Simulate } = window.ReactTestUtils;
+      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+
+      (async function() {
+        function allOutgoingMessagesFailed() {
+          return {
+            message: 'All outgoing messages to fail sending',
+            fn: () =>
+              pageObjects
+                .getActivities()
+                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
+                .every(({ channelData: { state } }) => state === 'send failed')
+          };
+        }
+
+        const clock = lolex.install();
+
+        const store = createStore();
+        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
+        const hackedDirectLine = {
+          ...directLine,
+          activity$: directLine.activity$,
+          connectionStatus$: directLine.connectionStatus$,
+          postActivity: activity => {
+            if (activity.type === 'message') {
+              return new Observable(({ error }) => error(new Error('artificial error')));
+            } else {
+              return directLine.postActivity(activity);
+            }
+          }
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: hackedDirectLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+
+        clock.tick(400);
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+
+        clock.tick(20000);
+
+        await pageObjects.wait(allOutgoingMessagesFailed(), timeouts.postActivity);
+
+        const retryButton = document.querySelector('button[data-markdown-href]');
+
+        retryButton.click();
+
+        // After clicking on retry button, it should focus back on the type focus sink.
+        expect(document.querySelector(':focus')).toBe(elements.typeFocusSink());
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
