@@ -1,4 +1,5 @@
 import connectivityStatus from './connectivityStatus';
+import newMessageButton from './newMessageButton';
 import sendBoxTextBox from './sendBoxTextBox';
 import suggestedActions from './suggestedActions';
 import toastDismissButtons from './toastDismissButtons';
@@ -10,6 +11,7 @@ import typeFocusSink from './typeFocusSink';
 
 export {
   connectivityStatus,
+  newMessageButton,
   sendBoxTextBox,
   suggestedActions,
   toasterHeader,

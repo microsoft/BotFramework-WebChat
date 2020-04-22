@@ -1,3 +1,3 @@
 export default function typeFocusSink() {
-  return document.querySelectorAll('[role="complementary"]');
+  return document.querySelector('[role="complementary"]');
 }
