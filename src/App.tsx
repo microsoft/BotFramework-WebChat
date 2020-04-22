@@ -155,10 +155,6 @@ const ThemeTemplate = (theme: Theme) => `
         background-color: white;
     } 
 
-    .wc-app .wc-card button {
-        color: ${theme.mainColor};
-    }
-
     .wc-suggested-actions .wc-hscroll > ul > li button {
         color: white !important;
         background-color: ${theme.mainColor} !important;
@@ -175,6 +171,10 @@ const ThemeTemplate = (theme: Theme) => `
         color: ${theme.mainColor} !important;
         background-color: white !important;
         border-color: ${theme.mainColor} !important;
+    }
+
+    .wc-app .wc-card button {
+        color: ${theme.mainColor};
     }
 
     .wc-app .wc-card button:hover {
@@ -288,6 +288,19 @@ const ThemeTemplate = (theme: Theme) => `
 
     .feedbot-wrapper .wc-suggested-actions .wc-hscroll > ul > li button:focus, .feedbot-wrapper .wc-console .wc-mic, .wc-console .wc-send, .feedbot-wrapper .wc-app .wc-card button {
         outline:0;
+    }
+
+    .feedbot-wrapper .wc-app .wc-card button {
+        color: white !important;
+        border-radius: 5px;
+        background-color: ${theme.mainColor} !important;
+        border-color: ${theme.mainColor} !important;
+    }
+
+    .feedbot-wrapper .wc-app .wc-card button:active {
+        color: ${theme.mainColor} !important;
+        background-color: white !important;
+        border-color: ${theme.mainColor} !important;
     }
 
     .feedbot-wrapper .wc-message-pane.show-actions .wc-message-groups {
