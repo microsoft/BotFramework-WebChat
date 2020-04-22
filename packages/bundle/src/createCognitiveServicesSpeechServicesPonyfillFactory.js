@@ -7,6 +7,8 @@ function resolveFunction(fnOrValue) {
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
+  audioContext,
+  audioInputDeviceId,
   authorizationToken,
   credentials,
   enableTelemetry,
@@ -17,6 +19,14 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   subscriptionKey,
   textNormalization
 }) {
+  if (!window.navigator.mediaDevices && !audioConfig) {
+    console.warn(
+      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded via HTTPS or localhost. Cognitive Services Speech Services is disabled. However, you may pass a custom AudioConfig to enable speech in this environment.'
+    );
+
+    return () => ({});
+  }
+
   if (!credentials && (authorizationToken || region || subscriptionKey)) {
     console.warn(
       'botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.'
@@ -37,11 +47,19 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     };
   }
 
+  if (audioConfig && audioInputDeviceId) {
+    console.warn(
+      'botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time; ignoring "audioInputDeviceId".'
+    );
+  }
+
   // HACK: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
   //       In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
   //       And on next recognition, they will re-use the AudioContext object.
   if (!audioConfig) {
-    audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    audioConfig = audioInputDeviceId
+      ? AudioConfig.fromMicrophoneInput(audioInputDeviceId)
+      : AudioConfig.fromDefaultMicrophoneInput();
 
     const source = audioConfig.privSource;
 
@@ -58,8 +76,9 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   }
 
   return ({ referenceGrammarID } = {}) => {
-    const ponyfill = createPonyfill({
+    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = createPonyfill({
       audioConfig,
+      audioContext,
       credentials,
       enableTelemetry,
       referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
@@ -68,8 +87,6 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       speechSynthesisOutputFormat,
       textNormalization
     });
-
-    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = ponyfill;
 
     return {
       SpeechGrammarList,

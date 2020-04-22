@@ -32,12 +32,12 @@ test('video', async () => {
   await clickButton(driver, By.css('button[aria-label="Play"]'));
 
   // Wait until the video complete buffered and start playing
-  await driver.sleep(5000);
+  await driver.sleep(4000);
 
   // Pause the video
   await clickButton(driver, By.css('button[aria-label="Pause (k)"]'));
 
-  // Rewind for 10 seconds
+  // Jump back for 10 seconds, to get the buffering bar the same
   await driver
     .actions()
     .sendKeys('j')
@@ -51,6 +51,10 @@ test('video', async () => {
     const spinner = document.querySelector('.ytp-spinner');
 
     spinner && spinner.remove();
+
+    const loadProgress = document.querySelector('.ytp-load-progress');
+
+    loadProgress && loadProgress.setAttribute('hidden', 'hidden');
   });
 
   const base64PNG = await driver.takeScreenshot();

@@ -60,9 +60,9 @@
     "event-target-shim": "^5.0.1",
     "event-target-shim-es5": "1.0.1",
     "math-random": "^1.0.4",
-    "microsoft-cognitiveservices-speech-sdk": "1.9.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.10.1",
     "p-defer": "^3.0.0",
     "p-defer-es5": "1.0.1",
-    "web-speech-cognitive-services": "6.3.0"
+    "web-speech-cognitive-services": "7.0.0-master.da7babf"
   }
 }

@@ -1,5 +1,7 @@
 /* global process */
 
+import 'core-js/features/object/entries';
+
 import createAdapters from './createAdapters';
 
 export { createAdapters };

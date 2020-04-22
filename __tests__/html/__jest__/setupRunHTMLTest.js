@@ -34,24 +34,22 @@ global.runHTMLTest = async (
   const params = parseURLParams(new URL(url, 'http://webchat2/').hash);
 
   try {
-    // For unknown reason, if we use ?wd=1, it will be removed.
-    // But when we use #wd=1, it kept.
+    // We are only parsing the "hash" from "url", the "http://localhost/" is actually ignored.
+    let { hash } = new URL(url, 'http://localhost/');
 
-    if (global.docker) {
-      params.wd = 1;
+    if (hash) {
+      hash += '&wd=1';
+    } else {
+      hash = '#wd=1';
     }
 
-    const baseURL = global.docker
-      ? new URL(url, 'http://webchat2/')
-      : new URL(url, `http://localhost:${global.webServerPort}/`);
-
-    const hash =
-      '#' +
-      Object.entries(params)
-        .map(([name, value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`)
-        .join('&');
-
-    await driver.get(new URL(hash, baseURL));
+    // For unknown reason, if we use ?wd=1, it will be removed.
+    // But when we use #wd=1, it kept.
+    await driver.get(
+      global.docker
+        ? new URL(hash, new URL(url, 'http://webchat2/'))
+        : new URL(url, `http://localhost:${global.webServerPort}/`)
+    );
 
     await runPageProcessor(driver, { ignoreConsoleError, ignorePageError });
 
