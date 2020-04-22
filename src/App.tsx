@@ -160,8 +160,11 @@ const ThemeTemplate = (theme: Theme) => `
     }
 
     .wc-suggested-actions .wc-hscroll > ul > li button {
-        color: ${theme.mainColor} !important;
+        color: white !important;
+        background-color: ${theme.mainColor} !important;
         border-color: ${theme.mainColor} !important;
+        border-radius: 20px;
+        text-overflow: initial;
     }
 
     .wc-suggested-actions .wc-hscroll > ul > li button:hover {
@@ -169,8 +172,9 @@ const ThemeTemplate = (theme: Theme) => `
     }
 
     .wc-suggested-actions .wc-hscroll > ul > li button:active {
-        color: white !important;
-        background-color: ${theme.mainColor};
+        color: ${theme.mainColor} !important;
+        background-color: white !important;
+        border-color: ${theme.mainColor} !important;
     }
 
     .wc-app .wc-card button:hover {
@@ -204,9 +208,9 @@ const ThemeTemplate = (theme: Theme) => `
         bottom: 0px;
         z-index: 10000;
 
-        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
+        box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
     }
 
     .feedbot-wrapper.collapsed > .feedbot {
@@ -273,39 +277,51 @@ const ThemeTemplate = (theme: Theme) => `
     .feedbot-wrapper .wc-suggested-actions {
         background-color: transparent;
     }
-
-    .wc-suggested-actions .wc-hscroll > ul > li {
+    
+    .feedbot-wrapper .wc-suggested-actions .wc-hscroll > ul > li {
         max-width: initial !important;
     }
 
-    .wc-suggested-actions .wc-hscroll > ul {
+    .feedbot-wrapper .wc-suggested-actions .wc-hscroll > ul {
         text-align: center;
     }
 
-    body .wc-suggested-actions .wc-hscroll > ul > li button {
-        color: white !important;
-        background-color: ${theme.mainColor} !important;
-        border-color: ${theme.mainColor} !important;
-        border-radius: 20px;
-        text-overflow: initial;
-    }
-
-    body .wc-suggested-actions .wc-hscroll > ul > li button:active {
-        color: ${theme.mainColor} !important;
-        background-color: white !important;
-        border-color: ${theme.mainColor} !important;
-    }
-
-    .wc-suggested-actions .wc-hscroll > ul > li button:focus, .wc-console .wc-mic, .wc-console .wc-send, .wc-app .wc-card button {
+    .feedbot-wrapper .wc-suggested-actions .wc-hscroll > ul > li button:focus, .feedbot-wrapper .wc-console .wc-mic, .wc-console .wc-send, .feedbot-wrapper .wc-app .wc-card button {
         outline:0;
     }
 
+    .feedbot-wrapper .wc-message-pane.show-actions .wc-message-groups {
+        top: 40px !important;
+    }
+
+    .feedbot-wrapper .wc-app .wc-card {
+        background-color: #fff !important;
+        border-width: 0px;
+        border-radius: 5px;
+    }
+  
+    .feedbot-wrapper .wc-card > div > .ac-container {
+        padding: 4px 12px 12px 12px !important;
+    }
+
+    .feedbot-wrapper .wc-message-content {
+        box-shadow: none;
+    }
+
+    .feedbot-wrapper .wc-message-from-bot .wc-message-content {
+        background-color: #f5f5f5;
+    }
+
+    .feedbot-wrapper .wc-message-from-bot svg.wc-message-callout path {
+        fill: #f5f5f5;
+    }
+
     @media (max-width: 450px) {
-        .wc-card {
+        .feedbot-wrapper .wc-card {
             border: 1px solid #d2dde5;
             width: 198px !important; 
         }
-        .wc-adaptive-card {
+        .feedbot-wrapper .wc-adaptive-card {
             width: 214px !important;
         }
     }
