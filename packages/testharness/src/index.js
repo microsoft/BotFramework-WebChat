@@ -35,23 +35,6 @@ window.Babel.registerPlugin(
   BabelPluginProposalAsyncGeneratorFunctions
 );
 
-export {
-  conditions,
-  createRunHookActivityMiddleware,
-  createStore,
-  elements,
-  expect,
-  getActionHistory,
-  getConsoleHistory,
-  host,
-  jobs,
-  pageObjects,
-  shareObservable,
-  timeouts,
-  token,
-  updateIn
-};
-
 const log = console.log.bind(console);
 
 // If not running under WebDriver, we handle all jobs here.
@@ -105,6 +88,7 @@ export {
   conditions,
   createDeferred,
   createQueuedArrayBufferAudioSource,
+  createRunHookActivityMiddleware,
   createStore,
   elements,
   EventIterator,
