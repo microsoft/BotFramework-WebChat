@@ -73,9 +73,10 @@ function useTextBoxSubmit(setFocus) {
       submitSendBox();
 
       if (setFocus) {
-        console.log(
-          `"botframework-webchat: \"setFocus\" in \"useTextBoxSubmit\" is deprecated and will be removed on or after 2022-04-23. Please use \"useFocus\" hook instead."`
+        console.warn(
+          `"botframework-webchat: "setFocus" in "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please use "useFocus" hook instead."`
         );
+
         focus('sendBox');
       }
     }

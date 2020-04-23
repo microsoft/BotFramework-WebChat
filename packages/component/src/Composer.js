@@ -138,10 +138,10 @@ function createFocusContext({ mainFocusRef, sendBoxRef }) {
 
         current.setAttribute('readonly', 'readonly');
 
-        setImmediate(() => {
+        setTimeout(() => {
           current.focus();
           readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-        });
+        }, 0);
       } else {
         current && current.focus();
       }
@@ -495,6 +495,7 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  mainFocusRef: undefined,
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,

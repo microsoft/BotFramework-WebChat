@@ -70,13 +70,6 @@ const BasicToaster = () => {
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
-  const expandableElementId = useMemo(
-    () => (!expandable || expanded ? `webchat__toaster__list__${instanceId}` : undefined),
-    [expandable, expanded]
-  );
-  const headerElementId = useMemo(() => (expandable ? `webchat__toaster__header__${instanceId}` : undefined), [
-    expandable
-  ]);
   const renderToast = useRenderToast();
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
@@ -95,6 +88,15 @@ const BasicToaster = () => {
 
   const expandable = sortedNotificationsWithChildren.length > 1;
   const [highestLevel] = sortedNotificationsWithChildren.map(({ notification: { level } }) => level).sort(compareLevel);
+
+  const expandableElementId = useMemo(
+    () => (!expandable || expanded ? `webchat__toaster__list__${instanceId}` : undefined),
+    [expandable, expanded, instanceId]
+  );
+  const headerElementId = useMemo(() => (expandable ? `webchat__toaster__header__${instanceId}` : undefined), [
+    expandable,
+    instanceId
+  ]);
 
   useEffect(() => {
     !expandable && setExpanded(false);

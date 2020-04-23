@@ -10,7 +10,7 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const FocusBox = forwardRef(({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
+const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
     sendFocusRefPersist,
@@ -64,14 +64,16 @@ const FocusBox = forwardRef(({ children, disabled, sendFocusRef: sendFocusRefPro
       </div>
     </Context.Provider>
   );
-});
+};
 
-FocusBox.defaultProps = {
+const FocusBox = forwardRef(BaseFocusBox);
+
+FocusBox.defaultProps = BaseFocusBox.defaultProps = {
   children: undefined,
   disabled: false
 };
 
-FocusBox.propTypes = {
+FocusBox.propTypes = BaseFocusBox.propTypes = {
   children: PropTypes.any,
   disabled: PropTypes.bool,
   sendFocusRef: PropTypes.shape({
