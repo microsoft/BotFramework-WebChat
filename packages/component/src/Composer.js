@@ -128,10 +128,23 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
 function createFocusContext({ mainFocusRef, sendBoxRef }) {
   return {
     focus: where => {
-      const ref = where === 'sendBox' ? sendBoxRef : mainFocusRef;
+      const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxRef : mainFocusRef;
       const { current } = ref || {};
 
-      current && current.focus();
+      if (current && where === 'sendBoxWithoutKeyboard') {
+        // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
+        // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
+        const readOnly = current.getAttribute('readonly');
+
+        current.setAttribute('readonly', 'readonly');
+
+        setImmediate(() => {
+          current.focus();
+          readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+        });
+      } else {
+        current && current.focus();
+      }
     }
   };
 }

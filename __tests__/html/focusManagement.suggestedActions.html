@@ -42,7 +42,7 @@
         await pageObjects.clickNthSuggestedAction(1);
 
         // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.querySelector(':focus')).toBe(elements.typeFocusSink());
+        expect(document.querySelector(':focus')).toBe(elements.sendBoxTextBox());
 
         await host.snapshot();
         await host.done();

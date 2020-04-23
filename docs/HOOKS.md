@@ -25,9 +25,9 @@ All actions will return a function that can be called at a later point. For exam
 
 <!-- prettier-ignore-start -->
 ```js
-const focusSendBox = useFocusSendBox();
+const focus = useFocus();
 
-focusSendBox();
+focus('sendBox');
 ```
 <!-- prettier-ignore-end -->
 
@@ -67,6 +67,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useDisabled`](#usedisabled)
 -  [`useDismissNotification`](#usedismissnotification)
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
+-  [`useFocus`](#usefocus)
 -  [`useFocusSendBox`](#usefocussendbox)
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
@@ -346,6 +347,24 @@ useEmitTypingIndicator(): () => void
 
 When called, this function will send a typing activity from the user to the bot.
 
+## `useFocus`
+
+<!-- prettier-ignore-start -->
+```js
+useFocus(): (where?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard') => void
+```
+<!-- prettier-ignore-end -->
+
+When called, this function will return a function that can be called to set the focus to various parts of Web Chat.
+
+Please use this function with cautions. When changing focus programmatically, user may lose focus on what they were working on. Also, this may affect accessibility.
+
+-  `main` will focus on transcript.
+   -  We do not provide any visual cues when focusing on transcript, this may affect accessibility and usability, please use with cautions.
+-  `sendBox` will focus on send box.
+   -  This will activate the virtual keyboard if your device have one.
+-  `sendBoxWithoutKeyboard` will focus on send box, without activating the virtual keyboard.
+
 ## `useFocusSendBox`
 
 <!-- prettier-ignore-start -->
@@ -353,6 +372,8 @@ When called, this function will send a typing activity from the user to the bot.
 useFocusSendBox(): () => void
 ```
 <!-- prettier-ignore-end -->
+
+> This function is deprecated. Developers should migrate to [`useFocus`](#usefocus).
 
 When called, this function will send focus to the send box.
 
@@ -422,7 +443,7 @@ useLocalize(identifier: string) => string
 ```
 <!-- prettier-ignore-end -->
 
-> This function is deprecated. Developers should migrate to [`useLocalizer`](#useLocalizer).
+> This function is deprecated. Developers should migrate to [`useLocalizer`](#uselocalizer).
 
 This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 
@@ -1025,13 +1046,13 @@ These are hooks that are specific to the text box in the send box.
 
 <!-- prettier-ignore-start -->
 ```js
-useTextBoxSubmit(): (setFocus: boolean) => void
+useTextBoxSubmit(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom and, optionally, set focus to the send box.
+This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom.
 
-The focus is useful for a phone scenario where the virtual keyboard will only be shown when a text box is focused.
+Previously, this hook accept `setFocus` argument to indicate if focus should be set on submit. This argument has been removed. Please use [`useFocus`](#usefocus) hook instead.
 
 ### `useTextBoxValue`
 

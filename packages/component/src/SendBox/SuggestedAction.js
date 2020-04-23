@@ -46,7 +46,7 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
   const handleClick = useCallback(() => {
     performCardAction({ displayText, text, type, value });
     type === 'openUrl' && setSuggestedActions([]);
-    focus();
+    focus('sendBoxWithoutKeyboard');
   }, [displayText, focus, performCardAction, setSuggestedActions, text, type, value]);
 
   return (

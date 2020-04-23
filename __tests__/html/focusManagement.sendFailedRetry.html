@@ -78,7 +78,7 @@
         retryButton.click();
 
         // After clicking on retry button, it should focus back on the type focus sink.
-        expect(document.querySelector(':focus')).toBe(elements.typeFocusSink());
+        expect(document.querySelector(':focus')).toBe(elements.sendBoxTextBox());
 
         await host.snapshot();
         await host.done();

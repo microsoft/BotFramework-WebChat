@@ -45,7 +45,10 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.runHook(({ useFocus }) => useFocus()());
+
+        // Since the keyboard is controlled by the browser and OS, we cannot test if the keyboard activated or not.
+        // This is our best-effort to check if focus is being set correctly or not.
+        await pageObjects.runHook(({ useFocus }) => useFocus()('sendBoxWithoutKeyboard'));
 
         await host.snapshot();
         await host.done();

@@ -46,7 +46,7 @@ const SendStatus = ({ activity, sendState }) => {
 
     // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
     // We want to make sure the user stay inside Web Chat
-    focus();
+    focus('sendBoxWithoutKeyboard');
   }, [activity, focus, postActivity]);
 
   return (

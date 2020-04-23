@@ -71,8 +71,16 @@ function useTextBoxSubmit(setFocus) {
     if (sendBoxValue) {
       scrollToEnd();
       submitSendBox();
-      setFocus && focus('sendBox');
+
+      if (setFocus) {
+        console.log(
+          `"botframework-webchat: \"setFocus\" in \"useTextBoxSubmit\" is deprecated and will be removed on or after 2022-04-23. Please use \"useFocus\" hook instead."`
+        );
+        focus('sendBox');
+      }
     }
+
+    return !!sendBoxValue;
   }, [focus, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
 }
 
@@ -135,6 +143,8 @@ const TextBox = ({ className }) => {
       onSubmit={handleSubmit}
     >
       {
+        // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
+        // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
         <TypeFocusSinkContext.Consumer>
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
