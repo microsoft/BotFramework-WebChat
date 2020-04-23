@@ -40,6 +40,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
         await pageObjects.clickNthSuggestedAction(1);
+        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
         // After clicking on any suggested actions, it should focus back on the type focus sink.
         expect(document.querySelector(':focus')).toBe(elements.sendBoxTextBox());
