@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added `aria-label` attribute support for default Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
 -  Resolves [#2969](https://github.com/microsoft/BotFramework-WebChat/issues/2969). Support sovereign cloud for Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#3040](https://github.com/microsoft/BotFramework-WebChat/pull/3040)
 -  Resolves [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481). Support selecting different audio input devices for Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/pull/3079)
+-  Resolves [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). Added new `useFocus` hook and deprecating `useFocusSendBox` hook, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/issue/3123)
+   -  Modify `setFocus` argument of `useTextBoxSubmit` to support `main` and `sendBoxWithoutKeyboard`
 
 ### Fixed
 
@@ -45,6 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3096](https://github.com/microsoft/BotFramework-WebChat/issues/3096). Use `<ScreenReaderText>` instead of `aria-label` for message bubbles, by [@compulim](https://github.com/compulim) in PR [#3097](https://github.com/microsoft/BotFramework-WebChat/issue/3097)
 -  Fixes [#2876](https://github.com/microsoft/BotFramework-WebChat/issues/2876). `messageBack` and `postBack` should send even if both `text` and `value` is falsy or `undefined`, by [@compulim](https://github.com/compulim) in PR [#3120](https://github.com/microsoft/BotFramework-WebChat/issues/3120)
 -  Fixes [#2668](https://github.com/microsoft/BotFramework-WebChat/issues/2668). Disable Web Audio on insecure connections, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/issue/3079)
+-  Fixes [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). After click suggested action, should focus to send box without keyboard, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/issue/3123)
 
 ### Changed
 
