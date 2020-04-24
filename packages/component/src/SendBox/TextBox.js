@@ -67,22 +67,29 @@ function useTextBoxSubmit(setFocus) {
   const scrollToEnd = useScrollToEnd();
   const submitSendBox = useSubmitSendBox();
 
-  return useCallback(() => {
-    if (sendBoxValue) {
-      scrollToEnd();
-      submitSendBox();
+  return useCallback(
+    setFocus => {
+      if (sendBoxValue) {
+        scrollToEnd();
+        submitSendBox();
 
-      if (setFocus) {
-        console.warn(
-          `"botframework-webchat: "setFocus" in "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please use "useFocus" hook instead."`
-        );
+        if (setFocus) {
+          if (setFocus === true) {
+            console.warn(
+              `"botframework-webchat: Passing "true" to "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please pass "sendBox" instead."`
+            );
 
-        focus('sendBox');
+            focus('sendBox');
+          } else {
+            focus(setFocus);
+          }
+        }
       }
-    }
 
-    return !!sendBoxValue;
-  }, [focus, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
+      return !!sendBoxValue;
+    },
+    [focus, scrollToEnd, sendBoxValue, setFocus, submitSendBox]
+  );
 }
 
 function useTextBoxValue() {
