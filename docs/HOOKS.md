@@ -1046,13 +1046,13 @@ These are hooks that are specific to the text box in the send box.
 
 <!-- prettier-ignore-start -->
 ```js
-useTextBoxSubmit(): () => void
+useTextBoxSubmit(): (setFocus: boolean | 'main' | 'sendBox' | 'sendBoxWithoutKeyboard') => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom.
+This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom and, optionally, set focus to the main transcript or send box. This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom.
 
-Previously, this hook accept `setFocus` argument to indicate if focus should be set on submit. This argument has been removed. Please use [`useFocus`](#usefocus) hook instead.
+The focus is useful for a phone scenario where the virtual keyboard will only be shown when a text box is focused.
 
 ### `useTextBoxValue`
 
