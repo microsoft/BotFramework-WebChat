@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Chat, ChatProps } from './Chat';
+import { DirectLine } from 'botframework-directlinejs';
 import * as konsole from './Konsole';
 
 export type Theme = {
@@ -46,7 +47,16 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
             })
             const body = await response.json()
             console.log('Token response', body)
-            props.directLine = {...(props.directLine || {}), token: body.token}
+
+            props.botConnection = new DirectLine({...(props.directLine || {}), token: body.token});
+            delete props.directLine
+
+            props.botConnection.activity$
+                .filter(activity => activity.type === "event" && activity.name === "webchat-collapse")
+                .subscribe(_ => {
+                    const wrapper = document.getElementsByClassName('feedbot-wrapper')[0]
+                    wrapper && wrapper.classList.add('collapsed')
+                })
 
             if (body.testMode && window.location.hash !== '#feedbot-test-mode') {
                 document.getElementsByTagName('body')[0].classList.add('feedbot-disabled')
@@ -92,17 +102,21 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         header.innerText = props.header ? (props.header.textWhenCollapsed || props.header.text || 'Chatbot') : 'Chatbot'
         header.onclick = () => {
             wrapper.classList.toggle('collapsed');
+
             if (!rendered) {
-                header.innerText = (props.header && props.header.text) || 'Chatbot'
+                header.innerHTML = '<span class="feedbot-title">'+((props.header && props.header.text) || 'Chatbot')+'</span><a onclick="return false;" class="feedbot-minimize" href="#">_</a>'
                 render(props, container)
             }
+
+            // when closed manually, store flag to do not open automatically after reload
+            localStorage && (localStorage.feedbotClosed = wrapper.classList.contains('collapsed'))
         }
         wrapper.appendChild(header)
 
         wrapper.appendChild(container)
         document.body.appendChild( wrapper );
-
-        if (props.autoExpandTimeout) {
+        
+        if (props.autoExpandTimeout && (!localStorage || localStorage.feedbotClosed !== 'true')) {
             setTimeout(() => {
                 if (wrapper.className.indexOf('collapsed') >= 0) {
                     header.click()
@@ -263,10 +277,30 @@ const ThemeTemplate = (theme: Theme) => `
         z-index: 10;
         color: white;
         line-height: 30px;
-        padding: 8px 8px 8px 16px;
+        padding: 9px 8px 8px 16px;
         cursor: pointer;
         font-size: 1.1em;
         letter-spacing: 1px;
+        display: flex;
+    }
+
+    .feedbot-header .feedbot-title {
+        flex-grow: 1;
+    }
+
+    .feedbot-header .feedbot-minimize {
+        width: 30px;
+        text-align: center;
+        color: white;
+        font-weight: bolder;
+        font-family: Verdana;
+        font-size: 1.2em;
+        line-height: 0.9em;
+    }
+
+    .feedbot-header .feedbot-minimize:hover {
+        font-size: 1.5em;
+        line-height: 0.8em;
     }
 
     .feedbot-header, .feedbot-wrapper {
@@ -313,10 +347,6 @@ const ThemeTemplate = (theme: Theme) => `
         border-radius: 5px;
     }
   
-    .feedbot-wrapper .wc-card > div > .ac-container {
-        padding: 4px 12px 12px 12px !important;
-    }
-
     .feedbot-wrapper .wc-message-content {
         box-shadow: none;
     }
