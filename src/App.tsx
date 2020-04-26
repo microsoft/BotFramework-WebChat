@@ -298,6 +298,10 @@ const ThemeTemplate = (theme: Theme) => `
         line-height: 0.9em;
     }
 
+    .feedbot-wrapper.collapsed .feedbot-minimize {
+        display: none;
+    }
+
     .feedbot-header .feedbot-minimize:hover {
         font-size: 1.5em;
         line-height: 0.8em;
