@@ -46,4 +46,4 @@ The main change you will need to make, regardless of whether you are using the s
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
 
-  [1]: ../b.cognitive-speech-services-js/README.md
+[1]: ../b.cognitive-speech-services-js/README.md

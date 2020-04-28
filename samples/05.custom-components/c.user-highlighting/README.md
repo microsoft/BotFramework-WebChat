@@ -181,4 +181,4 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
 
-  [1]: ../../01.getting-started/e.host-with-react/README.md
+[1]: ../../01.getting-started/e.host-with-react/README.md

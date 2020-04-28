@@ -15,6 +15,7 @@ import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import concatArrayBuffer from './speech/concatArrayBuffer';
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
+import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
@@ -87,6 +88,7 @@ export {
   conditions,
   createDeferred,
   createQueuedArrayBufferAudioSource,
+  createRunHookActivityMiddleware,
   createStore,
   elements,
   EventIterator,

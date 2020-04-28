@@ -6,7 +6,7 @@ import React, { useCallback, useRef } from 'react';
 
 import useActivities from '../hooks/useActivities';
 import useDirection from '../hooks/useDirection';
-import useFocusSendBox from '../hooks/useFocusSendBox';
+import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
@@ -15,14 +15,14 @@ const ScrollToEndButton = ({ animating, className, sticky }) => {
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const [activities] = useActivities();
   const [direction] = useDirection();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const localize = useLocalizer();
   const scrollToEnd = useScrollToEnd();
 
   const handleClick = useCallback(() => {
     scrollToEnd();
-    focusSendBox();
-  }, [focusSendBox, scrollToEnd]);
+    focus();
+  }, [focus, scrollToEnd]);
 
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 

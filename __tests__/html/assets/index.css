@@ -11,3 +11,9 @@ body {
 #webchat {
   width: 100%;
 }
+
+input,
+textarea,
+[contenteditable] {
+  caret-color: Transparent;
+}
