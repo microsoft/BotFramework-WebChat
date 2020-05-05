@@ -114,7 +114,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const contentARIALabel = localize(
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
-    plainText.replace(/[\.\s]+$/u, ''),
+    plainText.replace(/[.\s]+$/u, ''),
     formatDate(timestamp)
   ).trim();
 
