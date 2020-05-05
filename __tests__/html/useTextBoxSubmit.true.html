@@ -49,6 +49,7 @@
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.typeInSendBox('Hello');
         await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()(true));
+        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
 
         // Expect to show a deprecation notes.

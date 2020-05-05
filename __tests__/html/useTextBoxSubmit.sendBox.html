@@ -50,6 +50,7 @@
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.typeInSendBox('Hello');
         await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()('sendBox'));
+        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
 
         await host.snapshot();
