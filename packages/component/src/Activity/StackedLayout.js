@@ -4,7 +4,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import Bubble from './Bubble';
@@ -20,6 +20,7 @@ import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useRenderAvatar from '../hooks/useRenderAvatar';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -87,6 +88,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
+  const contentARIALabelId = useUniqueId('webchat__stacked-layout__content');
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
@@ -106,18 +108,19 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
 
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
-  const plainText = remarkStripMarkdown(text);
+  const plainText = useMemo(() => remarkStripMarkdown(text), [text]);
   const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
 
-  const ariaLabel = localize(
+  const contentARIALabel = localize(
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
-    plainText,
+    plainText.replace(/[\.\s]+$/u, ''),
     formatDate(timestamp)
   ).trim();
 
   return (
     <div
+      aria-labelledby={contentARIALabelId}
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
@@ -134,9 +137,9 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
-      role="region"
+      role="group"
     >
-      <ScreenReaderText text={ariaLabel} />
+      <ScreenReaderText id={contentARIALabelId} text={contentARIALabel} />
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
       <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
@@ -154,9 +157,7 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           </div>
         )}
         {attachments.map((attachment, index) => (
-          // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
           <div
-            aria-label=" "
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >

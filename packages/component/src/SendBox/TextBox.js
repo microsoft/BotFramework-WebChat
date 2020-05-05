@@ -61,7 +61,7 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-function useTextBoxSubmit(setFocus) {
+function useTextBoxSubmit() {
   const [sendBoxValue] = useSendBoxValue();
   const focus = useFocus();
   const scrollToEnd = useScrollToEnd();
@@ -88,7 +88,7 @@ function useTextBoxSubmit(setFocus) {
 
       return !!sendBoxValue;
     },
-    [focus, scrollToEnd, sendBoxValue, setFocus, submitSendBox]
+    [focus, scrollToEnd, sendBoxValue, submitSendBox]
   );
 }
 

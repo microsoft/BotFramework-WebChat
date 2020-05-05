@@ -122,13 +122,7 @@ const BasicTranscript = ({ className }) => {
           role="list"
         >
           {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }) => (
-            <li
-              // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-              aria-label=" "
-              className={activityStyleSet + ''}
-              key={key}
-              role="listitem"
-            >
+            <li className={activityStyleSet + ''} key={key} role="listitem">
               {element}
               {shouldSpeak && <SpeakActivity activity={activity} />}
             </li>

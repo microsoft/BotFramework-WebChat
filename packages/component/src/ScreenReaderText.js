@@ -1,8 +1,9 @@
+/* eslint react/forbid-dom-props: ["off"] */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import * as browser from '../lib/Utils/detectBrowser';
 
 const ROOT_CSS = css({
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
@@ -20,18 +21,18 @@ const ROOT_CSS = css({
   width: 1
 });
 
-const ScreenReaderText = ({ text }) => {
-  const ariaLabel = browser.chrome ? ' ' : text;
+const ScreenReaderText = ({ id, text }) => (
+  <div className={classNames(ROOT_CSS + '')} id={id}>
+    {text}
+  </div>
+);
 
-  return (
-    // Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers. This workaround was made to accommodate Chrome
-    <span aria-label={ariaLabel} className={classNames(ROOT_CSS + '')}>
-      {text}
-    </span>
-  );
+ScreenReaderText.defaultProps = {
+  id: undefined
 };
 
 ScreenReaderText.propTypes = {
+  id: PropTypes.string,
   text: PropTypes.string.isRequired
 };
 
