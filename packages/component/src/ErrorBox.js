@@ -12,7 +12,12 @@ const ErrorBox = ({ children, error, message }) => {
   const trackException = useTrackException();
 
   useEffect(() => {
-    trackException(error || new Error(message), false);
+    error || (error = new Error(message));
+    trackException(error, false);
+
+    console.group(`botframework-webchat: ${message}`);
+    console.error(error);
+    console.groupEnd();
   }, [error, message, trackException]);
 
   return (

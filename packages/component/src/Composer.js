@@ -96,7 +96,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
   return {
-    onCardAction: cardAction =>
+    onCardAction: (cardAction, { target } = {}) =>
       runMiddleware(({ cardAction: { type } }) => {
         throw new Error(`Web Chat: received unknown card action "${type}"`);
       })({
@@ -120,7 +120,8 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
 
                 return value;
               }
-            : null
+            : null,
+        target
       })
   };
 }
@@ -130,6 +131,8 @@ function createFocusContext({ mainFocusRef, sendBoxRef }) {
     focus: where => {
       const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxRef : mainFocusRef;
       const { current } = ref || {};
+
+      console.log(`focusing to ${where}`, current);
 
       if (current && where === 'sendBoxWithoutKeyboard') {
         // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.

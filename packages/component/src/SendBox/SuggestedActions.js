@@ -98,6 +98,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
         dir={direction}
         flipperBlurFocusOnClick={true}
         showDots={false}
+        showScrollBar={false}
         styleSet={suggestedActionsStyleSetForReactFilm}
       >
         {children}

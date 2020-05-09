@@ -1,8 +1,9 @@
 import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
+import { StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
@@ -16,6 +17,9 @@ import useStyleSet from './hooks/useStyleSet';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
+  // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
+  // Stacking context help isolating elements that use "z-index" from global pollution.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   position: 'relative'
 });
 
@@ -57,11 +61,10 @@ function useMemoize(fn) {
   }, [fn]);
 }
 
-const BasicTranscript = ({ className }) => {
+const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
-  const [{ hideScrollToEndButton }] = useStyleOptions();
+  let [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const [direction] = useDirection();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
@@ -110,27 +113,76 @@ const BasicTranscript = ({ className }) => {
     [activities, memoizeRenderActivityElement]
   );
 
+  // Ignore activity types other than "message"
+  const lastMessageActivity = [...activities].reverse().find(({ type }) => type === 'message');
+  const lastShownActivityId = (lastMessageActivity || {}).id;
+  const lastReadActivityIdRef = useRef(lastShownActivityId);
+
+  const { current: lastReadActivityId } = lastReadActivityIdRef;
+
+  if (sticky) {
+    // If it is sticky, mark the activity ID as read.
+    lastReadActivityIdRef.current = lastShownActivityId;
+  }
+
+  // Don't show the button if:
+  // - The scroll bar is animating
+  //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
+  // - It is already at the bottom (sticky)
+  // - The last activity ID has been read
+  if (animating || sticky || lastShownActivityId === lastReadActivityId) {
+    hideScrollToEndButton = true;
+  }
+
   return (
-    <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
-      <ScrollToBottomPanel className={PANEL_CSS + ''}>
-        <div aria-hidden={true} className={FILLER_CSS} />
-        <ul
-          aria-atomic="false"
-          aria-live="polite"
-          aria-relevant="additions"
-          className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
-          role="list"
-        >
-          {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }) => (
-            <li className={activityStyleSet + ''} key={key} role="listitem">
+    <React.Fragment>
+      <div aria-hidden={true} className={FILLER_CSS} />
+      <ul
+        aria-atomic="false"
+        aria-live="polite"
+        aria-relevant="additions"
+        className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
+        role="list"
+      >
+        {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }) => (
+          <React.Fragment key={key}>
+            <li className={activityStyleSet + ''} role="listitem">
               {element}
               {shouldSpeak && <SpeakActivity activity={activity} />}
             </li>
-          ))}
-        </ul>
-        <BasicTypingIndicator />
+            {!hideScrollToEndButton &&
+              activity.id === lastReadActivityId &&
+              index !== activityElementsWithMetadata.length - 1 && (
+                <li role="group">
+                  <ScrollToEndButton />
+                </li>
+              )}
+          </React.Fragment>
+        ))}
+      </ul>
+      <BasicTypingIndicator />
+    </React.Fragment>
+  );
+};
+
+BasicTranscriptContent.defaultProps = {
+  className: ''
+};
+
+BasicTranscriptContent.propTypes = {
+  className: PropTypes.string
+};
+
+const BasicTranscript = ({ className }) => {
+  const [direction] = useDirection();
+
+  return (
+    <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
+      <ScrollToBottomPanel className={PANEL_CSS + ''}>
+        <ScrollToBottomStateContext.Consumer>
+          {({ animating, sticky }) => <BasicTranscriptContent animating={animating} sticky={sticky} />}
+        </ScrollToBottomStateContext.Consumer>
       </ScrollToBottomPanel>
-      {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>
   );
 };

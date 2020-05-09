@@ -1,37 +1,93 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 2] }] */
 
+import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-
-import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
+const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-function disableInputElements(element) {
-  const hyperlinks = element.querySelectorAll('a');
-  const inputs = element.querySelectorAll('button, input, select, textarea');
+const disabledHandler = event => {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  event.stopPropagation();
+};
 
-  const disabledHandler = event => {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    event.stopPropagation();
-  };
-
-  [].forEach.call(inputs, input => {
-    input.disabled = true;
+function disableInputElements(element, observeSubtree) {
+  [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
+    input.setAttribute('aria-disabled', 'true');
   });
 
-  [].forEach.call(hyperlinks, hyperlink => {
+  // Should we not to disable hyperlink?
+  // How about buttons mimic as an hyperlink?
+  [].forEach.call(element.querySelectorAll('a'), hyperlink => {
     hyperlink.addEventListener('click', disabledHandler);
   });
+
+  [].forEach.call(element.querySelectorAll('option'), option => {
+    option.setAttribute('disabled', 'disabled');
+  });
+
+  [].forEach.call(element.querySelectorAll('input, textarea'), input => {
+    // Make checkboxes, radioes, etc, readonly.
+    input.addEventListener('click', disabledHandler);
+
+    // Disable text inputs, etc.
+    input.setAttribute('readonly', 'readonly');
+  });
+
+  // TODO: We should look at DOM tree change and disable all inputs in future subtree
+  if (observeSubtree) {
+    const observer = new MutationObserver(mutations =>
+      mutations.forEach(({ addedNodes }) => addedNodes.forEach(addedNode => disableInputElements(addedNode, false)))
+    );
+
+    observer.observe(element, { childList: true, subtree: true });
+  }
+}
+
+function getFocusableElements(element) {
+  return [].filter.call(
+    element.querySelectorAll(
+      [
+        'a',
+        'body',
+        'button',
+        'frame',
+        'iframe',
+        'img',
+        'input',
+        'isindex',
+        'object',
+        'select',
+        'textarea',
+        '[tabindex]'
+      ].join(', ')
+    ),
+    element => {
+      const tabIndex = getTabIndex(element);
+
+      return typeof tabIndex === 'number' && tabIndex >= 0;
+    }
+  );
+}
+
+function restoreActiveElementIndex(element, activeElementIndex) {
+  const focusable = getFocusableElements(element)[activeElementIndex];
+
+  focusable && focusable.focus();
+}
+
+function saveActiveElementIndex(element) {
+  return getFocusableElements(element).indexOf(document.activeElement);
 }
 
 function restoreInputValues(element, inputValues) {
@@ -64,18 +120,21 @@ function saveInputValues(element) {
   });
 }
 
-const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
+const AdaptiveCardRenderer = ({ adaptiveCard, disabled: disabledFromProps, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
-  const [disabled] = useDisabled();
+  const [disabledFromComposer] = useDisabled();
+  const [error, setError] = useState();
+  const activeElementIndexRef = useRef(-1);
+  const contentRef = useRef();
+  const inputValuesRef = useRef([]);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const scrollToEnd = useScrollToEnd();
 
-  const [error, setError] = useState();
-  const contentRef = useRef();
-  const inputValuesRef = useRef([]);
+  const disabled = disabledFromComposer || disabledFromProps;
 
   const handleClick = useCallback(
     ({ target }) => {
@@ -86,7 +145,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
         // If the user is clicking on something that is already clickable, do not allow them to click the card.
         // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
         if (typeof tabIndex !== 'number' || tabIndex < 0) {
-          tapAction && performCardAction(tapAction);
+          tapAction && performCardAction(tapAction, { target });
         }
       }
     },
@@ -103,10 +162,13 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
       const actionTypeName = action.getJsonTypeName();
 
       if (actionTypeName === 'Action.OpenUrl') {
-        performCardAction({
-          type: 'openUrl',
-          value: action.url
-        });
+        performCardAction(
+          {
+            type: 'openUrl',
+            value: action.url
+          },
+          { target: action }
+        );
       } else if (actionTypeName === 'Action.Submit') {
         if (typeof action.data !== 'undefined') {
           const { data: actionData } = action;
@@ -115,20 +177,25 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
             const { cardAction } = actionData;
             const { displayText, text, type, value } = cardAction;
 
-            performCardAction({ displayText, text, type, value });
+            performCardAction({ displayText, text, type, value }, { target: action });
           } else {
-            performCardAction({
-              type: typeof action.data === 'string' ? 'imBack' : 'postBack',
-              value: action.data
-            });
+            performCardAction(
+              {
+                type: typeof action.data === 'string' ? 'imBack' : 'postBack',
+                value: action.data
+              },
+              { target: action }
+            );
           }
         }
+
+        scrollToEnd();
       } else {
         console.error(`Web Chat: received unknown action from Adaptive Cards`);
         console.error(action);
       }
     },
-    [disabled, performCardAction]
+    [disabled, performCardAction, scrollToEnd]
   );
 
   useLayoutEffect(() => {
@@ -179,7 +246,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
 
       error && setError(null);
 
-      disabled && disableInputElements(element);
+      disabled && disableInputElements(element, true);
       restoreInputValues(element, inputValuesRef.current);
 
       const [firstChild] = current.children;
@@ -190,10 +257,20 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
         current.appendChild(element);
       }
 
+      // Focus can only be restored after the DOM is attached.
+      restoreActiveElementIndex(element, activeElementIndexRef.current);
+
+      // HACK: Remove this line before merge.
+      element.removeAttribute('tabindex');
+
       return () => {
+        activeElementIndexRef.current = saveActiveElementIndex(element);
         inputValuesRef.current = saveInputValues(element);
       };
     }
+
+    activeElementIndexRef.current = -1;
+    inputValuesRef.current = [];
   }, [
     adaptiveCard,
     adaptiveCardsHostConfig,
@@ -210,7 +287,10 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (
-    <div className={adaptiveCardRendererStyleSet} onClick={handleClick} ref={contentRef} />
+    <div className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}>
+      <div className="webchat__adaptive-card-renderer__content" onClick={handleClick} ref={contentRef} />
+      {disabled && <div className="webchat__adaptive-card-renderer__glass" />}
+    </div>
   );
 };
 

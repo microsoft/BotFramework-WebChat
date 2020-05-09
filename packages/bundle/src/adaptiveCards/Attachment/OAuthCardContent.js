@@ -1,7 +1,6 @@
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-
-import { hooks } from 'botframework-webchat-component';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -9,7 +8,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useDirection, useStyleOptions } = hooks;
 
-const CommonCard = ({ content, disabled }) => {
+const OAuthCardContent = ({ content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -18,24 +17,25 @@ const CommonCard = ({ content, disabled }) => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
-      builder.addCommon(content);
+      builder.addCommonHeaders(content);
+      builder.addButtons(content.buttons, true);
 
       return builder.card;
     }
   }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} tapAction={content && content.tap} />;
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} />;
 };
 
-CommonCard.defaultProps = {
+OAuthCardContent.defaultProps = {
   disabled: undefined
 };
 
-CommonCard.propTypes = {
+OAuthCardContent.propTypes = {
   content: PropTypes.shape({
-    tap: PropTypes.any
+    buttons: PropTypes.array
   }).isRequired,
   disabled: PropTypes.bool
 };
 
-export default CommonCard;
+export default OAuthCardContent;

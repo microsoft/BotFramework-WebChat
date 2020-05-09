@@ -8,15 +8,18 @@ const IconButton = ({ alt, children, className, disabled, onClick }) => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
 
   return (
-    <button
-      className={classNames(sendBoxButtonStyleSet + '', className + '')}
-      disabled={disabled}
-      onClick={onClick}
-      title={alt}
-      type="button"
-    >
-      {children}
-    </button>
+    <div className={classNames(sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}>
+      <button
+        aria-disabled={disabled}
+        className="webchat__icon-button__button"
+        onClick={disabled ? undefined : onClick}
+        title={alt}
+        type="button"
+      >
+        {children}
+      </button>
+      {disabled && <div className="webchat__icon-button__glass" />}
+    </div>
   );
 };
 

@@ -16,10 +16,12 @@ import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const ROOT_CSS = css({
-  display: 'flex',
+  '&.webchat__send-box-text-box': {
+    display: 'flex',
 
-  '& > div, input': {
-    flex: 1
+    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area-box': {
+      flex: 1
+    }
   }
 });
 
@@ -147,8 +149,15 @@ const TextBox = ({ className }) => {
 
   return (
     <form
-      className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
-      onSubmit={handleSubmit}
+      aria-disabled={disabled}
+      className={classNames(
+        ROOT_CSS + '',
+        sendBoxTextAreaStyleSet + '',
+        sendBoxTextBoxStyleSet + '',
+        'webchat__send-box-text-box',
+        className + ''
+      )}
+      onSubmit={disabled ? undefined : handleSubmit}
     >
       {
         // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
@@ -157,34 +166,39 @@ const TextBox = ({ className }) => {
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
               <input
+                aria-disabled={disabled}
                 aria-label={sendBoxString}
+                className="webchat__send-box-text-box__input"
                 data-id="webchat-sendbox-input"
-                disabled={disabled}
-                onChange={handleChange}
+                onChange={disabled ? undefined : handleChange}
                 placeholder={typeYourMessageString}
+                readOnly={disabled}
                 ref={sendFocusRef}
                 type="text"
                 value={textBoxValue}
               />
             ) : (
-              <div>
+              <div className="webchat__send-box-text-box__text-area-box">
                 <textarea
+                  aria-disabled={disabled}
                   aria-label={sendBoxString}
+                  className="webchat__send-box-text-box__text-area"
                   data-id="webchat-sendbox-input"
-                  disabled={disabled}
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={disabled ? undefined : handleChange}
+                  onKeyPress={disabled ? undefined : handleKeyPress}
                   placeholder={typeYourMessageString}
+                  readOnly={disabled}
                   ref={sendFocusRef}
                   rows="1"
                   value={textBoxValue}
                 />
-                <div>{textBoxValue + '\n'}</div>
+                <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
               </div>
             )
           }
         </TypeFocusSinkContext.Consumer>
       }
+      {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
 };
