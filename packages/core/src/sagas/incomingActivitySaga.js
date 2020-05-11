@@ -29,9 +29,19 @@ function patchActivityWithFromRole(activity, userID) {
   return activity;
 }
 
+function patchActivityWithNullAttachments(activity) {
+  return updateIn(activity, ['attachments'], attachments => attachments || []);
+}
+
+function patchActivityWithNullSuggestedActions(activity) {
+  return updateIn(activity, ['suggestedActions'], suggestedActions => suggestedActions || []);
+}
+
 function* observeActivity({ directLine, userID }) {
   yield observeEach(directLine.activity$, function* observeActivity(activity) {
     activity = patchActivityWithFromRole(activity, userID);
+    activity = patchActivityWithNullAttachments(activity);
+    activity = patchActivityWithNullSuggestedActions(activity);
 
     yield put(incomingActivity(activity));
 
@@ -41,7 +51,9 @@ function* observeActivity({ directLine, userID }) {
     const lastMessageActivity = messageActivities[messageActivities.length - 1];
 
     if (activityFromBot(lastMessageActivity)) {
-      const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
+      const { suggestedActions } = lastMessageActivity;
+      // Direct Line Speech will return "suggestedActions" as "null" instead of "undefined".
+      const { actions, to } = suggestedActions || {};
 
       // If suggested actions is not destined to anyone, or is destined to the user, show it.
       // In other words, if suggested actions is destined to someone else, don't show it.

@@ -60,7 +60,8 @@ test('should echo back "Bellevue" when saying "bellview"', async () => {
   `);
 });
 
-test('should not synthesis when "speak" is empty', async () => {
+// 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
+test('should synthesis if "speak" is empty', async () => {
   const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
@@ -74,6 +75,5 @@ test('should not synthesis when "speak" is empty', async () => {
   const activities = await activitiesPromise;
   const activityUtterances = await Promise.all(activities.map(activity => recognizeActivityAsText(activity)));
 
-  expect(activityUtterances).toHaveProperty('length', 1);
-  expect(activityUtterances[0]).toBeFalsy();
+  expect(activityUtterances).toEqual([`Don't speak anything.`]);
 });
