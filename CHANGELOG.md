@@ -67,7 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985) and [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012)
+-  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985), [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012) and [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
    -  Development dependencies
       -  Root package
          -  [`@azure/storage-blob@12.1.0`](https://npmjs.com/package/@azure/storage-blob)
@@ -113,7 +113,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  [`core-js@3.6.4`](https://npmjs.com/package/core-js)
          -  [`url-search-params-polyfill@8.0.0`](https://npmjs.com/package/url-search-params-polyfill)
       -  `component`
+         -  [`react-film@2.1.0`](https://npmjs.com/package/react-film)
          -  [`react-redux@7.2.0`](https://npmjs.com/package/react-redux)
+         -  [`react-scroll-to-bottom@2.0.0`](https://npmjs.com/package/react-scroll-to-bottom)
          -  [`redux@4.0.5`](https://npmjs.com/package/redux)
       -  `directlinespeech`
          -  [`@babel/runtime@7.8.7`](https://npmjs.com/package/@babel/runtime)
