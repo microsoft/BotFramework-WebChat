@@ -9,7 +9,15 @@ import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
+const {
+  useDisabled,
+  useFocus,
+  useLocalizer,
+  usePerformCardAction,
+  useRenderMarkdownAsHTML,
+  useScrollToEnd,
+  useStyleSet
+} = hooks;
 
 function addClass(element, className) {
   const classNames = new Set(element.className.split(' '));
@@ -183,6 +191,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   const activeElementIndexRef = useRef(-1);
   const adaptiveCardElementRef = useRef();
   const contentRef = useRef();
+  const focus = useFocus();
   const inputValuesRef = useRef([]);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
@@ -245,6 +254,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
           }
         }
 
+        focus('sendBoxWithoutKeyboard');
         scrollToEnd();
       } else {
         console.error(`Web Chat: received unknown action from Adaptive Cards`);
