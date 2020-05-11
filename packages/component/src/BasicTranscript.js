@@ -144,7 +144,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
         className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
         role="list"
       >
-        {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }) => (
+        {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
           <React.Fragment key={key}>
             <li className={activityStyleSet + ''} role="listitem">
               {element}

@@ -24,6 +24,7 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
   display: 'flex',
+  position: 'relative', // This is to keep screen reader text in the destinated area.
 
   '& > .webchat__stackedLayout__avatar': {
     flexShrink: 0
