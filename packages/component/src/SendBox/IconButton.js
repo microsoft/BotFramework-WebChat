@@ -1,23 +1,14 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-const ROOT_CSS = css({
-  '&.webchat__icon-button .webchat__icon-button__button': {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center'
-  }
-});
-
 const IconButton = ({ alt, children, className, disabled, onClick }) => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
 
   return (
-    <div className={classNames(ROOT_CSS + '', sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}>
+    <div className={classNames(sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}>
       <button
         aria-disabled={disabled}
         className="webchat__icon-button__button"
