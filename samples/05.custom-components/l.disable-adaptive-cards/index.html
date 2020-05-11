@@ -30,23 +30,6 @@
         margin: 0;
       }
 
-      header,
-      footer {
-        background-color: rgba(255, 0, 0, 0.2);
-        justify-content: center;
-        left: 0;
-        position: absolute;
-        width: 100%;
-      }
-
-      header {
-        top: 0;
-      }
-
-      footer {
-        bottom: 0;
-      }
-
       #webchat {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         height: 100%;
@@ -85,13 +68,7 @@
   </head>
 
   <body>
-    <header>
-      <a href="https://github.com/microsoft/BotFramework-WebChat/">First link in the HTML.</a>
-    </header>
     <div id="webchat" role="main"></div>
-    <footer>
-      <a href="https://github.com/microsoft/BotFramework-WebChat/">Last link in the HTML.</a>
-    </footer>
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
