@@ -42,7 +42,7 @@ const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...o
         return;
       }
 
-      if (typeof tabIndex !== 'number' || tabIndex < 0) {
+      if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
         event.stopPropagation();
 
         focus();
