@@ -5,11 +5,13 @@ import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-const ROOT_CSS = {
-  alignItems: 'center',
-  display: 'flex',
-  justifyContent: 'center'
-};
+const ROOT_CSS = css({
+  '&.webchat__icon-button .webchat__icon-button__button': {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center'
+  }
+});
 
 const IconButton = ({ alt, children, className, disabled, onClick }) => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
