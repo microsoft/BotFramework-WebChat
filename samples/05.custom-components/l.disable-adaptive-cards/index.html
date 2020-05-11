@@ -20,7 +20,8 @@
     <script crossorigin="anonymous" src="/webchat-es5.js"></script>
     <style>
       html,
-      body {
+      body,
+      .app {
         height: 100%;
       }
 
@@ -55,7 +56,14 @@
       }
 
       #webchat :focus {
-        background-color: yellow !important;
+        outline-color: rgba(0, 0, 0, 0.4);
+        outline-offset: -4px;
+        outline-style: dotted;
+        outline-width: 2px;
+      }
+
+      #webchat input[type='text']:focus {
+        outline-offset: 2px;
       }
 
       .app__button {
@@ -65,17 +73,13 @@
       }
 
       #webchat .card__action--performed {
-        background-color: #ee0000 !important;
-        border-color: #ee0000 !important;
+        background-color: #0063b1 !important;
+        border-color: #0063b1 !important;
         color: White !important;
       }
 
       #webchat .card__action--performed :focus {
-        background-color: #ee0000 !important;
-      }
-
-      .app {
-        height: 100%;
+        background-color: #0063b1 !important;
       }
     </style>
   </head>
@@ -117,67 +121,13 @@
 
         const store = createStore({}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            // dispatch({
-            //   type: 'WEB_CHAT/SEND_MESSAGE',
-            //   meta: { method: 'keyboard' },
-            //   payload: {
-            //     text: 'herocard qna 1'
-            //   }
-            // });
-
-            setTimeout(() => {
-              dispatch({
-                type: 'WEB_CHAT/SEND_MESSAGE',
-                meta: { method: 'keyboard' },
-                payload: {
-                  text: 'markdown'
-                }
-              });
-            }, 0);
-
-            setTimeout(() => {
-              dispatch({
-                type: 'WEB_CHAT/SEND_MESSAGE',
-                meta: { method: 'keyboard' },
-                payload: {
-                  text: 'herocard qna 1'
-                }
-              });
-            }, 500);
-
-            setTimeout(() => {
-              dispatch({
-                type: 'WEB_CHAT/SEND_MESSAGE',
-                meta: { method: 'keyboard' },
-                payload: {
-                  text: 'herocard qna 2'
-                }
-              });
-            }, 1000);
-
-            // setTimeout(() => {
-            //   dispatch({
-            //     type: 'WEB_CHAT/SEND_MESSAGE',
-            //     meta: { method: 'keyboard' },
-            //     payload: {
-            //       text: 'proactive card'
-            //     }
-            //   });
-            // }, 0);
-
-            // setTimeout(() => {
-            //   dispatch({
-            //     type: 'DIRECT_LINE/POST_ACTIVITY',
-            //     meta: { method: 'keyboard' },
-            //     payload: {
-            //       activity: {
-            //         text: 'help',
-            //         textFormat: 'plain',
-            //         type: 'message'
-            //       }
-            //     }
-            //   });
-            // }, 5000);
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              meta: { method: 'keyboard' },
+              payload: {
+                text: 'herocard qna 1'
+              }
+            });
           }
 
           return next(action);
@@ -217,9 +167,6 @@
               );
 
             case 'application/vnd.microsoft.card.hero':
-              // if (attachment.content.buttons[0].title === 'United States') {
-              //   return next({ activity, attachment, ...others });
-              // } else {
               return (
                 <HeroCardContent
                   actionPerformedClassName="card__action--performed"
@@ -227,7 +174,6 @@
                   disabled={!recentBotMessage}
                 />
               );
-            // }
 
             case 'application/vnd.microsoft.card.oauth':
               return (
@@ -279,31 +225,11 @@
           }
         };
 
-        const cardActionMiddleware = () => next => ({ cardAction, target, ...others }) => {
-          return next({ cardAction, target, ...others });
-        };
-
-        // let styleSet = createStyleSet({ hideSendBox: true });
-        let styleSet = createStyleSet();
-
-        styleSet = {
-          ...styleSet,
-          adaptiveCardRenderer: {
-            ...styleSet.adaptiveCardRenderer,
-            '& .ac-pushButton.primary[aria-disabled]': { backgroundColor: '#0078D7', color: 'White' }
-          }
-        };
-
         const App = () => {
           const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
           const [disabled, setDisabled] = useState();
-          // const handleDisable = useCallback(() => setDisabled(true), [setDisabled]);
-          // const handleEnable = useCallback(() => setDisabled(false), [setDisabled]);
-          // const handleSendMessage = useCallback(() => {
-          //   console.log(document.activeElement);
-          // }, []);
 
-          const handleKeyPress = useCallback(
+          const handleKeyUp = useCallback(
             event => {
               const { altKey, keyCode, shiftKey } = event;
 
@@ -327,14 +253,12 @@
           );
 
           return (
-            <div className="app" onKeyUp={handleKeyPress}>
+            <div className="app" onKeyUp={handleKeyUp}>
               <ReactWebChat
                 attachmentMiddleware={attachmentMiddleware}
-                cardActionMiddleware={cardActionMiddleware}
                 directLine={directLine}
                 disabled={disabled}
                 store={store}
-                styleSet={styleSet}
               />
             </div>
           );
