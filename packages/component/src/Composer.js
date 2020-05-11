@@ -132,21 +132,21 @@ function createFocusContext({ mainFocusRef, sendBoxRef }) {
       const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxRef : mainFocusRef;
       const { current } = ref || {};
 
-      console.log(`focusing to ${where}`, current);
+      if (current) {
+        if (where === 'sendBoxWithoutKeyboard') {
+          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
+          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
+          const readOnly = current.getAttribute('readonly');
 
-      if (current && where === 'sendBoxWithoutKeyboard') {
-        // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
-        // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
-        const readOnly = current.getAttribute('readonly');
+          current.setAttribute('readonly', 'readonly');
 
-        current.setAttribute('readonly', 'readonly');
-
-        setTimeout(() => {
+          setTimeout(() => {
+            current.focus();
+            readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+          }, 0);
+        } else {
           current.focus();
-          readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-        }, 0);
-      } else {
-        current && current.focus();
+        }
       }
     }
   };
