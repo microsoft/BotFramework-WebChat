@@ -89,6 +89,7 @@
         submitButton.click();
 
         await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
 
         await host.snapshot();
 
