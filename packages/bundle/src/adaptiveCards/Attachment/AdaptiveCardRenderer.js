@@ -313,9 +313,6 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     // Focus can only be restored after the DOM is attached.
     restoreActiveElementIndex(element, activeElementIndexRef.current);
 
-    // HACK: Remove this line before merge.
-    element.removeAttribute('tabindex');
-
     setLastRender(Date.now());
 
     return () => {
