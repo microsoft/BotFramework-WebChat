@@ -9,7 +9,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useDirection, useStyleOptions } = hooks;
 
-const CommonCard = ({ content, disabled }) => {
+const CommonCard = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -24,14 +24,23 @@ const CommonCard = ({ content, disabled }) => {
     }
   }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} tapAction={content && content.tap} />;
+  return (
+    <AdaptiveCardRenderer
+      actionPerformedClassName={actionPerformedClassName}
+      adaptiveCard={builtCard}
+      disabled={disabled}
+      tapAction={content && content.tap}
+    />
+  );
 };
 
 CommonCard.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 CommonCard.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     tap: PropTypes.any
   }).isRequired,

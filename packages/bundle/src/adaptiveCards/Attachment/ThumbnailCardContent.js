@@ -10,7 +10,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useDirection, useStyleOptions } = hooks;
 
-const ThumbnailCardContent = ({ content, disabled }) => {
+const ThumbnailCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -42,14 +42,23 @@ const ThumbnailCardContent = ({ content, disabled }) => {
     }
   }, [adaptiveCardsPackage, direction, content, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} tapAction={content && content.tap} />;
+  return (
+    <AdaptiveCardRenderer
+      actionPerformedClassName={actionPerformedClassName}
+      adaptiveCard={builtCard}
+      disabled={disabled}
+      tapAction={content && content.tap}
+    />
+  );
 };
 
 ThumbnailCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 ThumbnailCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     buttons: PropTypes.array,
     images: PropTypes.arrayOf(

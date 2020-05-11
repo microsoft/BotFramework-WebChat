@@ -6,21 +6,23 @@ import CommonCard from './CommonCard';
 
 const { useStyleSet } = hooks;
 
-const SignInCardContent = ({ content, disabled }) => {
+const SignInCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>
-      <CommonCard content={content} disabled={disabled} />
+      <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
 };
 
 SignInCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 SignInCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.any.isRequired,
   disabled: PropTypes.bool
 };

@@ -8,7 +8,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useDirection, useStyleOptions } = hooks;
 
-const OAuthCardContent = ({ content, disabled }) => {
+const OAuthCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -24,14 +24,22 @@ const OAuthCardContent = ({ content, disabled }) => {
     }
   }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} />;
+  return (
+    <AdaptiveCardRenderer
+      actionPerformedClassName={actionPerformedClassName}
+      adaptiveCard={builtCard}
+      disabled={disabled}
+    />
+  );
 };
 
 OAuthCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 OAuthCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     buttons: PropTypes.array
   }).isRequired,

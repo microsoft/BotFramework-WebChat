@@ -8,7 +8,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
 const { useDirection, useStyleOptions } = hooks;
 
-const HeroCardContent = ({ content, disabled }) => {
+const HeroCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();
@@ -24,14 +24,23 @@ const HeroCardContent = ({ content, disabled }) => {
     }
   }, [adaptiveCardsPackage, content, direction, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} tapAction={content && content.tap} />;
+  return (
+    <AdaptiveCardRenderer
+      actionPerformedClassName={actionPerformedClassName}
+      adaptiveCard={builtCard}
+      disabled={disabled}
+      tapAction={content && content.tap}
+    />
+  );
 };
 
 HeroCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 HeroCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     tap: PropTypes.any
   }).isRequired,

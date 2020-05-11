@@ -38,7 +38,7 @@ function updateRTLInline(element, rtl, adaptiveCardsPackage) {
   }
 }
 
-const AdaptiveCardContent = ({ content, disabled }) => {
+const AdaptiveCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const { AdaptiveCard } = adaptiveCardsPackage;
   const [direction] = useDirection();
@@ -71,14 +71,24 @@ const AdaptiveCardContent = ({ content, disabled }) => {
     return {};
   }, [AdaptiveCard, adaptiveCardsPackage, content, direction]);
 
-  return !!card && <AdaptiveCardRenderer adaptiveCard={card} disabled={disabled} />;
+  return (
+    !!card && (
+      <AdaptiveCardRenderer
+        actionPerformedClassName={actionPerformedClassName}
+        adaptiveCard={card}
+        disabled={disabled}
+      />
+    )
+  );
 };
 
 AdaptiveCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 AdaptiveCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.any.isRequired,
   disabled: PropTypes.bool
 };

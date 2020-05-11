@@ -9,7 +9,7 @@ import CommonCard from './CommonCard';
 const { AudioContent } = Components;
 const { useStyleSet } = hooks;
 
-const AudioCardContent = ({ content, disabled }) => {
+const AudioCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 
@@ -22,16 +22,18 @@ const AudioCardContent = ({ content, disabled }) => {
           </li>
         ))}
       </ul>
-      <CommonCard attachment={attachment} />
+      <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
 };
 
 AudioCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 AudioCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     autostart: PropTypes.bool,
     autoloop: PropTypes.bool,

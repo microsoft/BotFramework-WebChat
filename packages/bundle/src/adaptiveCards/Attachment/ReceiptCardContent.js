@@ -14,7 +14,7 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-const ReceiptCardContent = ({ content, disabled }) => {
+const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -101,14 +101,23 @@ const ReceiptCardContent = ({ content, disabled }) => {
     }
   }, [adaptiveCardsPackage, content, direction, styleOptions, taxText, totalText, vatText]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} disabled={disabled} tapAction={content && content.tap} />;
+  return (
+    <AdaptiveCardRenderer
+      actionPerformedClassName={actionPerformedClassName}
+      adaptiveCard={builtCard}
+      disabled={disabled}
+      tapAction={content && content.tap}
+    />
+  );
 };
 
 ReceiptCardContent.defaultProps = {
+  actionPerformedClassName: '',
   disabled: undefined
 };
 
 ReceiptCardContent.propTypes = {
+  actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
     buttons: PropTypes.array,
     facts: PropTypes.arrayOf(
