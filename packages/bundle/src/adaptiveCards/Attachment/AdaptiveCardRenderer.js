@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 2] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import classNames from 'classnames';
@@ -184,10 +184,11 @@ function saveInputValues(element) {
 const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled: disabledFromProps, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ HostConfig }] = useAdaptiveCardsPackage();
+  const [actionsPerformed, setActionsPerformed] = useState([]);
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [disabledFromComposer] = useDisabled();
   const [error, setError] = useState();
-  const [actionsPerformed, setActionsPerformed] = useState([]);
+  const [lastRender, setLastRender] = useState(0);
   const activeElementIndexRef = useRef(-1);
   const adaptiveCardElementRef = useRef();
   const contentRef = useRef();
@@ -261,7 +262,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
         console.error(action);
       }
     },
-    [actionsPerformed, disabled, performCardAction, scrollToEnd, setActionsPerformed]
+    [addActionsPerformed, disabled, focus, performCardAction, scrollToEnd]
   );
 
   useLayoutEffect(() => {
@@ -325,6 +326,8 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     // HACK: Remove this line before merge.
     element.removeAttribute('tabindex');
 
+    setLastRender(Date.now());
+
     return () => {
       activeElementIndexRef.current = saveActiveElementIndex(element);
       inputValuesRef.current = saveInputValues(element);
@@ -345,7 +348,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     if (disabled) {
       return disableInputElementsWithUndo(adaptiveCardElementRef.current);
     }
-  }, [adaptiveCardElementRef.current, disabled]);
+  }, [disabled, lastRender]);
 
   useEffect(() => {
     // If the Adaptive Card changed, reset all actions performed.
@@ -358,16 +361,15 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       return;
     }
 
-    const undoStack = actionsPerformed.map(({ renderedElement }) => {
-      return (
+    const undoStack = actionsPerformed.map(
+      ({ renderedElement }) =>
         renderedElement &&
         adaptiveCardElementRef.current.contains(renderedElement) &&
         addPersistentClassWithUndo(renderedElement, actionPerformedClassName)
-      );
-    });
+    );
 
     return () => undoStack.forEach(undo => undo && undo());
-  }, [actionPerformedClassName, actionsPerformed, adaptiveCardElementRef.current, actionPerformedClassName]);
+  }, [actionsPerformed, actionPerformedClassName, lastRender]);
 
   return error ? (
     <ErrorBox error={error} message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
@@ -383,12 +385,14 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
 AdaptiveCardRenderer.defaultProps = {
   actionPerformedClassName: '',
+  disabled: undefined,
   tapAction: undefined
 };
 
 AdaptiveCardRenderer.propTypes = {
   actionPerformedClassName: PropTypes.string,
   adaptiveCard: PropTypes.any.isRequired,
+  disabled: PropTypes.bool,
   tapAction: PropTypes.shape({
     type: PropTypes.string.isRequired,
     value: PropTypes.string

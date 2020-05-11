@@ -42,6 +42,12 @@ HeroCardContent.defaultProps = {
 HeroCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
+    images: PropTypes.arrayOf(
+      PropTypes.shape({
+        tap: PropTypes.any,
+        url: PropTypes.string
+      })
+    ),
     tap: PropTypes.any
   }).isRequired,
   disabled: PropTypes.bool

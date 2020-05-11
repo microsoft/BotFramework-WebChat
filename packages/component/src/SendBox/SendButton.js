@@ -30,7 +30,7 @@ const SendButton = () => {
     focus('sendBoxWithoutKeyboard');
     scrollToEnd();
     submitSendBox();
-  }, [submitSendBox]);
+  }, [focus, scrollToEnd, submitSendBox]);
 
   return (
     <IconButton alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')} disabled={disabled} onClick={handleClick}>

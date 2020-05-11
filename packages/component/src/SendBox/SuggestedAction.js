@@ -57,7 +57,7 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
       focus('sendBoxWithoutKeyboard');
       scrollToEnd();
     },
-    [displayText, focus, performCardAction, setSuggestedActions, text, type, value]
+    [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
   );
 
   return (

@@ -11,7 +11,7 @@ const { useStyleSet } = hooks;
 
 const AnimationCardContent = ({ actionPerformedClassName, content, disabled }) => {
   const { media = [] } = content;
-  const [{ animationCardAttachment: animationCardContentStyleSet }] = useStyleSet();
+  const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>

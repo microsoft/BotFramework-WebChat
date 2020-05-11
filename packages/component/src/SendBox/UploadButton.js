@@ -116,8 +116,8 @@ const UploadButton = () => {
       <input
         aria-hidden="true"
         multiple={true}
-        onClick={disabled ? disabledListener : undefined}
         onChange={disabled ? undefined : handleFileChange}
+        onClick={disabled ? disabledListener : undefined}
         readOnly={disabled}
         ref={inputRef}
         role="button"

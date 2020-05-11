@@ -3,9 +3,9 @@ import React from 'react';
 
 import ThumbnailCardContent from './ThumbnailCardContent';
 
-const ThumbnailCardAttachment = ({ attachment: { content }, disabled }) => {
-  return <ThumbnailCardContent content={content} disabled={disabled} />;
-};
+const ThumbnailCardAttachment = ({ attachment: { content }, disabled }) => (
+  <ThumbnailCardContent content={content} disabled={disabled} />
+);
 
 ThumbnailCardAttachment.defaultProps = {
   disabled: undefined

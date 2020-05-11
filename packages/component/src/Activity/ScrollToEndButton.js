@@ -1,5 +1,3 @@
-import { StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
-
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
@@ -45,15 +43,7 @@ ScrollToEndButton.defaultProps = {
 };
 
 ScrollToEndButton.propTypes = {
-  animating: PropTypes.bool.isRequired,
-  className: PropTypes.string,
-  sticky: PropTypes.bool.isRequired
+  className: PropTypes.string
 };
 
-const ConnectedScrollToEndButton = props => (
-  <ScrollToBottomStateContext.Consumer>
-    {({ animating, sticky }) => <ScrollToEndButton animating={animating} sticky={sticky} {...props} />}
-  </ScrollToBottomStateContext.Consumer>
-);
-
-export default ConnectedScrollToEndButton;
+export default ScrollToEndButton;

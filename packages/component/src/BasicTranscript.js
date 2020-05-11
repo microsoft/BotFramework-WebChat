@@ -1,6 +1,5 @@
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
-import { StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -165,12 +164,9 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   );
 };
 
-BasicTranscriptContent.defaultProps = {
-  className: ''
-};
-
 BasicTranscriptContent.propTypes = {
-  className: PropTypes.string
+  animating: PropTypes.bool.isRequired,
+  sticky: PropTypes.bool.isRequired
 };
 
 const BasicTranscript = ({ className }) => {
