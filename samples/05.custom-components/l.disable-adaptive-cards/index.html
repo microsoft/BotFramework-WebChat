@@ -20,8 +20,7 @@
     <script crossorigin="anonymous" src="/webchat-es5.js"></script>
     <style>
       html,
-      body,
-      .app {
+      body {
         height: 100%;
       }
 
@@ -198,40 +197,14 @@
 
         const App = () => {
           const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
-          const [disabled, setDisabled] = useState();
-
-          const handleKeyUp = useCallback(
-            event => {
-              const { altKey, keyCode, shiftKey } = event;
-
-              if (altKey && shiftKey) {
-                if (keyCode === 68) {
-                  event.preventDefault();
-
-                  setDisabled(!disabled);
-                } else if (keyCode === 83) {
-                  event.preventDefault();
-
-                  store.dispatch({
-                    type: 'WEB_CHAT/SEND_MESSAGE',
-                    meta: { method: 'keyboard' },
-                    payload: { text: 'herocard qna 1' }
-                  });
-                }
-              }
-            },
-            [disabled, setDisabled]
-          );
 
           return (
-            <div className="app" onKeyUp={handleKeyUp}>
-              <ReactWebChat
-                attachmentMiddleware={attachmentMiddleware}
-                directLine={directLine}
-                disabled={disabled}
-                store={store}
-              />
-            </div>
+            <ReactWebChat
+              attachmentMiddleware={attachmentMiddleware}
+              directLine={directLine}
+              disabled={disabled}
+              store={store}
+            />
           );
         };
 
