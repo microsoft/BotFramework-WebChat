@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added `aria-label` attribute support for default Markdown engine, by [@patniko](https://github.com/patniko) in PR [#3022](https://github.com/microsoft/BotFramework-WebChat/pull/3022)
 -  Resolves [#2969](https://github.com/microsoft/BotFramework-WebChat/issues/2969). Support sovereign cloud for Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#3040](https://github.com/microsoft/BotFramework-WebChat/pull/3040)
 -  Resolves [#2481](https://github.com/microsoft/BotFramework-WebChat/issues/2481). Support selecting different audio input devices for Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/pull/3079)
--  Resolves [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). Added new `useFocus` hook and deprecating `useFocusSendBox` hook, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/issue/3123)
+-  Resolves [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). Added new `useFocus` hook and deprecating `useFocusSendBox` hook, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/pull/3123)
    -  Modify `setFocus` argument of `useTextBoxSubmit` to support `main` and `sendBoxWithoutKeyboard`
 
 ### Fixed
@@ -43,9 +43,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2562](https://github.com/microsoft/BotFramework-WebChat/issues/2562). Fix timestamps should not stop updating, by [@compulim](https://github.com/compulim) in PR [#3066](https://github.com/microsoft/BotFramework-WebChat/pull/3066)
 -  Fixes [#2953](https://github.com/microsoft/BotFramework-WebChat/issues/2953). Direct Line Speech should not synthesize when the `speak` property is falsy, by [@compulim](https://github.com/compulim) in PR [#3059](https://github.com/microsoft/BotFramework-WebChat/pull/3059)
 -  Fixes [#2876](https://github.com/microsoft/BotFramework-WebChat/issues/2876). `messageBack` and `postBack` should send even if both `text` and `value` is falsy or `undefined`, by [@compulim](https://github.com/compulim) in PR [#3120](https://github.com/microsoft/BotFramework-WebChat/issues/3120)
--  Fixes [#2668](https://github.com/microsoft/BotFramework-WebChat/issues/2668). Disable Web Audio on insecure connections, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/issue/3079)
--  Fixes [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). After click suggested action, should focus to send box without keyboard, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/issue/3123)
--  Fixes [#3133](https://github.com/microsoft/BotFramework-WebChat/issues/3133). Associate ARIA labels with buttons in hero card and Adaptive Cards, by [@compulim](https://github.com/compulim) in PR [#3146](https://github.com/microsoft/BotFramework-WebChat/issues/3146).
+-  Fixes [#2668](https://github.com/microsoft/BotFramework-WebChat/issues/2668). Disable Web Audio on insecure connections, by [@compulim](https://github.com/compulim) in PR [#3079](https://github.com/microsoft/BotFramework-WebChat/pull/3079)
+-  Fixes [#2850](https://github.com/microsoft/BotFramework-WebChat/issues/2850). After click suggested action, should focus to send box without keyboard, by [@compulim](https://github.com/compulim) in PR [#3123](https://github.com/microsoft/BotFramework-WebChat/pull/3123)
+-  Fixes [#3133](https://github.com/microsoft/BotFramework-WebChat/issues/3133). Associate ARIA labels with buttons in hero card and Adaptive Cards, by [@compulim](https://github.com/compulim) in PR [#3146](https://github.com/microsoft/BotFramework-WebChat/pull/3146).
    -  Remove browser-based detection from `<ScreenReaderText>` because it is no longer needed.
    -  After stripping Markdown syntax for accessibility labels, cache the result to improve rendering performance.
    -  Skip stripping Markdown for non-Markdown text content.
