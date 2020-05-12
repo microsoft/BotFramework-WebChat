@@ -72,9 +72,7 @@ function* observeActivity({ directLine, userID }) {
     const lastMessageActivity = messageActivities[messageActivities.length - 1];
 
     if (activityFromBot(lastMessageActivity)) {
-      const { suggestedActions } = lastMessageActivity;
-      // Direct Line Speech will return "suggestedActions" as "null" instead of "undefined".
-      const { actions, to } = suggestedActions || {};
+      const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
 
       // If suggested actions is not destined to anyone, or is destined to the user, show it.
       // In other words, if suggested actions is destined to someone else, don't show it.
