@@ -8,6 +8,8 @@ import observeEach from './effects/observeEach';
 import setSuggestedActions from '../actions/setSuggestedActions';
 import whileConnected from './effects/whileConnected';
 
+const PASSTHRU_FN = value => value;
+
 function patchActivityWithFromRole(activity, userID) {
   // Some activities, such as "ConversationUpdate", does not have "from" defined.
   // And although "role" is defined in Direct Line spec, it was not sent over the wire.
@@ -29,19 +31,38 @@ function patchActivityWithFromRole(activity, userID) {
   return activity;
 }
 
-function patchActivityWithNullAttachments(activity) {
-  return updateIn(activity, ['attachments'], attachments => attachments || []);
-}
+function patchNullAsUndefined(activity) {
+  // These fields are known used in Web Chat and in any cases, they should not be null, but undefined.
+  // The only field omitted is "value", as it could be null purposefully.
 
-function patchActivityWithNullSuggestedActions(activity) {
-  return updateIn(activity, ['suggestedActions'], suggestedActions => suggestedActions || []);
+  return [
+    'attachmentLayout',
+    'attachments',
+    'channelData',
+    'conversation',
+    'entities',
+    'from',
+    'inputHint',
+    'locale',
+    'name',
+    'recipient',
+    'speak',
+    'suggestedActions',
+    'text',
+    'textFormat',
+    'timestamp',
+    'type'
+  ].reduce((activity, name) => {
+    const { [name]: value } = activity;
+
+    return updateIn(activity, [name], typeof value === 'undefined' || value === null ? undefined : PASSTHRU_FN);
+  }, activity);
 }
 
 function* observeActivity({ directLine, userID }) {
   yield observeEach(directLine.activity$, function* observeActivity(activity) {
+    activity = patchNullAsUndefined(activity);
     activity = patchActivityWithFromRole(activity, userID);
-    activity = patchActivityWithNullAttachments(activity);
-    activity = patchActivityWithNullSuggestedActions(activity);
 
     yield put(incomingActivity(activity));
 
