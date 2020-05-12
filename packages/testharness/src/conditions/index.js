@@ -1,4 +1,5 @@
 import actionDispatched from './actionDispatched';
+import allImagesLoaded from './allImagesLoaded';
 import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import connectivityStatusShown from './connectivityStatusShown';
 import minNumActivitiesShown from './minNumActivitiesShown';
@@ -12,6 +13,7 @@ import webChatRendered from './webChatRendered';
 
 export {
   actionDispatched,
+  allImagesLoaded,
   allOutgoingActivitiesSent,
   connectivityStatusShown,
   minNumActivitiesShown,
