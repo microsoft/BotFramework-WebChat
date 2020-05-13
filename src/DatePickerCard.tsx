@@ -168,7 +168,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 
     /** Handling the month change */
     handleMonthChange = ( date: moment.Moment ) => {
-        this.getAvailableTimes(date, false);
+        this.getAvailableTimes(date, true);
     }
 
     /**
