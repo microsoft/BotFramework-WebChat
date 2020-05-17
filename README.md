@@ -22,13 +22,13 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 Starting from Web Chat 4.6.0, Web Chat requires React 16.8.6 or up.
 
-Although we recommend that you upgrade your host app at your earliest convenience, we understand that host app may need some time before its React dependencies are updated, especially in regards to huge applications.
+Although we recommend you to upgrade your host app at your earliest convenience, we understand that host app may need some time before its react dependencies are updated, especially in regards to huge applications.
 
-If your app is not ready for React 16.8.6 yet, you can follow the [hybrid React sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/g.hybrid-react-npm) to dual-host React in your app.
+If your app is not ready for react 16.8.6 yet, you can follow the [hybrid React sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/g.hybrid-react-npm) to dual-host react in your app.
 
 ## Speech changes in Web Chat 4.5.0
 
-There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to the section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
+There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to the section [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for more details.
 
 ## Migrating from Web Chat v3 to v4
 
@@ -125,7 +125,7 @@ See the working sample of the [full Web Chat bundle](https://github.com/microsof
 
 For full customizability, you can use React to recompose components of Web Chat.
 
-To install the production build from NPM, run `npm install botframework-webchat`.
+To install the production build from NPM, run `npm install botframework-webchat` command.
 
 <!-- prettier-ignore-start -->
 ```js
@@ -183,10 +183,10 @@ If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](h
 
 Please note, however:
 
--  Web Chat does not support Internet Explorer older than version 11
+-  Web Chat does not support Internet Explorer's older version than version 11
 -  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
 -  Web Chat has no plan to support samples for IE11 (ES5).
-   -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+-  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
 ## Localization
 
@@ -240,7 +240,7 @@ See our [Contributing page](https://github.com/microsoft/BotFramework-WebChat/tr
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any of your additional questions or comments.
 
 # Reporting Security Issues
 
