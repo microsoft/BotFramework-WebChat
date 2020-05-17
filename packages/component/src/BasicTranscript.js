@@ -13,6 +13,7 @@ import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -64,6 +65,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   let [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+  const listRef = useRef();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
@@ -74,6 +76,40 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
       }),
     [renderActivity]
   );
+
+  const handleScrollToEndButtonClick = useCallback(() => {
+    const { current } = listRef;
+
+    // After clicking on the "New messages" button, we should focus on the first unread element.
+    // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
+    if (current) {
+      const unreadActivityElements = current.querySelectorAll('li[role="separator"] + li');
+
+      const firstUnreadFocusable = [].reduce.call(
+        unreadActivityElements,
+        (result, unreadActivityElement) => {
+          if (result) {
+            return result;
+          }
+
+          // This is best-effort for finding a focusable element.
+          // For a comprehensive list, please refer to https://allyjs.io/data-tables/focusable.html and update this list accordingly.
+          const focusables = unreadActivityElement.querySelectorAll(
+            'a, audio, button, details, details summary, embed, iframe, input, object, rect, select, svg[focusable], textarea, video, [tabindex]'
+          );
+
+          return [].find.call(focusables, focusable => {
+            const tabIndex = getTabIndex(focusable);
+
+            return typeof tabIndex === 'number' && tabIndex >= 0;
+          });
+        },
+        false
+      );
+
+      firstUnreadFocusable && firstUnreadFocusable.focus();
+    }
+  }, [listRef]);
 
   const memoizeRenderActivityElement = useMemoize(renderActivityElement);
 
@@ -141,6 +177,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
         aria-live="polite"
         aria-relevant="additions"
         className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
+        ref={listRef}
         role="list"
       >
         {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
@@ -152,8 +189,8 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
             {!hideScrollToEndButton &&
               activity.id === lastReadActivityId &&
               index !== activityElementsWithMetadata.length - 1 && (
-                <li role="group">
-                  <ScrollToEndButton />
+                <li role="separator">
+                  <ScrollToEndButton onClick={handleScrollToEndButtonClick} />
                 </li>
               )}
           </React.Fragment>
