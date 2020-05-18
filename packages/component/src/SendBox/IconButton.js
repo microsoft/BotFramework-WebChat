@@ -2,24 +2,22 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import AccessibleButton from '../Utils/AccessibleButton';
 import useStyleSet from '../hooks/useStyleSet';
 
 const IconButton = ({ alt, children, className, disabled, onClick }) => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
 
   return (
-    <div className={classNames(sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}>
-      <button
-        aria-disabled={disabled}
-        className="webchat__icon-button__button"
-        onClick={disabled ? undefined : onClick}
-        title={alt}
-        type="button"
-      >
-        {children}
-      </button>
-      {disabled && <div className="webchat__icon-button__glass" />}
-    </div>
+    <AccessibleButton
+      disabled={disabled}
+      className={classNames(sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}
+      onClick={disabled ? undefined : onClick}
+      title={alt}
+      type="button"
+    >
+      {children}
+    </AccessibleButton>
   );
 };
 

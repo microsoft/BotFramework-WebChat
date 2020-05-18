@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
 import useDirection from '../hooks/useDirection';
 import useDisabled from '../hooks/useDisabled';
@@ -65,10 +66,10 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
       aria-hidden={ariaHidden}
       className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
     >
-      <button
-        aria-disabled={disabled}
+      <AccessibleButton
+        disabled={disabled}
         className="webchat__suggested-action__button"
-        onClick={disabled ? undefined : handleClick}
+        onClick={handleClick}
         type="button"
       >
         {image && (
@@ -81,8 +82,7 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
           />
         )}
         <nobr className="webchat__suggested-action__button-text">{buttonText}</nobr>
-      </button>
-      {disabled && <div className="webchat__suggested-action__glass" />}
+      </AccessibleButton>
     </div>
   );
 };

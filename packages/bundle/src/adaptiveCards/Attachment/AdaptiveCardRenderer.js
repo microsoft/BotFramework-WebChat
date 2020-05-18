@@ -130,6 +130,8 @@ function disableInputElementsWithUndo(element, observeSubtree = true) {
     disableElementWithUndo(element)
   );
 
+  undoStack.push(setAttributeWithUndo(element, 'tabindex', '-1'));
+
   if (observeSubtree) {
     const observer = new MutationObserver(mutations =>
       mutations.forEach(({ addedNodes }) =>
@@ -401,10 +403,11 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (
-    <div className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}>
-      <div className="webchat__adaptive-card-renderer__content" onClick={handleClick} ref={contentRef} />
-      {disabled && <div className="webchat__adaptive-card-renderer__glass" />}
-    </div>
+    <div
+      className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
+      onClick={handleClick}
+      ref={contentRef}
+    />
   );
 };
 

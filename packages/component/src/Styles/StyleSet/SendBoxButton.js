@@ -8,47 +8,33 @@ export default function createSendBoxButtonStyle({
 }) {
   return {
     '&.webchat__icon-button': {
+      backgroundColor: 'Transparent',
+      border: 0,
       height: '100%',
-      position: 'relative',
+      outline: 0,
+      padding: 0,
 
-      '& .webchat__icon-button__button': {
-        backgroundColor: 'Transparent',
-        border: 0,
-        height: '100%',
-        outline: 0,
-        padding: 0,
+      // We use the sendBoxHeight, so the button looks square
+      width: sendBoxHeight,
 
-        // We use the sendBoxHeight, so the button looks square
-        width: sendBoxHeight,
-
-        '&:not(:disabled):not([aria-disabled="true"])': {
-          '&:focus svg': {
-            fill: sendBoxButtonColorOnFocus
-          },
-
-          '&:hover svg': {
-            fill: sendBoxButtonColorOnHover
-          }
+      '&:not(:disabled):not([aria-disabled="true"])': {
+        '&:focus svg': {
+          fill: sendBoxButtonColorOnFocus
         },
 
-        '& svg': {
-          fill: sendBoxButtonColor || subtle
-        },
-
-        '&:disabled, &[aria-disabled="true"]': {
-          '& svg': {
-            fill: sendBoxButtonColorOnDisabled
-          }
+        '&:hover svg': {
+          fill: sendBoxButtonColorOnHover
         }
       },
 
-      '& .webchat__icon-button__glass': {
-        height: '100%',
-        left: 0,
-        position: 'absolute',
-        top: 0,
-        userSelect: 'none',
-        width: '100%'
+      '& svg': {
+        fill: sendBoxButtonColor || subtle
+      },
+
+      '&:disabled, &[aria-disabled="true"]': {
+        '& svg': {
+          fill: sendBoxButtonColorOnDisabled
+        }
       }
     }
   };

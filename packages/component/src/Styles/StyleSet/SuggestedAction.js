@@ -55,15 +55,6 @@ export default function createSuggestedActionStyle({
         }
       },
 
-      '& .webchat__suggested-action__glass': {
-        height: '100%',
-        left: 0,
-        position: 'absolute',
-        top: 0,
-        userSelect: 'none',
-        width: '100%'
-      },
-
       '& .webchat__suggested-action__image': {
         height: suggestedActionImageHeight,
 
