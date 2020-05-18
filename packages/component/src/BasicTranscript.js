@@ -9,6 +9,7 @@ import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
+import useFocus from './hooks/useFocus';
 import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
@@ -79,6 +80,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   let [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+  const focus = useFocus();
   const listRef = useRef();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
@@ -103,7 +105,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
         0
       );
 
-      firstUnreadTabbable && firstUnreadTabbable.focus();
+      firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
   }, [listRef]);
 
