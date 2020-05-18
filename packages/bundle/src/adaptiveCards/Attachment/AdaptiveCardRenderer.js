@@ -63,39 +63,77 @@ const disabledHandler = event => {
   event.stopPropagation();
 };
 
-function disableInputElementsWithUndo(element, observeSubtree = true) {
+function addEventListenerOnceWithUndo(element, name, handler) {
+  let detach;
+  const detachingHandler = event => {
+    try {
+      handler(event);
+    } finally {
+      // IE11 does not support { once: true }, so we need to detach manually.
+      detach();
+    }
+  };
+
+  detach = () => element.removeEventListener(name, detachingHandler);
+  element.addEventListener(name, detachingHandler, { once: true });
+
+  return detach;
+}
+
+function disableElementWithUndo(element) {
   const undoStack = [];
+  const isActive = element === document.activeElement;
+  let tag = element.nodeName.toLowerCase();
 
-  [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
-    undoStack.push(setAttributeWithUndo(input, 'aria-disabled', 'true'));
-  });
+  switch (tag) {
+    // Should we not disable <a>? Will some of the <a> are styled as button?
+    case 'a':
+      undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
 
-  // Should we not to disable hyperlink?
-  // How about buttons mimic as an hyperlink?
-  [].forEach.call(element.querySelectorAll('a'), hyperlink => {
-    hyperlink.addEventListener('click', disabledHandler);
+      break;
 
-    undoStack.push(() => hyperlink.removeEventListener('click', disabledHandler));
-  });
+    case 'button':
+    case 'input':
+    case 'select':
+    case 'textarea':
+      undoStack.push(setAttributeWithUndo(element, 'aria-disabled', 'true'));
 
-  [].forEach.call(element.querySelectorAll('option'), option => {
-    undoStack.push(setAttributeWithUndo(option, 'disabled', 'disabled'));
-  });
+      if (isActive) {
+        undoStack.push(
+          addEventListenerOnceWithUndo(element, 'blur', () =>
+            undoStack.push(setAttributeWithUndo(element, 'disabled', 'disabled'))
+          )
+        );
+      } else {
+        undoStack.push(setAttributeWithUndo(element, 'disabled', 'disabled'));
+      }
 
-  [].forEach.call(element.querySelectorAll('input, textarea'), input => {
-    // Make checkboxes, radioes, etc, readonly.
-    input.addEventListener('click', disabledHandler);
+      if (tag === 'input' || tag === 'textarea') {
+        undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
+        undoStack.push(setAttributeWithUndo(element, 'readonly', 'readonly'));
+      } else if (tag === 'select') {
+        undoStack.push(
+          ...[].map.call(element.querySelectorAll('option'), option =>
+            setAttributeWithUndo(option, 'disabled', 'disabled')
+          )
+        );
+      }
 
-    undoStack.push(() => input.removeEventListener('click', disabledHandler));
+      break;
+  }
 
-    // Disable text inputs, etc.
-    undoStack.push(setAttributeWithUndo(input, 'readonly', 'readonly'));
-  });
+  return () => undoStack.forEach(undo => undo && undo());
+}
+
+function disableInputElementsWithUndo(element, observeSubtree = true) {
+  const undoStack = [].map.call(element.querySelectorAll('a, button, input, select, textarea'), element =>
+    disableElementWithUndo(element)
+  );
 
   if (observeSubtree) {
     const observer = new MutationObserver(mutations =>
       mutations.forEach(({ addedNodes }) =>
-        addedNodes.forEach(addedNode => undoStack.push(disableInputElementsWithUndo(addedNode, false)))
+        undoStack.push(...addedNodes.map(addedNode => disableInputElementsWithUndo(addedNode, false)))
       )
     );
 

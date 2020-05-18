@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useLayoutEffect, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
@@ -61,6 +61,20 @@ function useMemoize(fn) {
   }, [fn]);
 }
 
+function firstTabbableDescendant(element) {
+  // This is best-effort for finding a tabbable element.
+  // For a comprehensive list, please refer to https://allyjs.io/data-tables/focusable.html and update this list accordingly.
+  const focusables = element.querySelectorAll(
+    'a[href], audio, button, details, details summary, embed, iframe, input, object, rect, select, svg[focusable], textarea, video, [tabindex]'
+  );
+
+  return [].find.call(focusables, focusable => {
+    const tabIndex = getTabIndex(focusable);
+
+    return typeof tabIndex === 'number' && tabIndex >= 0;
+  });
+}
+
 const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   let [{ hideScrollToEndButton }] = useStyleOptions();
@@ -83,31 +97,13 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     // After clicking on the "New messages" button, we should focus on the first unread element.
     // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
     if (current) {
-      const unreadActivityElements = current.querySelectorAll('li[role="separator"] + li');
-
-      const firstUnreadFocusable = [].reduce.call(
-        unreadActivityElements,
-        (result, unreadActivityElement) => {
-          if (result) {
-            return result;
-          }
-
-          // This is best-effort for finding a focusable element.
-          // For a comprehensive list, please refer to https://allyjs.io/data-tables/focusable.html and update this list accordingly.
-          const focusables = unreadActivityElement.querySelectorAll(
-            'a, audio, button, details, details summary, embed, iframe, input, object, rect, select, svg[focusable], textarea, video, [tabindex]'
-          );
-
-          return [].find.call(focusables, focusable => {
-            const tabIndex = getTabIndex(focusable);
-
-            return typeof tabIndex === 'number' && tabIndex >= 0;
-          });
-        },
-        false
+      const firstUnreadTabbable = [].reduce.call(
+        current.querySelectorAll('li[role="separator"] + li'),
+        (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
+        0
       );
 
-      firstUnreadFocusable && firstUnreadFocusable.focus();
+      firstUnreadTabbable && firstUnreadTabbable.focus();
     }
   }, [listRef]);
 
@@ -168,6 +164,32 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   if (animating || sticky || lastShownActivityId === lastReadActivityId) {
     hideScrollToEndButton = true;
   }
+
+  useLayoutEffect(() => {
+    const { activeElement } = document;
+    const { current } = listRef;
+
+    // If the current focused element is disabled, when one or more activities are added, changed, or removed,
+    // we should put the focus on the next focusable element after the current disabled element.
+    if (
+      activeElement &&
+      current &&
+      activeElement.getAttribute('aria-disabled') === 'true' &&
+      current.contains(activeElement)
+    ) {
+      const { children } = current;
+      const indexOfListItem = [].findIndex.call(children, listItem => listItem.contains(activeElement));
+      const nextSiblings = [].slice.call(children, indexOfListItem + 1);
+
+      // Find the first tabbable element from descedants of all next siblings.
+      const firstTabbable = nextSiblings.reduce(
+        (result, nextSibling) => result || firstTabbableDescendant(nextSibling),
+        0
+      );
+
+      // firstTabbable && firstTabbable.focus();
+    }
+  }, [activities]);
 
   return (
     <React.Fragment>
