@@ -7,8 +7,10 @@ import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
 import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
+import refreshDirectLineToken from './utils/refreshDirectLineToken';
 
 const TOKEN_RENEWAL_INTERVAL = 120000;
+const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = (30 * 60 * 1000) / 2;
 
 export default async function create({
   audioConfig,
@@ -25,24 +27,27 @@ export default async function create({
   speechSynthesisOutputFormat,
   textNormalization,
   userID,
-  username
+  username,
+  useHttpPath = false
 }) {
   if (!fetchCredentials) {
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(fetchCredentials);
-
+  const { authorizationToken, region, subscriptionKey, directLineToken } = await resolveFunctionOrReturnValue(fetchCredentials);
+  
   if (
     (!authorizationToken && !subscriptionKey) ||
     (authorizationToken && subscriptionKey) ||
     (authorizationToken && typeof authorizationToken !== 'string') ||
-    (subscriptionKey && typeof subscriptionKey !== 'string')
+    (subscriptionKey && typeof subscriptionKey !== 'string') ||
+    (useHttpPath && !directLineToken)
   ) {
     throw new Error(
-      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only.'
+      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If useHttpPath = true, then it should also return a directLineToken'
     );
   }
+
 
   if (typeof enableTelemetry !== 'undefined') {
     console.warn(
@@ -104,6 +109,13 @@ export default async function create({
     config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
   }
 
+  // switch to direct line endpoint on DLS service.
+  if (useHttpPath) {
+     const endpoint = config.getProperty("SPEECH-Endpoint").replace("api/v3", "directline/api/v1")
+     config.setProperty("SPEECH-Endpoint", endpoint)
+     config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken.token)
+     config.setProperty(PropertyId.Conversation_Conversation_Id, directLineToken.conversationId)
+  }
   // Supported options can be found in DialogConnectorFactory.js.
 
   // Set the language used for recognition.
@@ -153,6 +165,29 @@ export default async function create({
 
       dialogServiceConnector.authorizationToken = authorizationToken; // eslint-disable-line require-atomic-updates
     }, TOKEN_RENEWAL_INTERVAL);
+  }
+
+  // Renew token per interval.
+  if (directLineToken) {
+    const interval = setInterval(async () => {
+      // #2660 If the connector has been disposed, we should stop renewing the token.
+
+      // TODO: We should use a public implementation if Speech SDK has one related to "privIsDisposed".
+      if (dialogServiceConnector.privIsDisposed) {
+        clearInterval(interval);
+      }
+
+      const { refreshedDirectLineToken } = await refreshDirectLineToken(directLineToken);
+
+      if (!refreshedDirectLineToken) {
+        return console.warn(
+          'botframework-directlinespeech-sdk: Renew token failed because call to refresh token Direct Line API did not return a new token.'
+        );
+      }
+
+      dialogServiceConnector.BotFrameworkConfig.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken.token)
+      dialogServiceConnector.BotFrameworkConfig.setProperty(PropertyId.Conversation_Conversation_Id, refreshedDirectLineToken.conversationId)
+    }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
   }
 
   const directLine = new DirectLineSpeech({ dialogServiceConnector });
