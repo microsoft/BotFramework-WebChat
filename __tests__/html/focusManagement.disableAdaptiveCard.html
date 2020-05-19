@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/react-dom@16.8.6/umd/react-dom-test-utils.development.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      :focus {
+        background-color: Yellow;
+        outline-color: rgba(0, 0, 0, 0.4);
+        outline-offset: -4px;
+        outline-style: dotted;
+        outline-width: 2px;
+      }
+
+      :disabled:focus,
+      [aria-disabled='true']:focus {
+        outline-color: rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="text/babel" data-presets="es2015,stage-3,react">
+      const {
+        WebChat: {
+          Components: { HeroCardContent }
+        },
+        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
+      } = window;
+
+      (async function() {
+        const store = createStore();
+        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
+
+        window.WebChat.renderWebChat(
+          {
+            attachmentMiddleware: () => next => args => {
+              const { activity, attachment } = args;
+              const { activities } = store.getState();
+              const messageActivities = activities.filter(activity => activity.type === 'message');
+              const mostRecent = messageActivities.pop() === activity;
+
+              if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
+                return (
+                  <HeroCardContent
+                    actionPerformedClassName="card__action--performed"
+                    content={attachment.content}
+                    disabled={!mostRecent}
+                  />
+                );
+              }
+
+              return next(args);
+            },
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.sendMessageViaSendBox('herocard qna 1', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        const firstButton = document.querySelector('.ac-adaptiveCard button');
+
+        firstButton.focus();
+
+        await host.snapshot();
+
+        await firstButton.click();
+
+        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrolling);
+
+        await host.snapshot();
+
+        expect(document.activeElement).toBe(firstButton);
+
+        await host.sendTab();
+
+        await host.snapshot();
+
+        await host.sendShiftTab();
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

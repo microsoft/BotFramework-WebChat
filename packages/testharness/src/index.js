@@ -1,3 +1,9 @@
+import 'script-loader!node_modules/@babel/standalone@7/babel.min.js';
+import 'script-loader!../../node_modules/regenerator-runtime/runtime.js';
+import 'script-loader!../../node_modules/react@16.8.6/umd/react.development.js';
+import 'script-loader!../../node_modules/react-dom@16.8.6/umd/react-dom.development.js';
+import 'script-loader!../../node_modules/react-dom@16.8.6/umd/react-dom-test-utils.development.js';
+
 import { decode } from 'base64-arraybuffer';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
