@@ -114,7 +114,6 @@ export default async function create({
      const endpoint = config.getProperty("SPEECH-Endpoint").replace("api/v3", "directline/api/v1")
      config.setProperty("SPEECH-Endpoint", endpoint)
      config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken.token)
-     config.setProperty(PropertyId.Conversation_Conversation_Id, directLineToken.conversationId)
   }
   // Supported options can be found in DialogConnectorFactory.js.
 
@@ -186,7 +185,6 @@ export default async function create({
       }
 
       dialogServiceConnector.BotFrameworkConfig.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken.token)
-      dialogServiceConnector.BotFrameworkConfig.setProperty(PropertyId.Conversation_Conversation_Id, refreshedDirectLineToken.conversationId)
     }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
   }
 
