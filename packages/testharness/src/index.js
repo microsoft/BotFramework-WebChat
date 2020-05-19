@@ -1,12 +1,14 @@
-import 'script-loader!node_modules/@babel/standalone@7/babel.min.js';
-import 'script-loader!../../node_modules/regenerator-runtime/runtime.js';
-import 'script-loader!../../node_modules/react@16.8.6/umd/react.development.js';
-import 'script-loader!../../node_modules/react-dom@16.8.6/umd/react-dom.development.js';
-import 'script-loader!../../node_modules/react-dom@16.8.6/umd/react-dom-test-utils.development.js';
+import 'script-loader!../node_modules/@babel/standalone/babel.min.js';
+import 'script-loader!../../../node_modules/regenerator-runtime/runtime.js';
+import 'script-loader!../../../node_modules/react/umd/react.development.js';
+import 'script-loader!../../../node_modules/react-dom/umd/react-dom.development.js';
+import 'script-loader!../../../node_modules/react-dom/umd/react-dom-test-utils.development.js';
+import '../assets/index.css';
 
 import { decode } from 'base64-arraybuffer';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
+import lolex from 'lolex';
 import updateIn from 'simple-update-in';
 
 import { EventIterator } from './external/event-iterator';
@@ -27,10 +29,10 @@ import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
 import iterateAsyncIterable from './utils/iterateAsyncIterable';
 import MockAudioContext from './speech/speechSynthesis/MockAudioContext';
-import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiffWaveArrayBuffer';
 import pageError from './host/pageError';
 import parseURLParams from './utils/parseURLParams';
 import pcmWaveArrayBufferToRiffWaveArrayBuffer from './speech/pcmWaveArrayBufferToRiffWaveArrayBuffer';
+import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiffWaveArrayBuffer';
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
@@ -40,6 +42,8 @@ window.Babel.registerPlugin(
   '@babel/plugin-proposal-async-generator-functions',
   BabelPluginProposalAsyncGeneratorFunctions
 );
+
+window.lolex = lolex;
 
 const log = console.log.bind(console);
 

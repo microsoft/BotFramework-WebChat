@@ -7,20 +7,18 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, host, pageObjects, timeouts } = window.WebChatTest;
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
       (async function() {
         window.WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({ token: 'INVALID-TOKEN' }),
-            store: createStore(),
-            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store: createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
-        await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_REJECTED'), timeouts.directLine);
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
 
         await host.snapshot();
         await host.done();

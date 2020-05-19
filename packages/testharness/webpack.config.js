@@ -3,6 +3,14 @@ const { join } = require('path');
 let config = {
   entry: './lib/index',
   mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.css$/iu,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  },
   output: {
     filename: 'testharness.js',
     library: 'WebChatTest',
