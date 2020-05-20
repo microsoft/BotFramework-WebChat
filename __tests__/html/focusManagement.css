@@ -1,9 +1,12 @@
 :focus {
-  background-color: Yellow !important;
   outline-color: rgba(0, 0, 0, 0.4) !important;
   outline-offset: -4px !important;
   outline-style: dotted !important;
   outline-width: 2px !important;
+}
+
+:focus:not(.webchat__scrollToEndButton) {
+  background-color: Yellow !important;
 }
 
 :disabled:focus,
@@ -23,4 +26,8 @@
 
 #webchat input.webchat__send-box-text-box__input {
   outline-offset: 2px !important;
+}
+
+#webchat .webchat__scrollToEndButton:focus {
+  outline-color: rgba(255, 255, 255, 0.6) !important;
 }
