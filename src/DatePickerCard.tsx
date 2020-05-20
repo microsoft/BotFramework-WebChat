@@ -41,6 +41,7 @@ export interface DatePickerState {
     excludedTimes: moment.Moment[];
     monthAvailabilities: any;
     loading: boolean;
+    duration: number;
 }
 
 const dateFormat = 'MMMM D, YYYY';
@@ -91,7 +92,8 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             showTimeSelectClass: 'hide-time-select',
             excludedTimes: [],
             monthAvailabilities: null,
-            loading: true
+            loading: true,
+            duration: 30
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -134,13 +136,17 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     if (!changeExcludeTime && (this.state.startDate && this.state.startDate.month() === date.month())) {
                         getAvailForDate = this.state.startDate;
                     }
-                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30, date);
+                    const minuteString = +res.data.duration.split(':')[1];
+                    const hourString = +res.data.duration.split(':')[0];
+                    const appointmentDuration = hourString * 60 + minuteString;
+                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], appointmentDuration, date);
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
                         excludedTimes: excludedTime,
-                        loading: false
+                        loading: false,
+                        duration: appointmentDuration
                     });
             })
             .catch((err: any) => {
@@ -199,7 +205,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 if (startDate && startDate.month() !== date.month()) {
                     this.getAvailableTimes(date, true);
                 } else if (this.state.monthAvailabilities) {
-                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30, date);
+                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date);
                     this.setState({
                         startDate: date,
                         dateSelected: true,
@@ -282,6 +288,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}
+                    timeIntervals={this.state.duration}
                 />
                 <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
                     None of these appointments work for me
