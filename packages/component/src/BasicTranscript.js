@@ -76,9 +76,19 @@ function firstTabbableDescendant(element) {
   });
 }
 
+function nextSiblingAll(element) {
+  const {
+    parentNode: { children }
+  } = element;
+
+  const elementIndex = [].indexOf.call(children, element);
+
+  return [].slice.call(children, elementIndex + 1);
+}
+
 const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
-  let [{ hideScrollToEndButton }] = useStyleOptions();
+  const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
   const focus = useFocus();
   const listRef = useRef();
@@ -99,21 +109,14 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     // After clicking on the "New messages" button, we should focus on the first unread element.
     // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
     if (current) {
-      const listItems = [].slice.call(current.querySelectorAll('li'));
-      const separator = current.querySelector('li[role="separator"]');
-      const indexOfSeparator = listItems.indexOf(separator);
+      const nextSiblings = nextSiblingAll(current.querySelector('li[role="separator"]'));
 
-      if (~indexOfSeparator) {
-        const firstUnreadTabbable = [].reduce.call(
-          listItems.slice(indexOfSeparator + 1),
-          (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
-          0
-        );
+      const firstUnreadTabbable = nextSiblings.reduce(
+        (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
+        0
+      );
 
-        firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
-      } else {
-        focus('sendBoxWithoutKeyboard');
-      }
+      firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
   }, [listRef]);
 
@@ -155,51 +158,38 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   );
 
   // Ignore activity types other than "message"
-  const lastMessageActivity = [...activities].reverse().find(({ type }) => type === 'message');
-  const lastShownActivityId = (lastMessageActivity || {}).id;
-  const lastReadActivityIdRef = useRef(lastShownActivityId);
-
-  const { current: lastReadActivityId } = lastReadActivityIdRef;
+  const lastMessageActivityId = ([...activities].reverse().find(({ type }) => type === 'message') || {}).id;
+  const lastReadActivityIdRef = useRef(lastMessageActivityId);
+  const allActivitiesRead = lastMessageActivityId === lastReadActivityIdRef.current;
 
   if (sticky) {
-    // If it is sticky, mark the activity ID as read.
-    lastReadActivityIdRef.current = lastShownActivityId;
+    // If it is sticky, the user is at the bottom of the transcript, everything is read.
+    // So mark the activity ID as read.
+    lastReadActivityIdRef.current = lastMessageActivityId;
   }
 
-  // Don't show the button if:
-  // - The scroll bar is animating
-  //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
-  // - It is already at the bottom (sticky)
-  // - The last activity ID has been read
-  if (animating || sticky || lastShownActivityId === lastReadActivityId) {
-    hideScrollToEndButton = true;
-  }
-
-  useLayoutEffect(() => {
-    const { activeElement } = document;
-    const { current } = listRef;
-
-    // If the current focused element is disabled, when one or more activities are added, changed, or removed,
-    // we should put the focus on the next focusable element after the current disabled element.
-    if (
-      activeElement &&
-      current &&
-      activeElement.getAttribute('aria-disabled') === 'true' &&
-      current.contains(activeElement)
-    ) {
-      const { children } = current;
-      const indexOfListItem = [].findIndex.call(children, listItem => listItem.contains(activeElement));
-      const nextSiblings = [].slice.call(children, indexOfListItem + 1);
-
-      // Find the first tabbable element from descedants of all next siblings.
-      const firstTabbable = nextSiblings.reduce(
-        (result, nextSibling) => result || firstTabbableDescendant(nextSibling),
-        0
-      );
-
-      // firstTabbable && firstTabbable.focus();
+  // Finds where (in index) should we render the "New messages" button. Returns -1 to hide the button.
+  const renderSeparatorAfterIndex = useMemo(() => {
+    // Don't show the button if:
+    // - All activities has been read
+    // - The scroll bar is animating
+    //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
+    // - Developer style to hide the button
+    // - It is already at the bottom (sticky)
+    if (allActivitiesRead || animating || hideScrollToEndButton || sticky) {
+      return -1;
     }
-  }, [activities]);
+
+    const renderSeparatorAfterIndex = activityElementsWithMetadata.findIndex(
+      ({ activity: { id } }) => id === lastReadActivityIdRef.current
+    );
+
+    if (~renderSeparatorAfterIndex) {
+      return renderSeparatorAfterIndex;
+    }
+
+    return activityElementsWithMetadata.length - 1;
+  }, [activityElementsWithMetadata, allActivitiesRead, animating, hideScrollToEndButton, sticky]);
 
   return (
     <React.Fragment>
@@ -218,13 +208,11 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
               {element}
               {shouldSpeak && <SpeakActivity activity={activity} />}
             </li>
-            {!hideScrollToEndButton &&
-              activity.id === lastReadActivityId &&
-              index !== activityElementsWithMetadata.length - 1 && (
-                <li role="separator">
-                  <ScrollToEndButton onClick={handleScrollToEndButtonClick} />
-                </li>
-              )}
+            {index === renderSeparatorAfterIndex && (
+              <li role="separator">
+                <ScrollToEndButton onClick={handleScrollToEndButtonClick} />
+              </li>
+            )}
           </React.Fragment>
         ))}
       </ul>

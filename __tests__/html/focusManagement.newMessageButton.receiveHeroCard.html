@@ -27,7 +27,14 @@
         await pageObjects.sendMessageViaSendBox('herocard');
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
-        await pageObjects.scrollToTop();
+
+        // Focus on the last button of the activity just above the "New messages" button.
+        const lastButtonOnFirstCard = elements.activities()[1].querySelectorAll('button')[3];
+
+        lastButtonOnFirstCard.focus();
+
+        // Scroll to bottom minus 10px.
+        await pageObjects.scrollToTop(-10);
 
         // Waiting for scroll-to-end panel to detect unsticky.
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -38,13 +45,17 @@
 
         await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
+        // Make sure TAB on the last button will jump to the "New messages" button.
+        await host.sendTab();
+
         const newMessageButton = elements.newMessageButton();
 
-        newMessageButton.focus();
+        expect(document.activeElement === newMessageButton).toBe(true);
 
         await host.snapshot();
 
-        newMessageButton.click();
+        // Press ENTER on the "New messages" button.
+        await host.sendKeys('ENTER');
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
@@ -54,6 +65,14 @@
         expect(heroCardElement.contains(document.activeElement)).toBe(true);
 
         await host.snapshot();
+
+        await host.sendShiftTab();
+
+        // Since the "New messages" button is gone, press SHIFT-TAB should go to the last button of first card.
+        expect(document.activeElement === lastButtonOnFirstCard).toBe(true);
+
+        await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);
