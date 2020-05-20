@@ -3,20 +3,7 @@
   <head>
     <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      :focus {
-        background-color: Yellow;
-        outline-color: rgba(0, 0, 0, 0.4);
-        outline-offset: -4px;
-        outline-style: dotted;
-        outline-width: 2px;
-      }
-
-      :disabled:focus,
-      [aria-disabled='true']:focus {
-        outline-color: rgba(0, 0, 0, 0.2);
-      }
-    </style>
+    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="webchat"></div>
@@ -76,15 +63,30 @@
 
         await host.snapshot();
 
+        // After clicking on the hero card button, it should keep the focus on the now disabled button.
         expect(document.activeElement).toBe(firstButton);
 
+        // Press TAB should focus on the first button of the next hero card.
         await host.sendTab();
 
         await host.snapshot();
 
+        // Press SHIFT-TAB cannot put the focus back to the disabled button, instead, it will focus back to the <body>.
         await host.sendShiftTab();
 
+        expect(document.activeElement === document.body).toBe(true);
+
         await host.snapshot();
+
+        await host.sendTab();
+        await host.sendTab();
+        await host.sendKeys('ENTER');
+
+        await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrolling);
+
+        await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);

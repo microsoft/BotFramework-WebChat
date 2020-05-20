@@ -23,15 +23,35 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+        await pageObjects.sendMessageViaSendBox('herocard');
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
-        await pageObjects.clickNthSuggestedAction(1);
-        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageObjects.scrollToTop();
+
+        // Waiting for scroll-to-end panel to detect unsticky.
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        await host.snapshot();
+
+        await pageObjects.sendMessageViaCode('herocard qna 1');
+
         await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
-        // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
+        const newMessageButton = elements.newMessageButton();
+
+        newMessageButton.focus();
+
+        await host.snapshot();
+
+        newMessageButton.click();
+
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        // After clicking on "New messages" button for a hero card with buttons, it should focus back on the hero card.
+        const heroCardElement = elements.activities()[3];
+
+        expect(heroCardElement.contains(document.activeElement)).toBe(true);
 
         await host.snapshot();
         await host.done();

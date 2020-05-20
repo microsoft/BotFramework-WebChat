@@ -59,7 +59,11 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
       try {
         let result;
 
-        if (job.type === 'send tab') {
+        if (job.type === 'send keys') {
+          await job.payload.keys
+            .reduce((actions, key) => actions.sendKeys(Key[key] || key), driver.actions())
+            .perform();
+        } else if (job.type === 'send tab') {
           await driver
             .actions()
             .sendKeys(Key.TAB)

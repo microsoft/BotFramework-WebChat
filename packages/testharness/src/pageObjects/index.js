@@ -5,8 +5,10 @@ import clickToasterHeader from './clickToasterHeader';
 import dismissToast from './dismissToast';
 import getActivities from './getActivities';
 import pingBot from './pingBot';
+import postActivity from './postActivity';
 import runHook from './runHook';
 import scrollToTop from './scrollToTop';
+import sendMessageViaCode from './sendMessageViaCode';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import typeInSendBox from './typeInSendBox';
 import verifyDOMIntegrity from './verifyDOMIntegrity';
@@ -20,8 +22,10 @@ export {
   dismissToast,
   getActivities,
   pingBot,
+  postActivity,
   runHook,
   scrollToTop,
+  sendMessageViaCode,
   sendMessageViaSendBox,
   typeInSendBox,
   verifyDOMIntegrity,

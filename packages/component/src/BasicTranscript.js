@@ -99,13 +99,21 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     // After clicking on the "New messages" button, we should focus on the first unread element.
     // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
     if (current) {
-      const firstUnreadTabbable = [].reduce.call(
-        current.querySelectorAll('li[role="separator"] + li'),
-        (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
-        0
-      );
+      const listItems = [].slice.call(current.querySelectorAll('li'));
+      const separator = current.querySelector('li[role="separator"]');
+      const indexOfSeparator = listItems.indexOf(separator);
 
-      firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
+      if (~indexOfSeparator) {
+        const firstUnreadTabbable = [].reduce.call(
+          listItems.slice(indexOfSeparator + 1),
+          (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
+          0
+        );
+
+        firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
+      } else {
+        focus('sendBoxWithoutKeyboard');
+      }
     }
   }, [listRef]);
 

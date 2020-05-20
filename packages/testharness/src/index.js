@@ -77,6 +77,21 @@ if (!webDriverMode) {
           log(`WebChatTest: Saving "${job.payload.filename}" to "${result}".`);
           break;
 
+        case 'send keys':
+          log(`WebChatTest: Please press this key sequence: ${job.payload.keys.join(', ')}.`);
+          await sleep(1000);
+          break;
+
+        case 'send shift tab':
+          log(`WebChatTest: Please press SHIFT-TAB key.`);
+          await sleep(1000);
+          break;
+
+        case 'send tab':
+          log(`WebChatTest: Please press TAB key.`);
+          await sleep(1000);
+          break;
+
         default:
           log(`WebChatTest: Auto-resolving job "${type}".`);
           break;

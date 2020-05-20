@@ -23,14 +23,32 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
-        await pageObjects.clickNthSuggestedAction(1);
-        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
-        // After clicking on any suggested actions, it should focus back on the type focus sink.
+        await pageObjects.sendMessageViaSendBox('herocard');
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageObjects.scrollToTop();
+
+        // Waiting for scroll-to-end panel to detect unsticky.
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        await host.snapshot();
+
+        await pageObjects.sendMessageViaCode('echo Hello, World!');
+
+        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
+
+        const newMessageButton = elements.newMessageButton();
+
+        newMessageButton.focus();
+
+        await host.snapshot();
+
+        newMessageButton.click();
+
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        // After clicking on "New messages" button for a text message, it should focus back on the send box text box.
         expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
 
         await host.snapshot();

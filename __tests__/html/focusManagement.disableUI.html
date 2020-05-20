@@ -8,32 +8,40 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+      const {
+        WebChat: {
+          Components: { HeroCardContent }
+        },
+        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
+      } = window;
 
       (async function() {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
+        const baseProps = { directLine, store };
+        const webChatElement = document.getElementById('webchat');
 
-        window.WebChat.renderWebChat(
-          {
-            directLine,
-            store
-          },
-          document.getElementById('webchat')
-        );
+        window.WebChat.renderWebChat(baseProps, webChatElement);
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+        await pageObjects.sendMessageViaSendBox('herocard qna 1', { waitForSend: true });
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
-        await pageObjects.clickNthSuggestedAction(1);
-        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
+        elements.sendBoxTextBox().focus();
 
         await host.snapshot();
+
+        window.WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
+
+        await host.snapshot();
+
+        await host.sendShiftTab();
+
+        expect(document.activeElement === document.body).toBe(true);
+
+        await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);
