@@ -52,7 +52,7 @@
           if (!dlRes.ok) {
             throw new Error('Failed to fetch token for DirectLine.');
           }
-          const { directLinetoken } = await dlRes.json();
+          const { token: directLineToken } = await dlRes.json();
 
           return { authorizationToken, region, directLineToken };
         };
