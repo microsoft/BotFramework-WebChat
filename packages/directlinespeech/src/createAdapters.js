@@ -167,7 +167,7 @@ export default async function create({
   }
 
   // Renew token per interval.
-  if (directLineToken) {
+  if (useHttpPath) {
     const interval = setInterval(async () => {
       // #2660 If the connector has been disposed, we should stop renewing the token.
 
