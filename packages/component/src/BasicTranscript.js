@@ -157,15 +157,16 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     [activities, memoizeRenderActivityElement]
   );
 
-  // Ignore activity types other than "message"
-  const lastMessageActivityId = ([...activities].reverse().find(({ type }) => type === 'message') || {}).id;
-  const lastReadActivityIdRef = useRef(lastMessageActivityId);
-  const allActivitiesRead = lastMessageActivityId === lastReadActivityIdRef.current;
+  // Activity of the last visible activity in the list.
+  const { activity: { id: lastVisibleActivityId } = {} } =
+    activityElementsWithMetadata[activityElementsWithMetadata.length - 1] || {};
+  const lastReadActivityIdRef = useRef(lastVisibleActivityId);
+  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   if (sticky) {
     // If it is sticky, the user is at the bottom of the transcript, everything is read.
     // So mark the activity ID as read.
-    lastReadActivityIdRef.current = lastMessageActivityId;
+    lastReadActivityIdRef.current = lastVisibleActivityId;
   }
 
   // Finds where we should render the "New messages" button, in index. Returns -1 to hide the button.
@@ -180,15 +181,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
       return -1;
     }
 
-    const renderSeparatorAfterIndex = activityElementsWithMetadata.findIndex(
-      ({ activity: { id } }) => id === lastReadActivityIdRef.current
-    );
-
-    if (~renderSeparatorAfterIndex) {
-      return renderSeparatorAfterIndex;
-    }
-
-    return activityElementsWithMetadata.length - 1;
+    return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
   }, [activityElementsWithMetadata, allActivitiesRead, animating, hideScrollToEndButton, sticky]);
 
   return (
@@ -208,6 +201,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
               {element}
               {shouldSpeak && <SpeakActivity activity={activity} />}
             </li>
+            {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
             {index === renderSeparatorAfterIndex && (
               <li role="separator">
                 <ScrollToEndButton onClick={handleScrollToEndButtonClick} />
