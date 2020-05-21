@@ -114,6 +114,7 @@ const UploadButton = () => {
   return (
     <div className={classNames(ROOT_CSS + '', uploadButtonStyleSet + '')}>
       <input
+        aria-disabled={disabled}
         aria-hidden="true"
         multiple={true}
         onChange={disabled ? undefined : handleFileChange}

@@ -16,6 +16,7 @@ const DEFAULT_OPTIONS = {
   paddingRegular: PADDING_REGULAR,
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
+  zIndex: 0, // Forming a new stacking context so "z-index" used in children won't pollute
 
   // Word break
   messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'
