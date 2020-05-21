@@ -3,6 +3,6 @@
  */
 
 describe('focus management', () => {
-  test('focus should not move after Adaptive Card is disable after obsolete', () =>
-    runHTMLTest('focusManagement.disableAdaptiveCard.obsolete.html'));
+  test('focus should not move after hero card is disable after obsolete', () =>
+    runHTMLTest('focusManagement.disableHeroCard.obsolete.html'));
 });
