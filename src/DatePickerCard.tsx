@@ -64,7 +64,10 @@ const getExcludedTimes = (availabilities: any, interval: number, date: moment.Mo
             const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
             const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
             const isFuture = dateCopy.isAfter(moment().utc().add(appointmentBuffer, 'minutes'));
-            return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[)');
+            const startTimeCheck = startTimeMoment.isBetween(beforeTime, afterTime, undefined, '[]');
+            const endTimeMoment = startTimeMoment.clone().add(interval, 'minutes');
+            const endTimeCheck = endTimeMoment.isBetween(beforeTime, afterTime, undefined, '[]');
+            return isFuture && startTimeCheck && endTimeCheck;
         });
         if (!excludeTime) {
             excludedTimes.push(startTimeMoment.format('hh:mm A'));
@@ -284,11 +287,11 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     onMonthChange={e => this.handleMonthChange(e)}
                     inline={true}
                     minDate={isHandoff && moment()}
-                    excludeTimes={this.state.excludedTimes}
+                    excludeTimes={this.state.loading ? [moment().startOf('day')] : this.state.excludedTimes}
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}
-                    timeIntervals={this.state.duration}
+                    timeIntervals={this.state.loading ? 24 * 60 * 60 : this.state.duration}
                 />
                 <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
                     None of these appointments work for me
