@@ -10,8 +10,8 @@ const IconButton = ({ alt, children, className, disabled, onClick }) => {
 
   return (
     <AccessibleButton
-      disabled={disabled}
       className={classNames(sendBoxButtonStyleSet + '', 'webchat__icon-button', className + '')}
+      disabled={disabled}
       onClick={disabled ? undefined : onClick}
       title={alt}
       type="button"

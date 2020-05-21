@@ -1,8 +1,10 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
+
 import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
@@ -118,7 +120,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
 
       firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
-  }, [listRef]);
+  }, [focus, listRef]);
 
   const memoizeRenderActivityElement = useMemoize(renderActivityElement);
 

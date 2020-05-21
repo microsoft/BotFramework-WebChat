@@ -14,16 +14,16 @@ export default function useDisableOnBlurEffect(targetRef, disabled) {
           current.setAttribute('disabled', 'disabled');
 
           return () => current.removeAttribute('disabled');
-        } else {
-          const handler = () => current.setAttribute('disabled', 'disabled');
-
-          current.addEventListener('blur', handler);
-
-          return () => {
-            current.removeAttribute('disabled');
-            current.removeEventListener('blur', handler);
-          };
         }
+
+        const handler = () => current.setAttribute('disabled', 'disabled');
+
+        current.addEventListener('blur', handler);
+
+        return () => {
+          current.removeAttribute('disabled');
+          current.removeEventListener('blur', handler);
+        };
       }
     }
   }, [disabled, targetRef]);

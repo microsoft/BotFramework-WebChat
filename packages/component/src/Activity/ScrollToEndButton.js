@@ -1,9 +1,8 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 
 import useDirection from '../hooks/useDirection';
-import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
@@ -11,8 +10,6 @@ import useStyleSet from '../hooks/useStyleSet';
 const ScrollToEndButton = ({ className, onClick }) => {
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const buttonRef = useRef();
-  const focus = useFocus();
   const localize = useLocalizer();
   const scrollToEnd = useScrollToEnd();
 
@@ -22,7 +19,7 @@ const ScrollToEndButton = ({ className, onClick }) => {
 
       scrollToEnd();
     },
-    [buttonRef, focus, scrollToEnd]
+    [onClick, scrollToEnd]
   );
 
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
@@ -36,7 +33,6 @@ const ScrollToEndButton = ({ className, onClick }) => {
         direction === 'rtl' ? 'webchat__overlay--rtl' : ''
       )}
       onClick={handleClick}
-      ref={buttonRef}
       type="button"
     >
       {newMessageText}

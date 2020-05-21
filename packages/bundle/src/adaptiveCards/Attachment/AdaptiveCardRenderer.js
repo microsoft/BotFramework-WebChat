@@ -64,6 +64,7 @@ const disabledHandler = event => {
 };
 
 function addEventListenerOnceWithUndo(element, name, handler) {
+  /* eslint-disable-next-line prefer-const */
   let detach;
   const detachingHandler = event => {
     try {
@@ -75,6 +76,7 @@ function addEventListenerOnceWithUndo(element, name, handler) {
   };
 
   detach = () => element.removeEventListener(name, detachingHandler);
+
   element.addEventListener(name, detachingHandler, { once: true });
 
   return detach;
@@ -83,8 +85,9 @@ function addEventListenerOnceWithUndo(element, name, handler) {
 function disableElementWithUndo(element) {
   const undoStack = [];
   const isActive = element === document.activeElement;
-  let tag = element.nodeName.toLowerCase();
+  const tag = element.nodeName.toLowerCase();
 
+  /* eslint-disable-next-line default-case */
   switch (tag) {
     // Should we not disable <a>? Will some of the <a> are styled as button?
     case 'a':

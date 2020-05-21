@@ -24,7 +24,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleButton = forwardRef(({ disabled, onClick, ...props }, forwardedRef) => {
+const AccessibleButton = ({ disabled, onClick, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
@@ -37,9 +37,10 @@ const AccessibleButton = forwardRef(({ disabled, onClick, ...props }, forwardedR
       onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
       ref={ref}
       {...props}
+      type="button"
     />
   );
-});
+};
 
 AccessibleButton.defaultProps = {
   disabled: undefined,
@@ -48,7 +49,8 @@ AccessibleButton.defaultProps = {
 
 AccessibleButton.propTypes = {
   disabled: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  type: PropTypes.oneOf(['button']).isRequired
 };
 
-export default AccessibleButton;
+export default forwardRef(AccessibleButton);

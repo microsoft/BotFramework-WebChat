@@ -22,7 +22,7 @@ import useDisableOnBlurEffect from '../hooks/internal/useDisableOnBlurEffect';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleInputText = forwardRef(({ disabled, onChange, ...props }, forwardedRef) => {
+const AccessibleInputText = ({ disabled, onChange, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
@@ -39,7 +39,7 @@ const AccessibleInputText = forwardRef(({ disabled, onChange, ...props }, forwar
       type="text"
     />
   );
-});
+};
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
@@ -52,4 +52,4 @@ AccessibleInputText.propTypes = {
   type: PropTypes.oneOf(['text']).isRequired
 };
 
-export default AccessibleInputText;
+export default forwardRef(AccessibleInputText);

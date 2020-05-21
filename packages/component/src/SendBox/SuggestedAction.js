@@ -67,8 +67,8 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
       className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
     >
       <AccessibleButton
-        disabled={disabled}
         className="webchat__suggested-action__button"
+        disabled={disabled}
         onClick={handleClick}
         type="button"
       >

@@ -14,7 +14,7 @@ const ErrorBox = ({ children, error, message }) => {
   const trackException = useTrackException();
 
   useEffect(() => {
-    const errorObject = error || (error = new Error(message));
+    const errorObject = error || new Error(message);
 
     trackException(errorObject, false);
 
