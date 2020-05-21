@@ -16,18 +16,6 @@ import uiConnected from './setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
-test('should not focus send box after clicking on send button', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.typeInSendBox('echo 123');
-  await pageObjects.clickSendButton();
-
-  await driver.wait(negationOf(sendBoxTextBoxFocused()), timeouts.ui);
-});
-
-// Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
 test('should focus send box after clicking on suggested actions', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 

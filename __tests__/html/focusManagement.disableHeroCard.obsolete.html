@@ -50,7 +50,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        const firstButton = document.querySelector('.ac-adaptiveCard button');
+        const [firstButton, secondButton] = document.querySelectorAll('.ac-adaptiveCard button');
 
         firstButton.focus();
 
@@ -60,6 +60,8 @@
 
         await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrolling);
+
+        expect(secondButton.hasAttribute('disabled')).toBe(true);
 
         await host.snapshot();
 

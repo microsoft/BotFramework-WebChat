@@ -168,7 +168,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     lastReadActivityIdRef.current = lastMessageActivityId;
   }
 
-  // Finds where (in index) should we render the "New messages" button. Returns -1 to hide the button.
+  // Finds where we should render the "New messages" button, in index. Returns -1 to hide the button.
   const renderSeparatorAfterIndex = useMemo(() => {
     // Don't show the button if:
     // - All activities has been read
