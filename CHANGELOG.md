@@ -63,7 +63,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  After stripping Markdown syntax for accessibility labels, cache the result to improve rendering performance.
    -  Skip stripping Markdown for non-Markdown text content.
 -  Fixes [#3155](https://github.com/microsoft/BotFramework-WebChat/issues/3155). Patch incoming activities with null fields, by [@compulim](https://github.com/compulim) in PR [#3154](https://github.com/microsoft/BotFramework-WebChat/pull/3154)
--  Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669). The "New messages" button will be accessible through <kbd>TAB</kbd> key, inbetween the last read and first unread activity, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/issues/3150).
+-  Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669) and [[#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136). The "New messages" button will be accessible through <kbd>TAB</kbd> key, inbetween the last read and first unread activity, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/issues/3150).
+   -  After the "New message" button is clicked, focus will be moved to the first interactive UI of unread activity or the send box.
+-  Fixes [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135). If the current widget is disabled, the focus will be stayed until the next <kbd>TAB</kbd> key, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
 
 ### Changed
 
