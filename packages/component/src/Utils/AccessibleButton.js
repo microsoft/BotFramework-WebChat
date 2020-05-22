@@ -47,7 +47,7 @@ AccessibleButton.defaultProps = {
   onClick: undefined
 };
 
-AccessibleButton.displayText = 'AccessibleButton';
+AccessibleButton.displayName = 'AccessibleButton';
 
 AccessibleButton.propTypes = {
   disabled: PropTypes.bool,
