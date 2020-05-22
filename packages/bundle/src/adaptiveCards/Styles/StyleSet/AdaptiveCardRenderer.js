@@ -19,13 +19,6 @@ export default function({ accent, paddingRegular, primaryFont }) {
         padding: paddingRegular
       },
 
-      '& .ac-pushButton, & input, & select, & textarea': {
-        '&[aria-disabled="true"]': {
-          backgroundColor: '#F7F7F7',
-          color: '#717171'
-        }
-      },
-
       '& .ac-pushButton.style-destructive': {
         backgroundColor: '#E50000',
         color: 'white'
@@ -42,6 +35,27 @@ export default function({ accent, paddingRegular, primaryFont }) {
 
       '& .ac-pushButton.style-positive:hover, & .ac-pushButton.style-positive:active': {
         backgroundColor: '#006ABC'
+      },
+
+      // The following styles are copied from :disabled via Chromium.
+
+      '& .ac-pushButton, & input, & select, & textarea': {
+        '&[aria-disabled="true"]': {
+          backgroundColor: '#EBEBE4',
+          borderColor: '#A9A9A9',
+          borderStyle: 'solid',
+          borderWidth: 1,
+          color: '#545454'
+        }
+      },
+
+      '& .ac-pushButton[aria-disabled="true"]': {
+        backgroundColor: '#F0F0F0',
+        color: '#6D6D6D'
+      },
+
+      '& input[aria-disabled="true"]': {
+        padding: '2px 1px'
       }
     }
   };

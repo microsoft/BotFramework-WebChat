@@ -1,4 +1,15 @@
 {
+  "headers": [
+    {
+      "source": "*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache no-store no-transform"
+        }
+      ]
+    }
+  ],
   "public": "../..",
   "rewrites": [
     {
@@ -20,6 +31,10 @@
     {
       "source": "/:page",
       "destination": "__tests__/html/:page.html"
+    },
+    {
+      "source": "/",
+      "destination": "__tests__/html"
     }
   ]
 }

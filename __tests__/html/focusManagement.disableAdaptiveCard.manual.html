@@ -52,8 +52,11 @@
         await new Promise(setTimeout);
 
         // After disabling the Adaptive Card, the focus should still be on the input, but read only.
-        expect(firstInput.hasAttribute('readonly')).toBe(true);
-        expect(document.activeElement === firstInput).toBe(true);
+        const isFirstInputReadOnly = firstInput.hasAttribute('readonly');
+        const isFocusingFirstInput = document.activeElement === firstInput;
+
+        expect(isFirstInputReadOnly).toBe(true);
+        expect(isFocusingFirstInput).toBe(true);
 
         await host.snapshot();
 
@@ -61,7 +64,9 @@
 
         await host.snapshot();
 
-        expect(document.activeElement === document.body).toBe(true);
+        const isFocusingBody = document.activeElement === document.body;
+
+        expect(isFocusingBody).toBe(true);
 
         await host.done();
       })().catch(async err => {

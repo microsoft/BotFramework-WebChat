@@ -8,6 +8,7 @@ import pingBot from './pingBot';
 import postActivity from './postActivity';
 import runHook from './runHook';
 import scrollToTop from './scrollToTop';
+import sendMessageViaCode from './sendMessageViaCode';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import typeInSendBox from './typeInSendBox';
 import verifyDOMIntegrity from './verifyDOMIntegrity';
@@ -24,6 +25,7 @@ export {
   postActivity,
   runHook,
   scrollToTop,
+  sendMessageViaCode,
   sendMessageViaSendBox,
   typeInSendBox,
   verifyDOMIntegrity,

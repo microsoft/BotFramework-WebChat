@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  After stripping Markdown syntax for accessibility labels, cache the result to improve rendering performance.
    -  Skip stripping Markdown for non-Markdown text content.
 -  Fixes [#3155](https://github.com/microsoft/BotFramework-WebChat/issues/3155). Patch incoming activities with null fields, by [@compulim](https://github.com/compulim) in PR [#3154](https://github.com/microsoft/BotFramework-WebChat/pull/3154)
--  Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669). The "New messages" button will be accessible through <kbd>TAB</kbd> key, inbetween the last read and last unread activities, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/issues/3150).
+-  Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669). The "New messages" button will be accessible through <kbd>TAB</kbd> key, inbetween the last read and first unread activity, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/issues/3150).
 
 ### Changed
 
