@@ -28,7 +28,7 @@ export default async function create({
   textNormalization,
   userID,
   username,
-  useHttpPath = false
+  enableInternalHttpSupport = false
 }) {
   if (!fetchCredentials) {
     throw new Error('"fetchCredentials" must be specified.');
@@ -41,10 +41,10 @@ export default async function create({
     (authorizationToken && subscriptionKey) ||
     (authorizationToken && typeof authorizationToken !== 'string') ||
     (subscriptionKey && typeof subscriptionKey !== 'string') ||
-    (useHttpPath && !directLineToken)
+    (enableInternalHttpSupport && !directLineToken)
   ) {
     throw new Error(
-      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If useHttpPath = true, then it should also return a directLineToken'
+      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If enableInternalHttpSupport = true, then it should also return a directLineToken'
     );
   }
 
@@ -110,16 +110,16 @@ export default async function create({
   }
 
   // switch to direct line endpoint on DLS service.
-  if (useHttpPath) {
-     const endpoint = config.getProperty("SPEECH-Endpoint").replace("api/v3", "directline/api/v1")
-     config.setProperty("SPEECH-Endpoint", endpoint)
-     config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken)
+  if (enableInternalHttpSupport) {
+    let endpoint = "wss://" + region + ".convai.speech.microsoft.com/directline/api/v1";
+    config.setProperty(PropertyId.SpeechServiceConnection_Endpoint, endpoint);
+    config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
   }
   // Supported options can be found in DialogConnectorFactory.js.
 
   // Set the language used for recognition.
   config.setProperty(PropertyId.SpeechServiceConnection_RecoLanguage, speechRecognitionLanguage);
-
+  
   // The following code sets the output format.
   // As advised by the Speech team, this API may be subject to future changes.
   // We are not enabling output format option because it does not send detailed output format to the bot, rendering this option useless.
@@ -167,7 +167,7 @@ export default async function create({
   }
 
   // Renew token per interval.
-  if (useHttpPath) {
+  if (enableInternalHttpSupport) {
     const interval = setInterval(async () => {
       // #2660 If the connector has been disposed, we should stop renewing the token.
 
