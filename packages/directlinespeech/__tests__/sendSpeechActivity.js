@@ -15,7 +15,7 @@ import waitForConnected from './utilities/waitForConnected';
 jest.setTimeout(timeouts.test);
 
 beforeEach(() => {
-  global.AudioContext = MockAudioContext;``
+  global.AudioContext = MockAudioContext;
 });
 
 test.each([true, false])('should echo back when saying "hello" and "world"', async (enableInternalHttpSupport) => {
