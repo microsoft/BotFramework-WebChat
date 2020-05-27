@@ -127,31 +127,12 @@
     },
     "4.8": {
       "redirects": [
-        ["*", "4.8.1"]
+        ["*", "4.8.0"]
       ]
     },
     "4.8.0": {
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.8.0/webchat-es5.js", "sha384-kBFopxfE3U3wq2fCUCdxNFihClv3I5jnxsQqqeShIPDs7wpWg9K8NSKUINSzPuJs"]
-      ],
-      "private": true,
-      "versionFamily": "4"
-    },
-    "4.8.1": {
-      "assets": [
-        ["https://cdn.botframework.com/botframework-webchat/4.8.1/webchat-es5.js", "sha384-8wbIBXOC04g3ze/UjsvmVyPV2JWVW6zErr0Vhn/aLSIZ24vFo1jiqkDns/53ye8h"]
-      ],
-      "private": true,
-      "versionFamily": "4"
-    },
-    "4.9": {
-      "redirects": [
-        ["*", "4.9.0"]
-      ]
-    },
-    "4.9.0": {
-      "assets": [
-        ["https://cdn.botframework.com/botframework-webchat/4.9.0/webchat-es5.js", "sha384-f6BvsOUIP9DrTw62SdcJwOm2oa+4Eu21Dzdlh2bfOA2axKA9dL812USg0fMy3CP4"]
       ],
       "private": true,
       "versionFamily": "4"
