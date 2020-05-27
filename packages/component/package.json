@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-env": "^7.10.0",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
     "@types/node": "^12.12.18",
@@ -56,7 +56,7 @@
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.2.6",
     "event-target-shim": "5.0.1",
-    "event-target-shim-es5": "1.0.1",
+    "event-target-shim-es5": "1.1.0",
     "glamor": "2.20.40",
     "globalize": "1.4.2",
     "markdown-it": "10.0.0",
