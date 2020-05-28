@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 30] */
 
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
 
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
@@ -12,6 +13,7 @@ const TOKEN_RENEWAL_INTERVAL = 120000;
 export default async function create({
   audioConfig,
   audioContext,
+  audioInputDeviceId,
   enableTelemetry,
   fetchCredentials,
   speechRecognitionEndpointId,
@@ -52,21 +54,33 @@ export default async function create({
     throw new Error('"fetchCredentials" must return "region" as a non-empty string.');
   }
 
+  if (audioConfig && audioInputDeviceId) {
+    console.warn(
+      'botframework-directlinespeech-sdk: Only "audioConfig" or "audioInputDeviceId" can be specified, but not both; ignoring "audioInputDeviceId".'
+    );
+  } else if (!audioConfig) {
+    if (audioInputDeviceId) {
+      audioConfig = AudioConfig.fromMicrophoneInput(audioInputDeviceId);
+    } else {
+      audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    }
+  }
+
   if (speechRecognitionEndpointId) {
     console.warn(
-      'botframework-directlinespeech: Custom Speech is currently not supported; ignoring speechRecognitionEndpointId.'
+      'botframework-directlinespeech: Custom Speech is currently not supported; ignoring "speechRecognitionEndpointId".'
     );
   }
 
   if (speechSynthesisDeploymentId) {
     console.warn(
-      'botframework-directlinespeech: Custom Voice is currently not supported; ignoring speechSynthesisDeploymentId.'
+      'botframework-directlinespeech: Custom Voice is currently not supported; ignoring "speechSynthesisDeploymentId".'
     );
   }
 
   if (speechSynthesisOutputFormat) {
     console.warn(
-      'botframework-directlinespeech: Synthesis output format is currently not supported; ignoring speechSynthesisOutputFormat.'
+      'botframework-directlinespeech: Synthesis output format is currently not supported; ignoring "speechSynthesisOutputFormat".'
     );
   }
 
@@ -144,7 +158,6 @@ export default async function create({
   const directLine = new DirectLineSpeech({ dialogServiceConnector });
 
   const webSpeechPonyfillFactory = createWebSpeechPonyfillFactory({
-    audioConfig,
     audioContext,
     enableTelemetry,
     recognizer: dialogServiceConnector,

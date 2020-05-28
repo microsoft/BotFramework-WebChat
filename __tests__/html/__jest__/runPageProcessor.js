@@ -1,5 +1,8 @@
 import { join } from 'path';
+import { promisify } from 'util';
+import { tmpdir } from 'os';
 import createDeferred from 'p-defer';
+import fs from 'fs';
 
 import { imageSnapshotOptions } from '../../constants.json';
 import createJobObservable from './createJobObservable';
@@ -8,6 +11,8 @@ const customImageSnapshotOptions = {
   ...imageSnapshotOptions,
   customSnapshotsDir: join(__dirname, '../../__image_snapshots__/html')
 };
+
+const writeFile = promisify(fs.writeFile);
 
 export default async function runPageProcessor(driver, { ignoreConsoleError = false, ignorePageError = false } = {}) {
   const webChatLoaded = await driver.executeScript(() => !!window.WebChat);
@@ -51,18 +56,25 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
     },
     next: async ({ deferred, job }) => {
       try {
+        let result;
+
         if (job.type === 'snapshot') {
-          try {
-            expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
-            deferred.resolve();
-          } catch (err) {
-            pageResultDeferred.reject(err);
-            deferred.reject(err);
-          }
+          expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
+        } else if (job.type === 'save file') {
+          const filename = join(tmpdir(), `${Date.now()}-${job.payload.filename}`);
+
+          await writeFile(filename, Buffer.from(job.payload.base64, 'base64'));
+
+          console.log(`Saved to ${filename}`);
+
+          result = filename;
         } else {
           throw new Error(`Unknown job type "${job.type}".`);
         }
+
+        deferred.resolve(result);
       } catch (err) {
+        pageResultDeferred.reject(err);
         deferred.reject(err);
       }
     }

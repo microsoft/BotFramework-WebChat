@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/react-dom@16.8.6/umd/react-dom-test-utils.development.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script
+      type="text/babel"
+      data-plugins="@babel/plugin-proposal-async-generator-functions"
+      data-presets="env,stage-3"
+    >
+      const {
+        concatArrayBuffer,
+        conditions,
+        createQueuedArrayBufferAudioSource,
+        createStore,
+        EventIterator,
+        expect,
+        fetchSpeechData,
+        float32ArraysToPcmWaveArrayBuffer,
+        host,
+        iterateAsyncIterable,
+        MockAudioContext,
+        pcmWaveArrayBufferToRiffWaveArrayBuffer,
+        recognizeRiffWaveArrayBuffer,
+        pageObjects,
+        shareObservable,
+        timeouts,
+        token
+      } = window.WebChatTest;
+
+      (async function() {
+        const queryParams = window.WebChatTest.parseURLParams(location.hash);
+        const {
+          sa: speechAuthorizationToken,
+          sr: speechRegion,
+          ss: speechSubscriptionKey,
+          t: channelType
+        } = queryParams;
+
+        if (!channelType) {
+          throw new Error('Channel type must be passed via hash, #t=dl or #t=dlspeech');
+        } else if (!speechRegion || !(speechAuthorizationToken || speechSubscriptionKey)) {
+          throw new Error(
+            'Speech region and authorization token or subscription key must be passed via hash, #sr=westus2&sa=a1b2c3d or #sr=westus2&ss=a1b2c3d.'
+          );
+        }
+
+        const speechCredentials = {
+          authorizationToken: speechAuthorizationToken,
+          region: speechRegion,
+          subscriptionKey: speechSubscriptionKey
+        };
+
+        let audioContext;
+
+        // EventIterator will only start listening when passed to for-await-of. This is correct behavior and follow the standard async iterator protocol.
+        // Since we construct the MockAudioContext in the iterable, we need to start the iteration sooner.
+        // The iterateAsyncIterable() will iterate the async iterable immediately and return a new iterable.
+        const bufferSourceAsyncIterable = iterateAsyncIterable(
+          new EventIterator((push, stop) => {
+            let allBuffers = [];
+            let timer;
+
+            audioContext = new MockAudioContext({
+              bufferSourceStartHandler: async ({ target: { buffer } }) => {
+                allBuffers.push(float32ArraysToPcmWaveArrayBuffer([new Float32Array(buffer.getChannelData(0))]));
+
+                timer && clearTimeout(timer);
+
+                timer = setTimeout(async () => {
+                  const pcmWaveArrayBuffer = concatArrayBuffer(...allBuffers);
+
+                  allBuffers = [];
+
+                  if (pcmWaveArrayBuffer.byteLength) {
+                    const riffWaveArrayBuffer = pcmWaveArrayBufferToRiffWaveArrayBuffer(pcmWaveArrayBuffer, {
+                      channels: buffer.numberOfChannels,
+                      samplesPerSec: buffer.sampleRate
+                    });
+
+                    const filename = await host.saveFile(Date.now() + '-recognizing.wav', riffWaveArrayBuffer);
+
+                    push({
+                      filename,
+                      text: await recognizeRiffWaveArrayBuffer({
+                        arrayBuffer: riffWaveArrayBuffer,
+                        credentials: speechCredentials
+                      })
+                    });
+
+                    stop();
+                  }
+                }, 2000);
+              }
+            });
+          })
+        );
+
+        const audioConfig = createQueuedArrayBufferAudioSource();
+
+        let adapters;
+
+        if (channelType === 'dlspeech') {
+          adapters = await window.WebChat.createDirectLineSpeechAdapters({
+            audioConfig,
+            audioContext,
+            fetchCredentials: () => speechCredentials
+          });
+        } else {
+          adapters = {
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+              audioConfig,
+              audioContext,
+              credentials: speechCredentials,
+              speechSynthesisOutputFormat: 'raw-16khz-16bit-mono-pcm'
+            })
+          };
+        }
+
+        window.WebChat.renderWebChat(
+          {
+            ...adapters,
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        audioConfig.push(
+          await fetchSpeechData({
+            fetchCredentials: () => speechCredentials,
+            text: 'Hello World.'
+          })
+        );
+
+        await pageObjects.clickMicrophoneButton();
+        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        const recognized = [];
+
+        for await (const result of bufferSourceAsyncIterable) {
+          recognized.push(result);
+        }
+
+        try {
+          expect(recognized.map(({ text }) => text)).toEqual([
+            "Unknown command I don't know. Hello world you can say help to learn more."
+          ]);
+        } catch (err) {
+          const files = recognized.map(({ filename }) => `See diff for details: ${filename}`).join('\n');
+          const detailedError = new Error(err.message + '\n\n' + files);
+
+          detailedError.stack = files + '\n\n' + err.stack;
+
+          throw detailedError;
+        }
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

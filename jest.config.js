@@ -65,6 +65,8 @@ module.exports = {
     }]
   ],
   setupFilesAfterEnv: [
+    '<rootDir>/__tests__/setup/setupDotEnv.js',
+    '<rootDir>/__tests__/setup/setupGlobalAgent.js',
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTimeout.js',

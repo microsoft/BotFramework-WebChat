@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
-import useFocusSendBox from '../hooks/useFocusSendBox';
+import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
@@ -61,19 +61,35 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-function useTextBoxSubmit(setFocus) {
+function useTextBoxSubmit() {
   const [sendBoxValue] = useSendBoxValue();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const scrollToEnd = useScrollToEnd();
   const submitSendBox = useSubmitSendBox();
 
-  return useCallback(() => {
-    if (sendBoxValue) {
-      scrollToEnd();
-      submitSendBox();
-      setFocus && focusSendBox();
-    }
-  }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
+  return useCallback(
+    setFocus => {
+      if (sendBoxValue) {
+        scrollToEnd();
+        submitSendBox();
+
+        if (setFocus) {
+          if (setFocus === true) {
+            console.warn(
+              `"botframework-webchat: Passing "true" to "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please pass "sendBox" instead."`
+            );
+
+            focus('sendBox');
+          } else {
+            focus(setFocus);
+          }
+        }
+      }
+
+      return !!sendBoxValue;
+    },
+    [focus, scrollToEnd, sendBoxValue, submitSendBox]
+  );
 }
 
 function useTextBoxValue() {
@@ -135,6 +151,8 @@ const TextBox = ({ className }) => {
       onSubmit={handleSubmit}
     >
       {
+        // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
+        // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
         <TypeFocusSinkContext.Consumer>
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (

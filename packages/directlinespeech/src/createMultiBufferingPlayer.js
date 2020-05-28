@@ -11,21 +11,21 @@ function zeroBuffer(buffer) {
   }
 }
 
-function copyBuffer(buffer, multiChannelArrayBuffer) {
+function copyBuffer(buffer, multiChannelArray) {
   const channels = buffer.numberOfChannels;
 
   for (let channel = 0; channel < channels; channel++) {
-    const arrayBuffer = multiChannelArrayBuffer[channel];
+    const float32Array = multiChannelArray[channel];
 
     // Note that Safari does not support AudioBuffer.copyToChannel yet.
     if (buffer.copyToChannel) {
-      buffer.copyToChannel(arrayBuffer, channel);
+      buffer.copyToChannel(float32Array, channel);
     } else {
-      const { length: arrayBufferLength } = arrayBuffer;
+      const { length: float32ArrayLength } = float32Array;
       const perChannelBuffer = buffer.getChannelData(channel);
 
-      for (let offset = 0; offset < arrayBufferLength; offset++) {
-        perChannelBuffer[offset] = arrayBuffer[offset];
+      for (let offset = 0; offset < float32ArrayLength; offset++) {
+        perChannelBuffer[offset] = float32Array[offset];
       }
     }
   }
@@ -51,25 +51,25 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
     }
 
     const bufferSource = audioContext.createBufferSource();
-    const multiChannelArrayBuffer = queue.shift();
+    const multiChannelArray = queue.shift();
 
-    if (typeof multiChannelArrayBuffer === 'function') {
+    if (typeof multiChannelArray === 'function') {
       // If the queued item is a function, it is because the user called "flush".
       // The "flush" function will callback when all queued buffers before the "flush" call have played.
-      multiChannelArrayBuffer();
-    } else if (multiChannelArrayBuffer) {
+      multiChannelArray();
+    } else if (multiChannelArray) {
       const nextBuffer = freeBuffers.shift();
 
       // If all buffers are currently occupied, prepend the data back to the queue.
       // When one of the buffers finish, it will call playNext() again to pick up items from the queue.
       if (!nextBuffer) {
-        queue.unshift(multiChannelArrayBuffer);
+        queue.unshift(multiChannelArray);
 
         return;
       }
 
       zeroBuffer(nextBuffer);
-      copyBuffer(nextBuffer, multiChannelArrayBuffer);
+      copyBuffer(nextBuffer, multiChannelArray);
 
       bufferSource.buffer = nextBuffer;
       bufferSource.connect(audioContext.destination);
@@ -99,8 +99,12 @@ export default function createMultiBufferingPlayer(audioContext, { channels, sam
       queuedBufferSources.forEach(bufferSource => bufferSource.stop());
     },
     flush: () => new Promise(resolve => queue.push(resolve)),
-    push: multiChannelArrayBuffer => {
-      queue.push(multiChannelArrayBuffer);
+    push: multiChannelArray => {
+      if (!multiChannelArray) {
+        throw new Error('multiChannelArray must not be falsy.');
+      }
+
+      queue.push(multiChannelArray);
 
       playNext();
     }

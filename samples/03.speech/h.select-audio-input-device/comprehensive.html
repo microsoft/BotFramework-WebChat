@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cognitive Services Speech Services with selectable audio input device</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <link href="comprehensive.css" rel="stylesheet" text="text/css" />
+  </head>
+  <body>
+    <div id="app" role="main"></div>
+    <script data-presets="es2015,react,stage-3" src="comprehensive.js" type="text/babel"></script>
+  </body>
+</html>

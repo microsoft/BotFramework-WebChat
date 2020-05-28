@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cognitive Services Speech Services with selectable audio input device</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      // Create a function to fetch the Cognitive Services Speech Services credentials.
+      // The async function created will hold expiration information about the token and will return cached token when possible.
+      function createFetchSpeechServicesCredentials() {
+        let expireAfter = 0;
+        let lastPromise;
+
+        return () => {
+          const now = Date.now();
+
+          // Fetch a new token if the existing one is expiring.
+          // The following article mentioned the token is only valid for 10 minutes.
+          // We will invalidate the token after 5 minutes.
+          // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
+          if (now > expireAfter) {
+            expireAfter = now + 300000;
+            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
+              method: 'POST'
+            }).then(
+              res => res.json(),
+              err => {
+                expireAfter = 0;
+
+                return Promise.reject(err);
+              }
+            );
+          }
+
+          return lastPromise;
+        };
+      }
+
+      const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+
+      (async function() {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens.
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        // Select the audio input device which has the keyword "Audio" in it.
+        const { deviceId } = (await window.navigator.mediaDevices.enumerateDevices()).find(
+          ({ label }) => ~label.indexOf('Audio')
+        );
+
+        // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
+        const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          audioInputDeviceId: deviceId,
+
+          // We are passing the Promise function to the "credentials" field.
+          // This function will be called every time the token is being used.
+          credentials: fetchSpeechServicesCredentials
+        });
+
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is compliant to W3C Web Speech API: https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            webSpeechPonyfillFactory
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

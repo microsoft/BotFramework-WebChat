@@ -38,7 +38,10 @@
 
         window.WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({ token })
+            directLine: window.WebChat.createDirectLine({ token }),
+            styleOptions: {
+              suggestedActionLayout: 'stacked'
+            }
           },
           document.getElementById('webchat')
         );

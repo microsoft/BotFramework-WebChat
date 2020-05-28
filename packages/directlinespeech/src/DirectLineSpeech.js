@@ -59,7 +59,13 @@ export default class DirectLineSpeech {
   }
 
   end() {
-    this.dialogServiceConnector.close();
+    try {
+      this.dialogServiceConnector.close();
+    } catch (err) {
+      if (!~err.message.indexOf('already disposed')) {
+        throw err;
+      }
+    }
   }
 
   postActivity(activity) {

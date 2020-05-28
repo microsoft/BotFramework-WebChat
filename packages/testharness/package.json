@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "build": "npm run build:babel && npm run build:webpack",
-    "build:babel": "babel src --out-dir lib --verbose",
+    "build:babel": "babel src --ignore src/**/*.spec.js,src/**/*.test.js --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
+    "postinstall": "webpack-cli --config pre/webpack.config.js",
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,webpack\" \"npm run start:babel\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
@@ -17,19 +18,31 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-env": "^7.10.0",
     "@babel/runtime": "^7.8.7",
+    "babel-loader": "^8.1.0",
     "concurrently": "^5.1.0",
     "core-js": "^3.6.4",
+    "source-map-loader": "^0.2.4",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@babel/plugin-proposal-async-generator-functions": "^7.8.3",
+    "abort-controller": "^3.0.0",
+    "abort-controller-es5": "^1.1.0",
+    "base64-arraybuffer": "^0.2.0",
+    "event-iterator": "^1.2.0",
+    "event-target-shim": "^5.0.1",
+    "event-target-shim-es5": "^1.1.0",
     "expect": "^25.1.0",
     "math-random": "^1.0.4",
+    "microsoft-cognitiveservices-speech-sdk": "1.10.1",
     "p-defer": "^3.0.0",
+    "p-defer-es5": "^1.1.0",
     "simple-update-in": "^2.1.1"
   }
 }

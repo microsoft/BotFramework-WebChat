@@ -159,18 +159,18 @@ export default async function playCognitiveServicesStream(
       // And each sample (A/B) will be an 8 to 32-bit number.
 
       // Convert the 8 - 32-bit number into a floating-point number, as required by Web Audio API.
-      const interleavedArrayBuffer = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
+      const interleavedArray = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
 
       // Deinterleave data back into two array buffer, e.g. "AAAAA" and "BBBBB".
-      const multiChannelArrayBuffer = deinterleave(interleavedArrayBuffer, audioFormat);
+      const multiChannelArray = deinterleave(interleavedArray, audioFormat);
 
       // Upsample data if necessary. If the multiplier is 2x, "AAAAA" will be upsampled to "AAAAAAAAAA" (with anti-alias).
-      const upsampledMultiChannelArrayBuffer = multiChannelArrayBuffer.map(arrayBuffer =>
-        multiplySampleRate(arrayBuffer, sampleRateMultiplier)
+      const upsampledMultiChannelArray = multiChannelArray.map(array =>
+        multiplySampleRate(array, sampleRateMultiplier)
       );
 
       // Queue to the buffering player.
-      player.push(upsampledMultiChannelArrayBuffer);
+      player.push(upsampledMultiChannelArray);
     }
 
     abortPromise.catch(() => player.cancelAll());

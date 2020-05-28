@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 
 import indent from './indent';
 import mergeCoverageMap from './mergeCoverageMap';
-
+import parseURLParams from './parseURLParams';
 import runPageProcessor from './runPageProcessor';
 
 global.runHTMLTest = async (
@@ -31,13 +31,23 @@ global.runHTMLTest = async (
         .build();
 
   const sessionId = (await driver.getSession()).getId();
+  const params = parseURLParams(new URL(url, 'http://webchat2/').hash);
 
   try {
+    // We are only parsing the "hash" from "url", the "http://localhost/" is actually ignored.
+    let { hash } = new URL(url, 'http://localhost/');
+
+    if (hash) {
+      hash += '&wd=1';
+    } else {
+      hash = '#wd=1';
+    }
+
     // For unknown reason, if we use ?wd=1, it will be removed.
     // But when we use #wd=1, it kept.
     await driver.get(
       global.docker
-        ? new URL(`#wd=1`, new URL(url, 'http://webchat2/'))
+        ? new URL(hash, new URL(url, 'http://webchat2/'))
         : new URL(url, `http://localhost:${global.webServerPort}/`)
     );
 
