@@ -172,15 +172,6 @@ export class Chat extends React.Component<ChatProps, State> {
         });
     }
 
-    private preventBodyScroll = (preventScroll: boolean) => {
-
-        if (preventScroll && document.body.className.indexOf('noScroll') === -1) {
-            document.body.className = this.state.orginalBodyClass + ' noScroll';
-        } else if (!preventScroll) {
-            document.body.className = this.state.orginalBodyClass;
-        }
-    }
-
     private setSize() {
         this.store.dispatch<ChatActions>({
             type: 'Set_Size',
@@ -474,7 +465,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : 109;
         const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
         const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
-        const chatviewPanelStyle = { bottom: bottomOffset, height };
+        const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', right: 0, borderRadius: 0 } : { bottom: bottomOffset, height };
 
         // only render real stuff after we know our dimensions
         return (
@@ -482,10 +473,6 @@ export class Chat extends React.Component<ChatProps, State> {
                 <div
                     className={`wc-wrap ${display ? '' : 'hide'}`}
                     style={{ display: 'none'}}
-                    onMouseOver={e => this.preventBodyScroll(true)}
-                    onMouseLeave={e => this.preventBodyScroll(false)}
-                    onTouchStart={e => this.preventBodyScroll(true)}
-                    onTouchEnd={e => this.preventBodyScroll(false)}
                 >
                     <FloatingIcon
                         visible={!open && !opened}
