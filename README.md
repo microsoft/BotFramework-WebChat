@@ -20,7 +20,7 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 ## Direct Line Speech support in Web Chat 4.7.0
 
-Starting from Web Chat 4.7.0, Direct Line Speech is supported and preferred way to provide an integrated speech functionality in Web Chat. We are working on [closing feature gaps](https://github.com/microsoft/BotFramework-WebChat/labels/Direct%20Line%20Speech) between Direct Line Speech and Web Speech API (includes Cognitive Services and browser-provided speech functionality).
+Starting from Web Chat 4.7.0, Direct Line Speech is supported, and it is the preferred way to provide an integrated speech functionality in Web Chat. We are working on [closing feature gaps](https://github.com/microsoft/BotFramework-WebChat/labels/Direct%20Line%20Speech) between Direct Line Speech and Web Speech API (includes Cognitive Services and browser-provided speech functionality).
 
 ## Upgrading to 4.6.0
 
@@ -206,7 +206,7 @@ View the [telemetry documentation](https://github.com/microsoft/BotFramework-Web
 
 ## Speech
 
-Web Chat support a wide-range of speech engines for a natural chat experience with a bot. This section outlines different engines we support:
+Web Chat supports a wide-range of speech engines for a natural chat experience with a bot. This section outlines the different engines that are supported:
 
 - [Direct Line Speech](#integrate-with-direct-line-speech)
 - [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
