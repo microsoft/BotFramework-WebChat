@@ -210,7 +210,6 @@ export interface FormatState {
     logoUrl: string;
     bottomOffset: number;
     topOffset: number;
-    rightOffset: number;
     fullHeight: boolean;
 }
 
@@ -248,7 +247,6 @@ export const format: Reducer<FormatState> = (
         logoUrl: undefined,
         bottomOffset: undefined,
         topOffset: undefined,
-        rightOffset: undefined,
         fullHeight: false
     },
     action: FormatAction

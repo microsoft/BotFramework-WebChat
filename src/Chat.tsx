@@ -325,15 +325,14 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
-                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset)) {
-                            const { bottomOffset, topOffset, rightOffset} = bot_display_options;
+                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset)) {
+                            const { bottomOffset, topOffset} = bot_display_options;
 
                             this.store.dispatch({
                                 type: 'Set_Format_Options',
                                 formatOptions: {
                                     bottomOffset,
-                                    topOffset,
-                                    rightOffset
+                                    topOffset
                                 }
                             });
                         }
@@ -465,9 +464,8 @@ export class Chat extends React.Component<ChatProps, State> {
 
         const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : 109;
         const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
-        const rightOffset = state.format && state.format.rightOffset ? state.format.rightOffset : 0;
         const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
-        const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', borderRadius: 0, right: rightOffset } : { bottom: bottomOffset, height, right: rightOffset };
+        const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', right: 0, borderRadius: 0 } : { bottom: bottomOffset, height };
 
         // only render real stuff after we know our dimensions
         return (
