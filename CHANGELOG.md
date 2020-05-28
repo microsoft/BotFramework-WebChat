@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped dependencies due to [a bug in Babel and Node.js](https://github.com/nodejs/node/issues/32852), by [@compulim](https://github.com/compulim) in PR [#3177](https://github.com/microsoft/BotFramework-WebChat/pull/3177)
+   -  Development dependencies
+      -  [`@babel/preset-env@7.10.0`](https://npmjs.com/package/@babel/preset-env)
+   -  Production dependencies
+      -  [`abort-controller-es5@1.1.0`](https://npmjs.com/package/abort-controller-es5)
+      -  [`event-target-shim-es5@1.1.0`](https://npmjs.com/package/event-target-shim-es5)
+      -  [`markdown-it-attrs-es5@1.1.0`](https://npmjs.com/package/markdown-it-attrs-es5)
+      -  [`p-defer-es5@1.1.0`](https://npmjs.com/package/p-defer-es5)
+      -  [`web-speech-cognitive-services@7.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
+
 ## [4.9.0] - 2020-05-11
 
 ### Added
