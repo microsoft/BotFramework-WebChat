@@ -476,7 +476,6 @@ export class Chat extends React.Component<ChatProps, State> {
         const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
         const rightOffset = state.format && state.format.rightOffset ? state.format.rightOffset : 0;
         const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
-        const chatviewPanelStyle = { bottom: bottomOffset, height };
         const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', borderRadius: 0, right: rightOffset } : { bottom: bottomOffset, height, right: rightOffset };
 
         // only render real stuff after we know our dimensions
