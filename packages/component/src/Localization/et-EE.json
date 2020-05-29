@@ -2,7 +2,7 @@
   "_comment": "[CI-LOCKED] Selle faili sisu on lukus. Panused on teretulnud, kuid muudatuste valideerimine võib aega võtta.",
   "ACTIVITY_BOT_SAID": "Robot $1 ütles $2. Saadetud $3.",
   "ACTIVITY_ERROR_BOX_TITLE": "Tõrketeade",
-  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Saatmine nurjus. [Retry][RETRY].",
+  "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Saatmine nurjus. [Proovi uuesti][RETRY].",
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Saatmine",
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT": "Saadetud kell $1",
   "ACTIVITY_STATUS_SEND_STATUS_ALT": "Saatmise olek: $1",
