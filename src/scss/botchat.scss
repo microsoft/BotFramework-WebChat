@@ -594,11 +594,13 @@
         input[type=text],
         textarea {
             border: none;
-            height: 100%;
+            height: calc(100% - 10px);
             outline: none;
             padding: 0;
             resize: none;
             width: 100%;
+            padding-top: 10px;
+            background-color: transparent;
         }
 
         &.has-text .wc-send svg {

@@ -27,7 +27,7 @@ export interface ShellFunctions {
 }
 
 class ShellContainer extends React.Component<Props> implements ShellFunctions {
-    private textInput: HTMLInputElement;
+    private textInput: HTMLTextAreaElement;
     private fileInput: HTMLInputElement;
 
     private sendMessage() {
@@ -51,9 +51,11 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         }
     }
 
-    private onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (e.key === 'Enter') {
+    private onKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if (e.key === 'Enter' && !e.shiftKey) {
             this.sendMessage();
+            e.stopPropagation()
+            e.preventDefault()
         }
     }
 
@@ -142,8 +144,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         />
                 }
                 <div className="wc-textbox">
-                    <input
-                        type="text"
+                    <textarea
                         className="wc-shellinput"
                         ref={ input => this.textInput = input }
                         autoFocus
@@ -155,7 +156,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         disabled={ this.props.disableInput }
                         aria-label={ this.props.inputText ? null : placeholder }
                         aria-live="polite"
-                    />
+                    ></textarea>
                 </div>
                 <button
                     className={ sendButtonClassName }
