@@ -34,7 +34,7 @@ Font modified May 20, 2012 by patorjk to add the 0xCA0 character
 
 ### Tabbable
 
--  A [focusable](#focusable) which can be focused on by pressing <kbd>TAB</kbd> key
+-  A [focusable](#focusable) element which can be focused on by pressing <kbd>TAB</kbd> key
 
 ## UX: A series of decisions
 
@@ -42,35 +42,35 @@ Font modified May 20, 2012 by patorjk to add the 0xCA0 character
 
 ### User story
 
-The bot send a question with a set of predefined answers as UI buttons that will drive the conversation towards a particular goal (a.k.a. decision buttons).
+The bot sends a question with a set of predefined answers as UI buttons that will drive the conversation towards a particular goal (a.k.a. decision buttons).
 
-After the user make the decision by clicking on a button, the decision is being submitted. The user is not allowed to reselect another decision.
+After the user makes their decision by clicking on a button, the decision is submitted. The user is not allowed to reselect another decision.
 
 The bot will then send another question with another set of answers.
 
 ### Positive user experience
 
-We should disable buttons that are not part of the decision. Momentarily, the next set of answers will arrive. Since we must not change focus asynchronously outside of user gesture, the user is required to press <kbd>TAB</kbd> to get into the next set of decision buttons.
+Once the user makes their selection, we should disable the decision buttons. Since the next question and set of possible decisions do not arrive immediately from the bot, we  can not change the focus asynchronously outside of user gestures. Consequently, the user is required to press <kbd>TAB</kbd> to move the focus to the next set of decision buttons.
 
-When the user <kbd>TAB</kbd> out of the current button and into the next set of buttons, we should disable all previous decision buttons including the one the user chose. This will give a more consistent UX on how buttons are disabled.
+When the user presses the <kbd>TAB</kbd> key to move the focus from the current button to the next set of buttons, all the previous decision buttons should be disabled including the button the user chose. This will give a more consistent UX on how buttons are disabled.
 
 Since disabling buttons will also hide them from screen reader, we should add a screen reader-only text to tell the user which answer they chose.
 
 ### Exceptions
 
--  If no tabbable UI after the current disabled button, the next <kbd>TAB</kbd> should goes into the send box.
+-  If there is not a tabbable UI after the current disabled button, the next <kbd>TAB</kbd> should move the focus to the send box.
 
 ### Implementation
 
-When an UI is being disabled:
+When a UI element is being disabled:
 
 -  All UI will be manually styled, based on `:disabled, [aria-disabled="true"]` query
    -  User agent stylesheet do not take account into `aria-disabled` attribute
 -  Set `aria-disabled` attribute to `true`
-   -  If it is a `<button>`, set `onClick` to a handler that call `event.preventDefault()`
-   -  If it is a `<input type="text">` or `<textarea>`, set `readOnly` to `true`
--  If it is currently focused, wait until `onBlur` event and set `disabled` attribute
-   -  Otherwise, set `disabled` attribute immediately
+   -  If the element is a `<button>`, `onClick` is set to a handler that calls `event.preventDefault()`
+   -  If the element is an `<input type="text">` or `<textarea>`, `readOnly` is set to `true`
+-  If the element is currently focused, the component will wait until the `onBlur` event is called to set the `disabled` attribute to `true`
+   -  Otherwise, the `disabled` attribute will be set to `true` immediately
 
 > List of elements support `disabled` attribute can be found in [this article](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled).
 
@@ -80,12 +80,12 @@ By default, HTML is static. Thus, the default `disabled` implementation works on
 
 On a dynamic web page, when `disabled` is being applied to a focusing element (`document.activeElement`), the focus change varies between browsers:
 
--  Chrome will keep the focus on current element invisible to JavaScript or CSS
+-  Chrome will keep the focus on the current element invisible to JavaScript or CSS
    -  On <kbd>TAB</kbd>, it jump to next tabbable sibling or descendants of them (depth-first search)
 -  Firefox will send the focus to the parent, invisibly
-   -  On <kbd>TAB</kbd>, it jump to the first tabbable sibling or descendants of them (depth-first search)
+   -  On <kbd>TAB</kbd>, focus will move to the first tabbable descendant or sibling (depth-first search)
 -  Edge UWP and IE11 will send the focus to `<body>`, invisibly
-   -  On <kbd>TAB</kbd>, it jump to the first tabbable on the web page
+   -  On <kbd>TAB</kbd>, focus moves to the first tabbable element on the web page
 
 ## UX: New messages button
 
@@ -93,17 +93,17 @@ On a dynamic web page, when `disabled` is being applied to a focusing element (`
 
 ### User story
 
-While the user scrolled up to view past conversation, the bot send a message with few decision buttons to the user. To make the user aware of the arriving message, a "New messages" button is shown on the screen.
+When the user scrolls up to view past conversation and the bot sends a message with new decision buttons to the user, Web Chat places a "New messages" button on the screen to make the user aware of the new message.
 
-The user should be able to <kbd>TAB</kbd> into the "New messages" button. Clicking on it will scroll the view to the first decision button and put the focus on it.
+The user should be able to move the focus to the "New messages" button by pressing <kbd>TAB</kbd>. Clicking on it will scroll the view to the first decision button and put the focus on it.
 
 ### Exceptions
 
-If the new message do not contains any tabbable UI, it should focus to the send box after clicking on the "New messages" button.
+If the new message does not contain any tabbable UI, it should move the focus to the send box after clicking on the "New messages" button.
 
 ### Implementation
 
-The "New messages" button should be positioned in the DOM between the last read message, and the first unread message.
+The "New messages" button should be positioned in the DOM between the last read message and the first unread message.
 
 When the "New messages" button is clicked:
 
@@ -115,12 +115,12 @@ When the "New messages" button is clicked:
 
 ### Do
 
--  After an element is removed from tab order, do put the focus on next logical tabbable
+-  After an element is removed from tab order, put the focus on next logical tabbable element
    -  "New messages" button
-      -  After clicking on the "New messages" button, put the focus on the first tabbable of all unread activities, or the send box as last resort
+      -  After clicking on the "New messages" button, the focus should move to the first tabbable element of all the unread activities or the send box as last resort
       -  Related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
    -  Suggested actions buttons
-      -  After clicking on any suggested action buttons, put the focus on the send box, without soft keyboard
+      -  After clicking on any suggested action buttons, the focus should move to the send box without soft keyboard
       -  For better UX, the activity asking the question should have the answer inlined
       -  Related to [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX)
 
@@ -129,11 +129,11 @@ When the "New messages" button is clicked:
 -  Don't use numbers other than `0` or `-1` in `tabindex` attribute
    -  This will pollute the hosting environment
 -  In an activity with question and answers, after clicking on a decision button, don't disable the button
-   -  When the user read the activity, the screen reader will only read the question but not the chosen answer
+   -  When the user reads the activity, the screen reader will only read the question but not the chosen answer
    -  It is okay to disable buttons that were not chosen as answer
    -  It is okay to disable all buttons, as long as the answer will be read by the screen reader
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
--  Don't move focus when an activity arrive (or asynchronously)
+-  Don't move focus when an activity arrives (or asynchronously)
    -  Screen reader reading will be interrupted when focus change
    -  Only change focus synchronous to user gesture
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)

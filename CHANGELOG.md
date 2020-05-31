@@ -65,11 +65,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3155](https://github.com/microsoft/BotFramework-WebChat/issues/3155). Patch incoming activities with null fields, by [@compulim](https://github.com/compulim) in PR [#3154](https://github.com/microsoft/BotFramework-WebChat/pull/3154)
 -  Fixes [#2669](https://github.com/microsoft/BotFramework-WebChat/issues/2669) and [[#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136). The "New messages" button will be accessible through <kbd>TAB</kbd> key, inbetween the last read and first unread activity, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/issues/3150).
    -  After the "New message" button is clicked, focus will be moved to the first interactive UI of unread activity or the send box.
--  Fixes [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135). If the current widget is disabled, the focus will be stayed until the next <kbd>TAB</kbd> key, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
+-  Fixes [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135). If the current widget is disabled, it will keep focus until the next <kbd>TAB</kbd> key is pressed, by [@compulim](https://github.com/compulim) in PR [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
 
 ### Changed
 
--  Bumped all dependencies to latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985), [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012) and [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985), [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012) and [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
    -  Development dependencies
       -  Root package
          -  [`@azure/storage-blob@12.1.0`](https://npmjs.com/package/@azure/storage-blob)
