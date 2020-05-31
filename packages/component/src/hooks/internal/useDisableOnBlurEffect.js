@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 // When the button is being disabled:
 // - If it is not currently focused, we will set "disabled";
 // - If it is currently focused, we will not set "disabled" until it is blurred (focus moved away).
+function disableElement(element) {
+  element.setAttribute('disabled', 'disabled');
+}
+
 export default function useDisableOnBlurEffect(targetRef, disabled) {
   useEffect(() => {
     if (disabled) {
@@ -16,13 +20,13 @@ export default function useDisableOnBlurEffect(targetRef, disabled) {
           return () => current.removeAttribute('disabled');
         }
 
-        const handler = () => current.setAttribute('disabled', 'disabled');
+        const blurHandler = disableElement.bind(current);
 
-        current.addEventListener('blur', handler);
+        current.addEventListener('blur', blurHandler);
 
         return () => {
           current.removeAttribute('disabled');
-          current.removeEventListener('blur', handler);
+          current.removeEventListener('blur', blurHandler);
         };
       }
     }
