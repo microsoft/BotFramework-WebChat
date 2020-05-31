@@ -81,7 +81,7 @@ By default, HTML is static. Thus, the default `disabled` implementation works on
 On a dynamic web page, when `disabled` is being applied to a focusing element (`document.activeElement`), the focus change varies between browsers:
 
 -  Chrome will keep the focus on the current element invisible to JavaScript or CSS
-   -  On <kbd>TAB</kbd>, it jump to next tabbable sibling or descendants of them (depth-first search)
+   -  On <kbd>TAB</kbd>, focus will move to next tabbable sibling or descendant (depth-first search)
 -  Firefox will send the focus to the parent, invisibly
    -  On <kbd>TAB</kbd>, focus will move to the first tabbable descendant or sibling (depth-first search)
 -  Edge UWP and IE11 will send the focus to `<body>`, invisibly
