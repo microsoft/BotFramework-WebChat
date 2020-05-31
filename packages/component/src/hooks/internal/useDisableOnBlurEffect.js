@@ -20,7 +20,7 @@ export default function useDisableOnBlurEffect(targetRef, disabled) {
           return () => current.removeAttribute('disabled');
         }
 
-        const blurHandler = disableElement.bind(current);
+        const blurHandler = disableElement.bind(null, current);
 
         current.addEventListener('blur', blurHandler);
 
