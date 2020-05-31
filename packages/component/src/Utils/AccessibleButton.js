@@ -13,10 +13,10 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 //     - If the focus is on, don't set "disabled" attribute, until it is blurred
 //       - Otherwise, set "disabled" attribute
 //     - Remove "onClick" handler
-//   - Why we need this
+//   - Why this is needed
 //     - Browser compatibility: when the widget is disabled, different browser send focus to different places
 //     - When the widget become disabled, it's reasonable to keep the focus on the same widget for an extended period of time
-//       - When the user press TAB after the current widget is disabled, it should jump to the next non-disabled widget
+//       - When the user presses TAB after the current widget is disabled, it should jump to the next non-disabled widget
 
 // Developers using this accessible widget will need to:
 // - Style the disabled widget themselves, using CSS query `:disabled, [aria-disabled="true"] {}`

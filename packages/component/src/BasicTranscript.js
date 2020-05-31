@@ -159,7 +159,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
     [activities, memoizeRenderActivityElement]
   );
 
-  // Activity of the last visible activity in the list.
+  // Activity ID of the last visible activity in the list.
   const { activity: { id: lastVisibleActivityId } = {} } =
     activityElementsWithMetadata[activityElementsWithMetadata.length - 1] || {};
   const lastReadActivityIdRef = useRef(lastVisibleActivityId);
@@ -174,7 +174,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   // Finds where we should render the "New messages" button, in index. Returns -1 to hide the button.
   const renderSeparatorAfterIndex = useMemo(() => {
     // Don't show the button if:
-    // - All activities has been read
+    // - All activities have been read
     // - The scroll bar is animating
     //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
     // - Developer style to hide the button
