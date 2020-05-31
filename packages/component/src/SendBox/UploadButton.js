@@ -25,9 +25,7 @@ const ROOT_CSS = css({
   }
 });
 
-function disabledListener(event) {
-  event.preventDefault();
-}
+const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 async function makeThumbnail(file, width, height, contentType, quality) {
   if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
@@ -118,7 +116,7 @@ const UploadButton = () => {
         aria-hidden="true"
         multiple={true}
         onChange={disabled ? undefined : handleFileChange}
-        onClick={disabled ? disabledListener : undefined}
+        onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
         readOnly={disabled}
         ref={inputRef}
         role="button"
