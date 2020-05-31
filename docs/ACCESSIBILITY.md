@@ -50,7 +50,7 @@ The bot will then send another question with another set of answers.
 
 ### Positive user experience
 
-Once the user makes their selection, we should disable the decision buttons. Since the next question and set of possible decisions do not arrive immediately from the bot, we  can not change the focus asynchronously outside of user gestures. Consequently, the user is required to press <kbd>TAB</kbd> to move the focus to the next set of decision buttons.
+Once the user makes their selection, we should disable the decision buttons. Since the next question and set of possible decisions do not arrive immediately from the bot, we can not change the focus asynchronously outside of user gestures. Consequently, the user is required to press <kbd>TAB</kbd> to move the focus to the next set of decision buttons.
 
 When the user presses the <kbd>TAB</kbd> key to move the focus from the current button to the next set of buttons, all the previous decision buttons should be disabled including the button the user chose. This will give a more consistent UX on how buttons are disabled.
 
@@ -80,12 +80,16 @@ By default, HTML is static. Thus, the default `disabled` implementation works on
 
 On a dynamic web page, when `disabled` is being applied to a focusing element (`document.activeElement`), the focus change varies between browsers:
 
--  Chrome will keep the focus on the current element invisible to JavaScript or CSS
-   -  On <kbd>TAB</kbd>, focus will move to next tabbable sibling or descendant (depth-first search)
--  Firefox will send the focus to the parent, invisibly
-   -  On <kbd>TAB</kbd>, focus will move to the first tabbable descendant or sibling (depth-first search)
--  Edge UWP and IE11 will send the focus to `<body>`, invisibly
-   -  On <kbd>TAB</kbd>, focus moves to the first tabbable element on the web page
+| Browser                | Element referenced by `document.activeElement`  | Element styled by `:focus` pseudo-class            | Element to focus after pressing <kbd>TAB</kbd>                    |
+| ---------------------- | ----------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
+| Chrome/Edge (Chromium) | Become `document.body`                          | No elements are styled                             | Next tabbable sibling or descendants of them (depth-first search) |
+| Edge (Legacy)          | Become `document.body`                          | No elements are styled unless `<body>` is tabbable | First tabbable descendants of `<body>`                            |
+| Firefox/Safari         | Kept on the disabled element                    | Styles kept on the disabled element                | Next tabbable sibling or descendants of them (depth-first search) |
+| Internet Explorer 11   | Become parent container of the disabled element | Parent container of the disabled element           | First tabbable descendants of parent container                    |
+
+> On macOS Safari, <kbd>OPTION</kbd> + <kbd>TAB</kbd> is used to move focus between tabbable elements.
+
+> On Firefox and macOS Safari, although disabled button appears to be focusable, they cannot be focused through <kbd>TAB</kbd> or JavaScript code.
 
 ## UX: New messages button
 
