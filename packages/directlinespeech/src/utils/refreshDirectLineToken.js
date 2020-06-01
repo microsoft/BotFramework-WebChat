@@ -1,3 +1,4 @@
+/* eslint-env node */
 const fetchJSON = require('./fetchJSON');
 
 // Refreshes the given token

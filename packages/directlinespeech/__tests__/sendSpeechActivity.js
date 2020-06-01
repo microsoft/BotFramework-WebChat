@@ -40,8 +40,8 @@ test.each([true, false])('should echo back when saying "hello" and "world"', asy
   `);
 });
 
-test.each([true, false])('should echo back "Bellevue" when saying "bellview"', async (enableInternalHttpSupport) => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness(enableInternalHttpSupport);
+test('should echo back "Bellevue" when saying "bellview"', async () => {
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
@@ -61,8 +61,8 @@ test.each([true, false])('should echo back "Bellevue" when saying "bellview"', a
 });
 
 // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
-test.each([true, false])('should synthesis if "speak" is empty', async (enableInternalHttpSupport) => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness(enableInternalHttpSupport);
+test('should synthesis if "speak" is empty', async () => {
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 1));

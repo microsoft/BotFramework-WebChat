@@ -1,3 +1,4 @@
+/* eslint-env node */
 const fetch = require('node-fetch');
 
 // Helper function for fetching network resource as JSON
@@ -13,6 +14,6 @@ module.exports = async function fetchJSON(url, options) {
   if (!res.ok) {
     throw new Error(`Failed to fetch JSON from server due to ${res.status}`);
   }
-
-  return await res.json();
+  const json = await res.json();
+  return json;
 };
