@@ -79,9 +79,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
-        this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
-
         const lastActivity = this.props.activities[this.props.activities.length - 1];
         const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
 
@@ -267,6 +264,10 @@ const measurePaddedWidth = (el: HTMLElement): number => {
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
+const findInitial = (title: string): string => {
+  return title.toUpperCase().replace('THE ', '').trim()[0];
+};
+
 export interface WrappedActivityProps {
     activity: Activity;
     showTimestamp: boolean;
@@ -376,10 +377,14 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.selected && 'selected'
         );
 
+        const avatarColor = this.props.format && this.props.format.themeColor ? this.props.format.themeColor : '#c3ccd0';
+        const avatarInitial = this.props.format && this.props.format.chatTitle && typeof(this.props.format.chatTitle) === 'string' ? findInitial(this.props.format.chatTitle) : 'G';
+
         return (
             <div className={`wc-message-pane from-${who}`}
               >
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+                    {(!this.props.fromMe && <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>)}
                     <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                         <div className={ contentClassName }>
                             {/* <svg className="wc-message-callout">

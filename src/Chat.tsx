@@ -325,15 +325,16 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
-                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset)) {
-                            const { bottomOffset, topOffset, rightOffset} = bot_display_options;
+                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight)) {
+                            const { bottomOffset, topOffset, rightOffset, fullHeight } = bot_display_options;
 
                             this.store.dispatch({
                                 type: 'Set_Format_Options',
                                 formatOptions: {
                                     bottomOffset,
                                     topOffset,
-                                    rightOffset
+                                    rightOffset,
+                                    fullHeight
                                 }
                             });
                         }
