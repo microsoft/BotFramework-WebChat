@@ -66,14 +66,14 @@ let credentialsPromise;
 
 export default async function fetchSpeechCredentialsWithCache(enableInternalHttpSupport = false) {
   if (!credentialsPromise) {
-    const { SPEECH_SERVICES_REGION, SPEECH_SERVICES_SUBSCRIPTION_KEY, SPEECH_SERVICES_DIRECTLINE_SECRET } = process.env;
+    const { SPEECH_SERVICES_REGION, SPEECH_SERVICES_SUBSCRIPTION_KEY, SPEECH_SERVICES_DIRECT_LINE_SECRET } = process.env;
     if (SPEECH_SERVICES_REGION && SPEECH_SERVICES_SUBSCRIPTION_KEY) {
       credentialsPromise = fromSubscriptionKey({
         region: SPEECH_SERVICES_REGION,
         subscriptionKey: SPEECH_SERVICES_SUBSCRIPTION_KEY
       });
       
-      if (enableInternalHttpSupport && SPEECH_SERVICES_DIRECTLINE_SECRET) {
+      if (enableInternalHttpSupport && SPEECH_SERVICES_DIRECT_LINE_SECRET) {
         const { authorizationToken, region } = await credentialsPromise;
         const directLineToken = await getDirectLineTokenFromSecret(SPEECH_SERVICES_DIRECTLINE_SECRET);
         return {authorizationToken, region, directLineToken };

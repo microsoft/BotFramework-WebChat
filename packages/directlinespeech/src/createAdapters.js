@@ -1,4 +1,4 @@
-/* eslint complexity: ["error", 30] */
+/* eslint complexity: ["error", 33] */
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
@@ -10,7 +10,7 @@ import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 import refreshDirectLineToken from './utils/refreshDirectLineToken';
 
 const TOKEN_RENEWAL_INTERVAL = 120000;
-const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = (30 * 60 * 1000) / 2;
+const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = 900000;
 
 export default async function create({
   audioConfig,
@@ -111,7 +111,7 @@ export default async function create({
 
   // switch to direct line endpoint on DLS service.
   if (enableInternalHttpSupport) {
-    let endpoint = "wss://" + region + ".convai.speech.microsoft.com/directline/api/v1";
+    const endpoint = "wss://" + region + ".convai.speech.microsoft.com/directline/api/v1";
     config.setProperty(PropertyId.SpeechServiceConnection_Endpoint, endpoint);
     config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
   }
@@ -176,7 +176,7 @@ export default async function create({
         clearInterval(interval);
       }
 
-      const refreshedDirectLineToken  = await refreshDirectLineToken(directLineToken);
+      const refreshedDirectLineToken = await refreshDirectLineToken(directLineToken);
 
       if (!refreshedDirectLineToken) {
         return console.warn(
@@ -185,8 +185,8 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-      dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));  
-      dialogServiceConnector.connect();
+      dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));  // eslint-disable-line require-atomic-updates
+      dialogServiceConnector.connect(); // eslint-disable-line require-atomic-updates
 
     }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
   }
