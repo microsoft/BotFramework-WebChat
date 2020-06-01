@@ -182,6 +182,7 @@ const BasicWebChat = ({
   attachmentMiddleware,
   avatarMiddleware,
   className,
+  disabled,
   toastMiddleware,
   typingIndicatorMiddleware,
   ...otherProps
@@ -205,6 +206,7 @@ const BasicWebChat = ({
       activityStatusRenderer={activityStatusRenderer}
       attachmentRenderer={attachmentRenderer}
       avatarRenderer={avatarRenderer}
+      disabled={disabled}
       mainFocusRef={mainFocusRef}
       sendBoxRef={sendBoxRef}
       toastRenderer={toastRenderer}
@@ -214,6 +216,7 @@ const BasicWebChat = ({
       {({ styleSet }) => (
         <TypeFocusSinkBox
           className={classNames(ROOT_CSS + '', styleSet.root + '', className + '')}
+          disabled={!!disabled}
           ref={mainFocusRef}
           role="complementary"
           sendFocusRef={sendBoxRef}

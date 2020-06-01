@@ -67,6 +67,7 @@ const DEFAULT_OPTIONS = {
   // Root
   rootHeight: '100%',
   rootWidth: '100%',
+  rootZIndex: 0, // "z-index" for the root container of Web Chat. This will form a new stacking context so "z-index" used in children won't pollute.
 
   // Scroll to end button
   hideScrollToEndButton: false,

@@ -27,6 +27,7 @@ const ROOT_CSS = css({
   MsOverflowStyle: 'none',
   overflowX: 'scroll',
   overflowY: 'hidden',
+  position: 'relative', // This is to keep screen reader text in the destinated area.
   touchAction: 'manipulation',
   WebkitOverflowScrolling: 'touch',
 

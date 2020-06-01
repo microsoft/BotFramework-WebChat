@@ -8,34 +8,15 @@ export default function createSendBoxTextAreaStyle({
   subtle
 }) {
   return {
-    alignItems: 'center',
-    fontFamily: primaryFont,
-    paddingBottom: paddingRegular,
-    paddingLeft: paddingRegular,
-    paddingRight: paddingRegular,
-    paddingTop: paddingRegular,
+    '&.webchat__send-box-text-box': {
+      alignItems: 'center',
+      fontFamily: primaryFont,
+      paddingBottom: paddingRegular,
+      paddingLeft: paddingRegular,
+      paddingRight: paddingRegular,
+      paddingTop: paddingRegular,
 
-    '& > div': {
-      color: sendBoxTextColor,
-      fontFamily: 'inherit',
-      fontSize: 'inherit',
-      height: '100%',
-      maxHeight: sendBoxMaxHeight,
-      position: 'relative',
-      width: 'inherit',
-
-      '& > div': {
-        color: 'inherit',
-        fontFamily: 'inherit',
-        fontSize: 'inherit',
-        height: '100%',
-        overflowY: 'auto',
-        whiteSpace: 'pre-wrap',
-        width: 'inherit',
-        wordBreak: 'break-word'
-      },
-
-      '& > textarea': {
+      '& .webchat__send-box-text-box__text-area': {
         backgroundColor: sendBoxBackground,
         border: 0,
         color: 'inherit',
@@ -54,6 +35,27 @@ export default function createSendBoxTextAreaStyle({
         '&::placeholder': {
           color: sendBoxPlaceholderColor || subtle
         }
+      },
+
+      '& .webchat__send-box-text-box__text-area-box': {
+        color: sendBoxTextColor,
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
+        height: '100%',
+        maxHeight: sendBoxMaxHeight,
+        position: 'relative',
+        width: 'inherit'
+      },
+
+      '& .webchat__send-box-text-box__text-area-doppelganger': {
+        color: 'Transparent',
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
+        height: '100%',
+        overflowY: 'auto',
+        whiteSpace: 'pre-wrap',
+        width: 'inherit',
+        wordBreak: 'break-word'
       }
     }
   };

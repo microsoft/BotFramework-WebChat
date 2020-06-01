@@ -1,3 +1,4 @@
+import activities from './activities';
 import connectivityStatus from './connectivityStatus';
 import newMessageButton from './newMessageButton';
 import sendBoxTextBox from './sendBoxTextBox';
@@ -10,6 +11,7 @@ import transcriptScrollable from './transcriptScrollable';
 import typeFocusSink from './typeFocusSink';
 
 export {
+  activities,
   connectivityStatus,
   newMessageButton,
   sendBoxTextBox,

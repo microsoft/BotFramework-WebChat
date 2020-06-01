@@ -15,9 +15,11 @@ export default function CarouselFlipper({
       outline: 0
     },
 
-    '&:disabled > div.slider > div.button': {
-      backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-      color: transcriptOverlayButtonColorOnDisabled
+    '&:disabled, &[aria-disabled="true"]': {
+      '& > div.slider > div.button': {
+        backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+        color: transcriptOverlayButtonColorOnDisabled
+      }
     },
 
     '&:focus > div.slider > div.button': {

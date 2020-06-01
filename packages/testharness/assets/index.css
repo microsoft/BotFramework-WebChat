@@ -1,0 +1,19 @@
+body,
+html,
+#webchat {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+#webchat {
+  width: 100%;
+}
+
+input,
+textarea,
+[contenteditable] {
+  caret-color: Transparent;
+}
