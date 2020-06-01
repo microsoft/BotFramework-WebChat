@@ -35,7 +35,7 @@ export default async function create({
   }
 
   const { authorizationToken, region, subscriptionKey, directLineToken } = await resolveFunctionOrReturnValue(fetchCredentials);
-  
+
   if (
     (!authorizationToken && !subscriptionKey) ||
     (authorizationToken && subscriptionKey) ||
@@ -134,8 +134,8 @@ export default async function create({
   // speechRecognitionEndpointId && config.setServiceProperty('cid', speechRecognitionEndpointId, ServicePropertyChannel.UriQueryParameter);
   // speechSynthesisDeploymentId && config.setProperty(PropertyId.conversation_Custom_Voice_Deployment_Ids, speechSynthesisDeploymentId);
 
-  const dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
-
+  let dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
+  
   dialogServiceConnector.connect();
 
   // Renew token per interval.
@@ -176,7 +176,7 @@ export default async function create({
         clearInterval(interval);
       }
 
-      const { refreshedDirectLineToken } = await refreshDirectLineToken(directLineToken);
+      const refreshedDirectLineToken  = await refreshDirectLineToken(directLineToken);
 
       if (!refreshedDirectLineToken) {
         return console.warn(
@@ -184,7 +184,10 @@ export default async function create({
         );
       }
 
-      dialogServiceConnector.BotFrameworkConfig.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken)
+      config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));  
+      dialogServiceConnector.connect();
+
     }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
   }
 
