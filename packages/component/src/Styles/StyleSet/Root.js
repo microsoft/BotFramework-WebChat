@@ -1,7 +1,8 @@
-export default function({ backgroundColor, rootHeight, rootWidth }) {
+export default function({ backgroundColor, rootHeight: height, rootWidth: width, rootZIndex: zIndex }) {
   return {
     backgroundColor,
-    height: rootHeight,
-    width: rootWidth
+    height,
+    width,
+    zIndex
   };
 }

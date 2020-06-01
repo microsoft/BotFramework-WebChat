@@ -22,6 +22,7 @@ export default function createScrollToEndButtonStyle({
     outline: 0,
     padding: paddingRegular,
     position: 'absolute',
+    zIndex: 1, // We formed a stacking context in the parent container, so we can use "z-index" here.
 
     '&:hover': {
       backgroundColor: transcriptOverlayButtonBackgroundOnHover,

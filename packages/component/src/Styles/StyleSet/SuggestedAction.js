@@ -21,49 +21,52 @@ export default function createSuggestedActionStyle({
   subtle
 }) {
   return {
-    paddingBottom: paddingRegular / 2,
-    paddingLeft: paddingRegular / 2,
-    paddingRight: paddingRegular / 2,
-    paddingTop: paddingRegular / 2,
+    '&.webchat__suggested-action': {
+      paddingBottom: paddingRegular / 2,
+      paddingLeft: paddingRegular / 2,
+      paddingRight: paddingRegular / 2,
+      paddingTop: paddingRegular / 2,
+      position: 'relative',
 
-    '& > button': {
-      alignItems: 'center',
-      borderRadius: suggestedActionBorderRadius,
-      fontFamily: primaryFont,
-      fontSize: 'inherit',
-      height: suggestedActionHeight,
-      justifyContent: 'center',
-      paddingLeft: paddingWide,
-      paddingRight: paddingWide,
+      '& .webchat__suggested-action__button': {
+        alignItems: 'center',
+        borderRadius: suggestedActionBorderRadius,
+        fontFamily: primaryFont,
+        fontSize: 'inherit',
+        height: suggestedActionHeight,
+        justifyContent: 'center',
+        paddingLeft: paddingWide,
+        paddingRight: paddingWide,
 
-      '&:disabled': {
-        background: suggestedActionDisabledBackground || suggestedActionBackground,
-        borderColor: suggestedActionDisabledBorderColor,
-        borderStyle: suggestedActionDisabledBorderStyle,
-        borderWidth: suggestedActionDisabledBorderWidth,
-        color: suggestedActionDisabledTextColor || subtle
+        '&:disabled, &[aria-disabled="true"]': {
+          background: suggestedActionDisabledBackground || suggestedActionBackground,
+          borderColor: suggestedActionDisabledBorderColor,
+          borderStyle: suggestedActionDisabledBorderStyle,
+          borderWidth: suggestedActionDisabledBorderWidth,
+          color: suggestedActionDisabledTextColor || subtle
+        },
+
+        '&:not(:disabled):not([aria-disabled="true"])': {
+          background: suggestedActionBackground,
+          borderColor: suggestedActionBorderColor || accent,
+          borderStyle: suggestedActionBorderStyle,
+          borderWidth: suggestedActionBorderWidth,
+          color: suggestedActionTextColor || accent
+        }
       },
 
-      '&:not(:disabled)': {
-        background: suggestedActionBackground,
-        borderColor: suggestedActionBorderColor || accent,
-        borderStyle: suggestedActionBorderStyle,
-        borderWidth: suggestedActionBorderWidth,
-        color: suggestedActionTextColor || accent
-      },
-
-      '& > img': {
+      '& .webchat__suggested-action__image': {
         height: suggestedActionImageHeight,
 
-        ':not(.webchat__suggestedactions--rtl)': {
+        ':not(.webchat__suggested-action__image--rtl)': {
           paddingRight: paddingRegular
         },
-        '.webchat__suggestedactions--rtl': {
+        '.webchat__suggested-action__image--rtl': {
           paddingLeft: paddingRegular
         }
       },
 
-      '& > nobr': {
+      '& .webchat__suggested-action__button-text': {
         overflow: 'hidden',
         textOverflow: 'ellipsis'
       }

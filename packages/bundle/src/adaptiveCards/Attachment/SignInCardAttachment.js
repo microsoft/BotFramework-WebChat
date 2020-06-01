@@ -1,23 +1,21 @@
-import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import CommonCard from './CommonCard';
+import SignInCardContent from './SignInCardContent';
 
-const { useStyleSet } = hooks;
+const SignInCardAttachment = ({ attachment: { content }, disabled }) => (
+  <SignInCardContent content={content} disabled={disabled} />
+);
 
-const SignInCardAttachment = ({ attachment }) => {
-  const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
-
-  return (
-    <div className={animationCardAttachmentStyleSet}>
-      <CommonCard attachment={attachment} />
-    </div>
-  );
+SignInCardAttachment.defaultProps = {
+  disabled: undefined
 };
 
 SignInCardAttachment.propTypes = {
-  attachment: PropTypes.any.isRequired
+  attachment: PropTypes.shape({
+    content: PropTypes.any.isRequired
+  }).isRequired,
+  disabled: PropTypes.bool
 };
 
 export default SignInCardAttachment;

@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { Key } from 'selenium-webdriver';
 import { promisify } from 'util';
 import { tmpdir } from 'os';
 import createDeferred from 'p-defer';
@@ -58,7 +59,23 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
       try {
         let result;
 
-        if (job.type === 'snapshot') {
+        if (job.type === 'send keys') {
+          await job.payload.keys
+            .reduce((actions, key) => actions.sendKeys(Key[key] || key), driver.actions())
+            .perform();
+        } else if (job.type === 'send tab') {
+          await driver
+            .actions()
+            .sendKeys(Key.TAB)
+            .perform();
+        } else if (job.type === 'send shift tab') {
+          await driver
+            .actions()
+            .keyDown(Key.SHIFT)
+            .sendKeys(Key.TAB)
+            .keyUp(Key.SHIFT)
+            .perform();
+        } else if (job.type === 'snapshot') {
           expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
         } else if (job.type === 'save file') {
           const filename = join(tmpdir(), `${Date.now()}-${job.payload.filename}`);

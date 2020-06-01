@@ -96,7 +96,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
   return {
-    onCardAction: cardAction =>
+    onCardAction: (cardAction, { target } = {}) =>
       runMiddleware(({ cardAction: { type } }) => {
         throw new Error(`Web Chat: received unknown card action "${type}"`);
       })({
@@ -120,7 +120,8 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
 
                 return value;
               }
-            : null
+            : null,
+        target
       })
   };
 }
@@ -131,19 +132,21 @@ function createFocusContext({ mainFocusRef, sendBoxRef }) {
       const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxRef : mainFocusRef;
       const { current } = ref || {};
 
-      if (current && where === 'sendBoxWithoutKeyboard') {
-        // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
-        // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
-        const readOnly = current.getAttribute('readonly');
+      if (current) {
+        if (where === 'sendBoxWithoutKeyboard') {
+          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
+          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
+          const readOnly = current.getAttribute('readonly');
 
-        current.setAttribute('readonly', 'readonly');
+          current.setAttribute('readonly', 'readonly');
 
-        setTimeout(() => {
+          setTimeout(() => {
+            current.focus();
+            readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+          }, 0);
+        } else {
           current.focus();
-          readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-        }, 0);
-      } else {
-        current && current.focus();
+        }
       }
     }
   };

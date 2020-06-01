@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
+import AccessibleInputText from '../Utils/AccessibleInputText';
+import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
@@ -16,10 +18,12 @@ import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const ROOT_CSS = css({
-  display: 'flex',
+  '&.webchat__send-box-text-box': {
+    display: 'flex',
 
-  '& > div, input': {
-    flex: 1
+    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area-box': {
+      flex: 1
+    }
   }
 });
 
@@ -107,6 +111,8 @@ function useTextBoxValue() {
   return [value, setter];
 }
 
+const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
+
 const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
@@ -147,8 +153,15 @@ const TextBox = ({ className }) => {
 
   return (
     <form
-      className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
-      onSubmit={handleSubmit}
+      aria-disabled={disabled}
+      className={classNames(
+        ROOT_CSS + '',
+        sendBoxTextAreaStyleSet + '',
+        sendBoxTextBoxStyleSet + '',
+        'webchat__send-box-text-box',
+        className + ''
+      )}
+      onSubmit={disabled ? PREVENT_DEFAULT_HANDLER : handleSubmit}
     >
       {
         // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
@@ -156,35 +169,40 @@ const TextBox = ({ className }) => {
         <TypeFocusSinkContext.Consumer>
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
-              <input
+              <AccessibleInputText
                 aria-label={sendBoxString}
+                className="webchat__send-box-text-box__input"
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
-                onChange={handleChange}
+                onChange={disabled ? undefined : handleChange}
                 placeholder={typeYourMessageString}
+                readOnly={disabled}
                 ref={sendFocusRef}
                 type="text"
                 value={textBoxValue}
               />
             ) : (
-              <div>
-                <textarea
+              <div className="webchat__send-box-text-box__text-area-box">
+                <AccessibleTextArea
                   aria-label={sendBoxString}
+                  className="webchat__send-box-text-box__text-area"
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={disabled ? undefined : handleChange}
+                  onKeyPress={disabled ? undefined : handleKeyPress}
                   placeholder={typeYourMessageString}
+                  readOnly={disabled}
                   ref={sendFocusRef}
                   rows="1"
                   value={textBoxValue}
                 />
-                <div>{textBoxValue + '\n'}</div>
+                <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
               </div>
             )
           }
         </TypeFocusSinkContext.Consumer>
       }
+      {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
 };

@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
@@ -12,7 +14,13 @@ const ErrorBox = ({ children, error, message }) => {
   const trackException = useTrackException();
 
   useEffect(() => {
-    trackException(error || new Error(message), false);
+    const errorObject = error || new Error(message);
+
+    trackException(errorObject, false);
+
+    console.group(`botframework-webchat: ${message}`);
+    console.error(errorObject);
+    console.groupEnd();
   }, [error, message, trackException]);
 
   return (

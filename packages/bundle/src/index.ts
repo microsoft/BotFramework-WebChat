@@ -4,18 +4,27 @@
 export * from './index-minimal';
 
 import { Components as MinimalComponents, hooks, version } from './index-minimal';
+import AdaptiveCardContent from './adaptiveCards/Attachment/AdaptiveCardContent';
 import addVersion from './addVersion';
+import AnimationCardContent from './adaptiveCards/Attachment/AnimationCardContent';
+import AudioCardContent from './adaptiveCards/Attachment/AudioCardContent';
 import coreRenderWebChat from './renderWebChat';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
-import createStyleSet from './createFullStyleSet';
 import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
+import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
 import FullComposer from './FullComposer';
+import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
+import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';
 import ReactWebChat from './FullReactWebChat';
+import ReceiptCardContent from './adaptiveCards/Attachment/ReceiptCardContent';
 import renderMarkdown from './renderMarkdown';
+import SignInCardContent from './adaptiveCards/Attachment/SignInCardContent';
+import ThumbnailCardContent from './adaptiveCards/Attachment/ThumbnailCardContent';
 import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from './adaptiveCards/hooks/useAdaptiveCardsPackage';
+import VideoCardContent from './adaptiveCards/Attachment/VideoCardContent';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -35,7 +44,16 @@ const patchedHooks = {
 
 const Components = {
   ...MinimalComponents,
-  Composer: FullComposer
+  AdaptiveCardContent,
+  AudioCardContent,
+  AnimationCardContent,
+  Composer: FullComposer,
+  HeroCardContent,
+  OAuthCardContent,
+  ReceiptCardContent,
+  SignInCardContent,
+  ThumbnailCardContent,
+  VideoCardContent
 };
 
 export default ReactWebChat;
@@ -53,6 +71,7 @@ export {
 
 window['WebChat'] = {
   ...window['WebChat'],
+  Components,
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
