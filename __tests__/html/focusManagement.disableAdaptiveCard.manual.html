@@ -49,7 +49,7 @@
         window.WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
 
         // It takes a frame for React to disable the UI.
-        await new Promise(setTimeout);
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         // After disabling the Adaptive Card, the focus should still be on the input, but read only.
         const isFirstInputReadOnly = firstInput.hasAttribute('readonly');
