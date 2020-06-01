@@ -157,13 +157,15 @@ class NUnitTestReporter {
                           '#cdata-section': failureMessages.join('\n')
                         },
                         'stack-trace': {
-                          '#cdata-section': ErrorStackParser.parse(error)
-                            .map(stackFrame => {
-                              stackFrame.setFileName(relative(join(__dirname, '..', '..'), stackFrame.fileName));
+                          '#cdata-section': error
+                            ? ErrorStackParser.parse(error)
+                                .map(stackFrame => {
+                                  stackFrame.setFileName(relative(join(__dirname, '..', '..'), stackFrame.fileName));
 
-                              return stackFrame + '';
-                            })
-                            .join('\n')
+                                  return stackFrame + '';
+                                })
+                                .join('\n')
+                            : ''
                         }
                       },
                 output: {},
