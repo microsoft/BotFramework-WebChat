@@ -5,7 +5,7 @@ export interface FormatOptions {
     bottomOffset?: number;
     topOffset?: number;
     rightOffset?: number;
-    fullHeight?: number;
+    fullHeight?: boolean;
 }
 
 export interface ActivityOrID {
