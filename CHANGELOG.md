@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`markdown-it-attrs-es5@1.1.0`](https://npmjs.com/package/markdown-it-attrs-es5)
       -  [`p-defer-es5@1.1.0`](https://npmjs.com/package/p-defer-es5)
       -  [`web-speech-cognitive-services@7.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
+-  Updated localization strings for Estonian (Estonia) (`et-EE`), by [@LiweiMa](https://github.com/LiweiMa) in PR [#3183](https://github.com/microsoft/BotFramework-WebChat/pull/3183)
 
 ## [4.9.0] - 2020-05-11
 
