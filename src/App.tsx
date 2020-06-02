@@ -116,7 +116,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         wrapper.appendChild(container)
         document.body.appendChild( wrapper );
         
-        if (props.autoExpandTimeout && (!localStorage || localStorage.feedbotClosed !== 'true')) {
+        if (props.autoExpandTimeout && (!localStorage || localStorage.feedbotClosed !== 'true') && window.matchMedia && window.matchMedia("(min-width: 1024px)").matches) {
             setTimeout(() => {
                 if (wrapper.className.indexOf('collapsed') >= 0) {
                     header.click()
