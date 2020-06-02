@@ -398,23 +398,30 @@
         margin-bottom: 5px;
         overflow: hidden;
         position: relative;
-        display:flex;
-        flex-direction: row;
         /*transition: max-height 2s ease-in-out;*/
-        
+    }
+
+    .wc-message-wrapper.bot {
+      display:flex;
+      flex-direction: row;
     }
     
     .wc-message-avatar{
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        border-radius: 30px;
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+        border-radius: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #f6f7f8;
-        vertical-align: middle;
-        margin-top: 2px;
+        opacity: 75%;
+        margin-top:auto;
+        margin-bottom: 10px;
+    }
+
+    .wc-message-avatar.blank{
+      color: transparent;
     }
 
     @keyframes animationFrames{
@@ -879,7 +886,7 @@
         textarea {
             border: none;
             color: #000 !important;
-            height: 60px;
+            height: 45px;
             outline: none;
             padding: 0;
             resize: none;
@@ -941,11 +948,15 @@
 
         .wc-textbox {
             bottom: 0;
-            left: 31px;
-            right: 71px;
+            left: 12px;
+            right: 60px;
+            top: 12px;
+            
 
             input {
-                background-color: transparent;
+                background-color: rgba(128, 128, 128, 0.1);
+                padding-left: 12px;
+                border-radius:10px;
             }
         }
 

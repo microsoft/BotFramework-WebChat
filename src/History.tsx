@@ -100,6 +100,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 from: { id: '' },
                 attachmentLayout: 'carousel'
             } }
+            nextActivityFromMe={ false }
             lastMessage={false}
             format={ null }
             fromMe={ false }
@@ -141,6 +142,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             format={ this.props.format }
                             key={ 'message' + index }
                             activity={ activity }
+                            nextActivityFromMe={ index + 1 < activities.length ? this.props.isFromMe(activities[index + 1]) : false}
                             doCardAction={this.doCardAction}
                             lastMessage={index === activities.length - 1}
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
@@ -270,6 +272,7 @@ const findInitial = (title: string): string => {
 
 export interface WrappedActivityProps {
     activity: Activity;
+    nextActivityFromMe: boolean;
     showTimestamp: boolean;
     selected: boolean;
     fromMe: boolean;
@@ -369,7 +372,8 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const wrapperClassName = classList(
             'wc-message-wrapper',
             (this.props.activity as Message).attachmentLayout || 'list',
-            this.props.onClickActivity && 'clickable'
+            this.props.onClickActivity && 'clickable',
+            who
         );
 
         const contentClassName = classList(
@@ -379,12 +383,16 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const avatarColor = this.props.format && this.props.format.themeColor ? this.props.format.themeColor : '#c3ccd0';
         const avatarInitial = this.props.format && this.props.format.chatTitle && typeof(this.props.format.chatTitle) === 'string' ? findInitial(this.props.format.chatTitle) : 'G';
-
+        const showAvatar = this.props.fromMe === false && (this.props.nextActivityFromMe || this.props.lastMessage);
         return (
             <div className={`wc-message-pane from-${who}`}
               >
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                    {(!this.props.fromMe && <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>)}
+                    {(showAvatar ?
+                      <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>
+                    :
+                      <div className="wc-message-avatar blank"/>
+                    )}
                     <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                         <div className={ contentClassName }>
                             {/* <svg className="wc-message-callout">
