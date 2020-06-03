@@ -235,8 +235,8 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
   const disabled = disabledFromComposer || disabledFromProps;
 
-  // TODO: [P2] We should consider using `adaptiveCard.selectAction` instead.
-  // This callback will not listen to "click" or "keypress" event if the component is disabled or does not have "tapAction" prop.
+  // TODO: [P2] #3199 We should consider using `adaptiveCard.selectAction` instead.
+  // The null check for "tapAction" is in "handleClickAndKeyPressForTapAction".
   const handleClickAndKeyPress = useCallback(
     event => {
       const { key, target, type } = event;
@@ -276,8 +276,11 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       performCardAction(tapAction);
       scrollToEnd();
     },
-    [disabled, performCardAction, tapAction]
+    [contentRef, performCardAction, scrollToEnd, tapAction]
   );
+
+  // Only listen to event if it is not disabled and have "tapAction" prop.
+  const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
 
   const addActionsPerformed = useCallback(
     action => !~actionsPerformed.indexOf(action) && setActionsPerformed([...actionsPerformed, action]),
@@ -431,8 +434,6 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
     return () => undoStack.forEach(undo => undo && undo());
   }, [actionsPerformed, actionPerformedClassName, lastRender]);
-
-  const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
 
   return errors.length ? (
     <ErrorBox message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
