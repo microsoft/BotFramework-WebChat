@@ -5,8 +5,8 @@ export default function allOutgoingActivitiesSent() {
     message: 'all outgoing activities to be sent',
     fn: () => {
       return getActivities()
-        .filter(({ from: { role } }) => role === 'user')
-        .every(({ channelData: { state } }) => state === 'sent');
+        .filter(({ from: { role }, name }) => role === 'user' && name !== '__RUN_HOOK')
+        .every(({ channelData: { state } = {} }) => state === 'sent');
     }
   };
 }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        conditions,
+        createStore,
+        host,
+        pageObjects,
+        shareObservable,
+        timeouts,
+        token,
+        updateIn
+      } = window.WebChatTest;
+
+      (async function() {
+        function createDirectLineForTest(options) {
+          const UNINITIALIZED = 0;
+          const workingDirectLine = window.WebChat.createDirectLine(options);
+
+          return {
+            ...workingDirectLine,
+            activity$: new Observable(observer => {
+              const subscription = workingDirectLine.activity$.subscribe({
+                complete() {
+                  observer.complete();
+                },
+                error(error) {
+                  observer.error(error);
+                },
+                next(value) {
+                  // Fill as much null as possible, it should not break rendering.
+                  value = [
+                    'attachmentLayout',
+                    'attachments',
+                    'channelData',
+                    'conversation',
+                    'entities',
+                    'from',
+                    'inputHint',
+                    'locale',
+                    'name',
+                    'recipient',
+                    'speak',
+                    'suggestedActions',
+                    'text',
+                    'textFormat',
+                    'timestamp',
+                    'type'
+                  ].reduce((activity, name) => updateIn(activity, [name], value => value || null), value);
+
+                  observer.next(value);
+                }
+              });
+
+              return () => subscription.unsubscribe();
+            }),
+            postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+            connectionStatus$: workingDirectLine.connectionStatus$
+          };
+        }
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
+
+        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
+        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.ui);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

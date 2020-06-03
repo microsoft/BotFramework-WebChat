@@ -2,7 +2,7 @@
 /* eslint no-undefined: "off" */
 
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
 
 import Context from './Context';
 import getTabIndex from './getTabIndex';
@@ -10,7 +10,7 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }) => {
+const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
     sendFocusRefPersist,
@@ -42,7 +42,7 @@ const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...other
         return;
       }
 
-      if (typeof tabIndex !== 'number' || tabIndex < 0) {
+      if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
         event.stopPropagation();
 
         focus();
@@ -53,19 +53,27 @@ const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...other
 
   return (
     <Context.Provider value={context}>
-      <div {...otherProps} onKeyDownCapture={!disabled && handleKeyDownCapture} style={DEFAULT_STYLE} tabIndex={-1}>
+      <div
+        {...otherProps}
+        onKeyDownCapture={disabled ? undefined : handleKeyDownCapture}
+        ref={ref}
+        style={DEFAULT_STYLE}
+        tabIndex={-1}
+      >
         {typeof children === 'function' ? children({ focus }) : children}
       </div>
     </Context.Provider>
   );
 };
 
-FocusBox.defaultProps = {
+const FocusBox = forwardRef(BaseFocusBox);
+
+FocusBox.defaultProps = BaseFocusBox.defaultProps = {
   children: undefined,
   disabled: false
 };
 
-FocusBox.propTypes = {
+FocusBox.propTypes = BaseFocusBox.propTypes = {
   children: PropTypes.any,
   disabled: PropTypes.bool,
   sendFocusRef: PropTypes.shape({

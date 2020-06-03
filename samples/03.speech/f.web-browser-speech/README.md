@@ -105,4 +105,4 @@ Here is the finished `index.html`:
 
 View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
 
-  [1]: ../../01.getting-started/a.full-bundle/README.md
+[1]: ../../01.getting-started/a.full-bundle/README.md

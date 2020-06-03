@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
+import AccessibleInputText from '../Utils/AccessibleInputText';
+import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
-import useFocusSendBox from '../hooks/useFocusSendBox';
+import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
@@ -16,10 +18,12 @@ import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const ROOT_CSS = css({
-  display: 'flex',
+  '&.webchat__send-box-text-box': {
+    display: 'flex',
 
-  '& > div, input': {
-    flex: 1
+    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area-box': {
+      flex: 1
+    }
   }
 });
 
@@ -61,19 +65,35 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-function useTextBoxSubmit(setFocus) {
+function useTextBoxSubmit() {
   const [sendBoxValue] = useSendBoxValue();
-  const focusSendBox = useFocusSendBox();
+  const focus = useFocus();
   const scrollToEnd = useScrollToEnd();
   const submitSendBox = useSubmitSendBox();
 
-  return useCallback(() => {
-    if (sendBoxValue) {
-      scrollToEnd();
-      submitSendBox();
-      setFocus && focusSendBox();
-    }
-  }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
+  return useCallback(
+    setFocus => {
+      if (sendBoxValue) {
+        scrollToEnd();
+        submitSendBox();
+
+        if (setFocus) {
+          if (setFocus === true) {
+            console.warn(
+              `"botframework-webchat: Passing "true" to "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please pass "sendBox" instead."`
+            );
+
+            focus('sendBox');
+          } else {
+            focus(setFocus);
+          }
+        }
+      }
+
+      return !!sendBoxValue;
+    },
+    [focus, scrollToEnd, sendBoxValue, submitSendBox]
+  );
 }
 
 function useTextBoxValue() {
@@ -90,6 +110,8 @@ function useTextBoxValue() {
 
   return [value, setter];
 }
+
+const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
@@ -131,42 +153,56 @@ const TextBox = ({ className }) => {
 
   return (
     <form
-      className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
-      onSubmit={handleSubmit}
+      aria-disabled={disabled}
+      className={classNames(
+        ROOT_CSS + '',
+        sendBoxTextAreaStyleSet + '',
+        sendBoxTextBoxStyleSet + '',
+        'webchat__send-box-text-box',
+        className + ''
+      )}
+      onSubmit={disabled ? PREVENT_DEFAULT_HANDLER : handleSubmit}
     >
       {
+        // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
+        // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
         <TypeFocusSinkContext.Consumer>
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
-              <input
+              <AccessibleInputText
                 aria-label={sendBoxString}
+                className="webchat__send-box-text-box__input"
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
-                onChange={handleChange}
+                onChange={disabled ? undefined : handleChange}
                 placeholder={typeYourMessageString}
+                readOnly={disabled}
                 ref={sendFocusRef}
                 type="text"
                 value={textBoxValue}
               />
             ) : (
-              <div>
-                <textarea
+              <div className="webchat__send-box-text-box__text-area-box">
+                <AccessibleTextArea
                   aria-label={sendBoxString}
+                  className="webchat__send-box-text-box__text-area"
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={disabled ? undefined : handleChange}
+                  onKeyPress={disabled ? undefined : handleKeyPress}
                   placeholder={typeYourMessageString}
+                  readOnly={disabled}
                   ref={sendFocusRef}
                   rows="1"
                   value={textBoxValue}
                 />
-                <div>{textBoxValue + '\n'}</div>
+                <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
               </div>
             )
           }
         </TypeFocusSinkContext.Consumer>
       }
+      {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
 };

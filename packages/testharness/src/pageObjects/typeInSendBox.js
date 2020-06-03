@@ -2,6 +2,7 @@ import getSendBoxTextBoxElement from '../elements/sendBoxTextBox';
 import sleep from '../utils/sleep';
 
 const { Simulate } = window.ReactTestUtils;
+const globalSetTimeout = setTimeout;
 
 function sendKey(element, char) {
   if (char === '\n') {
@@ -29,6 +30,11 @@ async function sendKeys(element, ...args) {
 
 export default async function typeInSendBox(...args) {
   const textBox = getSendBoxTextBoxElement();
+
+  textBox.focus();
+  Simulate.focus(textBox);
+
+  await new Promise(resolve => globalSetTimeout(resolve, 1000));
 
   await sendKeys(textBox, ...args);
 }

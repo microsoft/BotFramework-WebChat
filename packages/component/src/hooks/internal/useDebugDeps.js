@@ -11,7 +11,11 @@ export default function useDebugDeps(depsMap, name) {
 
   if (keysChanged.length) {
     console.groupCollapsed(`Changes found in ${name}`);
-    console.log(keysChanged);
+
+    keysChanged.forEach(key => {
+      console.log(key, { from: lastDepsMap[key], to: depsMap[key] });
+    });
+
     console.groupEnd();
   }
 

@@ -13,6 +13,7 @@ import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useUniqueId from '../hooks/internal/useUniqueId';
 
 const SUGGESTED_ACTION_STACKED_CSS = css({
   display: 'flex',
@@ -44,6 +45,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
+  const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const localize = useLocalizer();
 
   const suggestedActionsContainerText = localize(
@@ -55,8 +57,8 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
 
   if (!suggestedActions.length) {
     return (
-      <div aria-label=" " aria-live="polite" role="status">
-        <ScreenReaderText text={suggestedActionsContainerText} />
+      <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
+        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
       </div>
     );
   }
@@ -76,8 +78,8 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
 
   if (suggestedActionLayout === 'stacked') {
     return (
-      <div aria-label=" " aria-live="polite" role="status">
-        <ScreenReaderText text={suggestedActionsContainerText} />
+      <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
+        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
         <div className={classNames(suggestedActionsStyleSet + '', SUGGESTED_ACTION_STACKED_CSS + '', className + '')}>
           {children}
         </div>
@@ -86,14 +88,17 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   }
 
   return (
-    <div aria-label=" " aria-live="polite" role="status">
-      <ScreenReaderText text={suggestedActionsContainerText} />
+    // TODO: The content of suggested actions should be the labelled by the activity.
+    //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
+    <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
+      <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
       <BasicFilm
         autoCenter={false}
         className={classNames(suggestedActionsStyleSet + '', className + '')}
         dir={direction}
         flipperBlurFocusOnClick={true}
         showDots={false}
+        showScrollBar={false}
         styleSet={suggestedActionsStyleSetForReactFilm}
       >
         {children}

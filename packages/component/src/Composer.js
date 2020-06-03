@@ -96,7 +96,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
   return {
-    onCardAction: cardAction =>
+    onCardAction: (cardAction, { target } = {}) =>
       runMiddleware(({ cardAction: { type } }) => {
         throw new Error(`Web Chat: received unknown card action "${type}"`);
       })({
@@ -120,17 +120,34 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
 
                 return value;
               }
-            : null
+            : null,
+        target
       })
   };
 }
 
-function createFocusSendBoxContext({ sendBoxRef }) {
+function createFocusContext({ mainFocusRef, sendBoxRef }) {
   return {
-    focusSendBox: () => {
-      const { current } = sendBoxRef || {};
+    focus: where => {
+      const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxRef : mainFocusRef;
+      const { current } = ref || {};
 
-      current && current.focus();
+      if (current) {
+        if (where === 'sendBoxWithoutKeyboard') {
+          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
+          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
+          const readOnly = current.getAttribute('readonly');
+
+          current.setAttribute('readonly', 'readonly');
+
+          setTimeout(() => {
+            current.focus();
+            readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+          }, 0);
+        } else {
+          current.focus();
+        }
+      }
     }
   };
 }
@@ -169,6 +186,7 @@ const Composer = ({
   grammars,
   groupTimestamp,
   locale,
+  mainFocusRef,
   onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
@@ -272,7 +290,7 @@ const Composer = ({
     selectVoice
   ]);
 
-  const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
+  const focusContext = useMemo(() => createFocusContext({ mainFocusRef, sendBoxRef }), [mainFocusRef, sendBoxRef]);
 
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
@@ -345,7 +363,7 @@ const Composer = ({
   const context = useMemo(
     () => ({
       ...cardActionContext,
-      ...focusSendBoxContext,
+      ...focusContext,
       ...hoistedDispatchers,
       activityRenderer,
       activityStatusRenderer,
@@ -387,7 +405,7 @@ const Composer = ({
       dictateAbortable,
       directLine,
       disabled,
-      focusSendBoxContext,
+      focusContext,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -480,6 +498,7 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  mainFocusRef: undefined,
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
@@ -522,6 +541,9 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  mainFocusRef: PropTypes.shape({
+    current: PropTypes.any
+  }),
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,

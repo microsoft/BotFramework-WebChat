@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 
 import Bubble from './Bubble';
@@ -20,12 +20,14 @@ import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
 import useRenderAvatar from '../hooks/useRenderAvatar';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
   display: 'flex',
   MsOverflowStyle: 'none',
   overflowX: 'scroll',
   overflowY: 'hidden',
+  position: 'relative', // This is to keep screen reader text in the destinated area.
   touchAction: 'manipulation',
   WebkitOverflowScrolling: 'touch',
 
@@ -97,6 +99,7 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
+  const contentARIALabelId = useUniqueId('webchat__carousel-filmstrip__content');
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
@@ -116,18 +119,19 @@ const WebChatCarouselFilmStrip = ({
 
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const initials = fromUser ? userInitials : botInitials;
-  const plainText = remarkStripMarkdown(activityDisplayText);
+  const plainText = useMemo(() => remarkStripMarkdown(activityDisplayText), [activityDisplayText]);
   const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
 
-  const ariaLabel = localize(
+  const contentARIALabel = localize(
     fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
     initials,
-    plainText,
+    plainText.replace(/[.\s]+$/u, ''),
     formatDate(timestamp)
   ).trim();
 
   return (
     <div
+      aria-labelledby={contentARIALabelId}
       className={classNames(
         ROOT_CSS + '',
         carouselFilmStripStyleSet + '',
@@ -141,7 +145,7 @@ const WebChatCarouselFilmStrip = ({
       ref={scrollableRef}
       role="group"
     >
-      <ScreenReaderText text={ariaLabel} />
+      <ScreenReaderText id={contentARIALabelId} text={contentARIALabel} />
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
@@ -160,8 +164,7 @@ const WebChatCarouselFilmStrip = ({
         )}
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
-            // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 and Edge 44
-            <li aria-label=" " key={index}>
+            <li key={index}>
               <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
