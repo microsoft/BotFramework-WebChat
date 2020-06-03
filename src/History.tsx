@@ -393,7 +393,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
               >
                 {(this.props.displayName && <span className="wc-message-bot-name">{this.props.format && this.props.format.display_name ? this.props.format.display_name : 'Bot'}</span>)}
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                    {(showAvatar ?
+                    {!this.props.fromMe && (showAvatar ?
                       <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>
                     :
                       <div className="wc-message-avatar blank"/>
