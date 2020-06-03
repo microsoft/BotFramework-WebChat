@@ -222,7 +222,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   const [actionsPerformed, setActionsPerformed] = useState([]);
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [disabledFromComposer] = useDisabled();
-  const [error, setError] = useState();
+  const [errors, setErrors] = useState([]);
   const [lastRender, setLastRender] = useState(0);
   const activeElementIndexRef = useRef(-1);
   const adaptiveCardElementRef = useRef();
@@ -235,18 +235,46 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
   const disabled = disabledFromComposer || disabledFromProps;
 
-  const handleClick = useCallback(
-    ({ target }) => {
+  // TODO: [P2] We should consider using `adaptiveCard.selectAction` instead.
+  // This callback will not listen to "click" or "keypress" event if the component is disabled or does not have "tapAction" prop.
+  const handleClickAndKeyPress = useCallback(
+    event => {
+      const { key, target, type } = event;
+
       // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
-      if (!disabled) {
+      const { current } = contentRef;
+      const adaptiveCardRoot = current.querySelector('.ac-adaptiveCard[tabindex="0"]');
+
+      if (!adaptiveCardRoot) {
+        return console.warn(
+          'botframework-webchat: No Adaptive Card root container can be found, probably on an unsupported Adaptive Card version.'
+        );
+      }
+
+      // For "keypress" event, we only listen to ENTER and SPACEBAR key.
+      if (type === 'keypress') {
+        if (key !== 'Enter' && key !== ' ') {
+          return;
+        }
+
+        event.preventDefault();
+      }
+
+      // We will call performCardAction if either:
+      // 1. We are on the target, or
+      // 2. The event-dispatching element is not interactive
+      if (target !== adaptiveCardRoot) {
         const tabIndex = getTabIndex(target);
 
         // If the user is clicking on something that is already clickable, do not allow them to click the card.
         // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
-        if (typeof tabIndex !== 'number' || tabIndex < 0) {
-          tapAction && performCardAction(tapAction);
+        if (typeof tabIndex === 'number' && tabIndex >= 0) {
+          return;
         }
       }
+
+      performCardAction(tapAction);
+      scrollToEnd();
     },
     [disabled, performCardAction, tapAction]
   );
@@ -331,10 +359,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     const { failures } = adaptiveCard.validateProperties();
 
     if (failures.length) {
-      // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
-      const errors = failures.reduce((items, { errors }) => [...items, ...errors], []);
-
-      return setError(errors);
+      return setErrors(
+        failures.reduce((items, { errors }) => [...items, ...errors.map(({ message }) => new Error(message))], [])
+      );
     }
 
     let element;
@@ -342,14 +369,15 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     try {
       element = adaptiveCard.render();
     } catch (error) {
-      return setError(error);
+      return setErrors([error]);
     }
 
     if (!element) {
-      return setError('Adaptive Card rendered as empty element');
+      return setErrors([new Error('Adaptive Card rendered as empty element')]);
     }
 
-    error && setError(null);
+    // Clear errors on next render
+    setErrors([]);
 
     restoreInputValues(element, inputValuesRef.current);
 
@@ -369,7 +397,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
       adaptiveCardElementRef.current = undefined;
     };
-  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, error, HostConfig, renderMarkdownAsHTML]);
+  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, HostConfig, renderMarkdownAsHTML, setErrors]);
 
   useEffect(() => {
     // Set onExecuteAction without causing unnecessary re-render.
@@ -404,14 +432,19 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     return () => undoStack.forEach(undo => undo && undo());
   }, [actionsPerformed, actionPerformedClassName, lastRender]);
 
-  return error ? (
-    <ErrorBox error={error} message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
-      <pre>{JSON.stringify(error, null, 2)}</pre>
+  const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
+
+  return errors.length ? (
+    <ErrorBox message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
+      {errors.map(({ error, message }, index) => (
+        <pre key={index}>{JSON.stringify({ error, message }, null, 2)}</pre>
+      ))}
     </ErrorBox>
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
-      onClick={handleClick}
+      onClick={handleClickAndKeyPressForTapAction}
+      onKeyPress={handleClickAndKeyPressForTapAction}
       ref={contentRef}
     />
   );
