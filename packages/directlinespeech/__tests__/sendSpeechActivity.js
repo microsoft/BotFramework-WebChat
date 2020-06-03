@@ -18,8 +18,8 @@ beforeEach(() => {
   global.AudioContext = MockAudioContext;
 });
 
-test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to false', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: false });
+test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to true', async () => {
+  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: true });
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
@@ -40,8 +40,8 @@ test('should echo back when saying "hello" and "world" with enableInternalHTTPSu
   `);
 });
 
-test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to true', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: true });
+test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to false', async () => {
+  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: false });
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 2));

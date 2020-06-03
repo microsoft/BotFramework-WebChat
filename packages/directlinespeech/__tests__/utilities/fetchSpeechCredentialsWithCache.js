@@ -19,7 +19,7 @@ async function fromWaterBottle({ enableInternalHTTPSupport = false }) {
     }
 
     const { token: directLineToken } = await directLineTokenResult.json();
-    
+
     return { authorizationToken, region, directLineToken };
   }
 
@@ -80,7 +80,7 @@ export default async function fetchSpeechCredentialsWithCache({
       else if (enableInternalHTTPSupport && !SPEECH_SERVICES_DIRECTLINE_SECRET) {
         throw new Error(`Failed to fetch authorization token for Direct Line as SPEECH_SERVICES_DIRECT_LINE_SECRET environment variable is not set`);
       }
-    } else {
+    } else {      
       credentialsPromise = fromWaterBottle({ enableInternalHTTPSupport });
     }
 
