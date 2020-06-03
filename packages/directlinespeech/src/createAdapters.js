@@ -6,16 +6,17 @@ import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsof
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
-import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 import refreshDirectLineToken from './utils/refreshDirectLineToken';
+import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 
+const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
 const TOKEN_RENEWAL_INTERVAL = 120000;
-const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = 900000;
 
 export default async function create({
   audioConfig,
   audioContext,
   audioInputDeviceId,
+  enableInternalHTTPSupport = false,
   enableTelemetry,
   fetchCredentials,
   speechRecognitionEndpointId,
@@ -27,24 +28,23 @@ export default async function create({
   speechSynthesisOutputFormat,
   textNormalization,
   userID,
-  username,
-  enableInternalHttpSupport = false
+  username  
 }) {
   if (!fetchCredentials) {
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, region, subscriptionKey, directLineToken } = await resolveFunctionOrReturnValue(fetchCredentials);
+  const { authorizationToken, directLineToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(fetchCredentials);
 
   if (
     (!authorizationToken && !subscriptionKey) ||
     (authorizationToken && subscriptionKey) ||
     (authorizationToken && typeof authorizationToken !== 'string') ||
     (subscriptionKey && typeof subscriptionKey !== 'string') ||
-    (enableInternalHttpSupport && !directLineToken)
+    (enableInternalHTTPSupport && !directLineToken)
   ) {
     throw new Error(
-      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If enableInternalHttpSupport = true, then it should also return a directLineToken'
+      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If enableInternalHTTPSupport is set to true, then it should also return a non-empty "directLineToken"'
     );
   }
 
@@ -110,9 +110,8 @@ export default async function create({
   }
 
   // switch to direct line endpoint on DLS service.
-  if (enableInternalHttpSupport) {
-    const endpoint = "wss://" + region + ".convai.speech.microsoft.com/directline/api/v1";
-    config.setProperty(PropertyId.SpeechServiceConnection_Endpoint, endpoint);
+  if (enableInternalHTTPSupport) {
+    config.setProperty(PropertyId.SpeechServiceConnection_Endpoint, `wss://${region}.convai.speech.microsoft.com/directline/api/v1`);
     config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
   }
   // Supported options can be found in DialogConnectorFactory.js.
@@ -185,7 +184,6 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-      dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));  // eslint-disable-line require-atomic-updates
       dialogServiceConnector.connect(); // eslint-disable-line require-atomic-updates
 
     }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);

@@ -5,12 +5,13 @@ import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSo
 import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
 import fetchSpeechData from './fetchSpeechData';
 
-export default async function createTestHarness(enableInternalHttpSupport = false) {
+export default async function createTestHarness({ 
+  enableInternalHTTPSupport = false }) {
   const audioConfig = createQueuedArrayBufferAudioSource();
   const { directLine, webSpeechPonyfillFactory } = await createAdapters({
     audioConfig,
-    fetchCredentials: fetchSpeechCredentialsWithCache(enableInternalHttpSupport),
-    enableInternalHttpSupport: enableInternalHttpSupport
+    fetchCredentials: fetchSpeechCredentialsWithCache({ enableInternalHTTPSupport }),
+    enableInternalHTTPSupport
   });
 
   return {

@@ -48,20 +48,22 @@
           }
 
           const { region, token: authorizationToken } = await res.json();
-          const dlRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-          if (!dlRes.ok) {
+          const directLineResult = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+            method: 'POST'
+          });
+          if (!directLineResult.ok) {
             throw new Error('Failed to fetch token for DirectLine.');
           }
-          const { token: directLineToken } = await dlRes.json();
+          const { token: directLineToken } = await directLineResult.json();
 
-          return { authorizationToken, region, directLineToken };
+          return { authorizationToken, directLineToken, region };
         };
 
         // Create a set of adapters for Web Chat to use with Direct Line Speech channel.
         // Please refer to /packages/directlinespeech/src/createAdapters.js for list of supported options.
         const adapters = await window.WebChat.createDirectLineSpeechAdapters({
-          fetchCredentials,
-          enableInternalHttpSupport: true
+          enableInternalHTTPSupport: true,
+          fetchCredentials
         });
 
         // Pass the set of adapters to Web Chat.
