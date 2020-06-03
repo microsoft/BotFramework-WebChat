@@ -1,5 +1,5 @@
-export default async function() {
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+export default async function(url = 'https://webchat-mockbot.azurewebsites.net/directline/token') {
+  const res = await fetch(url, { method: 'POST' });
 
   if (!res.ok) {
     throw new Error('Failed to fetch Direct Line token.');

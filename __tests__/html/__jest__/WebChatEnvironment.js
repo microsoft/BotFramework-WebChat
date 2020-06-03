@@ -4,7 +4,7 @@ const NodeEnvironment = require('jest-environment-node');
 
 const { browserName } = require('../../constants.json');
 const hostServe = require('./hostServe');
-const serveJSON = require('../serve.json');
+const serveJSON = require('../../../serve-test.json');
 
 class WebChatEnvironment extends NodeEnvironment {
   constructor(config, context) {
