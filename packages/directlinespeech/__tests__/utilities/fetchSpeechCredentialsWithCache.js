@@ -19,7 +19,7 @@ async function fromWaterBottle({ enableInternalHTTPSupport = false }) {
     }
 
     const { token: directLineToken } = await directLineTokenResult.json();
-
+    
     return { authorizationToken, region, directLineToken };
   }
 
@@ -45,10 +45,9 @@ async function fromSubscriptionKey({ region, subscriptionKey }) {
 }
 
 async function getDirectLineTokenFromSecret(channelSecret) {
-  const bearerToken = "Bearer " + channelSecret
   const res = await fetch("https://directline.botframework.com/v3/directline/tokens/generate", {
     headers: {
-      'Authorization': bearerToken
+      'Authorization': `Bearer ${channelSecret}`
     },
     method: 'POST'
   });

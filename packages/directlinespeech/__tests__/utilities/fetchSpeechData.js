@@ -19,7 +19,7 @@ export default async function fetchSpeechData({
   voice = DEFAULT_VOICE,
   volume
 }) {
-  credentials || (credentials = await fetchSpeechCredentialsWithCache());
+  credentials || (credentials = await fetchSpeechCredentialsWithCache({ enableInternalHTTPSupport: false }));
 
   const { authorizationToken, region } = credentials;
   const ssml = isSSML(text) ? text : buildSSML({ lang, pitch, rate, text, voice, volume });
