@@ -218,7 +218,7 @@ function saveInputValues(element) {
 
 const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled: disabledFromProps, tapAction }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
-  const [{ HostConfig }] = useAdaptiveCardsPackage();
+  const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [actionsPerformed, setActionsPerformed] = useState([]);
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [disabledFromComposer] = useDisabled();
@@ -324,6 +324,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
         ? new HostConfig(adaptiveCardsHostConfig)
         : adaptiveCardsHostConfig;
     }
+
+    // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is non-interactive.
+    GlobalSettings.setTabIndexAtCardRoot = !!tapAction;
 
     const { failures } = adaptiveCard.validateProperties();
 
