@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#1340](https://github.com/microsoft/BotFramework-WebChat/issues/1340). Card container should not be focusable if they do not have `tapAction`, by [@compulim](https://github.compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX)
+-  Fixes [#1340](https://github.com/microsoft/BotFramework-WebChat/issues/1340). Card container should not be focusable if they do not have `tapAction`, by [@compulim](https://github.compulim) in PR [#3193](https://github.com/microsoft/BotFramework-WebChat/issues/3193)
 
 ### Changed
 

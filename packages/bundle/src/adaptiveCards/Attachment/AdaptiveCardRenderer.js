@@ -325,7 +325,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
         : adaptiveCardsHostConfig;
     }
 
-    // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is non-interactive.
+    // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
     GlobalSettings.setTabIndexAtCardRoot = !!tapAction;
 
     const { failures } = adaptiveCard.validateProperties();
