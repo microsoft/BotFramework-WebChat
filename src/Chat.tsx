@@ -326,7 +326,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         }
 
                         if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight)) {
-                            const { bottomOffset, topOffset, rightOffset, fullHeight } = bot_display_options;
+                            const { bottomOffset, topOffset, rightOffset, fullHeight, display_name } = bot_display_options;
 
                             this.store.dispatch({
                                 type: 'Set_Format_Options',
@@ -334,7 +334,8 @@ export class Chat extends React.Component<ChatProps, State> {
                                     bottomOffset,
                                     topOffset,
                                     rightOffset,
-                                    fullHeight
+                                    fullHeight,
+                                    display_name
                                 }
                             });
                         }
@@ -455,6 +456,20 @@ export class Chat extends React.Component<ChatProps, State> {
         }
     }
 
+    private calculateChatviewPanelStyle = (format: FormatOptions) => {
+        const fullHeight = format && format.fullHeight;
+        const bottomOffset = fullHeight ? 0 : (format && format.bottomOffset ? format.bottomOffset + 99 : 17);
+        const topOffset = format && format.topOffset ? format.topOffset : 0;
+        const rightOffset = fullHeight ? 0 : (format && format.rightOffset ? format.rightOffset : -1);
+        const height = fullHeight ? '100vh' : `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
+
+        return {
+            bottom: bottomOffset,
+            height,
+            ...(rightOffset !== -1 || (format && format.fullHeight)) && {right: rightOffset}
+        };
+    }
+
     // At startup we do three render passes:
     // 1. To determine the dimensions of the chat panel (nothing needs to actually render here, so we don't)
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
@@ -464,11 +479,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
 
-        const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : 109;
-        const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
-        const rightOffset = state.format && state.format.rightOffset ? state.format.rightOffset : 0;
-        const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
-        const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', borderRadius: 0, right: rightOffset } : { bottom: bottomOffset, height, right: rightOffset };
+        const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
 
         // only render real stuff after we know our dimensions
         return (

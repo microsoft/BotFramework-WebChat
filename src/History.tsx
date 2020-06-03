@@ -104,6 +104,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             lastMessage={false}
             format={ null }
             fromMe={ false }
+            displayName={ false }
             onClickActivity={ null }
             onClickRetry={ null }
             selected={ false }
@@ -145,9 +146,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             nextActivityFromMe={ index + 1 < activities.length ? this.props.isFromMe(activities[index + 1]) : false}
                             doCardAction={this.doCardAction}
                             lastMessage={index === activities.length - 1}
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            showTimestamp={ index === activities.length - 1 || (index + 1 < activities.length && suitableInterval(activity, activities[index + 1])) }
                             selected={ this.props.isSelected(activity) }
                             fromMe={ this.props.isFromMe(activity) }
+                            displayName={ index === 0 || (!this.props.isFromMe(activity) && this.props.isFromMe(activities[index - 1]))}
                             onClickActivity={ this.props.onClickActivity(activity) }
                             onClickRetry={e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -273,6 +275,7 @@ const findInitial = (title: string): string => {
 export interface WrappedActivityProps {
     activity: Activity;
     nextActivityFromMe: boolean;
+    displayName: boolean;
     showTimestamp: boolean;
     selected: boolean;
     fromMe: boolean;
@@ -382,11 +385,13 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         const avatarColor = this.props.format && this.props.format.themeColor ? this.props.format.themeColor : '#c3ccd0';
-        const avatarInitial = this.props.format && this.props.format.chatTitle && typeof(this.props.format.chatTitle) === 'string' ? findInitial(this.props.format.chatTitle) : 'G';
+        const avatarInitial = this.props.format && this.props.format.display_name && typeof(this.props.format.display_name) === 'string' ? findInitial(this.props.format.display_name) : 'B';
         const showAvatar = this.props.fromMe === false && (this.props.nextActivityFromMe || this.props.lastMessage);
+        const showName = this.props.fromMe === false;
         return (
             <div className={`wc-message-pane from-${who}`}
               >
+                {(this.props.displayName && <span className="wc-message-bot-name">{this.props.format && this.props.format.display_name ? this.props.format.display_name : 'Bot'}</span>)}
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
                     {(showAvatar ?
                       <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>

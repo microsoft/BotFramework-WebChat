@@ -48,11 +48,16 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
     render() {
         const { visible, activity, logoColor, bottomOffset, rightOffset } = this.props;
 
+        const floatingIconStyle = {
+          ...(bottomOffset > 0) && { bottom: bottomOffset },
+          ...(rightOffset > 0) && { right: rightOffset}
+        };
+
         return (
             <div
                 className="wc-floating-wrap"
                 onClick={() => this.props.clicked() }
-                style={{bottom: bottomOffset, right: rightOffset }}
+                style={floatingIconStyle}
             >
                 {activity && activity.text !== '' && (
                     <span className={`wc-floating-message ${visible && activity != null ? 'visible' : '' }`}>
