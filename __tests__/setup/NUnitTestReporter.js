@@ -185,9 +185,11 @@ class NUnitTestReporter {
       { minStartTime: Infinity, maxEndTime: -Infinity }
     );
 
-    xml['test-run']['@start-time'] = new Date(minStartTime).toISOString();
-    xml['test-run']['@end-time'] = new Date(maxEndTime).toISOString();
-    xml['test-run']['@duration'] = Math.max(0, maxEndTime - minStartTime) / 1000;
+    if (isFinite(minStartTime) && isFinite(maxEndTime)) {
+      xml['test-run']['@start-time'] = new Date(minStartTime).toISOString();
+      xml['test-run']['@end-time'] = new Date(maxEndTime).toISOString();
+      xml['test-run']['@duration'] = Math.max(0, maxEndTime - minStartTime) / 1000;
+    }
 
     xml['test-run']['test-suite'] = xml['test-run']['test-suite'].map(testSuite => {
       const { 'test-case': testCases } = testSuite;
