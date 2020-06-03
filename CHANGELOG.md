@@ -22,8 +22,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#1340](https://github.com/microsoft/BotFramework-WebChat/issues/1340). Card container should not be focusable if they do not have `tapAction`, by [@compulim](https://github.compulim) in PR [#3193](https://github.com/microsoft/BotFramework-WebChat/issues/3193)
+-  Fixed [#3196](https://github.com/microsoft/BotFramework-WebChat/issues/3196). Cards with `tapAction` should be executable by <kbd>ENTER</kbd> or <kbd>SPACEBAR</kbd> key, by [@compulim](https://github.com/compulim) in PR [#3197](https://github.com/microsoft/BotFramework-WebChat/pull/3197)
+
 ### Changed
 
+-  Bumped Adaptive Cards dependencies, by [@compulim](https://github.com/compulim) in PR [#3193](https://github.com/microsoft/BotFramework-WebChat/pull/3193)
+   -  [`adaptivecards@1.2.6`](https://npmjs.com/package/adaptivecards)
 -  Bumped dependencies due to [a bug in Babel and Node.js](https://github.com/nodejs/node/issues/32852), by [@compulim](https://github.com/compulim) in PR [#3177](https://github.com/microsoft/BotFramework-WebChat/pull/3177)
    -  Development dependencies
       -  [`@babel/preset-env@7.10.0`](https://npmjs.com/package/@babel/preset-env)

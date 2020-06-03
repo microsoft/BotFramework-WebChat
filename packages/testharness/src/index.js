@@ -38,6 +38,21 @@ import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
 import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
 
+function waitForFinishKey() {
+  const { promise, resolve } = createDeferred();
+  const handler = event => {
+    (event.code === 'CapsLock' || event.code === 'ShiftRight') && resolve();
+  };
+
+  window.addEventListener('keyup', handler);
+
+  log('WebChatTest: After you complete the last step, press CAPSLOCK or right SHIFT key to continue.');
+
+  return promise.finally(() => {
+    window.removeEventListener('keyup', handler);
+  });
+}
+
 window.Babel.registerPlugin(
   '@babel/plugin-proposal-async-generator-functions',
   BabelPluginProposalAsyncGeneratorFunctions
@@ -78,18 +93,22 @@ if (!webDriverMode) {
           break;
 
         case 'send keys':
-          log(`WebChatTest: Please press this key sequence: ${job.payload.keys.join(', ')}.`);
-          await sleep(1000);
+          log(
+            `WebChatTest: Please press this key sequence: ${job.payload.keys
+              .map(key => (key === '\n' ? 'ENTER' : key === ' ' ? 'SPACEBAR' : key))
+              .join(', ')}.`
+          );
+          await waitForFinishKey();
           break;
 
         case 'send shift tab':
           log(`WebChatTest: Please press SHIFT-TAB key.`);
-          await sleep(1000);
+          await waitForFinishKey();
           break;
 
         case 'send tab':
           log(`WebChatTest: Please press TAB key.`);
-          await sleep(1000);
+          await waitForFinishKey();
           break;
 
         default:
