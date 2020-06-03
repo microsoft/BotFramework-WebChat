@@ -212,7 +212,7 @@ export interface FormatState {
     topOffset: number;
     rightOffset: number;
     fullHeight: boolean;
-    display_name: boolean | string;
+    display_name: string;
 }
 
 export type FormatAction = {

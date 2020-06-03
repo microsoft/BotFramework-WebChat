@@ -325,7 +325,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
-                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight)) {
+                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight || bot_display_options.display_name)) {
                             const { bottomOffset, topOffset, rightOffset, fullHeight, display_name } = bot_display_options;
 
                             this.store.dispatch({

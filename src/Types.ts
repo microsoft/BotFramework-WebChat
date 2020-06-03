@@ -6,6 +6,7 @@ export interface FormatOptions {
     topOffset?: number;
     rightOffset?: number;
     fullHeight?: boolean;
+    display_name?: string;
 }
 
 export interface ActivityOrID {

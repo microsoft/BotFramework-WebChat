@@ -387,7 +387,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const avatarColor = this.props.format && this.props.format.themeColor ? this.props.format.themeColor : '#c3ccd0';
         const avatarInitial = this.props.format && this.props.format.display_name && typeof(this.props.format.display_name) === 'string' ? findInitial(this.props.format.display_name) : 'B';
         const showAvatar = this.props.fromMe === false && (this.props.nextActivityFromMe || this.props.lastMessage);
-        const showName = this.props.fromMe === false;
+
         return (
             <div className={`wc-message-pane from-${who}`}
               >
