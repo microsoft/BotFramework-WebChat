@@ -1,5 +1,6 @@
 export default function createScrollToEndButtonStyle({
   paddingRegular,
+  primaryFont,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnFocus,
   transcriptOverlayButtonBackgroundOnHover,
@@ -19,6 +20,7 @@ export default function createScrollToEndButtonStyle({
     borderWidth: 0,
     bottom: 5,
     color: transcriptOverlayButtonColor,
+    fontFamily: primaryFont,
     outline: 0,
     padding: paddingRegular,
     position: 'absolute',
