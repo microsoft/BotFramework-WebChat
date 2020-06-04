@@ -7,7 +7,7 @@ import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
-import { safari } from '../utils/detectBrowser';
+import { safari } from '../Utils/detectBrowser';
 
 const ScrollToEndButton = forwardRef(
   (
