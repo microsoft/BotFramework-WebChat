@@ -6,7 +6,7 @@ Customize Web Chat into a smart display for hosting voice assistant via Direct L
 
 This app is built with `create-react-app`.
 
-![Screenshot of smart display sample](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/06.recomposing-ui/c.smart-display/docs/screenshot1.png
+![Screenshot of smart display sample](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/06.recomposing-ui/c.smart-display/docs/screenshot1.png)
 
 # Test out the hosted sample
 
