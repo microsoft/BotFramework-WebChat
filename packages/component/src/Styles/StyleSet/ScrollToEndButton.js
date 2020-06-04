@@ -1,4 +1,5 @@
 export default function createScrollToEndButtonStyle({
+  newMessagesButtonFontSize,
   paddingRegular,
   primaryFont,
   transcriptOverlayButtonBackground,
@@ -21,6 +22,7 @@ export default function createScrollToEndButtonStyle({
     bottom: 5,
     color: transcriptOverlayButtonColor,
     fontFamily: primaryFont,
+    fontSize: newMessagesButtonFontSize,
     outline: 0,
     padding: paddingRegular,
     position: 'absolute',
