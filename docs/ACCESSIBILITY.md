@@ -117,15 +117,15 @@ When the "New messages" button is clicked:
 
 ### ARIA role "separator"
 
-We are using the [ARIA role "separator"](https://www.w3.org/TR/wai-aria-1.1/#separator) for the "New messages" button. This is because the button serves as a visible boundary between read and unread messages, similar to an [horizontal ruler](https://www.w3.org/TR/html52/grouping-content.html#the-hr-element). Per [HTML 5.2 specifications](https://www.w3.org/TR/html52/grouping-content.html#the-li-element), separator role is allowed to use in the `<li>` element.
+We are using the [ARIA role "separator"](https://www.w3.org/TR/wai-aria-1.1/#separator) for the "New messages" button. This is because the button serves as a visible boundary between read and unread messages, similar to a [horizontal ruler](https://www.w3.org/TR/html52/grouping-content.html#the-hr-element). Per [HTML 5.2 specifications](https://www.w3.org/TR/html52/grouping-content.html#the-li-element), the separator role is allowed to be used in the `<li>` element.
 
 The separator role has a property called [children presentational](https://www.w3.org/TR/wai-aria-1.1/#childrenArePresentational). This property hides all children from assistive technology. Its effect is very similar to setting `role="presentation"` to all descendants and is not overrideable. Thus, it prevented us from using `<button>` widget inside the `<li role="separator">` element.
 
 Fortunately, the separator role has two modes of operation: static structure or focusable widget. The "New messages" button is using the latter mode, which supports interactivity and movement.
 
-When the "New messages" separator is being activated, it logically move the separator to the bottom of the page, thus, marking all messages as read. And we only support one direction and one amount of movement.
+When the "New messages" separator is activated, it logically moves the separator to the bottom of the page, thus, marking all messages as read. And we only support one direction and one amount of movement.
 
-Lastly, we style the "New messages" separator like a normal button and float on top of the transcript. And added `click` and `keypress` event listener for <kbd>ENTER</kbd> and <kbd>SPACEBAR</kbd> key for [activation](https://www.w3.org/TR/wai-aria-practices-1.1/#button).
+Lastly, we style the "New messages" separator like a normal button, styled it to float on top of the transcript, and added `click` and `keypress` event listener for <kbd>ENTER</kbd> and <kbd>SPACEBAR</kbd> key for [activation](https://www.w3.org/TR/wai-aria-practices-1.1/#button).
 
 ## Do and don't
 
