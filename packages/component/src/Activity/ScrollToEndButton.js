@@ -53,9 +53,9 @@ const ScrollToEndButton = forwardRef(
           className + '',
           direction === 'rtl' ? 'webchat__overlay--rtl' : ''
         )}
-        ref={ref}
         onClick={handleClick}
         onKeyPress={handleKeyPress}
+        ref={ref}
         // iOS VoiceOver does not support role="separator" and treat it as role="presentation", which become invisible to VoiceOver.
         role={safari ? undefined : 'separator'}
         tabIndex={0}
@@ -71,6 +71,8 @@ ScrollToEndButton.defaultProps = {
   className: '',
   onClick: undefined
 };
+
+ScrollToEndButton.displayName = 'ScrollToEndButton';
 
 ScrollToEndButton.propTypes = {
   'aria-valuemax': PropTypes.number.isRequired,
