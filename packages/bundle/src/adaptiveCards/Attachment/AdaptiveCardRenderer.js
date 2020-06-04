@@ -400,7 +400,16 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
       adaptiveCardElementRef.current = undefined;
     };
-  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, HostConfig, renderMarkdownAsHTML, setErrors]);
+  }, [
+    adaptiveCard,
+    adaptiveCardsHostConfig,
+    contentRef,
+    GlobalSettings,
+    HostConfig,
+    renderMarkdownAsHTML,
+    setErrors,
+    tapAction
+  ]);
 
   useEffect(() => {
     // Set onExecuteAction without causing unnecessary re-render.
@@ -438,6 +447,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   return errors.length ? (
     <ErrorBox message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
       {errors.map(({ error, message }, index) => (
+        /* eslint-disable-next-line react/no-array-index-key */
         <pre key={index}>{JSON.stringify({ error, message }, null, 2)}</pre>
       ))}
     </ErrorBox>
