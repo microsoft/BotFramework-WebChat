@@ -1,10 +1,10 @@
-import fetchDirectLineAppServiceExtensionCredentials from './fetchDirectLineAppServiceExtensionCredentials';
+import fetchDirectLineAppServiceExtensionToken from './fetchDirectLineAppServiceExtensionToken';
 import fetchDirectLineSpeechCredentials from './fetchDirectLineSpeechCredentials';
 import fetchDirectLineToken from './fetchDirectLineToken';
 import fetchSpeechServicesCredentials from './fetchSpeechServicesCredentials';
 
 export {
-  fetchDirectLineAppServiceExtensionCredentials,
+  fetchDirectLineAppServiceExtensionToken,
   fetchDirectLineSpeechCredentials,
   fetchDirectLineToken,
   fetchSpeechServicesCredentials

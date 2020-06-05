@@ -12,7 +12,8 @@
       (async function() {
         window.WebChat.renderWebChat(
           {
-            directLine: await window.WebChat.createDirectLine({
+            directLine: await window.WebChat.createDirectLineAppServiceExtension({
+              domain: 'https://webchat-mockbot2.azurewebsites.net/.bot/v3/directline',
               token: await token.fetchDirectLineAppServiceExtensionToken()
             }),
             store: createStore()
@@ -22,7 +23,7 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
 
         await host.snapshot();
         await host.done();
