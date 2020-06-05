@@ -160,7 +160,9 @@ class NUnitTestReporter {
                           '#cdata-section': error
                             ? ErrorStackParser.parse(error)
                                 .map(stackFrame => {
-                                  stackFrame.setFileName(relative(join(__dirname, '..', '..'), stackFrame.fileName));
+                                  stackFrame.setFileName(
+                                    relative(join(__dirname, '..', '..'), stackFrame.fileName || '.')
+                                  );
 
                                   return stackFrame + '';
                                 })

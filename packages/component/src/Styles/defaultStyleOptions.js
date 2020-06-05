@@ -122,6 +122,7 @@ const DEFAULT_OPTIONS = {
   timestampFormat: 'relative', // 'absolute'
 
   // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
+  newMessagesButtonFontSize: '85%',
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
