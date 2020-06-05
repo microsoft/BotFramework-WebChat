@@ -22,7 +22,7 @@ class WebChatEnvironment extends NodeEnvironment {
 
     this.global.abortSignal = signal;
 
-    if (this.global.docker) {
+    if (!this.global.docker) {
       const { port } = await hostServe(signal, {
         ...serveJSON,
         public: '.'
