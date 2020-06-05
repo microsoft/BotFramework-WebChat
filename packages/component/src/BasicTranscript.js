@@ -93,7 +93,6 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
   const focus = useFocus();
-  const listRef = useRef();
   const renderAttachment = useRenderAttachment();
   const renderActivity = useRenderActivity(renderAttachment);
   const renderActivityElement = useCallback(
@@ -104,14 +103,15 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
       }),
     [renderActivity]
   );
+  const scrollToEndButtonRef = useRef();
 
   const handleScrollToEndButtonClick = useCallback(() => {
-    const { current } = listRef;
+    const { current } = scrollToEndButtonRef;
 
     // After clicking on the "New messages" button, we should focus on the first unread element.
     // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
     if (current) {
-      const nextSiblings = nextSiblingAll(current.querySelector('li[role="separator"]'));
+      const nextSiblings = nextSiblingAll(current);
 
       const firstUnreadTabbable = nextSiblings.reduce(
         (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
@@ -120,7 +120,7 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
 
       firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
-  }, [focus, listRef]);
+  }, [focus, scrollToEndButtonRef]);
 
   const memoizeRenderActivityElement = useMemoize(renderActivityElement);
 
@@ -194,7 +194,6 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
         aria-live="polite"
         aria-relevant="additions"
         className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
-        ref={listRef}
         role="list"
       >
         {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
@@ -205,9 +204,12 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
             </li>
             {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
             {index === renderSeparatorAfterIndex && (
-              <li role="separator">
-                <ScrollToEndButton onClick={handleScrollToEndButtonClick} />
-              </li>
+              <ScrollToEndButton
+                aria-valuemax={activityElementsWithMetadata.length}
+                aria-valuenow={index + 1}
+                onClick={handleScrollToEndButtonClick}
+                ref={scrollToEndButtonRef}
+              />
             )}
           </React.Fragment>
         ))}

@@ -63,7 +63,7 @@
 
         const newMessageButton = elements.newMessageButton();
 
-        expect(listItems[2].children[0]).toBe(newMessageButton);
+        expect(listItems[2]).toBe(newMessageButton);
 
         await host.snapshot();
         await host.done();

@@ -208,9 +208,9 @@ View the [telemetry documentation](https://github.com/microsoft/BotFramework-Web
 
 Web Chat supports a wide-range of speech engines for a natural chat experience with a bot. This section outlines the different engines that are supported:
 
-- [Direct Line Speech](#integrate-with-direct-line-speech)
-- [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
-- [Browser-provided engine or other engines](#browser-provided-engine-or-other-engines)
+-  [Direct Line Speech](#integrate-with-direct-line-speech)
+-  [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
+-  [Browser-provided engine or other engines](#browser-provided-engine-or-other-engines)
 
 ### Integrate with Direct Line Speech
 
