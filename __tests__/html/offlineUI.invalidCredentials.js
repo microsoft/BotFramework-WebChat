@@ -4,5 +4,5 @@
 
 describe('offline UI', () => {
   test('should show "unable to connect" UI when credentials are incorrect', () =>
-    runHTMLTest('offlineUI.invalidCredentials.html'));
+    runHTMLTest('offlineUI.invalidCredentials.html', { ignorePageError: true }));
 });

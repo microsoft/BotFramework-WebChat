@@ -54,9 +54,7 @@ test('timestamp should update time', async () => {
 
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
-  await driver.executeScript(() => {
-    window.WebChatTest.clock.tick(330000); // t = 5.5 minutes
-  });
+  await driver.executeScript(() => window.WebChatTest.clock.tick(330000)); // t = 5.5 minutes
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
@@ -139,6 +137,8 @@ test('change send timeout on-the-fly', async () => {
   await driver.executeScript(() => window.WebChatTest.clock.tick(1000));
 
   await driver.wait(uiConnected(), timeouts.directLine);
+  await driver.executeScript(() => window.WebChatTest.clock.tick(1));
+
   await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
 
   await driver.executeScript(() => window.WebChatTest.clock.tick(5000));
@@ -219,6 +219,8 @@ test('send timeout for attachment should be different', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendFile('empty.zip', { waitForSend: false });
+
+  await driver.executeScript(() => window.WebChatTest.clock.tick(1));
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
