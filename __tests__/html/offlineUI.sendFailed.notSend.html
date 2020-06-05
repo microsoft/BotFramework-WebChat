@@ -48,19 +48,16 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
 
         clock.tick(400);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        clock.tick(1);
-
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
         await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
 
         clock.tick(20000);
 
-        await pageObjects.wait(allOutgoingMessagesFailed(), timeouts.postActivity);
+        await pageObjects.waitWithTick(allOutgoingMessagesFailed(), clock, timeouts.postActivity);
 
         await host.snapshot();
         await host.done();

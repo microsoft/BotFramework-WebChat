@@ -48,26 +48,24 @@
 
         const { updateProps } = await createWebChat();
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
 
         // Advance 1 second for the connection status prompt to be gone.
         clock.tick(1000);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        clock.tick(1);
-
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
 
         clock.tick(5000);
 
-        await pageObjects.wait(
+        await pageObjects.waitWithTick(
           {
             message: 'turn into "Send failed. Retry.',
             fn: () =>
               document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
               'Send failed. Retry.'
           },
+          clock,
           timeouts.ui
         );
 
@@ -76,12 +74,13 @@
 
         updateProps(props => updateIn(props, ['styleOptions', 'sendTimeout'], () => 10000));
 
-        await pageObjects.wait(
+        await pageObjects.waitWithTick(
           {
             message: 'turn into "Sending"',
             fn: () =>
               document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText === 'Sending'
           },
+          clock,
           timeouts.ui
         );
 
@@ -90,13 +89,14 @@
 
         clock.tick(5000);
 
-        await pageObjects.wait(
+        await pageObjects.waitWithTick(
           {
             message: 'turn into "Send failed. Retry.',
             fn: () =>
               document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
               'Send failed. Retry.'
           },
+          clock,
           timeouts.ui
         );
 

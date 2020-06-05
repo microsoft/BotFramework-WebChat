@@ -59,23 +59,18 @@
 
         const { updateProps } = await createWebChat();
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
 
         // Advance 1 second for the connection status prompt to be gone.
         clock.tick(1000);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        clock.tick(1);
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
 
         const fileBlob = new Blob([new ArrayBuffer(0)]);
 
         fileBlob.name = 'empty.zip';
 
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-
-        clock.tick(1);
-
         await host.snapshot();
 
         clock.tick(20000);

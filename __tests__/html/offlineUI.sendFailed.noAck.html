@@ -9,53 +9,57 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
 
+      function allOutgoingMessagesFailed() {
+        return {
+          message: 'All outgoing messages to fail sending',
+          fn: () =>
+            pageObjects
+              .getActivities()
+              .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
+              .every(({ channelData: { state } }) => state === 'send failed')
+        };
+      }
+
+      function createDirectLineForTest(options) {
+        const workingDirectLine = window.WebChat.createDirectLine(options);
+        const bannedClientActivityIDs = [];
+        const { activity$, postActivity } = workingDirectLine;
+
+        workingDirectLine.activity$ = shareObservable(
+          new Observable(observer => {
+            const subscription = activity$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: activity => {
+                console.log(activity);
+
+                const { channelData: { clientActivityID } = {} } = activity;
+
+                !bannedClientActivityIDs.includes(clientActivityID) && observer.next(activity);
+              }
+            });
+
+            return () => subscription.unsubscribe();
+          })
+        );
+
+        workingDirectLine.postActivity = activity => {
+          const {
+            channelData: { clientActivityID },
+            type
+          } = activity;
+
+          type === 'message' && bannedClientActivityIDs.push(clientActivityID);
+
+          console.log('posting', activity);
+
+          return postActivity.call(workingDirectLine, activity);
+        };
+
+        return workingDirectLine;
+      }
+
       (async function() {
-        function allOutgoingMessagesFailed() {
-          return {
-            message: 'All outgoing messages to fail sending',
-            fn: () =>
-              pageObjects
-                .getActivities()
-                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed')
-          };
-        }
-
-        function createDirectLineForTest(options) {
-          const workingDirectLine = window.WebChat.createDirectLine(options);
-          const bannedClientActivityIDs = [];
-
-          return {
-            ...workingDirectLine,
-            activity$: shareObservable(
-              new Observable(observer => {
-                const subscription = workingDirectLine.activity$.subscribe({
-                  complete: () => observer.complete(),
-                  error: err => observer.error(err),
-                  next: activity => {
-                    const { channelData: { clientActivityID } = {} } = activity;
-
-                    !bannedClientActivityIDs.includes(clientActivityID) && observer.next(activity);
-                  }
-                });
-
-                return () => subscription.unsubscribe();
-              })
-            ),
-            connectionStatus$: workingDirectLine.connectionStatus$,
-            postActivity: activity => {
-              const {
-                channelData: { clientActivityID },
-                type
-              } = activity;
-
-              type === 'message' && bannedClientActivityIDs.push(clientActivityID);
-
-              return workingDirectLine.postActivity(activity);
-            }
-          };
-        }
-
         const clock = lolex.install();
 
         window.WebChat.renderWebChat(
@@ -67,23 +71,17 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
 
         clock.tick(400);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        clock.tick(1); // DirectLineJS required 1ms wait for RxJS AsyncScheduler
-
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
         await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
-
-        clock.tick(1); // DirectLineJS required 1ms wait for RxJS AsyncScheduler
-
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.postActivity);
+        await pageObjects.waitWithTick(conditions.minNumActivitiesShown(2), clock, timeouts.postActivity);
 
         clock.tick(20000);
 
-        await pageObjects.wait(allOutgoingMessagesFailed(), timeouts.postActivity);
+        await pageObjects.waitWithTick(allOutgoingMessagesFailed(), clock, timeouts.postActivity);
 
         await host.snapshot();
         await host.done();
