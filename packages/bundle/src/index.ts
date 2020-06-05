@@ -14,6 +14,7 @@ import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognit
 import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
+import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
 import FullComposer from './FullComposer';
 import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
 import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';
@@ -33,7 +34,17 @@ export const createDirectLine = options => {
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
+
   return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
+};
+
+export const createDirectLineAppServiceExtension = options => {
+  options.botAgent &&
+    console.warn(
+      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
+    );
+
+  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
 const patchedHooks = {
@@ -75,6 +86,7 @@ window['WebChat'] = {
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLine,
+  createDirectLineAppServiceExtension,
   createDirectLineSpeechAdapters,
   createStyleSet,
   hooks: patchedHooks,

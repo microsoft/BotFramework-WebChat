@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "adaptivecards": "1.2.5",
-    "botframework-directlinejs": "^0.11.6",
+    "botframework-directlinejs": "0.12.0",
     "botframework-webchat": "0.0.0-0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
