@@ -13,6 +13,7 @@ import sendMessageViaSendBox from './sendMessageViaSendBox';
 import typeInSendBox from './typeInSendBox';
 import verifyDOMIntegrity from './verifyDOMIntegrity';
 import wait from './wait';
+import waitWithTick from './waitWithTick';
 
 export {
   clickMicrophoneButton,
@@ -29,5 +30,6 @@ export {
   sendMessageViaSendBox,
   typeInSendBox,
   verifyDOMIntegrity,
-  wait
+  wait,
+  waitWithTick
 };

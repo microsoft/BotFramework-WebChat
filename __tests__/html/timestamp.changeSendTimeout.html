@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token, updateIn } = window.WebChatTest;
+
+      (async function() {
+        function createDirectLineForTest(options) {
+          const workingDirectLine = window.WebChat.createDirectLine(options);
+
+          return {
+            activity$: workingDirectLine.activity$,
+            connectionStatus$: workingDirectLine.connectionStatus$,
+            postActivity: activity =>
+              activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
+          };
+        }
+
+        const clock = lolex.install();
+
+        window.clock = clock;
+
+        async function createWebChat() {
+          let props = {
+            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
+            store: createStore(),
+            styleOptions: {
+              sendTimeout: 5000
+            }
+          };
+
+          const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+
+          render();
+
+          return {
+            updateProps: updater => {
+              props = updater(props);
+              render(props);
+            }
+          };
+        }
+
+        const { updateProps } = await createWebChat();
+
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
+
+        // Advance 1 second for the connection status prompt to be gone.
+        clock.tick(1000);
+
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+
+        clock.tick(5000);
+
+        await pageObjects.waitWithTick(
+          {
+            message: 'turn into "Send failed. Retry.',
+            fn: () =>
+              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+              'Send failed. Retry.'
+          },
+          clock,
+          timeouts.ui
+        );
+
+        // After 5 seconds, it should show timeout.
+        await host.snapshot();
+
+        updateProps(props => updateIn(props, ['styleOptions', 'sendTimeout'], () => 10000));
+
+        await pageObjects.waitWithTick(
+          {
+            message: 'turn into "Sending"',
+            fn: () =>
+              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText === 'Sending'
+          },
+          clock,
+          timeouts.ui
+        );
+
+        // After changing the send timeout to 10 seconds, it should show "sending".
+        await host.snapshot();
+
+        clock.tick(5000);
+
+        await pageObjects.waitWithTick(
+          {
+            message: 'turn into "Send failed. Retry.',
+            fn: () =>
+              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+              'Send failed. Retry.'
+          },
+          clock,
+          timeouts.ui
+        );
+
+        // After 10 seconds, it should show timeout again.
+        await host.snapshot();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
