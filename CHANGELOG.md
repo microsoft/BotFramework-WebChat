@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixed [#3196](https://github.com/microsoft/BotFramework-WebChat/issues/3196). Cards with `tapAction` should be executable by <kbd>ENTER</kbd> or <kbd>SPACEBAR</kbd> key, by [@compulim](https://github.com/compulim) in PR [#3197](https://github.com/microsoft/BotFramework-WebChat/pull/3197)
 -  Fixed [#3203](https://github.com/microsoft/BotFramework-WebChat/issues/3203). "New messages" button should be narrated by assistive technology, by [@compulim](https://github.com/compulim) in PR [#3204](https://github.com/microsoft/BotFramework-WebChat/pull/3204)
 -  Fixed [#3217](https://github.com/microsoft/BotFramework-WebChat/issues/3217). Make sure `rel="noopener noreferrer` is not sanitized, by [@compulim](https://github.com/compulim) in PR [#3220](https://github.com/microsoft/BotFramework-WebChat/pull/3220)
--  Fixed [#3223](https://github.com/microsoft/BotFramework-WebChat/issues/3223). Tap an `openUrl` card action should open URL in a new tab with `noopener noreferrer` set, by [@compulim] in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixed [#3223](https://github.com/microsoft/BotFramework-WebChat/issues/3223). Tap an `openUrl` card action should open URL in a new tab with `noopener noreferrer` set, by [@compulim](https://github.com/compulim) in PR [#3224](https://github.com/microsoft/BotFramework-WebChat/pull/3224)
 
 ### Changed
 
