@@ -27,9 +27,9 @@ A simple web page with Web Chat connected to a bot via [Direct Line App Service 
 
 ### Goals of this bot
 
-This code features the Direct Line App Service Extension protocol (Direct Line ASE). Additional steps required to set up a bot to use Direct Line App Service Extension can be found [in this documentation](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline-extension?view=azure-bot-service-4.0).
+This code features the Direct Line App Service Extension protocol (Direct Line ASE). Additional steps required to set up a bot to use Direct Line App Service Extension can be found in the [DL ASE documentation](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline-extension?view=azure-bot-service-4.0).
 
-The `index.html` page has few main goals.
+The `index.html` page has the following main goals:
 
 -  To import the Web Chat bundle CDN script
 -  [Obtain a Direct Line ASE-specific token](obtain-a-direct-line-ase-specific-token)
