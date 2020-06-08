@@ -23,9 +23,9 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(3));
 
         const externalLink = elements.transcript().querySelector('li:last-child a');
-        const relationship = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
+        const relationships = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
 
-        expect(relationship).toEqual(['noopener', 'noreferrer']);
+        expect(relationships).toEqual(['noopener', 'noreferrer']);
 
         await host.snapshot();
         await host.done();
