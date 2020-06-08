@@ -7,7 +7,7 @@ import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
-    a: ['aria-label', 'href', 'name', 'target', 'title'],
+    a: ['aria-label', 'href', 'name', 'rel', 'target', 'title'],
     img: ['alt', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -80,6 +80,7 @@ export default function render(markdown, { markdownRespectCRLF }) {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
+
   const html = customMarkdownIt.render(markdown);
 
   return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
