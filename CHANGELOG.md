@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### [4.9.1] - 2020-06-09
+
 ### Breaking changes
 
 -  Affecting Adaptive Cards, legacy cards and suggested actions
