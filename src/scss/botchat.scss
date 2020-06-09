@@ -479,6 +479,64 @@
         .wc-message-date &, .wc-message-handoff & {
             padding:0 !important;
         }
+
+        
+        .contact__form__card {
+          $contact_padding_v: 8px;
+          $contact_width: 260px;
+          width: $contact_width;
+
+          &__container {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: $contact_padding_v + 2px;
+
+            &__input {
+              width: 100%;
+              padding-left: $contact_padding_v;
+              border-radius: $contact_padding_v;
+              border-width: 1px;
+              border-color: $gideon-light-grey;
+              height: 2em;
+              outline-style: none;
+            }
+
+            &__title {
+              padding-bottom: $contact_padding_v - 2px;
+            }
+
+            &__error {
+              padding-top: 6px;
+              color: red;
+            }
+          }
+
+          &__line__break {
+            height: 1px;
+            color: $gideon-light-grey;
+            padding-left: 2px;
+            padding-right: 2px;
+            background: $gideon-light-grey;
+            border: none;
+          }
+    
+          &__submit {
+            width: 70%;
+            margin-top: $contact_padding_v;
+            margin-left:15%;
+            height: 2em;
+            border-radius: 6px;
+            border-width: 1px;
+            border-color: $gideon-light-grey;
+            color: $gideon-dark-blue;
+            background-color: white;
+          }
+
+          &__submit:hover {
+            background-color: $gideon-dark-blue;
+            color: white;
+          }
+        }
       }
 
     .wc-message-content.clickable {
@@ -512,8 +570,6 @@
         font-size: 11px;
         margin-top: 5px;
     }
-
-
 
 /* cards */
 

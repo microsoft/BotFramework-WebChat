@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { IDoCardAction } from './Chat';
+import { ContactFormCard } from './ContactFormCard';
 import { DatePickerCard } from './DatePickerCard';
 import { FileUploadCard } from './FileUploadCard';
 import { FormattedText } from './FormattedText';
@@ -67,6 +68,34 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 && this.props.size !== nextProps.size);
     }
 
+    addFormattedKey = (currentText: string, key: string, json: { [key: string]: string }) => {
+      if (!(key in json)) {
+        return currentText;
+      }
+      const newLine = key + ': ' + json[key];
+      if (currentText !== '') {
+        return currentText.concat('\n', newLine);
+      }
+      return currentText.concat(newLine);
+    }
+
+    // specifically for contact response
+    // but will format any json to display the key pairs set
+    formatText = (text: string) => {
+      try {
+        const o = JSON.parse(text);
+        let formattedText = '';
+        if (o && typeof o === 'object') {
+          formattedText = this.addFormattedKey(formattedText, 'name', o);
+          formattedText = this.addFormattedKey(formattedText, 'email', o);
+          formattedText = this.addFormattedKey(formattedText, 'phone', o);
+          return formattedText;
+        }
+      } catch (e) {
+        return text;
+      }
+    }
+
     render() {
         const { activity, type, ...props } = this.props;
 
@@ -74,7 +103,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             return (
                 <div>
                     <FormattedText
-                        text={ activity.text }
+                        text={ this.formatText(activity.text) }
                         format={ activity.textFormat }
                         onImageLoad={ props.onImageLoad }
                     />
@@ -104,6 +133,11 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             return (
                 <MultipleChoiceCard { ...props } />
             );
+        } else if (type === 'contact') {
+          const activityCopy: any = activity;
+          return (
+                <ContactFormCard { ...props } node={activityCopy.entities[0]} />
+          );
         }
     }
 }
