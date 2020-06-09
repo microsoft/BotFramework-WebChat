@@ -88,7 +88,7 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
   }
 
   validatePhone = (phone: string) => {
-    const phoneNumber = parsePhoneNumberFromString(phone);
+    const phoneNumber = parsePhoneNumberFromString(phone, 'US');
     return phoneNumber && phoneNumber.isValid();
   }
 
