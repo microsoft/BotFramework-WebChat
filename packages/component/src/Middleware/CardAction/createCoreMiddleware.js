@@ -31,7 +31,7 @@ export default function createDefaultCardActionMiddleware() {
       case 'playAudio':
       case 'playVideo':
       case 'showImage':
-        window.open(value);
+        window.open(value, '_blank', 'noopener noreferrer');
         break;
 
       case 'signin': {
