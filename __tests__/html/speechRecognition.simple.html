@@ -146,7 +146,7 @@
 
         try {
           expect(recognized.map(({ text }) => text)).toEqual([
-            "Unknown command I don't know. Hello world you can say help to learn more."
+            "Unknown command, I don't know hello world, you can say help to learn more."
           ]);
         } catch (err) {
           const files = recognized.map(({ filename }) => `See diff for details: ${filename}`).join('\n');
