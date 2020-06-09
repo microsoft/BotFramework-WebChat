@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        conditions,
+        createRunHookActivityMiddleware,
+        createStore,
+        elements,
+        expect,
+        host,
+        pageObjects,
+        timeouts,
+        token
+      } = window.WebChatTest;
+
+      function stringToArrayBuffer(value) {
+        // This assume the string is ASCII (0-127).
+
+        const { length } = value;
+        const byteArray = new Array(length);
+
+        for (let index = 0; index < length; index++) {
+          const charCode = value.charCodeAt(index);
+
+          if (charCode > 127) {
+            throw new Error('Only ASCII characters are supported.');
+          }
+
+          byteArray[index] = charCode;
+        }
+
+        return new Uint8Array(byteArray).buffer;
+      }
+
+      (async function() {
+        window.WebChat.renderWebChat(
+          {
+            activityMiddleware: createRunHookActivityMiddleware(),
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        const fileBlob = new Blob([
+          stringToArrayBuffer(
+            JSON.stringify(
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  type: 'AdaptiveCard',
+                  body: [
+                    {
+                      type: 'TextBlock',
+                      size: 'Medium',
+                      text: 'Tap on this Adaptive Card will open Bing.com.'
+                    }
+                  ],
+                  $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  version: '1.2',
+                  selectAction: {
+                    type: 'Action.OpenUrl',
+                    url: 'https://bing.com/'
+                  }
+                }
+              },
+              null,
+              2
+            )
+          )
+        ]);
+
+        fileBlob.name = 'openurl-card.attachmentjson';
+
+        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        const calls = [];
+
+        window.open = (url, windowName, windowFeatures) => calls.push([url, windowName, windowFeatures]);
+
+        const adaptiveCard = elements.activities()[1].querySelector('.ac-adaptiveCard');
+
+        adaptiveCard.click();
+
+        expect(calls).toHaveProperty('length', 1);
+        expect(calls[0][0]).toEqual('https://bing.com/');
+        expect(calls[0][1]).toEqual('_blank');
+
+        const windowFeatures = (calls[0][2] || '').split(new RegExp('\\s+', 'gu'));
+
+        expect(windowFeatures.includes('noopener')).toBe(true);
+        expect(windowFeatures.includes('noreferrer')).toBe(true);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
