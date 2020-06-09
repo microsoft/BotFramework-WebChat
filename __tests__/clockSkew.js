@@ -19,7 +19,7 @@ describe('Clock skew', () => {
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const activityBroker = window.createProduceConsumeBroker();
-        const activityObservers = [];
+        let activityObservers = [];
 
         const activitySubscription = workingDirectLine.activity$.subscribe({
           complete() {
