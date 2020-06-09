@@ -24,8 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Breaking changes
 
--  Affecting Adaptive Card, legacy card and suggested actions
-   -  For `openUrl` card action, we are now whitelisting the URL scheme using the same set of whitelist from the default Markdown + sanitize engine, it includes `data`, `http`, `https`, `ftp`, `mailto`, `sip`, and `tel`
+-  Affecting Adaptive Cards, legacy cards and suggested actions
+   -  For `openUrl` card action, we are now whitelisting the URL scheme using the same whitelist from the default Markdown + sanitize engine, which includes `data`, `http`, `https`, `ftp`, `mailto`, `sip`, and `tel`
    -  To whitelist a different set of URL schemes, please implement the card action middleware to override this behavior
 
 ### Added

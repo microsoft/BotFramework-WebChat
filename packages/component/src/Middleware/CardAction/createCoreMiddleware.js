@@ -1,7 +1,7 @@
 import { sendMessage, sendMessageBack, sendPostBack } from 'botframework-webchat-core';
 
 // This code is adopted from sanitize-html/naughtyScheme.
-// sanitize-html is a dependency of Web Chat but the naughtScheme function is not exposed nor reusable.
+// sanitize-html is a dependency of Web Chat but the naughtScheme function is neither exposed nor reusable.
 // https://github.com/apostrophecms/sanitize-html/blob/master/src/index.js#L526
 function getScheme(href) {
   // Browsers ignore character codes of 32 (space) and below in a surprising
