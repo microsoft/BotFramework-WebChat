@@ -114,9 +114,9 @@ const DEFAULT_OPTIONS = {
   suggestedActionLayout: 'carousel', // either 'carousel' or 'stacked'
   suggestedActionTextColor: null,
 
-  // Suggeseted actions 'stacked' layout
+  // Suggested actions 'stacked' layout
   suggestedActionsStackedHeight: undefined, // defaults to 'auto'
-  suggestedActionsStackedOverflow: undefined,
+  suggestedActionsStackedOverflow: null,
 
   // Timestamp
   groupTimestamp: true,
