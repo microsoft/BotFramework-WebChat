@@ -309,6 +309,8 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         // Check if there are suggessted acctions in the activity
         const activityHasSuggestedActions = activityActions && activityActions.actions && activityActions.actions.length > 0;
 
+        const contactClassName = activityRequiresAdditionalInput ? (' ' + contentClassName + '-' + activityCopy.entities[0].node_type) : '';
+
         // Check if there's an additional activity to render to get the user's input
         if (lastMessage && (activityRequiresAdditionalInput || activityHasSuggestedActions)) {
             let nodeType = '';
@@ -322,7 +324,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 return (
                     <div data-activity-id={activity.id } className={wrapperClassName}>
                         <div className={'wc-message wc-message-from-me wc-message-' + nodeType} ref={ div => this.messageDiv = div }>
-                            <div className={ contentClassName }>
+                            <div className={ contentClassName + contactClassName }>
                                 <ActivityView
                                     format={this.props.format}
                                     size={null}

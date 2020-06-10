@@ -481,6 +481,7 @@
         }
 
         
+        
         .contact__form__card {
           $contact_padding_v: 8px;
           $contact_width: 260px;
@@ -496,28 +497,22 @@
               padding-left: $contact_padding_v;
               border-radius: $contact_padding_v;
               border-width: 1px;
-              border-color: $gideon-light-grey;
+              border-color: $gideon-dark-blue;
+              border-style: solid;
               height: 2em;
               outline-style: none;
             }
 
             &__title {
               padding-bottom: $contact_padding_v - 2px;
+              color: #31ace2;
             }
 
             &__error {
               padding-top: 6px;
               color: red;
+              font-size: 12px;
             }
-          }
-
-          &__line__break {
-            height: 1px;
-            color: $gideon-light-grey;
-            padding-left: 2px;
-            padding-right: 2px;
-            background: $gideon-light-grey;
-            border: none;
           }
     
           &__submit {
@@ -527,9 +522,9 @@
             height: 2em;
             border-radius: 6px;
             border-width: 1px;
-            border-color: $gideon-light-grey;
-            color: $gideon-dark-blue;
-            background-color: white;
+            border-color: $gideon-dark-blue;
+            color: white;
+            background-color:$gideon-dark-blue;
           }
 
           &__submit:hover {
@@ -851,6 +846,13 @@
         color: $c01;
         border-top-right-radius: 0px;
     }
+
+    .wc-message-from-me .wc-message-content-contact {
+      background-color:white;
+      border-color:$gideon-dark-blue;
+      border-style:solid;
+      border-width:1px;
+  }
 
     .wc-message-from-me svg.wc-message-callout path {
         fill: $c_messageFromMe;

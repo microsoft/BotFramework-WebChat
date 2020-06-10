@@ -100,17 +100,17 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
     let emailError;
 
     if (this.nameActive() && !(this.state.name && this.state.name !== '')) {
-      nameError = 'Invalid Name';
+      nameError = 'Please enter your name';
       validated = false;
     }
 
     if (this.emailActive() && !(this.validateEmail(this.state.email))) {
-      emailError = 'Invalid Email';
+      emailError = 'That email doesn\'t look quite right';
       validated = false;
     }
 
     if (this.phoneActive() && !this.validatePhone(this.state.phone)) {
-      phoneError = 'Invalid Phone';
+      phoneError = 'That phone number doesn\'t look quite right';
       validated = false;
     }
 
@@ -167,7 +167,7 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
     return (
       <div className="contact__form__card">
         {this.nameActive() && (<div className="contact__form__card__container">
-          <span className={'contact__form__card__container__title'}>Name:</span>
+          <span className={'contact__form__card__container__title'}>Name</span>
           <input
               type="text"
               className={'contact__form__card__container__input'}
@@ -180,14 +180,14 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
               }) }
               onKeyPress={ e => this.onKeyPress(e) }
               // onFocus={ () => this.onTextInputFocus() }
-              placeholder="Your Name"
+              placeholder="First and Last Name"
               aria-label={null}
               aria-live="polite"
           />
           {this.state.nameError && <span className="contact__form__card__container__error">{this.state.nameError}</span>}
         </div>)}
         {this.emailActive() && (<div className="contact__form__card__container">
-          <span className={'contact__form__card__container__title'}>Email:</span>
+          <span className={'contact__form__card__container__title'}>Email</span>
           <input
               type="text"
               className={'contact__form__card__container__input'}
@@ -207,7 +207,7 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
           {this.state.emailError && <span className="contact__form__card__container__error">{this.state.emailError}</span>}
         </div>)}
         {this.phoneActive() && (<div className="contact__form__card__container">
-          <span className={'contact__form__card__container__title'}>Phone number:</span>
+          <span className={'contact__form__card__container__title'}>Phone number</span>
           <input
               type="text"
               className={'contact__form__card__container__input'}
@@ -223,7 +223,6 @@ class ContactForm extends React.Component<ContactFormProps, ContactFormState> {
           />
           {this.state.phoneError && <span className="contact__form__card__container__error">{this.state.phoneError}</span>}
         </div>)}
-        <hr className="contact__form__card__line__break"></hr>
         <button type="button" className="contact__form__card__submit" onClick={e => this.clickToSubmitContactInformation(e) } title="Submit">
           Submit
         </button>
