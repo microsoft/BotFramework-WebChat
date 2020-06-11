@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Resolves [#3205](https://github.com/microsoft/BotFramework-WebChat/issues/3205). Added [Direct Line App Service Extension chat adapter](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/i.protocol-direct-line-app-service-extension) sample, by [@compulim](https://github.com/compulim) in PR [#3206](https://github.com/microsoft/BotFramework-WebChat/pull/3206)
+-  Resolves [#3218](https://github.com/microsoft/BotFramework-WebChat/issues/3218). Adds documentation on reconnecting to a conversation in minimizable sample, by [@corinagum](https://github.com/corinagum), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.9.0] - 2020-05-11
 
