@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolves [#3182](https://github.com/microsoft/BotFramework-WebChat/issues/3182). Added stacked suggested actions height properties, by [@corinagum](https://github.com/corinagum), in PR [#3235](https://github.com/microsoft/BotFramework-WebChat/pull/3235)
+
+### Samples
+
+-  Resolves [#3218](https://github.com/microsoft/BotFramework-WebChat/issues/3218) and [#2811](https://github.com/microsoft/BotFramework-WebChat/issues/2811). Adds documentation on reconnecting to a conversation in minimizable sample, by [@corinagum](https://github.com/corinagum), in PR [#3239](https://github.com/microsoft/BotFramework-WebChat/pull/3239)
+
 ### [4.9.1] - 2020-06-09
 
 ### Breaking changes
@@ -34,7 +42,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Resolves [#3205](https://github.com/microsoft/BotFramework-WebChat/issues/3205). Added Direct Line App Service Extension protocol, by [@compulim](https://github.com/compulim) in PR [#3206](https://github.com/microsoft/BotFramework-WebChat/pull/3206)
 -  Resolves [#3225](https://github.com/microsoft/BotFramework-WebChat/issues/3225). Support allowed scheme with `openUrl` card action, by [@compulim](https://github.com/compulim) in PR [#3226](https://github.com/microsoft/BotFramework-WebChat/pull/3226)
--  Resolves [#3182](https://github.com/microsoft/BotFramework-WebChat/issues/3182). Added stacked suggested actions height properties, by [@corinagum](https://github.com/corinagum), in PR [#3235](https://github.com/microsoft/BotFramework-WebChat/pull/3235)
 
 ### Fixed
 
@@ -63,7 +70,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Resolves [#3205](https://github.com/microsoft/BotFramework-WebChat/issues/3205). Added [Direct Line App Service Extension chat adapter](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/i.protocol-direct-line-app-service-extension) sample, by [@compulim](https://github.com/compulim) in PR [#3206](https://github.com/microsoft/BotFramework-WebChat/pull/3206)
--  Resolves [#3218](https://github.com/microsoft/BotFramework-WebChat/issues/3218) and [#2811](https://github.com/microsoft/BotFramework-WebChat/issues/2811). Adds documentation on reconnecting to a conversation in minimizable sample, by [@corinagum](https://github.com/corinagum), in PR [#3239](https://github.com/microsoft/BotFramework-WebChat/pull/3239)
 
 ## [4.9.0] - 2020-05-11
 
