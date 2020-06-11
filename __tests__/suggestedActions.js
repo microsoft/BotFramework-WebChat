@@ -209,4 +209,64 @@ describe('suggested-actions command', () => {
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
+
+  test('should show stacked suggested actions with height of 50', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: { styleOptions: { suggestedActionLayout: 'stacked', suggestedActionsStackedHeight: 50 } }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+    await driver.wait(suggestedActionsShown(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show stacked suggested actions with height of 50 with overflow hidden', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        styleOptions: {
+          suggestedActionLayout: 'stacked',
+          suggestedActionsStackedHeight: 50,
+          suggestedActionsStackedOverflow: 'hidden'
+        }
+      }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+    await driver.wait(suggestedActionsShown(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show stacked suggested actions with height of 50 with overflow scroll', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        styleOptions: {
+          suggestedActionLayout: 'stacked',
+          suggestedActionsStackedHeight: 50,
+          suggestedActionsStackedOverflow: 'scroll'
+        }
+      }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+    await driver.wait(suggestedActionsShown(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
 });
