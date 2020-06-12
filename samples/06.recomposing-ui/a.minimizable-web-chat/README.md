@@ -85,7 +85,7 @@ import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-web
 ```
 <!-- prettier-ignore-end -->
 
-Set up the function component the same way you would set up a regular `React.Component`
+Set up the functional component the same way you would set up a regular `React.Component`
 
 1. Set state with `useMemo` and `createDirectLine` with your token. It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit this [tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 1. Inside render, be sure to return the `<ReactWebChat>` component.
@@ -115,7 +115,7 @@ const WebChat = ({ className, onFetchToken, store, token }) => {
 ```
 <!-- prettier-ignore-end -->
 
-With `useEffect`, invoke `onFetchToken` from props if the `token` has not been passed from the parent component.
+In the `useEffect` hook, invoke `onFetchToken` from props if the `token` has not been passed from the parent component.
 
 <!-- prettier-ignore-start -->
 ```js
@@ -141,7 +141,7 @@ import WebChat from './WebChat';
 ```
 <!-- prettier-ignore-end -->
 
-11. Build the component in the return statement
+1. Build the component in the return statement
     1. Depending on whether it is minimized, the ternary statement will switch between two different renders: minimized and maximized
     1. Render the `<WebChat>` component when the state is not minimized
     1. Create a header for the <WebChat> container with two buttons: one to switch sides of the window and the other to minimize the component
