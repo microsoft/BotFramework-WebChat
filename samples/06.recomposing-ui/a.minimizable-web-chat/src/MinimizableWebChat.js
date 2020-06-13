@@ -46,6 +46,9 @@ const MinimizableWebChat = () => {
   const [side, setSide] = useState('right');
   const [token, setToken] = useState();
 
+  // To learn about reconnecting to a conversation, see the following documentation:
+  // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
+
   const handleFetchToken = useCallback(async () => {
     if (!token) {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
