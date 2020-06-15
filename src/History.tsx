@@ -4,6 +4,7 @@ import { connect, Dispatch } from 'react-redux';
 import { ActivityView } from './ActivityView';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
+import { activityIsDisclaimer, DisclaimerCard } from './DisclaimerCard';
 import * as konsole from './Konsole';
 import { ChatState, FormatState, SizeState } from './Store';
 import { sendMessage } from './Store';
@@ -51,6 +52,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     componentDidUpdate() {
+
         if (this.props.format.carouselMargin === undefined) {
             // After our initial render we need to measure the carousel width
 
@@ -128,6 +130,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     render() {
         let content;
+        let lastActivityIsDisclaimer = false;
+        let activityDisclaimer: any;
         if (this.props.size.width !== undefined) {
             if (this.props.format.carouselMargin === undefined) {
                 // For measuring carousels we need a width known to be larger than the chat itself
@@ -136,9 +140,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } else {
                 const activities = filteredActivities(this.props.activities, this.props.format.strings.pingMessage);
 
+                activityDisclaimer = activities.length > 0 ? activities[activities.length - 1] : undefined;
+                lastActivityIsDisclaimer = activityDisclaimer && activityDisclaimer.entities && activityDisclaimer.entities.length > 0 && activityDisclaimer.entities[0].node_type === 'disclaimer';
+
                 content = activities
                 .map((activity, index) =>
-                    (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
+                    ((activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) && !activityIsDisclaimer(activity)) &&
                         <WrappedActivity
                             format={ this.props.format }
                             key={ 'message' + index }
@@ -179,6 +186,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
 
         return (
+            <div>
             <div
                 className={ groupsClassName }
                 ref={ div => this.scrollMe = div || this.scrollMe }
@@ -188,6 +196,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 <div className="wc-message-group-content" ref={ div => { if (div) { this.scrollContent = div; } }}>
                     { content }
                 </div>
+            </div>
+            {lastActivityIsDisclaimer && <DisclaimerCard activity={activityDisclaimer}/>}
             </div>
         );
     }
@@ -314,7 +324,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         // Check if there's an additional activity to render to get the user's input
         if (lastMessage && (activityRequiresAdditionalInput || activityHasSuggestedActions)) {
             let nodeType = '';
-            if (activityRequiresAdditionalInput) {
+            if (activityRequiresAdditionalInput && !activityHasSuggestedActions) {
                 nodeType = activityCopy.entities[0].node_type;
             } else if (activityHasSuggestedActions) {
                 nodeType = activityActions.actions[0].type;

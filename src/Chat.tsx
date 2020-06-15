@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
-import { Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { conversationHistory, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
@@ -129,6 +129,8 @@ export class Chat extends React.Component<ChatProps, State> {
 
     private handleIncomingActivity(activity: Activity) {
         const state = this.store.getState();
+        const activityCopy: any = activity;
+
         switch (activity.type) {
             case 'message':
                 this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
@@ -548,6 +550,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             this.props.resize === 'detect' &&
                                 <ResizeDetector onresize={ this.resizeListener } />
                         }
+
                     </div>
                 </div>
             </Provider >

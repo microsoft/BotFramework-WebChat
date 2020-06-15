@@ -325,6 +325,84 @@
             right: 0;
             top: 0;
         }
+
+        @keyframes disclaimerAnimation {
+            0% {
+                margin-bottom: 90vh;
+            }
+            100% {
+                margin-bottom: 0vh;
+            }
+        }
+
+        .disclaimer__card { 
+            animation: disclaimerAnimation 1s;
+            background-color: white;
+            bottom: $consoleHeight;
+            top: $headerTotalHeight;
+            display:flex;
+            flex-direction: column;
+            position:absolute;
+            overflow-y: scroll;
+
+            &__message {
+                font-size: 14px;
+                font-weight: 500;
+                padding: 20px;
+                line-height: 1.3em;
+                margin: 10px 10px 20px;
+                box-shadow: 2px 2px 9px 2px $c_shadow;
+                border-style: solid;
+                border-width: 1px;
+                border-color: $gideon-dark-blue;
+                border-radius: 8px;
+            }
+
+            &__buttons {
+                margin-bottom:auto;
+                margin-top:0;
+
+                ul {
+                    list-style: none;
+                    display: flex;
+                    flex-direction: column;
+
+                    button {
+                        background-color: $c_brand;
+                        border: 1px solid #31ace2;
+                        border-radius: 10px;
+                        border-top-right-radius: 0px;
+                        color: #ffffff;
+                        min-height: 32px;
+                        height: auto;
+                        padding: 0 16px;
+                        white-space: normal;
+                        width: auto;
+                        overflow-wrap: break-word;
+                        text-align: right;
+                        padding: 10px;
+                        margin-left: 25%;
+                        margin-right: 25%;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        box-shadow: 2px 2px 4px 0px $c_shadow;
+                    }
+
+                    button:focus,
+                    button:hover {
+                        background-color: #fff;
+                        border-color: $c_brand;
+                        color: $c_brand;
+                    }
+
+                    button:active {
+                        background-color: $c_brand;
+                        border-color: $c_brand;
+                        color: $c01;
+                    }
+                }
+            }
+        }
     }
 
     .wc-floating-wrap {
@@ -480,8 +558,6 @@
             padding:0 !important;
         }
 
-        
-        
         .contact__form__card {
           $contact_padding_v: 8px;
           $contact_width: 260px;
@@ -871,6 +947,7 @@
     .wc-message-from-bot {
         float: left;
         margin-left: 8px;
+        max-width: 75%;
     }
 
     .wc-message-from-bot .wc-message-content {
@@ -889,6 +966,18 @@
 
     .wc-message-from-bot svg.wc-message-callout {
         left: -6px;
+    }
+
+    .wc-message-contact {
+      margin-left: auto;
+    }
+
+    .wc-message-imBack {
+      margin-left: auto;
+    }
+
+    .wc-message-handoff {
+      margin-left: auto;
     }
 
 /* console */
