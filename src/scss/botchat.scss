@@ -56,6 +56,7 @@
 /* docking */
 
     $chatWidth: 360px;
+    $chatWidthMobile: 100%;
 
     .wc-hidden {
         visibility: hidden;
@@ -106,6 +107,10 @@
         max-width: $chatWidth;
 
         $logo-size: 42px;
+
+        @include mobileAndTablet {
+            max-width: $chatWidthMobile;
+        }
 
         .wc-header--attourney-logo-container {
           width: 38px;
@@ -171,6 +176,9 @@
         top: $headerTotalHeight;
         transition: transform $actionTransition;
         max-width: $chatWidth;
+        @include mobileAndTablet {
+            max-width: $chatWidthMobile;
+        }
 
         &.no-header {
             top: 0;
@@ -316,14 +324,24 @@
             max-width: 80vw;
             height: calc(100vh - #{$bottom} - 20px);
 
+            @include mobileAndTablet {
+                max-width: $chatWidthMobile;
+            }
+
         }
 
         @include mobileAndTablet {
             border-radius: 0;
-            height: 100%;
-            max-width: 100vw;
-            right: 0;
-            top: 0;
+            width: 100vw;
+
+            // need to be !important because this is being set inline for element
+            height: 100% !important;
+            right: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+
+            left: 0;
+            min-width: 100%;
         }
 
         @keyframes disclaimerAnimation {
@@ -414,7 +432,9 @@
         text-align: center;
 
         @include mobileAndTablet {
-            right: 0px;
+            // This is being set inline for desktop
+            right: 0px !important;
+            bottom: $floatingBottom !important;
         }
     }
 
@@ -994,6 +1014,10 @@
         position: absolute;
         right: 0;
         transition: background-color .4s;
+
+        @include mobileAndTablet {
+            max-width: $chatWidthMobile;
+        }
 
 
         .wc-border {
