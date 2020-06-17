@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      #app {
+        height: 100%;
+      }
+
+      .app__button-bar {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+      const {
+        Components: { BasicWebChat, Composer },
+        createDirectLine,
+        hooks: { useScrollOffsetEffect, useScrollTo }
+      } = window.WebChat;
+      const { useCallback, useRef, useState } = window.React;
+
+      (async function() {
+        const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
+        const store = createStore();
+        const Chat = () => {
+          const [scrollOffset, setScrollOffset] = useState();
+          const scrollOffsetRef = useRef();
+
+          useScrollOffsetEffect(
+            offset => {
+              scrollOffsetRef.current = { ...offset };
+            },
+            [setScrollOffset]
+          );
+
+          const scrollTo = useScrollTo();
+          const [savedScrollOffset, setSavedScrollOffset] = useState();
+
+          const handleRestoreScrollPosition = useCallback(() => scrollTo(savedScrollOffset), [
+            savedScrollOffset,
+            scrollTo
+          ]);
+
+          const handleSaveScrollPosition = useCallback(() => setSavedScrollOffset(scrollOffsetRef.current), [
+            scrollOffset,
+            setSavedScrollOffset
+          ]);
+
+          const handleScrollTo100 = useCallback(() => scrollTo({ scrollTop: 100 }), [scrollTo]);
+
+          return (
+            <React.Fragment>
+              <BasicWebChat />
+              <div className="app__button-bar">
+                <button onClick={handleSaveScrollPosition} type="button">
+                  Save
+                </button>
+                {savedScrollOffset ? (
+                  <button onClick={handleRestoreScrollPosition} type="button">
+                    Restore to {JSON.stringify(savedScrollOffset)}
+                  </button>
+                ) : (
+                  <button disabled={true} type="button">
+                    Restore (no saved offset)
+                  </button>
+                )}
+                <button onClick={handleScrollTo100} type="button">
+                  Scroll to 100px
+                </button>
+                <div>Currrent is {JSON.stringify(scrollOffset)}</div>
+              </div>
+            </React.Fragment>
+          );
+        };
+
+        const App = () => {
+          return (
+            <Composer directLine={directLine} store={store}>
+              <Chat />
+            </Composer>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('app'));
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

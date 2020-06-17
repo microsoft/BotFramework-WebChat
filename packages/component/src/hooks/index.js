@@ -33,6 +33,8 @@ import useRenderAvatar from './useRenderAvatar';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
+import useScrollOffsetEffect from './useScrollOffsetEffect';
+import useScrollTo from './useScrollTo';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
@@ -103,6 +105,8 @@ export {
   useRenderMarkdownAsHTML,
   useRenderToast,
   useRenderTypingIndicator,
+  useScrollOffsetEffect,
+  useScrollTo,
   useScrollToEnd,
   useSendBoxSpeechInterimsVisible,
   useSendBoxValue,

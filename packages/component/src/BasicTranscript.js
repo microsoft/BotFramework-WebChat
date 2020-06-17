@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel, StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, useAnimating, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -88,13 +88,18 @@ function nextSiblingAll(element) {
   return [].slice.call(children, elementIndex + 1);
 }
 
-const BasicTranscriptContent = ({ animating, sticky }) => {
+const BasicTranscriptContent = () => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+  const [animating] = useAnimating();
+  const [sticky] = useSticky();
   const focus = useFocus();
   const renderAttachment = useRenderAttachment();
+  const scrollToEndButtonRef = useRef();
+
   const renderActivity = useRenderActivity(renderAttachment);
+
   const renderActivityElement = useCallback(
     (activity, nextVisibleActivity) =>
       renderActivity({
@@ -103,7 +108,6 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
       }),
     [renderActivity]
   );
-  const scrollToEndButtonRef = useRef();
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
@@ -219,20 +223,13 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   );
 };
 
-BasicTranscriptContent.propTypes = {
-  animating: PropTypes.bool.isRequired,
-  sticky: PropTypes.bool.isRequired
-};
-
 const BasicTranscript = ({ className }) => {
   const [direction] = useDirection();
 
   return (
     <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
-        <ScrollToBottomStateContext.Consumer>
-          {({ animating, sticky }) => <BasicTranscriptContent animating={animating} sticky={sticky} />}
-        </ScrollToBottomStateContext.Consumer>
+        <BasicTranscriptContent />
       </ScrollToBottomPanel>
     </div>
   );
