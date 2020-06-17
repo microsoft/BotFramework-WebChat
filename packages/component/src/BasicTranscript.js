@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel, useAnimating, useSticky } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -92,7 +92,7 @@ const BasicTranscriptContent = () => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const [animating] = useAnimating();
+  const [animatingToEnd] = useAnimatingToEnd();
   const [sticky] = useSticky();
   const focus = useFocus();
   const renderAttachment = useRenderAttachment();
@@ -179,22 +179,31 @@ const BasicTranscriptContent = () => {
   const renderSeparatorAfterIndex = useMemo(() => {
     // Don't show the button if:
     // - All activities have been read
+    // - Currently animating towards bottom
+    //   - "New messages" button must not flashy when: 1. Type "help", 2. Scroll to top, 3. Type "help" again, 4. Expect the "New messages" button not flashy
     // - Hidden by style options
     // - It is already at the bottom (sticky)
 
-    // Any change to this logic, verify:
-    // - The "New messages" button must not flash
-    //   1. Make sure the "New messages" button show up
+    // Any changes to this logic, verify:
+    // - "New messages" button should persist while programmatically scrolling to mid-point of the transcript:
+    //   1. Type "help"
+    //   2. Type "proactive", then immediately scroll to top
+    //      Expect: the "New messages" button should appear
+    //   3. Run hook "useScrollTo({ scrollTop: 500 })"
+    //      Expect: when the scroll is animating to 500px, the "New messages" button should kept on the screen
+    // - "New messages" button must not flashy:
+    //   1. Type "help"
     //   2. Scroll to top
-    //   3. Send something
-    //   4. The button must not flash when the view is scrolling down
+    //      Expect: no "New messages" button is shown
+    //   3. Type "help" again
+    //      Expect: "New messages" button must not flash-appear
 
-    if (allActivitiesRead || hideScrollToEndButton || sticky) {
+    if (allActivitiesRead || animatingToEnd || hideScrollToEndButton || sticky) {
       return -1;
     }
 
     return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [activityElementsWithMetadata, allActivitiesRead, animating, hideScrollToEndButton, sticky]);
+  }, [activityElementsWithMetadata, allActivitiesRead, animatingToEnd, hideScrollToEndButton, sticky]);
 
   return (
     <React.Fragment>
