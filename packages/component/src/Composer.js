@@ -498,8 +498,6 @@ const Composer = ({
     ]
   );
 
-  console.log('render composer');
-
   return (
     <WebChatUIContext.Provider value={context}>
       <SayComposer ponyfill={webSpeechPonyfill}>

@@ -32,26 +32,25 @@
         const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
         const store = createStore();
         const Chat = () => {
-          const [scrollOffset, setScrollOffset] = useState();
           const scrollOffsetRef = useRef();
 
           useScrollOffsetEffect(
             offset => {
               scrollOffsetRef.current = { ...offset };
             },
-            [setScrollOffset]
+            [scrollOffsetRef]
           );
 
           const scrollTo = useScrollTo();
           const [savedScrollOffset, setSavedScrollOffset] = useState();
 
-          const handleRestoreScrollPosition = useCallback(() => scrollTo(savedScrollOffset), [
+          const handleRestoreScrollPosition = useCallback(() => scrollTo(savedScrollOffset, { behavior: 'smooth' }), [
             savedScrollOffset,
             scrollTo
           ]);
 
           const handleSaveScrollPosition = useCallback(() => setSavedScrollOffset(scrollOffsetRef.current), [
-            scrollOffset,
+            scrollOffsetRef,
             setSavedScrollOffset
           ]);
 
@@ -76,19 +75,16 @@
                 <button onClick={handleScrollTo100} type="button">
                   Scroll to 100px
                 </button>
-                <div>Currrent is {JSON.stringify(scrollOffset)}</div>
               </div>
             </React.Fragment>
           );
         };
 
-        const App = () => {
-          return (
-            <Composer directLine={directLine} store={store}>
-              <Chat />
-            </Composer>
-          );
-        };
+        const App = () => (
+          <Composer directLine={directLine} store={store}>
+            <Chat />
+          </Composer>
+        );
 
         ReactDOM.render(<App />, document.getElementById('app'));
 

@@ -179,11 +179,17 @@ const BasicTranscriptContent = () => {
   const renderSeparatorAfterIndex = useMemo(() => {
     // Don't show the button if:
     // - All activities have been read
-    // - The scroll bar is animating
-    //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
-    // - Developer style to hide the button
+    // - Hidden by style options
     // - It is already at the bottom (sticky)
-    if (allActivitiesRead || animating || hideScrollToEndButton || sticky) {
+
+    // Any change to this logic, verify:
+    // - The "New messages" button must not flash
+    //   1. Make sure the "New messages" button show up
+    //   2. Scroll to top
+    //   3. Send something
+    //   4. The button must not flash when the view is scrolling down
+
+    if (allActivitiesRead || hideScrollToEndButton || sticky) {
       return -1;
     }
 

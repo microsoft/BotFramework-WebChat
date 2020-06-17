@@ -4,8 +4,8 @@ export default function useScrollTo() {
   const scrollTo = useScrollToBottomScrollTo();
 
   return useCallback(
-    ({ scrollTop }) => {
-      typeof scrollTop === 'number' && scrollTo(scrollTop, { behavior: 'smooth' });
+    ({ scrollTop }, { behavior = 'auto' } = {}) => {
+      typeof scrollTop === 'number' && scrollTo(scrollTop, { behavior });
     },
     [scrollTo]
   );
