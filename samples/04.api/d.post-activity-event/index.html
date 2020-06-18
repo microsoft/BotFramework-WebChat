@@ -4,10 +4,21 @@
     <title>Web Chat: Programmatic access to post activity</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
+    <!-- <script
+      crossorigin="anonymous"
+      src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"
+    ></script> -->
+    <script src="/webchat.js"></script>
     <style>
       html,
       body {
@@ -23,7 +34,7 @@
         width: 100%;
       }
 
-      #helpButton {
+      .app__help-button {
         left: 10px;
         position: absolute;
         top: 10px;
@@ -32,9 +43,17 @@
   </head>
   <body>
     <div id="webchat" role="main"></div>
-    <button id="helpButton" type="button">Help</button>
-    <script>
+    <script type="text/babel">
       (async function() {
+        const {
+          React: { useCallback, useEffect },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            createDirectLine,
+            hooks: { useFocus, useSendMessage }
+          }
+        } = window;
+
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -42,28 +61,38 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const directLine = createDirectLine({ token });
 
-        // We are creating the Web Chat store here so we can dispatch WEB_CHAT/SEND_MESSAGE action later.
-        const store = window.WebChat.createStore();
+        // <SendHelpMessageButton> must be a descendant of <Composer>.
+        const SendHelpMessageButton = () => {
+          const sendMessage = useSendMessage();
 
-        window.WebChat.renderWebChat(
-          {
-            directLine: window.WebChat.createDirectLine({ token }),
-            // We are passing our own version of Web Chat store.
-            store
-          },
+          const handleHelpButtonClick = useCallback(() => sendMessage('help'), [sendMessage]);
+
+          return (
+            <button className="app__help-button" onClick={handleHelpButtonClick} type="button">
+              Send "help" to the bot
+            </button>
+          );
+        };
+
+        // <AutoFocusSendBox> is a headless component and will focus on the send box on initial render (useEffect).
+        const AutoFocusSendBox = () => {
+          const focus = useFocus();
+
+          useEffect(() => focus('sendBox'), [focus]);
+
+          return false;
+        };
+
+        ReactDOM.render(
+          <Composer directLine={directLine}>
+            <BasicWebChat />
+            <SendHelpMessageButton />
+            <AutoFocusSendBox />
+          </Composer>,
           document.getElementById('webchat')
         );
-
-        // The help button, when clicked, will send an activity with the text "help" to the bot.
-        document.querySelector('#helpButton').addEventListener('click', () => {
-          store.dispatch({
-            type: 'WEB_CHAT/SEND_MESSAGE',
-            payload: { text: 'help' }
-          });
-        });
-
-        document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>

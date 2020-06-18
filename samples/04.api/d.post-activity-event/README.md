@@ -2,6 +2,8 @@
 
 When the 'Help' button is clicked, an activity will be sent programmatically to the bot.
 
+> 2020-06-17: We updated the sample to use our [React hooks API](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/HOOKS.md). This API has better documentation and geared towards user stories involving UI.
+
 # Test out the hosted sample
 
 -  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event)

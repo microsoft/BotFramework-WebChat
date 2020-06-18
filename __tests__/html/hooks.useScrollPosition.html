@@ -24,7 +24,7 @@
       const {
         Components: { BasicWebChat, Composer },
         createDirectLine,
-        hooks: { useScrollOffsetEffect, useScrollTo }
+        hooks: { useObserveScrollPosition, useScrollTo }
       } = window.WebChat;
       const { useCallback, useRef, useState } = window.React;
 
@@ -32,26 +32,26 @@
         const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
         const store = createStore();
         const Chat = () => {
-          const scrollOffsetRef = useRef();
+          const scrollPositionRef = useRef();
 
-          useScrollOffsetEffect(
-            offset => {
-              scrollOffsetRef.current = { ...offset };
+          useObserveScrollPosition(
+            position => {
+              scrollPositionRef.current = { ...position };
             },
-            [scrollOffsetRef]
+            [scrollPositionRef]
           );
 
           const scrollTo = useScrollTo();
-          const [savedScrollOffset, setSavedScrollOffset] = useState();
+          const [savedScrollPosition, setSavedScrollPosition] = useState();
 
-          const handleRestoreScrollPosition = useCallback(() => scrollTo(savedScrollOffset, { behavior: 'smooth' }), [
-            savedScrollOffset,
+          const handleRestoreScrollPosition = useCallback(() => scrollTo(savedScrollPosition, { behavior: 'smooth' }), [
+            savedScrollPosition,
             scrollTo
           ]);
 
-          const handleSaveScrollPosition = useCallback(() => setSavedScrollOffset(scrollOffsetRef.current), [
-            scrollOffsetRef,
-            setSavedScrollOffset
+          const handleSaveScrollPosition = useCallback(() => setSavedScrollPosition(scrollPositionRef.current), [
+            scrollPositionRef,
+            setSavedScrollPosition
           ]);
 
           const handleScrollTo100 = useCallback(() => scrollTo({ scrollTop: 100 }), [scrollTo]);
@@ -63,13 +63,13 @@
                 <button onClick={handleSaveScrollPosition} type="button">
                   Save
                 </button>
-                {savedScrollOffset ? (
+                {savedScrollPosition ? (
                   <button onClick={handleRestoreScrollPosition} type="button">
-                    Restore to {JSON.stringify(savedScrollOffset)}
+                    Restore to {JSON.stringify(savedScrollPosition)}
                   </button>
                 ) : (
                   <button disabled={true} type="button">
-                    Restore (no saved offset)
+                    Restore (no saved position)
                   </button>
                 )}
                 <button onClick={handleScrollTo100} type="button">

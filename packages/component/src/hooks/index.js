@@ -22,6 +22,7 @@ import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
 import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
+import useObserveScrollPosition from './useObserveScrollPosition';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
@@ -33,7 +34,6 @@ import useRenderAvatar from './useRenderAvatar';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
-import useScrollOffsetEffect from './useScrollOffsetEffect';
 import useScrollTo from './useScrollTo';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
@@ -94,6 +94,7 @@ export {
   useMarkActivityAsSpoken,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,
+  useObserveScrollPosition,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
@@ -105,7 +106,6 @@ export {
   useRenderMarkdownAsHTML,
   useRenderToast,
   useRenderTypingIndicator,
-  useScrollOffsetEffect,
   useScrollTo,
   useScrollToEnd,
   useSendBoxSpeechInterimsVisible,
