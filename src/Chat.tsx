@@ -520,10 +520,10 @@ export class Chat extends React.Component<ChatProps, State> {
                                         onClick={() => {this.toggle(); }}
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/close.svg" />
 
-                                    <img
+                                    {/* <img
                                         className="wc-header--back"
                                         onClick={() => {this.step(); }}
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" />
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" /> */}
                                 </div>
                         }
                         <History
