@@ -150,6 +150,10 @@ $width: 280px;
             &-item--selected {
                 background-color: $gd_dark_sky_blue !important;
             }
+
+            &-item--disabled {
+              display: none;
+            }
         }
 
         &__header {

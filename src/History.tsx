@@ -4,6 +4,7 @@ import { connect, Dispatch } from 'react-redux';
 import { ActivityView } from './ActivityView';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
+import { activityIsDisclaimer, DisclaimerCard } from './DisclaimerCard';
 import * as konsole from './Konsole';
 import { ChatState, FormatState, SizeState } from './Store';
 import { sendMessage } from './Store';
@@ -51,6 +52,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     componentDidUpdate() {
+
         if (this.props.format.carouselMargin === undefined) {
             // After our initial render we need to measure the carousel width
 
@@ -79,9 +81,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
-        this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
-
         const lastActivity = this.props.activities[this.props.activities.length - 1];
         const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
 
@@ -103,9 +102,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 from: { id: '' },
                 attachmentLayout: 'carousel'
             } }
+            nextActivityFromMe={ false }
             lastMessage={false}
             format={ null }
             fromMe={ false }
+            displayName={ false }
             onClickActivity={ null }
             onClickRetry={ null }
             selected={ false }
@@ -129,6 +130,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     render() {
         let content;
+        let lastActivityIsDisclaimer = false;
+        let activityDisclaimer: any;
         if (this.props.size.width !== undefined) {
             if (this.props.format.carouselMargin === undefined) {
                 // For measuring carousels we need a width known to be larger than the chat itself
@@ -137,18 +140,23 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } else {
                 const activities = filteredActivities(this.props.activities, this.props.format.strings.pingMessage);
 
+                activityDisclaimer = activities.length > 0 ? activities[activities.length - 1] : undefined;
+                lastActivityIsDisclaimer = activityDisclaimer && activityDisclaimer.entities && activityDisclaimer.entities.length > 0 && activityDisclaimer.entities[0].node_type === 'disclaimer';
+
                 content = activities
                 .map((activity, index) =>
-                    (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
+                    ((activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) && !activityIsDisclaimer(activity)) &&
                         <WrappedActivity
                             format={ this.props.format }
                             key={ 'message' + index }
                             activity={ activity }
+                            nextActivityFromMe={ index + 1 < activities.length ? this.props.isFromMe(activities[index + 1]) : false}
                             doCardAction={this.doCardAction}
                             lastMessage={index === activities.length - 1}
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            showTimestamp={ index === activities.length - 1 || (index + 1 < activities.length && suitableInterval(activity, activities[index + 1])) }
                             selected={ this.props.isSelected(activity) }
                             fromMe={ this.props.isFromMe(activity) }
+                            displayName={ index === 0 || (!this.props.isFromMe(activity) && this.props.isFromMe(activities[index - 1]))}
                             onClickActivity={ this.props.onClickActivity(activity) }
                             onClickRetry={e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -178,6 +186,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
 
         return (
+            <div>
             <div
                 className={ groupsClassName }
                 ref={ div => this.scrollMe = div || this.scrollMe }
@@ -187,6 +196,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 <div className="wc-message-group-content" ref={ div => { if (div) { this.scrollContent = div; } }}>
                     { content }
                 </div>
+            </div>
+            {lastActivityIsDisclaimer && <DisclaimerCard activity={activityDisclaimer}/>}
             </div>
         );
     }
@@ -267,8 +278,14 @@ const measurePaddedWidth = (el: HTMLElement): number => {
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
+const findInitial = (title: string): string => {
+  return title.toUpperCase().replace('THE ', '').trim()[0];
+};
+
 export interface WrappedActivityProps {
     activity: Activity;
+    nextActivityFromMe: boolean;
+    displayName: boolean;
     showTimestamp: boolean;
     selected: boolean;
     fromMe: boolean;
@@ -302,20 +319,22 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         // Check if there are suggessted acctions in the activity
         const activityHasSuggestedActions = activityActions && activityActions.actions && activityActions.actions.length > 0;
 
+        const contactClassName = activityRequiresAdditionalInput ? (' ' + contentClassName + '-' + activityCopy.entities[0].node_type) : '';
+
         // Check if there's an additional activity to render to get the user's input
         if (lastMessage && (activityRequiresAdditionalInput || activityHasSuggestedActions)) {
             let nodeType = '';
-            if (activityRequiresAdditionalInput) {
+            if (activityRequiresAdditionalInput && !activityHasSuggestedActions) {
                 nodeType = activityCopy.entities[0].node_type;
             } else if (activityHasSuggestedActions) {
                 nodeType = activityActions.actions[0].type;
             }
 
-            if (nodeType === 'date' || nodeType === 'handoff' || nodeType === 'file' || nodeType === 'imBack') {
+            if (nodeType === 'date' || nodeType === 'handoff' || nodeType === 'file' || nodeType === 'imBack' || nodeType === 'contact') {
                 return (
                     <div data-activity-id={activity.id } className={wrapperClassName}>
                         <div className={'wc-message wc-message-from-me wc-message-' + nodeType} ref={ div => this.messageDiv = div }>
-                            <div className={ contentClassName }>
+                            <div className={ contentClassName + contactClassName }>
                                 <ActivityView
                                     format={this.props.format}
                                     size={null}
@@ -368,7 +387,8 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const wrapperClassName = classList(
             'wc-message-wrapper',
             (this.props.activity as Message).attachmentLayout || 'list',
-            this.props.onClickActivity && 'clickable'
+            this.props.onClickActivity && 'clickable',
+            who
         );
 
         const contentClassName = classList(
@@ -376,10 +396,20 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.selected && 'selected'
         );
 
+        const avatarColor = this.props.format && this.props.format.themeColor ? this.props.format.themeColor : '#c3ccd0';
+        const avatarInitial = this.props.format && this.props.format.display_name && typeof(this.props.format.display_name) === 'string' ? findInitial(this.props.format.display_name) : 'B';
+        const showAvatar = this.props.fromMe === false && (this.props.nextActivityFromMe || this.props.lastMessage);
+
         return (
             <div className={`wc-message-pane from-${who}`}
               >
+                {(this.props.displayName && <span className="wc-message-bot-name">{this.props.format && this.props.format.display_name ? this.props.format.display_name : 'Bot'}</span>)}
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+                    {!this.props.fromMe && (showAvatar ?
+                      <div className="wc-message-avatar" style={{ background: avatarColor }}>{avatarInitial}</div>
+                    :
+                      <div className="wc-message-avatar blank"/>
+                    )}
                     <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                         <div className={ contentClassName }>
                             {/* <svg className="wc-message-callout">

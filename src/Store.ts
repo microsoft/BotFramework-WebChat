@@ -212,6 +212,7 @@ export interface FormatState {
     topOffset: number;
     rightOffset: number;
     fullHeight: boolean;
+    display_name: string;
 }
 
 export type FormatAction = {
@@ -249,7 +250,8 @@ export const format: Reducer<FormatState> = (
         bottomOffset: undefined,
         topOffset: undefined,
         rightOffset: undefined,
-        fullHeight: false
+        fullHeight: false,
+        display_name: undefined
     },
     action: FormatAction
 ) => {
@@ -396,6 +398,7 @@ export interface HistoryState {
     clientActivityBase: string;
     clientActivityCounter: number;
     selectedActivity: Activity;
+    selectedDisclaimerActivity: Activity;
 }
 
 export type HistoryAction = {
@@ -433,7 +436,8 @@ export const history: Reducer<HistoryState> = (
         activities: [],
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
-        selectedActivity: null
+        selectedActivity: null,
+        selectedDisclaimerActivity: null
     },
     action: HistoryAction
 ) => {
@@ -468,13 +472,17 @@ export const history: Reducer<HistoryState> = (
         case 'Receive_Message':
             if (state.activities.find(a => a.id === action.activity.id)) { return state; } // don't allow duplicate messages
 
+            const copy: any = action.activity;
+            const isDisclaimer = copy && copy.entities && copy.entities.length > 0 && copy.entities[0].node_type === 'disclaimer';
+
             return {
                 ...state,
                 activities: [
                     ...state.activities.filter(activity => activity.type !== 'typing'),
                     action.activity,
                     ...state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === 'typing')
-                ]
+                ],
+                selectedDisclaimerActivity: isDisclaimer ? action.activity : null
             };
 
         case 'Send_Message':

@@ -41,6 +41,7 @@ export interface DatePickerState {
     excludedTimes: moment.Moment[];
     monthAvailabilities: any;
     loading: boolean;
+    duration: number;
 }
 
 const dateFormat = 'MMMM D, YYYY';
@@ -60,10 +61,13 @@ const getExcludedTimes = (availabilities: any, interval: number, date: moment.Mo
         startTimeMoment.add(i === 0 ? 0 : interval, 'minutes');
         dateCopy.add(i === 0 ? 0 : interval, 'minutes');
         const excludeTime = availabilities.some((avail: any) => {
-            const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
-            const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
-            const isFuture = dateCopy.isAfter(moment().utc().add(appointmentBuffer, 'minutes'));
-            return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[)');
+            const beforeTime = moment(moment(avail.start_time).format('HH:mm'), 'hh:mm');
+            const afterTime = moment(moment(avail.end_time).format('HH:mm'), 'hh:mm');
+            const isFuture = dateCopy.isAfter(moment().add(appointmentBuffer, 'minutes'));
+            const startTimeCheck = startTimeMoment.isBetween(beforeTime, afterTime, undefined, '[]');
+            const endTimeMoment = startTimeMoment.clone().add(interval, 'minutes');
+            const endTimeCheck = endTimeMoment.isBetween(beforeTime, afterTime, undefined, '[]');
+            return isFuture && startTimeCheck && endTimeCheck;
         });
         if (!excludeTime) {
             excludedTimes.push(startTimeMoment.format('hh:mm A'));
@@ -91,7 +95,8 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             showTimeSelectClass: 'hide-time-select',
             excludedTimes: [],
             monthAvailabilities: null,
-            loading: true
+            loading: true,
+            duration: 30
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -134,13 +139,17 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     if (!changeExcludeTime && (this.state.startDate && this.state.startDate.month() === date.month())) {
                         getAvailForDate = this.state.startDate;
                     }
-                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30, date);
+                    const minuteString = +res.data.duration.split(':')[1];
+                    const hourString = +res.data.duration.split(':')[0];
+                    const appointmentDuration = hourString * 60 + minuteString;
+                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], appointmentDuration, date);
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
                         excludedTimes: excludedTime,
-                        loading: false
+                        loading: false,
+                        duration: appointmentDuration
                     });
             })
             .catch((err: any) => {
@@ -168,7 +177,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 
     /** Handling the month change */
     handleMonthChange = ( date: moment.Moment ) => {
-        this.getAvailableTimes(date, false);
+        this.getAvailableTimes(date, true);
     }
 
     /**
@@ -199,7 +208,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 if (startDate && startDate.month() !== date.month()) {
                     this.getAvailableTimes(date, true);
                 } else if (this.state.monthAvailabilities) {
-                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30, date);
+                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date);
                     this.setState({
                         startDate: date,
                         dateSelected: true,
@@ -278,10 +287,11 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     onMonthChange={e => this.handleMonthChange(e)}
                     inline={true}
                     minDate={isHandoff && moment()}
-                    excludeTimes={this.state.excludedTimes}
+                    excludeTimes={this.state.loading ? [moment().startOf('day')] : this.state.excludedTimes}
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}
+                    timeIntervals={this.state.loading ? 24 * 60 * 60 : this.state.duration}
                 />
                 <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
                     None of these appointments work for me

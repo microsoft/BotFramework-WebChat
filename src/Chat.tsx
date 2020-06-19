@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
-import { Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { conversationHistory, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
@@ -129,6 +129,8 @@ export class Chat extends React.Component<ChatProps, State> {
 
     private handleIncomingActivity(activity: Activity) {
         const state = this.store.getState();
+        const activityCopy: any = activity;
+
         switch (activity.type) {
             case 'message':
                 this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
@@ -170,15 +172,6 @@ export class Chat extends React.Component<ChatProps, State> {
         .catch((err: any) => {
             console.log(err);
         });
-    }
-
-    private preventBodyScroll = (preventScroll: boolean) => {
-
-        if (preventScroll && document.body.className.indexOf('noScroll') === -1) {
-            document.body.className = this.state.orginalBodyClass + ' noScroll';
-        } else if (!preventScroll) {
-            document.body.className = this.state.orginalBodyClass;
-        }
     }
 
     private setSize() {
@@ -334,15 +327,17 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
-                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset)) {
-                            const { bottomOffset, topOffset, rightOffset} = bot_display_options;
+                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight || bot_display_options.display_name)) {
+                            const { bottomOffset, topOffset, rightOffset, fullHeight, display_name } = bot_display_options;
 
                             this.store.dispatch({
                                 type: 'Set_Format_Options',
                                 formatOptions: {
                                     bottomOffset,
                                     topOffset,
-                                    rightOffset
+                                    rightOffset,
+                                    fullHeight,
+                                    display_name
                                 }
                             });
                         }
@@ -463,6 +458,20 @@ export class Chat extends React.Component<ChatProps, State> {
         }
     }
 
+    private calculateChatviewPanelStyle = (format: FormatOptions) => {
+        const fullHeight = format && format.fullHeight;
+        const bottomOffset = fullHeight ? 0 : (format && format.bottomOffset ? format.bottomOffset + 99 : 17);
+        const topOffset = format && format.topOffset ? format.topOffset : 0;
+        const rightOffset = fullHeight ? 0 : (format && format.rightOffset ? format.rightOffset : -1);
+        const height = fullHeight ? '100vh' : `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
+
+        return {
+            bottom: bottomOffset,
+            height,
+            ...(rightOffset !== -1 || (format && format.fullHeight)) && {right: rightOffset}
+        };
+    }
+
     // At startup we do three render passes:
     // 1. To determine the dimensions of the chat panel (nothing needs to actually render here, so we don't)
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
@@ -472,11 +481,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
 
-        const bottomOffset = state.format && state.format.bottomOffset ? state.format.bottomOffset + 99 : 109;
-        const topOffset = state.format && state.format.topOffset ? state.format.topOffset : 0;
-        const rightOffset = state.format && state.format.rightOffset ? state.format.rightOffset : 0;
-        const height = `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
-        const chatviewPanelStyle = (state.format && state.format.fullHeight) ? { bottom: 0, height: '100vh', borderRadius: 0, right: rightOffset } : { bottom: bottomOffset, height, right: rightOffset };
+        const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
 
         // only render real stuff after we know our dimensions
         return (
@@ -484,10 +489,6 @@ export class Chat extends React.Component<ChatProps, State> {
                 <div
                     className={`wc-wrap ${display ? '' : 'hide'}`}
                     style={{ display: 'none'}}
-                    onMouseOver={e => this.preventBodyScroll(true)}
-                    onMouseLeave={e => this.preventBodyScroll(false)}
-                    onTouchStart={e => this.preventBodyScroll(true)}
-                    onTouchEnd={e => this.preventBodyScroll(false)}
                 >
                     <FloatingIcon
                         visible={!open && !opened}
@@ -519,10 +520,10 @@ export class Chat extends React.Component<ChatProps, State> {
                                         onClick={() => {this.toggle(); }}
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/close.svg" />
 
-                                    <img
+                                    {/* <img
                                         className="wc-header--back"
                                         onClick={() => {this.step(); }}
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" />
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" /> */}
                                 </div>
                         }
                         <History
@@ -549,6 +550,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             this.props.resize === 'detect' &&
                                 <ResizeDetector onresize={ this.resizeListener } />
                         }
+
                     </div>
                 </div>
             </Provider >
