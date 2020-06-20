@@ -10,7 +10,7 @@ const timeouts = {
   fetchImage: 5000,
   navigation: 10000,
   postActivity: 30000,
-  scrollToBottom: 2000,
+  scrollToBottom: 5000,
   ui: 1000
 };
 

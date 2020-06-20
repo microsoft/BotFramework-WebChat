@@ -543,7 +543,9 @@ When called, this hook will return an array of notifications.
 
 <!-- prettier-ignore-start -->
 ```js
-useObserveScrollPosition(observer: (position: ScrollPosition) => void, deps: any[]): void
+useObserveScrollPosition(observer: (ScrollObserver? | false), deps: any[]): void
+
+type ScrollObserver = (position: ScrollPosition) => void;
 
 type ScrollPosition {
   scrollTop: number
@@ -551,11 +553,13 @@ type ScrollPosition {
 ```
 <!-- prettier-ignore-end -->
 
-This function accept an observer function. When the scroll position has changed, the observer function will be called.
+This function accept an observer function. When the scroll position has changed, the observer function will be called with the latest `ScrollPosition`.
 
 The `position` argument can be passed to [`useScrollTo`](#usescrollto) hook to restore scroll position.
 
-Since the observer function will be called rapidly, please keep the code in the function as fast as posssible.
+Since the observer function will be called rapidly, please keep the code in the function as lightweight as posssible.
+
+To stop observing scroll positions, pass a falsy value to the `observer` argument.
 
 > If there are more than one transcripts, scrolling any of them will trigger the observer function, and there is no clear distinction of which transcript is being scrolled.
 
