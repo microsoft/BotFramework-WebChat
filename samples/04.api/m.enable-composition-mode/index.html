@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Programmatic access to post activity</title>
+    <title>Web Chat: Enable recomposition mode</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
@@ -14,10 +14,6 @@
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <!-- <script
-      crossorigin="anonymous"
-      src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"
-    ></script> -->
     <script src="/webchat.js"></script>
     <style>
       html,
@@ -36,24 +32,18 @@
         max-width: 480px;
         min-width: 360px;
       }
-
-      .app__help-button {
-        left: 10px;
-        position: absolute;
-        top: 10px;
-      }
     </style>
   </head>
   <body>
-    <div id="webchat" role="main"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       (async function() {
+        // Importing from UMD bundle.
         const {
-          React: { useCallback, useEffect },
+          React: { useCallback, useEffect, useRef, useState },
           WebChat: {
             Components: { BasicWebChat, Composer },
-            createDirectLine,
-            hooks: { useFocus, useSendMessage }
+            createDirectLine
           }
         } = window;
 
@@ -64,25 +54,22 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const directLine = createDirectLine({ token });
 
-        // <SendHelpMessageButton> must be a descendant of <Composer>.
-        const SendHelpMessageButton = () => {
+        const SendHelpOnConnect = () => {
+          const [connectivityStatus] = useConnectivityStatus();
           const sendMessage = useSendMessage();
 
-          const handleHelpButtonClick = useCallback(() => sendMessage('help'), [sendMessage]);
+          useEffect(() => {
+            connectivityStatus === 'connected' && sendMessage('help');
+          }, [connectivityStatus, sendMessage]);
 
-          return (
-            <button className="app__help-button" onClick={handleHelpButtonClick} type="button">
-              Send "help" to the bot
-            </button>
-          );
+          return false;
         };
 
         ReactDOM.render(
-          <Composer directLine={directLine}>
+          <Composer directLine={window.WebChat.createDirectLine({ token })}>
             <BasicWebChat />
-            <SendHelpMessageButton />
+            <SendHelpOnConnect />
           </Composer>,
           document.getElementById('webchat')
         );
