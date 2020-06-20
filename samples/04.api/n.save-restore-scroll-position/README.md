@@ -4,9 +4,9 @@ This sample shows how to save and restore scroll positions using [Web Chat hooks
 
 # Test out the hosted sample
 
-![Demo](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/04.api/n.save-restore-scroll-positions/demo.gif)
+![Demo](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/samples/04.api/n.save-restore-scroll-position/demo.gif)
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/n.save-restore-scroll-positions)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.api/n.save-restore-scroll-position)
 
 # Things to try out
 
