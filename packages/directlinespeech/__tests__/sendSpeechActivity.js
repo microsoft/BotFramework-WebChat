@@ -19,7 +19,8 @@ beforeEach(() => {
 });
 
 test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to true', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness();
+  const { directLine, sendTextAsSpeech } = await createTestHarness({
+    enableInternalHTTPSupport: true });
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
