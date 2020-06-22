@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useObserveScrollTop } from 'react-scroll-to-bottom';
+import { useObserveScrollPosition as useScrollToBottomObserveScrollPosition } from 'react-scroll-to-bottom';
 
 export default function useObserveScrollPosition(observer, deps) {
   if (typeof observer !== 'function') {
@@ -14,5 +14,5 @@ export default function useObserveScrollPosition(observer, deps) {
 
   const effectCallback = useCallback(({ scrollTop }) => observer && observer({ scrollTop }), deps);
 
-  useObserveScrollTop(effectCallback);
+  useScrollToBottomObserveScrollPosition(effectCallback);
 }

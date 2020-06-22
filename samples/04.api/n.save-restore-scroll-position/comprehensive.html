@@ -14,7 +14,10 @@
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"
+    ></script>
     <style>
       html,
       body {
@@ -127,12 +130,6 @@
                 <input checked={behavior === 'smooth'} onChange={handleBehaviorChange} type="checkbox" />
                 Smooth scrolling
               </label>
-              <button className="button-overlay__button" onClick={handleScrollTo100PixelClick} type="button">
-                Scroll to 100px
-              </button>
-              <button className="button-overlay__button" onClick={handleScrollToEndClick} type="button">
-                Scroll to end
-              </button>
               <button className="button-overlay__button" onClick={handleSavePositionClick} type="button">
                 Save current position
               </button>
@@ -142,7 +139,13 @@
                 onClick={handleScrollToSavedPositionClick}
                 type="button"
               >
-                Scroll to saved position
+                {behavior === 'smooth' ? 'Scroll to saved position' : 'Jump to saved position'}
+              </button>
+              <button className="button-overlay__button" onClick={handleScrollTo100PixelClick} type="button">
+                {behavior === 'smooth' ? 'Scroll to 100px' : 'Jump to 100px'}
+              </button>
+              <button className="button-overlay__button" onClick={handleScrollToEndClick} type="button">
+                {behavior === 'smooth' ? 'Scroll to end' : 'Jump to end'}
               </button>
               {savedScrollPosition && (
                 <pre className="button-overlay__saved-position">{JSON.stringify(savedScrollPosition, null, 2)}</pre>
