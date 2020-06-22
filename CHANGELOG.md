@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3205](https://github.com/microsoft/BotFramework-WebChat/issues/3205). Added Direct Line App Service Extension protocol, by [@compulim](https://github.com/compulim) in PR [#3206](https://github.com/microsoft/BotFramework-WebChat/pull/3206)
 -  Resolves [#3225](https://github.com/microsoft/BotFramework-WebChat/issues/3225). Support allowed scheme with `openUrl` card action, by [@compulim](https://github.com/compulim) in PR [#3226](https://github.com/microsoft/BotFramework-WebChat/pull/3226)
 -  Resolves [#3252](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added `useObserveScrollPosition` and `useScrollTo` hooks, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
--  Resolves [#3252](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added composition mode, which split up `<ReactWebChat>` into `<Composer>` and `<BasicWebChat>`, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
+-  Resolves [#3271](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added composition mode, which split up `<ReactWebChat>` into `<Composer>` and `<BasicWebChat>`, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
 
 ### Fixed
 
@@ -72,9 +72,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Resolves [#3205](https://github.com/microsoft/BotFramework-WebChat/issues/3205). Added [Direct Line App Service Extension chat adapter](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/i.protocol-direct-line-app-service-extension) sample, by [@compulim](https://github.com/compulim) in PR [#3206](https://github.com/microsoft/BotFramework-WebChat/pull/3206)
--  Resolves [#3252](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added [enable composition mode](https://microsoft.github.io/BotFramework-WebChat/04.api/m.enable-composition-mode) sample, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
+-  Resolves [#3271](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added [enable composition mode](https://microsoft.github.io/BotFramework-WebChat/04.api/m.enable-composition-mode) sample, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
 -  Resolves [#3252](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Added [save and restore scroll position](https://microsoft.github.io/BotFramework-WebChat/04.api/n.save-restore-scroll-position) sample, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
--  Resolves [#3252](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Updated [post activity event](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event) sample to use composition mode, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
+-  Resolves [#3271](https://github.com/microsoft/BotFramework-WebChat/issues/3252). Updated [post activity event](https://microsoft.github.io/BotFramework-WebChat/04.api/d.post-activity-event) sample to use composition mode, by [@compulim](https://github.com/compulim) in PR [#3268](https://github.com/microsoft/BotFramework-WebChat/pull/3268)
 
 ## [4.9.0] - 2020-05-11
 
