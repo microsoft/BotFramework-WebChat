@@ -557,7 +557,7 @@ This function accept an observer function. When the scroll position has changed,
 
 The `position` argument can be passed to [`useScrollTo`](#usescrollto) hook to restore scroll position.
 
-Since the observer function will be called rapidly, please keep the code in the function as lightweight as posssible.
+Since the observer function will be called rapidly, please keep the code in the function as lightweight as possible.
 
 To stop observing scroll positions, pass a falsy value to the `observer` argument.
 
