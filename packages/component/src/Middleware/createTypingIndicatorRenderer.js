@@ -1,5 +1,8 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import concatMiddleware from './concatMiddleware';
 import createCoreTypingIndicatorMiddleware from './TypingIndicator/createCoreMiddleware';
+import ErrorBox from '../ErrorBox';
 
 export default function createTypingIndicatorRenderer(additionalMiddleware) {
   const typingIndicatorMiddleware = concatMiddleware(additionalMiddleware, createCoreTypingIndicatorMiddleware())({});

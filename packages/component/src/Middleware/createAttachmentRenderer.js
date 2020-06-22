@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import concatMiddleware from './concatMiddleware';
 import createCoreAttachmentMiddleware from './Attachment/createCoreMiddleware';
 import ErrorBox from '../ErrorBox';

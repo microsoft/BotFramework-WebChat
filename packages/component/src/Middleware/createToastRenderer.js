@@ -1,5 +1,8 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import concatMiddleware from './concatMiddleware';
 import createCoreToastMiddleware from './Toast/createCoreMiddleware';
+import ErrorBox from '../ErrorBox';
 
 export default function createToastRenderer(additionalMiddleware) {
   const toastMiddleware = concatMiddleware(additionalMiddleware, createCoreToastMiddleware())({});

@@ -5,5 +5,5 @@ import { useScrollToEnd as useScrollToBottomScrollToEnd } from 'react-scroll-to-
 export default function useScrollToEnd() {
   const scrollToEnd = useScrollToBottomScrollToEnd();
 
-  return useCallback(() => scrollToEnd({ behavior: 'smooth' }), []);
+  return useCallback(() => scrollToEnd({ behavior: 'smooth' }), [scrollToEnd]);
 }

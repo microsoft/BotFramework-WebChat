@@ -66,16 +66,10 @@ export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
   ...Composer.defaultProps,
-  activityMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  avatarMiddleware: undefined,
   className: ''
 };
 
 BasicWebChat.propTypes = {
   ...Composer.propTypes,
-  activityMiddleware: PropTypes.func,
-  attachmentMiddleware: PropTypes.func,
-  avatarMiddleware: PropTypes.func,
   className: PropTypes.string
 };

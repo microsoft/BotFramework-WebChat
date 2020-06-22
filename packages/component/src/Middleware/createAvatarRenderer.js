@@ -1,5 +1,8 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import concatMiddleware from './concatMiddleware';
 import createCoreAvatarMiddleware from './Avatar/createCoreMiddleware';
+import ErrorBox from '../ErrorBox';
 
 export default function createAvatarRenderer(additionalMiddleware) {
   const avatarMiddleware = concatMiddleware(additionalMiddleware, createCoreAvatarMiddleware())({});

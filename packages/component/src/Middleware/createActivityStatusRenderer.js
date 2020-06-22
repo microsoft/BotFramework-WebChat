@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import concatMiddleware from './concatMiddleware';
 import createCoreActivityStatusMiddleware from './ActivityStatus/createCoreMiddleware';
 import ErrorBox from '../ErrorBox';
