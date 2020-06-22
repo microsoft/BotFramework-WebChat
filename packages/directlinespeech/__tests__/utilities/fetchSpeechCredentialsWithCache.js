@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 const TOKEN_URL_TEMPLATE = 'https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken';
 
-async function fromWaterBottle({ enableInternalHTTPSupport = false }) {
+async function fromWaterBottle({ enableInternalHTTPSupport } = {}) {
   const res = await fetch('https://webchat-waterbottle.azurewebsites.net/token/speechservices');
 
   if (!res.ok) {
@@ -20,7 +20,7 @@ async function fromWaterBottle({ enableInternalHTTPSupport = false }) {
 
     const { token: directLineToken } = await directLineTokenResult.json();
 
-    return { authorizationToken, region, directLineToken };
+    return { authorizationToken, directLineToken, region };
   }
 
   return { authorizationToken, region };
@@ -63,7 +63,7 @@ async function getDirectLineTokenFromSecret(channelSecret) {
 let credentialsPromise;
 
 export default async function fetchSpeechCredentialsWithCache({ 
-  enableInternalHTTPSupport = false }) {
+  enableInternalHTTPSupport } = {}) {
     if (!credentialsPromise) {
     const { SPEECH_SERVICES_DIRECT_LINE_SECRET, SPEECH_SERVICES_REGION, SPEECH_SERVICES_SUBSCRIPTION_KEY } = process.env;
     if (SPEECH_SERVICES_REGION && SPEECH_SERVICES_SUBSCRIPTION_KEY) {

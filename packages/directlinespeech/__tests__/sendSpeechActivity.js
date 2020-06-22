@@ -19,7 +19,7 @@ beforeEach(() => {
 });
 
 test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to true', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: true });
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
@@ -41,7 +41,7 @@ test('should echo back when saying "hello" and "world" with enableInternalHTTPSu
 });
 
 test('should echo back when saying "hello" and "world" with enableInternalHTTPSupport set to false', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: false });
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
@@ -63,7 +63,7 @@ test('should echo back when saying "hello" and "world" with enableInternalHTTPSu
 });
 
 test('should echo back "Bellevue" when saying "bellview"', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: false });
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
@@ -84,7 +84,7 @@ test('should echo back "Bellevue" when saying "bellview"', async () => {
 
 // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
 test('should synthesis if "speak" is empty', async () => {
-  const { directLine, sendTextAsSpeech } = await createTestHarness({ enableInternalHTTPSupport: false });
+  const { directLine, sendTextAsSpeech } = await createTestHarness();
 
   const connectedPromise = waitForConnected(directLine);
   const activitiesPromise = subscribeAll(take(directLine.activity$, 1));

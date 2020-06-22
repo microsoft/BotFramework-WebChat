@@ -16,7 +16,7 @@ export default async function create({
   audioConfig,
   audioContext,
   audioInputDeviceId,
-  enableInternalHTTPSupport = false,
+  enableInternalHTTPSupport,
   enableTelemetry,
   fetchCredentials,
   speechRecognitionEndpointId,
@@ -28,7 +28,7 @@ export default async function create({
   speechSynthesisOutputFormat,
   textNormalization,
   userID,
-  username  
+  username
 }) {
   if (!fetchCredentials) {
     throw new Error('"fetchCredentials" must be specified.');
@@ -133,8 +133,8 @@ export default async function create({
   // speechRecognitionEndpointId && config.setServiceProperty('cid', speechRecognitionEndpointId, ServicePropertyChannel.UriQueryParameter);
   // speechSynthesisDeploymentId && config.setProperty(PropertyId.conversation_Custom_Voice_Deployment_Ids, speechSynthesisDeploymentId);
 
-  let dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
-  
+  const dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
+
   dialogServiceConnector.connect();
 
   // Renew token per interval.
@@ -184,7 +184,7 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-      dialogServiceConnector.connect(); // eslint-disable-line require-atomic-updates
+      dialogServiceConnector.connect();
 
     }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
   }

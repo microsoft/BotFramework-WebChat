@@ -11,7 +11,7 @@ export default async function recognizeRiffWaveArrayBuffer(
   riffWaveArrayBuffer,
   audioFormat = AudioStreamFormat.getDefaultInputFormat()
 ) {
-  const { authorizationToken, region } = await fetchSpeechCredentialsWithCache({ enableInternalHTTPSupport: false });
+  const { authorizationToken, region } = await fetchSpeechCredentialsWithCache();
   const url = RECOGNITION_URL_TEMPLATE.replace(/\{region\}/u, encodeURI(region)).replace(
     /\{lang\}/u,
     encodeURIComponent(DEFAULT_LANGUAGE)
