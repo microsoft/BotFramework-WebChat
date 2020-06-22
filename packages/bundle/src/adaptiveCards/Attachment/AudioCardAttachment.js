@@ -1,34 +1,16 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import CommonCard from './CommonCard';
+import AudioCardContent from './AudioCardContent';
 
-const { AudioContent } = Components;
-const { useStyleSet } = hooks;
+const AudioCardAttachment = ({ attachment: { content }, disabled }) => (
+  <AudioCardContent content={content} disabled={disabled} />
+);
 
-const AudioCardAttachment = ({
-  attachment,
-  attachment: {
-    content: { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = {}
-  } = {}
-}) => {
-  const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
-
-  return (
-    <div className={audioCardAttachmentStyleSet}>
-      <ul className="media-list">
-        {media.map(({ url }, index) => (
-          <li key={index}>
-            <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
-          </li>
-        ))}
-      </ul>
-      <CommonCard attachment={attachment} />
-    </div>
-  );
+AudioCardAttachment.defaultProps = {
+  disabled: undefined
 };
 
 AudioCardAttachment.propTypes = {
@@ -45,7 +27,8 @@ AudioCardAttachment.propTypes = {
         }).isRequired
       ).isRequired
     })
-  }).isRequired
+  }).isRequired,
+  disabled: PropTypes.bool
 };
 
 export default AudioCardAttachment;

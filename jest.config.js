@@ -1,4 +1,4 @@
-const { relative } = require('path');
+const { join, relative } = require('path');
 
 module.exports = {
   collectCoverageFrom: [
@@ -58,7 +58,11 @@ module.exports = {
           }
         ]
       }
-    ]
+    ],
+    ['./__tests__/setup/NUnitTestReporter', {
+      filename: join(__dirname, 'coverage/nunit3.xml'),
+      jestResultFilename: join(__dirname, 'coverage/jest.json')
+    }]
   ],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',

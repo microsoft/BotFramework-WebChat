@@ -5,5 +5,5 @@ import getTranscript from './getTranscript';
 export default async function getScrollToBottomButton(driver) {
   const transcript = await getTranscript(driver);
 
-  return await transcript.findElement(By.css('button.webchat__scrollToEndButton'));
+  return await transcript.findElement(By.css('.webchat__scrollToEndButton'));
 }

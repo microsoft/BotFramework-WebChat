@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        conditions,
+        createRunHookActivityMiddleware,
+        createStore,
+        expect,
+        host,
+        pageObjects,
+        timeouts,
+        token,
+        updateIn
+      } = window.WebChatTest;
+
+      (async function() {
+        function createDirectLineForTest(options) {
+          const workingDirectLine = window.WebChat.createDirectLine(options);
+
+          return {
+            activity$: workingDirectLine.activity$,
+            connectionStatus$: workingDirectLine.connectionStatus$,
+            postActivity: activity =>
+              activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
+          };
+        }
+
+        const clock = lolex.install();
+
+        window.clock = clock;
+
+        async function createWebChat() {
+          let props = {
+            activityMiddleware: createRunHookActivityMiddleware(),
+            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
+            store: createStore(),
+            styleOptions: {
+              sendTimeout: 20000
+            }
+          };
+
+          const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+
+          render();
+
+          return {
+            updateProps: updater => {
+              props = updater(props);
+              render(props);
+            }
+          };
+        }
+
+        const { updateProps } = await createWebChat();
+
+        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
+
+        // Advance 1 second for the connection status prompt to be gone.
+        clock.tick(1000);
+
+        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
+
+        const fileBlob = new Blob([new ArrayBuffer(0)]);
+
+        fileBlob.name = 'empty.zip';
+
+        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+        await host.snapshot();
+
+        clock.tick(20000);
+
+        // After 20 seconds, it should still show "sending".
+        await host.snapshot();
+
+        clock.tick(100000);
+
+        // After 120 seconds, it should show time out.
+        await host.snapshot();
+
+        updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
+
+        // After changing the timeout to 130 seconds, it should show "sending".
+        await host.snapshot();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

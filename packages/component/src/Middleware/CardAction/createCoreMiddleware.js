@@ -1,5 +1,34 @@
 import { sendMessage, sendMessageBack, sendPostBack } from 'botframework-webchat-core';
 
+// This code is adopted from sanitize-html/naughtyScheme.
+// sanitize-html is a dependency of Web Chat but the naughtScheme function is neither exposed nor reusable.
+// https://github.com/apostrophecms/sanitize-html/blob/master/src/index.js#L526
+function getScheme(href) {
+  // Browsers ignore character codes of 32 (space) and below in a surprising
+  // number of situations. Start reading here:
+  // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
+  // eslint-disable-next-line no-control-regex
+
+  href = href.replace(/[\x00-\x20]+/g, '');
+
+  // Clobber any comments in URLs, which the browser might
+  // interpret inside an XML data island, allowing
+  // a javascript: URL to be snuck through
+  href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
+
+  // Case insensitive so we don't get faked out by JAVASCRIPT #1
+  const matches = href.match(/^([a-zA-Z]+)\:/);
+
+  if (!matches) {
+    // Protocol-relative URL or no scheme
+    return;
+  }
+
+  return matches[1].toLowerCase();
+}
+
+const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
+
 export default function createDefaultCardActionMiddleware() {
   return ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
     const { displayText, text, type, value } = cardAction;
@@ -31,7 +60,12 @@ export default function createDefaultCardActionMiddleware() {
       case 'playAudio':
       case 'playVideo':
       case 'showImage':
-        window.open(value);
+        if (ALLOWED_SCHEMES.includes(getScheme(value))) {
+          window.open(value, '_blank', 'noopener noreferrer');
+        } else {
+          console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
+        }
+
         break;
 
       case 'signin': {

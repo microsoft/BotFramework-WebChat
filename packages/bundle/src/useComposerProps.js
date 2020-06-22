@@ -19,10 +19,15 @@ export default function useComposerProps({ attachmentMiddleware, renderMarkdown,
     styleSet
   ]);
 
+  const patchedRenderMarkdown = useMemo(
+    () =>
+      typeof renderMarkdown === 'undefined' ? text => defaultRenderMarkdown(text, patchedStyleOptions) : renderMarkdown,
+    [patchedStyleOptions, renderMarkdown]
+  );
+
   return {
     attachmentMiddleware: patchedAttachmentMiddleware,
     extraStyleSet,
-    renderMarkdown:
-      typeof renderMarkdown === 'undefined' ? text => defaultRenderMarkdown(text, patchedStyleOptions) : renderMarkdown
+    renderMarkdown: patchedRenderMarkdown
   };
 }

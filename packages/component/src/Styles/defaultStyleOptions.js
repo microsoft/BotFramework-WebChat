@@ -67,6 +67,7 @@ const DEFAULT_OPTIONS = {
   // Root
   rootHeight: '100%',
   rootWidth: '100%',
+  rootZIndex: 0, // "z-index" for the root container of Web Chat. This will form a new stacking context so "z-index" used in children won't pollute.
 
   // Scroll to end button
   hideScrollToEndButton: false,
@@ -110,8 +111,12 @@ const DEFAULT_OPTIONS = {
   suggestedActionDisabledTextColor: undefined, // defaults to subtle
   suggestedActionHeight: 40,
   suggestedActionImageHeight: 20,
-  suggestedActionLayout: 'carousel', // either "carousel" or "stacked"
+  suggestedActionLayout: 'carousel', // either 'carousel' or 'stacked'
   suggestedActionTextColor: null,
+
+  // Suggested actions 'stacked' layout
+  suggestedActionsStackedHeight: undefined, // defaults to 'auto'
+  suggestedActionsStackedOverflow: null,
 
   // Timestamp
   groupTimestamp: true,
@@ -121,6 +126,7 @@ const DEFAULT_OPTIONS = {
   timestampFormat: 'relative', // 'absolute'
 
   // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
+  newMessagesButtonFontSize: '85%',
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',

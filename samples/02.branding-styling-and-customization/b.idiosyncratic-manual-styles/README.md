@@ -6,7 +6,7 @@ This sample introduces the ability to overwrite `createStyleSet`, which is the u
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.idiosyncrating-manual-styles)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.idiosyncratic-manual-styles)
 
 # How to run
 

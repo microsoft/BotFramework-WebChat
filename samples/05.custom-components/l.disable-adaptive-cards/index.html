@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Disable Adaptive Cards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <!-- <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script> -->
+    <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime@0.13.3/runtime.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background-color: #f7f7f7;
+        margin: 0;
+      }
+
+      #webchat {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        margin: 0 auto;
+        max-width: 480px;
+        min-width: 360px;
+      }
+
+      #webchat :focus {
+        outline-color: rgba(0, 0, 0, 0.4);
+        outline-offset: -4px;
+        outline-style: dotted;
+        outline-width: 2px;
+      }
+
+      #webchat input[type='text']:focus {
+        outline-offset: 2px;
+      }
+
+      #webchat .card__action--performed {
+        background-color: #0063b1 !important;
+        border-color: #0063b1 !important;
+        color: White !important;
+      }
+
+      #webchat .card__action--performed:focus {
+        outline-color: rgba(255, 255, 255, 0.6);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="webchat" role="main"></div>
+    <script type="text/babel" data-presets="es2015,react,stage-3">
+      (async function() {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const {
+          Components: {
+            AdaptiveCardContent,
+            AnimationCardContent,
+            AudioCardContent,
+            HeroCardContent,
+            OAuthCardContent,
+            ReceiptCardContent,
+            SignInCardContent,
+            ThumbnailCardContent,
+            VideoCardContent
+          },
+          createStore,
+          createStyleSet,
+          ReactWebChat
+        } = window.WebChat;
+        const { useCallback, useMemo, useState } = window.React;
+
+        const store = createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              meta: { method: 'keyboard' },
+              payload: {
+                text: 'herocard qna 1'
+              }
+            });
+          }
+
+          return next(action);
+        });
+
+        const attachmentMiddleware = () => next => ({ activity, attachment, ...others }) => {
+          const { activities } = store.getState();
+          const messageActivities = activities.filter(activity => activity.type === 'message');
+          const recentBotMessage = messageActivities.pop() === activity;
+
+          switch (attachment.contentType) {
+            case 'application/vnd.microsoft.card.adaptive':
+              return (
+                <AdaptiveCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.animation':
+              return (
+                <AnimationCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.audio':
+              return (
+                <AudioCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.hero':
+              return (
+                <HeroCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.oauth':
+              return (
+                <OAuthCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.receipt':
+              return (
+                <ReceiptCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.signin':
+              return (
+                <SignInCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.thumbnail':
+              return (
+                <ThumbnailCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            case 'application/vnd.microsoft.card.video':
+              return (
+                <VideoCardContent
+                  actionPerformedClassName="card__action--performed"
+                  content={attachment.content}
+                  disabled={!recentBotMessage}
+                />
+              );
+
+            default:
+              return next({ activity, attachment, ...others });
+          }
+        };
+
+        const App = () => {
+          const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
+
+          return (
+            <ReactWebChat
+              attachmentMiddleware={attachmentMiddleware}
+              directLine={directLine}
+              disabled={disabled}
+              store={store}
+            />
+          );
+        };
+
+        window.ReactDOM.render(<App />, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

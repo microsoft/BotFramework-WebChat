@@ -1,82 +1,85 @@
-import { StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
-
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 
-import useActivities from '../hooks/useActivities';
 import useDirection from '../hooks/useDirection';
-import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
-const ScrollToEndButton = ({ animating, className, sticky }) => {
-  const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
-  const [activities] = useActivities();
-  const [direction] = useDirection();
-  const focus = useFocus();
-  const localize = useLocalizer();
-  const scrollToEnd = useScrollToEnd();
+import { safari } from '../Utils/detectBrowser';
 
-  const handleClick = useCallback(() => {
-    scrollToEnd();
-    focus();
-  }, [focus, scrollToEnd]);
+const ScrollToEndButton = forwardRef(
+  (
+    { 'aria-valuemax': ariaValueMax, 'aria-valuemin': ariaValueMin, 'aria-valuenow': ariaValueNow, className, onClick },
+    ref
+  ) => {
+    const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
+    const [direction] = useDirection();
+    const localize = useLocalizer();
+    const scrollToEnd = useScrollToEnd();
 
-  const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
+    const handleClick = useCallback(
+      event => {
+        onClick && onClick(event);
+        scrollToEnd();
+      },
+      [onClick, scrollToEnd]
+    );
 
-  // Ignore activity types other than "message"
-  const lastMessageActivity = [...activities].reverse().find(({ type }) => type === 'message');
-  const lastShownActivityId = (lastMessageActivity || {}).id;
-  const lastReadActivityIdRef = useRef(lastShownActivityId);
+    const handleKeyPress = useCallback(
+      event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
 
-  const { current: lastReadActivityId } = lastReadActivityIdRef;
+          onClick && onClick(event);
+          scrollToEnd();
+        }
+      },
+      [onClick, scrollToEnd]
+    );
 
-  if (sticky) {
-    // If it is sticky, mark the activity ID as read.
-    lastReadActivityIdRef.current = lastShownActivityId;
+    const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
+
+    return (
+      <li
+        aria-label={newMessageText}
+        aria-valuemax={ariaValueMax}
+        aria-valuemin={ariaValueMin}
+        aria-valuenow={ariaValueNow}
+        className={classNames(
+          'webchat__scrollToEndButton',
+          scrollToEndButtonStyleSet + '',
+          className + '',
+          direction === 'rtl' ? 'webchat__overlay--rtl' : ''
+        )}
+        onClick={handleClick}
+        onKeyPress={handleKeyPress}
+        ref={ref}
+        // iOS VoiceOver does not support role="separator" and treat it as role="presentation", which become invisible to VoiceOver.
+        role={safari ? undefined : 'separator'}
+        tabIndex={0}
+      >
+        {newMessageText}
+      </li>
+    );
   }
-
-  // Don't show the button if:
-  // - The scroll bar is animating
-  //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
-  // - It is already at the bottom (sticky)
-  // - The last activity ID has been read
-  if (animating || sticky || lastShownActivityId === lastReadActivityId) {
-    return false;
-  }
-
-  return (
-    <button
-      className={classNames(
-        'webchat__scrollToEndButton',
-        scrollToEndButtonStyleSet + '',
-        className + '',
-        direction === 'rtl' ? 'webchat__overlay--rtl' : ''
-      )}
-      onClick={handleClick}
-      type="button"
-    >
-      {newMessageText}
-    </button>
-  );
-};
-
-ScrollToEndButton.defaultProps = {
-  className: ''
-};
-
-ScrollToEndButton.propTypes = {
-  animating: PropTypes.bool.isRequired,
-  className: PropTypes.string,
-  sticky: PropTypes.bool.isRequired
-};
-
-const ConnectedScrollToEndButton = props => (
-  <ScrollToBottomStateContext.Consumer>
-    {({ animating, sticky }) => <ScrollToEndButton animating={animating} sticky={sticky} {...props} />}
-  </ScrollToBottomStateContext.Consumer>
 );
 
-export default ConnectedScrollToEndButton;
+ScrollToEndButton.defaultProps = {
+  'aria-valuemin': 0,
+  className: '',
+  onClick: undefined
+};
+
+ScrollToEndButton.displayName = 'ScrollToEndButton';
+
+ScrollToEndButton.propTypes = {
+  'aria-valuemax': PropTypes.number.isRequired,
+  'aria-valuemin': PropTypes.number,
+  'aria-valuenow': PropTypes.number.isRequired,
+  className: PropTypes.string,
+  onClick: PropTypes.func
+};
+
+export default ScrollToEndButton;

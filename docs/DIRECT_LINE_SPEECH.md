@@ -2,9 +2,9 @@
 
 > For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md).
 
-This guide is for integrating Direct Line Speech.
+This guide is for using Web Chat with chat and speech functionality provided by the [Direct Line Speech protocol](https://docs.microsoft.com/en-us/azure/cognitive-services/Speech-Service/direct-line-speech).
 
-We assume you have already set up a bot and have Web Chat running on a page.
+We assume you have already set up a Direct Line Speech bot and have Web Chat running on your webpage.
 
 > Sample code in this article is optimized for modern browsers. You may need to use a [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) (e.g. [Babel](https://babeljs.io/)) to target a broader range of browsers.
 

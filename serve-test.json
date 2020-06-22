@@ -1,0 +1,39 @@
+{
+  "headers": [
+    {
+      "source": "*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache no-store no-transform"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/assets/:filename",
+      "destination": "__tests__/html/assets/:filename"
+    },
+    {
+      "source": "/__dist__/testharness.js",
+      "destination": "packages/testharness/dist/testharness.js"
+    },
+    {
+      "source": "/__dist__/webchat-es5.js",
+      "destination": "packages/bundle/dist/webchat-es5.js"
+    },
+    {
+      "source": "/:page.css",
+      "destination": "__tests__/html/:page.css"
+    },
+    {
+      "source": "/:page",
+      "destination": "__tests__/html/:page.html"
+    },
+    {
+      "source": "/",
+      "destination": "__tests__/html"
+    }
+  ]
+}

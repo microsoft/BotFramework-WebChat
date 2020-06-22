@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.9.1-0",
+  "version": "4.9.2-0",
   "private": true,
   "files": [
     "lib/**/*"
@@ -28,7 +28,7 @@
     "eslint": "lerna run --parallel --stream eslint",
     "posteslint": "npm run prettier-readmes",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "start": "concurrently --kill-others --raw \"serve\" \"serve -p 5001 -c __tests__/html/serve.json __tests__/html\" \"lerna run --ignore playground --parallel --stream start\"",
+    "start": "concurrently --kill-others --raw \"serve\" \"serve -p 5001 -c serve-test.json\" \"lerna run --ignore playground --parallel --stream start\"",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
     "test": "jest --watch",
     "test:ci": "npm run test -- --ci --coverage true --no-watch",
@@ -39,7 +39,7 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-env": "^7.10.0",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
     "@babel/runtime": "^7.8.7",
@@ -49,6 +49,7 @@
     "core-js": "^3.6.4",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
+    "error-stack-parser": "^2.0.6",
     "get-port": "^5.1.1",
     "global-agent": "^2.1.8",
     "husky": "^4.2.3",
@@ -66,7 +67,9 @@
     "react-dom": "16.8.6",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "serve": "^11.3.0",
-    "serve-handler": "^6.1.2"
+    "serve-handler": "^6.1.2",
+    "strip-ansi": "^6.0.0",
+    "xmlbuilder": "^15.1.1"
   },
   "dependencies": {}
 }

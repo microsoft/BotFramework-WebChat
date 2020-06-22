@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        conditions,
+        createRunHookActivityMiddleware,
+        createStore,
+        elements,
+        expect,
+        getConsoleHistory,
+        host,
+        pageObjects,
+        timeouts,
+        token
+      } = window.WebChatTest;
+
+      function stringToArrayBuffer(value) {
+        // This assume the string is ASCII (0-127).
+
+        const { length } = value;
+        const byteArray = new Array(length);
+
+        for (let index = 0; index < length; index++) {
+          const charCode = value.charCodeAt(index);
+
+          if (charCode > 127) {
+            throw new Error('Only ASCII characters are supported.');
+          }
+
+          byteArray[index] = charCode;
+        }
+
+        return new Uint8Array(byteArray).buffer;
+      }
+
+      (async function() {
+        window.WebChat.renderWebChat(
+          {
+            activityMiddleware: createRunHookActivityMiddleware(),
+            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        const fileBlob = new Blob([
+          stringToArrayBuffer(
+            JSON.stringify(
+              {
+                contentType: 'application/vnd.microsoft.card.hero',
+                content: {
+                  tap: {
+                    type: 'openUrl',
+                    value: 'javascript:alert(1)'
+                  },
+                  title: 'Tap on this hero card will open Bing.com.'
+                }
+              },
+              null,
+              2
+            )
+          )
+        ]);
+
+        fileBlob.name = 'openurl-card.attachmentjson';
+
+        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        const calls = [];
+
+        window.open = (url, windowName, windowFeatures) => calls.push([url, windowName, windowFeatures]);
+
+        const adaptiveCard = elements.activities()[1].querySelector('.ac-adaptiveCard');
+
+        adaptiveCard.click();
+
+        expect(calls).toHaveProperty('length', 0);
+
+        // Expect to show a warning.
+        await expect(getConsoleHistory()).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              args: expect.arrayContaining([expect.stringContaining('disallowed scheme')]),
+              level: 'warn'
+            })
+          ])
+        );
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

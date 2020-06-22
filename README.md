@@ -18,6 +18,10 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
 
+## Direct Line Speech support in Web Chat 4.7.0
+
+Starting from Web Chat 4.7.0, Direct Line Speech is supported, and it is the preferred way to provide an integrated speech functionality in Web Chat. We are working on [closing feature gaps](https://github.com/microsoft/BotFramework-WebChat/labels/Direct%20Line%20Speech) between Direct Line Speech and Web Speech API (includes Cognitive Services and browser-provided speech functionality).
+
 ## Upgrading to 4.6.0
 
 Starting from Web Chat 4.6.0, Web Chat requires React 16.8.6 or up.
@@ -200,9 +204,25 @@ View the [notification documentation](https://github.com/microsoft/BotFramework-
 
 View the [telemetry documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md) for implementing in Web Chat.
 
-## Speech: Integrate with Cognitive Services Speech Services
+## Speech
 
-You can use Cognitive Services Speech Services to add bi-directional speech functionality to Web Chat. Please refer to the [Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md) documentation for details.
+Web Chat supports a wide-range of speech engines for a natural chat experience with a bot. This section outlines the different engines that are supported:
+
+-  [Direct Line Speech](#integrate-with-direct-line-speech)
+-  [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
+-  [Browser-provided engine or other engines](#browser-provided-engine-or-other-engines)
+
+### Integrate with Direct Line Speech
+
+Direct Line Speech is the preferred way to add speech functionality in Web Chat. Please refer to the [Direct Line Speech](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md) documentation for details.
+
+### Integrate with Cognitive Services Speech Services
+
+You can use Cognitive Services Speech Services to add speech functionality to Web Chat. Please refer to the [Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md) documentation for details.
+
+### Browser-provided engine or other engines
+
+You can also use any speech engines which support [W3C Web Speech API standard](https://wicg.github.io/speech-api/). Some browsers support the [Speech Recognition API](https://caniuse.com/#feat=mdn-api_speechrecognition) and the [Speech Synthesis API](https://caniuse.com/#feat=mdn-api_speechsynthesis). You can mix-and-match different engines - including Cognitive Services Speech Services - to provide best user experience.
 
 <hr />
 

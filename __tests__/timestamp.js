@@ -52,11 +52,11 @@ test('timestamp should update time', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo timestamp', { waitForSend: true });
 
+  await driver.executeScript(() => window.WebChatTest.clock.tick(1));
+
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
-  await driver.executeScript(() => {
-    window.WebChatTest.clock.tick(330000); // t = 5.5 minutes
-  });
+  await driver.executeScript(() => window.WebChatTest.clock.tick(330000)); // t = 5.5 minutes
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
@@ -106,134 +106,5 @@ test('change timestamp grouping on-the-fly', async () => {
   await pageObjects.updateProps({ styleOptions: { groupTimestamp: false } });
 
   // After setting group timestamp to false, it should not show any timestamps.
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('change send timeout on-the-fly', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    createDirectLine: options => {
-      const workingDirectLine = window.WebChat.createDirectLine(options);
-
-      return {
-        activity$: workingDirectLine.activity$,
-        connectionStatus$: workingDirectLine.connectionStatus$,
-        postActivity: activity =>
-          activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
-      };
-    },
-    props: {
-      styleOptions: {
-        sendTimeout: 5000
-      }
-    },
-    setup: () =>
-      Promise.all([
-        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
-        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
-      ]).then(() => {
-        window.WebChatTest.clock = lolex.install();
-      })
-  });
-
-  // Advance 1 second for the connection status prompt to be gone.
-  await driver.executeScript(() => window.WebChatTest.clock.tick(1000));
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
-
-  await driver.executeScript(() => window.WebChatTest.clock.tick(5000));
-
-  await driver.wait(
-    new Condition('turn into "Send failed. Retry.', driver =>
-      driver.executeScript(
-        () =>
-          document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
-          'Send failed. Retry.'
-      )
-    ),
-    timeouts.ui
-  );
-
-  // After 5 seconds, it should show timeout.
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
-  await pageObjects.updateProps({ styleOptions: { sendTimeout: 10000 } });
-
-  await driver.wait(
-    new Condition('turn into "Sending"', driver =>
-      driver.executeScript(
-        () => document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText === 'Sending'
-      )
-    ),
-    timeouts.ui
-  );
-
-  // After changing the send timeout to 10 seconds, it should show "sending".
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
-  await driver.executeScript(() => window.WebChatTest.clock.tick(5000));
-
-  await driver.wait(
-    new Condition('turn into "Send failed. Retry.', driver =>
-      driver.executeScript(
-        () =>
-          document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
-          'Send failed. Retry.'
-      )
-    ),
-    timeouts.ui
-  );
-
-  // After 10 seconds, it should show timeout again.
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('send timeout for attachment should be different', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    createDirectLine: options => {
-      const workingDirectLine = window.WebChat.createDirectLine(options);
-
-      return {
-        activity$: workingDirectLine.activity$,
-        connectionStatus$: workingDirectLine.connectionStatus$,
-        postActivity: activity =>
-          activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
-      };
-    },
-    props: {
-      styleOptions: {
-        sendTimeout: 20000
-      }
-    },
-    setup: () =>
-      Promise.all([
-        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
-        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
-      ]).then(() => {
-        window.WebChatTest.clock = lolex.install();
-      })
-  });
-
-  // Advance 1 second for the connection status prompt to be gone.
-  await driver.executeScript(() => window.WebChatTest.clock.tick(1000));
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendFile('empty.zip', { waitForSend: false });
-
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
-  await driver.executeScript(() => window.WebChatTest.clock.tick(20000));
-
-  // After 20 seconds, it should still show "sending".
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
-  await driver.executeScript(() => window.WebChatTest.clock.tick(100000));
-
-  // After 120 seconds, it should show time out.
-  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
-  await pageObjects.updateProps({ styleOptions: { sendTimeoutForAttachments: 130000 } });
-
-  // After changing the timeout to 130 seconds, it should show "sending".
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });

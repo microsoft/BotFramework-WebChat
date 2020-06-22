@@ -83,6 +83,7 @@ describe('style options', () => {
       });
     });
 
+    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 

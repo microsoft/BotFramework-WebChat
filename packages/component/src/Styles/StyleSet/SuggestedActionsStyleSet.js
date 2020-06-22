@@ -29,9 +29,11 @@ export default function createSuggestedActionsStyleSet({
       outline: 0
     },
 
-    '&:disabled > div.slider > div': {
-      backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-      color: transcriptOverlayButtonColorOnDisabled
+    '&:disabled, &[aria-disabled="true"]': {
+      '& > div.slider > div': {
+        backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+        color: transcriptOverlayButtonColorOnDisabled
+      }
     },
 
     '&:focus > div.slider > div': {

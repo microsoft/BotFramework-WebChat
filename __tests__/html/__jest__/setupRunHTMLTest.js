@@ -26,7 +26,7 @@ global.runHTMLTest = async (
         .build()
     : builder
         .forBrowser('chrome')
-        .usingServer('http://localhost:9515/')
+        .usingServer('http://localhost:9515')
         .setChromeOptions(chromeOptions)
         .build();
 
@@ -81,12 +81,12 @@ global.runHTMLTest = async (
   } finally {
     // Using JSON Wire Protocol to kill Web Driver.
     // This is more reliable because Selenium package queue commands.
-    const res = await fetch(`http://localhost:4444/wd/hub/session/${sessionId}`, { method: 'DELETE' });
+    const res = await fetch(`${builder.getServerUrl()}/session/${sessionId}`, { method: 'DELETE' });
 
     if (!res.ok) {
       const json = await res.json();
 
-      throw new Error(`Failed to kill WebDriver session ${sessionId}.\n\n${json && json.value && json.value.message}`);
+      console.warn(`Failed to kill WebDriver session ${sessionId}.\n\n${json && json.value && json.value.message}`);
     }
   }
 };
