@@ -63,37 +63,55 @@ async function fetchDirectLineCredentialsFromDirectLineSecret(channelSecret) {
   return { directLineToken };
 }
 
-export default async function fetchSpeechCredentials({ enableInternalHTTPSupport } = {}) {
-  const { SPEECH_SERVICES_DIRECT_LINE_SECRET, SPEECH_SERVICES_REGION, SPEECH_SERVICES_SUBSCRIPTION_KEY } = process.env;
+export default function createFetchCredentials({ enableInternalHTTPSupport } = {}) {
+  let cachedCredentials;
 
-  let baseCredentialsPromise;
-  let additionalCredentialsPromise;
+  setInterval(() => {
+    cachedCredentials = null;
+  }, 120000);
 
-  if (SPEECH_SERVICES_REGION && SPEECH_SERVICES_SUBSCRIPTION_KEY) {
-    baseCredentialsPromise = fetchBaseSpeechCredentialsFromSubscriptionKey({
-      region: SPEECH_SERVICES_REGION,
-      subscriptionKey: SPEECH_SERVICES_SUBSCRIPTION_KEY
-    });
+  return () => {
+    if (!cachedCredentials) {
+      const {
+        SPEECH_SERVICES_DIRECT_LINE_SECRET,
+        SPEECH_SERVICES_REGION,
+        SPEECH_SERVICES_SUBSCRIPTION_KEY
+      } = process.env;
 
-    if (enableInternalHTTPSupport) {
-      if (!SPEECH_SERVICES_DIRECT_LINE_SECRET) {
-        throw new Error(
-          `Failed to fetch Direct Line token as SPEECH_SERVICES_DIRECT_LINE_SECRET environment variable is not set`
-        );
+      let baseCredentialsPromise;
+      let additionalCredentialsPromise;
+
+      if (SPEECH_SERVICES_REGION && SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+        baseCredentialsPromise = fetchBaseSpeechCredentialsFromSubscriptionKey({
+          region: SPEECH_SERVICES_REGION,
+          subscriptionKey: SPEECH_SERVICES_SUBSCRIPTION_KEY
+        });
+
+        if (enableInternalHTTPSupport) {
+          if (!SPEECH_SERVICES_DIRECT_LINE_SECRET) {
+            throw new Error(
+              `Failed to fetch Direct Line token as SPEECH_SERVICES_DIRECT_LINE_SECRET environment variable is not set`
+            );
+          }
+
+          additionalCredentialsPromise = fetchDirectLineCredentialsFromDirectLineSecret(
+            SPEECH_SERVICES_DIRECT_LINE_SECRET
+          );
+        }
+      } else {
+        baseCredentialsPromise = fetchBaseSpeechCredentialsFromWaterBottle();
+
+        if (enableInternalHTTPSupport) {
+          additionalCredentialsPromise = fetchDirectLineTokenFromWaterBottle();
+        }
       }
 
-      additionalCredentialsPromise = fetchDirectLineCredentialsFromDirectLineSecret(SPEECH_SERVICES_DIRECT_LINE_SECRET);
+      cachedCredentials = (async () => ({
+        ...(await baseCredentialsPromise),
+        ...(await (additionalCredentialsPromise || {}))
+      }))();
     }
-  } else {
-    baseCredentialsPromise = fetchBaseSpeechCredentialsFromWaterBottle();
 
-    if (enableInternalHTTPSupport) {
-      additionalCredentialsPromise = fetchDirectLineTokenFromWaterBottle();
-    }
-  }
-
-  return {
-    ...(await baseCredentialsPromise),
-    ...(await (additionalCredentialsPromise || {}))
+    return cachedCredentials;
   };
 }

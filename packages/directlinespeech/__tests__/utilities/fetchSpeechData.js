@@ -9,7 +9,7 @@ const DEFAULT_VOICE = 'Microsoft Server Speech Text to Speech Voice (en-US, Jess
 const SYNTHESIS_URL_TEMPLATE = 'https://{region}.tts.speech.microsoft.com/cognitiveservices/v1';
 
 export default async function fetchSpeechData({
-  credentials,
+  fetchCredentials,
   lang = DEFAULT_LANGUAGE,
   outputFormat = DEFAULT_OUTPUT_FORMAT,
   pitch,
@@ -18,7 +18,7 @@ export default async function fetchSpeechData({
   voice = DEFAULT_VOICE,
   volume
 }) {
-  const { authorizationToken, region } = await credentials;
+  const { authorizationToken, region } = await fetchCredentials();
   const ssml = isSSML(text) ? text : buildSSML({ lang, pitch, rate, text, voice, volume });
 
   // Although calling encodeURI on hostname does not actually works, it fails faster and safer.

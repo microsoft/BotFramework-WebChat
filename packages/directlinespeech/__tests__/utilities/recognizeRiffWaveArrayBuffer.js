@@ -7,9 +7,9 @@ const RECOGNITION_URL_TEMPLATE =
 
 export default async function recognizeRiffWaveArrayBuffer(
   riffWaveArrayBuffer,
-  { audioFormat = AudioStreamFormat.getDefaultInputFormat(), credentials } = {}
+  { audioFormat = AudioStreamFormat.getDefaultInputFormat(), fetchCredentials } = {}
 ) {
-  const { authorizationToken, region } = await credentials;
+  const { authorizationToken, region } = await fetchCredentials();
   const url = RECOGNITION_URL_TEMPLATE.replace(/\{region\}/u, encodeURI(region)).replace(
     /\{lang\}/u,
     encodeURIComponent(DEFAULT_LANGUAGE)

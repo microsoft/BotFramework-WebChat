@@ -34,7 +34,9 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, directLineToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(fetchCredentials);
+  const { authorizationToken, directLineToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(
+    fetchCredentials
+  );
 
   if (
     (!authorizationToken && !subscriptionKey) ||
@@ -47,7 +49,6 @@ export default async function create({
       '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If enableInternalHTTPSupport is set to true, then it should also return a non-empty "directLineToken"'
     );
   }
-
 
   if (typeof enableTelemetry !== 'undefined') {
     console.warn(
@@ -109,11 +110,16 @@ export default async function create({
     config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
   }
 
-  // switch to direct line endpoint on DLS service.
+  // If internal HTTP support is enabled, switch the endpoint to Direct Line on Direct Line Speech service.
   if (enableInternalHTTPSupport) {
-    config.setProperty(PropertyId.SpeechServiceConnection_Endpoint, `wss://${region}.convai.speech.microsoft.com/directline/api/v1`);
+    config.setProperty(
+      PropertyId.SpeechServiceConnection_Endpoint,
+      `wss://${encodeURI(region)}.convai.speech.microsoft.com/directline/api/v1`
+    );
+
     config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
   }
+
   // Supported options can be found in DialogConnectorFactory.js.
 
   // Set the language used for recognition.
@@ -184,8 +190,8 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-      dialogServiceConnector.connect();
 
+      dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
 

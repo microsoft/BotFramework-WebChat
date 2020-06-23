@@ -22,7 +22,7 @@ describe.each([['without internal HTTP support'], ['with internal HTTP support',
   '%s',
   (_, testHarnessOptions) => {
     test('should echo back when saying "hello" and "world"', async () => {
-      const { credentials, directLine, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
       const connectedPromise = waitForConnected(directLine);
       const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
@@ -34,19 +34,14 @@ describe.each([['without internal HTTP support'], ['with internal HTTP support',
 
       const activities = await activitiesPromise;
       const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { credentials }))
+        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
       );
 
-      await expect(activityUtterances).resolves.toMatchInlineSnapshot(`
-        Array [
-          "Hello.",
-          "World.",
-        ]
-      `);
+      await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
     });
 
     test('should echo back "Bellevue" when saying "bellview"', async () => {
-      const { credentials, directLine, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
       const connectedPromise = waitForConnected(directLine);
       const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
@@ -57,19 +52,15 @@ describe.each([['without internal HTTP support'], ['with internal HTTP support',
 
       const activities = await activitiesPromise;
       const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { credentials }))
+        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
       );
 
-      await expect(activityUtterances).resolves.toMatchInlineSnapshot(`
-        Array [
-          "Bellevue.",
-        ]
-      `);
+      await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
     });
 
     // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
     test('should synthesis if "speak" is empty', async () => {
-      const { credentials, directLine, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
       const connectedPromise = waitForConnected(directLine);
       const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
@@ -81,9 +72,10 @@ describe.each([['without internal HTTP support'], ['with internal HTTP support',
 
       const activities = await activitiesPromise;
       const activityUtterances = await Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { credentials }))
+        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
       );
 
+      // Despite it does not have "speak" property, Direct Line Speech protocol will fallback to "text" property for synthesize.
       expect(activityUtterances).toEqual([`Don't speak anything.`]);
     });
   }
