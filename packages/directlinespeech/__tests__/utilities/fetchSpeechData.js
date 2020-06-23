@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 
 import buildSSML from './buildSSML';
-import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
 import isSSML from './isSSML';
 
 const DEFAULT_LANGUAGE = 'en-US';
@@ -19,9 +18,7 @@ export default async function fetchSpeechData({
   voice = DEFAULT_VOICE,
   volume
 }) {
-  credentials || (credentials = await fetchSpeechCredentialsWithCache());
-
-  const { authorizationToken, region } = credentials;
+  const { authorizationToken, region } = await credentials;
   const ssml = isSSML(text) ? text : buildSSML({ lang, pitch, rate, text, voice, volume });
 
   // Although calling encodeURI on hostname does not actually works, it fails faster and safer.

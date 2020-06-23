@@ -2,22 +2,24 @@ import createDeferred from 'p-defer-es5';
 
 import createAdapters from '../../src/createAdapters';
 import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSource';
-import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
+import fetchSpeechCredentials from './fetchSpeechCredentials';
 import fetchSpeechData from './fetchSpeechData';
 
-export default async function createTestHarness({ 
-  enableInternalHTTPSupport } = {}) {
+export default async function createTestHarness({ enableInternalHTTPSupport } = {}) {
   const audioConfig = createQueuedArrayBufferAudioSource();
+  const credentials = fetchSpeechCredentials({ enableInternalHTTPSupport });
+
   const { directLine, webSpeechPonyfillFactory } = await createAdapters({
     audioConfig,
-    fetchCredentials: fetchSpeechCredentialsWithCache({ enableInternalHTTPSupport }),
+    fetchCredentials: credentials,
     enableInternalHTTPSupport
   });
 
   return {
+    credentials,
     directLine,
     sendTextAsSpeech: async text => {
-      audioConfig.push(await fetchSpeechData({ text }));
+      audioConfig.push(await fetchSpeechData({ credentials, text }));
 
       // Create a new SpeechRecognition session and start it.
       // By SpeechRecognition.start(), it will invoke Speech SDK to start grabbing speech data from AudioConfig.
