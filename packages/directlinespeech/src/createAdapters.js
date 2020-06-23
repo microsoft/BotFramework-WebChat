@@ -9,7 +9,7 @@ import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInli
 import refreshDirectLineToken from './utils/refreshDirectLineToken';
 import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 
-const DIRECTLINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
+const DIRECT_LINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
 const TOKEN_RENEWAL_INTERVAL = 120000;
 
 export default async function create({
@@ -118,7 +118,7 @@ export default async function create({
 
   // Set the language used for recognition.
   config.setProperty(PropertyId.SpeechServiceConnection_RecoLanguage, speechRecognitionLanguage);
-  
+
   // The following code sets the output format.
   // As advised by the Speech team, this API may be subject to future changes.
   // We are not enabling output format option because it does not send detailed output format to the bot, rendering this option useless.
@@ -186,7 +186,7 @@ export default async function create({
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
       dialogServiceConnector.connect();
 
-    }, DIRECTLINE_TOKEN_RENEWAL_INTERVAL);
+    }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
 
   const directLine = new DirectLineSpeech({ dialogServiceConnector });
