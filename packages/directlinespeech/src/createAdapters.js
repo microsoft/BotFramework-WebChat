@@ -180,9 +180,9 @@ export default async function create({
       if (dialogServiceConnector.privIsDisposed) {
         clearInterval(interval);
       }
-
+      
       const refreshedDirectLineToken = await refreshDirectLineToken(directLineToken);
-
+      
       if (!refreshedDirectLineToken) {
         return console.warn(
           'botframework-directlinespeech-sdk: Renew token failed because call to refresh token Direct Line API did not return a new token.'
@@ -190,7 +190,8 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-
+      
+      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken)
       dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
