@@ -137,6 +137,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+-  Added support for [Redux Devtools](https://github.com/zalmoxisus/redux-devtools-extension), by [@tpdewolf](https://github.com/tpdewolf)
+
+### Added
+
 -  Resolves [#3182](https://github.com/microsoft/BotFramework-WebChat/issues/3182). Added stacked suggested actions height properties, by [@corinagum](https://github.com/corinagum), in PR [#3235](https://github.com/microsoft/BotFramework-WebChat/pull/3235)
 -  Localized strings in Cantonese (`yue`), by [@compulim](https://github.com/compulim), in PR [#3289](https://github.com/microsoft/BotFramework-WebChat/pull/3289)
 

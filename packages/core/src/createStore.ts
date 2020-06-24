@@ -2,6 +2,7 @@
 /* eslint no-use-before-define: "off" */
 
 import { applyMiddleware, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
 import reducer from './reducer';
@@ -19,7 +20,11 @@ export default function createWebChatStore(initialState, ...middlewares) {
     }
   });
 
-  const store = createStore(reducer, initialState || {}, applyMiddleware(...middlewares, sagaMiddleware));
+  const store = createStore(
+    reducer,
+    initialState || {},
+    composeWithDevTools(applyMiddleware(...middlewares, sagaMiddleware))
+  );
 
   sagaMiddleware.run(sagas);
 
