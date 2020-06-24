@@ -109,11 +109,13 @@ jobs:
       - name: Delete existing release
         continue-on-error: true
         run: |
+          GITHUB_RELEASE_ID=$(curl --silent https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.variables.outputs.tag_name }} | jq -r .id)
+          echo Deleting release $GITHUB_RELEASE_ID.
           curl \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
           --request DELETE \
-          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/$(curl --silent https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.variables.outputs.tag_name }} | jq -r .id)
+          --url https://api.github.com/repos/${{ github.repository }}/releases/$GITHUB_RELEASE_ID
 
       - name: Create a tag
         run: |
