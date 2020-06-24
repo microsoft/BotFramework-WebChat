@@ -106,12 +106,11 @@ jobs:
       - name: Delete existing release
         continue-on-error: true
         run: |
-          GITHUB_RELEASE_ID=$(curl --silent https://api.github.com/repos/compulim/BotFramework-WebChat/releases/tags/dev-fix-a11y-post-4.9.1 | jq -r .id)
           curl \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
           --request DELETE \
-          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/$GITHUB_RELEASE_ID \
+          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/$(curl --silent https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.variables.outputs.tag_name }} | jq -r .id)
 
       - name: Create a tag
         run: |
