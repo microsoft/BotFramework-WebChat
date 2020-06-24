@@ -103,6 +103,16 @@ jobs:
           echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
           echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
 
+      - name: Delete existing release
+        continue-on-error: true
+        run: |
+          GITHUB_RELEASE_ID=$(curl --silent https://api.github.com/repos/compulim/BotFramework-WebChat/releases/tags/dev-fix-a11y-post-4.9.1 | jq -r .id)
+          curl \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --request DELETE \
+          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/$GITHUB_RELEASE_ID \
+
       - name: Create a tag
         run: |
           cd repo
