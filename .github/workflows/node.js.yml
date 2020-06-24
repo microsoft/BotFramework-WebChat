@@ -73,6 +73,7 @@ jobs:
           path: 'packages/*/*.tgz'
 
   github-tag:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
