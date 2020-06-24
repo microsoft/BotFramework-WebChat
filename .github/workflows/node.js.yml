@@ -10,7 +10,7 @@ on:
       - fix-a11y-post-4.9.1
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
 
     strategy:
@@ -42,11 +42,70 @@ jobs:
 
       # - run: npm test
 
-      - name: Copy documents
+      - name: Read variables
+        id: variables
         run: |
-          cp CHANGELOG.md packages/component
-          cp LICENSE packages/component
-          cp README.md packages/component
+          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "::set-output name=tag::dev-$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
+
+      - name: Create a tag
+        run: |
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git tag -f ${{ steps.variables.outputs.tag }}
+          git push --force origin -f ${{ steps.variables.outputs.tag }}
+
+      - name: Create a release
+        uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: 'More artifacts can be found in this workflow, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.'
+          prerelease: true
+          release_name: '[${{ steps.variables.outputs.tag }}] - ${{ steps.variables.outputs.date }} ${{ steps.variables.outputs.commitish }}'
+          tag_name: ${{ steps.variables.outputs.tag }}
+
+      - name: Upload webchat.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: packages/bundle/dist/webchat.js
+          asset_name: webchat.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-es5.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: packages/bundle/dist/webchat-es5.js
+          asset_name: webchat-es5.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-minimal.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: packages/bundle/dist/webchat-minimal.js
+          asset_name: webchat-minimal.js
+          asset_content_type: text/javascript
+
+      - name: Upload stats.json to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: packages/bundle/dist/stats.json
+          asset_name: stats.json
+          asset_content_type: application/json
 
       - name: Run npm pack bundle
         run: |
@@ -81,88 +140,3 @@ jobs:
         with:
           name: npm-tarball
           path: 'packages/*/*.tgz'
-
-  publish-dev-release:
-    needs: build
-    runs-on: ubuntu-latest
-    # Add dev branches here
-    if: ${{ startsWith(github.ref, 'refs/heads/fix-a11y-post-4.9.1') }}
-
-    steps:
-      - name: Download bundle
-        uses: actions/download-artifact@v2
-        with:
-          name: bundle
-
-      - name: Download npm-tarball
-        uses: actions/download-artifact@v2
-        with:
-          name: npm-tarball
-
-      - name: Read variables
-        id: variables
-        run: |
-          # echo "::set-output name=name::$(tar xOf *.tgz package/package.json | jq -r '.name')"
-          # echo "::set-output name=version::$(tar xOf *.tgz package/package.json | jq -r '.version')"
-          # echo "::set-output name=tarball::$(ls *.tgz)"
-          echo "::set-output name=date::$(date +%Y-%m-%d)"
-          echo "::set-output name=tag::dev-$(git rev-parse --abbrev-ref HEAD)"
-          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
-
-      - name: Create a tag
-        run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
-          git tag -f ${{ steps.variables.outputs.tag }}
-          git push --force origin -f ${{ steps.variables.outputs.tag }}
-
-      - name: Create a release
-        uses: actions/create-release@v1
-        id: create-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-          prerelease: true
-          release_name: '[${{ steps.variables.outputs.tag }}] - ${{ steps.variables.outputs.date }} ${{ steps.variables.outputs.commitish }}'
-          tag_name: ${{ steps.variables.outputs.tag }}
-
-      - name: Upload webchat.js to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: bundle/webchat.js
-          asset_name: webchat.js
-          asset_content_type: text/javascript
-
-      - name: Upload webchat-es5.js to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: bundle/webchat-es5.js
-          asset_name: webchat-es5.js
-          asset_content_type: text/javascript
-
-      - name: Upload webchat-minimal.js to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: bundle/webchat-minimal.js
-          asset_name: webchat-minimal.js
-          asset_content_type: text/javascript
-
-      - name: Upload stats.json to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: bundle/stats.json
-          asset_name: stats.json
-          asset_content_type: application/json
