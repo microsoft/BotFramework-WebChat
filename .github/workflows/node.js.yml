@@ -60,14 +60,12 @@ jobs:
 
       - name: Upload bundle
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.node-version == '14.x' }}
         with:
           name: bundle
           path: 'packages/bundle/dist/**/*'
 
       - name: Upload npm-tarball
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.node-version == '14.x' }}
         with:
           name: npm-tarball
           path: 'packages/*/*.tgz'
@@ -90,7 +88,6 @@ jobs:
         run: |
           echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
           echo "::set-output name=build_time::$(node -p "new Date().toISOString()")"
-          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
           echo "::set-output name=date::$(date +%Y-%m-%d)"
           echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
           echo "::set-output name=version::$(tar xOf botframework-webchat-4.*.tgz package/package.json | jq -r '.version')"
@@ -99,7 +96,7 @@ jobs:
         run: |
           git config user.name ${{ github.actor }}
           git config user.email ${{ github.actor }}@users.noreply.github.com
-          git tag -f ${{ steps.variables.outputs.tag_name }} ${{ steps.variables.outputs.commitish }}
+          git tag -f ${{ steps.variables.outputs.tag_name }} ${{ github.sha }}
           git push --force origin -f ${{ steps.variables.outputs.tag_name }}
 
       - name: Create a release
@@ -134,7 +131,7 @@ jobs:
                   </td>
                   <td>
                     <code>
-                      <a href="https://github.com/${{ github.repository }}/commit/${{ steps.variables.outputs.commitish }}">${{ steps.variables.outputs.commitish }}</a>
+                      <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">${{ github.sha }}</a>
                     </code>
                   </td>
                   <td>
