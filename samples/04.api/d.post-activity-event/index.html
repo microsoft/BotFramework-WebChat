@@ -66,7 +66,7 @@
         const { token } = await res.json();
         const directLine = createDirectLine({ token });
 
-        // <SendHelpMessageButton> must be a descendant of <Composer>.
+        // Since the <SendHelpMessageButton> component uses the useSendMessage hook it must be a descendant of <Composer>.
         const SendHelpMessageButton = () => {
           const sendMessage = useSendMessage();
 

@@ -90,7 +90,7 @@ Lastly, we will render the `<ButtonOverlay>` in the API container.
 
 ## Observing change of scroll positions
 
-The [`useObserveScrollPosition`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/HOOKS.md#useobservescrollposition) hook subscribe to changes of scroll positions. Since scroll positions change rapidly during scrolling, the callback function should be as lightweight as possible.
+The [`useObserveScrollPosition`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/HOOKS.md#useobservescrollposition) hook subscribes to scroll position changes. Since the scroll positions change rapidly during scrolling, the callback function should be as lightweight as possible.
 
 The observed scroll position will be saved to a [ref](https://reactjs.org/docs/refs-and-the-dom.html), namely `scrollPositionRef`. The ref is as [an instance property](https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables) and will not trigger render on set.
 

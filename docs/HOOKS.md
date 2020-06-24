@@ -561,7 +561,7 @@ Since the observer function will be called rapidly, please keep the code in the 
 
 To stop observing scroll positions, pass a falsy value to the `observer` argument.
 
-> If there are more than one transcripts, scrolling any of them will trigger the observer function, and there is no clear distinction of which transcript is being scrolled.
+> If there is more than one transcripts, scrolling any of them will trigger the observer function, and there is no clear distinction of which transcript is being scrolled.
 
 ## `usePerformCardAction`
 
@@ -757,7 +757,7 @@ type ScrollPosition {
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will scroll the transcript to the specific scroll position.
+This hook will return a function that, when called, will scroll the transcript to the specific scroll position.
 
 If `options` is passed with `behavior` set to `smooth`, it will smooth-scrolling to the scroll position. Otherwise, it will jump to the scroll position instantly.
 
@@ -769,7 +769,7 @@ useScrollToEnd(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will scroll the transcript view to the end using smooth scrolling.
+This function will return a function that, when called, will smoothly scroll the transcript view to the end.
 
 ## `useSendBoxValue`
 

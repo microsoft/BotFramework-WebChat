@@ -180,7 +180,7 @@ const BasicTranscriptContent = () => {
     // Don't show the button if:
     // - All activities have been read
     // - Currently animating towards bottom
-    //   - "New messages" button must not flashy when: 1. Type "help", 2. Scroll to top, 3. Type "help" again, 4. Expect the "New messages" button not flashy
+    //   - "New messages" button must not flash when: 1. Type "help", 2. Scroll to top, 3. Type "help" again, 4. Expect the "New messages" button not flashy
     // - Hidden by style options
     // - It is already at the bottom (sticky)
 
