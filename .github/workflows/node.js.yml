@@ -73,20 +73,14 @@ jobs:
         if: ${{ matrix.node-version == '14.x' }}
         with:
           name: bundle
-          path:
-          - 'packages/bundle/dist/*.js'
-          - 'packages/bundle/dist/stats.json'
+          path: 'packages/bundle/dist/**/*'
 
       - name: Upload npm-tarball
         uses: actions/upload-artifact@v2
         if: ${{ matrix.node-version == '14.x' }}
         with:
           name: npm-tarball
-          path:
-          - 'packages/bundle/*.tgz'
-          - 'packages/component/*.tgz'
-          - 'packages/core/*.tgz'
-          - 'packages/directlinespeech/*.tgz'
+          path: 'packages/*/*.tgz'
 
   publish-dev-release:
     needs: build
