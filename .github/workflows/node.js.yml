@@ -1,0 +1,179 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run npx version-from-git --no-git-tag-version
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        run: npx version-from-git --no-git-tag-version
+
+      - run: npm ci
+
+      - run: npm run bootstrap -- --ignore=playground
+
+      - name: Propagate versions
+        run: |
+          node_modules/.bin/lerna version --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+
+      - run: npm run build --if-present -- --ignore=playground
+
+      # - run: npm test
+
+      - name: Copy documents
+        run: |
+          cp CHANGELOG.md packages/component
+          cp LICENSE packages/component
+          cp README.md packages/component
+
+      - name: Run npm pack bundle
+        run: |
+          cd packages/bundle
+          npm pack
+
+      - name: Run npm pack component
+        run: |
+          cd packages/component
+          npm pack
+
+      - name: Run npm pack core
+        run: |
+          cd packages/core
+          npm pack
+
+      - name: Run npm pack directlinespeech
+        run: |
+          cd packages/directlinespeech
+          npm pack
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.node-version == '14.x' }}
+        with:
+          name: bundle
+          path:
+          - 'packages/bundle/dist/*.js'
+          - 'packages/bundle/dist/stats.json'
+
+      - name: Upload npm-tarball
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.node-version == '14.x' }}
+        with:
+          name: npm-tarball
+          path:
+          - 'packages/bundle/*.tgz'
+          - 'packages/component/*.tgz'
+          - 'packages/core/*.tgz'
+          - 'packages/directlinespeech/*.tgz'
+
+  publish-dev-release:
+    needs: build
+    runs-on: ubuntu-latest
+    # Add dev branches here
+    if: ${{ startsWith(github.ref, 'refs/heads/fix-a11y-post-4.9.1') }}
+
+    steps:
+      - name: Download bundle
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+
+      - name: Download npm-tarball
+        uses: actions/download-artifact@v2
+        with:
+          name: npm-tarball
+
+      - name: Read variables
+        id: variables
+        run: |
+          # echo "::set-output name=name::$(tar xOf *.tgz package/package.json | jq -r '.name')"
+          # echo "::set-output name=version::$(tar xOf *.tgz package/package.json | jq -r '.version')"
+          # echo "::set-output name=tarball::$(ls *.tgz)"
+          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "::set-output name=tag::dev-$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
+
+      - name: Create a tag
+        uses: EndBug/latest-tag@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag-name: ${{ steps.variables.outputs.tag }}
+
+      - name: Create a release
+        uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          prerelease: true
+          release_name: '[${{ steps.variables.outputs.tag }}] - ${{ steps.variables.outputs.date }} ${{ steps.variables.outputs.commitish }}'
+          tag_name: ${{ steps.variables.outputs.tag }}
+
+      - name: Upload webchat.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: bundle/webchat.js
+          asset_name: webchat.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-es5.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: bundle/webchat-es5.js
+          asset_name: webchat-es5.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-minimal.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: bundle/webchat-minimal.js
+          asset_name: webchat-minimal.js
+          asset_content_type: text/javascript
+
+      - name: Upload stats.json to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: bundle/stats.json
+          asset_name: stats.json
+          asset_content_type: application/json
