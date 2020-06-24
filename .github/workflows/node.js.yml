@@ -97,19 +97,19 @@ jobs:
 
     steps:
       - name: Download npm-tarball
-          uses: actions/download-artifact@v2
-          with:
-            name: npm-tarball
+        uses: actions/download-artifact@v2
+        with:
+          name: npm-tarball
 
       - name: Read variables
         id: variables
         run: |
-          echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
-          echo "::set-output name=build_time::$(node -p "new Date().toISOString()")"
-          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
-          echo "::set-output name=date::$(date +%Y-%m-%d)"
-          echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
           echo "::set-output name=version::$(tar xOf botframework-webchat-4.*.tgz package/package.json | jq -r '.version')"
+          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "::set-output name=build_time::$(node -p "new Date().toISOString()")"
+          echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
 
       - name: Create a release
         uses: actions/create-release@v1
