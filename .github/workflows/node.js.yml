@@ -3,6 +3,9 @@
 
 name: Node.js CI/CD dev release
 
+env:
+  NODE_ENV: production
+
 on:
   push:
     branches:
