@@ -95,9 +95,10 @@ jobs:
       - name: Read variables
         id: variables
         run: |
-          echo "::set-output name=build_time::$(node -p "new Date().toISOString()")"
+          echo "::set-output name=build_time::$(node -p "new Date().toISOString().replace('T', ' ')")"
           echo "::set-output name=date::$(date +%Y-%m-%d)"
           echo "::set-output name=version::$(tar xOf artifacts/npm-tarball/bundle/*.tgz package/package.json | jq -r '.version')"
+          echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
           cd repo
           echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
           echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
@@ -135,7 +136,9 @@ jobs:
               </thead>
               <tbody>
                 <tr>
-                  <td>${{ steps.variables.outputs.build_time }}</td>
+                  <td>
+                    <code>${{ steps.variables.outputs.build_time }}</code>
+                  </td>
                   <td>
                     <code>
                       <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">${{ github.run_id }}</a>
@@ -143,7 +146,7 @@ jobs:
                   </td>
                   <td>
                     <code>
-                      <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">${{ github.sha }}</a>
+                      <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">${{ steps.variables.outputs.short_sha }}</a>
                     </code>
                   </td>
                   <td>
@@ -158,7 +161,7 @@ jobs:
               </tbody>
             </table>
 
-            ```
+            ```html
             <script
               crossorigin="anonymous"
               src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat.js"
