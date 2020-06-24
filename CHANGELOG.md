@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Resolves [#3182](https://github.com/microsoft/BotFramework-WebChat/issues/3182). Added stacked suggested actions height properties, by [@corinagum](https://github.com/corinagum), in PR [#3235](https://github.com/microsoft/BotFramework-WebChat/pull/3235)
 
+### Fixes
+
+-  Fixes [#3265](https://github.com/microsoft/BotFramework-WebChat/issues/3265). Fix styling specificity regression on microphone button, by [@corinagum](https://github.com/corinagum) in PR [#3276](https://github.com/microsoft/BotFramework-WebChat/pull/3276)
+
 ### Samples
 
 -  Resolves [#3218](https://github.com/microsoft/BotFramework-WebChat/issues/3218) and [#2811](https://github.com/microsoft/BotFramework-WebChat/issues/2811). Adds documentation on reconnecting to a conversation in minimizable sample, by [@corinagum](https://github.com/corinagum), in PR [#3239](https://github.com/microsoft/BotFramework-WebChat/pull/3239)
