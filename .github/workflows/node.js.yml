@@ -10,12 +10,8 @@ on:
       - fix-a11y-post-4.9.1
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
 
     steps:
       - name: Checking out for ${{ github.ref }}
@@ -42,19 +38,78 @@ jobs:
 
       # - run: npm test
 
+      - name: Run npm pack bundle
+        run: |
+          cd packages/bundle
+          npm pack
+
+      - name: Run npm pack component
+        run: |
+          cd packages/component
+          npm pack
+
+      - name: Run npm pack core
+        run: |
+          cd packages/core
+          npm pack
+
+      - name: Run npm pack directlinespeech
+        run: |
+          cd packages/directlinespeech
+          npm pack
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.node-version == '14.x' }}
+        with:
+          name: bundle
+          path: 'packages/bundle/dist/**/*'
+
+      - name: Upload npm-tarball
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.node-version == '14.x' }}
+        with:
+          name: npm-tarball
+          path: 'packages/*/*.tgz'
+
+  github-tag:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Read variables
         id: variables
         run: |
-          echo "::set-output name=date::$(date +%Y-%m-%d)"
-          echo "::set-output name=tag::dev-$(git rev-parse --abbrev-ref HEAD)"
-          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
+          echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
+
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
 
       - name: Create a tag
         run: |
           git config user.name ${{ github.actor }}
           git config user.email ${{ github.actor }}@users.noreply.github.com
-          git tag -f ${{ steps.variables.outputs.tag }}
-          git push --force origin -f ${{ steps.variables.outputs.tag }}
+          git tag -f ${{ steps.variables.outputs.tag_name }}
+          git push --force origin -f ${{ steps.variables.outputs.tag_name }}
+
+  github-release:
+    needs: github-tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download npm-tarball
+          uses: actions/download-artifact@v2
+          with:
+            name: npm-tarball
+
+      - name: Read variables
+        id: variables
+        run: |
+          echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=build_time::$(node -p "new Date().toISOString()")"
+          echo "::set-output name=commitish::$(git rev-parse --short --verify HEAD)"
+          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=version::$(tar xOf botframework-webchat-4.*.tgz package/package.json | jq -r '.version')"
 
       - name: Create a release
         uses: actions/create-release@v1
@@ -62,10 +117,63 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          body: 'More artifacts can be found in this workflow, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.'
           prerelease: true
-          release_name: '[${{ steps.variables.outputs.tag }}] - ${{ steps.variables.outputs.date }} ${{ steps.variables.outputs.commitish }}'
-          tag_name: ${{ steps.variables.outputs.tag }}
+          release_name: '[${{ steps.variables.outputs.tag_name }}] - ${{ steps.variables.outputs.date }}'
+          tag_name: ${{ steps.variables.outputs.tag_name }}
+          body: |
+            > Tarballs can be found in this workflow, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Build time</th>
+                  <th>Workflow ID</th>
+                  <th>Source version</th>
+                  <th>Branch</th>
+                  <th>Package version</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${{ steps.variables.outputs.build_time }}</td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">${{ github.run_id }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/commit/${{ steps.variables.outputs.commitish }}">${{ steps.variables.outputs.commitish }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/tree/${{ steps.variables.outputs.branch_name }}">${{ steps.variables.outputs.branch_name }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>${{ steps.variables.outputs.version }}</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            ```
+            <script
+              crossorigin="anonymous"
+              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat.js"
+            ></script>
+
+            <script
+              crossorigin="anonymous"
+              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-es5.js"
+            ></script>
+
+            <script
+              crossorigin="anonymous"
+              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-minimal.js"
+            ></script>
+            ```
 
       - name: Upload webchat.js to release
         uses: actions/upload-release-asset@v1
@@ -106,37 +214,3 @@ jobs:
           asset_path: packages/bundle/dist/stats.json
           asset_name: stats.json
           asset_content_type: application/json
-
-      - name: Run npm pack bundle
-        run: |
-          cd packages/bundle
-          npm pack
-
-      - name: Run npm pack component
-        run: |
-          cd packages/component
-          npm pack
-
-      - name: Run npm pack core
-        run: |
-          cd packages/core
-          npm pack
-
-      - name: Run npm pack directlinespeech
-        run: |
-          cd packages/directlinespeech
-          npm pack
-
-      - name: Upload bundle
-        uses: actions/upload-artifact@v2
-        if: ${{ matrix.node-version == '14.x' }}
-        with:
-          name: bundle
-          path: 'packages/bundle/dist/**/*'
-
-      - name: Upload npm-tarball
-        uses: actions/upload-artifact@v2
-        if: ${{ matrix.node-version == '14.x' }}
-        with:
-          name: npm-tarball
-          path: 'packages/*/*.tgz'
