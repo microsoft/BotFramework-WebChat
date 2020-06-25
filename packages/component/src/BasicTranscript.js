@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
@@ -222,25 +222,6 @@ const BasicTranscriptContent = () => {
     lastReadActivityIdRef,
     sticky
   ]);
-
-  // TODO: Remove this code. This is for logging DOM changes to verify live region behavior.
-  const liveRegionRef = useRef();
-
-  useEffect(() => {
-    if (liveRegionRef.current && typeof window.MutationObserver !== 'undefined') {
-      /* eslint-disable-next-line no-console */
-      const observer = new MutationObserver(mutation => console.log(mutation));
-
-      observer.observe(liveRegionRef.current, {
-        attributes: true,
-        characterData: true,
-        childList: true,
-        subtree: true
-      });
-
-      return () => observer.disconnect();
-    }
-  }, [liveRegionRef]);
 
   return (
     <React.Fragment>

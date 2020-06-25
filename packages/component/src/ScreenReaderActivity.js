@@ -59,11 +59,7 @@ const ScreenReaderActivity = ({ activity }) => {
   return (
     <article aria-atomic={true} aria-roledescription="message" className={ROOT_CSS} role="region">
       <p>
-        {/* TODO: Remove "A-B-C", this is for debugging only, identifying which text the screen reader is reading. */}
-        <span>
-          {'A-B-C '}
-          {greetingAlt}
-        </span>
+        <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
