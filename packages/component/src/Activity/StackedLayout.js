@@ -4,16 +4,13 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
-import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
+import React from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
-import useAvatarForUser from '../hooks/useAvatarForUser';
-import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
@@ -85,12 +82,10 @@ const connectStackedLayout = (...selectors) =>
 
 const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
-  const [{ initials: userInitials }] = useAvatarForUser();
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const contentARIALabelId = useUniqueId('webchat__stacked-layout__content');
-  const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
@@ -100,28 +95,23 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
     channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
-    textFormat,
-    timestamp
+    textFormat
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
+  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
+  const greetingAlt = (fromUser
+    ? localize('ACTIVITY_YOU_SAID_ALT')
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
+  ).replace(/\s{2,}/gu, ' ');
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-  const initials = fromUser ? userInitials : botInitials;
-  const plainText = useMemo(() => remarkStripMarkdown(text), [text]);
-  const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
-
-  const contentARIALabel = localize(
-    fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
-    initials,
-    plainText.replace(/[.\s]+$/u, ''),
-    formatDate(timestamp)
-  ).trim();
 
   return (
     <div
       aria-labelledby={contentARIALabelId}
+      aria-roledescription="activity"
       className={classNames(
         ROOT_CSS + '',
         stackedLayoutStyleSet + '',
@@ -138,13 +128,16 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
+      // role="article" // This will read "Landmark" in iOS Safari
       role="group"
     >
-      <ScreenReaderText id={contentARIALabelId} text={contentARIALabel} />
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}
       <div className="webchat__stackedLayout__content">
         {!!activityDisplayText && (
-          <div aria-hidden={true} className="webchat__row message">
+          // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+          /* eslint-disable-next-line react/forbid-dom-props */
+          <div aria-roledescription="message" className="webchat__row message" id={contentARIALabelId}>
+            <ScreenReaderText text={greetingAlt} />
             <Bubble className="bubble" fromUser={fromUser} nub={!!indented}>
               {children({
                 activity,
@@ -159,10 +152,11 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
         )}
         {attachments.map((attachment, index) => (
           <div
+            aria-roledescription="attachment"
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
-            <ScreenReaderText text={roleLabel} />
+            <ScreenReaderText text={attachedAlt} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
