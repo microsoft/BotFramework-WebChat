@@ -118,6 +118,7 @@ test('disable card inputs', async () => {
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ disabled: true });
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   // Click "Submit" button should have no effect
   await driver.executeScript(() => {

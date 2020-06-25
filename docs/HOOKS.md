@@ -73,11 +73,12 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
 -  [`useLastTypingAt`](#uselasttypingat)
+-  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
--  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
+-  [`useObserveScrollPosition`](#useobservescrollposition)
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
@@ -88,6 +89,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useRenderToast`](#userendertoast)
 -  [`useRenderTypingIndicator`](#userendertypingindicator)
+-  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -537,6 +539,30 @@ useNotifications(): [Notification[]]
 
 When called, this hook will return an array of notifications.
 
+## `useObserveScrollPosition`
+
+<!-- prettier-ignore-start -->
+```js
+useObserveScrollPosition(observer: (ScrollObserver? | false), deps: any[]): void
+
+type ScrollObserver = (position: ScrollPosition) => void;
+
+type ScrollPosition {
+  scrollTop: number
+}
+```
+<!-- prettier-ignore-end -->
+
+This function accept an observer function. When the scroll position has changed, the observer function will be called with the latest `ScrollPosition`.
+
+The `position` argument can be passed to [`useScrollTo`](#usescrollto) hook to restore scroll position.
+
+Since the observer function will be called rapidly, please keep the code in the function as lightweight as possible.
+
+To stop observing scroll positions, pass a falsy value to the `observer` argument.
+
+> If there is more than one transcripts, scrolling any of them will trigger the observer function, and there is no clear distinction of which transcript is being scrolled.
+
 ## `usePerformCardAction`
 
 <!-- prettier-ignore-start -->
@@ -715,6 +741,26 @@ This function is for rendering typing indicator for all participants of the conv
 -  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
 -  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
 
+## `useScrollTo`
+
+<!-- prettier-ignore-start -->
+```js
+useScrollTo(): (position: ScrollPosition, options: ScrollOptions) => void
+
+type ScrollOptions {
+  behavior: 'auto' | 'smooth'
+}
+
+type ScrollPosition {
+  scrollTop: number
+}
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a function that, when called, will scroll the transcript to the specific scroll position.
+
+If `options` is passed with `behavior` set to `smooth`, it will smooth-scrolling to the scroll position. Otherwise, it will jump to the scroll position instantly.
+
 ## `useScrollToEnd`
 
 <!-- prettier-ignore-start -->
@@ -723,7 +769,7 @@ useScrollToEnd(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will scroll the transcript view to the end.
+This function will return a function that, when called, will smoothly scroll the transcript view to the end.
 
 ## `useSendBoxValue`
 

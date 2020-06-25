@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      #app {
+        height: 100%;
+      }
+
+      .app__button-bar {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+      const {
+        Components: { BasicWebChat, Composer },
+        createDirectLine,
+        hooks: { useObserveScrollPosition, useSendMessage }
+      } = window.WebChat;
+      const { useCallback, useLayoutEffect, useRef, useState } = window.React;
+
+      (async function() {
+        const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
+        const store = createStore();
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const positions = [];
+
+        const ScrollPositionObserver = () => {
+          useObserveScrollPosition(position => positions.push(position));
+
+          return false;
+        };
+
+        const renderWithFunction = fn =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+                <ScrollPositionObserver />
+              </Composer>,
+              document.getElementById('app')
+            )
+          );
+
+        await renderWithFunction();
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        // Send "markdown", so it show a message long enough to occupy the whole scroll view.
+        await renderWithFunction(() => useSendMessage()('markdown'));
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        // Wait until the scroll view stabilized, we should have a few numbers in the "positions" array.
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
+
+        // There should be at least 5 measurements while the transcript auto scroll.
+        expect(positions.length).toBeGreaterThanOrEqual(5);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

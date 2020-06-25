@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel, StateContext as ScrollToBottomStateContext } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -88,13 +88,18 @@ function nextSiblingAll(element) {
   return [].slice.call(children, elementIndex + 1);
 }
 
-const BasicTranscriptContent = ({ animating, sticky }) => {
+const BasicTranscriptContent = () => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
+  const [animatingToEnd] = useAnimatingToEnd();
+  const [sticky] = useSticky();
   const focus = useFocus();
   const renderAttachment = useRenderAttachment();
+  const scrollToEndButtonRef = useRef();
+
   const renderActivity = useRenderActivity(renderAttachment);
+
   const renderActivityElement = useCallback(
     (activity, nextVisibleActivity) =>
       renderActivity({
@@ -103,7 +108,6 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
       }),
     [renderActivity]
   );
-  const scrollToEndButtonRef = useRef();
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
@@ -175,16 +179,31 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   const renderSeparatorAfterIndex = useMemo(() => {
     // Don't show the button if:
     // - All activities have been read
-    // - The scroll bar is animating
-    //   - Otherwise, this will cause a flashy button when: 1. Scroll to top, 2. Send something, 3. The button flashes when it is scrolling down
-    // - Developer style to hide the button
+    // - Currently animating towards bottom
+    //   - "New messages" button must not flash when: 1. Type "help", 2. Scroll to top, 3. Type "help" again, 4. Expect the "New messages" button not flashy
+    // - Hidden by style options
     // - It is already at the bottom (sticky)
-    if (allActivitiesRead || animating || hideScrollToEndButton || sticky) {
+
+    // Any changes to this logic, verify:
+    // - "New messages" button should persist while programmatically scrolling to mid-point of the transcript:
+    //   1. Type "help"
+    //   2. Type "proactive", then immediately scroll to top
+    //      Expect: the "New messages" button should appear
+    //   3. Run hook "useScrollTo({ scrollTop: 500 })"
+    //      Expect: when the scroll is animating to 500px, the "New messages" button should kept on the screen
+    // - "New messages" button must not flashy:
+    //   1. Type "help"
+    //   2. Scroll to top
+    //      Expect: no "New messages" button is shown
+    //   3. Type "help" again
+    //      Expect: "New messages" button must not flash-appear
+
+    if (allActivitiesRead || animatingToEnd || hideScrollToEndButton || sticky) {
       return -1;
     }
 
     return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [activityElementsWithMetadata, allActivitiesRead, animating, hideScrollToEndButton, sticky]);
+  }, [activityElementsWithMetadata, allActivitiesRead, animatingToEnd, hideScrollToEndButton, sticky]);
 
   return (
     <React.Fragment>
@@ -219,20 +238,13 @@ const BasicTranscriptContent = ({ animating, sticky }) => {
   );
 };
 
-BasicTranscriptContent.propTypes = {
-  animating: PropTypes.bool.isRequired,
-  sticky: PropTypes.bool.isRequired
-};
-
 const BasicTranscript = ({ className }) => {
   const [direction] = useDirection();
 
   return (
     <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
-        <ScrollToBottomStateContext.Consumer>
-          {({ animating, sticky }) => <BasicTranscriptContent animating={animating} sticky={sticky} />}
-        </ScrollToBottomStateContext.Consumer>
+        <BasicTranscriptContent />
       </ScrollToBottomPanel>
     </div>
   );
