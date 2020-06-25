@@ -104,6 +104,7 @@ jobs:
           echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
           cd repo
           echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=last_commit_message::$(git log -1 --pretty=%B)"
           echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
 
       - name: Delete existing release
@@ -172,24 +173,20 @@ jobs:
                     <code>${{ steps.variables.outputs.version }}</code>
                   </td>
                 </tr>
+                <tr>
+                  <td colspan="5">${{ steps.variables.outputs.last_commit_message }}</td>
+                </tr>
               </tbody>
             </table>
 
+            ## Script tags
+
             ```html
-            <script
-              crossorigin="anonymous"
-              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat.js"
-            ></script>
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat.js"></script>
 
-            <script
-              crossorigin="anonymous"
-              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-es5.js"
-            ></script>
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-es5.js"></script>
 
-            <script
-              crossorigin="anonymous"
-              src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-minimal.js"
-            ></script>
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-minimal.js"></script>
             ```
 
       - name: Upload webchat.js to release
