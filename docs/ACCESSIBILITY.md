@@ -191,7 +191,7 @@ To make the live region more consistent across browsers and easier to control, w
    -  Suggested actions buttons
       -  After clicking on any suggested action buttons, the focus should move to the send box without soft keyboard
       -  For better UX, the activity asking the question should have the answer inlined
-      -  Related to [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX)
+      -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
 
 ### Don't
 
