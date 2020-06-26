@@ -19,10 +19,7 @@ const Fade = ({ children, fadeAfter }) => {
 
 Fade.defaultProps = {
   children: undefined,
-
-  // TODO: Find a better value or way (setTimeout, requestAnimationFrame, etc)
-  fadeAfter: 100
-  // fadeAfter: 0 // Setting to 0 will make some screen reader text not read at all.
+  fadeAfter: 1000
 };
 
 Fade.propTypes = {
