@@ -133,7 +133,7 @@ Lastly, we style the "New messages" separator like a normal button, styled it to
 
 ### User story
 
-Azure Bot Services is a distributed system and the message order is not guaranteed. Web Chat use insertion sort based on the timestamp.
+Azure Bot Services is a distributed system and message order is not guaranteed. Web Chat use insertion sort based on the timestamp to order messages.
 
 Messages with a latter timestamp may arrive sooner than messages with a former timestamp. Thus, messages with latter timestamp could appear on the screen first. Then, messages with a former timestamp will get inserted into place.
 
