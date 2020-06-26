@@ -168,13 +168,17 @@ To make the live region more consistent across browsers and easier to control, w
 
 -  Two copies of transcript
    -  Visible and interactable transcript
-   -  Screen reader only live region
+   -  Screen reader only transcript marked as live region
+      -  Attachment contents will not be narrated: attachments can be customized and the DOM tree could be very complex with interactive elements
 -  The live region contains recently arrived activities
-   -  When the DOM element appear in the live region, screen reader will compute the alternative text and queue it for narration
+   -  When the DOM element appear in the live region, screen reader will compute the alternative text and queue it for narration in a first-come-first-serve manner
    -  Screen reader will keep the alternative text in the queue even after the DOM element is removed from the live region
 -  One second after the activity is rendered in the live region, Web Chat will remove it from the live region, this has a few benefits:
-   -  Workaround some bugs that screen reader may keep repeating the entire transcript
+   -  Workaround some browser and screen reader bugs that may keep repeating the entire transcript
    -  Screen reader users will not be able to navigate into it and they will not notice there are 2 copies of the transcript
+   -  If the removal is too fast:
+      -  0-100 ms: Chrome and TalkBack on Android may miss some of the activities
+      -  One second is chosen after some experiments
 
 ## Do and don't
 
