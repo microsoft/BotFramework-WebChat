@@ -167,7 +167,7 @@ And sometimes, browser or screen reader could be buggy on how the live region is
 To make the live region more consistent across browsers and easier to control, we separated the live region from the visible transcript:
 
 -  Two copies of transcript
-   -  Visible and interactable transcript
+   -  Visible, rich, dynamic, and interactive transcript
    -  Screen reader only transcript marked as live region
       -  Attachment contents will not be narrated: attachments can be customized and the DOM tree could be very complex with interactive elements
 -  The live region contains recently arrived activities
@@ -197,6 +197,7 @@ To make the live region more consistent across browsers and easier to control, w
 
 -  Don't use numbers other than `0` or `-1` in `tabindex` attribute
    -  This will pollute the hosting environment
+   -  Do not use `tabindex="-1"` in DOM nodes that don't need it, otherwise, it will be focusable by mouse
 -  In an activity with question and answers, after clicking on a decision button, don't disable the button
    -  When the user reads the activity, the screen reader will only read the question but not the chosen answer
    -  It is okay to disable buttons that were not chosen as answer
