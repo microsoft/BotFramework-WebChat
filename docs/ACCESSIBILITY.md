@@ -135,9 +135,9 @@ Lastly, we style the "New messages" separator like a normal button, styled it to
 
 Azure Bot Services is a distributed system and message order is not guaranteed. Web Chat use insertion sort based on the timestamp to order messages.
 
-Messages with a latter timestamp may arrive sooner than messages with a former timestamp. Thus, messages with latter timestamp could appear on the screen first. Then, messages with a former timestamp will get inserted into place.
+Messages with a latter timestamp may arrive sooner than messages with a former timestamp. Thus, messages with latter timestamp could appear on the screen first. Then, messages with a former timestamp will get inserted before it.
 
-Because the time between the insertion is usually very short, users may not see the insertion visually. But screen reader read messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, message order could be confusing to users who relies on screen reader.
+Because the time between the insertion is usually very short (adjacent packet in a Web Socket connection), users may not see the insertion visually. But screen reader always read messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, message order could be confusing to users who relies on screen reader.
 
 ### Implementations
 
