@@ -26,7 +26,7 @@ Fade.defaultProps = {
 };
 
 Fade.propTypes = {
-  children: PropTypes.oneOf([PropTypes.element, PropTypes.func]),
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   fadeAfter: PropTypes.number
 };
 
