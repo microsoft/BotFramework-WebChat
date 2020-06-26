@@ -1,8 +1,8 @@
 import getActivityElements from '../elements/activities';
 
-export default function minNumActivitiesShown(numActivities) {
+export default function numActivitiesShown(numActivities) {
   return {
-    message: `at least ${numActivities} activities is shown`,
+    message: `exactly ${numActivities} activities is shown`,
     fn: () => {
       // To run hooks (WebChatTest.runHook), the code internally create an activity.
       // Inside the activity renderer, it call hooks, but return empty visually.
@@ -14,7 +14,7 @@ export default function minNumActivitiesShown(numActivities) {
         0
       );
 
-      return numActivitiesShown >= numActivities;
+      return numActivitiesShown === numActivities;
     }
   };
 }
