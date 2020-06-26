@@ -133,7 +133,11 @@ function disableInputElementsWithUndo(element, observeSubtree = true) {
     disableElementWithUndo(element)
   );
 
-  undoStack.push(setAttributeWithUndo(element, 'tabindex', '-1'));
+  const tag = element.nodeName.toLowerCase();
+
+  // Only set tabindex="-1" on focusable element. Otherwise, we will made <div> focusable by mouse.
+  (tag === 'a' || tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea') &&
+    undoStack.push(setAttributeWithUndo(element, 'tabindex', '-1'));
 
   if (observeSubtree) {
     const observer = new MutationObserver(mutations =>
