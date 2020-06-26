@@ -69,8 +69,10 @@ When a UI element is being disabled:
 -  Set `aria-disabled` attribute to `true`
    -  If the element is a `<button>`, `onClick` is set to a handler that calls `event.preventDefault()`
    -  If the element is an `<input type="text">` or `<textarea>`, `readOnly` is set to `true`
--  If the element is currently focused, the component will wait until the `onBlur` event is called to set the `disabled` attribute to `true`
-   -  Otherwise, the `disabled` attribute will be set to `true` immediately
+-  Set `tabindex` attribute to `-1`
+   -  The element will continue to be focused. But when the focus has moved away, the user can never use the <kbd>TAB</kbd> key to move the focus back to the element
+-  ~If the element is currently focused, the component will wait until the `onBlur` event is called to set the `disabled` attribute to `true`~
+   -  ~Otherwise, the `disabled` attribute will be set to `true` immediately~
 
 > List of elements support `disabled` attribute can be found in [this article](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled).
 
@@ -126,6 +128,53 @@ Fortunately, the separator role has two modes of operation: static structure or 
 When the "New messages" separator is activated, it logically moves the separator to the bottom of the page, thus, marking all messages as read. And we only support one direction and one amount of movement.
 
 Lastly, we style the "New messages" separator like a normal button, styled it to float on top of the transcript, and added `click` and `keypress` event listener for <kbd>ENTER</kbd> and <kbd>SPACEBAR</kbd> key for [activation](https://www.w3.org/TR/wai-aria-practices-1.1/#button).
+
+## UX: Message ordering
+
+### User story
+
+Azure Bot Services is a distributed system and the message order is not guaranteed. Web Chat use insertion sort based on the timestamp.
+
+Messages with a latter timestamp may arrive sooner than messages with a former timestamp. Thus, messages with latter timestamp could appear on the screen first. Then, messages with a former timestamp will get inserted into place.
+
+Because the time between the insertion is usually very short, users may not see the insertion visually. But screen reader read messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, message order could be confusing to users who relies on screen reader.
+
+### Implementations
+
+`replyToId` is a property set by the bot to reference to an activity that it is replying to. Web Chat use the `replyToId` property as a hint for the message order.
+
+-  When a message with a `replyToId` property arrive, Web Chat will check if it received the activity with the specified ID:
+   -  If an activity were received with the specified ID, Web Chat will render the activity immediately
+   -  If no activities were received with the specified ID, Web Chat will wait up to 5 seconds for the referencing activity to arrive
+      -  If the activity arrive within 5 seconds, Web Chat will render the activity in the same render loop
+      -  If the activity did not arrive within 5 seconds, Web Chat will render the activity
+-  When a message without a `replyToId` property arrive, Web Chat will render the activity immediately
+
+## UX: Live region transcript
+
+### User story
+
+In a [live region](https://www.w3.org/TR/wai-aria-1.1/#live_region_roles), it is difficult to control which part to be read or excluded from the screen reader.
+
+And sometimes, browser or screen reader could be buggy on how the live region is getting read. For example:
+
+-  [Chromium bug #910669](https://bugs.chromium.org/p/chromium/issues/detail?id=910669)
+-  [Chromium bug #1067257](https://bugs.chromium.org/p/chromium/issues/detail?id=1067257)
+-  [Android TalkBack bug #157888765](https://issuetracker.google.com/issues/157888765)
+
+### Implementation
+
+To make the live region more consistent across browsers and easier to control, we separated the live region from the visible transcript:
+
+-  Two copies of transcript
+   -  Visible and interactable transcript
+   -  Screen reader only live region
+-  The live region contains recently arrived activities
+   -  When the DOM element appear in the live region, screen reader will compute the alternative text and queue it for narration
+   -  Screen reader will keep the alternative text in the queue even after the DOM element is removed from the live region
+-  One second after the activity is rendered in the live region, Web Chat will remove it from the live region, this has a few benefits:
+   -  Workaround some bugs that screen reader may keep repeating the entire transcript
+   -  Screen reader users will not be able to navigate into it and they will not notice there are 2 copies of the transcript
 
 ## Do and don't
 
