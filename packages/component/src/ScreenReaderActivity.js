@@ -4,10 +4,11 @@ import { css } from 'glamor';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import remarkStripMarkdown from './Utils/remarkStripMarkdown';
+import textFormatToContentType from './Utils/textFormatToContentType';
 import useAvatarForBot from './hooks/useAvatarForBot';
 import useDateFormatter from './hooks/useDateFormatter';
 import useLocalizer from './hooks/useLocalizer';
+import useStripMarkdown from './hooks/internal/useStripMarkdown';
 
 const ROOT_CSS = css({
   color: 'transparent',
@@ -38,22 +39,21 @@ const ScreenReaderActivity = ({ activity }) => {
     channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
+    textFormat,
     timestamp
   } = activity;
 
-  const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
-
-  const numAttachmentsAlt =
-    !!attachments.length && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, attachments.length);
+  const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
+  const displayText = messageBackDisplayText || text;
 
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
     : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
   ).replace(/\s{2,}/gu, ' ');
-
-  const textAlt = remarkStripMarkdown(activityDisplayText).replace(/[.\s]+$/u, '');
-
+  const numAttachmentsAlt =
+    !!attachments.length && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, attachments.length);
+  const textAlt = useStripMarkdown(contentTypeMarkdown && displayText) || displayText;
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (

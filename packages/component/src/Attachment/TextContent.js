@@ -7,19 +7,20 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
 import ScreenReaderText from '../ScreenReaderText';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
+import useStripMarkdown from '../hooks/internal/useStripMarkdown';
 import useStyleSet from '../hooks/useStyleSet';
 
 const TextContent = ({ contentType, text }) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
-  const strippedText = useMemo(() => remarkStripMarkdown(text), [text]);
+  const contentTypeMarkdown = contentType === 'text/markdown';
+  const textAlt = useStripMarkdown(contentTypeMarkdown && text);
 
-  return contentType === 'text/markdown' && renderMarkdownAsHTML ? (
+  return contentTypeMarkdown && renderMarkdownAsHTML ? (
     <React.Fragment>
-      <ScreenReaderText text={strippedText} />
+      <ScreenReaderText text={textAlt} />
       <div
         aria-hidden={true}
         className={classNames('markdown', textContentStyleSet + '')}
