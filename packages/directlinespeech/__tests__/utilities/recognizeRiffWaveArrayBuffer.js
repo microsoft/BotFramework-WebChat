@@ -1,17 +1,15 @@
 import { AudioStreamFormat } from 'microsoft-cognitiveservices-speech-sdk';
 import fetch from 'node-fetch';
 
-import fetchSpeechCredentialsWithCache from './fetchSpeechCredentialsWithCache';
-
 const DEFAULT_LANGUAGE = 'en-US';
 const RECOGNITION_URL_TEMPLATE =
   'https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language={lang}&format=detailed';
 
 export default async function recognizeRiffWaveArrayBuffer(
   riffWaveArrayBuffer,
-  audioFormat = AudioStreamFormat.getDefaultInputFormat()
+  { audioFormat = AudioStreamFormat.getDefaultInputFormat(), fetchCredentials } = {}
 ) {
-  const { authorizationToken, region } = await fetchSpeechCredentialsWithCache();
+  const { authorizationToken, region } = await fetchCredentials();
   const url = RECOGNITION_URL_TEMPLATE.replace(/\{region\}/u, encodeURI(region)).replace(
     /\{lang\}/u,
     encodeURIComponent(DEFAULT_LANGUAGE)

@@ -1,4 +1,4 @@
-/* eslint complexity: ["error", 30] */
+/* eslint complexity: ["error", 33] */
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
@@ -6,14 +6,17 @@ import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsof
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
+import refreshDirectLineToken from './utils/refreshDirectLineToken';
 import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 
+const DIRECT_LINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
 const TOKEN_RENEWAL_INTERVAL = 120000;
 
 export default async function create({
   audioConfig,
   audioContext,
   audioInputDeviceId,
+  enableInternalHTTPSupport,
   enableTelemetry,
   fetchCredentials,
   speechRecognitionEndpointId,
@@ -31,16 +34,19 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(fetchCredentials);
+  const { authorizationToken, directLineToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(
+    fetchCredentials
+  );
 
   if (
     (!authorizationToken && !subscriptionKey) ||
     (authorizationToken && subscriptionKey) ||
     (authorizationToken && typeof authorizationToken !== 'string') ||
-    (subscriptionKey && typeof subscriptionKey !== 'string')
+    (subscriptionKey && typeof subscriptionKey !== 'string') ||
+    (enableInternalHTTPSupport && !directLineToken)
   ) {
     throw new Error(
-      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only.'
+      '"fetchCredentials" must return either "authorizationToken" or "subscriptionKey" as a non-empty string only. If enableInternalHTTPSupport is set to true, then it should also return a non-empty "directLineToken"'
     );
   }
 
@@ -104,6 +110,16 @@ export default async function create({
     config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
   }
 
+  // If internal HTTP support is enabled, switch the endpoint to Direct Line on Direct Line Speech service.
+  if (enableInternalHTTPSupport) {
+    config.setProperty(
+      PropertyId.SpeechServiceConnection_Endpoint,
+      `wss://${encodeURI(region)}.convai.speech.microsoft.com/directline/api/v1`
+    );
+
+    config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
+  }
+
   // Supported options can be found in DialogConnectorFactory.js.
 
   // Set the language used for recognition.
@@ -153,6 +169,31 @@ export default async function create({
 
       dialogServiceConnector.authorizationToken = authorizationToken; // eslint-disable-line require-atomic-updates
     }, TOKEN_RENEWAL_INTERVAL);
+  }
+
+  // Renew token per interval.
+  if (enableInternalHTTPSupport) {
+    const interval = setInterval(async () => {
+      // #2660 If the connector has been disposed, we should stop renewing the token.
+
+      // TODO: We should use a public implementation if Speech SDK has one related to "privIsDisposed".
+      if (dialogServiceConnector.privIsDisposed) {
+        clearInterval(interval);
+      }
+      
+      const refreshedDirectLineToken = await refreshDirectLineToken(directLineToken);
+      
+      if (!refreshedDirectLineToken) {
+        return console.warn(
+          'botframework-directlinespeech-sdk: Renew token failed because call to refresh token Direct Line API did not return a new token.'
+        );
+      }
+
+      config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      
+      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken)
+      dialogServiceConnector.connect();
+    }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
 
   const directLine = new DirectLineSpeech({ dialogServiceConnector });
