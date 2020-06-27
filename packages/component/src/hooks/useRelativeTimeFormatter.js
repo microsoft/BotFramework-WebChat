@@ -2,11 +2,12 @@
 
 import { useMemo } from 'react';
 
-import getLocaleString from '../Localization/getLocaleString';
+import useDateFormatter from './useDateFormatter';
 import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizer from './useLocalizer';
 
 export default function useRelativeTimeFormatter() {
+  const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const [globalize] = useLocalizedGlobalize();
 
@@ -42,7 +43,7 @@ export default function useRelativeTimeFormatter() {
         return localize('ACTIVITY_STATUS_TIMESTAMP_YESTERDAY');
       }
 
-      return getLocaleString(date, 'en-US');
+      return formatDate(date);
     };
   }, [localize, globalize]);
 }
