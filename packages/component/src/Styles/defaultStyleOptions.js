@@ -187,7 +187,12 @@ const DEFAULT_OPTIONS = {
   toastSuccessBackgroundColor: '#DFF6DD',
   toastSuccessColor: '#107C10',
   toastWarnBackgroundColor: '#FFF4CE',
-  toastWarnColor: '#3B3A39'
+  toastWarnColor: '#3B3A39',
+
+  // Emoji
+  emojiAutocorrect: false,
+  emojiList: undefined,
+  emojiRegExp: undefined
 };
 
 export default DEFAULT_OPTIONS;

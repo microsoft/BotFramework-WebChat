@@ -12,6 +12,7 @@ import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
+import useRenderEmoji from '../hooks/useRenderEmoji';
 import useStopDictate from '../hooks/useStopDictate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -115,6 +116,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [, setEmoji] = useRenderEmoji();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
@@ -124,7 +126,13 @@ const TextBox = ({ className }) => {
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 
-  const handleChange = useCallback(({ target: { value } }) => setTextBoxValue(value), [setTextBoxValue]);
+  const handleChange = useCallback(
+    ({ target: { value } }) => {
+      value = setEmoji(value);
+      setTextBoxValue(value);
+    },
+    [setEmoji, setTextBoxValue]
+  );
 
   const handleKeyPress = useCallback(
     event => {
