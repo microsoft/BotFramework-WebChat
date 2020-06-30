@@ -11,11 +11,11 @@ on:
 
 env:
   APP_NAME: webchat-samples-ssoteams
-  DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-uploadazurestorage
+  DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-ssoteams
   DOCKER_REGISTRY: webchatsamples.azurecr.io
   DOCKER_TAG: sha-${{ github.sha }}
   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/d.sso-for-teams
-  PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
+  PUBLISH_PROFILE: ${{ secrets.SAMPLES_SSOTEAMS_PUBLISH_PROFILE }}
 
 jobs:
   build:
