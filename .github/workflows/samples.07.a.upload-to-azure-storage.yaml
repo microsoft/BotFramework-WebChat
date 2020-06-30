@@ -6,6 +6,13 @@ on:
       - master
       - sample*
 
+env:
+  APP_NAME: webchat-samples-uploadazurestorage
+  DOCKER_REGISTRY: webchatsamples.azurecr.io
+  DOCKER_REPOSITORY: webchat-samples-uploadazurestorage
+  DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
+  PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,12 +21,26 @@ jobs:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
 
-      - name: Push to Azure Container Registry
+      - name: Read variables
+        id: variables
+        run: |
+          echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
+
+      - name: Build and push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}
         uses: docker/build-push-action@v1
         with:
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
-          path: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
-          registry: webchatsamples.azurecr.io
-          repository: webchat-samples-uploadazurestorage
+          path: ${{ env.DOCKERFILE_PATH }}
+          registry: ${{ env.DOCKER_REGISTRY }}
+          repository: ${{ env.DOCKER_REPOSITORY }}
           tag_with_sha: true
+          tags:
+          - latest
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
+
+      - name: Publish to ${{ env.APP_NAME }}
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.APP_NAME }
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:sha-${{ steps.variables.outputs.short_sha }}
+          publish-profile: ${{ env.PUBLISH_PROFILE }}
