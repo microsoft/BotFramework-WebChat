@@ -1,0 +1,59 @@
+name: samples/07.a.upload-to-azure-storage
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/samples.07.a.upload-to-azure-storage.yaml
+      - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**
+
+env:
+  APP_NAME: webchat-samples-uploadazurestorage
+  DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-uploadazurestorage
+  DOCKER_REGISTRY: webchatsamples.azurecr.io
+  DOCKER_TAG: sha-${{ github.sha }}
+  DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
+  PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - name: Read variables
+        id: variables
+        run: |
+          echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
+          password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
+
+      - name: Build and publish the image
+        run: |
+          cd ${{ env.DOCKERFILE_PATH }}
+          docker build . -t builder
+          docker create --name builder-image builder
+          docker cp builder-image:/var/build/build.tgz .
+          docker rm builder-image
+          docker build . -f Dockerfile-run -t ${{ env.DOCKER_IMAGE }}:latest -t ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          docker push ${{ env.DOCKER_IMAGE }}:latest
+          docker push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ${{ env.DOCKERFILE_PATH }}/build.tgz
+
+      - name: Publish to ${{ env.APP_NAME }}
+        uses: azure/webapps-deploy@v2.1
+        with:
+          app-name: ${{ env.APP_NAME }}
+          images: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          publish-profile: ${{ env.PUBLISH_PROFILE }}

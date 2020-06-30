@@ -1,6 +1,6 @@
 # Upload attachment to Azure Storage demo
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/10/10)](https://webchat-sample-upload-to-azure.azurewebsites.net/)
+![samples/07.a.upload-to-azure-storage](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.a.upload-to-azure-storage/badge.svg)
 
 # Description
 
@@ -16,7 +16,7 @@ Direct Line provides a temporary storage of user attachments, up to 4 MB per att
 
 # Test out the hosted sample
 
-You can browse to https://webchat-sample-upload-to-azure.azurewebsites.net/ to try out the hosted demo.
+You can browse to https://webchat-samples-uploadazurestorage.azurewebsites.net/ to try out the hosted demo.
 
 # How to run locally
 
