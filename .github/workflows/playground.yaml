@@ -34,6 +34,7 @@ jobs:
           cd packages/playground
           npm run build
           cd build
+          npm install serve@11.3.2
           zip -1rq ../zipdeploy.zip .
         env:
           NODE_ENV: production
@@ -42,3 +43,16 @@ jobs:
         with:
           name: build
           path: packages/playground/zipdeploy.zip
+
+      - id: deploy
+        uses: azure/webapps-deploy@v2.1
+        with:
+          app-name: webchat-playground2
+          slot-name: production
+          publish-profile: ${{ secrets.PLAYGROUND_PUBLISH_PROFILE }}
+          package: packages/playground/zipdeploy.zip
+
+      - name: Ping deployment
+        run: |
+          sleep 5
+          curl -s ${{ steps:deploy.outputs.webapp-url }}
