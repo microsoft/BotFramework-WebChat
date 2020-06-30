@@ -32,7 +32,8 @@ jobs:
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
 
-      - run: |
+      - name: Build the builder image
+        run: |
           cd ${{ env.DOCKERFILE_PATH }}
           docker build . -t builder
           docker create --name builder-image builder
@@ -42,7 +43,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: build
-          path: build.tgz
+          path: ${{ env.DOCKERFILE_PATH }}/build.tgz
 
       - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
         uses: docker/build-push-action@v1
