@@ -1,0 +1,25 @@
+name: samples/07.a.upload-to-azure-storage
+
+on:
+  push:
+    branches:
+      - master
+      - sample*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - name: Push to Azure Container Registry
+        uses: docker/build-push-action@v1
+        with:
+          password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
+          path: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
+          registry: webchatsamples.azurecr.io
+          repository: webchat-samples-uploadazurestorage
+          tag_with_sha: true
+          username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
