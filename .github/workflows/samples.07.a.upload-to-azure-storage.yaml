@@ -6,14 +6,13 @@ on:
       - master
       - sample*
     paths:
-      - '.github/workflows/samples.07.a.upload-to-azure-storage.yaml'
-      - 'samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**'
+      - .github/workflows/samples.07.a.upload-to-azure-storage.yaml
+      - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**
 
 env:
   APP_NAME: webchat-samples-uploadazurestorage
   DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-uploadazurestorage
   DOCKER_REGISTRY: webchatsamples.azurecr.io
-  # DOCKER_REPOSITORY: webchat-samples-uploadazurestorage
   DOCKER_TAG: sha-${{ github.sha }}
   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
   PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
@@ -37,7 +36,7 @@ jobs:
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
 
-      - name: Build the builder image
+      - name: Build and publish the image
         run: |
           cd ${{ env.DOCKERFILE_PATH }}
           docker build . -t builder
@@ -53,21 +52,9 @@ jobs:
           name: build
           path: ${{ env.DOCKERFILE_PATH }}/build.tgz
 
-      # - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
-      #   uses: docker/build-push-action@v1
-      #   with:
-      #     dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile-run
-      #     password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
-      #     path: ${{ env.DOCKERFILE_PATH }}
-      #     registry: ${{ env.DOCKER_REGISTRY }}
-      #     repository: ${{ env.DOCKER_REPOSITORY }}
-      #     tag_with_sha: true
-      #     tags: latest
-      #     username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
-
       - name: Publish to ${{ env.APP_NAME }}
         uses: azure/webapps-deploy@v2.1
         with:
           app-name: ${{ env.APP_NAME }}
-          images: ${{ env.DOCKER_IMAGE }}:sha-${{ env.DOCKER_TAG }}
+          images: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
           publish-profile: ${{ env.PUBLISH_PROFILE }}
