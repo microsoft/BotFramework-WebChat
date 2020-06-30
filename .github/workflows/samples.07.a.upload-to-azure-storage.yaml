@@ -26,6 +26,12 @@ jobs:
         run: |
           echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
 
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
+          password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
+
       - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
         uses: docker/build-push-action@v1
         with:
