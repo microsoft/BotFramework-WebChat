@@ -17,9 +17,6 @@ on:
 #   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
 #   PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
 
-env:
-  NODE_ENV: production
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,11 +28,15 @@ jobs:
       - run: |
           npm ci
           npm run bootstrap
+
+      - run: |
           npm run build
           cd packages/playground
           npm run build
           cd build
           zip -1rq ../zipdeploy.zip .
+        env:
+          NODE_ENV: production
 
       - uses: actions/upload-artifact@v2
         with:
