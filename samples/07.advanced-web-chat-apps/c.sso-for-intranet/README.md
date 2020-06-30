@@ -1,6 +1,6 @@
 # Single sign-on demo for Intranet apps using OAuth
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso-intranet.azurewebsites.net/)
+![samples/07.c.sso-for-intranet](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.c.sso-for-intranet/badge.svg)
 
 # Description
 
@@ -26,7 +26,7 @@ This demo does not include any threat models and is designed for educational pur
 
 # Test out the hosted sample
 
-You can browse to https://webchat-sample-sso-intranet.azurewebsites.net/ to try out this demo.
+You can browse to https://webchat-samples-ssointranet.azurewebsites.net/ to try out this demo.
 
 # How to run locally
 

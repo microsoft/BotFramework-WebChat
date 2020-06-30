@@ -1,6 +1,6 @@
 # Single sign-on demo for enterprise apps using OAuth
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso.azurewebsites.net/)
+![samples/07.b.sso-for-enterprise](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.b.sso-for-enterprise/badge.svg)
 
 # Description
 
@@ -20,7 +20,7 @@ This demo does not include any threat models and is designed for educational pur
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://webchat-sample-sso.azurewebsites.net/)
+-  [Try out MockBot](https://webchat-samples-ssoenterprise.azurewebsites.net/)
 
 # How to run locally
 

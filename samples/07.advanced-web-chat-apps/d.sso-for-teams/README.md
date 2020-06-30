@@ -1,6 +1,6 @@
 # Single sign-on demo for Microsoft Teams apps using OAuth
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/12/12)](https://webchat-sample-sso-teams.azurewebsites.net/)
+![samples/07.d.sso-for-teams](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.d.sso-for-teams/badge.svg)
 
 # Description
 
