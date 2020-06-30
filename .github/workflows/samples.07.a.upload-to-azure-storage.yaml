@@ -40,6 +40,6 @@ jobs:
       - name: Publish to ${{ env.APP_NAME }}
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.APP_NAME }
+          app-name: ${{ env.APP_NAME }}
           images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:sha-${{ steps.variables.outputs.short_sha }}
           publish-profile: ${{ env.PUBLISH_PROFILE }}
