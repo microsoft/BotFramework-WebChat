@@ -55,4 +55,4 @@ jobs:
       - name: Ping deployment
         run: |
           sleep 5
-          curl -s ${{ steps:deploy.outputs.webapp-url }}
+          curl -s ${{ steps.deploy.outputs.webapp-url }}
