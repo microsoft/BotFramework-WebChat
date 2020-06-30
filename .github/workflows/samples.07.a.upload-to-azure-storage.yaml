@@ -34,8 +34,7 @@ jobs:
           registry: ${{ env.DOCKER_REGISTRY }}
           repository: ${{ env.DOCKER_REPOSITORY }}
           tag_with_sha: true
-          tags:
-          - latest
+          tags: latest
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
 
       - name: Publish to ${{ env.APP_NAME }}
