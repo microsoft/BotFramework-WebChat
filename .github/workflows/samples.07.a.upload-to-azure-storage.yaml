@@ -19,6 +19,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DOCKER_IMAGE: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}
+      DOCKER_TAG: sha-${{ github.sha }}
+
     steps:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
@@ -41,23 +45,26 @@ jobs:
           docker create --name builder-image builder
           docker cp builder-image:/var/build/build.tgz .
           docker rm builder-image
+          docker build . -f Dockerfile-run -t ${{ env.DOCKER_IMAGE }}:latest -t ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          docker push ${{ env.DOCKER_IMAGE }}:latest
+          docker push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
 
       - uses: actions/upload-artifact@v2
         with:
           name: build
           path: ${{ env.DOCKERFILE_PATH }}/build.tgz
 
-      - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
-        uses: docker/build-push-action@v1
-        with:
-          dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile-run
-          password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
-          path: ${{ env.DOCKERFILE_PATH }}
-          registry: ${{ env.DOCKER_REGISTRY }}
-          repository: ${{ env.DOCKER_REPOSITORY }}
-          tag_with_sha: true
-          tags: latest
-          username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
+      # - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
+      #   uses: docker/build-push-action@v1
+      #   with:
+      #     dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile-run
+      #     password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
+      #     path: ${{ env.DOCKERFILE_PATH }}
+      #     registry: ${{ env.DOCKER_REGISTRY }}
+      #     repository: ${{ env.DOCKER_REPOSITORY }}
+      #     tag_with_sha: true
+      #     tags: latest
+      #     username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
 
       - name: Publish to ${{ env.APP_NAME }}
         uses: azure/webapps-deploy@v2.1
