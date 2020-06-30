@@ -5,6 +5,8 @@ on:
     branches:
       - master
       - sample*
+    paths:
+      - 'samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**'
 
 env:
   APP_NAME: webchat-samples-uploadazurestorage
