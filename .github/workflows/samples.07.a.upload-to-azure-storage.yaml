@@ -32,9 +32,22 @@ jobs:
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
 
+      - run: |
+          cd ${{ DOCKERFILE_PATH }}
+          docker build . -t builder
+          docker create --name builder-image builder
+          docker cp builder-image:/var/build/build.tgz .
+          docker rm builder-image
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build.tgz
+
       - name: Build and push to ${{ env.DOCKER_REPOSITORY }}
         uses: docker/build-push-action@v1
         with:
+          dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile-run
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
           path: ${{ env.DOCKERFILE_PATH }}
           registry: ${{ env.DOCKER_REGISTRY }}
