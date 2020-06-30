@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.SAMPLES_DOCKER_PASSWORD }}
 
       - run: |
-          cd ${{ DOCKERFILE_PATH }}
+          cd ${{ env.DOCKERFILE_PATH }}
           docker build . -t builder
           docker create --name builder-image builder
           docker cp builder-image:/var/build/build.tgz .
