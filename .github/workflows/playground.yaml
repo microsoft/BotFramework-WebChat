@@ -1,0 +1,43 @@
+name: playground
+
+on:
+  push:
+    branches:
+      - master
+      - deploy*
+    paths:
+      - .github/workflows/playground.yaml
+      - packages/**
+
+# env:
+#   APP_NAME: webchat-samples-uploadazurestorage
+#   DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-uploadazurestorage
+#   DOCKER_REGISTRY: webchatsamples.azurecr.io
+#   DOCKER_TAG: sha-${{ github.sha }}
+#   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
+#   PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
+
+env:
+  NODE_ENV: production
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - run: |
+          npm ci
+          npm run bootstrap
+          npm run build
+          cd packages/playground
+          npm run build
+          cd build
+          zip -1rq ../zipdeploy.zip .
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: packages/playground/zipdeploy.zip
