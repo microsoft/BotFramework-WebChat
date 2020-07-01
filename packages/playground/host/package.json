@@ -3,6 +3,6 @@
     "serve": "11.3.2"
   },
   "scripts": {
-    "start": "serve build -p $PORT"
+    "start": "npx --no-install serve build -p $PORT"
   }
 }
