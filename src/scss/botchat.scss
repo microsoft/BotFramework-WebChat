@@ -534,8 +534,7 @@
         align-items: center;
         justify-content: center;
         color: #f6f7f8;
-        margin-top:auto;
-        margin-bottom: 10px;
+        margin: auto, 0, 10px, 0;
     }
 
     .wc-message-avatar.blank{
@@ -605,6 +604,7 @@
               border-style: solid;
               height: 2em;
               outline-style: none;
+              color: black;
             }
 
             &__title {
