@@ -34,8 +34,11 @@ jobs:
           cd packages/playground
           npm run build
           cd build
-          npm install serve@11.3.2
-          echo { "scripts": { "start": "serve -p $PORT" } } > package.json
+          mkdir wwwroot
+          mv build wwwroot
+          cp host wwwroot
+          cd wwwroot
+          npm ci
           zip -1rq ../zipdeploy.zip .
         env:
           NODE_ENV: production
