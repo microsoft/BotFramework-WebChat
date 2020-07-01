@@ -33,20 +33,19 @@ jobs:
           npm run build
           cd packages/playground
           npm run build
-          cd build
           mkdir wwwroot
           mv build wwwroot
-          cp host wwwroot
+          cp host/* wwwroot
           cd wwwroot
           npm ci
-          zip -1rq ../zipdeploy.zip .
+          zip -1rq ../build.zip .
         env:
           NODE_ENV: production
 
       - uses: actions/upload-artifact@v2
         with:
-          name: build
-          path: packages/playground/zipdeploy.zip
+          name: wwwroot
+          path: packages/playground/build.zip
 
       - id: deploy
         uses: azure/webapps-deploy@v2.1
@@ -54,7 +53,7 @@ jobs:
           app-name: webchat-playground2
           slot-name: production
           publish-profile: ${{ secrets.PLAYGROUND_PUBLISH_PROFILE }}
-          package: packages/playground/zipdeploy.zip
+          package: packages/playground/build.zip
 
       - name: Ping deployment
         run: |
