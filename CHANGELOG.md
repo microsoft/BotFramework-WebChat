@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Updated some accessibility texts
    -  Delaying activities with `replyToId` referencing an activity that is not received yet, up to 5 seconds
    -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
-   -  Remove `tabindex="-1"` for Adaptive Cards container
+   -  Remove `tabindex="-1"` from Adaptive Cards container
 
 ### Changed
 
