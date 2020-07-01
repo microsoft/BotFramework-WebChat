@@ -35,6 +35,7 @@ jobs:
           npm run build
           cd build
           npm install serve@11.3.2
+          echo { "scripts": { "start": "serve -p $PORT" } } > package.json
           zip -1rq ../zipdeploy.zip .
         env:
           NODE_ENV: production
