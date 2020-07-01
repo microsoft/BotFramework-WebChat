@@ -1,0 +1,53 @@
+name: playground
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/playground.yaml
+      - packages/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - name: Run npm ci and lerna bootstrap
+        run: |
+          npm ci
+          npm run bootstrap
+
+      - run: |
+          npm run build
+          cd packages/playground
+          npm run build
+          mkdir wwwroot
+          mv build wwwroot
+          cp host/* wwwroot
+          cd wwwroot
+          npm ci
+          zip -1rq ../build.zip .
+        env:
+          NODE_ENV: production
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wwwroot
+          path: packages/playground/build.zip
+
+      - id: deploy
+        uses: azure/webapps-deploy@v2.1
+        with:
+          app-name: webchat-playground
+          slot-name: production
+          publish-profile: ${{ secrets.PLAYGROUND_PUBLISH_PROFILE }}
+          package: packages/playground/build.zip
+
+      - name: Ping deployment
+        run: |
+          sleep 15
+          curl -s ${{ steps.deploy.outputs.webapp-url }}

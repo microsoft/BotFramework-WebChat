@@ -8,6 +8,7 @@
 
 # production
 /build
+/wwwroot
 
 # misc
 .DS_Store
