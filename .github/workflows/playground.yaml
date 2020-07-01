@@ -16,7 +16,8 @@ jobs:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
 
-      - run: |
+      - name: Run npm ci and lerna bootstrap
+        run: |
           npm ci
           npm run bootstrap
 
