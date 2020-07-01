@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - deploy*
     paths:
       - .github/workflows/playground.yaml
       - packages/**
