@@ -7,9 +7,7 @@ const Fade = ({ children, fadeAfter }) => {
   useLayoutEffect(() => {
     setFaded(false);
 
-    const timeout = setTimeout(() => {
-      setFaded(true);
-    }, fadeAfter);
+    const timeout = setTimeout(() => setFaded(true), fadeAfter);
 
     return () => clearTimeout(timeout);
   }, [fadeAfter]);
