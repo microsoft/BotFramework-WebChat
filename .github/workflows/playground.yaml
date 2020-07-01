@@ -8,14 +8,6 @@ on:
       - .github/workflows/playground.yaml
       - packages/**
 
-# env:
-#   APP_NAME: webchat-samples-uploadazurestorage
-#   DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-uploadazurestorage
-#   DOCKER_REGISTRY: webchatsamples.azurecr.io
-#   DOCKER_TAG: sha-${{ github.sha }}
-#   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/a.upload-to-azure-storage
-#   PUBLISH_PROFILE: ${{ secrets.SAMPLES_UPLOADAZURESTORAGE_PUBLISH_PROFILE }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -49,12 +41,12 @@ jobs:
       - id: deploy
         uses: azure/webapps-deploy@v2.1
         with:
-          app-name: webchat-playground2
+          app-name: webchat-playground
           slot-name: production
           publish-profile: ${{ secrets.PLAYGROUND_PUBLISH_PROFILE }}
           package: packages/playground/build.zip
 
       - name: Ping deployment
         run: |
-          sleep 5
+          sleep 15
           curl -s ${{ steps.deploy.outputs.webapp-url }}
