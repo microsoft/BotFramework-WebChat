@@ -1,12 +1,15 @@
 {
   "_comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
 
+  "ACTIVITY_ARIA_LABEL_ALT": "activity",
+  "_ACTIVITY_ARIA_LABEL_ALT.comment": "This is for screen reader for aria-label for each activity.",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 said:",
   "_ACTIVITY_BOT_SAID_ALT.comment": "This is for screen reader only. $1 is the initials for the bot (e.g. \"JD\").",
   "ACTIVITY_YOU_SAID_ALT": "You said:",
   "_ACTIVITY_YOU_SAID_ALT.comment": "This is for screen reader only.",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot attached:",
   "_ACTIVITY_BOT_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the bot.",
+  "ACTIVITY_ERROR_BOX_TITLE": "Error message",
   "ACTIVITY_YOU_ATTACHED_ALT": "You attached:",
   "_ACTIVITY_YOU_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the user.",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 attachment.",
@@ -19,7 +22,6 @@
   "_ACTIVITY_NUM_ATTACHMENTS_OTHER_ALT.comment": "$1 is the number of attachments. This is for plural rule of \"other\".",
   "ACTIVITY_NUM_ATTACHMENTS_TWO_ALT": "$1 attachments.",
   "_ACTIVITY_NUM_ATTACHMENTS_TWO_ALT.comment": "$1 is the number of attachments. This is for plural rule of \"two\".",
-  "ACTIVITY_ERROR_BOX_TITLE": "Error message",
   "ACTIVITY_STATUS_SEND_FAILED_RETRY": "Send failed. [Retry][RETRY].",
   "_ACTIVITY_STATUS_SEND_FAILED_RETRY.comment": "This is Markdown. Do not localize \"[RETRY]\" (the one in uppercase).",
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Sending",
@@ -89,6 +91,8 @@
   "TOAST_DISMISS_BUTTON": "Dismiss",
   "TOAST_TITLE_ALT": "Notification",
   "_TOAST_TITLE_ALT.comment": "This is for screen reader. The label for individiual notification.",
+  "TRANSCRIPT_ARIA_ROLE_ALT": "transcript",
+  "_TRANSCRIPT_ARIA_ROLE_ALT.comment": "This is for screen reader for the aria-roledescription of the transcript container.",
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
   "TYPING_INDICATOR_ALT": "Showing typing indicator",
   "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message."
