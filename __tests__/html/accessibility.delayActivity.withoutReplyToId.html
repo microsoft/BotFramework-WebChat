@@ -10,8 +10,8 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         TestAsset: { createDirectLineForTest },
-        WebChatTest: { conditions, createStore, host, pageObjects }
-      } = window.WebChatTest;
+        WebChatTest: { conditions, createStore, host, pageObjects, timeouts }
+      } = window;
 
       (async function() {
         const clock = lolex.install();
@@ -25,7 +25,7 @@
           document.getElementById('webchat')
         );
 
-        await conditions.uiConnected();
+        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
 
         // Wait for "Connecting..." message to dismiss
         clock.tick(600);
@@ -35,7 +35,7 @@
         // This screenshot should show:
         // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
         // 2. Bot-initiated message "You said: Hello, World!"
-        await conditions.numActivitiesShown(2);
+        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
         await host.snapshot();
 
         directLine.releaseEchoBackOnce();

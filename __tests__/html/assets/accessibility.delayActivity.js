@@ -1,4 +1,4 @@
-const { createDeferredObservable } = window.WebChatTest;
+const { createDeferredObservable, shareObservable } = window.WebChatTest;
 
 window.TestAsset = {
   createDirectLineForTest: ({ withReplyToId = true } = {}) => {

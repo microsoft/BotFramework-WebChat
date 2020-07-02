@@ -3,6 +3,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import uiConnected from './setup/conditions/uiConnected';
+import getActivityElements from './setup/elements/getActivityElements';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -51,24 +52,33 @@ test('show ZIP files with contentUrl', async () => {
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 
+  const [firstActivity, secondActivity] = await getActivityElements(driver);
+
   await expect(
-    driver.executeScript(() =>
-      document.querySelector('[role="listitem"]:nth-child(1) a[target="_blank"]').getAttribute('href')
+    driver.executeScript(
+      firstActivity => firstActivity.querySelector('a[target="_blank"]').getAttribute('href'),
+      firstActivity
     )
   ).resolves.toEqual('https://example.org/');
+
   await expect(
-    driver.executeScript(() =>
-      document.querySelector('[role="listitem"]:nth-child(1) a[target="_blank"]').getAttribute('download')
+    driver.executeScript(
+      firstActivity => firstActivity.querySelector('a[target="_blank"]').getAttribute('download'),
+      firstActivity
     )
   ).resolves.toEqual('empty.zip');
+
   await expect(
-    driver.executeScript(() =>
-      document.querySelector('[role="listitem"]:nth-child(2) a[target="_blank"]').getAttribute('href')
+    driver.executeScript(
+      secondActivity => secondActivity.querySelector('a[target="_blank"]').getAttribute('href'),
+      secondActivity
     )
   ).resolves.toEqual('https://example.org/');
+
   await expect(
-    driver.executeScript(() =>
-      document.querySelector('[role="listitem"]:nth-child(2) a[target="_blank"]').getAttribute('download')
+    driver.executeScript(
+      secondActivity => secondActivity.querySelector('a[target="_blank"]').getAttribute('download'),
+      secondActivity
     )
   ).resolves.toEqual('empty.zip');
 });

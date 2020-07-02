@@ -7,6 +7,7 @@ import toastDismissButtons from './toastDismissButtons';
 import toasterHeader from './toasterHeader';
 import toasts from './toasts';
 import transcript from './transcript';
+import transcriptList from './transcriptList';
 import transcriptScrollable from './transcriptScrollable';
 import typeFocusSink from './typeFocusSink';
 
@@ -20,6 +21,7 @@ export {
   toastDismissButtons,
   toasts,
   transcript,
+  transcriptList,
   transcriptScrollable,
   typeFocusSink
 };
