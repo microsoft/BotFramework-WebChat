@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Delaying activities with `replyToId` referencing an activity that is not received yet, up to 5 seconds
    -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
    -  Remove `tabindex="-1"` from Adaptive Cards container
-   -  Hide activities with type `invoke`
+   -  Hide activities of type `invoke`
 
 ### Samples
 
