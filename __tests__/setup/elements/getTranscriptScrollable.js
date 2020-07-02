@@ -1,9 +1,5 @@
 import { By } from 'selenium-webdriver';
 
-import getTranscript from './getTranscript';
-
 export default async function getTranscriptScrollable(driver) {
-  const transcript = await getTranscript(driver);
-
-  return await transcript.findElement(By.css('*'));
+  return await driver.findElement(By.css('.webchat__basic-transcript__scrollable'));
 }
