@@ -114,14 +114,6 @@
             max-width: $chatWidthMobile;
         }
 
-        .wc-header--attourney-logo-container {
-          width: $logo-size;
-          min-width: $logo-size;
-          height: $logo-size;
-          display: inline-block;
-          vertical-align: middle;
-        }
-
         span {
             font-size: 18px;
             vertical-align: middle;
@@ -132,12 +124,12 @@
         }
 
         &--logo {
-            position: absolute;
             vertical-align: middle;
             max-height: $logo-size;
             min-height: $logo-size;
             min-width: $logo-size;
             max-width: $logo-size;
+            margin: 0;
         }
 
         $topMargin: 10px;
@@ -534,7 +526,7 @@
         align-items: center;
         justify-content: center;
         color: #f6f7f8;
-        margin: auto, 0, 10px, 0;
+        margin: auto 0 10px 0;
     }
 
     .wc-message-avatar.blank{

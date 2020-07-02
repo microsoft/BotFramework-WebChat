@@ -511,7 +511,6 @@ export class Chat extends React.Component<ChatProps, State> {
                                             'https://s3.amazonaws.com/com.gideon.static.dev/chatbot-header-default-v1.1.2.png'
                                         }
                                       />
-                                      <div className="wc-header--attourney-logo-container"/>
 
                                   <span>{typeof state.format.chatTitle === 'string' ? state.format.chatTitle : 'Gideon' }</span>
 
