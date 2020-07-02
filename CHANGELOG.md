@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Isolated screen reader only live region for incoming activities and added a new `<ScreenReaderActivity>` component
    -  Removed screen reader text for activities outside of live region, including `<CarouselFilmstrip>`, `<StackedLayout>`, `<TextContent>`, and `<Timestamp>`
    -  Updated some accessibility texts
-   -  Delaying activities with `replyToId` referencing an activity that is not received yet, up to 5 seconds
+   -  Rectified activities render order by delaying activities with `replyToId` that reference an activity which is not ACK-ed, for up to 5 seconds
    -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
    -  Remove `tabindex="-1"` from Adaptive Cards container
    -  Hide activities of type `invoke`

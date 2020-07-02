@@ -139,9 +139,13 @@ Messages with a latter timestamp may arrive sooner than messages with a former t
 
 Because the time between the insertion is usually very short (adjacent packet in a Web Socket connection), users may not see the insertion visually. But screen reader always read messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, message order could be confusing to users who relies on screen reader.
 
+![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/docs/media/direct-line-sequence-diagram.png)
+
 ### Implementations
 
-`replyToId` is a property set by the bot to reference to an activity that it is replying to. Web Chat use the `replyToId` property as a hint for the message order.
+We will rectify message order using the `replyToId` property.
+
+`replyToId` is a property set by the Bot Framework SDK and it references the activity the bot is replying to. Web Chat use the `replyToId` property as a hint when rectifying message order.
 
 -  When a message with a `replyToId` property arrive, Web Chat will check if it received the activity with the specified ID:
    -  If an activity were received with the specified ID, Web Chat will render the activity immediately
