@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
+
 import PropTypes from 'prop-types';
 import React, { forwardRef, useRef } from 'react';
 
@@ -39,7 +41,8 @@ const AccessibleInputText = forwardRef(({ disabled, onChange, tabIndex, ...props
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
-  onChange: undefined
+  onChange: undefined,
+  tabIndex: undefined
 };
 
 AccessibleInputText.displayName = 'AccessibleInputText';
@@ -47,6 +50,7 @@ AccessibleInputText.displayName = 'AccessibleInputText';
 AccessibleInputText.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func,
+  tabIndex: PropTypes.number,
   type: PropTypes.oneOf(['text']).isRequired
 };
 

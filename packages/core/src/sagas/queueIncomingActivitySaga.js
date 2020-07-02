@@ -1,11 +1,9 @@
 import { call, cancelled, fork, put, race, select, take } from 'redux-saga/effects';
 
-import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
-import { ofType as activitiesOfType } from '../selectors/activities';
-import activitiesSelector from '../selectors/activities';
+import activitiesSelector, { ofType as activitiesOfType } from '../selectors/activities';
 import activityFromBot from '../definitions/activityFromBot';
-import incomingActivity from '../actions/incomingActivity';
+import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
@@ -43,7 +41,7 @@ function* waitForActivityId(replyToId, initialActivities) {
   }
 }
 
-function* queueIncomingActivity() {
+function* queueIncomingActivity({ userID }) {
   yield takeEveryAndSelect(QUEUE_INCOMING_ACTIVITY, activitiesSelector, function* queueIncomingActivity(
     { payload: { activity } },
     initialActivities

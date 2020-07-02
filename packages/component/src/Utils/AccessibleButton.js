@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
+
 import PropTypes from 'prop-types';
 import React, { forwardRef, useRef } from 'react';
 
@@ -40,7 +42,8 @@ const AccessibleButton = forwardRef(({ disabled, onClick, tabIndex, ...props }, 
 
 AccessibleButton.defaultProps = {
   disabled: undefined,
-  onClick: undefined
+  onClick: undefined,
+  tabIndex: undefined
 };
 
 AccessibleButton.displayName = 'AccessibleButton';
@@ -48,6 +51,7 @@ AccessibleButton.displayName = 'AccessibleButton';
 AccessibleButton.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
+  tabIndex: PropTypes.number,
   type: PropTypes.oneOf(['button']).isRequired
 };
 

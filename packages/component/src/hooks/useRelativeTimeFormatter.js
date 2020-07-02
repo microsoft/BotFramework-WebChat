@@ -45,5 +45,5 @@ export default function useRelativeTimeFormatter() {
 
       return formatDate(date);
     };
-  }, [localize, globalize]);
+  }, [formatDate, globalize, localize]);
 }
