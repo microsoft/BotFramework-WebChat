@@ -21,10 +21,6 @@ const ROOT_CSS = css({
   width: 1
 });
 
-// <span className={classNames(ROOT_CSS + '')} id={id}>
-//   {text}
-// </span>
-
 const ScreenReaderText = ({ id, text }) => (
   <div className={classNames(ROOT_CSS + '')} id={id}>
     {text}

@@ -30,6 +30,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#3265](https://github.com/microsoft/BotFramework-WebChat/issues/3265). Fix styling specificity regression on microphone button, by [@corinagum](https://github.com/corinagum) in PR [#3276](https://github.com/microsoft/BotFramework-WebChat/pull/3276)
 -  Fixes [#3279](https://github.com/microsoft/BotFramework-WebChat/issues/3279). Fix relative timestamp errored out when showing a time before yesterday, by [@compulim](https://github.com/compulim) in PR [#3282](https://github.com/microsoft/BotFramework-WebChat/pull/3282)
+-  Fixes [#3236](https://github.com/microsoft/BotFramework-WebChat/issues/3236), by [@compulim](https://github.com/compulim) in PR [#3287](https://github.com/microsoft/BotFramework-WebChat/pull/3287)
+   -  Isolated screen reader only live region for incoming activities and added a new `<ScreenReaderActivity>` component
+   -  Removed screen reader text for activities outside of live region, including `<CarouselFilmstrip>`, `<StackedLayout>`, `<TextContent>`, and `<Timestamp>`
+   -  Updated some accessibility texts
+   -  Delaying activities with `replyToId` referencing an activity that is not received yet, up to 5 seconds
+   -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
+   -  Remove `tabindex="-1"` from Adaptive Cards container
+   -  Hide activities with type `invoke`
 
 ### Samples
 
@@ -57,13 +65,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixed [#3203](https://github.com/microsoft/BotFramework-WebChat/issues/3203). "New messages" button should be narrated by assistive technology, by [@compulim](https://github.com/compulim) in PR [#3204](https://github.com/microsoft/BotFramework-WebChat/pull/3204)
 -  Fixed [#3217](https://github.com/microsoft/BotFramework-WebChat/issues/3217). Make sure `rel="noopener noreferrer` is not sanitized, by [@compulim](https://github.com/compulim) in PR [#3220](https://github.com/microsoft/BotFramework-WebChat/pull/3220)
 -  Fixed [#3223](https://github.com/microsoft/BotFramework-WebChat/issues/3223). Tap an `openUrl` card action should open URL in a new tab with `noopener noreferrer` set, by [@compulim](https://github.com/compulim) in PR [#3224](https://github.com/microsoft/BotFramework-WebChat/pull/3224)
--  Fixed [#3236](https://github.com/microsoft/BotFramework-WebChat/issues/3236), by [@compulim](https://github.com/compulim) in PR [#3287](https://github.com/microsoft/BotFramework-WebChat/pull/3287)
-   -  Isolated screen reader only live region for incoming activities
-   -  Removed screen reader text for activities outside of live region
-   -  Updated some accessibility texts
-   -  Delaying activities with `replyToId` referencing an activity that is not received yet, up to 5 seconds
-   -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
-   -  Remove `tabindex="-1"` from Adaptive Cards container
 
 ### Changed
 
