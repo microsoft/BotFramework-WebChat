@@ -128,7 +128,6 @@ const StackedLayout = ({ activity, children, nextVisibleActivity }) => {
           'webchat__stackedLayout--hasAvatar': renderAvatar && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize)
         }
       )}
-      // role="article" // This will read "Landmark" in iOS Safari
       role="group"
     >
       {renderAvatar && <div className="webchat__stackedLayout__avatar">{renderAvatar()}</div>}

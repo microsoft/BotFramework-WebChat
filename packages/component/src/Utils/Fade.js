@@ -1,6 +1,8 @@
 import { useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
+// Initially, <Fade> will render all of its children.
+// After a period of time (specified through the "fadeAfter" prop), <Fade> will stop rendering its children and removing it from DOM.
 const Fade = ({ children, fadeAfter }) => {
   const [faded, setFaded] = useState(false);
 

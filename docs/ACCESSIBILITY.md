@@ -172,7 +172,7 @@ To make the live region more consistent across browsers and easier to control, w
 
 -  Two copies of transcript
    -  Visible, rich, dynamic, and interactive transcript
-   -  Screen reader only transcript marked as live region
+   -  Screen reader only reads the transcript marked as live region
       -  Web Chat does not narrate attachment contents: attachments can be customized and the DOM tree could be very complex with interactive elements
 -  The live region contains activities that were recently
    -  When the DOM element appear in the live region, the screen reader will compute the alternative text and queue it for narration in a first-come-first-serve manner
