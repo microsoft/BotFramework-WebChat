@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
+import getActivityElements from './setup/elements/getActivityElements';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -101,9 +102,12 @@ describe('Clock skew', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
-    const lastActivity = await driver.findElement(By.css('.webchat__basic-transcript__activity:last-child p'));
+    const activityElements = await getActivityElements(driver);
+    const lastActivityParagraphElement = await activityElements[activityElements.length - 1].findElement(By.css('p'));
 
-    await expect(lastActivity.getText()).resolves.toBe('echo This outgoing activity should be the last in the list.');
+    await expect(lastActivityParagraphElement.getText()).resolves.toBe(
+      'echo This outgoing activity should be the last in the list.'
+    );
 
     // Skip the echoback for 2nd user-originated activity, so we don't apply server timestamp to it. It will be visually appear as "sending".
     // Even the 2nd user-originated activity didn't apply server timestamp, the insertion-sort algorithm should put bot-originated activity below it.
@@ -141,9 +145,10 @@ describe('Clock skew', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
-    const firstActivity = await driver.findElement(By.css('.webchat__basic-transcript__activity:first-child p'));
+    const activityElements = await getActivityElements(driver);
+    const firstActivityParagraphElement = await activityElements[0].findElement(By.css('p'));
 
-    await expect(firstActivity.getText()).resolves.toBe(
+    await expect(firstActivityParagraphElement.getText()).resolves.toBe(
       'echo This outgoing activity should be the first in the list before echo back, and last after the echo back.'
     );
 
