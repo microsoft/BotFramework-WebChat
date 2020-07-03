@@ -1,11 +1,8 @@
-import { put, select } from 'redux-saga/effects';
+import { put } from 'redux-saga/effects';
 import updateIn from 'simple-update-in';
 
-import { ofType as activitiesOfType } from '../selectors/activities';
-import activityFromBot from '../definitions/activityFromBot';
-import incomingActivity from '../actions/incomingActivity';
 import observeEach from './effects/observeEach';
-import setSuggestedActions from '../actions/setSuggestedActions';
+import queueIncomingActivity from '../actions/queueIncomingActivity';
 import whileConnected from './effects/whileConnected';
 
 const PASSTHRU_FN = value => value;
@@ -64,23 +61,10 @@ function* observeActivity({ directLine, userID }) {
     activity = patchNullAsUndefined(activity);
     activity = patchActivityWithFromRole(activity, userID);
 
-    yield put(incomingActivity(activity));
-
-    // Update suggested actions
-    // TODO: [P3] We could put this logic inside reducer to minimize number of actions dispatched.
-    const messageActivities = yield select(activitiesOfType('message'));
-    const lastMessageActivity = messageActivities[messageActivities.length - 1];
-
-    if (activityFromBot(lastMessageActivity)) {
-      const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
-
-      // If suggested actions is not destined to anyone, or is destined to the user, show it.
-      // In other words, if suggested actions is destined to someone else, don't show it.
-      yield put(setSuggestedActions(to && to.length && !to.includes(userID) ? null : actions));
-    }
+    yield put(queueIncomingActivity(activity));
   });
 }
 
-export default function* incomingActivitySaga() {
+export default function* observeActivitySaga() {
   yield whileConnected(observeActivity);
 }

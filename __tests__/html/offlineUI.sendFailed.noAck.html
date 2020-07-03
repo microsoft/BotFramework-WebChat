@@ -3,6 +3,7 @@
   <head>
     <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/4.9.1/webchat-es5.js"></script> -->
   </head>
   <body>
     <div id="webchat"></div>
@@ -35,7 +36,9 @@
 
                 const { channelData: { clientActivityID } = {} } = activity;
 
-                !bannedClientActivityIDs.includes(clientActivityID) && observer.next(activity);
+                // We are removing "replyToId" from the bot.
+                // Otherwise, since the outgoing message is not ACK-ed, the bot response will not be rendered on-screen until 5000 ms of timeout (activity order rectification).
+                !bannedClientActivityIDs.includes(clientActivityID) && observer.next({ ...activity, replyToId: '' });
               }
             });
 
@@ -61,6 +64,8 @@
 
       (async function() {
         const clock = lolex.install();
+
+        window.clock = clock;
 
         window.WebChat.renderWebChat(
           {

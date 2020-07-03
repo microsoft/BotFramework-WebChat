@@ -1,5 +1,3 @@
-import getTranscriptElement from './transcript';
-
 export default function transcriptScrollable() {
-  return getTranscriptElement().querySelector('*');
+  return document.querySelector('.webchat__basic-transcript__scrollable');
 }

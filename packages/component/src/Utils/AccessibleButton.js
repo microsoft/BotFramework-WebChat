@@ -1,7 +1,7 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
+
 import PropTypes from 'prop-types';
 import React, { forwardRef, useRef } from 'react';
-
-import useDisableOnBlurEffect from '../hooks/internal/useDisableOnBlurEffect';
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
@@ -10,8 +10,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 //   - When the widget is disabled
 //     - Set "aria-disabled" attribute to "true"
 //     - Set "readonly" attribute
-//     - If the focus is on, don't set "disabled" attribute, until it is blurred
-//       - Otherwise, set "disabled" attribute
+//     - Set "tabIndex" to -1
 //     - Remove "onClick" handler
 //   - Why this is needed
 //     - Browser compatibility: when the widget is disabled, different browser send focus to different places
@@ -24,18 +23,17 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleButton = forwardRef(({ disabled, onClick, ...props }, forwardedRef) => {
+const AccessibleButton = forwardRef(({ disabled, onClick, tabIndex, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
-
-  useDisableOnBlurEffect(ref, disabled);
 
   return (
     <button
       aria-disabled={disabled || undefined}
       onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
       ref={ref}
+      tabIndex={disabled ? -1 : tabIndex}
       {...props}
       type="button"
     />
@@ -44,7 +42,8 @@ const AccessibleButton = forwardRef(({ disabled, onClick, ...props }, forwardedR
 
 AccessibleButton.defaultProps = {
   disabled: undefined,
-  onClick: undefined
+  onClick: undefined,
+  tabIndex: undefined
 };
 
 AccessibleButton.displayName = 'AccessibleButton';
@@ -52,6 +51,7 @@ AccessibleButton.displayName = 'AccessibleButton';
 AccessibleButton.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
+  tabIndex: PropTypes.number,
   type: PropTypes.oneOf(['button']).isRequired
 };
 

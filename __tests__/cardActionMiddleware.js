@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
+import getTranscript from './setup/elements/getTranscript';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -71,7 +72,9 @@ test('card action "signin"', async () => {
   await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
+
+  const transcript = await getTranscript(driver);
+  const openUrlButton = await transcript.findElement(By.css('button'));
 
   await openUrlButton.click();
   await driver.wait(minNumActivitiesShown(4), timeouts.directLine);

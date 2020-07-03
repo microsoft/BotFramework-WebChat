@@ -7,37 +7,42 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
+import Fade from './Utils/Fade';
+import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
+import useLocalizer from './hooks/useLocalizer';
 import useRenderActivity from './hooks/useRenderActivity';
 import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 const ROOT_CSS = css({
-  overflow: 'hidden',
-  // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
-  // Stacking context help isolating elements that use "z-index" from global pollution.
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
-  position: 'relative'
-});
+  '&.webchat__basic-transcript': {
+    overflow: 'hidden',
+    // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
+    // Stacking context help isolating elements that use "z-index" from global pollution.
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+    position: 'relative',
 
-const PANEL_CSS = css({
-  display: 'flex',
-  flexDirection: 'column',
-  WebkitOverflowScrolling: 'touch'
-});
+    '& .webchat__basic-transcript__filler': {
+      flex: 1
+    },
 
-const FILLER_CSS = css({
-  flex: 1
-});
+    '& .webchat__basic-transcript__scrollable': {
+      display: 'flex',
+      flexDirection: 'column',
+      WebkitOverflowScrolling: 'touch'
+    },
 
-const LIST_CSS = css({
-  listStyleType: 'none'
+    '& .webchat__basic-transcript__transcript': {
+      listStyleType: 'none'
+    }
+  }
 });
 
 function useMemoize(fn) {
@@ -88,26 +93,21 @@ function nextSiblingAll(element) {
   return [].slice.call(children, elementIndex + 1);
 }
 
-const BasicTranscriptContent = () => {
+const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
   const [animatingToEnd] = useAnimatingToEnd();
+  const [direction] = useDirection();
   const [sticky] = useSticky();
   const focus = useFocus();
   const renderAttachment = useRenderAttachment();
   const scrollToEndButtonRef = useRef();
+  const localize = useLocalizer();
 
   const renderActivity = useRenderActivity(renderAttachment);
-
-  const renderActivityElement = useCallback(
-    (activity, nextVisibleActivity) =>
-      renderActivity({
-        activity,
-        nextVisibleActivity
-      }),
-    [renderActivity]
-  );
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+  const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
@@ -126,6 +126,15 @@ const BasicTranscriptContent = () => {
     }
   }, [focus, scrollToEndButtonRef]);
 
+  const renderActivityElement = useCallback(
+    (activity, nextVisibleActivity) =>
+      renderActivity({
+        activity,
+        nextVisibleActivity
+      }),
+    [renderActivity]
+  );
+
   const memoizeRenderActivityElement = useMemoize(renderActivityElement);
 
   const activityElementsWithMetadata = useMemo(
@@ -138,11 +147,21 @@ const BasicTranscriptContent = () => {
             // Until the activity passes through middleware, it is unknown whether the activity will be visible.
             // If the activity does not render, it will not be spoken if text-to-speech is enabled.
             if (element) {
+              const {
+                channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
+                text
+              } = activity;
+
+              const key = (activity.channelData && activity.channelData.clientActivityID) || activity.id || index;
+
               result = [
                 {
                   activity,
                   element,
-                  key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
+                  key,
+
+                  // If this key changes, the content of this attachment will be reannounced.
+                  liveRegionKey: key + '|' + (messageBackDisplayText || text),
 
                   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
                   shouldSpeak: activity.channelData && activity.channelData.speak
@@ -166,7 +185,9 @@ const BasicTranscriptContent = () => {
   // Activity ID of the last visible activity in the list.
   const { activity: { id: lastVisibleActivityId } = {} } =
     activityElementsWithMetadata[activityElementsWithMetadata.length - 1] || {};
+
   const lastReadActivityIdRef = useRef(lastVisibleActivityId);
+
   const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   if (sticky) {
@@ -203,48 +224,59 @@ const BasicTranscriptContent = () => {
     }
 
     return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [activityElementsWithMetadata, allActivitiesRead, animatingToEnd, hideScrollToEndButton, sticky]);
+  }, [
+    activityElementsWithMetadata,
+    allActivitiesRead,
+    animatingToEnd,
+    hideScrollToEndButton,
+    lastReadActivityIdRef,
+    sticky
+  ]);
 
   return (
-    <React.Fragment>
-      <div aria-hidden={true} className={FILLER_CSS} />
-      <ul
-        aria-atomic="false"
-        aria-live="polite"
-        aria-relevant="additions"
-        className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
-        role="list"
-      >
-        {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
-          <React.Fragment key={key}>
-            <li className={activityStyleSet + ''} role="listitem">
-              {element}
-              {shouldSpeak && <SpeakActivity activity={activity} />}
-            </li>
-            {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
-            {index === renderSeparatorAfterIndex && (
-              <ScrollToEndButton
-                aria-valuemax={activityElementsWithMetadata.length}
-                aria-valuenow={index + 1}
-                onClick={handleScrollToEndButtonClick}
-                ref={scrollToEndButtonRef}
-              />
-            )}
-          </React.Fragment>
-        ))}
-      </ul>
-      <BasicTypingIndicator />
-    </React.Fragment>
-  );
-};
+    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
+      <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+        <div aria-hidden={true} className="webchat__basic-transcript__filler" />
 
-const BasicTranscript = ({ className }) => {
-  const [direction] = useDirection();
+        {/* This <section> is for live region only. Contents are made invisible through CSS. */}
+        <section
+          aria-atomic={false}
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-roledescription={transcriptRoleDescription}
+          role="log"
+        >
+          {activityElementsWithMetadata.map(({ activity, liveRegionKey }) => (
+            <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+          ))}
+        </section>
 
-  return (
-    <div className={classNames(ROOT_CSS + '', className + '')} dir={direction} role="log">
-      <ScrollToBottomPanel className={PANEL_CSS + ''}>
-        <BasicTranscriptContent />
+        <ul
+          aria-roledescription={transcriptRoleDescription}
+          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+        >
+          {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
+            <React.Fragment key={key}>
+              <li
+                aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
+                className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
+              >
+                {element}
+                {shouldSpeak && <SpeakActivity activity={activity} />}
+              </li>
+              {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
+              {index === renderSeparatorAfterIndex && (
+                <ScrollToEndButton
+                  aria-valuemax={activityElementsWithMetadata.length}
+                  aria-valuenow={index + 1}
+                  onClick={handleScrollToEndButtonClick}
+                  ref={scrollToEndButtonRef}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </ul>
+        <BasicTypingIndicator />
       </ScrollToBottomPanel>
     </div>
   );

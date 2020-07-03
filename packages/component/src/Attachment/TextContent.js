@@ -5,27 +5,21 @@
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
-import ScreenReaderText from '../ScreenReaderText';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../hooks/useStyleSet';
 
 const TextContent = ({ contentType, text }) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
-  const strippedText = useMemo(() => remarkStripMarkdown(text), [text]);
+  const contentTypeMarkdown = contentType === 'text/markdown';
 
-  return contentType === 'text/markdown' && renderMarkdownAsHTML ? (
-    <React.Fragment>
-      <ScreenReaderText text={strippedText} />
-      <div
-        aria-hidden={true}
-        className={classNames('markdown', textContentStyleSet + '')}
-        dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(text || '') }}
-      />
-    </React.Fragment>
+  return contentTypeMarkdown && renderMarkdownAsHTML ? (
+    <div
+      className={classNames('markdown', textContentStyleSet + '')}
+      dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(text || '') }}
+    />
   ) : (
     (text || '').split('\n').map((line, index) => (
       <p className={classNames('plain', textContentStyleSet + '')} key={index}>
