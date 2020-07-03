@@ -33,7 +33,9 @@
         await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
 
         // This screenshot should show only user-initiated message "Hello, World!" with "Sending" status.
+        // Although the bot-initiate message arrived, it is not shown on the screen or appear in the Redux store.
         await pageObjects.wait(conditions.numActivitiesShown(1), timeouts.directLine);
+        await pageObjects.wait(() => directLine.numActivities === 1, timeouts.directLine);
         await host.snapshot();
 
         clock.tick(5000);
@@ -41,7 +43,7 @@
         // This screenshot should show:
         // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
         // 2. Bot-initiated message "You said: Hello, World!"
-        await conditions.numActivitiesShown(2);
+        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.ui);
         await host.snapshot();
 
         directLine.releaseEchoBackOnce();

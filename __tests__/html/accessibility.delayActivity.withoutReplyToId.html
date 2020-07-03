@@ -36,6 +36,7 @@
         // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
         // 2. Bot-initiated message "You said: Hello, World!"
         await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(() => directLine.numActivities === 1, timeouts.directLine);
         await host.snapshot();
 
         directLine.releaseEchoBackOnce();

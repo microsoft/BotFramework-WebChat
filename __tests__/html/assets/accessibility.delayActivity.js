@@ -15,9 +15,10 @@ window.TestAsset = {
       echoBack && echoBack();
     };
 
-    return {
+    const directLine = {
       activity$: shareObservable(activityDeferred$.observable),
       connectionStatus$: shareObservable(connectionStatusDeferred$.observable),
+      numActivities: 0,
       postActivity: activity => {
         const id = Math.random()
           .toString(36)
@@ -39,6 +40,8 @@ window.TestAsset = {
           ...(withReplyToId ? { replyToId: id } : {})
         });
 
+        directLine.numActivities++;
+
         echoBackQueue.push(() => {
           activityDeferred$.next({
             ...activity,
@@ -49,6 +52,8 @@ window.TestAsset = {
             timestamp
           });
 
+          directLine.numActivities++;
+
           postActivityDeferred$.next(id);
           postActivityDeferred$.complete();
         });
@@ -57,5 +62,7 @@ window.TestAsset = {
       },
       releaseEchoBackOnce
     };
+
+    return directLine;
   }
 };

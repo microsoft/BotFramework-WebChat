@@ -3,5 +3,6 @@
  */
 
 describe('accessibility requirement', () => {
-  test('should delay activity with "replyToId"', () => runHTMLTest('accessibility.delayActivity.withReplyToId.html'));
+  test('should delay activity with "replyToId" referencing a missing activity', () =>
+    runHTMLTest('accessibility.delayActivity.withReplyToId.html'));
 });
