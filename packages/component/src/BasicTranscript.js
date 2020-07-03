@@ -160,7 +160,7 @@ const BasicTranscript = ({ className }) => {
                   element,
                   key,
 
-                  // If this key change, the content of this attachment will be reannounced.
+                  // If this key changes, the content of this attachment will be reannounced.
                   liveRegionKey: key + '|' + (messageBackDisplayText || text),
 
                   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
