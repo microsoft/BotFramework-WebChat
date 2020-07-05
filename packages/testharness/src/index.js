@@ -22,6 +22,7 @@ import * as jobs from './jobs';
 import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import concatArrayBuffer from './speech/concatArrayBuffer';
+import createDeferredObservable from './utils/createDeferredObservable';
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
@@ -123,7 +124,7 @@ if (!webDriverMode) {
   window.addEventListener('error', ({ error }) => jobs.post(pageError(error)));
 }
 
-subscribeConsole();
+webDriverMode && subscribeConsole();
 
 !webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
 
@@ -131,6 +132,7 @@ export {
   concatArrayBuffer,
   conditions,
   createDeferred,
+  createDeferredObservable,
   createQueuedArrayBufferAudioSource,
   createRunHookActivityMiddleware,
   createStore,
@@ -150,6 +152,7 @@ export {
   pcmWaveArrayBufferToRiffWaveArrayBuffer,
   recognizeRiffWaveArrayBuffer,
   shareObservable,
+  sleep,
   timeouts,
   token,
   updateIn

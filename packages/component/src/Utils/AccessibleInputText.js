@@ -1,15 +1,14 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
+
 import PropTypes from 'prop-types';
 import React, { forwardRef, useRef } from 'react';
-
-import useDisableOnBlurEffect from '../hooks/internal/useDisableOnBlurEffect';
 
 // Differences between <input type="text"> and <AccessibleInputText>:
 // - Disable behavior
 //   - When the widget is disabled
 //     - Set "aria-disabled" attribute to "true"
 //     - Set "readonly" attribute
-//     - If the focus is on, don't set "disabled" attribute until it is blurred
-//       - Otherwise, set "disabled" attribute to `true`
+//     - Set "tabIndex" to -1
 //     - Remove "onChange" handler
 //   - Why this is needed
 //     - Browser compatibility: when the widget is disabled, different browser send focus to different places
@@ -22,12 +21,10 @@ import useDisableOnBlurEffect from '../hooks/internal/useDisableOnBlurEffect';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleInputText = forwardRef(({ disabled, onChange, ...props }, forwardedRef) => {
+const AccessibleInputText = forwardRef(({ disabled, onChange, tabIndex, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
-
-  useDisableOnBlurEffect(ref, disabled);
 
   return (
     <input
@@ -35,6 +32,7 @@ const AccessibleInputText = forwardRef(({ disabled, onChange, ...props }, forwar
       onChange={disabled ? undefined : onChange}
       readOnly={disabled}
       ref={ref}
+      tabIndex={disabled ? -1 : tabIndex}
       {...props}
       type="text"
     />
@@ -43,7 +41,8 @@ const AccessibleInputText = forwardRef(({ disabled, onChange, ...props }, forwar
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
-  onChange: undefined
+  onChange: undefined,
+  tabIndex: undefined
 };
 
 AccessibleInputText.displayName = 'AccessibleInputText';
@@ -51,6 +50,7 @@ AccessibleInputText.displayName = 'AccessibleInputText';
 AccessibleInputText.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func,
+  tabIndex: PropTypes.number,
   type: PropTypes.oneOf(['text']).isRequired
 };
 

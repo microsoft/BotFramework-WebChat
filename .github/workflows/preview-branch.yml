@@ -1,0 +1,229 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Preview branch
+
+on:
+  push:
+    branches:
+      - preview-*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run npx version-from-git --no-git-tag-version
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        run: npx version-from-git --no-git-tag-version
+
+      - run: npm ci
+
+      - run: npm run bootstrap -- --ignore=playground
+
+      - name: Propagate versions
+        run: |
+          node_modules/.bin/lerna version --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+
+      - name: Run npm run build
+        env:
+          NODE_ENV: production
+        run: npm run build --if-present -- --ignore=playground
+
+      # - run: npm test
+
+      - name: Run npm pack bundle
+        run: |
+          cd packages/bundle
+          npm pack
+
+      - name: Run npm pack component
+        run: |
+          cd packages/component
+          npm pack
+
+      - name: Run npm pack core
+        run: |
+          cd packages/core
+          npm pack
+
+      - name: Run npm pack directlinespeech
+        run: |
+          cd packages/directlinespeech
+          npm pack
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: 'packages/bundle/dist/**/*'
+
+      - name: Upload npm-tarball
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-tarball
+          path: 'packages/*/*.tgz'
+
+  tag-and-release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v2
+        with:
+          path: repo
+
+      - name: Download bundle
+        uses: actions/download-artifact@v2
+        with:
+          name: bundle
+          path: artifacts/bundle
+
+      - name: Download npm-tarball
+        uses: actions/download-artifact@v2
+        with:
+          name: npm-tarball
+          path: artifacts/npm-tarball
+
+      - name: Read variables
+        id: variables
+        run: |
+          echo "::set-output name=build_time::$(node -p "new Date().toISOString().replace('T', ' ')")"
+          echo "::set-output name=date::$(date +%Y-%m-%d)"
+          echo "::set-output name=version::$(tar xOf artifacts/npm-tarball/bundle/*.tgz package/package.json | jq -r '.version')"
+          echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
+          cd repo
+          echo "::set-output name=branch_name::$(git rev-parse --abbrev-ref HEAD)"
+          echo "::set-output name=last_commit_message::$(git log -1 --pretty=%B)"
+          echo "::set-output name=tag_name::dev-$(git rev-parse --abbrev-ref HEAD)"
+
+      - name: Delete existing release
+        continue-on-error: true
+        run: |
+          GITHUB_RELEASE_ID=$(curl --silent https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.variables.outputs.tag_name }} | jq -r .id)
+          echo Deleting release $GITHUB_RELEASE_ID.
+          curl \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --request DELETE \
+          --url https://api.github.com/repos/${{ github.repository }}/releases/$GITHUB_RELEASE_ID
+
+      - name: Create a tag
+        run: |
+          cd repo
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git push origin :${{ steps.variables.outputs.tag_name }}
+          git tag -f ${{ steps.variables.outputs.tag_name }} ${{ github.sha }}
+          git push origin ${{ steps.variables.outputs.tag_name }}
+
+      - name: Create a release
+        uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          prerelease: true
+          release_name: '[${{ steps.variables.outputs.tag_name }}] - ${{ steps.variables.outputs.date }}'
+          tag_name: ${{ steps.variables.outputs.tag_name }}
+          body: |
+            > Tarballs can be found in this workflow, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Build time</th>
+                  <th>Workflow ID</th>
+                  <th>Source version</th>
+                  <th>Branch</th>
+                  <th>Package version</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <code>${{ steps.variables.outputs.build_time }}</code>
+                  </td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">${{ github.run_id }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">${{ steps.variables.outputs.short_sha }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>
+                      <a href="https://github.com/${{ github.repository }}/tree/${{ steps.variables.outputs.branch_name }}">${{ steps.variables.outputs.branch_name }}</a>
+                    </code>
+                  </td>
+                  <td>
+                    <code>${{ steps.variables.outputs.version }}</code>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">${{ steps.variables.outputs.last_commit_message }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            ## Script tags
+
+            ```html
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat.js"></script>
+
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-es5.js"></script>
+
+            <script src="https://github.com/${{ github.repository }}/releases/download/${{ steps.variables.outputs.tag_name }}/webchat-minimal.js"></script>
+            ```
+
+      - name: Upload webchat.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/bundle/webchat.js
+          asset_name: webchat.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-es5.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/bundle/webchat-es5.js
+          asset_name: webchat-es5.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-minimal.js to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/bundle/webchat-minimal.js
+          asset_name: webchat-minimal.js
+          asset_content_type: text/javascript
+
+      - name: Upload stats.json to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/bundle/stats.json
+          asset_name: stats.json
+          asset_content_type: application/json

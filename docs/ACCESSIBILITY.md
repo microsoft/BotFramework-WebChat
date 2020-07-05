@@ -69,8 +69,10 @@ When a UI element is being disabled:
 -  Set `aria-disabled` attribute to `true`
    -  If the element is a `<button>`, `onClick` is set to a handler that calls `event.preventDefault()`
    -  If the element is an `<input type="text">` or `<textarea>`, `readOnly` is set to `true`
--  If the element is currently focused, the component will wait until the `onBlur` event is called to set the `disabled` attribute to `true`
-   -  Otherwise, the `disabled` attribute will be set to `true` immediately
+-  Set `tabindex` attribute to `-1`
+   -  The element will continue to be focused. But when the focus has moved away, the user can never use the <kbd>TAB</kbd> key to move the focus back to the element
+-  ~If the element is currently focused, the component will wait until the `onBlur` event is called to set the `disabled` attribute to `true`~
+   -  ~Otherwise, the `disabled` attribute will be set to `true` immediately~
 
 > List of elements support `disabled` attribute can be found in [this article](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled).
 
@@ -127,6 +129,61 @@ When the "New messages" separator is activated, it logically moves the separator
 
 Lastly, we style the "New messages" separator like a normal button, styled it to float on top of the transcript, and added `click` and `keypress` event listener for <kbd>ENTER</kbd> and <kbd>SPACEBAR</kbd> key for [activation](https://www.w3.org/TR/wai-aria-practices-1.1/#button).
 
+## UX: Message ordering
+
+### User story
+
+Azure Bot Services is a distributed system and message order is not guaranteed. Web Chat use insertion sort based on the timestamp to order messages.
+
+Messages with a newer timestamp may arrive before messages with an older timestamp. Thus, messages with a newer timestamp could appear on the screen first. Then, messages with an older timestamp will get inserted before it.
+
+Because the time between the insertion is usually very short (adjacent packet in a Web Socket connection), users may not see the insertion visually. But the screen reader always reads the messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, the message order could be confusing to users who rely on the screen reader.
+
+![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/docs/media/direct-line-sequence-diagram.png)
+
+### Implementations
+
+We will rectify message order using the `replyToId` property.
+
+`replyToId` is a property set by the Bot Framework SDK and it references the activity the bot is replying to. Web Chat uses the `replyToId` property as a hint when rectifying the message order.
+
+-  When a message with a `replyToId` property arrives, Web Chat will check if it received the activity with the specified ID:
+   -  If an activity were received with the specified ID, Web Chat will render the activity immediately
+   -  If no activities were received with the specified ID, Web Chat will wait up to 5 seconds for the referencing activity to arrive
+      -  If the activity arrive within 5 seconds, Web Chat will render the activity in the same render loop
+      -  If the activity did not arrive within 5 seconds, Web Chat will render the activity
+-  When a message without a `replyToId` property arrive, Web Chat will render the activity immediately
+
+## UX: Live region transcript
+
+### User story
+
+In a [live region](https://www.w3.org/TR/wai-aria-1.1/#live_region_roles), it is difficult to control which part is read or excluded from the screen reader.
+
+Also, browsers and screen readers can be inconsistent on reading the live region. For example:
+
+-  [Chromium bug #910669](https://bugs.chromium.org/p/chromium/issues/detail?id=910669)
+-  [Chromium bug #1067257](https://bugs.chromium.org/p/chromium/issues/detail?id=1067257)
+-  [Android TalkBack bug #157888765](https://issuetracker.google.com/issues/157888765)
+
+### Implementation
+
+To make the live region more consistent across browsers and easier to control, we separated the live region from the visible transcript:
+
+-  Two copies of transcript
+   -  Visible, rich, dynamic, and interactive transcript
+   -  Screen reader only reads the transcript marked as live region
+      -  Web Chat does not narrate attachment contents: attachments can be customized and the DOM tree could be very complex with interactive elements
+-  The live region contains activities that were recently
+   -  When the DOM element appear in the live region, the screen reader will compute the alternative text and queue it for narration in a first-come-first-serve manner
+   -  The screen reader will keep the alternative text in the queue even after the DOM element is removed from the live region
+-  One second after the activity is rendered in the live region, Web Chat will remove it from the live region. This has a few benefits:
+   -  Workaround some browser and screen reader bugs that may keep repeating the entire transcript
+   -  The screen reader users will not be able to navigate into it and they will not notice there are 2 copies of the transcript
+   -  If the removal is too fast:
+      -  0-100 ms: Chrome and TalkBack on Android may miss some of the activities
+      -  The development team settled on using one second after some experimentation
+
 ## Do and don't
 
 ### Do
@@ -138,12 +195,13 @@ Lastly, we style the "New messages" separator like a normal button, styled it to
    -  Suggested actions buttons
       -  After clicking on any suggested action buttons, the focus should move to the send box without soft keyboard
       -  For better UX, the activity asking the question should have the answer inlined
-      -  Related to [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX)
+      -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
 
 ### Don't
 
 -  Don't use numbers other than `0` or `-1` in `tabindex` attribute
    -  This will pollute the hosting environment
+   -  Do not use `tabindex="-1"` in DOM nodes that don't need it, otherwise, it will be focusable by mouse
 -  In an activity with question and answers, after clicking on a decision button, don't disable the button
    -  When the user reads the activity, the screen reader will only read the question but not the chosen answer
    -  It is okay to disable buttons that were not chosen as answer

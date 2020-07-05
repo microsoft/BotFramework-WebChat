@@ -4,8 +4,7 @@ import { css } from 'glamor';
 import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
-import remarkStripMarkdown from '../Utils/remarkStripMarkdown';
+import React from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -13,7 +12,6 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
-import useDateFormatter from '../hooks/useDateFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
@@ -100,7 +98,6 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
   const contentARIALabelId = useUniqueId('webchat__carousel-filmstrip__content');
-  const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
   const renderAvatar = useRenderAvatar({ activity });
@@ -110,24 +107,21 @@ const WebChatCarouselFilmStrip = ({
     channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
     from: { role } = {},
     text,
-    textFormat,
-    timestamp
+    textFormat
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
+  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
+  const greetingAlt = (fromUser
+    ? localize('ACTIVITY_YOU_SAID_ALT')
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
+  ).replace(/\s{2,}/gu, ' ');
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-  const initials = fromUser ? userInitials : botInitials;
-  const plainText = useMemo(() => remarkStripMarkdown(activityDisplayText), [activityDisplayText]);
-  const roleLabel = localize(fromUser ? 'CAROUSEL_ATTACHMENTS_USER_ALT' : 'CAROUSEL_ATTACHMENTS_BOT_ALT');
 
-  const contentARIALabel = localize(
-    fromUser ? 'ACTIVITY_USER_SAID' : 'ACTIVITY_BOT_SAID',
-    initials,
-    plainText.replace(/[.\s]+$/u, ''),
-    formatDate(timestamp)
-  ).trim();
+  // TODO: Should we check truthy/falsy for renderAvatar instead? This is because "avatar !== initials". An avatar can show up without initials.
+  const initials = fromUser ? userInitials : botInitials;
 
   return (
     <div
@@ -145,12 +139,14 @@ const WebChatCarouselFilmStrip = ({
       ref={scrollableRef}
       role="group"
     >
-      <ScreenReaderText id={contentARIALabelId} text={contentARIALabel} />
       {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
       <div className="content">
         {!!activityDisplayText && (
-          <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
+          // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+          /* eslint-disable-next-line react/forbid-dom-props */
+          <div aria-roledescription="message" className="message" id={contentARIALabelId}>
+            <ScreenReaderText text={greetingAlt} />
+            <Bubble className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {
@@ -164,8 +160,8 @@ const WebChatCarouselFilmStrip = ({
         )}
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
-            <li key={index}>
-              <ScreenReaderText text={roleLabel} />
+            <li aria-roledescription="attachment" key={index}>
+              <ScreenReaderText text={attachedAlt} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>

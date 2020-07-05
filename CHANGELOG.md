@@ -30,6 +30,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#3265](https://github.com/microsoft/BotFramework-WebChat/issues/3265). Fix styling specificity regression on microphone button, by [@corinagum](https://github.com/corinagum) in PR [#3276](https://github.com/microsoft/BotFramework-WebChat/pull/3276)
 -  Fixes [#3279](https://github.com/microsoft/BotFramework-WebChat/issues/3279). Fix relative timestamp errored out when showing a time before yesterday, by [@compulim](https://github.com/compulim) in PR [#3282](https://github.com/microsoft/BotFramework-WebChat/pull/3282)
+-  Fixes [#3236](https://github.com/microsoft/BotFramework-WebChat/issues/3236), by [@compulim](https://github.com/compulim) in PR [#3287](https://github.com/microsoft/BotFramework-WebChat/pull/3287)
+   -  Isolated screen reader only live region for incoming activities and added a new `<ScreenReaderActivity>` component
+   -  Removed screen reader text for activities outside of live region, including `<CarouselFilmstrip>`, `<StackedLayout>`, `<TextContent>`, and `<Timestamp>`
+   -  Updated some accessibility texts
+   -  Rectified activities render order by delaying activities with `replyToId` that reference an activity which is not ACK-ed, for up to 5 seconds
+   -  Disabled widgets will have `tabindex="-1"` set, instead of `disabled` attribute
+   -  Remove `tabindex="-1"` from Adaptive Cards container
+   -  Hide activities of type `invoke`
 
 ### Samples
 

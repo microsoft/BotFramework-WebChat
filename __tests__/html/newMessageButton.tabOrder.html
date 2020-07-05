@@ -57,7 +57,7 @@
         await pageObjects.wait(conditions.newMessageButtonShown(), timeouts.ui);
         await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
 
-        const listItems = elements.transcript().querySelectorAll('ul[role="list"] > li');
+        const { children: listItems } = elements.transcriptList();
 
         expect(listItems).toHaveProperty('length', 5);
 
