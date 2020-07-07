@@ -219,19 +219,12 @@ const BasicTranscript = ({ className }) => {
     //   3. Type "help" again
     //      Expect: "New messages" button must not flash-appear
 
-    if (allActivitiesRead || animatingToEnd || hideScrollToEndButton || sticky) {
+    if (allActivitiesRead || hideScrollToEndButton || sticky) {
       return -1;
     }
 
     return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [
-    activityElementsWithMetadata,
-    allActivitiesRead,
-    animatingToEnd,
-    hideScrollToEndButton,
-    lastReadActivityIdRef,
-    sticky
-  ]);
+  }, [activityElementsWithMetadata, allActivitiesRead, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
 
   return (
     <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
