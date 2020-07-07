@@ -142,9 +142,9 @@ import WebChat from './WebChat';
 <!-- prettier-ignore-end -->
 
 1. Build the component in the return statement
-    1. Depending on whether it is minimized, the ternary statement will switch between two different renders: minimized and maximized
-    1. Render the `<WebChat>` component when the state is not minimized
-    1. Create a header for the <WebChat> container with two buttons: one to switch sides of the window and the other to minimize the component
+   1. Depending on whether it is minimized, the ternary statement will switch between two different renders: minimized and maximized
+   1. Render the `<WebChat>` component when the state is not minimized
+   1. Create a header for the <WebChat> container with two buttons: one to switch sides of the window and the other to minimize the component
 
 <!-- prettier-ignore-start -->
 ```js

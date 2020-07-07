@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 export default function useRenderEmoji() {
   const [{ emojiAutocorrect, emojiUnicodeMap, emojiRegexp }] = useEmojiFromStyles();
 
-  let [value] = useTextBoxValue();
+  const [value] = useTextBoxValue();
 
   const setEmoji = useCallback(
     value => {

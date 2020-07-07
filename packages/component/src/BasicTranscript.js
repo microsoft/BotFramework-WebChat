@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -97,7 +97,6 @@ const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
   const [sticky] = useSticky();
   const focus = useFocus();
@@ -219,19 +218,12 @@ const BasicTranscript = ({ className }) => {
     //   3. Type "help" again
     //      Expect: "New messages" button must not flash-appear
 
-    if (allActivitiesRead || animatingToEnd || hideScrollToEndButton || sticky) {
+    if (allActivitiesRead || hideScrollToEndButton || sticky) {
       return -1;
     }
 
     return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [
-    activityElementsWithMetadata,
-    allActivitiesRead,
-    animatingToEnd,
-    hideScrollToEndButton,
-    lastReadActivityIdRef,
-    sticky
-  ]);
+  }, [activityElementsWithMetadata, allActivitiesRead, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
 
   return (
     <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
