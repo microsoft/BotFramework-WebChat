@@ -1,3 +1,5 @@
+/*eslint no-useless-escape: "off"*/
+/*eslint require-unicode-regexp: "off" */
 import useStyleOptions from './useStyleOptions';
 
 export default function useEmojiFromStyles() {
@@ -21,7 +23,6 @@ export default function useEmojiFromStyles() {
     ':-o': '😲',
     ':o': '😲',
     ':-O': '😲',
-    ':-O': '😲',
     ';-)': '😉',
     ';)': '😉',
     '<3': '❤️',
@@ -29,7 +30,7 @@ export default function useEmojiFromStyles() {
     '<\\3': '💔'
   };
 
-  const emojiRegexp = regex || new RegExp(/([:<()\\/|3DPpoO0\-]{2,3})/, 'gim');
+  const emojiRegexp = regex || new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
 
   return [{ emojiAutocorrect, emojiUnicodeMap, emojiRegexp }];
 }
