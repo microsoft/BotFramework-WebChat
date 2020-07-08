@@ -1,7 +1,6 @@
 import { Activity, CardAction, DirectLineOptions, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
-import ReactDatePicker from 'react-datepicker';
 import { connect } from 'react-redux';
 import { availableTimes  } from './api/bot';
 import { ChatState } from './Store';
@@ -34,33 +33,34 @@ export interface DatePickerState {
     startDate: moment.Moment;
     endDate: moment.Moment;
     dateSelected: boolean;
+    timeSelected: boolean;
     selectChoice: string;
     showTimeSelectClass: string;
     withRange: boolean;
     withTime: boolean;
-    excludedTimes: moment.Moment[];
+    includedTimes: moment.Moment[];
     monthAvailabilities: any;
     loading: boolean;
     duration: number;
 }
 
 const dateFormat = 'MMMM D, YYYY';
-const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
+export const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
 const appointmentBuffer = 30; // minutes
 
 /**
  * Getting all the times which are not between the availability times
  */
-const getExcludedTimes = (availabilities: any, interval: number, date: moment.Moment) => {
+const getIncludedTimes = (availabilities: any, interval: number, date: moment.Moment) => {
     const periodsInADay = moment.duration(1, 'day').as('minutes');
 
-    const excludedTimes = [];
+    const includedTimes = [];
     const startTimeMoment = moment('00:00', 'hh:mm');
     const dateCopy = date.clone().startOf('day');
     for (let i: number = 0; i <= periodsInADay; i += interval) {
         startTimeMoment.add(i === 0 ? 0 : interval, 'minutes');
         dateCopy.add(i === 0 ? 0 : interval, 'minutes');
-        const excludeTime = availabilities.some((avail: any) => {
+        const includeTime = availabilities.some((avail: any) => {
             const beforeTime = moment(moment(avail.start_time).format('HH:mm'), 'hh:mm');
             const afterTime = moment(moment(avail.end_time).format('HH:mm'), 'hh:mm');
             const isFuture = dateCopy.isAfter(moment().add(appointmentBuffer, 'minutes'));
@@ -69,12 +69,12 @@ const getExcludedTimes = (availabilities: any, interval: number, date: moment.Mo
             const endTimeCheck = endTimeMoment.isBetween(beforeTime, afterTime, undefined, '[]');
             return isFuture && startTimeCheck && endTimeCheck;
         });
-        if (!excludeTime) {
-            excludedTimes.push(startTimeMoment.format('hh:mm A'));
+        if (includeTime) {
+          includedTimes.push(startTimeMoment.format('hh:mm A'));
         }
     }
 
-    return excludedTimes.map(time => moment(time, 'hh:mm A'));
+    return includedTimes.map(time => moment(time, 'hh:mm A'));
 };
 
 /**
@@ -89,11 +89,12 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             startDate: null,
             endDate: null,
             dateSelected: false,
+            timeSelected: false,
             selectChoice: 'endDate',
             withRange: props.node.custom_attributes.includes('range'),
             withTime: props.withTime || props.node.custom_attributes.includes('time') || props.node.node_type === 'handoff',
             showTimeSelectClass: 'hide-time-select',
-            excludedTimes: [],
+            includedTimes: [],
             monthAvailabilities: null,
             loading: true,
             duration: 30
@@ -122,8 +123,8 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             directLine,
             conversationId
         } = this.props;
-        const startDate = date.clone().startOf('month').format('YYYY-MM-DD');
-        const endDate = date.clone().endOf('month').format('YYYY-MM-DD');
+        const startDate = date.clone().startOf('week').format('YYYY-MM-DD');
+        const endDate = date.clone().endOf('week').format('YYYY-MM-DD');
 
         if (!node) {
             return;
@@ -142,12 +143,12 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     const minuteString = +res.data.duration.split(':')[1];
                     const hourString = +res.data.duration.split(':')[0];
                     const appointmentDuration = hourString * 60 + minuteString;
-                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], appointmentDuration, date);
+                    const includedTime = getIncludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], appointmentDuration, date);
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
-                        excludedTimes: excludedTime,
+                        includedTimes: includedTime,
                         loading: false,
                         duration: appointmentDuration
                     });
@@ -175,17 +176,12 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         return dateWiseAvailabilities;
      }
 
-    /** Handling the month change */
-    handleMonthChange = ( date: moment.Moment ) => {
-        this.getAvailableTimes(date, true);
-    }
-
     /**
      * Handles date changing when either selecting a range
      * or just a single date
      * @param date
      */
-    handleDateChange(date: moment.Moment) {
+    handleDateChange(date: moment.Moment, withTime: boolean) {
         const { withRange, startDate } = this.state;
         const { node } = this.props;
 
@@ -194,36 +190,39 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 return this.setState({
                     selectChoice: 'startDate',
                     endDate: date,
-                    dateSelected: true
+                    dateSelected: true,
+                    timeSelected: withTime
                 });
             }
 
             this.setState({
                 selectChoice: 'endDate',
                 startDate: date,
-                dateSelected: true
+                dateSelected: true,
+                timeSelected: withTime
             });
         } else {
             if (node.node_type === 'handoff') {
-                if (startDate && startDate.month() !== date.month()) {
-                    this.getAvailableTimes(date, true);
-                } else if (this.state.monthAvailabilities) {
-                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date);
+                if (this.state.monthAvailabilities) {
+                    const includedTime = getIncludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date);
                     this.setState({
                         startDate: date,
                         dateSelected: true,
-                        excludedTimes: excludedTime ? excludedTime : []
+                        includedTimes: includedTime ? includedTime : [],
+                        timeSelected: withTime
                     });
                 } else {
                     this.setState({
                         startDate: date,
-                        dateSelected: true
+                        dateSelected: true,
+                        timeSelected: withTime
                     });
                 }
             } else {
                 this.setState({
                     startDate: date,
-                    dateSelected: true
+                    dateSelected: true,
+                    timeSelected: withTime
                 });
             }
         }
@@ -250,7 +249,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     clickToSubmitDate(e: React.MouseEvent<HTMLButtonElement>) {
-        if (!this.state.dateSelected) { return; }
+        if (!this.state.dateSelected || !this.state.timeSelected) { return; }
 
         // this.props.submitDate();
         this.props.sendMessage(this.getDateText());
@@ -266,38 +265,116 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         e.stopPropagation();
     }
 
+    availabilitiesExistOnDay = (day: string) => {
+      const date = moment(day);
+      return date >= moment() && getIncludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date).length > 0;
+    }
+
+    getUsersTimeZone = () => {
+      return Intl.DateTimeFormat('en-US', { timeZoneName: 'short'}).format(new Date()).split(' ').pop();
+    }
+
+    renderDayPicker = () => {
+      const keys = this.state.monthAvailabilities ? Object.keys(this.state.monthAvailabilities) : [];
+      const startDate = this.state.monthAvailabilities ? moment(keys[0]) : undefined;
+      const endDate = this.state.monthAvailabilities ? moment(keys[keys.length - 1]) : undefined;
+
+      return (
+        <div className="gd-date-picker-inner-container">
+          <div className="gd-date-picker-inner-header">
+            <span className="gd-date-picker-inner-header-date-range"></span>
+          </div>
+          <div className="gd-date-picker-select-header">
+            <span>Select a Day</span>
+            <span>{this.getUsersTimeZone()}</span>
+          </div>
+          <div className="gd-date-picker-days-container">
+          {this.state.monthAvailabilities && !this.state.loading &&
+            keys.map(date =>
+              this.availabilitiesExistOnDay(date) && <button
+                className="gd-date-picker-select-day"
+                onClick={e => this.handleDateChange(moment(date), false)}
+                key={date}
+              >
+                {moment(date).format('dddd MMMM Do, YYYY')}
+              </button>
+            )}
+            {this.state.loading &&
+              <div className="gd-date-picker-loading-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="50" cy="50" r="45"/>
+                </svg>
+              </div>
+            }
+            </div>
+            <div className="gd-date-picker-navigation">
+              {startDate > moment() && <button
+                className="gd-date-picker-prev"
+                disabled={this.state.loading}
+                onClick={e => this.getAvailableTimes(startDate.subtract(1, 'days'), true)}
+              >Prev</button>}
+              <button
+                className="gd-date-picker-next"
+                disabled={this.state.loading}
+                onClick={e => this.getAvailableTimes(endDate.add(1, 'days'), true)}
+              >Next</button>
+            </div>
+        </div>
+
+      );
+    }
+
+    renderHourPicker = () => {
+      const { includedTimes, startDate, timeSelected } = this.state;
+
+      return (
+        <div className="gd-date-picker-inner-container gd-date-picker-inner-container-hours">
+          <div className="gd-date-picker-inner-header">
+            <button
+              className="gd-date-picker-hours-back"
+              onClick={e => this.setState({
+                ...this.state,
+                dateSelected: false,
+                timeSelected: false,
+                startDate: null
+              })}
+            >{'<'}</button>
+            <span className="gd-date-picker-inner-header-selected-day">{timeSelected ? startDate.format('MM/DD/YYYY hh:mm A') : startDate.format('MM/DD/YYYY')}</span>
+          </div>
+          <div className="gd-date-picker-select-header">
+            <span>Select a Time</span>
+            <span>{this.getUsersTimeZone()}</span>
+          </div>
+          <div className="gd-date-picker-hours-container">
+            {includedTimes.map(time =>
+              <button
+                className="gd-date-picker-select-hour"
+                key={time.format('hh:mm A')}
+                onClick={e => {
+                  this.handleDateChange(moment(startDate.format('DD MMM YYYY') + ' ' + time.format('hh:mm A')), true);
+                }}
+              >{time.format('hh:mm A')}</button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     render() {
-        const { startDate, endDate, withTime, loading } = this.state;
+        const { startDate, endDate, withTime, loading, dateSelected, duration } = this.state;
         const { node } = this.props;
         const isHandoff = node.node_type === 'handoff';
 
         return (
             <div className={`gd-date-picker ${withTime && 'withTime'}`}>
-                <div className="gd-selected-date-container">
-                    <span className="gd-selected-date">{loading ? 'Loading...' : startDate ? startDate.format('MMMM D, YYYY') : 'Select a date'}</span>
-                    {(withTime && startDate) &&
-                        <span className="gd-selected-time">at {startDate && startDate.format('hh:mm A')}</span>
-                    }
+                <div className="gd-date-picker-header">
+                    <span className="gd-header-schedule-meeting">Schedule a Meeting</span>
+                    <span className="gd-header-duration">{`${duration} Minutes`}</span>
                 </div>
-
-                <ReactDatePicker endDate={this.state.endDate}
-                    startDate={this.state.startDate}
-                    selected={this.state.startDate}
-                    onChange={date => this.handleDateChange(date)}
-                    onMonthChange={e => this.handleMonthChange(e)}
-                    inline={true}
-                    minDate={isHandoff && moment()}
-                    excludeTimes={this.state.loading ? [moment().startOf('day')] : this.state.excludedTimes}
-                    tabIndex={1}
-                    dateFormat={withTime ? dateFormatWithTime : dateFormat}
-                    showTimeSelect={withTime}
-                    timeIntervals={this.state.loading ? 24 * 60 * 60 : this.state.duration}
-                />
-                <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
-                    None of these appointments work for me
-                </button>
+                {!dateSelected && this.renderDayPicker()}
+                {dateSelected && this.renderHourPicker()}
                 <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
-                    Submit
+                    Schedule Meeting
                 </button>
             </div>
         );

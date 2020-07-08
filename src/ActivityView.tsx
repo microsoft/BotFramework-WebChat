@@ -1,10 +1,11 @@
 import { Activity, Attachment, AttachmentLayout, DirectLineOptions } from 'botframework-directlinejs';
+import * as moment from 'moment';
 import * as React from 'react';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { IDoCardAction } from './Chat';
 import { ContactFormCard } from './ContactFormCard';
-import { DatePickerCard } from './DatePickerCard';
+import { dateFormatWithTime, DatePickerCard } from './DatePickerCard';
 import { DisclaimerCard } from './DisclaimerCard';
 import { FileUploadCard } from './FileUploadCard';
 import { FormattedText } from './FormattedText';
@@ -83,6 +84,11 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     // specifically for contact response
     // but will format any json to display the key pairs set
     formatText = (text: string) => {
+      const date = moment(text, dateFormatWithTime);
+      if (date.isValid()) {
+        return date.format('MMMM D, YYYY hh:mmA');
+      }
+
       try {
         const o = JSON.parse(text);
         let formattedText = '';

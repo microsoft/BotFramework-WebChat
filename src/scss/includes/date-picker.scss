@@ -13,10 +13,211 @@ $gd_dark_sky_blue: #31ace2;
 $width: 280px;
 
 .gd-date-picker {
+    width: $width;
     max-width: $width;
+    
     padding:2px;
     
+    &-inner-container {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      height: 280px;
+    }
 
+    .gd-date-picker-select-day {
+      margin: 5px 10% 0px 10%;
+      min-height: 2em;
+      border-radius: 4px;
+      background-color: white;
+      border-color: $gd_dark_sky_blue;
+      color: $gd_dark_sky_blue;
+      outline: 0;
+    }
+
+    .gd-date-picker-inner-header {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      height: 20px;
+      span {
+        color: $gd_dark_sky_blue;
+        height: 1.2em;
+        line-height: 20px;
+      }
+    }
+
+    .gd-date-picker-inner-header-date-range {
+      text-align: center;
+      width: 100%;
+    }
+
+    .gd-date-picker-select-hour {
+      margin: 5px 5% 0px 5%;
+      min-height: 2em;
+      max-height: 2em;
+      border-radius: 4px;
+      background-color: white;
+      border-color: $gd_dark_sky_blue;
+      color: $gd_dark_sky_blue;
+      outline: 0;
+      width: 40%;
+    }
+
+    .gd-date-picker-hours-container {
+      overflow-y: auto;
+      display:flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      height: 100%;
+      max-height: 280px;
+      padding-bottom: 20px;
+      align-content: flex-start;
+    }
+
+    .gd-date-picker-select-day:focus, 
+    .gd-date-picker-select-day:hover:enabled,
+    .gd-date-picker-select-hour:focus, 
+    .gd-date-picker-select-hour:hover:enabled {
+      background-color: $gd_dark_sky_blue;
+      color: white;
+    }
+
+    &-select-day:disabled {
+      background-color: #cccccc;
+      cursor: default;
+    }
+
+    .gd-date-picker-select-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+
+      span {
+        color: $gd_dark_sky_blue;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+
+    // SVG animation.
+    @keyframes svg-animation {
+      0% {
+        transform: rotateZ(0deg);
+      }
+      100% {
+        transform: rotateZ(360deg)
+      }
+    }
+
+    // Circle animation.
+    @keyframes circle-animation {
+      0%,
+      25% {
+        stroke-dashoffset: 280;
+        transform: rotate(0);
+      }
+      
+      50%,
+      75% {
+        stroke-dashoffset: 75;
+        transform: rotate(45deg);
+      }
+      
+      100% {
+        stroke-dashoffset: 280;
+        transform: rotate(360deg);
+      }
+    }
+
+    .gd-date-picker-days-container {
+      height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+
+      svg {
+        animation: 2s linear infinite svg-animation;
+        max-width: 100px;
+        position: absolute;
+        left: calc(50% - 50px);
+        top: calc(50% - 50px);
+      }
+
+      circle {
+        animation: 1.4s ease-in-out infinite both circle-animation;
+        display: block;
+        fill: transparent;
+        stroke: $gd_dark_sky_blue;
+        stroke-linecap: round;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 280;
+        stroke-width: 10px;
+        transform-origin: 50% 50%;
+      }
+    }
+
+    .gd-date-picker-nagivation {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .gd-date-picker-next, .gd-date-picker-prev {
+      background-color: white;
+      color: $gd_dark_sky_blue;
+      border-style: none;
+      margin-right: auto;
+      margin-left: auto;
+      outline: 0;
+    }
+
+    .gd-date-picker-next {
+      margin-right: 10%;
+    }
+
+    .gd-date-picker-prev {
+      margin-left: 10%;
+    }
+
+    .gd-date-picker-prev:disabled, .gd-date-picker-next:disabled {
+      color: #cccccc;
+      cursor: default;
+    }
+
+    .gd-date-picker-hours-back {
+      font-size: 20px;
+      font-weight: bold;
+      outline: 0;
+      color: $gd_dark_sky_blue;
+      background-color: white;
+      border-style: none;
+      height: 20px;
+      width: 20px;
+      margin-left: 10px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 0px;
+    }
+
+    .gd-date-picker-inner-header-selected-day {
+      width: 100%;
+      text-align: center;
+      padding-right: 30px;
+    }
+
+    &-navigation {
+      display: flex;
+      flex-direction: row;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    &-navigation button {
+      border-radius: 8px;
+      background-color: white;
+    }
 
     &.withTime {
         max-width: 421px;
@@ -53,18 +254,27 @@ $width: 280px;
         width: 100%;
         height: 42px;
         background: white;
+        border-top: 2px solid $gd_dark_sky_blue;
         border-bottom-left-radius: $messageBorderRadius - 2px;
         border-bottom-right-radius: $messageBorderRadius - 2px;
-        border:0;
+        border-bottom: 0;
+        border-left: 0;
+        border-right: 0;
         color:$gd_dark_sky_blue;
         font-size: 14px;
         font-weight: bold;
+    }
+
+    .gd-submit-date-button:hover {
+      background: $gd_dark_sky_blue;
+      color: white;
     }
 
     .gd-no-workable-appointment {
         background: white;
         border: 0;
         border-bottom: 2px solid $gd_dark_sky_blue;
+        border-top: 2px solid $gd_dark_sky_blue;
         color: $gd_dark_sky_blue;
         font-size: 14px;
         font-weight: bold;
@@ -73,10 +283,10 @@ $width: 280px;
         width: 100%;
     }
     
-    .gd-selected-date-container {
+    .gd-date-picker-header {
         font-size: 14px;
         text-align: center;
-        height: 54px;
+        height: 30px;
         display: inline-block;
         width: 100%;
         position: relative;
@@ -87,16 +297,15 @@ $width: 280px;
             display: block;
         }
 
-        .gd-selected-date {
+        .gd-header-schedule-meeting {
             color: #ffffff;
-            top: 38%;
-            left: 0;
-            right: 0;
+            top: 25%;
+            left: 6%;
         }
 
-        .gd-selected-time {
+        .gd-header-duration {
             margin: auto;
-            top: 36%;
+            top: 25%;
             right: 6%;
             bottom: 0;
 
