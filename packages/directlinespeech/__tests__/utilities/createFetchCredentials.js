@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 const TOKEN_URL_TEMPLATE = 'https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken';
 
 async function fetchBaseSpeechCredentialsFromWaterBottle() {
-  const res = await fetch('https://webchat-waterbottle.azurewebsites.net/token/speechservices');
+  const res = await fetch('https://webchat-waterbottle.azurewebsites.net/api/token/speechservices', { method: 'POST' });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch Cognitive Services Speech Services credentials, server returned ${res.status}`);
@@ -33,7 +33,7 @@ async function fetchBaseSpeechCredentialsFromSubscriptionKey({ region, subscript
 }
 
 async function fetchDirectLineTokenFromWaterBottle() {
-  const directLineTokenResult = await fetch('https://webchat-waterbottle.azurewebsites.net/token/directline');
+  const directLineTokenResult = await fetch('https://webchat-waterbottle.azurewebsites.net/api/token/directline', { method: 'POST' });
 
   if (!directLineTokenResult.ok) {
     throw new Error(
