@@ -122,9 +122,8 @@ jobs:
           cd repo
           git config user.name ${{ github.actor }}
           git config user.email ${{ github.actor }}@users.noreply.github.com
-          git push origin :${{ steps.variables.outputs.tag_name }}
           git tag -f ${{ steps.variables.outputs.tag_name }} ${{ github.sha }}
-          git push origin ${{ steps.variables.outputs.tag_name }}
+          git push -f origin ${{ steps.variables.outputs.tag_name }}
 
       - name: Create a release
         uses: actions/create-release@v1
