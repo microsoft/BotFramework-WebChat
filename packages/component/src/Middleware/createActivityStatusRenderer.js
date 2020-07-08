@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
+import React from 'react';
 import concatMiddleware from './concatMiddleware';
 import createCoreActivityStatusMiddleware from './ActivityStatus/createCoreMiddleware';
 import ErrorBox from '../ErrorBox';
