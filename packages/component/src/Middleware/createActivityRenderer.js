@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import concatMiddleware from './concatMiddleware';
