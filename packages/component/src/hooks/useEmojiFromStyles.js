@@ -3,7 +3,7 @@
 import useStyleOptions from './useStyleOptions';
 
 export default function useEmojiFromStyles() {
-  const [{ emojiAutocorrect: autocorrect, emojiList, emojiRegexp: regex }] = useStyleOptions();
+  const [{ emojiAutocorrect: autocorrect, emojiList, emojiRegExp: regex }] = useStyleOptions();
 
   const emojiAutocorrect = autocorrect || false;
 
@@ -22,7 +22,10 @@ export default function useEmojiFromStyles() {
     ':P': '😛',
     ':-o': '😲',
     ':o': '😲',
+    ':O': '😲',
     ':-O': '😲',
+    ':-0': '😲',
+    ':0': '😲',
     ';-)': '😉',
     ';)': '😉',
     '<3': '❤️',
@@ -30,7 +33,7 @@ export default function useEmojiFromStyles() {
     '<\\3': '💔'
   };
 
-  const emojiRegexp = regex || new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
+  const emojiRegExp = regex || new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
 
-  return [{ emojiAutocorrect, emojiUnicodeMap, emojiRegexp }];
+  return [{ emojiAutocorrect, emojiUnicodeMap, emojiRegExp }];
 }
