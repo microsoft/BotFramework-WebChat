@@ -50,6 +50,7 @@
     "react-device-detect": "^1.6.2",
     "react-dom": "15.6.1",
     "react-dropzone": "^5.1.0",
+    "react-icons": "^3.10.0",
     "react-redux": "5.0.5",
     "redux": "3.7.2",
     "redux-observable": "0.13.0",

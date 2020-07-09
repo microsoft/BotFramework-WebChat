@@ -1,6 +1,7 @@
 import { Activity, CardAction, DirectLineOptions, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
+import { FaCaretLeft } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import { availableTimes  } from './api/bot';
 import { ChatState } from './Store';
@@ -267,7 +268,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 
     availabilitiesExistOnDay = (day: string) => {
       const date = moment(day);
-      return date >= moment() && getIncludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date).length > 0;
+      return date.dayOfYear() >= moment().dayOfYear() && getIncludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], this.state.duration, date).length > 0;
     }
 
     getUsersTimeZone = () => {
@@ -330,15 +331,16 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
       return (
         <div className="gd-date-picker-inner-container gd-date-picker-inner-container-hours">
           <div className="gd-date-picker-inner-header">
-            <button
+            <div
               className="gd-date-picker-hours-back"
-              onClick={e => this.setState({
+            >
+              <FaCaretLeft onClick={(e: React.MouseEvent<SVGElement>) => this.setState({
                 ...this.state,
                 dateSelected: false,
                 timeSelected: false,
                 startDate: null
-              })}
-            >{'<'}</button>
+              })}/>
+            </div>
             <span className="gd-date-picker-inner-header-selected-day">{timeSelected ? startDate.format('MM/DD/YYYY hh:mm A') : startDate.format('MM/DD/YYYY')}</span>
           </div>
           <div className="gd-date-picker-select-header">
