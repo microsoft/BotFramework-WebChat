@@ -1,79 +1,89 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
+export default function createStackedLayoutStyle({ avatarSize, bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
-    '&.webchat__stacked_extra_left_indent': {
-      marginLeft: paddingRegular * 2
-    },
+    '&.webchat__stacked-layout': {
+      marginLeft: paddingRegular,
+      marginRight: paddingRegular,
 
-    '&:not(.webchat__stacked_extra_left_indent)': {
-      marginLeft: paddingRegular
-    },
+      '&.webchat__stacked-layout--from-user': {
+        '& .webchat__stacked-layout__main-row, & .webchat__stacked-layout__content-row, & .webchat__stacked-layout__status-row': {
+          flexDirection: 'row-reverse'
+        }
+      },
 
-    '&.webchat__stacked_extra_right_indent': {
-      marginRight: paddingRegular * 2
-    },
+      '&.webchat__stacked-layout--extra-indent': {
+        '&:not(.webchat__stacked-layout--right-side)': {
+          marginRight: paddingRegular * 2
+        },
 
-    '&:not(.webchat__stacked_extra_right_indent)': {
-      marginRight: paddingRegular
-    },
-    '&:not(.webchat__stackedLayout--rtl)': {
-      '&:not(.webchat__stackedLayout--fromUser)': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
+        '&.webchat__stacked-layout--right-side': {
+          marginLeft: paddingRegular * 2
+        }
+      },
+
+      // '&.webchat__stacked-layout--extra-left-indent': {
+      //   marginLeft: paddingRegular * 2
+      // },
+
+      // '&.webchat__stacked-layout--extra-right-indent': {
+      //   marginRight: paddingRegular * 2
+      // },
+
+      '&:not(.webchat__stacked-layout--right-side)': {
+        '& .webchat__stacked-layout__avatar-column.webchat__stacked-layout__avatar-column--indented': {
           marginRight: paddingRegular
         },
 
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
+        '& .webchat__stacked-layout__content-row.webchat__stacked-layout__content-row--indented': {
           marginLeft: paddingRegular
         }
       },
 
-      '&.webchat__stackedLayout--fromUser': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
+      '&.webchat__stacked-layout--right-side': {
+        '& .webchat__stacked-layout__avatar-column.webchat__stacked-layout__avatar-column--indented': {
           marginLeft: paddingRegular
         },
 
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginRight: paddingRegular
-        }
-      }
-    },
-
-    '&.webchat__stackedLayout--rtl': {
-      '&:not(.webchat__stackedLayout--fromUser)': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginLeft: paddingRegular
-        },
-
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
+        '& .webchat__stacked-layout__content-row.webchat__stacked-layout__content-row--indented': {
           marginRight: paddingRegular
         }
       },
 
-      '&.webchat__stackedLayout--fromUser': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginRight: paddingRegular
-        },
-
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginLeft: paddingRegular
-        }
-      }
-    },
-
-    '& > .webchat__stackedLayout__content': {
-      '& > .webchat__row': {
-        '& > .bubble, & > .timestamp': {
-          maxWidth: bubbleMaxWidth
-        },
-
-        '&.attachment > .bubble': {
-          minWidth: bubbleMinWidth
-        }
-      },
-
-      '& > *:not(:first-child):not(:last-child)': {
+      // Can we simplify this?
+      '& .webchat__stacked-layout__content-row:not(:first-child)': {
         marginTop: paddingRegular
+      },
+
+      '& .webchat__stacked-layout__message-bubble': {
+        maxWidth: bubbleMaxWidth,
+
+        '&.webchat__stacked-layout__messeage-bubble--show-nub': {
+          maxWidth: bubbleMaxWidth + paddingRegular
+        }
+      },
+
+      '& .webchat__stacked-layout__attachment-bubble': {
+        maxWidth: bubbleMaxWidth,
+        minWidth: bubbleMinWidth
+      },
+
+      '& .webchat__stacked-layout__avatar-column': {
+        width: avatarSize
+      },
+
+      '& .webchat__stacked-layout__avatar-column.webchat__stacked-layout__avatar-column--align-bottom': {
+        alignItems: 'flex-end'
+      },
+
+      '& .webchat__stacked-layout__avatar-filler': {
+        '&.webchat__stacked-layout__avatar-filler--for-avatar': {
+          width: avatarSize + paddingRegular
+        },
+
+        '&.webchat__stacked-layout__avatar-filler--for-nub:not(.webchat__stacked-layout__avatar-filler--for-avatar)': {
+          width: paddingRegular
+        }
       }
     }
   };

@@ -14,8 +14,7 @@ import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
-import useRenderActivityStatus from '../hooks/useRenderActivityStatus';
-import useRenderAvatar from '../hooks/useRenderAvatar';
+import useRenderAttachment from '../hooks/useRenderAttachment';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useUniqueId from '../hooks/internal/useUniqueId';
@@ -86,10 +85,10 @@ const connectCarouselFilmStrip = (...selectors) =>
 
 const WebChatCarouselFilmStrip = ({
   activity,
-  children,
   className,
   itemContainerRef,
-  nextVisibleActivity,
+  renderActivityStatus,
+  renderAvatar,
   scrollableRef
 }) => {
   const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
@@ -99,8 +98,7 @@ const WebChatCarouselFilmStrip = ({
   const [direction] = useDirection();
   const contentARIALabelId = useUniqueId('webchat__carousel-filmstrip__content');
   const localize = useLocalizer();
-  const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
-  const renderAvatar = useRenderAvatar({ activity });
+  const renderAttachment = useRenderAttachment();
 
   const {
     attachments = [],
@@ -118,10 +116,9 @@ const WebChatCarouselFilmStrip = ({
     ? localize('ACTIVITY_YOU_SAID_ALT')
     : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
   ).replace(/\s{2,}/gu, ' ');
-  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-
-  // TODO: Should we check truthy/falsy for renderAvatar instead? This is because "avatar !== initials". An avatar can show up without initials.
-  const initials = fromUser ? userInitials : botInitials;
+  const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+  const nubType = !!nubSize && (typeof renderAvatar === 'function' ? true : 'indent');
+  const indent = renderAvatar && nubType !== true;
 
   return (
     <div
@@ -131,7 +128,7 @@ const WebChatCarouselFilmStrip = ({
         carouselFilmStripStyleSet + '',
         className + '',
         {
-          webchat__carousel_indented_content: initials && !indented,
+          webchat__carousel_indented_content: indent,
           webchat__carousel_extra_right_indent: !userInitials && bubbleFromUserNubSize
         },
         direction === 'rtl' ? 'webchat__carousel--rtl' : ''
@@ -139,15 +136,19 @@ const WebChatCarouselFilmStrip = ({
       ref={scrollableRef}
       role="group"
     >
-      {renderAvatar && <div className="webchat__carouselFilmStrip__avatar">{renderAvatar()}</div>}
+      {renderAvatar && (
+        <div className="webchat__carouselFilmStrip__avatar">
+          {typeof renderAvatar === 'function' && renderAvatar({ activity })}
+        </div>
+      )}
       <div className="content">
         {!!activityDisplayText && (
           // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
           /* eslint-disable-next-line react/forbid-dom-props */
           <div aria-roledescription="message" className="message" id={contentARIALabelId}>
             <ScreenReaderText text={greetingAlt} />
-            <Bubble className="bubble" fromUser={fromUser} nub={true}>
-              {children({
+            <Bubble className="bubble" fromUser={fromUser} nub={nubType === true}>
+              {renderAttachment({
                 activity,
                 attachment: {
                   content: activityDisplayText,
@@ -158,26 +159,30 @@ const WebChatCarouselFilmStrip = ({
             <div aria-hidden={true} className="filler" />
           </div>
         )}
-        <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
+        <ul className={classNames({ webchat__carousel__item_indented: nubType === true })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li aria-roledescription="attachment" key={index}>
               <ScreenReaderText text={attachedAlt} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
-                {children({ attachment })}
+                {renderAttachment({ attachment })}
               </Bubble>
             </li>
           ))}
         </ul>
-        <div className={classNames({ webchat__carousel__item_indented: indented })}>{renderActivityStatus()}</div>
+        {renderActivityStatus && (
+          <div className={classNames({ webchat__carousel__item_indented: nubType === true })}>
+            {typeof renderActivityStatus === 'function' && renderActivityStatus({ activity })}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 WebChatCarouselFilmStrip.defaultProps = {
-  children: undefined,
   className: '',
-  nextVisibleActivity: undefined
+  renderActivityStatus: false,
+  renderAvatar: false
 };
 
 WebChatCarouselFilmStrip.propTypes = {
@@ -196,16 +201,11 @@ WebChatCarouselFilmStrip.propTypes = {
     textFormat: PropTypes.string,
     timestamp: PropTypes.string
   }).isRequired,
-  children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  nextVisibleActivity: PropTypes.shape({
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    timestamp: PropTypes.string
-  }),
-  scrollableRef: PropTypes.any.isRequired
+  scrollableRef: PropTypes.any.isRequired,
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func])
 };
 
 const CarouselFilmStrip = props => (

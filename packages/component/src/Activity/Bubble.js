@@ -19,7 +19,7 @@ const ROOT_CSS = css({
 });
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
-  if (!nubSize) {
+  if (typeof nubSize !== 'number') {
     return false;
   }
 

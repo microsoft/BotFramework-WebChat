@@ -15,7 +15,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
+const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const filmStyleSet = createBasicStyleSet({ cursor: null });
@@ -28,9 +28,11 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
       <FilmContext.Consumer>
         {({ scrollBarWidth }) => (
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
-            <CarouselFilmStrip activity={activity} nextVisibleActivity={nextVisibleActivity}>
-              {children}
-            </CarouselFilmStrip>
+            <CarouselFilmStrip
+              activity={activity}
+              renderActivityStatus={renderActivityStatus}
+              renderAvatar={renderAvatar}
+            />
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
                 <Flipper
@@ -60,13 +62,15 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
 
 CarouselLayout.defaultProps = {
   children: undefined,
-  nextVisibleActivity: undefined
+  renderActivityStatus: false,
+  renderAvatar: false
 };
 
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  nextVisibleActivity: PropTypes.any
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func])
 };
 
 export default CarouselLayout;

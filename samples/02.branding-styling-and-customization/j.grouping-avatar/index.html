@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Enable recomposition mode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
+    <script src="/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background-color: #fafafa;
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+      }
+
+      .app {
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: auto;
+        max-width: 720px;
+        min-width: 360px;
+        transition-duration: 0.5s;
+        transition-property: width;
+        width: 360px;
+      }
+
+      .app--wide {
+        width: 720px;
+      }
+
+      .option-bar {
+        background-color: floralwhite;
+        border: solid 2px #ccc;
+        border-radius: 4px;
+        bottom: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        margin: 10px;
+        padding: 10px;
+        position: fixed;
+        right: 0;
+        z-index: 1;
+      }
+
+      .transcript {
+        flex: 1;
+      }
+
+      .transcript > li + li {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      (async function() {
+        // Importing from UMD bundle.
+        const {
+          React: { useCallback, useEffect, useMemo, useState },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            createDirectLine,
+            hooks: { useConnectivityStatus, useSendMessage }
+          }
+        } = window;
+
+        const NEXT_MESSAGES = [
+          'Exercitation laboris enim ad Lorem.',
+          'Irure velit ad laborum reprehenderit cupidatat excepteur.',
+          'Velit veniam deserunt aliquip velit irure officia cupidatat sint velit minim minim sit et.',
+          'Nisi cupidatat officia dolore sint eu amet.',
+          'Ea fugiat amet sit est.',
+          'Laboris irure do laborum laborum aliquip minim deserunt aute officia velit mollit Lorem amet.',
+          'Sint quis aliquip ut do sit consequat occaecat sunt occaecat exercitation aliqua.',
+          'Commodo elit aliqua voluptate exercitation in minim amet enim.',
+          'Nulla magna dolore et adipisicing quis qui sit cillum qui nisi.',
+          'Amet exercitation sit culpa duis exercitation magna labore.',
+          'Exercitation qui dolor labore ex quis fugiat consectetur consectetur et cillum voluptate.',
+          'Elit dolor pariatur quis in elit irure qui sit exercitation commodo voluptate.',
+          'Reprehenderit ullamco qui ullamco nostrud consequat excepteur minim aute elit incididunt ad aliqua ad ipsum.',
+          'Officia reprehenderit et excepteur ipsum fugiat eu fugiat excepteur consequat occaecat aute Lorem.',
+          'Cillum cupidatat occaecat consectetur ut anim veniam consequat Lorem quis.',
+          'Et velit velit fugiat est irure anim est Lorem veniam cillum tempor eu consequat esse.',
+          'Fugiat dolore velit quis tempor laboris laborum cupidatat excepteur eiusmod enim tempor proident fugiat nulla.',
+          'Sunt do labore anim tempor nulla deserunt elit elit adipisicing consequat.'
+        ];
+
+        function shareObservable(observable) {
+          let observers = [];
+          let subscription;
+
+          return new Observable(observer => {
+            if (!subscription) {
+              subscription = observable.subscribe({
+                complete() {
+                  observers.forEach(observer => observer.complete());
+                },
+
+                error(err) {
+                  observers.forEach(observer => observer.error(err));
+                },
+
+                next(value) {
+                  observers.forEach(observer => observer.next(value));
+                }
+              });
+            }
+
+            observers.push(observer);
+
+            return () => {
+              observers = observers.filter(o => o !== observer);
+
+              if (!observers.length) {
+                subscription.unsubscribe();
+                subscription = null;
+              }
+            };
+          });
+        }
+
+        function createDeferredObservable(subscribe) {
+          const observers = [];
+          const observable = new Observable(observer => {
+            const unsubscribe = subscribe && subscribe(observer);
+
+            observers.push(observer);
+
+            return () => {
+              removeInline(observers, observer);
+              unsubscribe && unsubscribe();
+            };
+          });
+
+          return {
+            complete: () => observers.forEach(observer => observer.complete()),
+            error: error => observers.forEach(observer => observer.error(error)),
+            next: value => observers.forEach(observer => observer.next(value)),
+            observable
+          };
+        }
+
+        const connectionStatusDeferredObservable = createDeferredObservable(() => {
+          connectionStatusDeferredObservable.next(0);
+        });
+
+        const activityDeferredObservable = createDeferredObservable(({ next }) => {
+          connectionStatusDeferredObservable.next(1);
+          connectionStatusDeferredObservable.next(2);
+
+          setTimeout(() => {
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1',
+              text:
+                'Lorem pariatur ea veniam exercitation aliqua qui officia ut velit labore anim cupidatat non. Reprehenderit nostrud officia nisi.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1.1',
+              text: 'Duis duis irure proident dolor labore labore pariatur proident duis.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+
+            // activityDeferredObservable.next({
+            //   attachmentLayout: 'carousel',
+            //   attachments: [
+            //     {
+            //       content:
+            //         'Veniam labore labore tempor deserunt sunt veniam labore pariatur consectetur id sint. Elit ex non ullamco deserunt dolore ad ullamco occaecat irure qui. Quis anim exercitation consequat qui labore cillum. Eu consectetur ut dolor incididunt elit incididunt sunt pariatur ea quis consequat occaecat Lorem. Ad minim deserunt amet aliqua. Reprehenderit commodo quis eiusmod anim voluptate. Do amet anim ut commodo.',
+            //       contentType: 'text/markdown'
+            //     },
+            //     {
+            //       content:
+            //         'Incididunt et ullamco sunt sunt ad laboris proident. Deserunt commodo quis dolor commodo labore. Nostrud minim mollit amet labore ullamco aliquip. Ut in quis consequat ad est eiusmod sint cillum nisi. Adipisicing culpa nulla nostrud amet consectetur irure est velit qui occaecat laboris voluptate.',
+            //       contentType: 'text/markdown'
+            //     },
+            //     {
+            //       content:
+            //         'Reprehenderit veniam Lorem cillum consectetur minim consequat anim culpa in consequat ut et dolore mollit. Nisi qui magna exercitation nostrud esse labore sit. In aliquip nisi amet id velit mollit nulla esse velit aute culpa consequat commodo.',
+            //       contentType: 'text/markdown'
+            //     }
+            //   ],
+            //   from: { role: 'bot' },
+            //   id: '2',
+            //   text:
+            //     'Sit mollit laborum et sunt eu nisi enim ullamco proident magna labore dolor est. Amet aute non consequat duis aute aute enim nulla. Magna non do excepteur enim nostrud incididunt ad tempor labore anim ex. Velit sunt ullamco deserunt voluptate cillum dolor ipsum deserunt cupidatat anim. Incididunt qui aliquip cillum veniam commodo et. Laborum aliqua dolor laborum mollit dolore labore reprehenderit ut nisi laboris.',
+            //   timestamp: new Date().toISOString(),
+            //   type: 'message'
+            // });
+
+            activityDeferredObservable.next({
+              attachments: [
+                {
+                  contentType: 'image/jpeg',
+                  contentUrl:
+                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                  // content: 'Cupidatat pariatur fugiat aliqua ex excepteur nostrud magna laboris duis laborum labore.',
+                  // contentType: 'text/markdown'
+                },
+                {
+                  contentType: 'image/jpeg',
+                  contentUrl:
+                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+                  // content:
+                  //   'In consectetur eiusmod officia irure elit Lorem qui labore voluptate reprehenderit nostrud magna laborum occaecat.',
+                  // contentType: 'text/markdown'
+                }
+              ],
+              from: { role: 'bot' },
+              id: '3',
+              text:
+                'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia magna in pariatur mollit dolor reprehenderit magna et.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+          }, 100);
+        });
+
+        const directLine = {
+          activity$: shareObservable(activityDeferredObservable.observable),
+          connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
+          postActivity: () => {}
+        };
+
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        // const { token } = await res.json();
+
+        const SendOnConnect = () => {
+          // const [connectivityStatus] = useConnectivityStatus();
+          // const sendMessage = useSendMessage();
+
+          // useEffect(() => {
+          //   if (connectivityStatus === 'connected') {
+          //     sendMessage('layout carousel');
+          //     sendMessage('card breakfast');
+          //     sendMessage('card sports');
+          //   }
+          // }, [connectivityStatus, sendMessage]);
+
+          return false;
+        };
+
+        const Toggle = ({ checked, children, disabled, onChange, type }) => {
+          const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
+          const style = useMemo(() => ({ userSelect: 'none' }), []);
+
+          return (
+            <label style={style}>
+              <input checked={checked} disabled={disabled} onChange={handleChange} type={type || 'checkbox'} />
+              {children}
+            </label>
+          );
+        };
+
+        function getComboNumber(states) {
+          return states.reduce((value, state, index) => value + (state ? Math.pow(2, index) : 0), 0);
+        }
+
+        function comboNumberSetter(value, setters) {
+          setters.forEach((setter, index) => setter(!!(value & Math.pow(2, index))));
+        }
+
+        function createCustomActivityMiddleware(attachmentLayout) {
+          return () => next => args => {
+            const activity = { ...args.activity, attachmentLayout };
+            // const activity = patchActivity(args.activity);
+
+            return next({ ...args, activity });
+          };
+        }
+
+        const App = () => {
+          const [wide, setWide] = useState(false);
+          const [rtl, setRTL] = useState(false);
+          const [botAvatarInitials, setBotAvatarInitials] = useState(true);
+          const [botNub, setBotNub] = useState(true);
+          const [botOnTop, setBotOnTop] = useState(true);
+          const [userAvatarInitials, setUserAvatarInitials] = useState(true);
+          const [userNub, setUserNub] = useState(true);
+          const [userOnTop, setUserOnTop] = useState(true);
+          const [carouselLayout, setCarouselLayout] = useState(false);
+
+          const activityMiddleware = useMemo(
+            () => createCustomActivityMiddleware(carouselLayout ? 'carousel' : 'stacked'),
+            [carouselLayout]
+          );
+
+          const setBotOnTop2 = useCallback(() => setBotOnTop(true), [setBotOnTop]);
+          const setBotOnBottom = useCallback(() => setBotOnTop(false), [setBotOnTop]);
+          const setUserOnTop2 = useCallback(() => setUserOnTop(true), [setUserOnTop]);
+          const setUserOnBottom = useCallback(() => setUserOnTop(false), [setUserOnTop]);
+
+          const setCarouselLayout2 = useCallback(() => setCarouselLayout(true), [setCarouselLayout]);
+          const setStackedLayout = useCallback(() => setCarouselLayout(false), [setCarouselLayout]);
+
+          const styleValueAndSetters = [
+            [botAvatarInitials, setBotAvatarInitials],
+            [botNub, setBotNub],
+            [botOnTop, setBotOnTop],
+            [userAvatarInitials, setUserAvatarInitials],
+            [userNub, setUserNub],
+            [userOnTop, setUserOnTop],
+            [carouselLayout, setCarouselLayout]
+          ];
+
+          const styleValues = styleValueAndSetters.map(([value]) => value);
+          const styleSetters = styleValueAndSetters.map(([_, setter]) => setter);
+
+          const styleComboNumber = getComboNumber(styleValues);
+          const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
+
+          const handleStyleComboNumberChange = useCallback(({ target: { value } }) => setStyleComboNumber(value), [
+            setStyleComboNumber
+          ]);
+
+          const handlePlusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber + 1), [
+            styleComboNumber,
+            setStyleComboNumber
+          ]);
+
+          const handleMinusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber - 1), [
+            styleComboNumber,
+            setStyleComboNumber
+          ]);
+
+          const viewValueAndSetters = [
+            [wide, setWide],
+            [rtl, setRTL]
+          ];
+
+          const viewValues = viewValueAndSetters.map(([value]) => value);
+          const viewSetters = viewValueAndSetters.map(([_, setter]) => setter);
+
+          const viewComboNumber = getComboNumber(viewValues);
+          const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
+
+          const handleViewComboNumberChange = useCallback(({ target: { value } }) => setViewComboNumber(value), [
+            setViewComboNumber
+          ]);
+
+          const handlePlusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber + 1), [
+            viewComboNumber,
+            setViewComboNumber
+          ]);
+
+          const handleMinusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber - 1), [
+            viewComboNumber,
+            setViewComboNumber
+          ]);
+
+          const styleOptions = useMemo(
+            () => ({
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserTextColor: 'White',
+              bubbleTextColor: 'White',
+
+              botAvatarInitials: botAvatarInitials ? 'WC' : undefined,
+              bubbleFromUserNubOffset: userOnTop ? 0 : undefined,
+              bubbleFromUserNubSize: userNub ? 10 : undefined,
+              bubbleNubOffset: botOnTop ? 0 : undefined,
+              bubbleNubSize: botNub ? 10 : undefined,
+              userAvatarInitials: userAvatarInitials ? 'WW' : undefined
+            }),
+            [botAvatarInitials, botNub, botOnTop, userAvatarInitials, userNub, userOnTop]
+          );
+
+          const handleAddMessage = useCallback(() => {
+            activityDeferredObservable.next({
+              from: { role: 'bot' },
+              id: Math.random()
+                .toString(36)
+                .substr(2),
+              text: NEXT_MESSAGES.shift(),
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+          }, []);
+
+          return (
+            <div className={'app' + (wide ? ' app--wide' : '')} dir={rtl ? 'rtl' : undefined}>
+              <div className="option-bar" dir="ltr">
+                <div>
+                  <Toggle checked={wide} onChange={setWide}>
+                    View: Wide
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle checked={rtl} onChange={setRTL}>
+                    View: Right-to-left
+                  </Toggle>
+                </div>
+                <hr />
+                <div>
+                  <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
+                  <button onClick={handlePlusOneViewComboNumber}>+</button>
+                  <button onClick={handleMinusOneViewComboNumber}>-</button>
+                </div>
+                <hr />
+                <div>
+                  <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
+                    Bot: Avatar
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle checked={botNub} onChange={setBotNub}>
+                    Bot: Nub
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle
+                    checked={botOnTop}
+                    disabled={!botAvatarInitials && !botNub}
+                    onChange={setBotOnTop2}
+                    type="radio"
+                  >
+                    Bot: On top
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle
+                    checked={!botOnTop}
+                    disabled={!botAvatarInitials && !botNub}
+                    onChange={setBotOnBottom}
+                    type="radio"
+                  >
+                    Bot: On bottom
+                  </Toggle>
+                </div>
+                <hr />
+                <div>
+                  <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
+                    User: Avatar
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle checked={userNub} onChange={setUserNub}>
+                    User: Nub
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle
+                    checked={userOnTop}
+                    disabled={!userAvatarInitials && !userNub}
+                    onChange={setUserOnTop2}
+                    type="radio"
+                  >
+                    User: On top
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle
+                    checked={!userOnTop}
+                    disabled={!userAvatarInitials && !userNub}
+                    onChange={setUserOnBottom}
+                    type="radio"
+                  >
+                    User: On bottom
+                  </Toggle>
+                </div>
+                <hr />
+                <div>
+                  <Toggle checked={!carouselLayout} onChange={setStackedLayout} type="radio">
+                    Layout: Stacked
+                  </Toggle>
+                </div>
+                <div>
+                  <Toggle checked={carouselLayout} onChange={setCarouselLayout2} type="radio">
+                    Layout: Carousel
+                  </Toggle>
+                </div>
+                <hr />
+                <div>
+                  <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
+                  <button onClick={handlePlusOneStyleComboNumber}>+</button>
+                  <button onClick={handleMinusOneStyleComboNumber}>-</button>
+                </div>
+                <hr />
+                <div>
+                  <button onClick={handleAddMessage}>Add message</button>
+                </div>
+              </div>
+              <Composer
+                // directLine={window.WebChat.createDirectLine({ token })}
+                activityMiddleware={activityMiddleware}
+                directLine={directLine}
+                dir={rtl ? 'rtl' : undefined}
+                styleOptions={styleOptions}
+              >
+                <BasicWebChat />
+                {/* <BasicGroupedTranscript /> */}
+                <SendOnConnect />
+              </Composer>
+            </div>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('webchat'));
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

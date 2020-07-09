@@ -3,17 +3,17 @@ import React from 'react';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
-const RETURN_FALSE = () => false;
-
 export default function createCoreMiddleware() {
-  return () => next => ({ activity, nextVisibleActivity }) => {
+  return () => next => args => {
+    const { activity } = args;
+
     // TODO: [P4] Can we simplify these if-statement to something more readable?
 
     const { type } = activity;
 
     // Filter out activities that should not be visible
     if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
-      return RETURN_FALSE;
+      return false;
     } else if (type === 'message') {
       const { attachments = [], channelData, text } = activity;
 
@@ -25,37 +25,27 @@ export default function createCoreMiddleware() {
         // Do not show empty bubbles (no text and attachments, and not "typing")
         !(text || attachments.length)
       ) {
-        return RETURN_FALSE;
+        return false;
       }
     } else if (type === 'typing' && activity.from.role === 'user') {
       // Do not show typing by oneself
-      return RETURN_FALSE;
+      return false;
     }
 
     if (type === 'message' || type === 'typing') {
       if (type === 'message' && (activity.attachments || []).length > 1 && activity.attachmentLayout === 'carousel') {
-        // The following line is not a React functional component, it's a middleware function.
-        // Note that "children" is not a props, but first argument.
-        const CarouselActivity = children => (
-          <CarouselLayout activity={activity} nextVisibleActivity={nextVisibleActivity}>
-            {children}
-          </CarouselLayout>
-        );
-
-        return CarouselActivity;
+        // The following line is not a React functional component, it's a render function.
+        return function renderCarouselLayout(props) {
+          return <CarouselLayout activity={activity} {...props} />;
+        };
       }
 
-      // The following line is not a React functional component, it's a middleware function.
-      // Note that "children" is not a props, but first argument.
-      const StackedActivity = children => (
-        <StackedLayout activity={activity} nextVisibleActivity={nextVisibleActivity}>
-          {children}
-        </StackedLayout>
-      );
-
-      return StackedActivity;
+      // The following line is not a React functional component, it's a render function.
+      return function renderStackedLayout(props) {
+        return <StackedLayout activity={activity} {...props} />;
+      };
     }
 
-    return next({ activity, nextVisibleActivity });
+    return next(args);
   };
 }

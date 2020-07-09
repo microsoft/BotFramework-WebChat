@@ -19,16 +19,20 @@ const ImageAvatar = ({ fromUser }) => {
   const [{ image: avatarImageForUser }] = useAvatarForUser();
   const [{ imageAvatar: imageAvatarStyleSet }] = useStyleSet();
 
+  const avatarImage = fromUser ? avatarImageForUser : avatarImageForBot;
+
   return (
-    <div className={classNames(ROOT_CSS + '', 'webchat__imageAvatar', imageAvatarStyleSet + '')}>
-      <CroppedImage
-        alt=""
-        className="webchat__imageAvatar__image"
-        height="100%"
-        src={fromUser ? avatarImageForUser : avatarImageForBot}
-        width="100%"
-      />
-    </div>
+    !!avatarImage && (
+      <div className={classNames(ROOT_CSS + '', 'webchat__imageAvatar', imageAvatarStyleSet + '')}>
+        <CroppedImage
+          alt=""
+          className="webchat__imageAvatar__image"
+          height="100%"
+          src={fromUser ? avatarImageForUser : avatarImageForBot}
+          width="100%"
+        />
+      </div>
+    )
   );
 };
 
