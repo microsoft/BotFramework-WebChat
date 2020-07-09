@@ -95,6 +95,7 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const contentARIALabelId = useUniqueId('webchat__stacked-layout__content-column');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
+  const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (fromUser
@@ -124,11 +125,10 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
   const hasNub = typeof nubSize === 'number';
   const hasOtherNub = typeof otherNubSize === 'number';
+  const rightSide = (!rtl && fromUser) || (rtl && !fromUser);
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraIndent = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
-  const rightSide = (!rtl && fromUser) || (rtl && !fromUser);
-  const showActivityStatus = typeof renderActivityStatus === 'function';
   const showCallout = (topAlignedCallout && leading) || (!topAlignedCallout && trailing);
 
   const showAvatar = hasAvatar && showCallout;
