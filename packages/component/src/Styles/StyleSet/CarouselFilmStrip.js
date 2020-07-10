@@ -1,5 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
+import mirrorStyle from '../mirrorStyle';
+
 export default function CarouselFilmStrip({
   avatarSize,
   bubbleMaxWidth,
@@ -60,11 +62,15 @@ export default function CarouselFilmStrip({
         justifyContent: 'flex-end'
       },
 
-      '&:not(.webchat__carousel-layout--rtl)': {
+      ...mirrorStyle('.webchat__carousel-layout--rtl', {
         paddingLeft: paddingRegular,
 
-        '& .webchat__carousel-layout__content': {
+        '&:not(.webchat__carousel-layout--extra-trailing) .webchat__carousel-layout__content': {
           paddingRight: paddingRegular
+        },
+
+        '&.webchat__carousel-layout--extra-trailing .webchat__carousel-layout__content': {
+          paddingRight: paddingRegular * 2
         },
 
         '& .webchat__carousel-layout__attachments': {
@@ -73,10 +79,6 @@ export default function CarouselFilmStrip({
 
         '& .webchat__carousel-layout__attachment': {
           paddingLeft: paddingRegular
-        },
-
-        '&.webchat__carousel-layout--extra-trailing .webchat__carousel-layout__content': {
-          paddingRight: paddingRegular * 2
         },
 
         '&.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {
@@ -100,7 +102,7 @@ export default function CarouselFilmStrip({
             }
           }
         }
-      }
+      })
     }
   };
 }
