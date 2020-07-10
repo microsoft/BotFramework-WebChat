@@ -8,6 +8,7 @@ import React from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
+import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
@@ -20,48 +21,71 @@ import useStyleSet from '../hooks/useStyleSet';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
-  display: 'flex',
-  MsOverflowStyle: 'none',
-  overflowX: 'scroll',
-  overflowY: 'hidden',
-  position: 'relative', // This is to keep screen reader text in the destinated area.
-  touchAction: 'manipulation',
-  WebkitOverflowScrolling: 'touch',
+  '&.webchat__carousel-layout': {
+    display: 'flex',
+    flexDirection: 'column',
+    MsOverflowStyle: 'none',
+    overflowX: 'scroll',
+    overflowY: 'hidden',
+    position: 'relative', // This is to keep screen reader text in the destinated area.
+    touchAction: 'manipulation',
+    WebkitOverflowScrolling: 'touch',
 
-  '&::-webkit-scrollbar': {
-    display: 'none'
-  },
-
-  '& > .webchat__carouselFilmStrip__avatar': {
-    flexShrink: 0
-  },
-
-  '& > .content': {
-    flex: 1,
-
-    '& > .message': {
-      display: 'flex',
-
-      '& > .bubble': {
-        flexGrow: 1,
-        overflow: 'hidden'
-      },
-
-      '& > .filler': {
-        flexGrow: 10000,
-        flexShrink: 1
-      }
+    '&::-webkit-scrollbar': {
+      display: 'none'
     },
 
-    '& > ul': {
+    '&.webchat__carousel-layout__main': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__attachment': {
+      flex: 1
+    },
+
+    '& .webchat__carousel-layout__attachments': {
       display: 'flex',
       listStyleType: 'none',
       margin: 0,
-      padding: 0,
+      padding: 0
+    },
 
-      '& > li': {
-        flex: 1
-      }
+    '& .webchat__carousel-layout__avatar': {
+      flexShrink: 0
+    },
+
+    '& > .webchat__carousel-layout__bubble': {
+      flexGrow: 1,
+      overflow: 'hidden'
+    },
+
+    '& .webchat__carousel-layout__filler': {
+      flexGrow: 10000,
+      flexShrink: 1
+    },
+
+    '& .webchat__carousel-layout__message': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__complimentary': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__complimentary-content': {
+      display: 'flex',
+      flexDirection: 'column'
+    },
+
+    // Revised
+
+    '& .webchat__carousel-layout__main, & .webchat__carousel-layout__status': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__content': {
+      display: 'flex',
+      flexDirection: 'column'
     }
   }
 });
@@ -87,11 +111,13 @@ const WebChatCarouselFilmStrip = ({
   activity,
   className,
   itemContainerRef,
+  leading,
   renderActivityStatus,
   renderAvatar,
-  scrollableRef
+  scrollableRef,
+  trailing
 }) => {
-  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
+  const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -99,6 +125,9 @@ const WebChatCarouselFilmStrip = ({
   const contentARIALabelId = useUniqueId('webchat__carousel-filmstrip__content');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
+  const showActivityStatus = typeof renderActivityStatus === 'function' && trailing;
+
+  const rtl = direction === 'rtl';
 
   const {
     attachments = [],
@@ -114,67 +143,90 @@ const WebChatCarouselFilmStrip = ({
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
   ).replace(/\s{2,}/gu, ' ');
+
+  const initials = fromUser ? userInitials : botInitials;
+  const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
   const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-  const nubType = !!nubSize && (typeof renderAvatar === 'function' ? true : 'indent');
-  const indent = renderAvatar && nubType !== true;
+  const otherInitials = fromUser ? botInitials : userInitials;
+  const otherNubSize = fromUser ? bubbleNubSize : bubbleFromUserNubSize;
+
+  const hasAvatar = initials || typeof initials === 'string';
+  const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
+  const hasNub = typeof nubSize === 'number';
+  const hasOtherNub = typeof otherNubSize === 'number';
+  const topAlignedCallout = isZeroOrPositive(nubOffset);
+
+  const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
+  const showCallout = (topAlignedCallout && leading) || (!topAlignedCallout && trailing);
+
+  const showAvatar = hasAvatar && showCallout;
+  const showNub = hasNub && showCallout && (topAlignedCallout || !attachments.length);
 
   return (
     <div
       aria-labelledby={contentARIALabelId}
-      className={classNames(
-        ROOT_CSS + '',
-        carouselFilmStripStyleSet + '',
-        className + '',
-        {
-          webchat__carousel_indented_content: indent,
-          webchat__carousel_extra_right_indent: !userInitials && bubbleFromUserNubSize
-        },
-        direction === 'rtl' ? 'webchat__carousel--rtl' : ''
-      )}
+      className={classNames(ROOT_CSS + '', 'webchat__carousel-layout', carouselFilmStripStyleSet + '', className + '', {
+        'webchat__carousel-layout--extra-trailing': extraTrailing,
+        'webchat__carousel-layout--hide-avatar': hasAvatar && !showAvatar,
+        'webchat__carousel-layout--hide-nub': hasNub && !showNub,
+        'webchat__carousel-layout--rtl': direction === 'rtl',
+        'webchat__carousel-layout--show-avatar': showAvatar,
+        'webchat__carousel-layout--show-nub': showNub,
+        'webchat__carousel-layout--top-callout': topAlignedCallout
+      })}
       ref={scrollableRef}
       role="group"
     >
-      {renderAvatar && (
-        <div className="webchat__carouselFilmStrip__avatar">
-          {typeof renderAvatar === 'function' && renderAvatar({ activity })}
+      <div className="webchat__carousel-layout__main">
+        <div className="webchat__carousel-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
+        <div className="webchat__carousel-layout__content">
+          {!!activityDisplayText && (
+            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+            /* eslint-disable-next-line react/forbid-dom-props */
+            <div aria-roledescription="message" className="webchat__carousel-layout__message" id={contentARIALabelId}>
+              <ScreenReaderText text={greetingAlt} />
+              <Bubble
+                className="webchat__carousel-layout__bubble"
+                fromUser={fromUser}
+                nub={showNub ? true : hasAvatar || hasNub ? 'hidden' : false}
+              >
+                {renderAttachment({
+                  activity,
+                  attachment: {
+                    content: activityDisplayText,
+                    contentType: textFormatToContentType(textFormat)
+                  }
+                })}
+              </Bubble>
+              <div aria-hidden={true} className="webchat__carousel-layout__filler" />
+            </div>
+          )}
+          <div className="webchat__carousel-layout__complimentary">
+            <div className="webchat__carousel-layout__nub-pad" />
+            <div className="webchat__carousel-layout__complimentary-content">
+              <ul className="webchat__carousel-layout__attachments" ref={itemContainerRef}>
+                {attachments.map((attachment, index) => (
+                  <li aria-roledescription="attachment" className="webchat__carousel-layout__attachment" key={index}>
+                    <ScreenReaderText text={attachedAlt} />
+                    <Bubble fromUser={fromUser} key={index} nub={false}>
+                      {renderAttachment({ attachment })}
+                    </Bubble>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      {showActivityStatus && (
+        <div className="webchat__carousel-layout__status">
+          <div className="webchat__carousel-layout__avatar-gutter" />
+          <div className="webchat__carousel-layout__nub-pad" />
+          {renderActivityStatus({ activity })}
         </div>
       )}
-      <div className="content">
-        {!!activityDisplayText && (
-          // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-          /* eslint-disable-next-line react/forbid-dom-props */
-          <div aria-roledescription="message" className="message" id={contentARIALabelId}>
-            <ScreenReaderText text={greetingAlt} />
-            <Bubble className="bubble" fromUser={fromUser} nub={nubType === true}>
-              {renderAttachment({
-                activity,
-                attachment: {
-                  content: activityDisplayText,
-                  contentType: textFormatToContentType(textFormat)
-                }
-              })}
-            </Bubble>
-            <div aria-hidden={true} className="filler" />
-          </div>
-        )}
-        <ul className={classNames({ webchat__carousel__item_indented: nubType === true })} ref={itemContainerRef}>
-          {attachments.map((attachment, index) => (
-            <li aria-roledescription="attachment" key={index}>
-              <ScreenReaderText text={attachedAlt} />
-              <Bubble fromUser={fromUser} key={index} nub={false}>
-                {renderAttachment({ attachment })}
-              </Bubble>
-            </li>
-          ))}
-        </ul>
-        {renderActivityStatus && (
-          <div className={classNames({ webchat__carousel__item_indented: nubType === true })}>
-            {typeof renderActivityStatus === 'function' && renderActivityStatus({ activity })}
-          </div>
-        )}
-      </div>
     </div>
   );
 };

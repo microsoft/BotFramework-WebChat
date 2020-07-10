@@ -16,6 +16,7 @@ const DEFAULT_OPTIONS = {
   paddingRegular: PADDING_REGULAR,
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
+  transitionDuration: '.3s', // '.3s' is default
 
   // Word break
   messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'

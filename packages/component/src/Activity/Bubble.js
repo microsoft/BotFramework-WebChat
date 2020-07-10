@@ -10,11 +10,13 @@ import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
-  position: 'relative',
+  '&.webchat__bubble': {
+    position: 'relative',
 
-  '& > .webchat__bubble__content': {
-    // This is for hiding content outside of the bubble, for example, content outside of border radius
-    overflow: 'hidden'
+    '& .webchat__bubble__content': {
+      // This is for hiding content outside of the bubble, for example, content outside of border radius
+      overflow: 'hidden'
+    }
   }
 });
 
@@ -45,7 +47,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <g transform={`${horizontalTransform} ${verticalTransform}`}>
-        <path d={`M${p1} L${p2} L${p3}`} />
+        <path className="webchat__bubble__nub-outline" d={`M${p1} L${p2} L${p3}`} />
       </g>
     </svg>
   );
@@ -89,14 +91,19 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
+        'webchat__bubble',
         direction === 'rtl' ? 'webchat__bubble--rtl' : '',
         bubbleStyleSet + '',
-        { 'from-user': fromUser, webchat__bubble_has_nub: nub },
+        {
+          'webchat__bubble--from-user': fromUser,
+          'webchat__bubble--hide-nub': nub !== true && nub !== false,
+          'webchat__bubble--show-nub': nub === true
+        },
         className + '' || ''
       )}
     >
       <div className="webchat__bubble__content">{children}</div>
-      {nub && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
+      {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
     </div>
   );
 };
@@ -106,7 +113,7 @@ Bubble.defaultProps = {
   children: undefined,
   className: '',
   fromUser: false,
-  nub: true
+  nub: false
 };
 
 Bubble.propTypes = {
@@ -114,7 +121,7 @@ Bubble.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,
-  nub: PropTypes.bool
+  nub: PropTypes.oneOf([true, false, 'hidden'])
 };
 
 export default Bubble;

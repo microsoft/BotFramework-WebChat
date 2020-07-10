@@ -95,13 +95,8 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const contentARIALabelId = useUniqueId('webchat__stacked-layout__content-column');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
-  const showActivityStatus = typeof renderActivityStatus === 'function';
+  const showActivityStatus = typeof renderActivityStatus === 'function' && trailing;
 
-  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
-  const greetingAlt = (fromUser
-    ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
-  ).replace(/\s{2,}/gu, ' ');
   const rtl = direction === 'rtl';
 
   const {
@@ -114,6 +109,12 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
 
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
+
+  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
+  const greetingAlt = (fromUser
+    ? localize('ACTIVITY_YOU_SAID_ALT')
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+  ).replace(/\s{2,}/gu, ' ');
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
@@ -211,7 +212,7 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
           ))}
         </div>
       </div>
-      {showActivityStatus && trailing && (
+      {showActivityStatus && (
         <div className="webchat__stacked-layout__status-row">
           <div
             className={classNames('webchat__stacked-layout__avatar-filler', {
@@ -219,7 +220,7 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
               'webchat__stacked-layout__avatar-filler--for-nub': hasNub
             })}
           />
-          {showActivityStatus && renderActivityStatus({ activity })}
+          {renderActivityStatus({ activity })}
         </div>
       )}
     </div>
