@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Remove `tabindex="-1"` from Adaptive Cards container
    -  Hide activities of type `invoke`
 -  Fixes [#3294](https://github.com/microsoft/BotFramework-WebChat/issues/3294). Fix blank screen on missing middlewares, by [@compulim](https://github.com/compulim) in PR [#3295](https://github.com/microsoft/BotFramework-WebChat/pull/3295)
--  Fixes [#3297](https://github.com/microsoft/BotFramework-WebChat/issues/3297). Fix `className` prop is not honored in `<ReactWebChat>`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#3297](https://github.com/microsoft/BotFramework-WebChat/issues/3297). Fix `className` prop is not honored in `<ReactWebChat>`, by [@compulim](https://github.com/compulim) in PR [#3300](https://github.com/microsoft/BotFramework-WebChat/pull/3300)
 
 ### Samples
 
