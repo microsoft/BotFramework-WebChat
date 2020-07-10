@@ -233,7 +233,12 @@ $width: 280px;
       background-color: white;
     }
 
+    &.withTime.date-node {
+      width: 100%;
+    }
+
     &.withTime {
+        
         max-width: 421px;
 
         @include mobile {
@@ -297,7 +302,7 @@ $width: 280px;
         width: 100%;
     }
     
-    .gd-date-picker-header {
+    .gd-date-picker-header, .gd-selected-date-container {
         font-size: 14px;
         text-align: center;
         height: 30px;
@@ -317,6 +322,20 @@ $width: 280px;
             left: 6%;
         }
 
+        .gd-selected-date {
+            color: #ffffff;
+            top: 38%;
+            left: 0;
+            right: 0;
+        }
+
+        .gd-selected-time {
+            margin: auto;
+            top: 36%;
+            right: 6%;
+            bottom: 0;
+        }
+
         .gd-header-duration {
             margin: auto;
             top: 25%;
@@ -327,6 +346,10 @@ $width: 280px;
                 right:8%;
             }
         }
+    }
+
+    .gd-selected-date-container {
+        height: 54px;
     }
 
     .react-datepicker {

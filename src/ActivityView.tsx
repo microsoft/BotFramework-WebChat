@@ -5,7 +5,7 @@ import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { IDoCardAction } from './Chat';
 import { ContactFormCard } from './ContactFormCard';
-import { dateFormatWithTime, DatePickerCard } from './DatePickerCard';
+import { dateFormat, dateFormatWithTime, DatePickerCard } from './DatePickerCard';
 import { DisclaimerCard } from './DisclaimerCard';
 import { FileUploadCard } from './FileUploadCard';
 import { FormattedText } from './FormattedText';
@@ -81,15 +81,38 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
       return currentText.concat(newLine);
     }
 
+    parseDate = (date: string) => {
+      const dateWithoutTime = moment(date, dateFormat, true);
+      if (dateWithoutTime.isValid()) {
+        return dateWithoutTime.format(dateFormat);
+      }
+
+      const dateWithTime = moment(date, dateFormatWithTime, true);
+      if (dateWithTime.isValid()) {
+        return dateWithTime.format('MMMM D, YYYY hh:mmA');
+      }
+
+      return undefined;
+    }
+
     // specifically for contact response
     // but will format any json to display the key pairs set
     formatText = (text: string) => {
-      const date = moment(text, dateFormatWithTime);
-      if (date.isValid()) {
-        return date.format('MMMM D, YYYY hh:mmA');
+      if (text.includes('~')) { // date node withRange
+        const splitDates = text.split('~');
+        const date1 = this.parseDate(splitDates[0]);
+        const date2 = this.parseDate(splitDates[1]);
+        if (!!date1 && !!date2) {
+          return `${date1} to ${date2}`;
+        }
       }
 
-      try {
+      const date = this.parseDate(text);
+      if (!!date) { // date node !withRange and handoff node
+        return date;
+      }
+
+      try { // contact node
         const o = JSON.parse(text);
         let formattedText = '';
         if (o && typeof o === 'object') {
@@ -97,6 +120,8 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
           formattedText = this.addFormattedKey(formattedText, 'email', o);
           formattedText = this.addFormattedKey(formattedText, 'phone', o);
           return formattedText;
+        } else {
+          return text;
         }
       } catch (e) {
         return text;

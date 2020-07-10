@@ -1,6 +1,7 @@
 import { Activity, CardAction, DirectLineOptions, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
+import ReactDatePicker from 'react-datepicker';
 import { FaCaretLeft } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import { availableTimes  } from './api/bot';
@@ -45,7 +46,7 @@ export interface DatePickerState {
     duration: number;
 }
 
-const dateFormat = 'MMMM D, YYYY';
+export const dateFormat = 'MMMM D, YYYY';
 export const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
 const appointmentBuffer = 30; // minutes
 
@@ -177,14 +178,24 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         return dateWiseAvailabilities;
      }
 
+    /** Handling the month change */
+    handleMonthChange = ( date: moment.Moment ) => {
+        this.getAvailableTimes(date, true);
+    }
+
     /**
      * Handles date changing when either selecting a range
      * or just a single date
      * @param date
      */
-    handleDateChange(date: moment.Moment, withTime: boolean) {
+    handleDateChange(event: React.SyntheticEvent<any>, date: moment.Moment, withTime: boolean) {
         const { withRange, startDate } = this.state;
         const { node } = this.props;
+
+        const isHandoff = node.node_type === 'handoff';
+        // event check is a hack that works for date and handoff
+        // date node will be reworked, so don't want to spend time on this
+        const timeSelected = isHandoff ? withTime : event === undefined;
 
         if (withRange) {
             if (this.state.selectChoice === 'endDate') {
@@ -192,7 +203,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     selectChoice: 'startDate',
                     endDate: date,
                     dateSelected: true,
-                    timeSelected: withTime
+                    timeSelected
                 });
             }
 
@@ -200,7 +211,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 selectChoice: 'endDate',
                 startDate: date,
                 dateSelected: true,
-                timeSelected: withTime
+                timeSelected
             });
         } else {
             if (node.node_type === 'handoff') {
@@ -210,20 +221,20 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                         startDate: date,
                         dateSelected: true,
                         includedTimes: includedTime ? includedTime : [],
-                        timeSelected: withTime
+                        timeSelected
                     });
                 } else {
                     this.setState({
                         startDate: date,
                         dateSelected: true,
-                        timeSelected: withTime
+                        timeSelected
                     });
                 }
             } else {
                 this.setState({
                     startDate: date,
                     dateSelected: true,
-                    timeSelected: withTime
+                    timeSelected
                 });
             }
         }
@@ -231,7 +242,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     private handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): any {
-        if (!this.state.dateSelected) { return; }
+        if (!this.validateSelection()) { return; }
 
         if (e.key === 'Enter') {
             this.props.submitDate();
@@ -249,8 +260,22 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         return (startDate + endDate);
     }
 
+    validateSelection = () => {
+        const { node } = this.props;
+        const { dateSelected, timeSelected, withTime, withRange, startDate, endDate } = this.state;
+
+        const isHandoff = node.node_type === 'handoff';
+        if (isHandoff) {
+            return dateSelected && timeSelected;
+        } else { // date node
+            const rangeValidation = withRange ? startDate && endDate : true;
+            const timeValidation = withTime ? timeSelected : true;
+            return dateSelected && rangeValidation && timeValidation;
+        }
+    }
+
     clickToSubmitDate(e: React.MouseEvent<HTMLButtonElement>) {
-        if (!this.state.dateSelected || !this.state.timeSelected) { return; }
+        if (!this.validateSelection()) { return; }
 
         // this.props.submitDate();
         this.props.sendMessage(this.getDateText());
@@ -294,7 +319,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             keys.map(date =>
               this.availabilitiesExistOnDay(date) && <button
                 className="gd-date-picker-select-day"
-                onClick={e => this.handleDateChange(moment(date), false)}
+                onClick={e => this.handleDateChange(undefined, moment(date), false)}
                 key={date}
               >
                 {moment(date).format('dddd MMMM Do, YYYY')}
@@ -353,7 +378,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 className="gd-date-picker-select-hour"
                 key={time.format('hh:mm A')}
                 onClick={e => {
-                  this.handleDateChange(moment(startDate.format('DD MMM YYYY') + ' ' + time.format('hh:mm A')), true);
+                  this.handleDateChange(undefined, moment(startDate.format('DD MMM YYYY') + ' ' + time.format('hh:mm A')), true);
                 }}
               >{time.format('hh:mm A')}</button>
             )}
@@ -362,24 +387,75 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
       );
     }
 
+    renderForDateNode = () => {
+        const { startDate, endDate, withTime, withRange, timeSelected } = this.state;
+        const { node } = this.props;
+        const isHandoff = node.node_type === 'handoff';
+
+        let headerMessage = withRange ? (!startDate ? 'Select a start date' : 'Select an end date') : 'Select a date';
+        const dateSelectedCheck = withRange ? startDate && endDate : !!startDate;
+        if (withTime && !timeSelected && dateSelectedCheck) {
+            headerMessage = 'Select a time';
+        }
+
+        if (this.validateSelection()) {
+            headerMessage = startDate.format('MMMM D, YYYY');
+            if (withRange) {
+                headerMessage += ' to ' + endDate.format('MMMM D, YYYY');
+            }
+        }
+
+        return (
+            <div className={`gd-date-picker ${withTime && 'withTime'} date-node`}>
+                <div className="gd-selected-date-container">
+                    <span className="gd-selected-date">{headerMessage}</span>
+                </div>
+
+                <ReactDatePicker endDate={endDate}
+                    startDate={startDate}
+                    selected={startDate}
+                    onChange={(date, event) => this.handleDateChange(event, date, withTime)}
+                    onMonthChange={e => this.handleMonthChange(e)}
+                    inline={true}
+                    minDate={isHandoff && moment()}
+                    tabIndex={1}
+                    dateFormat={withTime ? dateFormatWithTime : dateFormat}
+                    showTimeSelect={withTime}
+                />
+                <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
+                    None of these appointments work for me
+                </button>
+                <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
+                    Submit
+                </button>
+            </div>
+        );
+    }
+
+    renderForHandoff = () => {
+      const { withTime, dateSelected, duration } = this.state;
+
+      return (
+        <div className={`gd-date-picker ${withTime && 'withTime'}`}>
+            <div className="gd-date-picker-header">
+                <span className="gd-header-schedule-meeting">Schedule a Meeting</span>
+                <span className="gd-header-duration">{`${duration} Minutes`}</span>
+            </div>
+            {!dateSelected && this.renderDayPicker()}
+            {dateSelected && this.renderHourPicker()}
+            <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
+                Schedule Meeting
+            </button>
+        </div>
+    );
+    }
+
     render() {
         const { startDate, endDate, withTime, loading, dateSelected, duration } = this.state;
         const { node } = this.props;
         const isHandoff = node.node_type === 'handoff';
 
-        return (
-            <div className={`gd-date-picker ${withTime && 'withTime'}`}>
-                <div className="gd-date-picker-header">
-                    <span className="gd-header-schedule-meeting">Schedule a Meeting</span>
-                    <span className="gd-header-duration">{`${duration} Minutes`}</span>
-                </div>
-                {!dateSelected && this.renderDayPicker()}
-                {dateSelected && this.renderHourPicker()}
-                <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
-                    Schedule Meeting
-                </button>
-            </div>
-        );
+        return isHandoff ? this.renderForHandoff() : this.renderForDateNode();
     }
 }
 
