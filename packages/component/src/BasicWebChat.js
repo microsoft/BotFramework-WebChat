@@ -10,7 +10,6 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import Composer from './Composer';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 import useDisabled from './hooks/useDisabled';
 import useSendBoxFocusRef from './hooks/internal/useSendBoxFocusRef';
@@ -65,11 +64,9 @@ const BasicWebChat = ({ className }) => {
 export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
-  ...Composer.defaultProps,
   className: ''
 };
 
 BasicWebChat.propTypes = {
-  ...Composer.propTypes,
   className: PropTypes.string
 };
