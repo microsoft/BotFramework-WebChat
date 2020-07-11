@@ -190,7 +190,8 @@ const WebChatCarouselFilmStrip = ({
               <Bubble
                 className="webchat__carousel-layout__bubble"
                 fromUser={fromUser}
-                nub={showNub ? true : hasAvatar || hasNub ? 'hidden' : false}
+                nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
+                // nub={showNub ? true : hasAvatar || hasNub ? 'hidden' : false}
               >
                 {renderAttachment({
                   activity,

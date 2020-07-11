@@ -1,7 +1,7 @@
 /* eslint complexity: ["error", 30] */
 /* eslint react/no-array-index-key: "off" */
 
-import { css, first } from 'glamor';
+import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -26,41 +26,37 @@ const ROOT_CSS = css({
     flexDirection: 'column',
     position: 'relative', // This is to keep screen reader text in the destinated area.
 
-    '& .webchat__stacked-layout__main-row': {
+    '& .webchat__stacked-layout__main': {
       display: 'flex',
       flexDirection: 'row'
     },
 
-    '& .webchat__stacked-layout__avatar-column': {
-      display: 'flex',
+    '& .webchat__stacked-layout__alignment-pad': {
       flexShrink: 0
     },
 
-    '& .webchat__stacked-layout__content-column': {
-      flexGrow: 1,
-      overflow: 'hidden'
+    '& .webchat__stacked-layout__avatar-gutter': {
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0
     },
 
-    '& .webchat__stacked-layout__content-row': {
-      display: 'flex'
+    '& .webchat__stacked-layout__content': {
+      display: 'flex',
+      flexDirection: 'column'
     },
 
-    '& .webchat__stacked-layout__status-row': {
+    '& .webchat__stacked-layout__nub-pad': {
+      flexShrink: 0
+    },
+
+    '& .webchat__stacked-layout__status': {
       display: 'flex'
     },
 
     '& .webchat__stacked-layout__bubble': {
-      flexGrow: 1,
-      overflow: 'hidden'
-    },
-
-    '& .webchat__stacked-layout__attachment-bubble': {
       flexGrow: 1
-    },
-
-    '& .webchat__stacked-layout__filler': {
-      flexGrow: 10000,
-      flexShrink: 0
+      // overflow: 'hidden'
     }
   }
 });
@@ -129,7 +125,7 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const rightSide = (!rtl && fromUser) || (rtl && !fromUser);
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
-  const extraIndent = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
+  const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
   const showCallout = (topAlignedCallout && leading) || (!topAlignedCallout && trailing);
 
   const showAvatar = hasAvatar && showCallout;
@@ -140,46 +136,35 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
       aria-labelledby={contentARIALabelId}
       aria-roledescription="activity"
       className={classNames('webchat__stacked-layout', ROOT_CSS + '', stackedLayoutStyleSet + '', {
-        'webchat__stacked-layout--from-user': fromUser,
         'webchat__stacked-layout--right-side': rightSide,
-        'webchat__stacked-layout--extra-indent': extraIndent,
-        'webchat__stacked-layout--extra-left-indent':
-          (!rtl && fromUser && !renderAvatar && bubbleNubSize) ||
-          (rtl && !fromUser && !renderAvatar && bubbleFromUserNubSize),
-        'webchat__stacked-layout--extra-right-indent':
-          (!rtl && !fromUser && !renderAvatar && bubbleFromUserNubSize) ||
-          (rtl && fromUser && !renderAvatar && bubbleNubSize)
+
+        'webchat__stacked-layout--extra-trailing': extraTrailing,
+        'webchat__stacked-layout--from-user': fromUser,
+        'webchat__stacked-layout--hide-avatar': hasAvatar && !showAvatar,
+        'webchat__stacked-layout--hide-nub': hasNub && !showNub,
+        'webchat__stacked-layout--rtl': rtl,
+        'webchat__stacked-layout--show-avatar': showAvatar,
+        'webchat__stacked-layout--show-nub': showNub,
+        'webchat__stacked-layout--top-callout': topAlignedCallout
       })}
       role="group"
     >
-      <div className="webchat__stacked-layout__main-row">
-        {hasAvatar && (
-          <div
-            className={classNames('webchat__stacked-layout__avatar-column', {
-              'webchat__stacked-layout__avatar-column--align-bottom': !topAlignedCallout
-            })}
-          >
-            {showAvatar && renderAvatar({ activity })}
-          </div>
-        )}
-        <div className="webchat__stacked-layout__content-column">
+      <div className="webchat__stacked-layout__main">
+        <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
+        <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
             // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
             /* eslint-disable-next-line react/forbid-dom-props */
             <div
               aria-roledescription="message"
-              className={classNames('webchat__stacked-layout__content-row', {
-                'webchat__stacked-layout__content-row--indented': (hasAvatar && !hasNub) || (hasNub && !showNub)
-              })}
+              className="webchat__stacked-layout__message-row"
               id={contentARIALabelId}
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
-                className={classNames('webchat__stacked-layout__message-bubble', {
-                  'webchat__stacked-layout__messeage-bubble--show-nub': showNub
-                })}
+                className="webchat__stacked-layout__bubble"
                 fromUser={fromUser}
-                nub={showNub}
+                nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
               >
                 {renderAttachment({
                   activity,
@@ -192,35 +177,27 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
             </div>
           )}
           {attachments.map((attachment, index) => (
-            <div
-              aria-roledescription="attachment"
-              className={classNames('webchat__stacked-layout__content-row', {
-                'webchat__stacked-layout__content-row--indented': hasAvatar || hasNub
-              })}
-              key={index}
-            >
+            <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment" key={index}>
               <ScreenReaderText text={attachedAlt} />
               <Bubble
-                className="webchat__stacked-layout__attachment-bubble"
+                className="webchat__stacked-layout__bubble"
                 fromUser={fromUser}
                 key={index}
-                nub={false}
+                nub={(hasAvatar || hasNub) && 'hidden'}
               >
                 {renderAttachment({ attachment })}
               </Bubble>
             </div>
           ))}
         </div>
+        <div className="webchat__stacked-layout__alignment-pad" />
       </div>
       {showActivityStatus && (
-        <div className="webchat__stacked-layout__status-row">
-          <div
-            className={classNames('webchat__stacked-layout__avatar-filler', {
-              'webchat__stacked-layout__avatar-filler--for-avatar': hasAvatar,
-              'webchat__stacked-layout__avatar-filler--for-nub': hasNub
-            })}
-          />
+        <div className="webchat__stacked-layout__status">
+          <div className="webchat__stacked-layout__avatar-gutter" />
+          <div className="webchat__stacked-layout__nub-pad" />
           {renderActivityStatus({ activity })}
+          <div className="webchat__stacked-layout__alignment-pad" />
         </div>
       )}
     </div>

@@ -34,6 +34,7 @@ const ROOT_CSS = css({
     '& .webchat__basic-transcript__scrollable': {
       display: 'flex',
       flexDirection: 'column',
+      overflowX: 'hidden',
       WebkitOverflowScrolling: 'touch'
     },
 
