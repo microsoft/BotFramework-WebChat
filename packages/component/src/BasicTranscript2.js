@@ -155,12 +155,18 @@ const BasicTranscript2 = ({ className }) => {
   // Gets renderer for every activities.
   // Some activities that are not visible, will return a falsy renderer.
 
-  const activitiesWithRenderer = activities
-    .map(activity => ({
-      activity,
-      renderActivity: createActivityRenderer({ activity })
-    }))
-    .filter(({ renderActivity }) => renderActivity);
+  const activitiesWithRenderer = [];
+
+  [...activities].reverse().forEach(activity => {
+    const { activity: nextVisibleActivity } = activitiesWithRenderer[0] || {};
+    const renderActivity = createActivityRenderer({ activity, nextVisibleActivity });
+
+    renderActivity &&
+      activitiesWithRenderer.splice(0, 0, {
+        activity,
+        renderActivity
+      });
+  });
 
   const visibleActivities = activitiesWithRenderer.map(({ activity }) => activity);
 
