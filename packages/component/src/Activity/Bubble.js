@@ -20,8 +20,9 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__bubble__content': {
-      // This is for hiding content outside of the bubble, for example, content outside of border radius
       flexGrow: 1,
+
+      // This is for hiding content outside of the bubble, for example, content outside of border radius
       overflow: 'hidden'
     }
   }
@@ -93,14 +94,14 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
     <div
       aria-hidden={ariaHidden}
       className={classNames(
-        ROOT_CSS + '',
         'webchat__bubble',
-        direction === 'rtl' ? 'webchat__bubble--rtl' : '',
+        ROOT_CSS + '',
         bubbleStyleSet + '',
         {
           'webchat__bubble--from-user': fromUser,
           'webchat__bubble--hide-nub': nub !== true && nub !== false,
           'webchat__bubble--nub-on-top': isZeroOrPositive(nubOffset),
+          'webchat__bubble--rtl': direction === getRTLList,
           'webchat__bubble--show-nub': nub === true
         },
         className + '' || ''
