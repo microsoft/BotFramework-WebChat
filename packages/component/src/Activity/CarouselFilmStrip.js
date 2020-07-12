@@ -35,8 +35,8 @@ const ROOT_CSS = css({
       display: 'none'
     },
 
-    '&.webchat__carousel-layout__main': {
-      display: 'flex'
+    '& .webchat__carousel-layout__alignment-pad': {
+      flexShrink: 0
     },
 
     '& .webchat__carousel-layout__attachment': {
@@ -54,18 +54,10 @@ const ROOT_CSS = css({
       flexShrink: 0
     },
 
-    '& > .webchat__carousel-layout__bubble': {
-      flexGrow: 1,
-      overflow: 'hidden'
-    },
-
-    '& .webchat__carousel-layout__filler': {
-      flexGrow: 10000,
-      flexShrink: 1
-    },
-
-    '& .webchat__carousel-layout__message': {
-      display: 'flex'
+    '& .webchat__carousel-layout__avatar-gutter': {
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0
     },
 
     '& .webchat__carousel-layout__complimentary': {
@@ -77,15 +69,26 @@ const ROOT_CSS = css({
       flexDirection: 'column'
     },
 
-    // Revised
-
-    '& .webchat__carousel-layout__main, & .webchat__carousel-layout__status': {
-      display: 'flex'
-    },
-
     '& .webchat__carousel-layout__content': {
       display: 'flex',
       flexDirection: 'column'
+    },
+
+    '& .webchat__carousel-layout__filler': {
+      flexGrow: 10000,
+      flexShrink: 1
+    },
+
+    '& .webchat__carousel-layout__main': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__message': {
+      display: 'flex'
+    },
+
+    '& .webchat__carousel-layout__status': {
+      display: 'flex'
     }
   }
 });
@@ -122,12 +125,10 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const contentARIALabelId = useUniqueId('webchat__carousel-filmstrip__content');
+  const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__content');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
   const showActivityStatus = typeof renderActivityStatus === 'function' && trailing;
-
-  const rtl = direction === 'rtl';
 
   const {
     attachments = [],
@@ -166,8 +167,8 @@ const WebChatCarouselFilmStrip = ({
 
   return (
     <div
-      aria-labelledby={contentARIALabelId}
-      className={classNames(ROOT_CSS + '', 'webchat__carousel-layout', carouselFilmStripStyleSet + '', className + '', {
+      aria-labelledby={ariaLabelId}
+      className={classNames('webchat__carousel-layout', ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
         'webchat__carousel-layout--extra-trailing': extraTrailing,
         'webchat__carousel-layout--hide-avatar': hasAvatar && !showAvatar,
         'webchat__carousel-layout--hide-nub': hasNub && !showNub,
@@ -185,13 +186,12 @@ const WebChatCarouselFilmStrip = ({
           {!!activityDisplayText && (
             // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
             /* eslint-disable-next-line react/forbid-dom-props */
-            <div aria-roledescription="message" className="webchat__carousel-layout__message" id={contentARIALabelId}>
+            <div aria-roledescription="message" className="webchat__carousel-layout__message" id={ariaLabelId}>
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className="webchat__carousel-layout__bubble"
                 fromUser={fromUser}
                 nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
-                // nub={showNub ? true : hasAvatar || hasNub ? 'hidden' : false}
               >
                 {renderAttachment({
                   activity,
@@ -220,6 +220,7 @@ const WebChatCarouselFilmStrip = ({
             </div>
           </div>
         </div>
+        <div className="webchat__carousel-layout__alignment-pad" />
       </div>
       {showActivityStatus && (
         <div className="webchat__carousel-layout__status">

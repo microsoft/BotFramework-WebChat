@@ -30,20 +30,33 @@ export default function CarouselFilmStrip({
         }
       },
 
+      '& .webchat__carousel-layout__alignment-pad': {
+        transitionDuration,
+        transitionProperty: 'width',
+        width: paddingRegular
+      },
+
+      '&.webchat__carousel-layout--extra-trailing .webchat__carousel-layout__alignment-pad': {
+        width: paddingRegular * 2
+      },
+
       '& .webchat__carousel-layout__attachments': {
         marginTop: paddingRegular
       },
 
+      '& .webchat__carousel-layout__avatar-gutter': {
+        alignItems: 'flex-end'
+      },
+
       '& .webchat__carousel-layout__avatar-gutter, & .webchat__carousel-layout__nub-pad': {
-        flexShrink: 0,
         transitionDuration,
         transitionProperty: 'width',
-        width: 0
+        width: paddingRegular
       },
 
       '&.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {
         '& .webchat__carousel-layout__avatar-gutter': {
-          width: avatarSize
+          width: avatarSize + paddingRegular
         }
       },
 
@@ -53,26 +66,11 @@ export default function CarouselFilmStrip({
         }
       },
 
-      '& .webchat__carousel-layout__avatar-gutter': {
-        display: 'flex',
-        flexDirection: 'column'
-      },
-
       '&:not(.webchat__carousel-layout--top-callout) .webchat__carousel-layout__avatar-gutter': {
         justifyContent: 'flex-end'
       },
 
       ...mirrorStyle('.webchat__carousel-layout--rtl', {
-        paddingLeft: paddingRegular,
-
-        '&:not(.webchat__carousel-layout--extra-trailing) .webchat__carousel-layout__content': {
-          paddingRight: paddingRegular
-        },
-
-        '&.webchat__carousel-layout--extra-trailing .webchat__carousel-layout__content': {
-          paddingRight: paddingRegular * 2
-        },
-
         '& .webchat__carousel-layout__attachments': {
           marginLeft: -paddingRegular
         },

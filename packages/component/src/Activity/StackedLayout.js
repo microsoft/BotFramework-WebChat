@@ -55,8 +55,7 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__stacked-layout__bubble': {
-      flexGrow: 1
-      // overflow: 'hidden'
+      // flexGrow: 1
     }
   }
 });
@@ -122,7 +121,6 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
   const hasNub = typeof nubSize === 'number';
   const hasOtherNub = typeof otherNubSize === 'number';
-  const rightSide = (!rtl && fromUser) || (rtl && !fromUser);
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
@@ -136,13 +134,10 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
       aria-labelledby={contentARIALabelId}
       aria-roledescription="activity"
       className={classNames('webchat__stacked-layout', ROOT_CSS + '', stackedLayoutStyleSet + '', {
-        'webchat__stacked-layout--right-side': rightSide,
-
         'webchat__stacked-layout--extra-trailing': extraTrailing,
         'webchat__stacked-layout--from-user': fromUser,
         'webchat__stacked-layout--hide-avatar': hasAvatar && !showAvatar,
         'webchat__stacked-layout--hide-nub': hasNub && !showNub,
-        'webchat__stacked-layout--rtl': rtl,
         'webchat__stacked-layout--show-avatar': showAvatar,
         'webchat__stacked-layout--show-nub': showNub,
         'webchat__stacked-layout--top-callout': topAlignedCallout

@@ -149,7 +149,7 @@ export default function createBubbleStyle({
             }
           },
 
-          '&.webchat__bubble__has-nub': {
+          '&.webchat__bubble--show-nub': {
             '& .webchat__bubble__content': {
               // Hide border radius if there is a nub on the top/bottom left corner
               ...(userNubUpSideDown ? { borderBottomLeftRadius: userNubCornerRadius } : {}),
