@@ -63,10 +63,14 @@ export default function createBubbleStyle({
           minHeight: bubbleMinHeight - bubbleBorderWidth * 2
         },
 
-        '& .webchat__bubble__nub': {
-          height: bubbleNubSize,
-          width: bubbleNubSize
-        },
+        ...(typeof bubbleNubSize === 'number'
+          ? {
+              '& .webchat__bubble__nub': {
+                height: bubbleNubSize,
+                width: bubbleNubSize
+              }
+            }
+          : {}),
 
         '&:not(.webchat__bubble--nub-on-top) .webchat__bubble__nub': {
           bottom: -bubbleNubOffset
@@ -96,10 +100,14 @@ export default function createBubbleStyle({
           minHeight: bubbleMinHeight - bubbleFromUserBorderWidth * 2
         },
 
-        '& .webchat__bubble__nub': {
-          height: bubbleFromUserNubSize,
-          width: bubbleFromUserNubSize
-        },
+        ...(typeof bubbleFromUserNubSize === 'number'
+          ? {
+              '& .webchat__bubble__nub': {
+                height: bubbleFromUserNubSize,
+                width: bubbleFromUserNubSize
+              }
+            }
+          : {}),
 
         '&:not(.webchat__bubble--nub-on-top) .webchat__bubble__nub': {
           bottom: -bubbleFromUserNubOffset
@@ -129,9 +137,11 @@ export default function createBubbleStyle({
             }
           },
 
-          '& .webchat__bubble__nub': {
-            left: bubbleBorderWidth - bubbleNubSize + paddingRegular
-          }
+          ...(typeof bubbleNubSize === 'number'
+            ? {
+                '& .webchat__bubble__nub': { left: bubbleBorderWidth - bubbleNubSize + paddingRegular }
+              }
+            : {})
         },
 
         '&.webchat__bubble--from-user': {
@@ -146,9 +156,11 @@ export default function createBubbleStyle({
             }
           },
 
-          '& .webchat__bubble__nub': {
-            right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular
-          }
+          ...(typeof bubbleFromUserNubSize === 'number'
+            ? {
+                '& .webchat__bubble__nub': { right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular }
+              }
+            : {})
         }
       })
     }

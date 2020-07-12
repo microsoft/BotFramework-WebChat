@@ -11,14 +11,15 @@ import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
-import useCreateActivityRenderer from './hooks/useRenderActivity';
 import useDirection from './hooks/useDirection';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useLocalizer from './hooks/useLocalizer';
+import useRenderActivity from './hooks/useRenderActivity';
 import useRenderActivityStatus from './hooks/useRenderActivityStatus';
 import useRenderAvatar from './hooks/useRenderAvatar';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useDebugDeps from './hooks/internal/useDebugDeps';
 
 const ROOT_CSS = css({
   '&.webchat__basic-transcript': {
@@ -143,7 +144,7 @@ const BasicTranscript2 = ({ className }) => {
   const [direction] = useDirection();
   const [groupTimestamp] = useGroupTimestamp();
   const [sticky] = useSticky();
-  const createActivityRenderer = useCreateActivityRenderer();
+  const createActivityRenderer = useRenderActivity();
   const createActivityStatusRenderer = useRenderActivityStatus();
   const createAvatarRenderer = useRenderAvatar();
   const localize = useLocalizer();
@@ -155,127 +156,147 @@ const BasicTranscript2 = ({ className }) => {
   // Gets renderer for every activities.
   // Some activities that are not visible, will return a falsy renderer.
 
-  const activitiesWithRenderer = [];
+  const activitiesWithRenderer = useMemo(() => {
+    const activitiesWithRenderer = [];
 
-  [...activities].reverse().forEach(activity => {
-    const { activity: nextVisibleActivity } = activitiesWithRenderer[0] || {};
-    const renderActivity = createActivityRenderer({ activity, nextVisibleActivity });
+    [...activities].reverse().forEach(activity => {
+      const { activity: nextVisibleActivity } = activitiesWithRenderer[0] || {};
+      const renderActivity = createActivityRenderer({ activity, nextVisibleActivity });
 
-    renderActivity &&
-      activitiesWithRenderer.splice(0, 0, {
-        activity,
-        renderActivity
-      });
-  });
+      renderActivity &&
+        activitiesWithRenderer.splice(0, 0, {
+          activity,
+          renderActivity
+        });
+    });
 
-  const visibleActivities = activitiesWithRenderer.map(({ activity }) => activity);
+    return activitiesWithRenderer;
+  }, [createActivityRenderer, activities]);
+
+  const visibleActivities = useMemo(() => activitiesWithRenderer.map(({ activity }) => activity), [
+    activitiesWithRenderer
+  ]);
 
   // Tag activities based on types.
   // The default implementation tag into 2 types: avatar and activity status.
 
-  const { activityStatus: activitiesGroupByStatus, avatar: activityGroupByAvatar } = groupActivities(
-    visibleActivities,
-    { groupTimestamp }
-  );
+  const { activitiesGroupByStatus, activitiesGroupByAvatar } = useMemo(() => {
+    const {
+      activityStatus: activitiesGroupByStatus,
+      avatar: activitiesGroupByAvatar
+    } = groupActivities(visibleActivities, { groupTimestamp });
 
-  if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
-    console.warn(
-      'botframework-webchat: Not every activities are grouped by "activityStatus". Please fix "groupActivitiesMiddleware" and group every activities.'
-    );
-  }
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped by "activityStatus". Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
 
-  if (!validateAllActivitiesTagged(visibleActivities, activityGroupByAvatar)) {
-    console.warn(
-      'botframework-webchat: Not every activities are grouped by "avatar". Please fix "groupActivitiesMiddleware" and group every activities.'
-    );
-  }
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByAvatar)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped by "avatar". Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
+
+    return {
+      activitiesGroupByAvatar,
+      activitiesGroupByStatus
+    };
+  }, [groupTimestamp, visibleActivities]);
 
   // Create a tree of activities with 2 dimensions: avatar, followed by activity status.
 
-  const visibleActivitiesPendingGrouping = [...visibleActivities];
-  const activityTree = [];
+  const activityTree = useMemo(() => {
+    const visibleActivitiesPendingGrouping = [...visibleActivities];
+    const activityTree = [];
 
-  while (visibleActivitiesPendingGrouping.length) {
-    const [activity] = visibleActivitiesPendingGrouping;
-    const avatarTree = [];
-    const activitiesWithSameAvatar = activityGroupByAvatar.find(activities => activities.includes(activity));
+    while (visibleActivitiesPendingGrouping.length) {
+      const [activity] = visibleActivitiesPendingGrouping;
+      const avatarTree = [];
+      const activitiesWithSameAvatar = activitiesGroupByAvatar.find(activities => activities.includes(activity));
 
-    activityTree.push(avatarTree);
+      activityTree.push(avatarTree);
 
-    activitiesWithSameAvatar.forEach(activity => {
-      const activitiesWithSameStatus = activitiesGroupByStatus.find(activities => activities.includes(activity));
+      activitiesWithSameAvatar.forEach(activity => {
+        const activitiesWithSameStatus = activitiesGroupByStatus.find(activities => activities.includes(activity));
 
-      const activitiesWithSameAvatarAndStatus = intersectionOf(
-        visibleActivitiesPendingGrouping,
-        activitiesWithSameAvatar,
-        activitiesWithSameStatus
-      );
+        const activitiesWithSameAvatarAndStatus = intersectionOf(
+          visibleActivitiesPendingGrouping,
+          activitiesWithSameAvatar,
+          activitiesWithSameStatus
+        );
 
-      if (activitiesWithSameAvatarAndStatus.length) {
-        avatarTree.push(activitiesWithSameAvatarAndStatus);
-        removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameAvatarAndStatus);
-      }
-    });
-  }
+        if (activitiesWithSameAvatarAndStatus.length) {
+          avatarTree.push(activitiesWithSameAvatarAndStatus);
+          removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameAvatarAndStatus);
+        }
+      });
+    }
 
-  // Assertion: All activities in visibleActivities, must be assigned to the activityTree
-
-  if (
-    !visibleActivities.every(activity =>
-      activityTree.some(activitiesWithSameAvatar =>
-        activitiesWithSameAvatar.some(activitiesWithSameAvatarAndStatus =>
-          activitiesWithSameAvatarAndStatus.includes(activity)
+    // Assertion: All activities in visibleActivities, must be assigned to the activityTree
+    if (
+      !visibleActivities.every(activity =>
+        activityTree.some(activitiesWithSameAvatar =>
+          activitiesWithSameAvatar.some(activitiesWithSameAvatarAndStatus =>
+            activitiesWithSameAvatarAndStatus.includes(activity)
+          )
         )
       )
-    )
-  ) {
-    console.warn('botframework-webchat internal: Not all visible activities are grouped in the activityTree.', {
-      visibleActivities,
-      activityTree
-    });
-  }
+    ) {
+      console.warn('botframework-webchat internal: Not all visible activities are grouped in the activityTree.', {
+        visibleActivities,
+        activityTree
+      });
+    }
+
+    return activityTree;
+  }, [activitiesGroupByAvatar, activitiesGroupByStatus, visibleActivities]);
 
   // Flatten the tree back into an array with information related to rendering.
 
-  const renderingElements = [];
+  const renderingElements = useMemo(() => {
+    const renderingElements = [];
 
-  activityTree.forEach(activitiesWithSameAvatar => {
-    const firstActivity = activitiesWithSameAvatar[0][0];
-    const renderAvatar = createAvatarRenderer({ activity: firstActivity });
+    activityTree.forEach(activitiesWithSameAvatar => {
+      const firstActivity = activitiesWithSameAvatar[0][0];
+      const renderAvatar = createAvatarRenderer({ activity: firstActivity });
 
-    activitiesWithSameAvatar.forEach((activitiesWithSameAvatarAndStatus, indexWithinAvatarGroup) => {
-      const renderActivityStatus = createActivityStatusRenderer({
-        activity: activitiesWithSameAvatarAndStatus[activitiesWithSameAvatarAndStatus.length - 1]
-      });
+      activitiesWithSameAvatar.forEach((activitiesWithSameAvatarAndStatus, indexWithinAvatarGroup) => {
+        const renderActivityStatus = createActivityStatusRenderer({
+          activity: activitiesWithSameAvatarAndStatus[activitiesWithSameAvatarAndStatus.length - 1]
+        });
 
-      activitiesWithSameAvatarAndStatus.forEach((activity, indexWithinAvatarAndStatusGroup) => {
-        const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
-        const key = getActivityUniqueId(activity) || renderingElements.length;
-        const { channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {}, text } = activity;
+        activitiesWithSameAvatarAndStatus.forEach((activity, indexWithinAvatarAndStatusGroup) => {
+          const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
+          const key = getActivityUniqueId(activity) || renderingElements.length;
+          const { channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {}, text } = activity;
 
-        renderingElements.push({
-          activity,
-          key,
+          renderingElements.push({
+            activity,
+            key,
 
-          // When "liveRegionKey" change, it was show up in the live region momentarily.
-          liveRegionKey: key + '|' + (messageBackDisplayText || text),
-          renderActivity,
-          renderActivityStatus,
-          renderAvatar,
+            // When "liveRegionKey" change, it was show up in the live region momentarily.
+            liveRegionKey: key + '|' + (messageBackDisplayText || text),
+            renderActivity,
+            renderActivityStatus,
+            renderAvatar,
 
-          // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-          shouldSpeak: activity.channelData && activity.channelData.speak,
+            // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
+            shouldSpeak: activity.channelData && activity.channelData.speak,
 
-          // "leading"/"trailing" defines whether the activity is the first/last in the avatar group or not
-          // They is part of
-          leading: !indexWithinAvatarGroup && !indexWithinAvatarAndStatusGroup,
-          trailing:
-            indexWithinAvatarGroup === activitiesWithSameAvatar.length - 1 &&
-            indexWithinAvatarAndStatusGroup === activitiesWithSameAvatarAndStatus.length - 1
+            // "leading"/"trailing" defines whether the activity is the first/last in the avatar group or not
+            // They is part of
+            leading: !indexWithinAvatarGroup && !indexWithinAvatarAndStatusGroup,
+            trailing:
+              indexWithinAvatarGroup === activitiesWithSameAvatar.length - 1 &&
+              indexWithinAvatarAndStatusGroup === activitiesWithSameAvatarAndStatus.length - 1
+          });
         });
       });
     });
-  });
+
+    return renderingElements;
+  }, [activitiesWithRenderer, activityTree, createAvatarRenderer, createActivityStatusRenderer]);
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;

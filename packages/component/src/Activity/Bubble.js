@@ -63,7 +63,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
-
+  const [direction] = useDirection();
   const [
     {
       bubbleBorderWidth,
@@ -88,7 +88,6 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         nubSize: bubbleNubSize,
         side: 'bot'
       };
-  const [direction] = useDirection();
 
   return (
     <div
@@ -101,7 +100,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
           'webchat__bubble--from-user': fromUser,
           'webchat__bubble--hide-nub': nub !== true && nub !== false,
           'webchat__bubble--nub-on-top': isZeroOrPositive(nubOffset),
-          'webchat__bubble--rtl': direction === getRTLList,
+          'webchat__bubble--rtl': direction === 'rtl',
           'webchat__bubble--show-nub': nub === true
         },
         className + '' || ''

@@ -11,9 +11,11 @@ export default function useRenderAvatar() {
     () => ({ activity }) => {
       const { from: { role } = {} } = activity;
 
-      const fromUser = role === 'user';
-
-      const result = avatarRenderer({ activity, fromUser, styleOptions });
+      const result = avatarRenderer({
+        activity,
+        fromUser: role === 'user',
+        styleOptions
+      });
 
       if (result !== false && typeof result !== 'function') {
         console.warn(
