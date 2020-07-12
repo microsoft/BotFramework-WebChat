@@ -5,16 +5,23 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useDirection from '../hooks/useDirection';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   '&.webchat__bubble': {
+    display: 'flex',
     position: 'relative',
+
+    '& .webchat__bubble__nub-pad': {
+      flexShrink: 0
+    },
 
     '& .webchat__bubble__content': {
       // This is for hiding content outside of the bubble, for example, content outside of border radius
+      flexGrow: 1,
       overflow: 'hidden'
     }
   }
@@ -51,10 +58,6 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
       </g>
     </svg>
   );
-}
-
-function isPositive(value) {
-  return 1 / value >= 0;
 }
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
@@ -97,13 +100,15 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         {
           'webchat__bubble--from-user': fromUser,
           'webchat__bubble--hide-nub': nub !== true && nub !== false,
+          'webchat__bubble--nub-on-top': isZeroOrPositive(nubOffset),
           'webchat__bubble--show-nub': nub === true
         },
         className + '' || ''
       )}
     >
+      <div className="webchat__bubble__nub-pad" />
       <div className="webchat__bubble__content">{children}</div>
-      {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isPositive(nubOffset))}
+      {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isZeroOrPositive(nubOffset))}
     </div>
   );
 };
