@@ -45,10 +45,7 @@ export default function CarouselFilmStrip({
       },
 
       '& .webchat__carousel-layout__avatar-gutter': {
-        alignItems: 'flex-end'
-      },
-
-      '& .webchat__carousel-layout__avatar-gutter': {
+        alignItems: 'flex-end',
         transitionDuration,
         transitionProperty: 'width',
         width: paddingRegular
