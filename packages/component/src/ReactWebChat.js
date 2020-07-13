@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import BasicWebChat from './BasicWebChat';
@@ -11,18 +12,20 @@ import Composer from './Composer';
 // - They can run hooks outside of activity/attachment middleware
 //   - They will put <Composer> as very top of their page, and allow buttons on their existing page to send message to bot
 
-const ReactWebChat = props => (
-  <Composer {...props}>
-    <BasicWebChat />
+const ReactWebChat = ({ className, ...composerProps }) => (
+  <Composer {...composerProps}>
+    <BasicWebChat className={className} />
   </Composer>
 );
 
 export default ReactWebChat;
 
 ReactWebChat.defaultProps = {
+  className: undefined,
   ...Composer.defaultProps
 };
 
 ReactWebChat.propTypes = {
+  className: PropTypes.string,
   ...Composer.propTypes
 };
