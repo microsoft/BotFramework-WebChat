@@ -42,6 +42,12 @@ export default function createBubbleStyle({
         position: 'absolute'
       },
 
+      '& .webchat__bubble__nub-pad': {
+        transitionDuration,
+        transitionProperty: 'width',
+        width: 0
+      },
+
       '&.webchat__bubble--hide-nub, &.webchat__bubble--show-nub': {
         '& .webchat__bubble__nub-pad': {
           width: paddingRegular
