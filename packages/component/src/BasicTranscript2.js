@@ -141,8 +141,7 @@ const BasicTranscript2 = ({ className }) => {
 
   const { activitiesGroupByStatus, activitiesGroupByAvatar } = useMemo(() => {
     const { activityStatus: activitiesGroupByStatus, avatar: activitiesGroupByAvatar } = groupActivities({
-      activities: visibleActivities,
-      groupTimestamp
+      activities: visibleActivities
     });
 
     if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
@@ -161,7 +160,7 @@ const BasicTranscript2 = ({ className }) => {
       activitiesGroupByAvatar,
       activitiesGroupByStatus
     };
-  }, [groupTimestamp, visibleActivities]);
+  }, [groupActivities, visibleActivities]);
 
   // Create a tree of activities with 2 dimensions: avatar, followed by activity status.
 

@@ -9,6 +9,7 @@
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/classnames@2.2.6"></script>
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
@@ -48,7 +49,7 @@
         width: 720px;
       }
 
-      .option-bar {
+      .options-bar {
         background-color: floralwhite;
         border: solid 2px #ccc;
         border-radius: 4px;
@@ -57,10 +58,26 @@
           'Helvetica Neue', sans-serif;
         font-size: 14px;
         margin: 10px;
-        padding: 10px;
+        overflow: hidden;
         position: fixed;
         right: 0;
         z-index: 1;
+      }
+
+      .options-bar__body {
+        height: 100%;
+        padding: 10px;
+      }
+
+      .options-bar--minimized .options-bar__body {
+        height: 0;
+        padding: 0 10px;
+      }
+
+      .options-bar__header {
+        background-color: rgba(0, 0, 0, 0.1);
+        display: flex;
+        padding: 10px;
       }
 
       .transcript {
@@ -234,6 +251,14 @@
                   //   'In consectetur eiusmod officia irure elit Lorem qui labore voluptate reprehenderit nostrud magna laborum occaecat.',
                   // contentType: 'text/markdown'
                 }
+                // {
+                //   contentType: 'image/jpeg',
+                //   contentUrl:
+                //     'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg'
+                //   // content:
+                //   //   'In consectetur eiusmod officia irure elit Lorem qui labore voluptate reprehenderit nostrud magna laborum occaecat.',
+                //   // contentType: 'text/markdown'
+                // }
               ],
               from: { role: 'bot' },
               id: '3',
@@ -313,6 +338,7 @@
           const [userNub, setUserNub] = useState(true);
           const [userOnTop, setUserOnTop] = useState(true);
           const [carouselLayout, setCarouselLayout] = useState(false);
+          const [groupActivities, setGroupActivities] = useState(true);
 
           const activityMiddleware = useMemo(
             () => createCustomActivityMiddleware(carouselLayout ? 'carousel' : 'stacked'),
@@ -334,7 +360,8 @@
             [userAvatarInitials, setUserAvatarInitials],
             [userNub, setUserNub],
             [userOnTop, setUserOnTop],
-            [carouselLayout, setCarouselLayout]
+            [carouselLayout, setCarouselLayout],
+            [groupActivities, setGroupActivities]
           ];
 
           const styleValues = styleValueAndSetters.map(([value]) => value);
@@ -415,114 +442,145 @@
             });
           }, []);
 
+          const [minimized, setMinimized] = useState(false);
+          const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
+          const groupActivitiesMiddleware = useMemo(() => {
+            if (!groupActivities) {
+              return () => next => args => {
+                const { activities } = args;
+
+                return {
+                  ...next(args),
+                  avatar: activities.map(activity => [activity])
+                };
+              };
+            }
+          }, [groupActivities]);
+
+          console.log({ groupActivitiesMiddleware });
+
           return (
-            <div className={'app' + (wide ? ' app--wide' : '')} dir={rtl ? 'rtl' : undefined}>
-              <div className="option-bar" dir="ltr">
-                <div>
-                  <Toggle checked={wide} onChange={setWide}>
-                    View: Wide
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle checked={rtl} onChange={setRTL}>
-                    View: Right-to-left
-                  </Toggle>
-                </div>
-                <hr />
-                <div>
-                  <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
-                  <button onClick={handlePlusOneViewComboNumber}>+</button>
-                  <button onClick={handleMinusOneViewComboNumber}>-</button>
-                </div>
-                <hr />
-                <div>
-                  <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
-                    Bot: Avatar
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle checked={botNub} onChange={setBotNub}>
-                    Bot: Nub
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle
-                    checked={botOnTop}
-                    disabled={!botAvatarInitials && !botNub}
-                    onChange={setBotOnTop2}
-                    type="radio"
-                  >
-                    Bot: On top
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle
-                    checked={!botOnTop}
-                    disabled={!botAvatarInitials && !botNub}
-                    onChange={setBotOnBottom}
-                    type="radio"
-                  >
-                    Bot: On bottom
-                  </Toggle>
-                </div>
-                <hr />
-                <div>
-                  <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
-                    User: Avatar
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle checked={userNub} onChange={setUserNub}>
-                    User: Nub
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle
-                    checked={userOnTop}
-                    disabled={!userAvatarInitials && !userNub}
-                    onChange={setUserOnTop2}
-                    type="radio"
-                  >
-                    User: On top
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle
-                    checked={!userOnTop}
-                    disabled={!userAvatarInitials && !userNub}
-                    onChange={setUserOnBottom}
-                    type="radio"
-                  >
-                    User: On bottom
-                  </Toggle>
-                </div>
-                <hr />
-                <div>
-                  <Toggle checked={!carouselLayout} onChange={setStackedLayout} type="radio">
-                    Layout: Stacked
-                  </Toggle>
-                </div>
-                <div>
-                  <Toggle checked={carouselLayout} onChange={setCarouselLayout2} type="radio">
-                    Layout: Carousel
-                  </Toggle>
-                </div>
-                <hr />
-                <div>
-                  <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
-                  <button onClick={handlePlusOneStyleComboNumber}>+</button>
-                  <button onClick={handleMinusOneStyleComboNumber}>-</button>
-                </div>
-                <hr />
-                <div>
-                  <button onClick={handleAddMessage}>Add message</button>
-                </div>
+            <div className={classNames('app', { 'app--wide': wide })} dir={rtl ? 'rtl' : undefined}>
+              <div className={classNames('options-bar', { 'options-bar--minimized': minimized })} dir="ltr">
+                <header className="options-bar__header">
+                  <button className="options-bar__minimize-button" onClick={handleMinimizeClick}>
+                    Minimize
+                  </button>
+                </header>
+                <section className="options-bar__body">
+                  <div>
+                    <Toggle checked={wide} onChange={setWide}>
+                      View: Wide
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={rtl} onChange={setRTL}>
+                      View: Right-to-left
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
+                    <button onClick={handlePlusOneViewComboNumber}>+</button>
+                    <button onClick={handleMinusOneViewComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
+                      Bot: Avatar
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={botNub} onChange={setBotNub}>
+                      Bot: Nub
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={botOnTop}
+                      disabled={!botAvatarInitials && !botNub}
+                      onChange={setBotOnTop2}
+                      type="radio"
+                    >
+                      Bot: On top
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!botOnTop}
+                      disabled={!botAvatarInitials && !botNub}
+                      onChange={setBotOnBottom}
+                      type="radio"
+                    >
+                      Bot: On bottom
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
+                      User: Avatar
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={userNub} onChange={setUserNub}>
+                      User: Nub
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={userOnTop}
+                      disabled={!userAvatarInitials && !userNub}
+                      onChange={setUserOnTop2}
+                      type="radio"
+                    >
+                      User: On top
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!userOnTop}
+                      disabled={!userAvatarInitials && !userNub}
+                      onChange={setUserOnBottom}
+                      type="radio"
+                    >
+                      User: On bottom
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={!carouselLayout} onChange={setStackedLayout} type="radio">
+                      Layout: Stacked
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={carouselLayout} onChange={setCarouselLayout2} type="radio">
+                      Layout: Carousel
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={groupActivities} onChange={setGroupActivities}>
+                      Group activities
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
+                    <button onClick={handlePlusOneStyleComboNumber}>+</button>
+                    <button onClick={handleMinusOneStyleComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <button onClick={handleAddMessage}>Add message</button>
+                  </div>
+                </section>
               </div>
               <Composer
                 // directLine={window.WebChat.createDirectLine({ token })}
                 activityMiddleware={activityMiddleware}
                 directLine={directLine}
                 dir={rtl ? 'rtl' : undefined}
+                groupActivitiesMiddleware={groupActivitiesMiddleware}
                 styleOptions={styleOptions}
               >
                 <BasicWebChat />
