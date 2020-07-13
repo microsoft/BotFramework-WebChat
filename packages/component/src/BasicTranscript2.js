@@ -19,7 +19,6 @@ import useRenderActivityStatus from './hooks/useRenderActivityStatus';
 import useRenderAvatar from './hooks/useRenderAvatar';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import useDebugDeps from './hooks/internal/useDebugDeps';
 
 const ROOT_CSS = css({
   '&.webchat__basic-transcript': {
@@ -46,7 +45,7 @@ const ROOT_CSS = css({
   }
 });
 
-function group(items, grouping) {
+function bin(items, grouping) {
   let lastGroup;
   const groups = [];
   let lastItem;
@@ -65,6 +64,13 @@ function group(items, grouping) {
   return groups;
 }
 
+function groupActivities(activities, { groupTimestamp }) {
+  return {
+    activityStatus: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp)),
+    avatar: bin(activities, (x, y) => x.from.role === y.from.role)
+  };
+}
+
 function intersectionOf(arg0, ...args) {
   return args.reduce(
     (interim, arg) =>
@@ -75,13 +81,6 @@ function intersectionOf(arg0, ...args) {
       }, []),
     arg0
   );
-}
-
-function groupActivities(activities, { groupTimestamp }) {
-  return {
-    activityStatus: group(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp)),
-    avatar: group(activities, (x, y) => x.from.role === y.from.role)
-  };
 }
 
 function removeInline(array, ...items) {
