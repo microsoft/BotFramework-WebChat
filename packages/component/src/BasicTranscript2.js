@@ -12,6 +12,7 @@ import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
+import useGroupActivities from './hooks/useGroupActivities';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useLocalizer from './hooks/useLocalizer';
 import useRenderActivity from './hooks/useRenderActivity';
@@ -45,32 +46,6 @@ const ROOT_CSS = css({
   }
 });
 
-function bin(items, grouping) {
-  let lastGroup;
-  const groups = [];
-  let lastItem;
-
-  items.forEach(item => {
-    if (lastItem && grouping(lastItem, item)) {
-      lastGroup.push(item);
-    } else {
-      lastGroup = [item];
-      groups.push(lastGroup);
-    }
-
-    lastItem = item;
-  });
-
-  return groups;
-}
-
-function groupActivities(activities, { groupTimestamp }) {
-  return {
-    activityStatus: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp)),
-    avatar: bin(activities, (x, y) => x.from.role === y.from.role)
-  };
-}
-
 function intersectionOf(arg0, ...args) {
   return args.reduce(
     (interim, arg) =>
@@ -89,22 +64,6 @@ function removeInline(array, ...items) {
 
     ~index && array.splice(index, 1);
   });
-}
-
-function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
-  if (groupTimestamp === false) {
-    // Hide timestamp for all activities.
-    return true;
-  } else if (activityX && activityY) {
-    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : Infinity;
-
-    const timeX = new Date(activityX.timestamp).getTime();
-    const timeY = new Date(activityY.timestamp).getTime();
-
-    return Math.abs(timeX - timeY) <= groupTimestamp;
-  }
-
-  return false;
 }
 
 function firstTabbableDescendant(element) {
@@ -146,11 +105,12 @@ const BasicTranscript2 = ({ className }) => {
   const createActivityRenderer = useRenderActivity();
   const createActivityStatusRenderer = useRenderActivityStatus();
   const createAvatarRenderer = useRenderAvatar();
+  const groupActivities = useGroupActivities();
   const localize = useLocalizer();
   const scrollToEndButtonRef = useRef();
 
-  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   // Gets renderer for every activities.
   // Some activities that are not visible, will return a falsy renderer.
@@ -180,10 +140,10 @@ const BasicTranscript2 = ({ className }) => {
   // The default implementation tag into 2 types: avatar and activity status.
 
   const { activitiesGroupByStatus, activitiesGroupByAvatar } = useMemo(() => {
-    const {
-      activityStatus: activitiesGroupByStatus,
-      avatar: activitiesGroupByAvatar
-    } = groupActivities(visibleActivities, { groupTimestamp });
+    const { activityStatus: activitiesGroupByStatus, avatar: activitiesGroupByAvatar } = groupActivities({
+      activities: visibleActivities,
+      groupTimestamp
+    });
 
     if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
       console.warn(
