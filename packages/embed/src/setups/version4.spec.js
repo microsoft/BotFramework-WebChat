@@ -48,7 +48,8 @@ test('Load Web Chat v4', async () => {
       language: 'ja-JP',
       secret: 'secret',
       token: 'token',
-      username: 'William'
+      username: 'William',
+      locale: 'en-US'
     }
   );
 
@@ -65,7 +66,8 @@ test('Load Web Chat v4', async () => {
     domain: 'https://directline.botframework.com',
     secret: 'secret',
     token: 'token',
-    webSocket: true
+    webSocket: true,
+    locale: 'en-US'
   });
 
   expect(document.body).toHaveProperty(
