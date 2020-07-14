@@ -2,12 +2,16 @@
 /*eslint require-unicode-regexp: "off" */
 import useStyleOptions from './useStyleOptions';
 
+function escapeRegexp(emoticon) {
+  return emoticon.replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 export default function useEmojiFromStyles() {
-  const [{ emojiAutocorrect: autocorrect, emojiList, emojiRegExp: regex }] = useStyleOptions();
+  const [{ emojiAutocorrect: autocorrect, emojiList: customEmojiList, emojiRegExp: regex }] = useStyleOptions();
 
   const emojiAutocorrect = autocorrect || false;
 
-  const emojiUnicodeMap = emojiList || {
+  const emojiUnicodeMap = customEmojiList || {
     ':)': '😊',
     ':-)': '😊',
     '(:': '😊',
@@ -33,7 +37,15 @@ export default function useEmojiFromStyles() {
     '<\\3': '💔'
   };
 
-  const emojiRegExp = regex || new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
+  const escapedString =
+    customEmojiList &&
+    Object.keys(customEmojiList)
+      .map(escapeRegexp)
+      .join('|');
+
+  const emojiRegExp = customEmojiList
+    ? new RegExp(escapedString, 'gum')
+    : new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
 
   return [{ emojiAutocorrect, emojiUnicodeMap, emojiRegExp }];
 }

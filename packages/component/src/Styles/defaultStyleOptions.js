@@ -191,8 +191,7 @@ const DEFAULT_OPTIONS = {
 
   // Emoji
   emojiAutocorrect: false,
-  emojiList: undefined,
-  emojiRegExp: undefined
+  emojiList: undefined
 };
 
 export default DEFAULT_OPTIONS;
