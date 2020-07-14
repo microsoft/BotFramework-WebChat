@@ -76,7 +76,7 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, renderActivityStatus, renderAvatar }) => {
+const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallout }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -116,9 +116,10 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar }) => {
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
+  // const showCallout = !!renderAvatar || (!hasAvatar && hasNub);
 
-  const showAvatar = renderAvatar && hasAvatar;
-  const showNub = renderAvatar && hasNub && (topAlignedCallout || !attachments.length);
+  const showAvatar = showCallout && hasAvatar;
+  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
 
   return (
     <div

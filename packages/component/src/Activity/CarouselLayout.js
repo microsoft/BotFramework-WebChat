@@ -15,7 +15,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar }) => {
+const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar, showCallout }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const filmStyleSet = createBasicStyleSet({ cursor: null });
@@ -32,6 +32,7 @@ const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar
               activity={activity}
               renderActivityStatus={renderActivityStatus}
               renderAvatar={renderAvatar}
+              showCallout={showCallout}
             />
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
@@ -63,14 +64,16 @@ const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar
 CarouselLayout.defaultProps = {
   children: undefined,
   renderActivityStatus: false,
-  renderAvatar: false
+  renderAvatar: false,
+  showCallout: true
 };
 
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func])
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  showCallout: PropTypes.bool
 };
 
 export default CarouselLayout;

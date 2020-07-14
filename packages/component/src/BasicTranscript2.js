@@ -238,25 +238,25 @@ const BasicTranscript2 = ({ className }) => {
 
           const topSideNub = fromUser ? topSideUserNub : topSideBotNub;
 
-          let showAvatar;
+          let showCallout;
 
           // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
           if (showAvatarInGroup === 'sender') {
             if (topSideNub) {
-              showAvatar = !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup;
+              showCallout = !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup;
             } else {
-              showAvatar =
+              showCallout =
                 indexWithinSenderGroup === activitiesWithSameSender.length - 1 &&
                 indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
             }
           } else if (showAvatarInGroup === 'status') {
             if (topSideNub) {
-              showAvatar = !indexWithinSenderAndStatusGroup;
+              showCallout = !indexWithinSenderAndStatusGroup;
             } else {
-              showAvatar = indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+              showCallout = indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
             }
           } else {
-            showAvatar = true;
+            showCallout = true;
           }
 
           renderingElements.push({
@@ -269,10 +269,11 @@ const BasicTranscript2 = ({ className }) => {
             renderActivityStatus:
               // We only show the activity status at the end of the sender group.
               indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1 && renderActivityStatus,
-            renderAvatar: showAvatar && renderAvatar,
+            renderAvatar,
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-            shouldSpeak: activity.channelData && activity.channelData.speak
+            shouldSpeak: activity.channelData && activity.channelData.speak,
+            showCallout
           });
         });
       });
@@ -374,7 +375,10 @@ const BasicTranscript2 = ({ className }) => {
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
         >
           {renderingElements.map(
-            ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak }, index) => (
+            (
+              { activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout },
+              index
+            ) => (
               <React.Fragment key={key}>
                 <li
                   aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
@@ -382,7 +386,8 @@ const BasicTranscript2 = ({ className }) => {
                 >
                   {renderActivity({
                     renderActivityStatus,
-                    renderAvatar
+                    renderAvatar,
+                    showCallout
                   })}
                   {shouldSpeak && <SpeakActivity activity={activity} />}
                 </li>
