@@ -137,32 +137,32 @@ const BasicTranscript2 = ({ className }) => {
   ]);
 
   // Tag activities based on types.
-  // The default implementation tag into 2 types: avatar and activity status.
+  // The default implementation tag into 2 types: sender and status.
 
-  const { activitiesGroupByStatus, activitiesGroupByAvatar } = useMemo(() => {
-    const { activityStatus: activitiesGroupByStatus, avatar: activitiesGroupByAvatar } = groupActivities({
+  const { activitiesGroupBySender, activitiesGroupByStatus } = useMemo(() => {
+    const { sender: activitiesGroupBySender, status: activitiesGroupByStatus } = groupActivities({
       activities: visibleActivities
     });
 
-    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupBySender)) {
       console.warn(
-        'botframework-webchat: Not every activities are grouped by "activityStatus". Please fix "groupActivitiesMiddleware" and group every activities.'
+        'botframework-webchat: Not every activities are grouped by "sender". Please fix "groupActivitiesMiddleware" and group every activities.'
       );
     }
 
-    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByAvatar)) {
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
       console.warn(
-        'botframework-webchat: Not every activities are grouped by "avatar". Please fix "groupActivitiesMiddleware" and group every activities.'
+        'botframework-webchat: Not every activities are grouped by "status". Please fix "groupActivitiesMiddleware" and group every activities.'
       );
     }
 
     return {
-      activitiesGroupByAvatar,
+      activitiesGroupBySender,
       activitiesGroupByStatus
     };
   }, [groupActivities, visibleActivities]);
 
-  // Create a tree of activities with 2 dimensions: avatar, followed by activity status.
+  // Create a tree of activities with 2 dimensions: sender, followed by status.
 
   const activityTree = useMemo(() => {
     const visibleActivitiesPendingGrouping = [...visibleActivities];
@@ -170,23 +170,23 @@ const BasicTranscript2 = ({ className }) => {
 
     while (visibleActivitiesPendingGrouping.length) {
       const [activity] = visibleActivitiesPendingGrouping;
-      const avatarTree = [];
-      const activitiesWithSameAvatar = activitiesGroupByAvatar.find(activities => activities.includes(activity));
+      const senderTree = [];
+      const activitiesWithSameSender = activitiesGroupBySender.find(activities => activities.includes(activity));
 
-      activityTree.push(avatarTree);
+      activityTree.push(senderTree);
 
-      activitiesWithSameAvatar.forEach(activity => {
+      activitiesWithSameSender.forEach(activity => {
         const activitiesWithSameStatus = activitiesGroupByStatus.find(activities => activities.includes(activity));
 
-        const activitiesWithSameAvatarAndStatus = intersectionOf(
+        const activitiesWithSameSenderAndStatus = intersectionOf(
           visibleActivitiesPendingGrouping,
-          activitiesWithSameAvatar,
+          activitiesWithSameSender,
           activitiesWithSameStatus
         );
 
-        if (activitiesWithSameAvatarAndStatus.length) {
-          avatarTree.push(activitiesWithSameAvatarAndStatus);
-          removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameAvatarAndStatus);
+        if (activitiesWithSameSenderAndStatus.length) {
+          senderTree.push(activitiesWithSameSenderAndStatus);
+          removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameSenderAndStatus);
         }
       });
     }
@@ -194,9 +194,9 @@ const BasicTranscript2 = ({ className }) => {
     // Assertion: All activities in visibleActivities, must be assigned to the activityTree
     if (
       !visibleActivities.every(activity =>
-        activityTree.some(activitiesWithSameAvatar =>
-          activitiesWithSameAvatar.some(activitiesWithSameAvatarAndStatus =>
-            activitiesWithSameAvatarAndStatus.includes(activity)
+        activityTree.some(activitiesWithSameSender =>
+          activitiesWithSameSender.some(activitiesWithSameSenderAndStatus =>
+            activitiesWithSameSenderAndStatus.includes(activity)
           )
         )
       )
@@ -208,23 +208,23 @@ const BasicTranscript2 = ({ className }) => {
     }
 
     return activityTree;
-  }, [activitiesGroupByAvatar, activitiesGroupByStatus, visibleActivities]);
+  }, [activitiesGroupBySender, activitiesGroupByStatus, visibleActivities]);
 
   // Flatten the tree back into an array with information related to rendering.
 
   const renderingElements = useMemo(() => {
     const renderingElements = [];
 
-    activityTree.forEach(activitiesWithSameAvatar => {
-      const firstActivity = activitiesWithSameAvatar[0][0];
+    activityTree.forEach(activitiesWithSameSender => {
+      const firstActivity = activitiesWithSameSender[0][0];
       const renderAvatar = createAvatarRenderer({ activity: firstActivity });
 
-      activitiesWithSameAvatar.forEach((activitiesWithSameAvatarAndStatus, indexWithinAvatarGroup) => {
+      activitiesWithSameSender.forEach((activitiesWithSameSenderAndStatus, indexWithinSenderGroup) => {
         const renderActivityStatus = createActivityStatusRenderer({
-          activity: activitiesWithSameAvatarAndStatus[activitiesWithSameAvatarAndStatus.length - 1]
+          activity: activitiesWithSameSenderAndStatus[activitiesWithSameSenderAndStatus.length - 1]
         });
 
-        activitiesWithSameAvatarAndStatus.forEach((activity, indexWithinAvatarAndStatusGroup) => {
+        activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
           const { channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {}, text } = activity;
@@ -242,12 +242,14 @@ const BasicTranscript2 = ({ className }) => {
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
             shouldSpeak: activity.channelData && activity.channelData.speak,
 
+            // TODO: Add a feature named "showAvatarOnGroup": "sender", "status", "every"/true.
+
             // "leading"/"trailing" defines whether the activity is the first/last in the avatar group or not
             // They is part of
-            leading: !indexWithinAvatarGroup && !indexWithinAvatarAndStatusGroup,
+            leading: !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup,
             trailing:
-              indexWithinAvatarGroup === activitiesWithSameAvatar.length - 1 &&
-              indexWithinAvatarAndStatusGroup === activitiesWithSameAvatarAndStatus.length - 1
+              indexWithinSenderGroup === activitiesWithSameSender.length - 1 &&
+              indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1
           });
         });
       });
