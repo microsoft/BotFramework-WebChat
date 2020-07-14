@@ -114,11 +114,9 @@ const WebChatCarouselFilmStrip = ({
   activity,
   className,
   itemContainerRef,
-  leading,
   renderActivityStatus,
   renderAvatar,
-  scrollableRef,
-  trailing
+  scrollableRef
 }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
@@ -128,7 +126,7 @@ const WebChatCarouselFilmStrip = ({
   const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__content');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
-  const showActivityStatus = typeof renderActivityStatus === 'function' && trailing;
+  const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const {
     attachments = [],
@@ -160,10 +158,9 @@ const WebChatCarouselFilmStrip = ({
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
-  const showCallout = (topAlignedCallout && leading) || (!topAlignedCallout && trailing);
 
-  const showAvatar = hasAvatar && showCallout;
-  const showNub = hasNub && showCallout && (topAlignedCallout || !attachments.length);
+  const showAvatar = renderAvatar && hasAvatar;
+  const showNub = renderAvatar && hasNub && (topAlignedCallout || !attachments.length);
 
   return (
     <div

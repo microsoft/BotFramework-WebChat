@@ -13,7 +13,6 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
-import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useRenderAttachment from '../hooks/useRenderAttachment';
 import useStyleOptions from '../hooks/useStyleOptions';
@@ -52,10 +51,6 @@ const ROOT_CSS = css({
 
     '& .webchat__stacked-layout__status': {
       display: 'flex'
-    },
-
-    '& .webchat__stacked-layout__bubble': {
-      // flexGrow: 1
     }
   }
 });
@@ -81,18 +76,15 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, trailing }) => {
+const StackedLayout = ({ activity, renderActivityStatus, renderAvatar }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
-  const [direction] = useDirection();
   const contentARIALabelId = useUniqueId('webchat__stacked-layout__content-column');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
-  const showActivityStatus = typeof renderActivityStatus === 'function' && trailing;
-
-  const rtl = direction === 'rtl';
+  const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const {
     attachments = [],
@@ -124,10 +116,9 @@ const StackedLayout = ({ activity, leading, renderActivityStatus, renderAvatar, 
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
-  const showCallout = (topAlignedCallout && leading) || (!topAlignedCallout && trailing);
 
-  const showAvatar = hasAvatar && showCallout;
-  const showNub = hasNub && showCallout && (topAlignedCallout || !attachments.length);
+  const showAvatar = renderAvatar && hasAvatar;
+  const showNub = renderAvatar && hasNub && (topAlignedCallout || !attachments.length);
 
   return (
     <div

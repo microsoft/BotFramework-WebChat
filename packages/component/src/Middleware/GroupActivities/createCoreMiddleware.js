@@ -33,8 +33,8 @@ function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-export default function createDefaultGroupActivityMiddleware() {
-  return () => () => ({ activities, groupTimestamp }) => ({
+export default function createDefaultGroupActivityMiddleware({ groupTimestamp }) {
+  return () => () => ({ activities }) => ({
     sender: bin(activities, (x, y) => x.from.role === y.from.role),
     status: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp))
   });

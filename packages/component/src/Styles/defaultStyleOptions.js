@@ -35,6 +35,7 @@ const DEFAULT_OPTIONS = {
   userAvatarBackgroundColor: undefined, // defaults to accent color
   userAvatarImage: undefined, // Or a string of URL. Can be a data URI or blob.
   userAvatarInitials: undefined, // Or a string. Empty strings means it has avatar but not initials inside.
+  showAvatarInGroup: 'status', // Or 'sender' or true (on every activity).
 
   // Bubble
   // TODO: Should we make a bubbleFromBot*

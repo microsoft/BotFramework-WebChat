@@ -309,12 +309,6 @@ const Composer = ({
     dispatch
   ]);
 
-  const groupActivitiesContext = useMemo(
-    () =>
-      createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp: patchedStyleOptions.groupTimestamp }),
-    [groupActivitiesMiddleware]
-  );
-
   const patchedSelectVoice = useCallback(selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
     selectVoice
   ]);
@@ -327,6 +321,15 @@ const Composer = ({
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
     [extraStyleSet, patchedStyleOptions, styleSet]
+  );
+
+  const groupActivitiesContext = useMemo(
+    () =>
+      createGroupActivitiesContext({
+        groupActivitiesMiddleware,
+        groupTimestamp: patchedStyleSet.options.groupTimestamp
+      }),
+    [groupActivitiesMiddleware, patchedStyleSet.options.groupTimestamp]
   );
 
   const hoistedDispatchers = useMemo(

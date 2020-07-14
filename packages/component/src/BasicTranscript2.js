@@ -7,13 +7,13 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
+import isZeroOrPositive from './Utils/isZeroOrPositive';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDirection from './hooks/useDirection';
 import useGroupActivities from './hooks/useGroupActivities';
-import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useLocalizer from './hooks/useLocalizer';
 import useRenderActivity from './hooks/useRenderActivity';
 import useRenderActivityStatus from './hooks/useRenderActivityStatus';
@@ -50,7 +50,7 @@ function intersectionOf(arg0, ...args) {
   return args.reduce(
     (interim, arg) =>
       interim.reduce((intersection, item) => {
-        args[0].includes(item) && intersection.push(item);
+        arg.includes(item) && intersection.push(item);
 
         return intersection;
       }, []),
@@ -96,11 +96,10 @@ function validateAllActivitiesTagged(activities, bins) {
 
 const BasicTranscript2 = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
-  const [{ hideScrollToEndButton }] = useStyleOptions();
+  const [{ bubbleFromUserNubOffset, bubbleNubOffset, hideScrollToEndButton, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
   const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
-  const [groupTimestamp] = useGroupTimestamp();
   const [sticky] = useSticky();
   const createActivityRenderer = useRenderActivity();
   const createActivityStatusRenderer = useRenderActivityStatus();
@@ -214,6 +213,8 @@ const BasicTranscript2 = ({ className }) => {
 
   const renderingElements = useMemo(() => {
     const renderingElements = [];
+    const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
+    const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
     activityTree.forEach(activitiesWithSameSender => {
       const firstActivity = activitiesWithSameSender[0][0];
@@ -227,7 +228,36 @@ const BasicTranscript2 = ({ className }) => {
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
-          const { channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {}, text } = activity;
+          const {
+            channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
+            from: { role },
+            text
+          } = activity;
+
+          const fromUser = role === 'user';
+
+          const topSideNub = fromUser ? topSideUserNub : topSideBotNub;
+
+          let showAvatar;
+
+          // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
+          if (showAvatarInGroup === 'sender') {
+            if (topSideNub) {
+              showAvatar = !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup;
+            } else {
+              showAvatar =
+                indexWithinSenderGroup === activitiesWithSameSender.length - 1 &&
+                indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+            }
+          } else if (showAvatarInGroup === 'status') {
+            if (topSideNub) {
+              showAvatar = !indexWithinSenderAndStatusGroup;
+            } else {
+              showAvatar = indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+            }
+          } else {
+            showAvatar = true;
+          }
 
           renderingElements.push({
             activity,
@@ -236,27 +266,28 @@ const BasicTranscript2 = ({ className }) => {
             // When "liveRegionKey" change, it was show up in the live region momentarily.
             liveRegionKey: key + '|' + (messageBackDisplayText || text),
             renderActivity,
-            renderActivityStatus,
-            renderAvatar,
+            renderActivityStatus:
+              // We only show the activity status at the end of the sender group.
+              indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1 && renderActivityStatus,
+            renderAvatar: showAvatar && renderAvatar,
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-            shouldSpeak: activity.channelData && activity.channelData.speak,
-
-            // TODO: Add a feature named "showAvatarOnGroup": "sender", "status", "every"/true.
-
-            // "leading"/"trailing" defines whether the activity is the first/last in the avatar group or not
-            // They is part of
-            leading: !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup,
-            trailing:
-              indexWithinSenderGroup === activitiesWithSameSender.length - 1 &&
-              indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1
+            shouldSpeak: activity.channelData && activity.channelData.speak
           });
         });
       });
     });
 
     return renderingElements;
-  }, [activitiesWithRenderer, activityTree, createAvatarRenderer, createActivityStatusRenderer]);
+  }, [
+    activitiesWithRenderer,
+    activityTree,
+    bubbleFromUserNubOffset,
+    bubbleNubOffset,
+    createActivityStatusRenderer,
+    createAvatarRenderer,
+    showAvatarInGroup
+  ]);
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
@@ -343,20 +374,15 @@ const BasicTranscript2 = ({ className }) => {
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
         >
           {renderingElements.map(
-            (
-              { activity, key, leading, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, trailing },
-              index
-            ) => (
+            ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak }, index) => (
               <React.Fragment key={key}>
                 <li
                   aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
                   className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
                 >
                   {renderActivity({
-                    leading,
                     renderActivityStatus,
-                    renderAvatar,
-                    trailing
+                    renderAvatar
                   })}
                   {shouldSpeak && <SpeakActivity activity={activity} />}
                 </li>

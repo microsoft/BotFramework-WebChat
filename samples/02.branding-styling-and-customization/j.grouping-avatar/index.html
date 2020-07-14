@@ -191,10 +191,9 @@
             activityDeferredObservable.next({
               channelData: { state: 'sent' },
               from: { role: 'user' },
-              id: '1',
-              text:
-                'Lorem pariatur ea veniam exercitation aliqua qui officia ut velit labore anim cupidatat non. Reprehenderit nostrud officia nisi.',
-              timestamp: new Date().toISOString(),
+              id: '1.0',
+              text: 'Lorem pariatur ea veniam exercitation aliqua qui officia.',
+              timestamp: new Date(Date.now() - 5001).toISOString(),
               type: 'message'
             });
 
@@ -203,6 +202,15 @@
               from: { role: 'user' },
               id: '1.1',
               text: 'Duis duis irure proident dolor labore labore pariatur proident duis.',
+              timestamp: new Date(Date.now() - 5001).toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1.2',
+              text: 'Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.',
               timestamp: new Date().toISOString(),
               type: 'message'
             });
@@ -338,7 +346,6 @@
           const [userNub, setUserNub] = useState(true);
           const [userOnTop, setUserOnTop] = useState(true);
           const [carouselLayout, setCarouselLayout] = useState(false);
-          const [groupActivities, setGroupActivities] = useState(true);
 
           const activityMiddleware = useMemo(
             () => createCustomActivityMiddleware(carouselLayout ? 'carousel' : 'stacked'),
@@ -360,8 +367,7 @@
             [userAvatarInitials, setUserAvatarInitials],
             [userNub, setUserNub],
             [userOnTop, setUserOnTop],
-            [carouselLayout, setCarouselLayout],
-            [groupActivities, setGroupActivities]
+            [carouselLayout, setCarouselLayout]
           ];
 
           const styleValues = styleValueAndSetters.map(([value]) => value);
@@ -409,6 +415,66 @@
             setViewComboNumber
           ]);
 
+          const handleAddMessage = useCallback(() => {
+            activityDeferredObservable.next({
+              from: { role: 'bot' },
+              id: Math.random()
+                .toString(36)
+                .substr(2),
+              text: NEXT_MESSAGES.shift(),
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+          }, []);
+
+          const [minimized, setMinimized] = useState(false);
+          const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
+
+          const [showAvatarInGroup, setShowAvatarInGroup] = useState('status');
+          const [showAvatarForEveryActivity, setShowAvatarForEveryActivity] = useState(false);
+
+          const setShowAvatarInSenderGroup = useCallback(() => {
+            setShowAvatarForEveryActivity(false);
+            setShowAvatarInGroup('sender');
+          }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
+
+          const setShowAvatarInStatusGroup = useCallback(() => {
+            setShowAvatarForEveryActivity(false);
+            setShowAvatarInGroup('status');
+          }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
+
+          const setShowAvatarInGroupType = useCallback(sender => setShowAvatarInGroup('sender'), [
+            setShowAvatarInGroup
+          ]);
+
+          const groupingValueAndSetters = [
+            [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
+            [showAvatarForEveryActivity, setShowAvatarForEveryActivity]
+          ];
+
+          const groupingValues = groupingValueAndSetters.map(([value]) => value);
+          const groupingSetters = groupingValueAndSetters.map(([_, setter]) => setter);
+
+          const groupingComboNumber = getComboNumber(groupingValues);
+          const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [
+            ...groupingSetters
+          ]);
+
+          const handleGroupingComboNumberChange = useCallback(
+            ({ target: { value } }) => setGroupingComboNumber(value),
+            [setGroupingComboNumber]
+          );
+
+          const handlePlusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber + 1), [
+            groupingComboNumber,
+            setGroupingComboNumber
+          ]);
+
+          const handleMinusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber - 1), [
+            groupingComboNumber,
+            setGroupingComboNumber
+          ]);
+
           const styleOptions = useMemo(
             () => ({
               bubbleBackground: '#0063B1',
@@ -425,39 +491,22 @@
               bubbleFromUserNubSize: userNub ? 10 : undefined,
               bubbleNubOffset: botOnTop ? 0 : undefined,
               bubbleNubSize: botNub ? 10 : undefined,
-              userAvatarInitials: userAvatarInitials ? 'WW' : undefined
+              userAvatarInitials: userAvatarInitials ? 'WW' : undefined,
+
+              groupTimestamp: 5000,
+              showAvatarInGroup: showAvatarForEveryActivity ? true : showAvatarInGroup
             }),
-            [botAvatarInitials, botNub, botOnTop, userAvatarInitials, userNub, userOnTop]
+            [
+              botAvatarInitials,
+              botNub,
+              botOnTop,
+              showAvatarForEveryActivity,
+              showAvatarInGroup,
+              userAvatarInitials,
+              userNub,
+              userOnTop
+            ]
           );
-
-          const handleAddMessage = useCallback(() => {
-            activityDeferredObservable.next({
-              from: { role: 'bot' },
-              id: Math.random()
-                .toString(36)
-                .substr(2),
-              text: NEXT_MESSAGES.shift(),
-              timestamp: new Date().toISOString(),
-              type: 'message'
-            });
-          }, []);
-
-          const [minimized, setMinimized] = useState(false);
-          const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
-          const groupActivitiesMiddleware = useMemo(() => {
-            if (!groupActivities) {
-              return () => next => args => {
-                const { activities } = args;
-
-                return {
-                  ...next(args),
-                  avatar: activities.map(activity => [activity])
-                };
-              };
-            }
-          }, [groupActivities]);
-
-          console.log({ groupActivitiesMiddleware });
 
           return (
             <div className={classNames('app', { 'app--wide': wide })} dir={rtl ? 'rtl' : undefined}>
@@ -483,6 +532,36 @@
                     <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
                     <button onClick={handlePlusOneViewComboNumber}>+</button>
                     <button onClick={handleMinusOneViewComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle
+                      checked={!showAvatarForEveryActivity && showAvatarInGroup === 'sender'}
+                      onChange={setShowAvatarInSenderGroup}
+                      type="radio"
+                    >
+                      Show avatar: On sender
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!showAvatarForEveryActivity && showAvatarInGroup === 'status'}
+                      onChange={setShowAvatarInStatusGroup}
+                      type="radio"
+                    >
+                      Show avatar: On status
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={showAvatarForEveryActivity} onChange={setShowAvatarForEveryActivity} type="radio">
+                      Show avatar: On every activity
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleGroupingComboNumberChange} type="number" value={groupingComboNumber} />
+                    <button onClick={handlePlusOneGroupingComboNumber}>+</button>
+                    <button onClick={handleMinusOneGroupingComboNumber}>-</button>
                   </div>
                   <hr />
                   <div>
@@ -559,12 +638,6 @@
                   </div>
                   <hr />
                   <div>
-                    <Toggle checked={groupActivities} onChange={setGroupActivities}>
-                      Group activities
-                    </Toggle>
-                  </div>
-                  <hr />
-                  <div>
                     <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
                     <button onClick={handlePlusOneStyleComboNumber}>+</button>
                     <button onClick={handleMinusOneStyleComboNumber}>-</button>
@@ -580,7 +653,6 @@
                 activityMiddleware={activityMiddleware}
                 directLine={directLine}
                 dir={rtl ? 'rtl' : undefined}
-                groupActivitiesMiddleware={groupActivitiesMiddleware}
                 styleOptions={styleOptions}
               >
                 <BasicWebChat />

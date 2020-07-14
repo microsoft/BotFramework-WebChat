@@ -15,7 +15,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, leading, renderActivityStatus, renderAvatar, trailing }) => {
+const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const filmStyleSet = createBasicStyleSet({ cursor: null });
@@ -30,10 +30,8 @@ const CarouselLayout = ({ activity, children, leading, renderActivityStatus, ren
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
             <CarouselFilmStrip
               activity={activity}
-              leading={leading}
               renderActivityStatus={renderActivityStatus}
               renderAvatar={renderAvatar}
-              trailing={trailing}
             />
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
