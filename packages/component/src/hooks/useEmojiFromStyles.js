@@ -7,7 +7,7 @@ function escapeRegexp(emoticon) {
 }
 
 export default function useEmojiFromStyles() {
-  const [{ emojiAutocorrect: autocorrect, emojiList: customEmojiList, emojiRegExp: regex }] = useStyleOptions();
+  const [{ emojiAutocorrect: autocorrect, emojiList: customEmojiList }] = useStyleOptions();
 
   const emojiAutocorrect = autocorrect || false;
 
