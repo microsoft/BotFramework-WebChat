@@ -44,6 +44,7 @@ export interface DatePickerState {
     monthAvailabilities: any;
     loading: boolean;
     duration: number;
+    previousStartDates: moment.Moment[]; // keep track of start dates in previous 3 day ranges
 }
 
 export const dateFormat = 'MMMM D, YYYY';
@@ -99,7 +100,8 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             includedTimes: [],
             monthAvailabilities: null,
             loading: true,
-            duration: 30
+            duration: 30,
+            previousStartDates: []
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -125,8 +127,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             directLine,
             conversationId
         } = this.props;
-        const startDate = date.clone().startOf('week').format('YYYY-MM-DD');
-        const endDate = date.clone().endOf('week').format('YYYY-MM-DD');
+        const startDate = date.clone().format('YYYY-MM-DD');
 
         if (!node) {
             return;
@@ -134,7 +135,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         if (node && node.node_type === 'handoff') {
             const dateAvailabilitySelected = changeExcludeTime && this.state.startDate;
             this.setState({loading: true});
-            availableTimes(gid, directLine.secret, conversationId, startDate, endDate)
+            availableTimes(gid, directLine.secret, conversationId, startDate)
                 .then((res: any) => {
                     const allAvailabilities = this.mapAvailabilitiesDateWise(res.data);
                     let getAvailForDate = date;
@@ -146,13 +147,28 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     const hourString = +res.data.duration.split(':')[0];
                     const appointmentDuration = hourString * 60 + minuteString;
                     const includedTime = getIncludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], appointmentDuration, date);
+
+                    const lastStartDate = this.state.previousStartDates.length === 0 ? undefined : this.state.previousStartDates[this.state.previousStartDates.length - 1];
+
+                    let updatedPreviousStartDates: moment.Moment[];
+                    if (this.state.previousStartDates.length === 0) {
+                        updatedPreviousStartDates = [date];
+                    } else {
+                        if (lastStartDate < date) {
+                            updatedPreviousStartDates = this.state.previousStartDates.concat(date);
+                        } else if (lastStartDate > date && this.state.previousStartDates.length > 1) {
+                            updatedPreviousStartDates = this.state.previousStartDates.slice(0, -1);
+                        }
+                    }
+
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
                         includedTimes: includedTime,
                         loading: false,
-                        duration: appointmentDuration
+                        duration: appointmentDuration,
+                        previousStartDates: updatedPreviousStartDates || this.state.previousStartDates
                     });
             })
             .catch((err: any) => {
@@ -301,9 +317,14 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     renderDayPicker = () => {
-      const keys = this.state.monthAvailabilities ? Object.keys(this.state.monthAvailabilities) : [];
+      const keys = this.state.monthAvailabilities ? Object.keys(this.state.monthAvailabilities).sort((a, b) => Date.parse(a) - Date.parse(b)) : [];
       const startDate = this.state.monthAvailabilities ? moment(keys[0]) : undefined;
-      const endDate = this.state.monthAvailabilities ? moment(keys[keys.length - 1]) : undefined;
+      let endDate: moment.Moment; // = this.state.monthAvailabilities ? moment(keys[keys.length - 1]) : undefined;
+      keys.forEach(key => {
+        if (this.state.monthAvailabilities[key].length > 0) {
+          endDate = moment(key);
+        }
+      });
 
       return (
         <div className="gd-date-picker-inner-container">
@@ -337,7 +358,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
               {startDate > moment() && <button
                 className="gd-date-picker-prev"
                 disabled={this.state.loading}
-                onClick={e => this.getAvailableTimes(startDate.subtract(1, 'days'), true)}
+                onClick={e => this.getAvailableTimes(this.state.previousStartDates[this.state.previousStartDates.length - 2], true)}
               >Prev</button>}
               <button
                 className="gd-date-picker-next"
