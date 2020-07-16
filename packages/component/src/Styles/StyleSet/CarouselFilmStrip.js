@@ -17,11 +17,17 @@ export default function CarouselFilmStrip({
         marginBottom: -17
       },
 
-      '& .webchat__carousel-layout__attachment, .webchat__carousel-layout__message': {
-        maxWidth: bubbleMaxWidth,
+      '& .webchat__carousel-layout__attachment': {
         minWidth: bubbleMinWidth,
+        maxWidth: bubbleMaxWidth,
         transitionDuration,
         transitionProperty: 'max-width, min-width'
+      },
+
+      '& .webchat__carousel-layout__message': {
+        maxWidth: bubbleMaxWidth,
+        transitionDuration,
+        transitionProperty: 'max-width'
       },
 
       '&.webchat__carousel-layout--hide-nub, &.webchat__carousel-layout--show-nub, &.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {

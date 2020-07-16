@@ -1,7 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import mirrorStyle from '../mirrorStyle';
-
 export default function createStackedLayoutStyle({
   avatarSize,
   bubbleMaxWidth,
@@ -26,7 +24,9 @@ export default function createStackedLayoutStyle({
         }
       },
 
-      // Revised
+      '& .webchat__stacked-layout__content': {
+        overflow: 'hidden'
+      },
 
       '&.webchat__stacked-layout--from-user': {
         '& .webchat__stacked-layout__main, .webchat__stacked-layout__status': {
@@ -40,11 +40,17 @@ export default function createStackedLayoutStyle({
         width: 0
       },
 
-      '& .webchat__stacked-layout__bubble': {
+      '& .webchat__stacked-layout__attachment': {
         maxWidth: bubbleMaxWidth,
         minWidth: bubbleMinWidth,
         transitionDuration,
         transitionProperty: 'max-width, min-width'
+      },
+
+      '& .webchat__stacked-layout__message': {
+        maxWidth: bubbleMaxWidth,
+        transitionDuration,
+        transitionProperty: 'max-width'
       },
 
       // nub-pad
@@ -62,7 +68,7 @@ export default function createStackedLayoutStyle({
       },
 
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub': {
-        '& .webchat__stacked-layout__bubble': {
+        '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
           maxWidth: bubbleMaxWidth + paddingRegular
         },
 

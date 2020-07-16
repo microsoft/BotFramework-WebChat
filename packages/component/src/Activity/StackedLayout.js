@@ -21,9 +21,7 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
   '&.webchat__stacked-layout': {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'relative', // This is to keep screen reader text in the destinated area.
+    // position: 'relative', // This is to keep screen reader text in the destinated area.
 
     '& .webchat__stacked-layout__main': {
       display: 'flex',
@@ -38,11 +36,6 @@ const ROOT_CSS = css({
       display: 'flex',
       flexDirection: 'column',
       flexShrink: 0
-    },
-
-    '& .webchat__stacked-layout__content': {
-      display: 'flex',
-      flexDirection: 'column'
     },
 
     '& .webchat__stacked-layout__nub-pad': {
@@ -149,7 +142,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
-                className="webchat__stacked-layout__bubble"
+                className="webchat__stacked-layout__message"
                 fromUser={fromUser}
                 nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
               >
@@ -167,7 +160,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
             <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment" key={index}>
               <ScreenReaderText text={attachedAlt} />
               <Bubble
-                className="webchat__stacked-layout__bubble"
+                className="webchat__stacked-layout__attachment"
                 fromUser={fromUser}
                 key={index}
                 nub={(hasAvatar || hasNub) && 'hidden'}

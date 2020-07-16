@@ -12,9 +12,11 @@ import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useDebugDeps from './hooks/internal/useDebugDeps';
 import useDirection from './hooks/useDirection';
 import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
+import useMemoize from './hooks/internal/useMemoize';
 import useRenderActivity from './hooks/useRenderActivity';
 import useRenderActivityStatus from './hooks/useRenderActivityStatus';
 import useRenderAvatar from './hooks/useRenderAvatar';
@@ -101,6 +103,10 @@ const BasicTranscript2 = ({ className }) => {
   const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
   const [sticky] = useSticky();
+
+  // const animatingToEnd = false;
+  // const sticky = true;
+
   const createActivityRenderer = useRenderActivity();
   const createActivityStatusRenderer = useRenderActivityStatus();
   const createAvatarRenderer = useRenderAvatar();
@@ -114,22 +120,43 @@ const BasicTranscript2 = ({ className }) => {
   // Gets renderer for every activities.
   // Some activities that are not visible, will return a falsy renderer.
 
-  const activitiesWithRenderer = useMemo(() => {
-    const activitiesWithRenderer = [];
+  // Converting from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
+  // This is for the memoization function to cache the arguments.
+  const createActivityRenderer2 = useCallback(
+    (activity, nextVisibleActivity) =>
+      createActivityRenderer({
+        activity,
+        nextVisibleActivity
+      }),
+    [createActivityRenderer]
+  );
 
-    [...activities].reverse().forEach(activity => {
-      const { activity: nextVisibleActivity } = activitiesWithRenderer[0] || {};
-      const renderActivity = createActivityRenderer({ activity, nextVisibleActivity });
+  // Create a memoized context of the createActivityRenderer function.
+  const activitiesWithRenderer = useMemoize(
+    createActivityRenderer2,
+    createActivityRenderer2Memoized => {
+      // All calls to createActivityRenderer2Memoized() in this function will be memoized (LRU = 1).
+      // In next render cycle, calls to createActivityRenderer2Memoized() might return memoized result instead.
+      // This is an improvement to React useMemo(), because it only allows 1 memoization.
+      // useMemoize() allows any number of memoization.
 
-      renderActivity &&
-        activitiesWithRenderer.splice(0, 0, {
-          activity,
-          renderActivity
-        });
-    });
+      const activitiesWithRenderer = [];
 
-    return activitiesWithRenderer;
-  }, [createActivityRenderer, activities]);
+      [...activities].reverse().forEach(activity => {
+        const [{ activity: nextVisibleActivity } = {}] = activitiesWithRenderer;
+        const renderActivity = createActivityRenderer2Memoized(activity, nextVisibleActivity);
+
+        renderActivity &&
+          activitiesWithRenderer.splice(0, 0, {
+            activity,
+            renderActivity
+          });
+      });
+
+      return activitiesWithRenderer;
+    },
+    [activities]
+  );
 
   const visibleActivities = useMemo(() => activitiesWithRenderer.map(({ activity }) => activity), [
     activitiesWithRenderer
@@ -351,6 +378,20 @@ const BasicTranscript2 = ({ className }) => {
       ({ activity }) => getActivityUniqueId(activity) === lastReadActivityIdRef.current
     );
   }, [allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, renderingElements, sticky]);
+
+  useDebugDeps(
+    {
+      // activitiesGroupBySender,
+      // activitiesGroupByStatus,
+      // activityTree,
+      renderingElements,
+      visibleActivities
+    },
+    'BasicTranscript2'
+  );
+
+  // Reduce number of render here.
+  console.log('render BasicTranscript2');
 
   return (
     <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
