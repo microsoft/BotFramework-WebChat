@@ -29,9 +29,11 @@ export interface Node {
 }
 
 interface FloatingIconProps {
+    alignment?: string;
     visible?: boolean;
     activity?: Activity & { text: string };
     clicked?: () => void;
+    leftOffset: number;
     logoColor: string;
     bottomOffset: number;
     rightOffset: number;
@@ -46,11 +48,12 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
     }
 
     render() {
-        const { visible, activity, logoColor, bottomOffset, rightOffset } = this.props;
+        const { alignment, visible, activity, logoColor, bottomOffset, rightOffset, leftOffset } = this.props;
 
         const floatingIconStyle = {
           ...(bottomOffset > 0) && { bottom: bottomOffset },
-          ...(rightOffset > 0) && { right: rightOffset}
+          ...(alignment !== 'left' && rightOffset > 0) && { right: rightOffset},
+          ...(alignment === 'left') && { left: leftOffset || 0 }
         };
 
         return (
@@ -85,8 +88,10 @@ export const FloatingIcon = connect(
 
     }, (stateProps: any, dispatchProps: any, ownProps: any): FloatingIconProps => ({
         activity: stateProps.activities ? stateProps.activities[0] : null,
+        alignment: stateProps.format.alignment,
         visible: ownProps.visible,
         clicked: ownProps.clicked,
+        leftOffset: stateProps.format.leftOffset,
         logoColor: stateProps.format.themeColor,
         bottomOffset: stateProps.format.bottomOffset,
         rightOffset: stateProps.format.rightOffset

@@ -327,14 +327,16 @@ export class Chat extends React.Component<ChatProps, State> {
                             });
                         }
 
-                        if (bot_display_options && (bot_display_options.bottomOffset || bot_display_options.topOffset || bot_display_options.rightOffset || bot_display_options.fullHeight || bot_display_options.display_name)) {
-                            const { bottomOffset, topOffset, rightOffset, fullHeight, display_name } = bot_display_options;
+                        if (bot_display_options) {
+                            const { alignment, bottomOffset, topOffset, leftOffset, rightOffset, fullHeight, display_name } = bot_display_options;
 
                             this.store.dispatch({
                                 type: 'Set_Format_Options',
                                 formatOptions: {
+                                    alignment,
                                     bottomOffset,
                                     topOffset,
+                                    leftOffset,
                                     rightOffset,
                                     fullHeight,
                                     display_name
@@ -459,16 +461,19 @@ export class Chat extends React.Component<ChatProps, State> {
     }
 
     private calculateChatviewPanelStyle = (format: FormatOptions) => {
+        const alignment = format && format.alignment;
         const fullHeight = format && format.fullHeight;
         const bottomOffset = fullHeight ? 0 : (format && format.bottomOffset ? format.bottomOffset + 99 : 17);
         const topOffset = format && format.topOffset ? format.topOffset : 0;
-        const rightOffset = fullHeight ? 0 : (format && format.rightOffset ? format.rightOffset : -1);
+        const leftOffset = fullHeight ? 0 : (alignment && alignment === 'left' && format && format.leftOffset ? format.leftOffset : 0);
+        const rightOffset = fullHeight ? 0 : (alignment !== 'left' && format && format.rightOffset ? format.rightOffset : -1);
         const height = fullHeight ? '100vh' : `calc(100vh - ${bottomOffset}px - ${topOffset}px - 20px)`;
 
         return {
             bottom: bottomOffset,
             height,
-            ...(rightOffset !== -1 || (format && format.fullHeight)) && {right: rightOffset}
+            ...alignment === 'left' && { left: leftOffset },
+            ...(rightOffset !== -1 || (format && format.fullHeight)) && { right: rightOffset }
         };
     }
 
