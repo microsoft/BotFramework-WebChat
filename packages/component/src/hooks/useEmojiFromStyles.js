@@ -1,9 +1,11 @@
-/*eslint no-useless-escape: "off"*/
 /*eslint require-unicode-regexp: "off" */
+
+import { useMemo } from 'react';
+
 import useStyleOptions from './useStyleOptions';
 
 function escapeRegexp(emoticon) {
-  return emoticon.replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+  return emoticon.replace(/[\\^$*+?.()|[\]{}]/gu, '\\$&');
 }
 
 export default function useEmojiFromStyles() {
@@ -18,6 +20,8 @@ export default function useEmojiFromStyles() {
     '(-:': '😊',
     ':-|': '😐',
     ':|': '😐',
+    ':-(': '☹️',
+    ':(': '☹️',
     ':-D': '😀',
     ':D': '😀',
     ':-p': '😛',
@@ -43,9 +47,10 @@ export default function useEmojiFromStyles() {
       .map(escapeRegexp)
       .join('|');
 
-  const emojiRegExp = customEmojiList
-    ? new RegExp(escapedString, 'gum')
-    : new RegExp(/([:<()\\|\/3DPpoO0-]{2,3})/, 'gum');
+  const emojiRegExp = useMemo(
+    () => (customEmojiList ? new RegExp(escapedString, 'gmu') : new RegExp(/([:<()\\|/3DPpoO0-]{2,3})/gmu)),
+    [customEmojiList, escapedString]
+  );
 
   return [{ emojiAutocorrect, emojiUnicodeMap, emojiRegExp }];
 }

@@ -10,9 +10,9 @@ import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
+import useReplaceEmoticon from '../hooks/useReplaceEmoticon';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
-import useRenderEmoji from '../hooks/useRenderEmoji';
 import useStopDictate from '../hooks/useStopDictate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -116,7 +116,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
-  const [, setEmoji] = useRenderEmoji();
+  const [, setEmoji] = useReplaceEmoticon();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();

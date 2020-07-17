@@ -31,7 +31,7 @@ import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
 import useRenderAvatar from './useRenderAvatar';
-import useRenderEmoji from './useRenderEmoji';
+import useReplaceEmoticon from './useReplaceEmoticon';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
@@ -104,7 +104,7 @@ export {
   useRenderActivityStatus,
   useRenderAttachment,
   useRenderAvatar,
-  useRenderEmoji,
+  useReplaceEmoticon,
   useRenderMarkdownAsHTML,
   useRenderToast,
   useRenderTypingIndicator,
