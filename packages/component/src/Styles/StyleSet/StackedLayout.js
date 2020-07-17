@@ -28,12 +28,6 @@ export default function createStackedLayoutStyle({
         overflow: 'hidden'
       },
 
-      '&.webchat__stacked-layout--from-user': {
-        '& .webchat__stacked-layout__main, .webchat__stacked-layout__status': {
-          flexDirection: 'row-reverse'
-        }
-      },
-
       '& .webchat__stacked-layout__avatar-gutter': {
         transitionDuration,
         transitionProperty: 'width',
@@ -41,10 +35,12 @@ export default function createStackedLayoutStyle({
       },
 
       '& .webchat__stacked-layout__attachment': {
+        marginTop: paddingRegular,
         maxWidth: bubbleMaxWidth,
         minWidth: bubbleMinWidth,
         transitionDuration,
-        transitionProperty: 'max-width, min-width'
+        transitionProperty: 'max-width, min-width',
+        width: '100%'
       },
 
       '& .webchat__stacked-layout__message': {
@@ -79,12 +75,6 @@ export default function createStackedLayoutStyle({
 
       '&:not(.webchat__stacked-layout--top-callout) .webchat__stacked-layout__avatar-gutter': {
         justifyContent: 'flex-end'
-      },
-
-      // attachment
-
-      '& .webchat__stacked-layout__attachment': {
-        marginTop: paddingRegular
       }
     }
   };

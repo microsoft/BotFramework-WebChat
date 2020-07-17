@@ -38,6 +38,19 @@ const ROOT_CSS = css({
       flexShrink: 0
     },
 
+    '&.webchat__stacked-layout--from-user': {
+      '& .webchat__stacked-layout__content, .webchat__stacked-layout__main, .webchat__stacked-layout__status': {
+        flexDirection: 'row-reverse'
+      }
+    },
+
+    '& .webchat__stacked-layout__content': {
+      alignItems: 'flex-start', // This is required for content with attachments wider than the message
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1
+    },
+
     '& .webchat__stacked-layout__nub-pad': {
       flexShrink: 0
     },

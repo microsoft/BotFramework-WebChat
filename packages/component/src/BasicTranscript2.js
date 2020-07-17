@@ -14,6 +14,7 @@ import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDebugDeps from './hooks/internal/useDebugDeps';
 import useDirection from './hooks/useDirection';
+import useFocus from './hooks/useDirection';
 import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
@@ -100,19 +101,13 @@ const BasicTranscript2 = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, hideScrollToEndButton, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
-  const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
-  const [sticky] = useSticky();
-
-  // const animatingToEnd = false;
-  // const sticky = true;
 
   const createActivityRenderer = useRenderActivity();
   const createActivityStatusRenderer = useRenderActivityStatus();
   const createAvatarRenderer = useRenderAvatar();
   const groupActivities = useGroupActivities();
   const localize = useLocalizer();
-  const scrollToEndButtonRef = useRef();
 
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
@@ -141,17 +136,25 @@ const BasicTranscript2 = ({ className }) => {
       // useMemoize() allows any number of memoization.
 
       const activitiesWithRenderer = [];
+      let nextVisibleActivity;
 
-      [...activities].reverse().forEach(activity => {
-        const [{ activity: nextVisibleActivity } = {}] = activitiesWithRenderer;
+      for (let index = activities.length - 1; index >= 0; index--) {
+        const activity = activities[index];
+        // const [{ activity: nextVisibleActivity } = {}] = activitiesWithRenderer;
         const renderActivity = createActivityRenderer2Memoized(activity, nextVisibleActivity);
 
-        renderActivity &&
+        if (renderActivity) {
           activitiesWithRenderer.splice(0, 0, {
             activity,
             renderActivity
           });
-      });
+
+          nextVisibleActivity = activity;
+        }
+      }
+
+      // [...activities].reverse().forEach(activity => {
+      // });
 
       return activitiesWithRenderer;
     },
@@ -317,6 +320,111 @@ const BasicTranscript2 = ({ className }) => {
     showAvatarInGroup
   ]);
 
+  useDebugDeps(
+    {
+      // activitiesGroupBySender,
+      // activitiesGroupByStatus,
+      // activityTree,
+      renderingElements,
+      visibleActivities
+    },
+    'BasicTranscript2'
+  );
+
+  // Reduce number of render here.
+  console.log('render BasicTranscript2');
+
+  const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
+
+  return (
+    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
+      {/* This <section> is for live region only. Contents are made invisible through CSS. */}
+      <section
+        aria-atomic={false}
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-roledescription={transcriptRoleDescription}
+        role="log"
+      >
+        {renderingElements.map(({ activity, liveRegionKey }) => (
+          <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+        ))}
+      </section>
+      <InternalTranscriptScrollable activities={renderingActivities}>
+        {renderingElements.map(
+          ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout }, index) => (
+            <li
+              aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
+              className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
+              key={key}
+            >
+              {renderActivity({
+                renderActivityStatus,
+                renderAvatar,
+                showCallout
+              })}
+              {shouldSpeak && <SpeakActivity activity={activity} />}
+            </li>
+          )
+        )}
+      </InternalTranscriptScrollable>
+    </div>
+  );
+};
+
+BasicTranscript2.defaultProps = {
+  className: ''
+};
+
+BasicTranscript2.propTypes = {
+  className: PropTypes.string
+};
+
+const InternalScreenReaderTranscript = ({ renderingElements }) => {
+  const localize = useLocalizer();
+
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  return (
+    <section
+      aria-atomic={false}
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-roledescription={transcriptRoleDescription}
+      role="log"
+    >
+      {renderingElements.map(({ activity, liveRegionKey }) => (
+        <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+      ))}
+    </section>
+  );
+};
+
+InternalScreenReaderTranscript.propTypes = {
+  renderingElements: PropTypes.arrayOf(
+    PropTypes.shape({
+      activity: PropTypes.any,
+      liveRegionKey: PropTypes.string
+    })
+  )
+};
+
+// Separating high-frequency hooks to improve performance.
+const InternalTranscriptScrollable = ({ activities, children }) => {
+  const [{ activities: activitiesStyleSet }] = useStyleSet();
+  const [{ hideScrollToEndButton }] = useStyleOptions();
+  const [animatingToEnd] = useAnimatingToEnd();
+  const [sticky] = useSticky();
+  const focus = useFocus();
+  const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1] || {}); // Activity ID of the last visible activity in the list.
+  const localize = useLocalizer();
+  const scrollToEndButtonRef = useRef();
+
+  const lastReadActivityIdRef = useRef(lastVisibleActivityId);
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
+
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
 
@@ -333,13 +441,6 @@ const BasicTranscript2 = ({ className }) => {
       firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
   }, [focus, scrollToEndButtonRef]);
-
-  // Activity ID of the last visible activity in the list.
-  const lastVisibleActivityId = getActivityUniqueId(renderingElements[renderingElements.length - 1] || {});
-
-  const lastReadActivityIdRef = useRef(lastVisibleActivityId);
-
-  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   if (sticky) {
     // If it is sticky, the user is at the bottom of the transcript, everything is read.
@@ -374,89 +475,53 @@ const BasicTranscript2 = ({ className }) => {
       return -1;
     }
 
-    return renderingElements.findIndex(
-      ({ activity }) => getActivityUniqueId(activity) === lastReadActivityIdRef.current
-    );
-  }, [allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, renderingElements, sticky]);
+    return activities.findIndex(activity => getActivityUniqueId(activity) === lastReadActivityIdRef.current);
+  }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
+
+  // console.log('render InternalTranscriptScrollable');
 
   useDebugDeps(
     {
-      // activitiesGroupBySender,
-      // activitiesGroupByStatus,
-      // activityTree,
-      renderingElements,
-      visibleActivities
+      activities,
+      allActivitiesRead,
+      animatingToEnd,
+      hideScrollToEndButton,
+      lastReadActivityIdRef,
+      sticky
     },
-    'BasicTranscript2'
+    'InternalTranscriptScrollable'
   );
-
-  // Reduce number of render here.
-  console.log('render BasicTranscript2');
 
   return (
-    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
-      <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
-        <div aria-hidden={true} className="webchat__basic-transcript__filler" />
-
-        {/* This <section> is for live region only. Contents are made invisible through CSS. */}
-        <section
-          aria-atomic={false}
-          aria-live="polite"
-          aria-relevant="additions"
-          aria-roledescription={transcriptRoleDescription}
-          role="log"
-        >
-          {renderingElements.map(({ activity, liveRegionKey }) => (
-            <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
-          ))}
-        </section>
-
-        <ul
-          aria-roledescription={transcriptRoleDescription}
-          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-        >
-          {renderingElements.map(
-            (
-              { activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout },
-              index
-            ) => (
-              <React.Fragment key={key}>
-                <li
-                  aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
-                  className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
-                >
-                  {renderActivity({
-                    renderActivityStatus,
-                    renderAvatar,
-                    showCallout
-                  })}
-                  {shouldSpeak && <SpeakActivity activity={activity} />}
-                </li>
-                {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
-                {index === renderSeparatorAfterIndex && (
-                  <ScrollToEndButton
-                    aria-valuemax={renderingElements.length}
-                    aria-valuenow={index + 1}
-                    onClick={handleScrollToEndButtonClick}
-                    ref={scrollToEndButtonRef}
-                  />
-                )}
-              </React.Fragment>
-            )
-          )}
-        </ul>
-        <BasicTypingIndicator />
-      </ScrollToBottomPanel>
-    </div>
+    <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+      <div aria-hidden={true} className="webchat__basic-transcript__filler" />
+      <ul
+        aria-roledescription={transcriptRoleDescription}
+        className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+      >
+        {React.Children.map(children, (child, index) => (
+          <React.Fragment>
+            {child}
+            {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
+            {index === renderSeparatorAfterIndex && (
+              <ScrollToEndButton
+                aria-valuemax={activities.length}
+                aria-valuenow={index + 1}
+                onClick={handleScrollToEndButtonClick}
+                ref={scrollToEndButtonRef}
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </ul>
+      <BasicTypingIndicator />
+    </ScrollToBottomPanel>
   );
 };
 
-BasicTranscript2.defaultProps = {
-  className: ''
-};
-
-BasicTranscript2.propTypes = {
-  className: PropTypes.string
+InternalTranscriptScrollable.propTypes = {
+  activities: PropTypes.array.isRequired,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
 export default BasicTranscript2;
