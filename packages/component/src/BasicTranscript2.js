@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
+
 import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
@@ -7,6 +9,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
+import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
@@ -14,7 +17,7 @@ import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useDebugDeps from './hooks/internal/useDebugDeps';
 import useDirection from './hooks/useDirection';
-import useFocus from './hooks/useDirection';
+import useFocus from './hooks/useFocus';
 import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
@@ -98,8 +101,8 @@ function validateAllActivitiesTagged(activities, bins) {
 }
 
 const BasicTranscript2 = ({ className }) => {
-  const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, hideScrollToEndButton, showAvatarInGroup }] = useStyleOptions();
+  const [{ activity: activityStyleSet }] = useStyleSet();
+  const [{ bubbleFromUserNubOffset, bubbleNubOffset, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
   const [direction] = useDirection();
 
@@ -247,7 +250,7 @@ const BasicTranscript2 = ({ className }) => {
     const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
     activityTree.forEach(activitiesWithSameSender => {
-      const firstActivity = activitiesWithSameSender[0][0];
+      const [[firstActivity]] = activitiesWithSameSender;
       const renderAvatar = createAvatarRenderer({ activity: firstActivity });
 
       activitiesWithSameSender.forEach((activitiesWithSameSenderAndStatus, indexWithinSenderGroup) => {
@@ -255,7 +258,14 @@ const BasicTranscript2 = ({ className }) => {
           activity: activitiesWithSameSenderAndStatus[activitiesWithSameSenderAndStatus.length - 1]
         });
 
+        const firstInSenderGroup = !indexWithinSenderGroup;
+        const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSenderAndStatus;
+
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
+          const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
+          const lastInSenderAndStatusGroup =
+            indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
           const {
@@ -264,26 +274,22 @@ const BasicTranscript2 = ({ className }) => {
             text
           } = activity;
 
-          const fromUser = role === 'user';
-
-          const topSideNub = fromUser ? topSideUserNub : topSideBotNub;
+          const topSideNub = role === 'user' ? topSideUserNub : topSideBotNub;
 
           let showCallout;
 
           // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
           if (showAvatarInGroup === 'sender') {
             if (topSideNub) {
-              showCallout = !indexWithinSenderGroup && !indexWithinSenderAndStatusGroup;
+              showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;
             } else {
-              showCallout =
-                indexWithinSenderGroup === activitiesWithSameSender.length - 1 &&
-                indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+              showCallout = lastInSenderGroup && lastInSenderAndStatusGroup;
             }
           } else if (showAvatarInGroup === 'status') {
             if (topSideNub) {
-              showCallout = !indexWithinSenderAndStatusGroup;
+              showCallout = firstInSenderAndStatusGroup;
             } else {
-              showCallout = indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+              showCallout = lastInSenderAndStatusGroup;
             }
           } else {
             showCallout = true;
@@ -352,7 +358,7 @@ const BasicTranscript2 = ({ className }) => {
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
         {renderingElements.map(
-          ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout }, index) => (
+          ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout }) => (
             <li
               aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
               className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
@@ -406,7 +412,7 @@ InternalScreenReaderTranscript.propTypes = {
       activity: PropTypes.any,
       liveRegionKey: PropTypes.string
     })
-  )
+  ).isRequired
 };
 
 // Separating high-frequency hooks to improve performance.

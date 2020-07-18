@@ -18,14 +18,8 @@ export default function createStackedLayoutStyle({
         width: 0
       },
 
-      '&.webchat__stacked-layout--extra-trailing': {
-        '& .webchat__stacked-layout__alignment-pad': {
-          width: paddingRegular
-        }
-      },
-
-      '& .webchat__stacked-layout__content': {
-        overflow: 'hidden'
+      '&.webchat__stacked-layout--extra-trailing .webchat__stacked-layout__alignment-pad': {
+        width: paddingRegular
       },
 
       '& .webchat__stacked-layout__avatar-gutter': {
@@ -39,7 +33,10 @@ export default function createStackedLayoutStyle({
         maxWidth: bubbleMaxWidth,
         minWidth: bubbleMinWidth,
         transitionDuration,
-        transitionProperty: 'max-width, min-width',
+        transitionProperty: 'max-width, min-width'
+      },
+
+      '& .webchat__stacked-layout__attachment-row': {
         width: '100%'
       },
 
@@ -48,8 +45,6 @@ export default function createStackedLayoutStyle({
         transitionDuration,
         transitionProperty: 'max-width'
       },
-
-      // nub-pad
 
       '& .webchat__stacked-layout__nub-pad': {
         transitionDuration,

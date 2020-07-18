@@ -21,11 +21,10 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 
 const ROOT_CSS = css({
   '&.webchat__stacked-layout': {
-    // position: 'relative', // This is to keep screen reader text in the destinated area.
+    position: 'relative', // This is to keep screen reader text in the destinated area.
 
     '& .webchat__stacked-layout__main': {
-      display: 'flex',
-      flexDirection: 'row'
+      display: 'flex'
     },
 
     '& .webchat__stacked-layout__alignment-pad': {
@@ -45,10 +44,11 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__stacked-layout__content': {
-      alignItems: 'flex-start', // This is required for content with attachments wider than the message
-      display: 'flex',
-      flexDirection: 'column',
-      flexGrow: 1
+      overflow: 'hidden'
+    },
+
+    '& .webchat__stacked-layout__main': {
+      display: 'flex'
     },
 
     '& .webchat__stacked-layout__nub-pad': {
@@ -87,7 +87,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
-  const contentARIALabelId = useUniqueId('webchat__stacked-layout__content-column');
+  const contentARIALabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
   const renderAttachment = useRenderAttachment();
   const showActivityStatus = typeof renderActivityStatus === 'function';
@@ -146,11 +146,11 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
         <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
         <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
-            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-            /* eslint-disable-next-line react/forbid-dom-props */
             <div
               aria-roledescription="message"
               className="webchat__stacked-layout__message-row"
+              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+              /* eslint-disable-next-line react/forbid-dom-props */
               id={contentARIALabelId}
             >
               <ScreenReaderText text={greetingAlt} />
@@ -170,7 +170,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
             </div>
           )}
           {attachments.map((attachment, index) => (
-            <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment" key={index}>
+            <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment-row" key={index}>
               <ScreenReaderText text={attachedAlt} />
               <Bubble
                 className="webchat__stacked-layout__attachment"
@@ -199,7 +199,8 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
 
 StackedLayout.defaultProps = {
   renderActivityStatus: false,
-  renderAvatar: false
+  renderAvatar: false,
+  showCallout: true
 };
 
 StackedLayout.propTypes = {
@@ -219,7 +220,8 @@ StackedLayout.propTypes = {
     type: PropTypes.string.isRequired
   }).isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func])
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  showCallout: PropTypes.bool
 };
 
 export default StackedLayout;

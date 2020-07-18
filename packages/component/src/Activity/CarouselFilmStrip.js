@@ -119,7 +119,7 @@ const WebChatCarouselFilmStrip = ({
   scrollableRef,
   showCallout
 }) => {
-  const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
+  const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -235,7 +235,8 @@ const WebChatCarouselFilmStrip = ({
 WebChatCarouselFilmStrip.defaultProps = {
   className: '',
   renderActivityStatus: false,
-  renderAvatar: false
+  renderAvatar: false,
+  showCallout: false
 };
 
 WebChatCarouselFilmStrip.propTypes = {
@@ -256,9 +257,10 @@ WebChatCarouselFilmStrip.propTypes = {
   }).isRequired,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  scrollableRef: PropTypes.any.isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func])
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  scrollableRef: PropTypes.any.isRequired,
+  showCallout: PropTypes.bool
 };
 
 const CarouselFilmStrip = props => (

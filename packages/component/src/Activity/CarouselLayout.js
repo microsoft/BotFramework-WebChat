@@ -3,7 +3,7 @@ import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from '
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useDirection from '../hooks/useDirection';
@@ -18,7 +18,7 @@ const ROOT_CSS = css({
 const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar, showCallout }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const filmStyleSet = createBasicStyleSet({ cursor: null });
+  const filmStyleSet = useMemo(() => createBasicStyleSet({ cursor: null }), []);
   const leftSideFlipper = direction === 'rtl' ? '>' : '<';
   const localize = useLocalizer();
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';

@@ -3,11 +3,11 @@ export default function mirrorStyle(mirrorSelector, styles) {
 
   for (const [key, value] of Object.entries(styles)) {
     if (typeof value === 'number' || typeof value === 'string') {
-      key = key.replace(/(^left|^right|Left|Right)/u, match =>
+      const patchedKey = key.replace(/(^left|^right|Left|Right)/u, match =>
         match === 'Left' ? 'Right' : match === 'left' ? 'right' : match === 'Right' ? 'Left' : 'left'
       );
 
-      mirrored[key] = value;
+      mirrored[patchedKey] = value;
     } else {
       mirrored[key] = mirrorStyle('', value);
     }
