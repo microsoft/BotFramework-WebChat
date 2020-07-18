@@ -23,7 +23,7 @@ const ROOT_CSS = css({
   '&.webchat__stacked-layout': {
     position: 'relative', // This is to keep screen reader text in the destinated area.
 
-    '& .webchat__stacked-layout__main': {
+    '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
       display: 'flex'
     },
 
@@ -42,7 +42,7 @@ const ROOT_CSS = css({
     },
 
     '&.webchat__stacked-layout--from-user': {
-      '& .webchat__stacked-layout__content, .webchat__stacked-layout__main, .webchat__stacked-layout__status': {
+      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__content, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
         flexDirection: 'row-reverse'
       }
     },
@@ -52,24 +52,8 @@ const ROOT_CSS = css({
       overflow: 'hidden'
     },
 
-    '& .webchat__stacked-layout__message-row': {
-      display: 'flex'
-    },
-
-    '&.webchat__stacked-layout--from-user .webchat__stacked-layout__message-row': {
-      flexDirection: 'row-reverse'
-    },
-
-    '& .webchat__stacked-layout__main': {
-      display: 'flex'
-    },
-
     '& .webchat__stacked-layout__nub-pad': {
       flexShrink: 0
-    },
-
-    '& .webchat__stacked-layout__status': {
-      display: 'flex'
     }
   }
 });
