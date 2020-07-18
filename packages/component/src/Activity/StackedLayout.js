@@ -31,6 +31,10 @@ const ROOT_CSS = css({
       flexShrink: 0
     },
 
+    '& .webchat__stacked-layout__attachment': {
+      width: '100%'
+    },
+
     '& .webchat__stacked-layout__avatar-gutter': {
       display: 'flex',
       flexDirection: 'column',
@@ -44,7 +48,16 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__stacked-layout__content': {
+      flex: 1,
       overflow: 'hidden'
+    },
+
+    '& .webchat__stacked-layout__message-row': {
+      display: 'flex'
+    },
+
+    '&.webchat__stacked-layout--from-user .webchat__stacked-layout__message-row': {
+      flexDirection: 'row-reverse'
     },
 
     '& .webchat__stacked-layout__main': {
