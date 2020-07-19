@@ -259,7 +259,7 @@ const BasicTranscript2 = ({ className }) => {
         });
 
         const firstInSenderGroup = !indexWithinSenderGroup;
-        const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSenderAndStatus;
+        const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSender.length - 1;
 
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;

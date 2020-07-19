@@ -39,6 +39,7 @@
     "abort-controller": "^3.0.0",
     "abort-controller-es5": "^1.1.0",
     "base64-arraybuffer": "^0.2.0",
+    "classnames": "^2.2.6",
     "event-iterator": "^1.2.0",
     "event-target-shim": "^5.0.1",
     "event-target-shim-es5": "^1.1.0",

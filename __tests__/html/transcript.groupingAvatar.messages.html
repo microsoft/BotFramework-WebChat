@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="assets/groupAvatar.js"
+      type="text/babel"
+      data-presets="env,stage-3,react"
+    ></script>
+    <style type="text/css">
+      body {
+        background: #f7f7f7;
+      }
+
+      .group-avatar-panel {
+        background-color: floralwhite;
+        border: solid 2px #ccc;
+        border-radius: 4px;
+        bottom: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        margin: 10px;
+        overflow: hidden;
+        position: fixed;
+        right: 0;
+        z-index: 1;
+      }
+
+      .group-avatar-panel__body {
+        height: 100%;
+        padding: 10px;
+      }
+
+      .group-avatar-panel--minimized .group-avatar-panel__body {
+        height: 0;
+        padding: 0 10px;
+      }
+
+      .group-avatar-panel__header {
+        background-color: rgba(0, 0, 0, 0.1);
+        display: flex;
+        padding: 10px;
+      }
+
+      .test-harness {
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: auto;
+        max-width: 720px;
+        min-width: 360px;
+        transition-duration: 0.5s;
+        transition-property: width;
+        width: 360px;
+      }
+
+      .test-harness--wide {
+        width: 720px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useContext, useState },
+        ReactDOM: { render },
+        WebChat: {
+          Components: { BasicWebChat, Composer }
+        },
+        WebChatTest: {
+          conditions,
+          classNames,
+          createDirectLineWithTranscript,
+          createStore,
+          expect,
+          GroupAvatarContext,
+          GroupAvatarPanel,
+          GroupAvatarSurface,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function() {
+        const TestHarness = () => {
+          const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(GroupAvatarContext);
+          const [store, setStore] = useState(() => createStore());
+
+          useEffect(() => {
+            setStore(createStore());
+          }, [directLine, setStore]);
+
+          return (
+            <div className={classNames('test-harness', { 'test-harness--wide': wide })} dir={rtl ? 'rtl' : 'ltr'}>
+              {!!directLine && !!store && (
+                <Composer
+                  activityMiddleware={activityMiddleware}
+                  directLine={directLine}
+                  dir={rtl ? 'rtl' : undefined}
+                  store={store}
+                  styleOptions={styleOptions}
+                >
+                  <BasicWebChat />
+                  <GroupAvatarPanel />
+                </Composer>
+              )}
+            </div>
+          );
+        };
+
+        render(
+          <GroupAvatarSurface>
+            <TestHarness />
+          </GroupAvatarSurface>,
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

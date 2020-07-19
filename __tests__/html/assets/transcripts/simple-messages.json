@@ -1,0 +1,65 @@
+[
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "1.0",
+    "text": "Lorem pariatur ea veniam.",
+    "timestamp": -600002,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "1.1",
+    "text": "Duis duis irure proident dolor labore.",
+    "timestamp": -600002,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "1.2",
+    "text": "Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.",
+    "timestamp": -300001,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "2.0",
+    "text": "Excepteur mollit ipsum id cupidatat.",
+    "timestamp": -300001,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "2.1",
+    "text": "Aliquip excepteur laborum aute proident.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "2.2",
+    "text": "Eiusmod voluptate mollit exercitation occaecat.",
+    "timestamp": 0,
+    "type": "message"
+  }
+]
