@@ -5,7 +5,7 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script
       crossorigin="anonymous"
-      src="assets/groupAvatar.js"
+      src="assets/activityGrouping.js"
       type="text/babel"
       data-presets="env,stage-3,react"
     ></script>
@@ -79,9 +79,9 @@
           createDirectLineWithTranscript,
           createStore,
           expect,
-          GroupAvatarContext,
-          GroupAvatarPanel,
-          GroupAvatarSurface,
+          ActivityGroupingContext,
+          ActivityGroupingPanel,
+          ActivityGroupingSurface,
           host,
           pageObjects,
           timeouts,
@@ -91,7 +91,7 @@
 
       (async function() {
         const TestHarness = () => {
-          const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(GroupAvatarContext);
+          const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
           const [store, setStore] = useState(() => createStore());
 
           useEffect(() => {
@@ -109,7 +109,7 @@
                   styleOptions={styleOptions}
                 >
                   <BasicWebChat />
-                  <GroupAvatarPanel />
+                  <ActivityGroupingPanel />
                 </Composer>
               )}
             </div>
@@ -117,9 +117,9 @@
         };
 
         render(
-          <GroupAvatarSurface>
+          <ActivityGroupingSurface>
             <TestHarness />
-          </GroupAvatarSurface>,
+          </ActivityGroupingSurface>,
           document.getElementById('webchat')
         );
 

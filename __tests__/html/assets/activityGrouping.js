@@ -1,29 +1,91 @@
 const {
-  React: { createContext, useCallback, useEffect, useMemo, useState }
+  React: { createContext, useCallback, useEffect, useMemo, useState },
+  WebChatTest: { parseURLParams }
 } = window;
 
 const TRANSCRIPT_NAMES = ['simple-messages.json', 'stacked-layout.json'];
 
-const GroupAvatarContext = createContext();
+const ActivityGroupingContext = createContext();
 
 function createCustomActivityMiddleware(attachmentLayout) {
   return () => next => args => next({ ...args, activity: { ...args.activity, attachmentLayout } });
 }
 
-const GroupAvatarSurface = ({ children }) => {
-  const [botAvatarInitials, setBotAvatarInitials] = useState(true);
-  const [botNub, setBotNub] = useState(true);
-  const [botOnTop, setBotOnTop] = useState(true);
-  const [carouselLayout, setCarouselLayout] = useState(false);
+const URL_QUERY_MAPPING = {
+  bi: 'botAvatarInitials',
+  bn: 'botNub',
+  bt: 'botOnTop',
+  g: 'showAvatarInGroup',
+  l: 'carouselLayout',
+  rtl: 'rtl',
+  t: 'transcriptName',
+  ui: 'userAvatarInitials',
+  un: 'userNub',
+  ut: 'userOnTop',
+  w: 'wide'
+};
+
+function generateURL(state) {
+  const params = {};
+
+  Object.entries(URL_QUERY_MAPPING).forEach(([short, long]) => {
+    const value = state[long];
+
+    params[short] = value === true ? '1' : value === false ? '0' : value + '';
+  });
+
+  return '#' + new URLSearchParams(params).toString();
+}
+
+const DEFAULT_STATE = {
+  botAvatarInitials: true,
+  botNub: true,
+  botOnTop: true,
+  carouselLayout: false,
+  rtl: false,
+  showAvatarInGroup: 'status',
+  transcriptName: TRANSCRIPT_NAMES[0],
+  userAvatarInitials: true,
+  userNub: true,
+  userOnTop: true,
+  wide: false
+};
+
+function getInitialState(defaultValues = {}) {
+  const initialState = {};
+  const params = parseURLParams(location.hash);
+
+  Object.entries(URL_QUERY_MAPPING).forEach(([short, long]) => {
+    const value = params[short];
+
+    if (typeof value === 'undefined') {
+      initialState[long] = defaultValues[long];
+    } else if (value === '1') {
+      initialState[long] = true;
+    } else if (value === '0') {
+      initialState[long] = false;
+    } else {
+      initialState[long] = value;
+    }
+  });
+
+  return initialState;
+}
+
+const ActivityGroupingSurface = ({ children }) => {
+  const initialState = useMemo(() => getInitialState(DEFAULT_STATE), []);
+  const [botAvatarInitials, setBotAvatarInitials] = useState(initialState.botAvatarInitials);
+  const [botNub, setBotNub] = useState(initialState.botNub);
+  const [botOnTop, setBotOnTop] = useState(initialState.botOnTop);
+  const [carouselLayout, setCarouselLayout] = useState(initialState.carouselLayout);
   const [directLine, setDirectLine] = useState();
-  const [rtl, setRTL] = useState(false);
-  const [showAvatarForEveryActivity, setShowAvatarForEveryActivity] = useState(false);
-  const [showAvatarInGroup, setShowAvatarInGroup] = useState('status');
-  const [transcriptName, setTranscriptName] = useState(TRANSCRIPT_NAMES[0]);
-  const [userAvatarInitials, setUserAvatarInitials] = useState(true);
-  const [userNub, setUserNub] = useState(true);
-  const [userOnTop, setUserOnTop] = useState(true);
-  const [wide, setWide] = useState(false);
+  const [rtl, setRTL] = useState(initialState.rtl);
+  const [showAvatarInGroup, setShowAvatarInGroup] = useState(initialState.showAvatarInGroup);
+  const [transcriptName, setTranscriptName] = useState(initialState.transcriptName);
+  const [userAvatarInitials, setUserAvatarInitials] = useState(initialState.userAvatarInitials);
+  const [userNub, setUserNub] = useState(initialState.userNub);
+  const [userOnTop, setUserOnTop] = useState(initialState.userOnTop);
+  const [wide, setWide] = useState(initialState.wide);
 
   useEffect(() => {
     let aborted;
@@ -64,83 +126,87 @@ const GroupAvatarSurface = ({ children }) => {
       userAvatarInitials: userAvatarInitials ? 'WW' : undefined,
 
       groupTimestamp: 5000,
-      showAvatarInGroup: showAvatarForEveryActivity ? true : showAvatarInGroup,
+      showAvatarInGroup,
       transitionDuration: '.3s'
     }),
-    [
+    [botAvatarInitials, botNub, botOnTop, showAvatarInGroup, userAvatarInitials, userNub, userOnTop]
+  );
+
+  const contextState = useMemo(
+    () => ({
       botAvatarInitials,
       botNub,
       botOnTop,
-      showAvatarForEveryActivity,
+      carouselLayout,
+      rtl,
       showAvatarInGroup,
+      transcriptName,
       userAvatarInitials,
       userNub,
-      userOnTop
+      userOnTop,
+      wide
+    }),
+    [
+      {
+        botAvatarInitials,
+        botNub,
+        botOnTop,
+        carouselLayout,
+        rtl,
+        showAvatarInGroup,
+        transcriptName,
+        userAvatarInitials,
+        userNub,
+        userOnTop,
+        wide
+      }
     ]
   );
+
+  const url = useMemo(() => generateURL(contextState), [contextState]);
 
   const context = useMemo(
     () => ({
+      ...contextState,
       activityMiddleware,
-      botAvatarInitials,
-      botNub,
-      botOnTop,
-      carouselLayout,
       directLine,
-      rtl,
       setBotAvatarInitials,
       setBotNub,
       setBotOnTop,
       setCarouselLayout,
       setRTL,
-      setShowAvatarForEveryActivity,
       setShowAvatarInGroup,
       setTranscriptName,
       setUserAvatarInitials,
       setUserNub,
       setUserOnTop,
       setWide,
-      showAvatarForEveryActivity,
       showAvatarInGroup,
       styleOptions,
-      transcriptName,
-      userAvatarInitials,
-      userNub,
-      userOnTop,
-      wide
+      url
     }),
     [
       activityMiddleware,
-      botAvatarInitials,
-      botNub,
-      botOnTop,
-      carouselLayout,
+      contextState,
       directLine,
-      rtl,
       setBotAvatarInitials,
       setBotNub,
       setBotOnTop,
       setCarouselLayout,
       setRTL,
-      setShowAvatarForEveryActivity,
       setShowAvatarInGroup,
       setTranscriptName,
       setUserAvatarInitials,
       setUserNub,
       setUserOnTop,
       setWide,
-      showAvatarForEveryActivity,
       showAvatarInGroup,
       styleOptions,
-      transcriptName,
-      userAvatarInitials,
-      userNub,
-      userOnTop,
-      wide
+      url
     ]
   );
 
-  return <GroupAvatarContext.Provider value={context}>{children}</GroupAvatarContext.Provider>;
+  return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
 };
 
 function comboNumberSetter(value, setters) {
@@ -163,7 +229,9 @@ const Toggle = ({ checked, children, disabled, onChange, type }) => {
   );
 };
 
-const GroupAvatarPanel = ({ onChange }) => {
+const ActivityGroupingPanel = () => {
+  const context = useContext(window.WebChatTest.ActivityGroupingContext);
+
   const {
     botAvatarInitials,
     botNub,
@@ -175,21 +243,23 @@ const GroupAvatarPanel = ({ onChange }) => {
     setBotOnTop,
     setCarouselLayout,
     setRTL,
-    setShowAvatarForEveryActivity,
     setShowAvatarInGroup,
     setTranscriptName,
     setUserAvatarInitials,
     setUserNub,
     setUserOnTop,
     setWide,
-    showAvatarForEveryActivity,
     showAvatarInGroup,
     transcriptName,
+    url,
     userAvatarInitials,
     userNub,
     userOnTop,
     wide
-  } = useContext(window.WebChatTest.GroupAvatarContext);
+  } = context;
+
+  const showAvatarForEveryActivity = showAvatarInGroup === true;
+  const setShowAvatarForEveryActivity = useCallback(value => value && setShowAvatarInGroup(value));
 
   const setBotOnTop2 = useCallback(() => setBotOnTop(true), [setBotOnTop]);
   const setBotOnBottom = useCallback(() => setBotOnTop(false), [setBotOnTop]);
@@ -264,7 +334,7 @@ const GroupAvatarPanel = ({ onChange }) => {
     setShowAvatarInGroup('status');
   }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
 
-  const setShowAvatarInGroupType = useCallback(sender => setShowAvatarInGroup('sender'), [setShowAvatarInGroup]);
+  const setShowAvatarInGroupType = useCallback(() => setShowAvatarInGroup('sender'), [setShowAvatarInGroup]);
 
   const groupingValueAndSetters = [
     [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
@@ -427,11 +497,17 @@ const GroupAvatarPanel = ({ onChange }) => {
           <button onClick={handlePlusOneStyleComboNumber}>+</button>
           <button onClick={handleMinusOneStyleComboNumber}>-</button>
         </div>
+        <hr />
+        <div>
+          <a href={url} rel="noopener noreferrer" target="_blank">
+            Open in new window
+          </a>
+        </div>
       </section>
     </div>
   );
 };
 
-window.WebChatTest.GroupAvatarContext = GroupAvatarContext;
-window.WebChatTest.GroupAvatarPanel = GroupAvatarPanel;
-window.WebChatTest.GroupAvatarSurface = GroupAvatarSurface;
+window.WebChatTest.ActivityGroupingContext = ActivityGroupingContext;
+window.WebChatTest.ActivityGroupingPanel = ActivityGroupingPanel;
+window.WebChatTest.ActivityGroupingSurface = ActivityGroupingSurface;
