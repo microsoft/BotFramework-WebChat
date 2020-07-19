@@ -259,7 +259,16 @@ const ActivityGroupingPanel = () => {
   } = context;
 
   const showAvatarForEveryActivity = showAvatarInGroup === true;
-  const setShowAvatarForEveryActivity = useCallback(value => value && setShowAvatarInGroup(value));
+  const setShowAvatarForEveryActivity = useCallback(
+    value => {
+      if (value) {
+        setShowAvatarInGroup(true);
+      } else if (showAvatarInGroup === true) {
+        setShowAvatarInGroup(DEFAULT_STATE.showAvatarInGroup);
+      }
+    },
+    [setShowAvatarInGroup, showAvatarInGroup]
+  );
 
   const setBotOnTop2 = useCallback(() => setBotOnTop(true), [setBotOnTop]);
   const setBotOnBottom = useCallback(() => setBotOnTop(false), [setBotOnTop]);
@@ -334,11 +343,14 @@ const ActivityGroupingPanel = () => {
     setShowAvatarInGroup('status');
   }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
 
-  const setShowAvatarInGroupType = useCallback(() => setShowAvatarInGroup('sender'), [setShowAvatarInGroup]);
+  const setShowAvatarInGroupType = useCallback(value => setShowAvatarInGroup(value ? 'status' : 'sender'), [
+    setShowAvatarInGroup
+  ]);
 
   const groupingValueAndSetters = [
-    [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
-    [showAvatarForEveryActivity, setShowAvatarForEveryActivity]
+    // [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
+    [showAvatarInGroup === 'status', setShowAvatarInGroupType],
+    [showAvatarInGroup === true, setShowAvatarForEveryActivity]
   ];
 
   const groupingValues = groupingValueAndSetters.map(([value]) => value);
