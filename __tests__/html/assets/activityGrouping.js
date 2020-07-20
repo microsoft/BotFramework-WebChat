@@ -3,22 +3,16 @@ const {
   WebChatTest: { parseURLParams }
 } = window;
 
-const TRANSCRIPT_NAMES = [
-  'simple-messages.json',
-  'single-line-multiple-files.json',
-  'single-line-no-files.json',
-  'single-line-single-file.json',
-  'stacked-layout.json',
-  'user-upload.json'
-];
-
 const ActivityGroupingContext = createContext();
 
 function createCustomActivityMiddleware(attachmentLayout) {
   return () => next => args =>
     next({
       ...args,
-      activity: { ...args.activity, ...(args.activity.from.role === 'bot' ? { attachmentLayout } : {}) }
+      activity: {
+        ...args.activity,
+        ...(attachmentLayout && args.activity.from.role === 'bot' ? { attachmentLayout } : {})
+      }
     });
 }
 
@@ -27,7 +21,7 @@ const URL_QUERY_MAPPING = {
   bn: 'botNub',
   bt: 'botOnTop',
   g: 'showAvatarInGroup',
-  l: 'carouselLayout',
+  l: 'attachmentLayout',
   rtl: 'rtl',
   t: 'transcriptName',
   ui: 'userAvatarInitials',
@@ -49,13 +43,13 @@ function generateURL(state) {
 }
 
 const DEFAULT_STATE = {
+  attachmentLayout: false,
   botAvatarInitials: true,
   botNub: true,
   botOnTop: true,
-  carouselLayout: false,
   rtl: false,
   showAvatarInGroup: 'status',
-  transcriptName: TRANSCRIPT_NAMES[0],
+  transcriptName: 'simple-messages.json',
   userAvatarInitials: true,
   userNub: true,
   userOnTop: true,
@@ -84,11 +78,13 @@ function getInitialState(defaultValues = {}) {
 }
 
 const ActivityGroupingSurface = ({ children }) => {
+  const [transcriptNames, setTranscriptNames] = useState([]);
   const initialState = useMemo(() => getInitialState(DEFAULT_STATE), []);
+
+  const [attachmentLayout, setAttachmentLayout] = useState(initialState.attachmentLayout);
   const [botAvatarInitials, setBotAvatarInitials] = useState(initialState.botAvatarInitials);
   const [botNub, setBotNub] = useState(initialState.botNub);
   const [botOnTop, setBotOnTop] = useState(initialState.botOnTop);
-  const [carouselLayout, setCarouselLayout] = useState(initialState.carouselLayout);
   const [directLine, setDirectLine] = useState();
   const [rtl, setRTL] = useState(initialState.rtl);
   const [showAvatarInGroup, setShowAvatarInGroup] = useState(initialState.showAvatarInGroup);
@@ -97,6 +93,20 @@ const ActivityGroupingSurface = ({ children }) => {
   const [userNub, setUserNub] = useState(initialState.userNub);
   const [userOnTop, setUserOnTop] = useState(initialState.userOnTop);
   const [wide, setWide] = useState(initialState.wide);
+
+  useEffect(() => {
+    (async function() {
+      const res = await fetch('./assets/transcripts/index.json');
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch ./assets/transcripts/index.json');
+      }
+
+      const { transcriptNames } = await res.json();
+
+      setTranscriptNames(transcriptNames);
+    })();
+  }, [setTranscriptNames]);
 
   useEffect(() => {
     let aborted;
@@ -114,9 +124,13 @@ const ActivityGroupingSurface = ({ children }) => {
     };
   }, [setDirectLine, transcriptName]);
 
-  const activityMiddleware = useMemo(() => createCustomActivityMiddleware(carouselLayout ? 'carousel' : 'stacked'), [
-    carouselLayout
-  ]);
+  const activityMiddleware = useMemo(
+    () =>
+      attachmentLayout === 'carousel' || attachmentLayout === 'stacked'
+        ? createCustomActivityMiddleware(attachmentLayout)
+        : undefined,
+    [attachmentLayout]
+  );
 
   const styleOptions = useMemo(
     () => ({
@@ -145,10 +159,10 @@ const ActivityGroupingSurface = ({ children }) => {
 
   const contextState = useMemo(
     () => ({
+      attachmentLayout,
       botAvatarInitials,
       botNub,
       botOnTop,
-      carouselLayout,
       rtl,
       showAvatarInGroup,
       transcriptName,
@@ -159,10 +173,10 @@ const ActivityGroupingSurface = ({ children }) => {
     }),
     [
       {
+        attachmentLayout,
         botAvatarInitials,
         botNub,
         botOnTop,
-        carouselLayout,
         rtl,
         showAvatarInGroup,
         transcriptName,
@@ -181,10 +195,10 @@ const ActivityGroupingSurface = ({ children }) => {
       ...contextState,
       activityMiddleware,
       directLine,
+      setAttachmentLayout,
       setBotAvatarInitials,
       setBotNub,
       setBotOnTop,
-      setCarouselLayout,
       setRTL,
       setShowAvatarInGroup,
       setTranscriptName,
@@ -194,16 +208,17 @@ const ActivityGroupingSurface = ({ children }) => {
       setWide,
       showAvatarInGroup,
       styleOptions,
+      transcriptNames,
       url
     }),
     [
       activityMiddleware,
       contextState,
       directLine,
+      setAttachmentLayout,
       setBotAvatarInitials,
       setBotNub,
       setBotOnTop,
-      setCarouselLayout,
       setRTL,
       setShowAvatarInGroup,
       setTranscriptName,
@@ -213,6 +228,7 @@ const ActivityGroupingSurface = ({ children }) => {
       setWide,
       showAvatarInGroup,
       styleOptions,
+      transcriptNames,
       url
     ]
   );
@@ -244,15 +260,15 @@ const ActivityGroupingPanel = () => {
   const context = useContext(window.WebChatTest.ActivityGroupingContext);
 
   const {
+    attachmentLayout,
     botAvatarInitials,
     botNub,
     botOnTop,
-    carouselLayout,
     rtl,
+    setAttachmentLayout,
     setBotAvatarInitials,
     setBotNub,
     setBotOnTop,
-    setCarouselLayout,
     setRTL,
     setShowAvatarInGroup,
     setTranscriptName,
@@ -266,6 +282,7 @@ const ActivityGroupingPanel = () => {
     userAvatarInitials,
     userNub,
     userOnTop,
+    transcriptNames,
     wide
   } = context;
 
@@ -286,8 +303,11 @@ const ActivityGroupingPanel = () => {
   const setUserOnTop2 = useCallback(() => setUserOnTop(true), [setUserOnTop]);
   const setUserOnBottom = useCallback(() => setUserOnTop(false), [setUserOnTop]);
 
-  const setCarouselLayout2 = useCallback(() => setCarouselLayout(true), [setCarouselLayout]);
-  const setStackedLayout = useCallback(() => setCarouselLayout(false), [setCarouselLayout]);
+  const setAttachmentLayoutCarousel = useCallback(carousel => setAttachmentLayout(carousel ? 'carousel' : 'stacked'), [
+    setAttachmentLayout
+  ]);
+  const setAttachmentLayoutDefault = useCallback(() => setAttachmentLayout(false), [setAttachmentLayout]);
+  const setAttachmentLayoutStacked = useCallback(() => setAttachmentLayout('stacked'), [setAttachmentLayout]);
 
   const styleValueAndSetters = [
     [botAvatarInitials, setBotAvatarInitials],
@@ -296,7 +316,8 @@ const ActivityGroupingPanel = () => {
     [userAvatarInitials, setUserAvatarInitials],
     [userNub, setUserNub],
     [userOnTop, setUserOnTop],
-    [carouselLayout, setCarouselLayout]
+    [attachmentLayout !== false, setAttachmentLayoutDefault],
+    [attachmentLayout === 'carousel', setAttachmentLayoutCarousel]
   ];
 
   const styleValues = styleValueAndSetters.map(([value]) => value);
@@ -390,18 +411,21 @@ const ActivityGroupingPanel = () => {
   const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
 
   return (
-    <div className={classNames('group-avatar-panel', { 'group-avatar-panel--minimized': minimized })} dir="ltr">
-      <header className="group-avatar-panel__header">
-        <button className="group-avatar-panel__minimize-button" onClick={handleMinimizeClick}>
+    <div
+      className={classNames('activity-grouping-panel', { 'activity-grouping-panel--minimized': minimized })}
+      dir="ltr"
+    >
+      <header className="activity-grouping-panel__header">
+        <button className="activity-grouping-panel__minimize-button" onClick={handleMinimizeClick}>
           Minimize
         </button>
       </header>
-      <section className="group-avatar-panel__body">
+      <section className="activity-grouping-panel__body">
         <div>
           <label>
             Transcript:{' '}
             <select onChange={handleTranscriptChange} value={transcriptName}>
-              {TRANSCRIPT_NAMES.map(name => (
+              {transcriptNames.map(name => (
                 <option key={name} value={name}>
                   {name}
                 </option>
@@ -505,13 +529,22 @@ const ActivityGroupingPanel = () => {
         </div>
         <hr />
         <div>
-          <Toggle checked={!carouselLayout} onChange={setStackedLayout} type="radio">
-            Layout: Stacked
+          <Toggle checked={!attachmentLayout} onChange={setAttachmentLayoutDefault} type="radio">
+            Layout: Default
           </Toggle>
         </div>
         <div>
-          <Toggle checked={carouselLayout} onChange={setCarouselLayout2} type="radio">
-            Layout: Carousel
+          <Toggle
+            checked={attachmentLayout && attachmentLayout !== 'carousel'}
+            onChange={setAttachmentLayoutStacked}
+            type="radio"
+          >
+            Layout: Force stacked
+          </Toggle>
+        </div>
+        <div>
+          <Toggle checked={attachmentLayout === 'carousel'} onChange={setAttachmentLayoutCarousel} type="radio">
+            Layout: Force carousel
           </Toggle>
         </div>
         <hr />
