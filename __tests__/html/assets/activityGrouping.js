@@ -429,6 +429,8 @@ const ActivityGroupingPanel = () => {
   const [minimized, setMinimized] = useState(false);
   const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
 
+  const handleComboNumberFocus = useCallback(({ target }) => target.select(), []);
+
   return (
     !hide && (
       <div
@@ -470,6 +472,7 @@ const ActivityGroupingPanel = () => {
             <input
               className="activity-grouping-panel__combo-number-input"
               onChange={handleViewComboNumberChange}
+              onFocus={handleComboNumberFocus}
               type="number"
               value={viewComboNumber}
             />
@@ -509,6 +512,7 @@ const ActivityGroupingPanel = () => {
             <input
               className="activity-grouping-panel__combo-number-input"
               onChange={handleGroupingComboNumberChange}
+              onFocus={handleComboNumberFocus}
               type="number"
               value={groupingComboNumber}
             />
@@ -599,6 +603,7 @@ const ActivityGroupingPanel = () => {
             <input
               className="activity-grouping-panel__combo-number-input"
               onChange={handleStyleComboNumberChange}
+              onFocus={handleComboNumberFocus}
               type="number"
               value={styleComboNumber}
             />
