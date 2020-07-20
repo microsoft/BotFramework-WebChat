@@ -27,7 +27,8 @@ const URL_QUERY_MAPPING = {
   ui: 'userAvatarInitials',
   un: 'userNub',
   ut: 'userOnTop',
-  w: 'wide'
+  w: 'wide',
+  wd: 'hide'
 };
 
 function generateURL(state) {
@@ -36,7 +37,9 @@ function generateURL(state) {
   Object.entries(URL_QUERY_MAPPING).forEach(([short, long]) => {
     const value = state[long];
 
-    params[short] = value === true ? '1' : value === false ? '0' : value + '';
+    if (typeof value !== 'undefined') {
+      params[short] = value === true ? '1' : value === false ? '0' : value + '';
+    }
   });
 
   return '#' + new URLSearchParams(params).toString();
@@ -47,6 +50,7 @@ const DEFAULT_STATE = {
   botAvatarInitials: true,
   botNub: true,
   botOnTop: true,
+  hide: false,
   rtl: false,
   showAvatarInGroup: 'status',
   transcriptName: 'simple-messages.json',
@@ -93,6 +97,7 @@ const ActivityGroupingSurface = ({ children }) => {
   const [userNub, setUserNub] = useState(initialState.userNub);
   const [userOnTop, setUserOnTop] = useState(initialState.userOnTop);
   const [wide, setWide] = useState(initialState.wide);
+  const { hide } = initialState;
 
   useEffect(() => {
     (async function() {
@@ -163,6 +168,7 @@ const ActivityGroupingSurface = ({ children }) => {
       botAvatarInitials,
       botNub,
       botOnTop,
+      hide,
       rtl,
       showAvatarInGroup,
       transcriptName,
@@ -177,6 +183,7 @@ const ActivityGroupingSurface = ({ children }) => {
         botAvatarInitials,
         botNub,
         botOnTop,
+        hide,
         rtl,
         showAvatarInGroup,
         transcriptName,
@@ -264,6 +271,7 @@ const ActivityGroupingPanel = () => {
     botAvatarInitials,
     botNub,
     botOnTop,
+    hide,
     rtl,
     setAttachmentLayout,
     setBotAvatarInitials,
@@ -411,156 +419,194 @@ const ActivityGroupingPanel = () => {
   const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
 
   return (
-    <div
-      className={classNames('activity-grouping-panel', { 'activity-grouping-panel--minimized': minimized })}
-      dir="ltr"
-    >
-      <header className="activity-grouping-panel__header">
-        <button className="activity-grouping-panel__minimize-button" onClick={handleMinimizeClick}>
-          Minimize
-        </button>
-      </header>
-      <section className="activity-grouping-panel__body">
-        <div>
-          <label>
-            Transcript:{' '}
-            <select onChange={handleTranscriptChange} value={transcriptName}>
-              {transcriptNames.map(name => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <hr />
-        <div>
-          <Toggle checked={wide} onChange={setWide}>
-            View: Wide
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={rtl} onChange={setRTL}>
-            View: Right-to-left
-          </Toggle>
-        </div>
-        <hr />
-        <div>
-          <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
-          <button onClick={handlePlusOneViewComboNumber}>+</button>
-          <button onClick={handleMinusOneViewComboNumber}>-</button>
-        </div>
-        <hr />
-        <div>
-          <Toggle
-            checked={!showAvatarForEveryActivity && showAvatarInGroup === 'sender'}
-            onChange={setShowAvatarInSenderGroup}
-            type="radio"
-          >
-            Show avatar: On sender
-          </Toggle>
-        </div>
-        <div>
-          <Toggle
-            checked={!showAvatarForEveryActivity && showAvatarInGroup === 'status'}
-            onChange={setShowAvatarInStatusGroup}
-            type="radio"
-          >
-            Show avatar: On status
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={showAvatarForEveryActivity} onChange={setShowAvatarForEveryActivity} type="radio">
-            Show avatar: On every activity
-          </Toggle>
-        </div>
-        <hr />
-        <div>
-          <input onChange={handleGroupingComboNumberChange} type="number" value={groupingComboNumber} />
-          <button onClick={handlePlusOneGroupingComboNumber}>+</button>
-          <button onClick={handleMinusOneGroupingComboNumber}>-</button>
-        </div>
-        <hr />
-        <div>
-          <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
-            Bot: Avatar
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={botNub} onChange={setBotNub}>
-            Bot: Nub
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnTop2} type="radio">
-            Bot: On top
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={!botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnBottom} type="radio">
-            Bot: On bottom
-          </Toggle>
-        </div>
-        <hr />
-        <div>
-          <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
-            User: Avatar
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={userNub} onChange={setUserNub}>
-            User: Nub
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={userOnTop} disabled={!userAvatarInitials && !userNub} onChange={setUserOnTop2} type="radio">
-            User: On top
-          </Toggle>
-        </div>
-        <div>
-          <Toggle
-            checked={!userOnTop}
-            disabled={!userAvatarInitials && !userNub}
-            onChange={setUserOnBottom}
-            type="radio"
-          >
-            User: On bottom
-          </Toggle>
-        </div>
-        <hr />
-        <div>
-          <Toggle checked={!attachmentLayout} onChange={setAttachmentLayoutDefault} type="radio">
-            Layout: Default
-          </Toggle>
-        </div>
-        <div>
-          <Toggle
-            checked={attachmentLayout && attachmentLayout !== 'carousel'}
-            onChange={setAttachmentLayoutStacked}
-            type="radio"
-          >
-            Layout: Force stacked
-          </Toggle>
-        </div>
-        <div>
-          <Toggle checked={attachmentLayout === 'carousel'} onChange={setAttachmentLayoutCarousel} type="radio">
-            Layout: Force carousel
-          </Toggle>
-        </div>
-        <hr />
-        <div>
-          <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
-          <button onClick={handlePlusOneStyleComboNumber}>+</button>
-          <button onClick={handleMinusOneStyleComboNumber}>-</button>
-        </div>
-        <hr />
-        <div>
-          <a href={url} rel="noopener noreferrer" target="_blank">
-            Open in new window
-          </a>
-        </div>
-      </section>
-    </div>
+    !hide && (
+      <div
+        className={classNames('activity-grouping-panel', { 'activity-grouping-panel--minimized': minimized })}
+        dir="ltr"
+      >
+        <header className="activity-grouping-panel__header">
+          <span className="activity-grouping-panel__header-title">Activity grouping</span>
+          <button className="activity-grouping-panel__minimize-button" onClick={handleMinimizeClick}>
+            {minimized ? 'Restore' : 'Minimize'}
+          </button>
+        </header>
+        <section className="activity-grouping-panel__body">
+          <div>
+            <label>
+              Transcript:{' '}
+              <select onChange={handleTranscriptChange} value={transcriptName}>
+                {transcriptNames.map(name => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <hr />
+          <div>
+            <Toggle checked={wide} onChange={setWide}>
+              View: Wide
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={rtl} onChange={setRTL}>
+              View: Right-to-left
+            </Toggle>
+          </div>
+          <hr />
+          <div className="activity-grouping-panel__combo-number-row">
+            <input
+              className="activity-grouping-panel__combo-number-input"
+              onChange={handleViewComboNumberChange}
+              type="number"
+              value={viewComboNumber}
+            />
+            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneViewComboNumber}>
+              +
+            </button>
+            <button className="activity-grouping-panel__combo-number-button" onClick={handleMinusOneViewComboNumber}>
+              -
+            </button>
+          </div>
+          <hr />
+          <div>
+            <Toggle
+              checked={!showAvatarForEveryActivity && showAvatarInGroup === 'sender'}
+              onChange={setShowAvatarInSenderGroup}
+              type="radio"
+            >
+              Show avatar: On sender
+            </Toggle>
+          </div>
+          <div>
+            <Toggle
+              checked={!showAvatarForEveryActivity && showAvatarInGroup === 'status'}
+              onChange={setShowAvatarInStatusGroup}
+              type="radio"
+            >
+              Show avatar: On status
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={showAvatarForEveryActivity} onChange={setShowAvatarForEveryActivity} type="radio">
+              Show avatar: On every activity
+            </Toggle>
+          </div>
+          <hr />
+          <div className="activity-grouping-panel__combo-number-row">
+            <input
+              className="activity-grouping-panel__combo-number-input"
+              onChange={handleGroupingComboNumberChange}
+              type="number"
+              value={groupingComboNumber}
+            />
+            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneGroupingComboNumber}>
+              +
+            </button>
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handleMinusOneGroupingComboNumber}
+            >
+              -
+            </button>
+          </div>
+          <hr />
+          <div>
+            <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
+              Bot: Avatar
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={botNub} onChange={setBotNub}>
+              Bot: Nub
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnTop2} type="radio">
+              Bot: On top
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={!botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnBottom} type="radio">
+              Bot: On bottom
+            </Toggle>
+          </div>
+          <hr />
+          <div>
+            <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
+              User: Avatar
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={userNub} onChange={setUserNub}>
+              User: Nub
+            </Toggle>
+          </div>
+          <div>
+            <Toggle
+              checked={userOnTop}
+              disabled={!userAvatarInitials && !userNub}
+              onChange={setUserOnTop2}
+              type="radio"
+            >
+              User: On top
+            </Toggle>
+          </div>
+          <div>
+            <Toggle
+              checked={!userOnTop}
+              disabled={!userAvatarInitials && !userNub}
+              onChange={setUserOnBottom}
+              type="radio"
+            >
+              User: On bottom
+            </Toggle>
+          </div>
+          <hr />
+          <div>
+            <Toggle checked={!attachmentLayout} onChange={setAttachmentLayoutDefault} type="radio">
+              Layout: Default
+            </Toggle>
+          </div>
+          <div>
+            <Toggle
+              checked={attachmentLayout && attachmentLayout !== 'carousel'}
+              onChange={setAttachmentLayoutStacked}
+              type="radio"
+            >
+              Layout: Force stacked
+            </Toggle>
+          </div>
+          <div>
+            <Toggle checked={attachmentLayout === 'carousel'} onChange={setAttachmentLayoutCarousel} type="radio">
+              Layout: Force carousel
+            </Toggle>
+          </div>
+          <hr />
+          <div className="activity-grouping-panel__combo-number-row">
+            <input
+              className="activity-grouping-panel__combo-number-input"
+              onChange={handleStyleComboNumberChange}
+              type="number"
+              value={styleComboNumber}
+            />
+            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneStyleComboNumber}>
+              +
+            </button>
+            <button className="activity-grouping-panel__combo-number-button" onClick={handleMinusOneStyleComboNumber}>
+              -
+            </button>
+          </div>
+          <hr />
+          <div>
+            <a href={url} rel="noopener noreferrer" target="_blank">
+              Open in new window
+            </a>
+          </div>
+        </section>
+      </div>
+    )
   );
 };
 

@@ -41,7 +41,7 @@ body {
 }
 
 .activity-grouping-panel--minimized .activity-grouping-panel__body {
-  height: 0;
+  display: none;
   padding: 0 10px;
 }
 
@@ -49,4 +49,25 @@ body {
   background-color: rgba(0, 0, 0, 0.1);
   display: flex;
   padding: 10px;
+}
+
+.activity-grouping-panel--minimized .activity-grouping-panel__header-title {
+  display: none;
+}
+
+.activity-grouping-panel__header-title {
+  flex-grow: 1;
+}
+
+.activity-grouping-panel__combo-number-button {
+  margin-left: 0.4em;
+  width: 2em;
+}
+
+.activity-grouping-panel__combo-number-input {
+  flex: 1;
+}
+
+.activity-grouping-panel__combo-number-row {
+  display: flex;
 }
