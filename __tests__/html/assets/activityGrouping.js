@@ -37,6 +37,11 @@ function generateURL(state) {
   Object.entries(URL_QUERY_MAPPING).forEach(([short, long]) => {
     const value = state[long];
 
+    // Do not set "wd=0" for easier copy and paste.
+    if (short === 'wd' && !value) {
+      return;
+    }
+
     if (typeof value !== 'undefined') {
       params[short] = value === true ? '1' : value === false ? '0' : value + '';
     }
