@@ -3,12 +3,23 @@ const {
   WebChatTest: { parseURLParams }
 } = window;
 
-const TRANSCRIPT_NAMES = ['simple-messages.json', 'stacked-layout.json'];
+const TRANSCRIPT_NAMES = [
+  'simple-messages.json',
+  'single-line-multiple-files.json',
+  'single-line-no-files.json',
+  'single-line-single-file.json',
+  'stacked-layout.json',
+  'user-upload.json'
+];
 
 const ActivityGroupingContext = createContext();
 
 function createCustomActivityMiddleware(attachmentLayout) {
-  return () => next => args => next({ ...args, activity: { ...args.activity, attachmentLayout } });
+  return () => next => args =>
+    next({
+      ...args,
+      activity: { ...args.activity, ...(args.activity.from.role === 'bot' ? { attachmentLayout } : {}) }
+    });
 }
 
 const URL_QUERY_MAPPING = {

@@ -1,30 +1,32 @@
 [
   {
-    "channelData": {
-      "state": "sent"
-    },
     "from": {
-      "role": "user"
+      "role": "bot"
     },
     "id": "1.0",
-    "text": "Lorem pariatur ea veniam.",
-    "timestamp": -5001,
+    "text": "Proident sunt nostrud incididunt veniam occaecat minim elit nulla labore exercitation nulla.",
+    "timestamp": -300001,
     "type": "message"
   },
   {
     "from": {
       "role": "bot"
     },
-    "id": "2.0",
-    "text": "Excepteur mollit ipsum id cupidatat.",
+    "id": "1.1",
+    "text": "Ullamco veniam ea non quis elit.",
     "timestamp": 0,
     "type": "message"
   },
   {
+    "attachmentLayout": "carousel",
     "attachments": [
       {
         "contentType": "image/jpeg",
         "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
+      },
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
       },
       {
         "contentType": "image/jpeg",
@@ -34,8 +36,44 @@
     "from": {
       "role": "bot"
     },
+    "id": "1.2",
+    "text": "Ut nulla magna commodo excepteur.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "2.0",
+    "text": "Aliquip laborum veniam sunt do aliquip anim.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
     "id": "2.1",
-    "text": "Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia.",
+    "text": "Voluptate amet velit culpa excepteur voluptate cupidatat eu do magna occaecat.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "2.2",
+    "text": "Cupidatat et qui quis in excepteur qui voluptate mollit dolore nisi tempor ut.",
     "timestamp": 0,
     "type": "message"
   }
