@@ -190,8 +190,7 @@ const DEFAULT_OPTIONS = {
   toastWarnColor: '#3B3A39',
 
   // Emoji
-  emojiAutocorrect: false,
-  emojiList: undefined
+  emojiSet: false // true || false || { ':)' : '😊'}
 };
 
 export default DEFAULT_OPTIONS;

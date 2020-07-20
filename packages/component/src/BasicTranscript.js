@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { css } from 'glamor';
-import { Panel as ScrollToBottomPanel, useAnimating, useSticky } from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -97,7 +97,7 @@ const BasicTranscript = ({ className }) => {
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [activities] = useActivities();
-  const [animatingToEnd] = useAnimating();
+  const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
   const [sticky] = useSticky();
   const focus = useFocus();
