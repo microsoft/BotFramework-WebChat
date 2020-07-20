@@ -27,10 +27,6 @@
       {
         "contentType": "image/jpeg",
         "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
-      },
-      {
-        "contentType": "image/jpeg",
-        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
       }
     ],
     "from": {

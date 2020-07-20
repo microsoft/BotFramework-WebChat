@@ -1,10 +1,9 @@
 {
   "transcriptNames": [
     "carousel-layout.json",
+    "multiple-lines-multiple-files.json",
     "simple-messages.json",
-    "single-line-multiple-files.json",
     "single-line-no-files.json",
-    "single-line-single-file.json",
     "user-upload.json"
   ]
 }
