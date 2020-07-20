@@ -66,11 +66,13 @@ const ROOT_CSS = css({
 
     '& .webchat__carousel-layout__complimentary-content': {
       display: 'flex',
+      flexGrow: 1,
       flexDirection: 'column'
     },
 
     '& .webchat__carousel-layout__content': {
       display: 'flex',
+      flexGrow: 1,
       flexDirection: 'column'
     },
 
