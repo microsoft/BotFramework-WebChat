@@ -249,7 +249,7 @@ const ActivityGroupingSurface = ({ children }) => {
 };
 
 function comboNumberSetter(value, setters) {
-  setters.forEach((setter, index) => setter(!!(value & Math.pow(2, index))));
+  setters.forEach((setter, index) => setter && setter(!!(value & Math.pow(2, index)), value));
 }
 
 function getComboNumber(states) {
@@ -316,11 +316,17 @@ const ActivityGroupingPanel = () => {
   const setUserOnTop2 = useCallback(() => setUserOnTop(true), [setUserOnTop]);
   const setUserOnBottom = useCallback(() => setUserOnTop(false), [setUserOnTop]);
 
-  const setAttachmentLayoutCarousel = useCallback(carousel => setAttachmentLayout(carousel ? 'carousel' : 'stacked'), [
-    setAttachmentLayout
-  ]);
+  const setAttachmentLayoutCarousel = useCallback(() => setAttachmentLayout('carousel'), [setAttachmentLayout]);
   const setAttachmentLayoutDefault = useCallback(() => setAttachmentLayout(false), [setAttachmentLayout]);
   const setAttachmentLayoutStacked = useCallback(() => setAttachmentLayout('stacked'), [setAttachmentLayout]);
+
+  const setAttachmentLayoutComboNumber = useCallback(
+    (_, value) =>
+      setAttachmentLayout(
+        (value & 192) === 192 && value !== -1 ? false : value & 128 ? 'carousel' : value & 64 ? 'stacked' : false
+      ),
+    [attachmentLayout, setAttachmentLayout]
+  );
 
   const styleValueAndSetters = [
     [botAvatarInitials, setBotAvatarInitials],
@@ -329,8 +335,8 @@ const ActivityGroupingPanel = () => {
     [userAvatarInitials, setUserAvatarInitials],
     [userNub, setUserNub],
     [userOnTop, setUserOnTop],
-    [attachmentLayout !== false, setAttachmentLayoutDefault],
-    [attachmentLayout === 'carousel', setAttachmentLayoutCarousel]
+    [attachmentLayout === 'stacked', setAttachmentLayoutComboNumber],
+    [attachmentLayout === 'carousel']
   ];
 
   const styleValues = styleValueAndSetters.map(([value]) => value);
