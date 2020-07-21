@@ -17,7 +17,7 @@ export async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
 export default async function setupVersionFamily3(
   { assets },
   { botId, directLineURL: domain, speechTokenURL, userId, webSocket },
-  { language, secret, token, username, locale }
+  { language, secret, token, username, conversationStartLocale }
 ) {
   assets && (await Promise.all(assets.map(loadAsset)));
 
@@ -41,7 +41,7 @@ export default async function setupVersionFamily3(
 
   window.BotChat.App(
     {
-      directLine: { domain, secret, token, webSocket, locale },
+      directLine: { domain, secret, token, webSocket, conversationStartLocale },
       bot: { id: botId },
       locale: language,
       resize: 'window',

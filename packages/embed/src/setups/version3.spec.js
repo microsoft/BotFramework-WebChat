@@ -18,7 +18,7 @@ test('Load Web Chat v3 without a speech token', async () => {
           secret: 'secret',
           token: 'token',
           webSocket: true,
-          locale: 'en-US'
+          conversationStartLocale: 'en-US'
         },
         bot: {
           id: 'webchat-mockbot'
@@ -54,7 +54,7 @@ test('Load Web Chat v3 without a speech token', async () => {
       secret: 'secret',
       token: 'token',
       username: 'William',
-      locale: 'en-US'
+      conversationStartLocale: 'en-US'
     }
   );
 

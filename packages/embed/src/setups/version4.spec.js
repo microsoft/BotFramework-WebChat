@@ -49,7 +49,7 @@ test('Load Web Chat v4', async () => {
       secret: 'secret',
       token: 'token',
       username: 'William',
-      locale: 'en-US'
+      conversationStartLocale: 'en-US'
     }
   );
 
@@ -67,7 +67,7 @@ test('Load Web Chat v4', async () => {
     secret: 'secret',
     token: 'token',
     webSocket: true,
-    locale: 'en-US'
+    conversationStartLocale: 'en-US'
   });
 
   expect(document.body).toHaveProperty(
