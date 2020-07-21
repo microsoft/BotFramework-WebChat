@@ -11,12 +11,12 @@ body {
 
 .badges .badges__badge {
   background-color: #e00;
-  border-radius: 28px;
+  border-radius: 30px;
   color: White;
   font-family: Consolas, 'Courier New', Courier, monospace;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
-  line-height: 28px;
+  line-height: 30px;
   margin: 2px;
   padding: 4px 8px;
 }
