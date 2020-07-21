@@ -11,7 +11,7 @@ export default function createDirectLine({
   token,
   watermark,
   webSocket,
-  locale
+  conversationStartLocale
 }) {
   return new DirectLine({
     botAgent,
@@ -24,7 +24,7 @@ export default function createDirectLine({
     token,
     watermark,
     webSocket,
-    locale,
+    conversationStartLocale,
     createFormData: attachments => {
       const formData = new FormData();
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <h3>No locale is sent</h3>
+    <div id="webchat1" role="main"></div>
+    <hr />
+    <h3>Send "en-US"</h3>
+    <div id="webchat2" role="main"></div>
+    <hr />
+    <h3>Send "zh-Hans"</h3>
+    <div id="webchat3" role="main"></div>
+    <hr />
+    <h3>Send "xx-YY" (non-exsiting)</h3>
+    <div id="webchat4" role="main"></div>
+    <hr />
+    <h3>Send "1a2b3c" (non-ISO format)</h3>
+    <div id="webchat5" role="main"></div>
+    <hr />
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+
+      async function conversationStart(frame, locale) {
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({
+              token: await token.fetchDirectLineToken(),
+              conversationStartLocale: locale
+            }),
+            store: createStore()
+          },
+          document.getElementById(frame)
+        );
+      }
+
+      (async function() {
+        await conversationStart('webchat1');
+        await conversationStart('webchat2', 'en-US');
+        await conversationStart('webchat3', 'zh-Hans');
+        await conversationStart('webchat4', 'xx-YY');
+        await conversationStart('webchat5', '1a2b3c');
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
