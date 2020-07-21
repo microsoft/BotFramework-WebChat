@@ -100,13 +100,15 @@ function useTextBoxSubmit() {
 function useTextBoxValue() {
   const [value, setSendBox] = useSendBoxValue();
   const stopDictate = useStopDictate();
+  const replaceEmoticon = useReplaceEmoticon();
 
   const setter = useCallback(
     value => {
+      value = replaceEmoticon(value);
       setSendBox(value);
       stopDictate();
     },
-    [setSendBox, stopDictate]
+    [replaceEmoticon, setSendBox, stopDictate]
   );
 
   return [value, setter];
@@ -116,7 +118,6 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
-  const [, setEmoji] = useReplaceEmoticon();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
@@ -128,10 +129,9 @@ const TextBox = ({ className }) => {
 
   const handleChange = useCallback(
     ({ target: { value } }) => {
-      value = setEmoji(value);
       setTextBoxValue(value);
     },
-    [setEmoji, setTextBoxValue]
+    [setTextBoxValue]
   );
 
   const handleKeyPress = useCallback(

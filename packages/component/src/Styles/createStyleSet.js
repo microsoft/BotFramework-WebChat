@@ -171,6 +171,39 @@ export default function createStyleSet(options) {
     options.bubbleNubOffset = -0;
   }
 
+  if (options.emojiSet === true) {
+    options.emojiSet = {
+      ':)': '😊',
+      ':-)': '😊',
+      '(:': '😊',
+      '(-:': '😊',
+      ':-|': '😐',
+      ':|': '😐',
+      ':-(': '☹️',
+      ':(': '☹️',
+      ':-D': '😀',
+      ':D': '😀',
+      ':-p': '😛',
+      ':p': '😛',
+      ':-P': '😛',
+      ':P': '😛',
+      ':-o': '😲',
+      ':o': '😲',
+      ':O': '😲',
+      ':-O': '😲',
+      ':-0': '😲',
+      ':0': '😲',
+      ';-)': '😉',
+      ';)': '😉',
+      '<3': '❤️',
+      '</3': '💔',
+      '<\\3': '💔'
+    };
+  } else if (Object.prototype.toString.call(options.emojiSet) !== '[object Object]') {
+    // TODO: Add a warning for invalid value.
+    options.emojiSet = false;
+  }
+
   return {
     activities: createActivitiesStyle(options),
     activity: createActivityStyle(options),
