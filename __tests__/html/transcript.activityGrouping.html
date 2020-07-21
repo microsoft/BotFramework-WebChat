@@ -26,6 +26,7 @@
           createDirectLineWithTranscript,
           createStore,
           expect,
+          ActivityGroupingBadges,
           ActivityGroupingContext,
           ActivityGroupingPanel,
           ActivityGroupingSurface,
@@ -55,7 +56,8 @@
                   store={store}
                   styleOptions={styleOptions}
                 >
-                  <BasicWebChat />
+                  <BasicWebChat className="webchat" />
+                  <ActivityGroupingBadges />
                   <ActivityGroupingPanel />
                 </Composer>
               )}
@@ -71,6 +73,7 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
 
         await host.snapshot();
         await host.done();

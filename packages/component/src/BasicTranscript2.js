@@ -15,7 +15,6 @@ import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
-import useDebugDeps from './hooks/internal/useDebugDeps';
 import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
 import useGroupActivities from './hooks/useGroupActivities';
@@ -326,20 +325,6 @@ const BasicTranscript2 = ({ className }) => {
     showAvatarInGroup
   ]);
 
-  useDebugDeps(
-    {
-      // activitiesGroupBySender,
-      // activitiesGroupByStatus,
-      // activityTree,
-      renderingElements,
-      visibleActivities
-    },
-    'BasicTranscript2'
-  );
-
-  // Reduce number of render here.
-  console.log('render BasicTranscript2');
-
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
 
   return (
@@ -483,20 +468,6 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
 
     return activities.findIndex(activity => getActivityUniqueId(activity) === lastReadActivityIdRef.current);
   }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
-
-  // console.log('render InternalTranscriptScrollable');
-
-  useDebugDeps(
-    {
-      activities,
-      allActivitiesRead,
-      animatingToEnd,
-      hideScrollToEndButton,
-      lastReadActivityIdRef,
-      sticky
-    },
-    'InternalTranscriptScrollable'
-  );
 
   return (
     <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">

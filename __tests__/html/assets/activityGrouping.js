@@ -86,6 +86,76 @@ function getInitialState(defaultValues = {}) {
   return initialState;
 }
 
+const ActivityGroupingBadges = () => {
+  const {
+    attachmentLayout,
+    botAvatarInitials,
+    botNub,
+    botOnTop,
+    rtl,
+    showAvatarInGroup,
+    transcriptName,
+    userAvatarInitials,
+    userNub,
+    userOnTop,
+    wide
+  } = useContext(window.WebChatTest.ActivityGroupingContext);
+
+  const badges = useMemo(() => {
+    const badges = [];
+
+    if (attachmentLayout === 'stacked') {
+      badges.push('layout:stacked');
+    } else if (attachmentLayout === 'carousel') {
+      badges.push('layout:carousel');
+    }
+
+    botAvatarInitials && badges.push('bot:initials');
+    botNub && badges.push('bot:nub');
+    botOnTop && badges.push('bot:on-top');
+    rtl && badges.push('view:rtl');
+
+    if (showAvatarInGroup === 'sender') {
+      badges.push('avatar-group:sender');
+    } else if (showAvatarInGroup === true) {
+      badges.push('avatar-group:every');
+    }
+
+    badges.push(`transcript:${transcriptName}`);
+
+    userAvatarInitials && badges.push('user:initials');
+    userNub && badges.push('user:nub');
+    userOnTop && badges.push('user:on-top');
+
+    wide && badges.push('view:wide');
+
+    return badges.sort();
+  }, [
+    attachmentLayout,
+    botAvatarInitials,
+    botNub,
+    botOnTop,
+    rtl,
+    showAvatarInGroup,
+    transcriptName,
+    userAvatarInitials,
+    userNub,
+    userOnTop,
+    wide
+  ]);
+
+  return (
+    <div className="badges" dir="ltr">
+      {badges.map(badge => (
+        <React.Fragment key={badge}>
+          <nobr className="badges__badge">{badge}</nobr>
+          {'\u200B'}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
 const ActivityGroupingSurface = ({ children }) => {
   const [transcriptNames, setTranscriptNames] = useState([]);
   const initialState = useMemo(() => getInitialState(DEFAULT_STATE), []);
@@ -626,6 +696,7 @@ const ActivityGroupingPanel = () => {
   );
 };
 
+window.WebChatTest.ActivityGroupingBadges = ActivityGroupingBadges;
 window.WebChatTest.ActivityGroupingContext = ActivityGroupingContext;
 window.WebChatTest.ActivityGroupingPanel = ActivityGroupingPanel;
 window.WebChatTest.ActivityGroupingSurface = ActivityGroupingSurface;
