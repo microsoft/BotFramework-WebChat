@@ -17,8 +17,7 @@ test('Load Web Chat v3 without a speech token', async () => {
           domain: 'https://directline.botframework.com',
           secret: 'secret',
           token: 'token',
-          webSocket: true,
-          conversationStartLocale: 'en-US'
+          webSocket: true
         },
         bot: {
           id: 'webchat-mockbot'
@@ -53,8 +52,7 @@ test('Load Web Chat v3 without a speech token', async () => {
       language: 'ja-JP',
       secret: 'secret',
       token: 'token',
-      username: 'William',
-      conversationStartLocale: 'en-US'
+      username: 'William'
     }
   );
 

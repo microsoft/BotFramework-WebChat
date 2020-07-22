@@ -3,6 +3,7 @@ import { DirectLine } from 'botframework-directlinejs';
 export default function createDirectLine({
   botAgent,
   conversationId,
+  conversationStartProperties,
   domain,
   fetch,
   pollingInterval,
@@ -10,12 +11,12 @@ export default function createDirectLine({
   streamUrl,
   token,
   watermark,
-  webSocket,
-  conversationStartLocale
+  webSocket
 }) {
   return new DirectLine({
     botAgent,
     conversationId,
+    conversationStartProperties,
     domain,
     fetch,
     pollingInterval,
@@ -24,7 +25,6 @@ export default function createDirectLine({
     token,
     watermark,
     webSocket,
-    conversationStartLocale,
     createFormData: attachments => {
       const formData = new FormData();
 

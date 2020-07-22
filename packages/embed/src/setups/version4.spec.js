@@ -48,8 +48,7 @@ test('Load Web Chat v4', async () => {
       language: 'ja-JP',
       secret: 'secret',
       token: 'token',
-      username: 'William',
-      conversationStartLocale: 'en-US'
+      username: 'William'
     }
   );
 
@@ -63,11 +62,13 @@ test('Load Web Chat v4', async () => {
 
   expect(window.WebChat.createDirectLine).toHaveBeenCalledTimes(1);
   expect(window.WebChat.createDirectLine).toHaveBeenCalledWith({
+    conversationStartProperties: {
+      locale: 'ja-JP'
+    },
     domain: 'https://directline.botframework.com',
     secret: 'secret',
     token: 'token',
-    webSocket: true,
-    conversationStartLocale: 'en-US'
+    webSocket: true
   });
 
   expect(document.body).toHaveProperty(
