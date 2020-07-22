@@ -21,5 +21,5 @@ export default function useRenderActivityStatus({ activity, nextVisibleActivity 
     const renderActivityStatus = createActivityStatusRenderer({ activity, nextVisibleActivity });
 
     return renderActivityStatus || RETURN_FALSE;
-  }, [createActivityStatusRenderer]);
+  }, [activity, createActivityStatusRenderer, nextVisibleActivity]);
 }

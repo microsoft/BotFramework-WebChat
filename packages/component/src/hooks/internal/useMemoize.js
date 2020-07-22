@@ -23,5 +23,7 @@ export default function useMemoize(fn, callback, deps) {
     };
   }, [fn]);
 
+  // We are manually creating the deps here. The "callback" arg is also designed not to be impact deps, similar to useEffect(fn), where "fn" is not in deps.
+  /* eslint-disable-next-line react-hooks/exhaustive-deps */
   return useMemo(() => memoizedFn(callback), [memoizedFn, ...deps]);
 }

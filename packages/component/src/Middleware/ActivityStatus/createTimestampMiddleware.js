@@ -11,10 +11,10 @@ export default function createTimestampMiddleware() {
       // This is not a React component, but a render function.
       /* eslint-disable-next-line react/display-name */
       return () => <AbsoluteTime hide={true} value={activity.timestamp} />;
-    } else {
-      // This is not a React component, but a render function.
-      /* eslint-disable-next-line react/display-name */
-      return () => <Timestamp activity={activity} />;
     }
+
+    // This is not a React component, but a render function.
+    /* eslint-disable-next-line react/display-name */
+    return () => <Timestamp activity={activity} />;
   };
 }

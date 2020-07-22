@@ -20,7 +20,12 @@ const AbsoluteTime = ({ hide, value }) => {
   );
 };
 
+AbsoluteTime.defaultProps = {
+  hide: false
+};
+
 AbsoluteTime.propTypes = {
+  hide: PropTypes.bool,
   value: PropTypes.string.isRequired
 };
 

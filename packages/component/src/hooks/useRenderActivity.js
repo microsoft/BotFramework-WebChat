@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import useCreateActivityRendererInternal from './internal/useCreateActivityRendererInternal';
 
 // In the old days, the useRenderActivity() will be called like this:
@@ -48,5 +50,5 @@ export default function useRenderActivity(renderAttachment) {
         })
       )
     );
-  });
+  }, []);
 }
