@@ -82,6 +82,6 @@ export default function render(markdown, { markdownRespectCRLF }) {
   }
 
   const html = customMarkdownIt.render(markdown);
-
-  return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
+  return html;
+  // return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
 }
