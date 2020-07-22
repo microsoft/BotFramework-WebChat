@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: "off" */
+/* eslint complexity: ["error", 30] */
 
 import { css } from 'glamor';
 import { Context as FilmContext } from 'react-film';
@@ -160,7 +160,6 @@ const WebChatCarouselFilmStrip = ({
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
-  // const showCallout = !!renderAvatar || (!hasAvatar && hasNub);
 
   const showAvatar = showCallout && hasAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
@@ -208,9 +207,12 @@ const WebChatCarouselFilmStrip = ({
             <div className="webchat__carousel-layout__nub-pad" />
             <div className="webchat__carousel-layout__complimentary-content">
               <ul className="webchat__carousel-layout__attachments" ref={itemContainerRef}>
+                {/* attachments do not have an ID, it is always indexed by number */}
                 {attachments.map((attachment, index) => (
+                  /* eslint-disable-next-line react/no-array-index-key */
                   <li aria-roledescription="attachment" className="webchat__carousel-layout__attachment" key={index}>
                     <ScreenReaderText text={attachedAlt} />
+                    {/* eslint-disable-next-line react/no-array-index-key */}
                     <Bubble fromUser={fromUser} key={index} nub={false}>
                       {renderAttachment({ activity, attachment })}
                     </Bubble>

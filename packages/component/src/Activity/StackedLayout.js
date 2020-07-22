@@ -1,5 +1,4 @@
 /* eslint complexity: ["error", 30] */
-/* eslint react/no-array-index-key: "off" */
 
 import { css } from 'glamor';
 import classNames from 'classnames';
@@ -164,12 +163,15 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
               </Bubble>
             </div>
           )}
+          {/* attachments do not have an ID, it is always indexed by number */}
           {attachments.map((attachment, index) => (
+            /* eslint-disable-next-line react/no-array-index-key */
             <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment-row" key={index}>
               <ScreenReaderText text={attachedAlt} />
               <Bubble
                 className="webchat__stacked-layout__attachment"
                 fromUser={fromUser}
+                /* eslint-disable-next-line react/no-array-index-key */
                 key={index}
                 nub={(hasAvatar || hasNub) && 'hidden'}
               >
