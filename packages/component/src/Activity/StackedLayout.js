@@ -180,12 +180,11 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
         </div>
         <div className="webchat__stacked-layout__alignment-pad" />
       </div>
-      {/* TODO: renderActivityStatus could be false, but we still need to render an accessible timestamp here */}
       {showActivityStatus && (
         <div aria-hidden={true} className="webchat__stacked-layout__status">
           <div className="webchat__stacked-layout__avatar-gutter" />
           <div className="webchat__stacked-layout__nub-pad" />
-          {renderActivityStatus({ activity })}
+          {renderActivityStatus()}
           <div className="webchat__stacked-layout__alignment-pad" />
         </div>
       )}

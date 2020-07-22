@@ -127,9 +127,12 @@ if (!webDriverMode) {
   window.addEventListener('error', ({ error }) => jobs.post(pageError(error)));
 }
 
-webDriverMode && subscribeConsole();
-
-!webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
+if (webDriverMode) {
+  subscribeConsole();
+  document.body.className += ' webdriver';
+} else {
+  console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
+}
 
 export {
   classNames,

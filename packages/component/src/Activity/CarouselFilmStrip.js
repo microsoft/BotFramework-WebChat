@@ -222,12 +222,11 @@ const WebChatCarouselFilmStrip = ({
         </div>
         <div className="webchat__carousel-layout__alignment-pad" />
       </div>
-      {/* TODO: renderActivityStatus could be false, but we still need to render an accessible timestamp here */}
       {showActivityStatus && (
         <div aria-hidden={true} className="webchat__carousel-layout__status">
           <div className="webchat__carousel-layout__avatar-gutter" />
           <div className="webchat__carousel-layout__nub-pad" />
-          {renderActivityStatus({ activity })}
+          {renderActivityStatus()}
         </div>
       )}
     </div>

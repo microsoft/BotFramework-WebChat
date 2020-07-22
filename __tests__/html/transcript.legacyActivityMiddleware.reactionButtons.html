@@ -74,15 +74,11 @@
         if (role === 'bot') {
           const { id } = activity;
 
-          return (...renderArgs) => {
-            const [children] = renderArgs;
-
-            return (
-              <BotActivityDecorator key={id} activityID={id}>
-                {next(args)(children)}
-              </BotActivityDecorator>
-            );
-          };
+          return (...renderArgs) => (
+            <BotActivityDecorator key={id} activityID={id}>
+              {next(args)(...renderArgs)}
+            </BotActivityDecorator>
+          );
         }
 
         return next(args);

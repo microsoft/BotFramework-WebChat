@@ -12,8 +12,16 @@ export default function createDirectLineWithTranscript(activitiesOrFilename) {
       connectionStatusDeferredObservable.next(1);
       connectionStatusDeferredObservable.next(2);
 
+      const now = Date.now();
       const activities = Array.isArray(activitiesOrFilename)
-        ? activitiesOrFilename
+        ? activitiesOrFilename.map(activity => {
+            const { timestamp } = activity;
+
+            return {
+              ...activity,
+              timestamp: typeof timestamp === 'number' ? new Date(now + (timestamp || 0)).toISOString() : timestamp
+            };
+          })
         : await loadTranscriptAsset(activitiesOrFilename);
 
       setTimeout(() => {

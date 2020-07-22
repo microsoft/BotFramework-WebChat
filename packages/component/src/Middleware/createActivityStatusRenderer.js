@@ -14,11 +14,13 @@ export default function createActivityStatusRenderer(additionalMiddleware) {
     } catch (err) {
       const { message, stack } = err;
 
-      return (
+      const FailedRenderActivityStatus = () => (
         <ErrorBox error={err} message="Failed to render activity status">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );
+
+      return FailedRenderActivityStatus;
     }
   };
 }

@@ -4,6 +4,8 @@ import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useByteFormatter from './useByteFormatter';
 import useConnectivityStatus from './useConnectivityStatus';
+import useCreateActivityRenderer from './useCreateActivityRenderer';
+import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
@@ -74,6 +76,8 @@ export {
   useAvatarForUser,
   useByteFormatter,
   useConnectivityStatus,
+  useCreateActivityRenderer,
+  useCreateActivityStatusRenderer,
   useDateFormatter,
   useDebouncedNotifications,
   useDictateInterims,

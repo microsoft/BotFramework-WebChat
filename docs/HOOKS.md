@@ -274,7 +274,9 @@ If `showCallout` is truthy, the activity should render the bubble nub. The activ
 <!-- prettier-ignore-start -->
 ```js
 useCreateActivityStatusRenderer(): ({
-  activity: Activity
+  activity: Activity,
+  hideTimestamp: boolean,
+  sendState: 'sending' | 'send failed' | 'sent'
 }) =>
   (
     false |
@@ -283,7 +285,9 @@ useCreateActivityStatusRenderer(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will return a function to render the activity status for the specified activity.
+This function will return a function that, when called, will return a function to render the activity status for the specified activity. Activity status could be a timestamp or a retry prompt.
+
+When `hideTimestamp` is set to `true`, the activity status middleware should hide if it is rendering a timestamp for the activity. Although the timestamp is hidden, activity status should consider rendering accessible counterpart.
 
 ## `useDateFormatter`
 

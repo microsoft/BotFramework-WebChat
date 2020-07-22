@@ -42,12 +42,23 @@ export default function createCoreMiddleware() {
         // ) => React.Element
 
         return function renderCarouselLayout(renderAttachment, props) {
+          // TODO: Add the solution to FAQ.
+          typeof props === 'undefined' &&
+            console.warn(
+              'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passthrough all arguments.'
+            );
+
           return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
         };
       }
 
       // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
       return function renderStackedLayout(renderAttachment, props) {
+        typeof props === 'undefined' &&
+          console.warn(
+            'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passthrough all arguments.'
+          );
+
         return <StackedLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
       };
     }

@@ -245,14 +245,16 @@ const BasicTranscript2 = ({ className }) => {
       const renderAvatar = createAvatarRenderer({ activity: firstActivity });
 
       activitiesWithSameSender.forEach((activitiesWithSameSenderAndStatus, indexWithinSenderGroup) => {
-        const renderActivityStatus = createActivityStatusRenderer({
-          activity: activitiesWithSameSenderAndStatus[activitiesWithSameSenderAndStatus.length - 1]
-        });
-
         const firstInSenderGroup = !indexWithinSenderGroup;
         const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSender.length - 1;
 
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
+          // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
+          const renderActivityStatus = createActivityStatusRenderer({
+            activity,
+            hideTimestamp: indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1
+          });
+
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
           const lastInSenderAndStatusGroup =
             indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
@@ -293,9 +295,7 @@ const BasicTranscript2 = ({ className }) => {
             // When "liveRegionKey" change, it was show up in the live region momentarily.
             liveRegionKey: key + '|' + (messageBackDisplayText || text),
             renderActivity,
-            renderActivityStatus:
-              // We only show the activity status at the end of the sender group.
-              indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1 && renderActivityStatus,
+            renderActivityStatus,
             renderAvatar,
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead

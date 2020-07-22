@@ -8,14 +8,16 @@ const {
   ActivityClientState: { SEND_FAILED, SENDING, SENT }
 } = Constants;
 
+let showUpgradeNotes = true;
+
 export default function useCreateActivityStatusRenderer() {
-  const { activityStatusRenderer } = useContext(WebChatUIContext);
+  const { activityStatusRenderer: createActivityStatusRenderer } = useContext(WebChatUIContext);
 
   // TODO: We used to call useTimePassed. We need a newer implementation
   const getSendTimeout = useSendTimeoutForActivity();
 
   return useMemo(
-    () => ({ activity, nextVisibleActivity } = legacyArgs) => {
+    () => ({ activity, hideTimestamp, nextVisibleActivity }) => {
       const sendTimeout = getSendTimeout({ activity });
 
       // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
@@ -29,13 +31,28 @@ export default function useCreateActivityStatusRenderer() {
       const pastTimeout = fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0;
       const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
-      return activityStatusRenderer({
+      const renderActivityStatus = createActivityStatusRenderer({
         activity,
-        nextVisibleActivity,
-        sameTimestampGroup: false,
+        hideTimestamp,
+        nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
+        sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
         sendState
       });
+
+      if (typeof renderActivityStatus === 'object') {
+        if (showUpgradeNotes) {
+          console.warn(
+            'botframework-webchat: Please update your custom activity status middleware to return a render function, instead of a React element.'
+          );
+
+          showUpgradeNotes = false;
+        }
+
+        return () => renderActivityStatus;
+      }
+
+      return renderActivityStatus;
     },
-    [activityStatusRenderer, getSendTimeout]
+    [createActivityStatusRenderer, getSendTimeout]
   );
 }

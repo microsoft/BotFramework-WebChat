@@ -12,8 +12,8 @@ body {
   width: 100%;
 }
 
-input,
-textarea,
+body.webdriver input,
+body.webdriver textarea,
 [contenteditable] {
   caret-color: Transparent;
 }

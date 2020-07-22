@@ -1,15 +1,20 @@
 import React from 'react';
 
+import AbsoluteTime from './AbsoluteTime';
 import Timestamp from './Timestamp';
 
 export default function createTimestampMiddleware() {
-  return () => next => ({ activity, sameTimestampGroup, ...args }) => {
-    if (!sameTimestampGroup) {
+  return () => () => args => {
+    const { activity, hideTimestamp } = args;
+
+    if (hideTimestamp) {
+      // This is not a React component, but a render function.
+      /* eslint-disable-next-line react/display-name */
+      return () => <AbsoluteTime hide={true} value={activity.timestamp} />;
+    } else {
       // This is not a React component, but a render function.
       /* eslint-disable-next-line react/display-name */
       return () => <Timestamp activity={activity} />;
     }
-
-    return next({ activity, sameTimestampGroup, ...args });
   };
 }
