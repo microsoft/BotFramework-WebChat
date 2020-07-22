@@ -32,23 +32,26 @@ export default function useRenderActivity(renderAttachment) {
 
   const createActivityRenderer = useCreateActivityRendererInternal(renderAttachment);
 
-  return useCallback(renderActivityArgs => {
-    if (!renderActivityArgs || !renderActivityArgs.activity) {
-      throw new Error(
-        'botframework-webchat: First argument passed to the callback of useRenderActivity() must contains "activity" property.'
+  return useCallback(
+    renderActivityArgs => {
+      if (!renderActivityArgs || !renderActivityArgs.activity) {
+        throw new Error(
+          'botframework-webchat: First argument passed to the callback of useRenderActivity() must contains "activity" property.'
+        );
+      }
+
+      const renderActivity = createActivityRenderer(renderActivityArgs);
+
+      return (
+        !!renderActivity ||
+        renderActivity(renderAttachmentArgs =>
+          renderAttachment({
+            activity: renderActivityArgs.activity,
+            ...renderAttachmentArgs
+          })
+        )
       );
-    }
-
-    const renderActivity = createActivityRenderer(renderActivityArgs);
-
-    return (
-      !!renderActivity ||
-      renderActivity(renderAttachmentArgs =>
-        renderAttachment({
-          activity: renderActivityArgs.activity,
-          ...renderAttachmentArgs
-        })
-      )
-    );
-  }, []);
+    },
+    [createActivityRenderer, renderAttachment]
+  );
 }
