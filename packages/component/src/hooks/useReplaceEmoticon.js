@@ -10,6 +10,7 @@ function escapeRegexp(emoticon) {
 
 export default function useReplaceEmoticon() {
   const [{ emojiSet }] = useStyleOptions();
+
   return useCallback(
     valueWithEmoticon => {
       const escapedString =
@@ -18,6 +19,7 @@ export default function useReplaceEmoticon() {
           .sort()
           .map(escapeRegexp)
           .join('|');
+
       const emojiRegExp =
         Object.prototype.toString.call(emojiSet) !== '[object Object]'
           ? new RegExp(escapedString, 'gmu')
