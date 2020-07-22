@@ -34,15 +34,21 @@ export default function createCoreMiddleware() {
 
     if (type === 'message' || type === 'typing') {
       if (type === 'message' && (activity.attachments || []).length > 1 && activity.attachmentLayout === 'carousel') {
-        // The following line is not a React functional component, it's a render function.
-        return function renderCarouselLayout(props) {
-          return <CarouselLayout activity={activity} {...props} />;
+        // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
+        // The function signature need to be compatible with older version of activity middleware, which was:
+        //
+        // renderActivity(
+        //   renderAttachment: ({ activity, attachment }) => React.Element
+        // ) => React.Element
+
+        return function renderCarouselLayout(renderAttachment, props) {
+          return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
         };
       }
 
-      // The following line is not a React functional component, it's a render function.
-      return function renderStackedLayout(props) {
-        return <StackedLayout activity={activity} {...props} />;
+      // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
+      return function renderStackedLayout(renderAttachment, props) {
+        return <StackedLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
       };
     }
 

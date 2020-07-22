@@ -14,7 +14,6 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalizer from '../hooks/useLocalizer';
-import useRenderAttachment from '../hooks/useRenderAttachment';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useUniqueId from '../hooks/internal/useUniqueId';
@@ -79,14 +78,13 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallout }) => {
+const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, renderAvatar, showCallout }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
-  const contentARIALabelId = useUniqueId('webchat__stacked-layout__id');
+  const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
-  const renderAttachment = useRenderAttachment();
   const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const {
@@ -126,7 +124,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
 
   return (
     <div
-      aria-labelledby={contentARIALabelId}
+      aria-labelledby={ariaLabelId}
       aria-roledescription="activity"
       className={classNames('webchat__stacked-layout', ROOT_CSS + '', stackedLayoutStyleSet + '', {
         'webchat__stacked-layout--extra-trailing': extraTrailing,
@@ -148,7 +146,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
               className="webchat__stacked-layout__message-row"
               // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
               /* eslint-disable-next-line react/forbid-dom-props */
-              id={contentARIALabelId}
+              id={ariaLabelId}
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
@@ -175,15 +173,16 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAvatar, showCallo
                 key={index}
                 nub={(hasAvatar || hasNub) && 'hidden'}
               >
-                {renderAttachment({ attachment })}
+                {renderAttachment({ activity, attachment })}
               </Bubble>
             </div>
           ))}
         </div>
         <div className="webchat__stacked-layout__alignment-pad" />
       </div>
+      {/* TODO: renderActivityStatus could be false, but we still need to render an accessible timestamp here */}
       {showActivityStatus && (
-        <div className="webchat__stacked-layout__status">
+        <div aria-hidden={true} className="webchat__stacked-layout__status">
           <div className="webchat__stacked-layout__avatar-gutter" />
           <div className="webchat__stacked-layout__nub-pad" />
           {renderActivityStatus({ activity })}
@@ -216,7 +215,8 @@ StackedLayout.propTypes = {
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
+  renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
   showCallout: PropTypes.bool
 };

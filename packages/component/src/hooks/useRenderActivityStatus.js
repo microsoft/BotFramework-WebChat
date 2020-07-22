@@ -1,63 +1,25 @@
-import { Constants } from 'botframework-webchat-core';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 
-// import useGroupTimestamp from './useGroupTimestamp';
-import useSendTimeoutForActivity from './useSendTimeoutForActivity';
-// import useTimePassed from './internal/useTimePassed';
-import WebChatUIContext from '../WebChatUIContext';
+import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 
-const {
-  ActivityClientState: { SEND_FAILED, SENDING, SENT }
-} = Constants;
+const RETURN_FALSE = () => false;
 
-// function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
-//   if (groupTimestamp === false) {
-//     // Hide timestamp for all activities.
-//     return true;
-//   } else if (activityX && activityY && activityX.from && activityY.from) {
-//     groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : Infinity;
+let showDeprecationNotes = true;
 
-//     if (activityX.from.role === activityY.from.role) {
-//       const timeX = new Date(activityX.timestamp).getTime();
-//       const timeY = new Date(activityY.timestamp).getTime();
+export default function useRenderActivityStatus({ activity, nextVisibleActivity }) {
+  if (showDeprecationNotes) {
+    console.warn(
+      'botframework-webchat: "useRenderActivityStatus" is deprecated and will be removed on or after 2022-07-22. Please use "useCreateActivityStatusRenderer()" instead.'
+    );
 
-//       return Math.abs(timeX - timeY) <= groupTimestamp;
-//     }
-//   }
+    showDeprecationNotes = false;
+  }
 
-//   return false;
-// }
+  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
 
-export default function useRenderActivityStatus() {
-  const { activityStatusRenderer } = useContext(WebChatUIContext);
-  const getSendTimeout = useSendTimeoutForActivity();
+  return useMemo(() => {
+    const renderActivityStatus = createActivityStatusRenderer({ activity, nextVisibleActivity });
 
-  return useMemo(
-    () => ({ activity, nextVisibleActivity }) => {
-      const sendTimeout = getSendTimeout({ activity });
-
-      // const sameTimestampGroup = useMemo(() => shouldGroupTimestamp(activity, nextVisibleActivity, groupTimestamp), [
-      //   activity,
-      //   groupTimestamp,
-      //   nextVisibleActivity
-      // ]);
-
-      const sameTimestampGroup = false;
-
-      // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
-      // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
-      const {
-        channelData: { clientTimestamp = 0, state } = {},
-        from: { role }
-      } = activity;
-      const fromUser = role === 'user';
-      const activitySent = state !== SENDING && state !== SEND_FAILED;
-      // const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
-      const pastTimeout = fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0;
-      const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
-
-      return activityStatusRenderer({ activity, nextVisibleActivity, sameTimestampGroup, sendState });
-    },
-    [activityStatusRenderer, getSendTimeout]
-  );
+    return renderActivityStatus || RETURN_FALSE;
+  }, [createActivityStatusRenderer]);
 }

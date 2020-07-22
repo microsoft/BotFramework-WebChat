@@ -15,7 +15,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar, showCallout }) => {
+const CarouselLayout = ({ activity, children, renderActivityStatus, renderAttachment, renderAvatar, showCallout }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const filmStyleSet = useMemo(() => createBasicStyleSet({ cursor: null }), []);
@@ -31,6 +31,7 @@ const CarouselLayout = ({ activity, children, renderActivityStatus, renderAvatar
             <CarouselFilmStrip
               activity={activity}
               renderActivityStatus={renderActivityStatus}
+              renderAttachment={renderAttachment}
               renderAvatar={renderAvatar}
               showCallout={showCallout}
             />
@@ -71,7 +72,8 @@ CarouselLayout.defaultProps = {
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
+  renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
   showCallout: PropTypes.bool
 };

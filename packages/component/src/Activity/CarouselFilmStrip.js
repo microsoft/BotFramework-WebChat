@@ -15,7 +15,6 @@ import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
-import useRenderAttachment from '../hooks/useRenderAttachment';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useUniqueId from '../hooks/internal/useUniqueId';
@@ -117,6 +116,7 @@ const WebChatCarouselFilmStrip = ({
   className,
   itemContainerRef,
   renderActivityStatus,
+  renderAttachment,
   renderAvatar,
   scrollableRef,
   showCallout
@@ -126,9 +126,8 @@ const WebChatCarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__content');
+  const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__id');
   const localize = useLocalizer();
-  const renderAttachment = useRenderAttachment();
   const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const {
@@ -213,7 +212,7 @@ const WebChatCarouselFilmStrip = ({
                   <li aria-roledescription="attachment" className="webchat__carousel-layout__attachment" key={index}>
                     <ScreenReaderText text={attachedAlt} />
                     <Bubble fromUser={fromUser} key={index} nub={false}>
-                      {renderAttachment({ attachment })}
+                      {renderAttachment({ activity, attachment })}
                     </Bubble>
                   </li>
                 ))}
@@ -223,8 +222,9 @@ const WebChatCarouselFilmStrip = ({
         </div>
         <div className="webchat__carousel-layout__alignment-pad" />
       </div>
+      {/* TODO: renderActivityStatus could be false, but we still need to render an accessible timestamp here */}
       {showActivityStatus && (
-        <div className="webchat__carousel-layout__status">
+        <div aria-hidden={true} className="webchat__carousel-layout__status">
           <div className="webchat__carousel-layout__avatar-gutter" />
           <div className="webchat__carousel-layout__nub-pad" />
           {renderActivityStatus({ activity })}
@@ -259,7 +259,8 @@ WebChatCarouselFilmStrip.propTypes = {
   }).isRequired,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
+  renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
   scrollableRef: PropTypes.any.isRequired,
   showCallout: PropTypes.bool

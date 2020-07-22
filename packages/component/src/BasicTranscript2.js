@@ -15,13 +15,13 @@ import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useCreateActivityRenderer from './hooks/useCreateActivityRenderer';
+import useCreateActivityStatusRenderer from './hooks/useCreateActivityStatusRenderer';
 import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
 import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
-import useRenderActivity from './hooks/useRenderActivity';
-import useRenderActivityStatus from './hooks/useRenderActivityStatus';
 import useRenderAvatar from './hooks/useRenderAvatar';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
@@ -105,8 +105,8 @@ const BasicTranscript2 = ({ className }) => {
   const [activities] = useActivities();
   const [direction] = useDirection();
 
-  const createActivityRenderer = useRenderActivity();
-  const createActivityStatusRenderer = useRenderActivityStatus();
+  const createActivityRenderer = useCreateActivityRenderer();
+  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useRenderAvatar();
   const groupActivities = useGroupActivities();
   const localize = useLocalizer();
@@ -118,22 +118,18 @@ const BasicTranscript2 = ({ className }) => {
   // Some activities that are not visible, will return a falsy renderer.
 
   // Converting from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
-  // This is for the memoization function to cache the arguments.
-  const createActivityRenderer2 = useCallback(
-    (activity, nextVisibleActivity) =>
-      createActivityRenderer({
-        activity,
-        nextVisibleActivity
-      }),
+  // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
+  const createActivityRendererWithLiteralArgs = useCallback(
+    (activity, nextVisibleActivity) => createActivityRenderer({ activity, nextVisibleActivity }),
     [createActivityRenderer]
   );
 
   // Create a memoized context of the createActivityRenderer function.
   const activitiesWithRenderer = useMemoize(
-    createActivityRenderer2,
-    createActivityRenderer2Memoized => {
-      // All calls to createActivityRenderer2Memoized() in this function will be memoized (LRU = 1).
-      // In next render cycle, calls to createActivityRenderer2Memoized() might return memoized result instead.
+    createActivityRendererWithLiteralArgs,
+    createActivityRendererWithLiteralArgsMemoized => {
+      // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
+      // In next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return memoized result instead.
       // This is an improvement to React useMemo(), because it only allows 1 memoization.
       // useMemoize() allows any number of memoization.
 
@@ -142,8 +138,7 @@ const BasicTranscript2 = ({ className }) => {
 
       for (let index = activities.length - 1; index >= 0; index--) {
         const activity = activities[index];
-        // const [{ activity: nextVisibleActivity } = {}] = activitiesWithRenderer;
-        const renderActivity = createActivityRenderer2Memoized(activity, nextVisibleActivity);
+        const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
 
         if (renderActivity) {
           activitiesWithRenderer.splice(0, 0, {
@@ -154,9 +149,6 @@ const BasicTranscript2 = ({ className }) => {
           nextVisibleActivity = activity;
         }
       }
-
-      // [...activities].reverse().forEach(activity => {
-      // });
 
       return activitiesWithRenderer;
     },
