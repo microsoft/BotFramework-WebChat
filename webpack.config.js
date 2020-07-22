@@ -4,7 +4,7 @@ require("expose-loader");
 
 const coreConfig = {
     devtool: "source-map",
-
+    
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js", ".json"]
@@ -35,7 +35,7 @@ const coreConfig = {
 const chatConfig = {
     entry: "./src/BotChat.ts",
     output: {
-        libraryTarget: "umd",
+        libraryTarget: "window",
         library: "BotChat",
         filename: "./botchat.js"
     }
@@ -44,7 +44,7 @@ const chatConfig = {
 const chatWithPolyfillConfig = {
     entry: "./src/BotChatWithPolyfill.ts",
     output: {
-        libraryTarget: "umd",
+        libraryTarget: "window",
         library: "BotChat",
         filename: "./botchat-es5.js"
     }
@@ -56,7 +56,7 @@ const featureConfig = {
         CognitiveServices: "./src/CognitiveServices/lib.ts"
     },
     output: {
-        libraryTarget: "umd",
+        libraryTarget: "window",
         library: "[name]",
         filename: "./[name].js",
     }
