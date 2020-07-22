@@ -51,6 +51,9 @@ test('Setup version 4', async () => {
 
   expect(window.WebChat.renderWebChat.mock.calls[0][0]).toEqual({
     directLine: {
+      conversationStartProperties: {
+        locale: 'ja-JP'
+      },
       domain: 'https://directline.botframework.com',
       secret: 'secret',
       token: undefined,
