@@ -24,6 +24,7 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        // await pageObjects.wait(conditions.minNumActivitiesShown(1), timeouts.directLine);
 
         await host.snapshot();
         await host.done();
