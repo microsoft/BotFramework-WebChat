@@ -264,9 +264,11 @@ If the activity middleware want to hide the activity, it must return `false` ins
 For `renderActivityStatus` and `renderAvatar`, it could be one of the followings:
 
 -  `false`: Do not render activity status or avatar.
--  `() => React.Element`: render activity status or avatar by calling this function.
+-  `() => React.Element`: Render activity status or avatar by calling this function.
 
-If `showCallout` is truthy, the activity should render the bubble nub. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
+If `showCallout` is truthy, the activity should render the bubble nub anda avatar. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
+
+If `showCallout` is falsy but `renderAvatar` is truthy, the activity should not render the avatar, but leave a space for the avatar to keep align with other activities.
 
 ## `useCreateActivityStatusRenderer`
 
