@@ -161,7 +161,7 @@ const WebChatCarouselFilmStrip = ({
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
-  const showAvatar = showCallout && hasAvatar;
+  const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
 
   return (

@@ -1,5 +1,5 @@
 import { Constants } from 'botframework-webchat-core';
-import { useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
@@ -43,15 +43,13 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
 
 export default function useCreateActivityStatusRenderer() {
   return useMemo(
-    () => ({ activity, hideTimestamp, nextVisibleActivity }) => {
-      return () => (
-        <ActivityStatusContainer
-          activity={activity}
-          hideTimestamp={hideTimestamp}
-          nextVisibleActivity={nextVisibleActivity}
-        />
-      );
-    },
+    () => ({ activity, hideTimestamp, nextVisibleActivity }) => () => (
+      <ActivityStatusContainer
+        activity={activity}
+        hideTimestamp={hideTimestamp}
+        nextVisibleActivity={nextVisibleActivity}
+      />
+    ),
     []
   );
 }
