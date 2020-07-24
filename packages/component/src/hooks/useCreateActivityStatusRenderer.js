@@ -1,16 +1,16 @@
 import { Constants } from 'botframework-webchat-core';
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING, SENT }
 } = Constants;
 
 const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity }) => {
-  const { activityStatusRenderer: createActivityStatusRenderer } = useContext(WebChatUIContext);
+  const { activityStatusRenderer: createActivityStatusRenderer } = useWebChatUIContext();
   const getSendTimeout = useSendTimeoutForActivity();
 
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.

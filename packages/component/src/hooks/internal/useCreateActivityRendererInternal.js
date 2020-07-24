@@ -1,16 +1,16 @@
-import { useCallback, useContext } from 'react';
+import { useMemo } from 'react';
 
 import useRenderAttachment from '../useRenderAttachment';
-import WebChatUIContext from '../../WebChatUIContext';
+import useWebChatUIContext from './useWebChatUIContext';
 
 export default function useCreateActivityRendererInternal(renderAttachmentOverride) {
-  const { activityRenderer: createActivityRenderer } = useContext(WebChatUIContext);
+  const { activityRenderer: createActivityRenderer } = useWebChatUIContext();
   const defaultRenderAttachment = useRenderAttachment();
 
   const renderAttachment = renderAttachmentOverride || defaultRenderAttachment;
 
-  return useCallback(
-    createActivityRendererOptions => {
+  return useMemo(
+    () => createActivityRendererOptions => {
       const renderActivity = createActivityRenderer(createActivityRendererOptions);
 
       if (!renderActivity) {
