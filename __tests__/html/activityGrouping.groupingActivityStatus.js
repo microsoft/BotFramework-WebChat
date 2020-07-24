@@ -4,5 +4,5 @@
 
 describe('activity grouping', () => {
   test('should group activity status after activities being sent', () =>
-    runHTMLTest('activityGrouping.groupingActivityStatus.html'));
+    runHTMLTest('activityGrouping.groupingActivityStatus.html', { height: 1280 }));
 });

@@ -129,7 +129,10 @@ if (!webDriverMode) {
 
 if (webDriverMode) {
   subscribeConsole();
-  document.body.className += ' webdriver';
+
+  setTimeout(() => {
+    document.body.className += ' webdriver';
+  }, 0);
 } else {
   console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
 }
