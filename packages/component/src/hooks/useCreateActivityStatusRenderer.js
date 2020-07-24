@@ -37,7 +37,7 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
         sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
         sendState
       }),
-    [activity, hideTimestamp, nextVisibleActivity, sendState]
+    [activity, createActivityStatusRenderer, hideTimestamp, nextVisibleActivity, sendState]
   );
 };
 
