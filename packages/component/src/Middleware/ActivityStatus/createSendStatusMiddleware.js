@@ -10,8 +10,6 @@ const {
 export default function createSendStatusMiddleware() {
   return () => next => ({ activity, sendState, ...args }) => {
     if (sendState !== SENT) {
-      // This is not a React component, but a render function.
-      /* eslint-disable-next-line react/display-name */
       return <SendStatus activity={activity} sendState={sendState} />;
     }
 
