@@ -41,12 +41,6 @@
       } = window;
 
       (async function() {
-        const activityStatusMiddleware = () => next => (...args) => {
-          console.log(args);
-
-          return next(...args);
-        };
-
         const clock = lolex.install();
 
         function refreshClock() {
@@ -192,7 +186,6 @@
 
         window.WebChat.renderWebChat(
           {
-            activityStatusMiddleware,
             directLine,
             store: createStore(),
             styleOptions: {
@@ -205,10 +198,17 @@
 
         await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
 
-        clock.tick(1000);
-        refreshClock();
+        const advanceButton = document.querySelector('.lolex__advance-button');
 
+        advanceButton.click();
         await host.snapshot();
+
+        advanceButton.click();
+        await host.snapshot();
+
+        advanceButton.click();
+        await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);
