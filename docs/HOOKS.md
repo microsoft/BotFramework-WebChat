@@ -248,7 +248,7 @@ useCreateActivityRenderer(): ({
     false |
     ({
       renderActivityStatus: false | () => React.Element,
-      renderAvatar: false | 'indent' | () => React.Element,
+      renderAvatar: false | () => React.Element,
       showCallout: boolean
     }) => React.Element
   )
@@ -263,9 +263,8 @@ If the activity middleware want to hide the activity, it must return `false` ins
 
 For `renderActivityStatus` and `renderAvatar`, it could be one of the followings:
 
--  `false`: Do not render activity status or avatar. This is similar to CSS `visibility: collapse`.
+-  `false`: Do not render activity status or avatar.
 -  `() => React.Element`: render activity status or avatar by calling this function.
--  `"indent"`: Do not render avatar, but leave space for it. This is similar to CSS `visibility: hidden`.
 
 If `showCallout` is truthy, the activity should render the bubble nub. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
 

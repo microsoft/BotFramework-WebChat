@@ -262,7 +262,7 @@ WebChatCarouselFilmStrip.propTypes = {
   itemContainerRef: PropTypes.any.isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   scrollableRef: PropTypes.any.isRequired,
   showCallout: PropTypes.bool
 };

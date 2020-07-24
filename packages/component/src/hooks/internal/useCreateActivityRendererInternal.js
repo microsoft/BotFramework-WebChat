@@ -10,8 +10,8 @@ export default function useCreateActivityRendererInternal(renderAttachmentOverri
   const renderAttachment = renderAttachmentOverride || defaultRenderAttachment;
 
   return useMemo(
-    () => createActivityRendererOptions => {
-      const renderActivity = createActivityRenderer(createActivityRendererOptions);
+    () => (...createActivityRendererOptions) => {
+      const renderActivity = createActivityRenderer(...createActivityRendererOptions);
 
       if (!renderActivity) {
         return false;

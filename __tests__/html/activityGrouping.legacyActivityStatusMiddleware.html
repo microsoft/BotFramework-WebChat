@@ -24,10 +24,11 @@
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
+        lolex,
         WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
       } = window;
 
-      const clock = window.lolex.install();
+      const clock = lolex.install();
 
       (async function() {
         const activityStatusMiddleware = () => next => args => {

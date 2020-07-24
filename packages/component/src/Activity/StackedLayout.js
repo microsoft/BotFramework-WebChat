@@ -217,7 +217,7 @@ StackedLayout.propTypes = {
   }).isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false, 'indent']), PropTypes.func]),
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   showCallout: PropTypes.bool
 };
 
