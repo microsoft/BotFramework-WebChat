@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <!-- <script
+      crossorigin="anonymous"
+      src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"
+    ></script> -->
+    <style type="text/css">
+      .lolex {
+        left: 10px;
+        position: fixed;
+        top: 10px;
+      }
+
+      .lolex__clock {
+        font-family: Consolas, 'Courier New', Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <div class="lolex">
+      <button class="lolex__advance-button">Advance</button>
+      <span class="lolex__clock">t = 0</span>
+    </div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        lolex,
+        WebChatTest: {
+          clock,
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function() {
+        const activityStatusMiddleware = () => next => (...args) => {
+          console.log(args);
+
+          return next(...args);
+        };
+
+        const clock = lolex.install();
+
+        function refreshClock() {
+          const now = Date.now();
+
+          document.querySelector('.lolex__clock').textContent = `t = ${now}`;
+
+          switch (now) {
+            case 2000:
+              directLine.activityDeferredObservable.next({
+                channelData: {
+                  state: 'sent'
+                },
+                from: {
+                  role: 'user'
+                },
+                id: '6.0',
+                text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.',
+                timestamp: 3000,
+                type: 'message'
+              });
+
+              break;
+
+            case 3000:
+              directLine.activityDeferredObservable.next({
+                channelData: {
+                  state: 'sent'
+                },
+                from: {
+                  role: 'user'
+                },
+                id: '4.0',
+                text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.',
+                timestamp: -6001,
+                type: 'message'
+              });
+
+              break;
+          }
+        }
+
+        document.querySelector('.lolex__advance-button').addEventListener('click', () => {
+          clock.tick(1000);
+          refreshClock();
+        });
+
+        const directLine = await createDirectLineWithTranscript([
+          {
+            from: {
+              role: 'bot'
+            },
+            id: '1.0',
+            text: 'Ullamco mollit sunt officia consectetur ex commodo.',
+            timestamp: -120002,
+            type: 'message'
+          },
+          {
+            from: {
+              role: 'bot'
+            },
+            id: '1.1',
+            text:
+              'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.',
+            timestamp: -120002,
+            type: 'message'
+          },
+          {
+            from: {
+              role: 'bot'
+            },
+            id: '2.0',
+            text: 'Anim do voluptate eiusmod nostrud fugiat.',
+            timestamp: -60001,
+            type: 'message'
+          },
+          {
+            channelData: {
+              state: 'sent'
+            },
+            from: {
+              role: 'user'
+            },
+            id: '3.0',
+            text: 'Irure minim excepteur aliqua veniam fugiat anim.',
+            timestamp: -6001,
+            type: 'message'
+          },
+          {
+            channelData: {
+              clientTimestamp: -6001,
+              // "send failed" is actually ignored and treated as "sending".
+              // As long as this field is not "sent", we will consider it is "sending" or "send failed".
+              state: 'send failed'
+            },
+            from: {
+              role: 'user'
+            },
+            id: '4.0',
+            text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.',
+            timestamp: -6001,
+            type: 'message'
+          },
+          {
+            channelData: {
+              state: 'sent'
+            },
+            from: {
+              role: 'user'
+            },
+            id: '5.0',
+            text: 'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.',
+            timestamp: -5001,
+            type: 'message'
+          },
+          {
+            channelData: {
+              state: 'sent'
+            },
+            from: {
+              role: 'user'
+            },
+            id: '5.1',
+            text: 'Adipisicing proident occaecat mollit mollit sunt dolore amet nulla ullamco consectetur quis.',
+            timestamp: -5001,
+            type: 'message'
+          },
+          {
+            channelData: {
+              clientTimestamp: -3001,
+              state: 'sending'
+            },
+            from: {
+              role: 'user'
+            },
+            id: '6.0',
+            text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.',
+            timestamp: -3001,
+            type: 'message'
+          }
+        ]);
+
+        window.WebChat.renderWebChat(
+          {
+            activityStatusMiddleware,
+            directLine,
+            store: createStore(),
+            styleOptions: {
+              groupTimestamp: 60000,
+              sendTimeout: 5000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+
+        clock.tick(1000);
+        refreshClock();
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

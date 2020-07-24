@@ -1,7 +1,7 @@
 import { Constants } from 'botframework-webchat-core';
 
 const {
-  ActivityClientState: { SEND_FAILED }
+  ActivityClientState: { SENT }
 } = Constants;
 
 function bin(items, grouping) {
@@ -23,8 +23,8 @@ function bin(items, grouping) {
   return groups;
 }
 
-function sendFailed(activity) {
-  return activity.from.role === 'user' && activity.channelData && activity.channelData.state === SEND_FAILED;
+function sending(activity) {
+  return activity.from.role === 'user' && activity.channelData && activity.channelData.state !== SENT;
 }
 
 function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
@@ -32,7 +32,7 @@ function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
     // Hide timestamp for all activities.
     return true;
   } else if (activityX && activityY) {
-    if (sendFailed(activityX) || sendFailed(activityY)) {
+    if (sending(activityX) !== sending(activityY)) {
       return false;
     }
 

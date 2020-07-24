@@ -116,7 +116,6 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
   const topAlignedCallout = isZeroOrPositive(nubOffset);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
-  // const showCallout = !!renderAvatar || (!hasAvatar && hasNub);
 
   const showAvatar = showCallout && hasAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);

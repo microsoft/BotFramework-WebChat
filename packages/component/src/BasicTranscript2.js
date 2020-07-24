@@ -169,13 +169,13 @@ const BasicTranscript2 = ({ className }) => {
 
     if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupBySender)) {
       console.warn(
-        'botframework-webchat: Not every activities are grouped by "sender". Please fix "groupActivitiesMiddleware" and group every activities.'
+        'botframework-webchat: Not every activities are grouped in the "sender" property. Please fix "groupActivitiesMiddleware" and group every activities.'
       );
     }
 
     if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
       console.warn(
-        'botframework-webchat: Not every activities are grouped by "status". Please fix "groupActivitiesMiddleware" and group every activities.'
+        'botframework-webchat: Not every activities are grouped in the "status" property. Please fix "groupActivitiesMiddleware" and group every activities.'
       );
     }
 
