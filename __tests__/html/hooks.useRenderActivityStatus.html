@@ -15,28 +15,29 @@
         ReactDOM: { render },
         WebChat: {
           Components: { Composer },
-          hooks: { useActivities, useRenderActivity, useRenderAttachment }
+          hooks: { useActivities, useRenderActivityStatus }
         },
         WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
       } = window;
 
       (async function() {
+        const ActivityStatusTest = ({ activity }) => {
+          const renderActivityStatus = useRenderActivityStatus({
+            activity,
+            nextVisibleActivity: undefined
+          });
+
+          return renderActivityStatus();
+        };
+
         const Test = () => {
-          const [[activity]] = useActivities();
-          const renderAttachment = useRenderAttachment();
+          const [activities] = useActivities();
 
-          const renderActivity = useRenderActivity(renderAttachment);
-
-          if (!activity) {
-            return false;
-          }
-
-          const element = renderActivity(
-            { activity, nextVisibleActivity: undefined },
-            { renderActivityStatus: () => 'Custom activity status' }
-          );
-
-          return element;
+          return activities.map(activity => (
+            <div>
+              <ActivityStatusTest activity={activity} key={activity.id} />
+            </div>
+          ));
         };
 
         const directLine = await createDirectLineWithTranscript([
@@ -44,6 +45,28 @@
             from: { role: 'bot' },
             id: '1.0',
             text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
+            timestamp: -60001,
+            type: 'message'
+          },
+          {
+            channelData: { clientTimestamp: -60001, state: 'sending' },
+            from: { role: 'user' },
+            id: '2.0',
+            text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
+            type: 'message'
+          },
+          {
+            channelData: { clientTimestamp: 0, state: 'sending' },
+            from: { role: 'user' },
+            id: '3.0',
+            text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
+            type: 'message'
+          },
+          {
+            channelData: { state: 'sent' },
+            from: { role: 'user' },
+            id: '4.0',
+            text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',
             timestamp: 0,
             type: 'message'
           }

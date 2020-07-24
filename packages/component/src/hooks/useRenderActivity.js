@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
 import useCreateActivityRendererInternal from './internal/useCreateActivityRendererInternal';
 
@@ -32,25 +32,19 @@ export default function useRenderActivity(renderAttachment) {
 
   const createActivityRenderer = useCreateActivityRendererInternal(renderAttachment);
 
-  return useCallback(
-    renderActivityArgs => {
-      if (!renderActivityArgs || !renderActivityArgs.activity) {
+  return useMemo(
+    () => (renderActivityArg, renderOptions = {}) => {
+      const { activity } = renderActivityArg || {};
+
+      if (!activity) {
         throw new Error(
           'botframework-webchat: First argument passed to the callback of useRenderActivity() must contains "activity" property.'
         );
       }
 
-      const renderActivity = createActivityRenderer(renderActivityArgs);
+      const renderActivity = createActivityRenderer(renderActivityArg);
 
-      return (
-        !!renderActivity ||
-        renderActivity(renderAttachmentArgs =>
-          renderAttachment({
-            activity: renderActivityArgs.activity,
-            ...renderAttachmentArgs
-          })
-        )
-      );
+      return !!renderActivity && renderActivity(renderOptions);
     },
     [createActivityRenderer, renderAttachment]
   );
