@@ -177,6 +177,8 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
 
         await host.snapshot();
         await host.done();

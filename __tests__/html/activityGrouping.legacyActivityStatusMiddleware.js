@@ -3,9 +3,6 @@
  */
 
 describe('activity grouping', () => {
-  test(
-    'should not break legacy activity status middleware',
-    () => runHTMLTest('activityGrouping.legacyActivityStatusMiddleware.html'),
-    { height: 1280 }
-  );
+  test('should not break legacy activity status middleware', () =>
+    runHTMLTest('activityGrouping.legacyActivityStatusMiddleware.html', { height: 1280 }));
 });

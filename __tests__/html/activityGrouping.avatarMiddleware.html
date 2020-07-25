@@ -183,10 +183,18 @@
             store: createStore(),
             styleOptions: {
               botAvatarInitials: 'Bot',
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
               bubbleFromUserNubOffset: 0,
               bubbleFromUserNubSize: 10,
+              bubbleFromUserTextColor: 'White',
               bubbleNubOffset: 0,
               bubbleNubSize: 10,
+              bubbleTextColor: 'White',
               groupTimestamp: 5000,
               userAvatarInitials: 'You'
             }
@@ -195,6 +203,7 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
 
         await host.snapshot();
         await host.done();

@@ -3,7 +3,8 @@
  */
 
 describe('activity grouping', () => {
-  test('should not break avatar middleware', () => runHTMLTest('activityGrouping.avatarMiddleware.html'), {
-    height: 1280
-  });
+  test('should not break avatar middleware', () =>
+    runHTMLTest('activityGrouping.avatarMiddleware.html', {
+      height: 1280
+    }));
 });
