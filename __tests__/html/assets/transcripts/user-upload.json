@@ -30,11 +30,15 @@
     "attachments": [
       {
         "contentType": "image/jpeg",
-        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg",
+        "name": "surface1.jpg",
+        "thumbnailUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
       },
       {
         "contentType": "image/jpeg",
-        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg",
+        "name": "surface2.jpg",
+        "thumbnailUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
       }
     ],
     "channelData": {
