@@ -3,10 +3,6 @@
   <head>
     <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <!-- <script
-      crossorigin="anonymous"
-      src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"
-    ></script> -->
   </head>
   <body>
     <div id="webchat"></div>
@@ -15,28 +11,22 @@
         ReactDOM: { render },
         WebChat: {
           Components: { Composer },
-          hooks: { useActivities, useRenderActivityStatus }
+          hooks: { useActivities, useCreateActivityStatusRenderer }
         },
         WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
       } = window;
 
       (async function() {
-        const ActivityStatusTest = ({ activity }) => {
-          const renderActivityStatus = useRenderActivityStatus({
-            activity,
-            nextVisibleActivity: undefined
-          });
-
-          return renderActivityStatus();
-        };
-
         const Test = () => {
           const [activities] = useActivities();
 
-          return activities.map(activity => (
-            <div key={activity.id}>
-              <ActivityStatusTest activity={activity} />
-            </div>
+          const createActivityStatusRenderer = useCreateActivityStatusRenderer();
+          const activityStatusRenderers = activities
+            .map(activity => createActivityStatusRenderer({ activity }))
+            .filter(renderer => renderer);
+
+          return activityStatusRenderers.map((activityStatusRenderer, index) => (
+            <div key={index}>{activityStatusRenderer && activityStatusRenderer()}</div>
           ));
         };
 
@@ -77,11 +67,13 @@
         render(
           <Composer directLine={directLine} store={store}>
             <Test />
+            <div className="done" />
           </Composer>,
           document.getElementById('webchat')
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
 
         await host.snapshot();
         await host.done();
