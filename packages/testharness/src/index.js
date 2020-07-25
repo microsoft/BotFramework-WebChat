@@ -132,9 +132,9 @@ if (!webDriverMode) {
   window.addEventListener('error', ({ error }) => jobs.post(pageError(error)));
 }
 
-if (webDriverMode) {
-  subscribeConsole();
+subscribeConsole();
 
+if (webDriverMode) {
   setTimeout(() => {
     document.body.className += ' webdriver';
   }, 0);
