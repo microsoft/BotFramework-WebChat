@@ -27,7 +27,12 @@
 
           const renderActivity = createActivityRenderer({ activity });
 
-          return renderActivity && renderActivity({ renderActivityStatus: () => 'Custom activity status' });
+          return (
+            <React.Fragment>
+              {renderActivity && renderActivity({ renderActivityStatus: () => 'Custom activity status' })}
+              <div className="done" />
+            </React.Fragment>
+          );
         };
 
         const directLine = await createDirectLineWithTranscript([
@@ -45,7 +50,6 @@
         render(
           <Composer directLine={directLine} store={store}>
             <Test />
-            <div className="done" />
           </Composer>,
           document.getElementById('webchat')
         );

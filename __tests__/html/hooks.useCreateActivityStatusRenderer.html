@@ -25,9 +25,14 @@
             .map(activity => createActivityStatusRenderer({ activity }))
             .filter(renderer => renderer);
 
-          return activityStatusRenderers.map((activityStatusRenderer, index) => (
-            <div key={index}>{activityStatusRenderer && activityStatusRenderer()}</div>
-          ));
+          return (
+            <React.Fragment>
+              {activityStatusRenderers.map((activityStatusRenderer, index) => (
+                <div key={index}>{activityStatusRenderer && activityStatusRenderer()}</div>
+              ))}
+              <div className="done" />
+            </React.Fragment>
+          );
         };
 
         const directLine = await createDirectLineWithTranscript([
@@ -67,7 +72,6 @@
         render(
           <Composer directLine={directLine} store={store}>
             <Test />
-            <div className="done" />
           </Composer>,
           document.getElementById('webchat')
         );

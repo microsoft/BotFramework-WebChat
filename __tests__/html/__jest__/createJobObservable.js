@@ -25,6 +25,21 @@ export default function createJobObservable(driver, { ignorePageError = false } 
         if (job === ABORT_SYMBOL) {
           break;
         } else if (job.type === 'done') {
+          if (job.payload.deprecation) {
+            const deferred = createDeferred();
+
+            observer.next({
+              deferred,
+              job: {
+                type: 'expect deprecation'
+              }
+            });
+
+            if (!(await deferred.promise)) {
+              return observer.error(new Error('Expected deprecation notes were not found in the console log.'));
+            }
+          }
+
           observer.complete();
           break;
         } else if (job.type === 'error') {

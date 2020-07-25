@@ -40,7 +40,7 @@ import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiff
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
-import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
+import subscribeConsole, { getHistory as getConsoleHistory, shiftDeprecationHistory } from './utils/subscribeConsole';
 
 function waitForFinishKey() {
   const { promise, resolve } = createDeferred();
@@ -83,7 +83,12 @@ if (!webDriverMode) {
           break;
 
         case 'done':
-          log('WebChatTest: Done.');
+          if (job.payload.deprecation) {
+            log('WebChatTest: Done. Please check console for logs related to deprecation.');
+          } else {
+            log('WebChatTest: Done.');
+          }
+
           break;
 
         case 'snapshot':
@@ -164,6 +169,7 @@ export {
   pcmWaveArrayBufferToRiffWaveArrayBuffer,
   recognizeRiffWaveArrayBuffer,
   shareObservable,
+  shiftDeprecationHistory,
   sleep,
   timeouts,
   token,

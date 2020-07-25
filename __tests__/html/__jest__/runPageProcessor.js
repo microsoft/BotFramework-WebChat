@@ -85,6 +85,8 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
           console.log(`Saved to ${filename}`);
 
           result = filename;
+        } else if (job.type === 'expect deprecation') {
+          result = (await driver.executeScript(() => window.WebChatTest.shiftDeprecationHistory())).length;
         } else {
           throw new Error(`Unknown job type "${job.type}".`);
         }

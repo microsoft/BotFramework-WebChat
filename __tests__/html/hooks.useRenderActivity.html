@@ -36,7 +36,12 @@
             { renderActivityStatus: () => 'Custom activity status' }
           );
 
-          return element;
+          return (
+            <React.Fragment>
+              {element}
+              <div className="done" />
+            </React.Fragment>
+          );
         };
 
         const directLine = await createDirectLineWithTranscript([
@@ -59,9 +64,10 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
 
         await host.snapshot();
-        await host.done();
+        await host.done({ deprecation: true });
       })().catch(async err => {
         console.error(err);
 
