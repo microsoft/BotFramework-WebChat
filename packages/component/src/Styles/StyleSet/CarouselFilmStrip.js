@@ -46,7 +46,7 @@ export default function CarouselFilmStrip({
         width: paddingRegular * 2
       },
 
-      '& .webchat__carousel-layout__attachments': {
+      '&:not(.webchat__carousel-layout--no-message) .webchat__carousel-layout__attachments': {
         marginTop: paddingRegular
       },
 

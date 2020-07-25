@@ -29,7 +29,6 @@ export default function createStackedLayoutStyle({
       },
 
       '& .webchat__stacked-layout__attachment': {
-        marginTop: paddingRegular,
         maxWidth: bubbleMaxWidth,
         minWidth: bubbleMinWidth,
         transitionDuration,
@@ -37,7 +36,12 @@ export default function createStackedLayoutStyle({
       },
 
       '& .webchat__stacked-layout__attachment-row': {
+        marginTop: paddingRegular,
         width: '100%'
+      },
+
+      '&.webchat__stacked-layout--no-message .webchat__stacked-layout__attachment-row.webchat__stacked-layout__attachment-row--first': {
+        marginTop: 0
       },
 
       '& .webchat__stacked-layout__message': {

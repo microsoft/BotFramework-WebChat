@@ -129,6 +129,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
         'webchat__stacked-layout--from-user': fromUser,
         'webchat__stacked-layout--hide-avatar': hasAvatar && !showAvatar,
         'webchat__stacked-layout--hide-nub': hasNub && !showNub,
+        'webchat__stacked-layout--no-message': !activityDisplayText,
         'webchat__stacked-layout--show-avatar': showAvatar,
         'webchat__stacked-layout--show-nub': showNub,
         'webchat__stacked-layout--top-callout': topAlignedCallout
@@ -165,7 +166,13 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
           {/* attachments do not have an ID, it is always indexed by number */}
           {attachments.map((attachment, index) => (
             /* eslint-disable-next-line react/no-array-index-key */
-            <div aria-roledescription="attachment" className="webchat__stacked-layout__attachment-row" key={index}>
+            <div
+              aria-roledescription="attachment"
+              className={classNames('webchat__stacked-layout__attachment-row', {
+                'webchat__stacked-layout__attachment-row--first': !index
+              })}
+              key={index}
+            >
               <ScreenReaderText text={attachedAlt} />
               <Bubble
                 className="webchat__stacked-layout__attachment"

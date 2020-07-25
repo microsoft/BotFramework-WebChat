@@ -231,4 +231,16 @@ describe('transcript', () => {
       'transcript.activityGrouping#bi=0&bn=1&bt=1&g=status&l=carousel&rtl=0&t=user-upload.json&ui=0&un=1&ut=0&w=0',
       { height: 1280 }
     ));
+
+  test('with activity grouping test 41', () =>
+    runHTMLTest(
+      'http://localhost:5001/transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=attachment-without-text.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280 }
+    ));
+
+  test('with activity grouping test 42', () =>
+    runHTMLTest(
+      'http://localhost:5001/transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=stacked&rtl=0&t=attachment-without-text.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280 }
+    ));
 });

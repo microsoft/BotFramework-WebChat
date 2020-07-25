@@ -171,6 +171,7 @@ const WebChatCarouselFilmStrip = ({
         'webchat__carousel-layout--extra-trailing': extraTrailing,
         'webchat__carousel-layout--hide-avatar': hasAvatar && !showAvatar,
         'webchat__carousel-layout--hide-nub': hasNub && !showNub,
+        'webchat__carousel-layout--no-message': !activityDisplayText,
         'webchat__carousel-layout--rtl': direction === 'rtl',
         'webchat__carousel-layout--show-avatar': showAvatar,
         'webchat__carousel-layout--show-nub': showNub,

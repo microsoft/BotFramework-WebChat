@@ -1,5 +1,6 @@
 {
   "transcriptNames": [
+    "attachment-without-message.json",
     "carousel-layout.json",
     "multiple-lines-multiple-files.json",
     "simple-messages.json",
