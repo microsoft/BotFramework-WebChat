@@ -46,6 +46,7 @@ export default function createStackedLayoutStyle({
 
       '& .webchat__stacked-layout__message': {
         maxWidth: bubbleMaxWidth,
+        overflow: 'hidden',
         transitionDuration,
         transitionProperty: 'max-width'
       },
