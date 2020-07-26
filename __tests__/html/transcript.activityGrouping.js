@@ -234,13 +234,37 @@ describe('transcript', () => {
 
   test('with activity grouping test 41', () =>
     runHTMLTest(
-      'http://localhost:5001/transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=attachment-without-text.json&ui=1&un=1&ut=1&w=0',
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=attachment-without-message.json&ui=1&un=1&ut=1&w=0',
       { height: 1280 }
     ));
 
   test('with activity grouping test 42', () =>
     runHTMLTest(
-      'http://localhost:5001/transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=stacked&rtl=0&t=attachment-without-text.json&ui=1&un=1&ut=1&w=0',
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=stacked&rtl=0&t=attachment-without-message.json&ui=1&un=1&ut=1&w=0',
       { height: 1280 }
+    ));
+
+  test('with activity grouping test 43', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280 }
+    ));
+
+  test('with activity grouping test 44', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=1',
+      { height: 1280, width: 720 }
+    ));
+
+  test('with activity grouping test 45', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=carousel&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280 }
+    ));
+
+  test('with activity grouping test 46', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=carousel&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=1',
+      { height: 1280, width: 720 }
     ));
 });

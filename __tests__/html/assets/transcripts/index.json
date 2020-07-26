@@ -2,6 +2,7 @@
   "transcriptNames": [
     "attachment-without-message.json",
     "carousel-layout.json",
+    "markdown-message.json",
     "multiple-lines-multiple-files.json",
     "simple-messages.json",
     "single-line-no-files.json",
