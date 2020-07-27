@@ -48,14 +48,14 @@ const DEFAULT_OPTIONS = {
   bubbleFromUserBorderRadius: 2,
   bubbleFromUserBorderStyle: 'solid',
   bubbleFromUserBorderWidth: 1,
-  bubbleFromUserNubOffset: 'bottom', // Either a positive/negative number, or "bottom"
+  bubbleFromUserNubOffset: 0, // Either a positive/negative number, or "bottom"
   bubbleFromUserNubSize: undefined, // Or a number. 0 means a sharp corner.
   bubbleFromUserTextColor: 'Black',
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinHeight: 40,
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
-  bubbleNubOffset: 'bottom', // Either a positive/negative number, or "bottom"
+  bubbleNubOffset: 0, // Either a positive/negative number, or "bottom"
   bubbleNubSize: undefined, // Or a number. 0 means a sharp corner.
   bubbleTextColor: 'Black',
 
