@@ -30,7 +30,7 @@
           return (
             <React.Fragment>
               {renderActivity && renderActivity({ renderActivityStatus: () => 'Custom activity status' })}
-              <div className="done" />
+              {!!renderActivity && <div className="done" />}
             </React.Fragment>
           );
         };

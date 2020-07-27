@@ -13,7 +13,16 @@
           Components: { Composer },
           hooks: { useActivities, useCreateActivityStatusRenderer }
         },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+        WebChatTest: {
+          conditions,
+          createDeferred,
+          createDirectLineWithTranscript,
+          createStore,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
       } = window;
 
       (async function() {
@@ -30,7 +39,7 @@
               {activityStatusRenderers.map((activityStatusRenderer, index) => (
                 <div key={index}>{activityStatusRenderer && activityStatusRenderer()}</div>
               ))}
-              <div className="done" />
+              {!!activityStatusRenderers.length && <div className="done" />}
             </React.Fragment>
           );
         };

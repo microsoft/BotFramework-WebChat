@@ -3,11 +3,11 @@ import { Options } from 'selenium-webdriver/chrome';
 import { URL } from 'url';
 import fetch from 'node-fetch';
 
+import { timeout } from './sleep';
 import indent from './indent';
 import mergeCoverageMap from './mergeCoverageMap';
 import parseURLParams from './parseURLParams';
 import runPageProcessor from './runPageProcessor';
-import { timeout } from './sleep';
 
 global.runHTMLTest = async (
   url,

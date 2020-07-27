@@ -40,7 +40,7 @@
                   <ActivityStatusTest activity={activity} />
                 </div>
               ))}
-              <div className="done" />
+              {!!activities.length && <div className="done" />}
             </React.Fragment>
           );
         };

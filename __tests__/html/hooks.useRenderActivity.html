@@ -39,7 +39,7 @@
           return (
             <React.Fragment>
               {element}
-              <div className="done" />
+              {!!element && <div className="done" />}
             </React.Fragment>
           );
         };
