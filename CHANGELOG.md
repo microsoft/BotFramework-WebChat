@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  If customized avatar is rendering `false`, bubble will still be padded to leave a gutter for the empty customized avatar. To hide gutter, please set `styleOptions.botAvatarInitials` and `styleOptions.userAvatarInitials` to falsy.
 -  Default bubble nub offset is set to `0`, previously `"bottom"` (or `-1`)
    -  Previously, we put the bubble nub at the bottom while keeping the avatar on top. This is not consistent in the layout.
+-  By default, we will group avatar per status group.
+   -  If you want to switch back to previous behaviors, please set `styleOptions.showAvatarInGroup` to `true`.
 
 ## [4.9.2] - 2020-07-14
 
