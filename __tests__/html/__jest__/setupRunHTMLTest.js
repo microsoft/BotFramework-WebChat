@@ -7,6 +7,7 @@ import indent from './indent';
 import mergeCoverageMap from './mergeCoverageMap';
 import parseURLParams from './parseURLParams';
 import runPageProcessor from './runPageProcessor';
+import { timeout } from './sleep';
 
 global.runHTMLTest = async (
   url,
@@ -30,7 +31,16 @@ global.runHTMLTest = async (
         .setChromeOptions(chromeOptions)
         .build();
 
-  const sessionId = (await driver.getSession()).getId();
+  const session = await Promise.race([
+    driver.getSession(),
+    timeout(
+      15000,
+      'Timed out while waiting for a Web Driver session. Probably there are not enough Web Driver sessions for test runners.'
+    )
+  ]);
+
+  const sessionId = session.getId();
+
   const params = parseURLParams(new URL(url, 'http://webchat2/').hash);
 
   try {
