@@ -46,7 +46,9 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__stacked-layout__content': {
+      display: 'flex',
       flex: 1,
+      flexDirection: 'column',
       overflow: 'hidden'
     },
 

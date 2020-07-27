@@ -20,11 +20,11 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
   const webChatTestLoaded = await driver.executeScript(() => !!window.WebChatTest);
 
   if (!webChatLoaded) {
-    throw new Error('"webchat.js" is not loaded on the page.');
+    throw new Error('"webchat.js" did not load on the page, or the page was not found.');
   }
 
   if (!webChatTestLoaded) {
-    throw new Error('"testharness.js" is not loaded on the page.');
+    throw new Error('"testharness.js" did not loaded on the page.');
   }
 
   if (await driver.executeScript(() => !(window.React && window.ReactDOM && window.ReactTestUtils))) {
