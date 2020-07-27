@@ -35,7 +35,7 @@ global.runHTMLTest = async (
     driver.getSession(),
     timeout(
       15000,
-      'Timed out while waiting for a Web Driver session. Probably there are not enough Web Driver sessions for test runners.'
+      'Timed out while waiting for a Web Driver session. Probably there are more test runners running simultaneously than Web Driver sessions. Or some Web Driver sessions are hung.'
     )
   ]);
 
