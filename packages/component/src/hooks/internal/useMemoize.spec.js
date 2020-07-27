@@ -1,4 +1,4 @@
-import { useMemoize } from './useMemoize';
+import useMemoize from './useMemoize';
 
 jest.mock('react', () => {
   let lastDeps = [];
