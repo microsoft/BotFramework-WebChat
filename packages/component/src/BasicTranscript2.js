@@ -101,7 +101,7 @@ function validateAllActivitiesTagged(activities, bins) {
 
 const BasicTranscript2 = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, showAvatarInGroup }] = useStyleOptions();
+  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
   const [direction] = useDirection();
 
@@ -109,6 +109,7 @@ const BasicTranscript2 = ({ className }) => {
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useRenderAvatar();
   const groupActivities = useGroupActivities();
+  const hideAllTimestamps = groupTimestamp === false;
   const localize = useLocalizer();
 
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
@@ -252,7 +253,8 @@ const BasicTranscript2 = ({ className }) => {
           // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
           const renderActivityStatus = createActivityStatusRenderer({
             activity,
-            hideTimestamp: indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1
+            hideTimestamp:
+              hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1
           });
 
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
