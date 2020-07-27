@@ -74,12 +74,8 @@ export default function createStackedLayoutStyle({
       },
 
       '&:not(.webchat__stacked-layout--top-callout)': {
-        '& .webchat__stacked-layout__avatar-gutter': {
+        '& .webchat__stacked-layout__avatar-gutter, & .webchat__stacked-layout__content': {
           justifyContent: 'flex-end'
-        },
-
-        '& .webchat__stacked-layout__content': {
-          alignItems: 'flex-end'
         }
       }
     }

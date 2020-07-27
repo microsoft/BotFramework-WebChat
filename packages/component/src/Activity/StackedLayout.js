@@ -40,7 +40,7 @@ const ROOT_CSS = css({
     },
 
     '&.webchat__stacked-layout--from-user': {
-      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__content, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
+      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
         flexDirection: 'row-reverse'
       }
     },
@@ -48,8 +48,13 @@ const ROOT_CSS = css({
     '& .webchat__stacked-layout__content': {
       flex: 1,
 
+      // This is for bottom aligning an avatar with a message bubble shorter than the avatar.
+      // Related to the test at activityGrouping.avatarMiddleware.atBottom.js.
+      display: 'flex',
+      flexDirection: 'column',
+
       // This "overflow: hidden" is to make sure text overflow we get clipped correctly.
-      // Related to basic.js "long URLs with keep-all" test.
+      // Related to the test at basic.js "long URLs with keep-all".
       overflow: 'hidden'
     },
 
