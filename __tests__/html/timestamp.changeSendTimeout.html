@@ -62,7 +62,7 @@
           {
             message: 'turn into "Send failed. Retry.',
             fn: () =>
-              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+              document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText ===
               'Send failed. Retry.'
           },
           clock,
@@ -77,8 +77,7 @@
         await pageObjects.waitWithTick(
           {
             message: 'turn into "Sending"',
-            fn: () =>
-              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText === 'Sending'
+            fn: () => document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText === 'Sending'
           },
           clock,
           timeouts.ui
@@ -93,7 +92,7 @@
           {
             message: 'turn into "Send failed. Retry.',
             fn: () =>
-              document.querySelector('.webchat__row.message + .webchat__row [aria-hidden]').innerText ===
+              document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText ===
               'Send failed. Retry.'
           },
           clock,
