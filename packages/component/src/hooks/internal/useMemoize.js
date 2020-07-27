@@ -1,6 +1,14 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export default function useMemoize(fn, callback, deps) {
+  if (typeof fn !== 'function') {
+    throw new Error('The first argument must be a function.');
+  } else if (typeof callback !== 'function') {
+    throw new Error('The second argument must be a function.');
+  } else if (!Array.isArray(deps)) {
+    throw new Error('The third argument must be an array.');
+  }
+
   const memoizedFn = useMemo(() => {
     let cache = [];
 
@@ -21,9 +29,9 @@ export default function useMemoize(fn, callback, deps) {
 
       return result;
     };
-  }, [fn]);
+    // We are manually creating the deps here. The "callback" arg is also designed not to be impact deps, similar to useEffect(fn), where "fn" is not in deps.
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [fn, ...deps]);
 
-  // We are manually creating the deps here. The "callback" arg is also designed not to be impact deps, similar to useEffect(fn), where "fn" is not in deps.
-  /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  return useMemo(() => memoizedFn(callback), [memoizedFn, ...deps]);
+  return memoizedFn(callback);
 }
