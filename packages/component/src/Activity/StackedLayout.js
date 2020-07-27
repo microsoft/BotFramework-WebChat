@@ -46,9 +46,10 @@ const ROOT_CSS = css({
     },
 
     '& .webchat__stacked-layout__content': {
-      display: 'flex',
       flex: 1,
-      flexDirection: 'column',
+
+      // This "overflow: hidden" is to make sure text overflow we get clipped correctly.
+      // Related to basic.js "long URLs with keep-all" test.
       overflow: 'hidden'
     },
 
