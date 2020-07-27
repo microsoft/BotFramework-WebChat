@@ -32,8 +32,6 @@
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: activity => {
-                console.log(activity);
-
                 const { channelData: { clientActivityID } = {} } = activity;
 
                 // We are removing "replyToId" from the bot.
@@ -53,8 +51,6 @@
           } = activity;
 
           type === 'message' && bannedClientActivityIDs.push(clientActivityID);
-
-          console.log('posting', activity);
 
           return postActivity.call(workingDirectLine, activity);
         };
