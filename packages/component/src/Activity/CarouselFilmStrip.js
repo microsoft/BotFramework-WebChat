@@ -88,6 +88,10 @@ const ROOT_CSS = css({
       display: 'flex'
     },
 
+    '& .webchat__carousel-layout__nub-pad': {
+      flexShrink: 0
+    },
+
     '& .webchat__carousel-layout__status': {
       display: 'flex'
     }

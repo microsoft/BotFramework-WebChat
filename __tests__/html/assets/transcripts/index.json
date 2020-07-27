@@ -1,6 +1,7 @@
 {
   "transcriptNames": [
     "attachment-without-message.json",
+    "carousel-hero-cards.json",
     "carousel-layout.json",
     "markdown-message.json",
     "multiple-lines-multiple-files.json",

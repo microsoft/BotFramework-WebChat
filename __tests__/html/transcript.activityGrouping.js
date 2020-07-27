@@ -267,4 +267,28 @@ describe('transcript', () => {
       'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=carousel&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=1',
       { height: 1280, width: 720 }
     ));
+
+  test('with activity grouping test 47', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=1&l=0&rtl=0&t=carousel-hero-cards.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280, width: 720 }
+    ));
+
+  test('with activity grouping test 48', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=1&l=0&rtl=0&t=carousel-hero-cards.json&ui=1&un=1&ut=1&w=1',
+      { height: 1280, width: 720 }
+    ));
+
+  test('with activity grouping test 49', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=1&l=stacked&rtl=0&t=carousel-hero-cards.json&ui=1&un=1&ut=1&w=0',
+      { height: 1280, width: 720 }
+    ));
+
+  test('with activity grouping test 50', () =>
+    runHTMLTest(
+      'transcript.activityGrouping#bi=1&bn=1&bt=1&g=1&l=stacked&rtl=0&t=carousel-hero-cards.json&ui=1&un=1&ut=1&w=1',
+      { height: 1280, width: 720 }
+    ));
 });
