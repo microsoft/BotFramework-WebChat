@@ -28,7 +28,6 @@ describe('customizable avatar', () => {
                 fontFamily: "'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif'",
                 height: 128,
                 justifyContent: 'center',
-                // width: 40
                 width: '100%'
               }
             },
