@@ -9,8 +9,7 @@ import React from 'react';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
-// import BasicTranscript from './BasicTranscript';
-import BasicTranscript2 from './BasicTranscript2';
+import BasicTranscript from './BasicTranscript';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 import useDisabled from './hooks/useDisabled';
 import useSendBoxFocusRef from './hooks/internal/useSendBoxFocusRef';
@@ -55,8 +54,7 @@ const BasicWebChat = ({ className }) => {
       sendFocusRef={sendBoxFocusRef}
     >
       {!options.hideToaster && <BasicToaster className={TOASTER_CSS + ''} />}
-      {/* <BasicTranscript className={TRANSCRIPT_CSS + ''} /> */}
-      <BasicTranscript2 className={TRANSCRIPT_CSS + ''} />
+      <BasicTranscript className={TRANSCRIPT_CSS + ''} />
       <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
       {!options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
     </TypeFocusSinkBox>
