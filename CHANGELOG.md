@@ -28,10 +28,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  With the new activity grouping feature:
    -  Customized avatar cannot be wider than `styleOptions.avatarSize`. If you want to show a wider avatar, please increase `styleOptions.avatarSize`.
    -  If customized avatar is rendering `false`, bubble will still be padded to leave a gutter for the empty customized avatar. To hide gutter, please set `styleOptions.botAvatarInitials` and `styleOptions.userAvatarInitials` to falsy.
--  Default bubble nub offset is set to `0`, previously `"bottom"` (or `-1`)
-   -  Previously, we put the bubble nub at the bottom while keeping the avatar on top. This is not consistent in the layout.
+-  Default bubble nub offset is set to `0`, previously `"bottom"` (or `-0`)
+   -  Previously, we put the bubble nub at the bottom while keeping the avatar on top. This is not consistent in the new layout.
 -  By default, we will group avatar per status group.
    -  If you want to switch back to previous behaviors, please set `styleOptions.showAvatarInGroup` to `true`.
+-  Default `botAvatarInitials` and `userAvatarInitials` is changed to `undefined`, from `""` (empty string)
+   -  When the initials is `undefined`, no gutter space will be reserved for the avatar.
+   -  When the initials is `""` (empty string), gutter space will be reserved, but not avatar will be shown.
+
+### Added
+
+-  Resolves [#3250](https://github.com/microsoft/BotFramework-WebChat/issues/3250). Added activity grouping feature, by [@compulim](https://github.com/compulim), in PR [#3365](https://github.com/microsoft/BotFramework-WebChat/pull/3365)
 
 ## [4.9.2] - 2020-07-14
 

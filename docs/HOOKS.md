@@ -247,6 +247,7 @@ useCreateActivityRenderer(): ({
   (
     false |
     ({
+      hideTimestamp: boolean,
       renderActivityStatus: false | () => React.Element,
       renderAvatar: false | () => React.Element,
       showCallout: boolean
@@ -276,12 +277,13 @@ If `showCallout` is falsy but `renderAvatar` is truthy, the activity should not 
 ```js
 useCreateActivityStatusRenderer(): ({
   activity: Activity,
-  hideTimestamp: boolean,
   sendState: 'sending' | 'send failed' | 'sent'
 }) =>
   (
     false |
-    () => React.Element
+    ({
+      hideTimestamp: boolean
+    }) => React.Element
   )
 ```
 <!-- prettier-ignore-end -->
