@@ -5,22 +5,22 @@ const {
 } = Constants;
 
 function bin(items, grouping) {
-  let lastGroup;
-  const groups = [];
+  let lastBin;
+  const bins = [];
   let lastItem;
 
   items.forEach(item => {
     if (lastItem && grouping(lastItem, item)) {
-      lastGroup.push(item);
+      lastBin.push(item);
     } else {
-      lastGroup = [item];
-      groups.push(lastGroup);
+      lastBin = [item];
+      bins.push(lastBin);
     }
 
     lastItem = item;
   });
 
-  return groups;
+  return bins;
 }
 
 function sending(activity) {

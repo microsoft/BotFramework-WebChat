@@ -10,9 +10,7 @@
       const {
         lolex,
         React: { useMemo },
-        WebChat: {
-          hooks: { useDirection }
-        },
+        WebChat: { renderWebChat },
         WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
       } = window;
 
@@ -62,7 +60,7 @@
           }
         ]);
 
-        window.WebChat.renderWebChat(
+        renderWebChat(
           {
             directLine,
             store: createStore(),
