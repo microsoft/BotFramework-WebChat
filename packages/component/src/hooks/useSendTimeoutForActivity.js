@@ -22,7 +22,7 @@ export default function useSendTimeoutForActivity(activity) {
       'botframework-webchat: Passing activity directly to useSendTimeoutForActivity() has been deprecated. Please refer to HOOKS.md for details. This function signature will be removed on or after 2020-07-26.'
     );
 
-    return getSendTimeout(activity);
+    return getSendTimeout({ activity });
   }
 
   return getSendTimeout;

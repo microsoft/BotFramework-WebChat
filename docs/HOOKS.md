@@ -938,7 +938,19 @@ When called, this function will send a `postBack` activity to the bot.
 
 <!-- prettier-ignore-start -->
 ```js
-useSendTimeoutForActivity(): (activity: Activity) => number
+useSendTimeoutForActivity(): ({ activity: Activity }) => number
+```
+<!-- prettier-ignore-end -->
+
+When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
+
+### Old signature
+
+The signature was updated and the old signature will be deprecated on or after 2022-07-28.
+
+<!-- prettier-ignore-start -->
+```js
+useSendTimeoutForActivity(activity: Activity) => number
 ```
 <!-- prettier-ignore-end -->
 
