@@ -46,6 +46,6 @@ export default function useRenderActivity(renderAttachment) {
 
       return !!renderActivity && renderActivity(renderOptions);
     },
-    [createActivityRenderer, renderAttachment]
+    [createActivityRenderer]
   );
 }

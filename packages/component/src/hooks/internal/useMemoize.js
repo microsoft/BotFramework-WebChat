@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export default function useMemoize(fn, callback, deps) {
   if (typeof fn !== 'function') {
