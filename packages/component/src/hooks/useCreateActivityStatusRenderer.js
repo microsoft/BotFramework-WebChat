@@ -1,7 +1,7 @@
 import { Constants } from 'botframework-webchat-core';
 import React, { useMemo } from 'react';
 
-import useSendTimeoutForActivity from './useSendTimeoutForActivity';
+import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
@@ -11,7 +11,7 @@ const {
 
 const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity }) => {
   const { activityStatusRenderer: createActivityStatusRenderer } = useWebChatUIContext();
-  const getSendTimeout = useSendTimeoutForActivity();
+  const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
 
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
   // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
@@ -22,7 +22,7 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
 
   const activitySent = state !== SENDING && state !== SEND_FAILED;
   const fromUser = role === 'user';
-  const sendTimeout = getSendTimeout({ activity });
+  const sendTimeout = getSendTimeoutForActivity({ activity });
 
   const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
 

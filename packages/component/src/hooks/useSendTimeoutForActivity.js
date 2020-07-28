@@ -1,29 +1,17 @@
-import { useMemo } from 'react';
+import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 
-import useStyleOptions from './useStyleOptions';
+let showDeprecationNotes = true;
 
 export default function useSendTimeoutForActivity(activity) {
-  const [{ sendTimeout, sendTimeoutForAttachments }] = useStyleOptions();
-
-  const getSendTimeout = useMemo(
-    () => ({ activity }) => {
-      if (typeof sendTimeout === 'function') {
-        return sendTimeout(activity);
-      }
-
-      return activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout;
-    },
-    [sendTimeout, sendTimeoutForAttachments]
-  );
-
-  // TODO: Add tests
-  if (activity) {
+  if (showDeprecationNotes) {
     console.warn(
-      'botframework-webchat: Passing activity directly to useSendTimeoutForActivity() has been deprecated. Please refer to HOOKS.md for details. This function signature will be removed on or after 2020-07-26.'
+      'botframework-webchat: "useSendTimeoutForActivity" is deprecated and will be removed on or after 2022-07-28. Please use "useGetSendTimeoutForActivity()" instead.'
     );
 
-    return getSendTimeout({ activity });
+    showDeprecationNotes = false;
   }
 
-  return getSendTimeout;
+  const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
+
+  return getSendTimeoutForActivity({ activity });
 }

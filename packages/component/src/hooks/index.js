@@ -17,6 +17,7 @@ import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocus from './useFocus';
 import useFocusSendBox from './useFocusSendBox';
+import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
@@ -90,6 +91,7 @@ export {
   useEmitTypingIndicator,
   useFocus,
   useFocusSendBox,
+  useGetSendTimeoutForActivity,
   useGrammars,
   useGroupTimestamp,
   useLanguage,

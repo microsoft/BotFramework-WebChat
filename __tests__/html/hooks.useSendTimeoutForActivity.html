@@ -66,40 +66,36 @@
 
         await expect(
           renderWithFunction(() =>
-            useSendTimeoutForActivity()({
-              activity: {
-                channelData: { clientActivityID: '1.0', clientTimestamp: 0, state: 'sending' },
-                from: { role: 'user' },
-                text: 'Dolore deserunt tempor dolore et culpa nulla consequat.',
-                timestamp: 0,
-                type: 'message'
-              }
+            useSendTimeoutForActivity({
+              channelData: { clientActivityID: '1.0', clientTimestamp: 0, state: 'sending' },
+              from: { role: 'user' },
+              text: 'Dolore deserunt tempor dolore et culpa nulla consequat.',
+              timestamp: 0,
+              type: 'message'
             })
           )
         ).resolves.toBe(20000);
 
         await expect(
           renderWithFunction(() =>
-            useSendTimeoutForActivity()({
-              activity: {
-                attachments: [
-                  {
-                    contentType: 'application/octet-stream',
-                    contentUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
-                  }
-                ],
-                channelData: { clientActivityID: '2.0', clientTimestamp: 0, state: 'sending' },
-                from: { role: 'user' },
-                text: 'Ullamco ipsum irure culpa eu labore nulla id laborum nostrud et.',
-                timestamp: 0,
-                type: 'message'
-              }
+            useSendTimeoutForActivity({
+              attachments: [
+                {
+                  contentType: 'application/octet-stream',
+                  contentUrl:
+                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                }
+              ],
+              channelData: { clientActivityID: '2.0', clientTimestamp: 0, state: 'sending' },
+              from: { role: 'user' },
+              text: 'Ullamco ipsum irure culpa eu labore nulla id laborum nostrud et.',
+              timestamp: 0,
+              type: 'message'
             })
           )
         ).resolves.toBe(120000);
 
-        await host.done();
+        await host.done({ deprecation: true });
       })().catch(async err => {
         console.error(err);
 

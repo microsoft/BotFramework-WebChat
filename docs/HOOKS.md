@@ -72,6 +72,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocus`](#usefocus)
 -  [`useFocusSendBox`](#usefocussendbox)
+-  [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
@@ -101,7 +102,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
--  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity)
+-  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity) (Deprecated)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
 -  [`useSetNotification`](#usesetnotification)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
@@ -453,6 +454,16 @@ useFocusSendBox(): () => void
 > This function is deprecated. Developers should migrate to [`useFocus`](#usefocus).
 
 When called, this function will send focus to the send box.
+
+## `useGetSendTimeoutForActivity`
+
+<!-- prettier-ignore-start -->
+```js
+useGetSendTimeoutForActivity(): ({ activity: Activity }) => number
+```
+<!-- prettier-ignore-end -->
+
+When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useGrammars`
 
@@ -936,17 +947,7 @@ When called, this function will send a `postBack` activity to the bot.
 
 ## `useSendTimeoutForActivity`
 
-<!-- prettier-ignore-start -->
-```js
-useSendTimeoutForActivity(): ({ activity: Activity }) => number
-```
-<!-- prettier-ignore-end -->
-
-When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
-
-### Old signature
-
-The signature was updated and the old signature will be deprecated on or after 2022-07-28.
+> This function is deprecated. Developers should migrate to [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity).
 
 <!-- prettier-ignore-start -->
 ```js
