@@ -27,14 +27,14 @@
       } = window;
 
       (async function() {
-        const avatarMiddleware = () => next => args => {
-          const { activity } = args;
+        const avatarMiddleware = () => next => (...args) => {
+          const [{ activity }] = args;
 
           if (activity.id === '3.0') {
             return () => <div className="custom-avatar">Bot</div>;
           }
 
-          return next(args);
+          return next(...args);
         };
 
         const directLine = await createDirectLineWithTranscript([

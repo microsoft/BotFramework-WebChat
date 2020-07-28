@@ -27,14 +27,16 @@
       const clock = lolex.install();
 
       (async function() {
-        const activityStatusMiddleware = () => next => args => {
-          const {
-            activity: {
-              from: { role }
-            },
-            sendState,
-            sameTimestampGroup
-          } = args;
+        const activityStatusMiddleware = () => next => (...args) => {
+          const [
+            {
+              activity: {
+                from: { role }
+              },
+              sendState,
+              sameTimestampGroup
+            }
+          ] = args;
 
           if (sendState === 'sending') {
             return (
@@ -53,12 +55,12 @@
             return (
               <span className="activity-status">
                 <span className="activity-status__timestamp-pretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
-                {next(args)}
+                {next(...args)}
               </span>
             );
           }
 
-          return next(args);
+          return next(...args);
         };
 
         window.WebChat.renderWebChat(

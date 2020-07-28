@@ -6,14 +6,17 @@ const {
 const ActivityGroupingContext = createContext();
 
 function createCustomActivityMiddleware(attachmentLayout) {
-  return () => next => args =>
-    next({
-      ...args,
-      activity: {
-        ...args.activity,
-        ...(attachmentLayout && args.activity.from.role === 'bot' ? { attachmentLayout } : {})
-      }
-    });
+  return () => next => (arg0, ...args) =>
+    next(
+      {
+        ...arg0,
+        activity: {
+          ...arg0.activity,
+          ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
+        }
+      },
+      ...args
+    );
 }
 
 const URL_QUERY_MAPPING = {

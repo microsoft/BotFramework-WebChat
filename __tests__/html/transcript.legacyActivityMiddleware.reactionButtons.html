@@ -62,25 +62,27 @@
         </div>
       );
 
-      const activityMiddleware = () => next => args => {
-        const {
-          activity,
-          activity: {
-            from: { role }
+      const activityMiddleware = () => next => (...args) => {
+        const [
+          {
+            activity,
+            activity: {
+              from: { role }
+            }
           }
-        } = args;
+        ] = args;
 
         if (role === 'bot') {
           const { id } = activity;
 
           return (...renderArgs) => (
             <BotActivityDecorator key={id} activityID={id}>
-              {next(args)(...renderArgs)}
+              {next(...args)(...renderArgs)}
             </BotActivityDecorator>
           );
         }
 
-        return next(args);
+        return next(...args);
       };
 
       (async function() {

@@ -4,8 +4,8 @@ import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
 export default function createCoreMiddleware() {
-  return () => next => args => {
-    const { activity } = args;
+  return () => next => (...args) => {
+    const [{ activity }] = args;
 
     // TODO: [P4] Can we simplify these if-statement to something more readable?
 
@@ -42,7 +42,6 @@ export default function createCoreMiddleware() {
         // ) => React.Element
 
         return function renderCarouselLayout(renderAttachment, props) {
-          // TODO: Add the solution to FAQ.
           typeof props === 'undefined' &&
             console.warn(
               'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passthrough all arguments.'
@@ -63,6 +62,6 @@ export default function createCoreMiddleware() {
       };
     }
 
-    return next(args);
+    return next(...args);
   };
 }

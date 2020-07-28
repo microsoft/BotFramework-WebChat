@@ -96,11 +96,13 @@
           }
         ]);
 
-        const avatarMiddleware = () => next => args => {
-          const {
-            activity: { id },
-            styleOptions: { botAvatarInitials, userAvatarInitials }
-          } = args;
+        const avatarMiddleware = () => next => (...args) => {
+          const [
+            {
+              activity: { id },
+              styleOptions: { botAvatarInitials, userAvatarInitials }
+            }
+          ] = args;
 
           if (id === '3.0') {
             return () => <div className="custom-avatar">{botAvatarInitials}</div>;
@@ -110,7 +112,7 @@
             return false;
           }
 
-          return next(args);
+          return next(...args);
         };
 
         const store = createStore();
