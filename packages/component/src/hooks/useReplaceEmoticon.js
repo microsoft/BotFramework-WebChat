@@ -14,22 +14,27 @@ export default function useReplaceEmoticon() {
   return useCallback(
     valueWithEmoticon => {
       const escapedString =
-        Object.prototype.toString.call(emojiSet) !== '[object Object]' &&
+        Object.prototype.toString.call(emojiSet) === '[object Object]' &&
         Object.keys(emojiSet)
           .sort()
           .map(escapeRegexp)
           .join('|');
 
       const emojiRegExp =
-        Object.prototype.toString.call(emojiSet) !== '[object Object]'
+        Object.prototype.toString.call(emojiSet) === '[object Object]'
           ? new RegExp(escapedString, 'gmu')
-          : new RegExp(/([()-/03:<DOP\\op|]{2,3})/gmu);
+          : /([()-/03:;<DOP\\op|]{2,3})/gmu;
 
-      const emoticon = valueWithEmoticon.match(emojiRegExp);
+      const emoticonMatches = valueWithEmoticon.match(emojiRegExp);
+
       let valueWithEmoji = valueWithEmoticon;
 
-      if (!!emojiSet && emoticon && emojiSet[emoticon]) {
-        valueWithEmoji = valueWithEmoticon.replace(emoticon, emojiSet[emoticon]);
+      if (!!emojiSet && emoticonMatches) {
+        emoticonMatches.forEach(emoticon => {
+          if (emojiSet[emoticon]) {
+            valueWithEmoji = valueWithEmoji.replace(emoticon, emojiSet[emoticon]);
+          }
+        });
       }
       return valueWithEmoji;
     },

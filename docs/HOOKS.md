@@ -89,6 +89,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useRenderToast`](#userendertoast)
 -  [`useRenderTypingIndicator`](#userendertypingindicator)
+-  [`useReplaceEmoticon`](#useReplaceEmoticon)
 -  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useSendBoxValue`](#usesendboxvalue)
@@ -740,6 +741,16 @@ This function is for rendering typing indicator for all participants of the conv
 -  `activeTyping` lists of participants who are actively typing.
 -  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
 -  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
+
+## `useReplaceEmoticon`
+
+<!-- prettier-ignore-start -->
+```js
+useEmoticonReplacer() => (valueWithEmoticon: string) => string
+```
+<!-- prettier-ignore-end -->
+
+This function is for enabling autocorrect from emoticon to emoji text in the SendBox.The caller passes the current value of the text box.
 
 ## `useScrollTo`
 

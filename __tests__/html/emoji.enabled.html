@@ -14,7 +14,7 @@
           {
             directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
             store: createStore(),
-            styleOptions: { emojiAutocorrect: true }
+            styleOptions: { emojiSet: true }
           },
           document.getElementById('webchat')
         );

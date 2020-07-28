@@ -85,7 +85,7 @@ const DEFAULT_OPTIONS = {
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
   sendBoxTextColor: 'Black',
-  // TODO: We should deprecate this because there isn't an easy way to make the width of the send box, narrower than the transcript
+  // TODO: We should deprecate this because there isn't an easy way to make the width of the send box narrower than the transcript
   sendBoxBorderBottom: '',
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
@@ -135,7 +135,7 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonColorOnHover: undefined, // defaults to transcriptOverlayButtonColor
 
   // Video
-  videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
+  videoHeight: 270, // based on bubbleMaxWidth: 480 / 16 * 9 = 270
 
   // Connectivity UI
   connectivityIconPadding: PADDING_REGULAR * 1.2,
@@ -168,7 +168,7 @@ const DEFAULT_OPTIONS = {
 
   // Toast UI
 
-  // New debounce timeout value only affect new notifications.
+  // New debounce timeout value only affects new notifications.
   notificationDebounceTimeout: 400,
 
   hideToaster: false,
