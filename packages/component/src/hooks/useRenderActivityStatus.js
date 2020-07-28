@@ -2,6 +2,18 @@ import { useMemo } from 'react';
 
 import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 
+// In the old days, the useRenderActivity() will be called like this:
+//
+// const element = useRenderActivityStatus({ activity, nextVisibleActivity });
+
+// In the new days, the useCreateActivityRenderer() is a 3-pass function:
+//
+// const createActivityStatusRenderer = useCreateActivityStatusRenderer();
+// const renderActivityStatus = createActivityStatusRenderer({ activity, hideTimestamp });
+// const element = renderActivityStatus && renderActivityStatus(undefined);
+
+// Despite deprecation, useRenderActivityStatus() can be retrofitted using useCreateActivityStatusRenderer().
+
 const RETURN_FALSE = () => false;
 
 let showDeprecationNotes = true;

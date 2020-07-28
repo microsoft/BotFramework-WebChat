@@ -118,6 +118,7 @@ const connectCarouselFilmStrip = (...selectors) =>
 const WebChatCarouselFilmStrip = ({
   activity,
   className,
+  hideTimestamp,
   itemContainerRef,
   renderActivityStatus,
   renderAttachment,
@@ -205,7 +206,7 @@ const WebChatCarouselFilmStrip = ({
                   }
                 })}
               </Bubble>
-              <div aria-hidden={true} className="webchat__carousel-layout__filler" />
+              <div className="webchat__carousel-layout__filler" />
             </div>
           )}
           <div className="webchat__carousel-layout__complimentary">
@@ -230,10 +231,10 @@ const WebChatCarouselFilmStrip = ({
         <div className="webchat__carousel-layout__alignment-pad" />
       </div>
       {showActivityStatus && (
-        <div aria-hidden={true} className="webchat__carousel-layout__status">
+        <div className="webchat__carousel-layout__status">
           <div className="webchat__carousel-layout__avatar-gutter" />
           <div className="webchat__carousel-layout__nub-pad" />
-          {renderActivityStatus()}
+          {renderActivityStatus({ hideTimestamp })}
         </div>
       )}
     </div>
@@ -242,6 +243,7 @@ const WebChatCarouselFilmStrip = ({
 
 WebChatCarouselFilmStrip.defaultProps = {
   className: '',
+  hideTimestamp: false,
   renderActivityStatus: false,
   renderAvatar: false,
   showCallout: false
@@ -264,6 +266,7 @@ WebChatCarouselFilmStrip.propTypes = {
     timestamp: PropTypes.string
   }).isRequired,
   className: PropTypes.string,
+  hideTimestamp: PropTypes.bool,
   itemContainerRef: PropTypes.any.isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,

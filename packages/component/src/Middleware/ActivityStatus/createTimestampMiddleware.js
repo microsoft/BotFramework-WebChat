@@ -8,6 +8,7 @@ export default function createTimestampMiddleware() {
     const { activity, hideTimestamp } = args;
 
     if (hideTimestamp) {
+      // If "hideTimestamp" is set, we will not render the visual timestamp. But continue to render the screen reader only version.
       return <AbsoluteTime hide={true} value={activity.timestamp} />;
     }
 

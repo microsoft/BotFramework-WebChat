@@ -7,7 +7,7 @@ import useCreateActivityRendererInternal from './internal/useCreateActivityRende
 // const renderActivity = useRenderActivity();
 // const element = renderActivity({ activity, nextVisibleActivity });
 
-// In the new days, the useCreateActivityRenderer() is a 2-pass function:
+// In the new days, the useCreateActivityRenderer() is a 3-pass function:
 //
 // const createActivityRenderer = useCreateActivityRenderer();
 // const renderActivity = createActivityRenderer({ activity, nextVisibleActivity });

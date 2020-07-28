@@ -252,9 +252,7 @@ const BasicTranscript2 = ({ className }) => {
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
           // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
           const renderActivityStatus = createActivityStatusRenderer({
-            activity,
-            hideTimestamp:
-              hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1
+            activity
           });
 
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
@@ -292,6 +290,12 @@ const BasicTranscript2 = ({ className }) => {
 
           renderingElements.push({
             activity,
+
+            // "hideTimestamp" is a render-time parameter for renderActivityStatus().
+            // If set, it will hide if timestamp is being shown, but it will continue to show
+            // retry prompt. And show the screen reader version of the timestamp.
+            hideTimestamp:
+              hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
             key,
 
             // When "liveRegionKey" change, it was show up in the live region momentarily.
@@ -338,13 +342,23 @@ const BasicTranscript2 = ({ className }) => {
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
         {renderingElements.map(
-          ({ activity, key, renderActivity, renderActivityStatus, renderAvatar, shouldSpeak, showCallout }) => (
+          ({
+            activity,
+            key,
+            hideTimestamp,
+            renderActivity,
+            renderActivityStatus,
+            renderAvatar,
+            shouldSpeak,
+            showCallout
+          }) => (
             <li
               aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
               className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
               key={key}
             >
               {renderActivity({
+                hideTimestamp,
                 renderActivityStatus,
                 renderAvatar,
                 showCallout

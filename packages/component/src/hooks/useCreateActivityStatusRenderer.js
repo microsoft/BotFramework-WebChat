@@ -43,7 +43,7 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
 
 export default function useCreateActivityStatusRenderer() {
   return useMemo(
-    () => ({ activity, hideTimestamp, nextVisibleActivity }) => () => (
+    () => ({ activity, nextVisibleActivity }) => ({ hideTimestamp } = {}) => (
       <ActivityStatusContainer
         activity={activity}
         hideTimestamp={hideTimestamp}

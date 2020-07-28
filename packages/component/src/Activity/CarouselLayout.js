@@ -15,7 +15,15 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, renderActivityStatus, renderAttachment, renderAvatar, showCallout }) => {
+const CarouselLayout = ({
+  activity,
+  children,
+  hideTimestamp,
+  renderActivityStatus,
+  renderAttachment,
+  renderAvatar,
+  showCallout
+}) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const filmStyleSet = useMemo(() => createBasicStyleSet({ cursor: null }), []);
@@ -30,6 +38,7 @@ const CarouselLayout = ({ activity, children, renderActivityStatus, renderAttach
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
             <CarouselFilmStrip
               activity={activity}
+              hideTimestamp={hideTimestamp}
               renderActivityStatus={renderActivityStatus}
               renderAttachment={renderAttachment}
               renderAvatar={renderAvatar}
@@ -64,6 +73,7 @@ const CarouselLayout = ({ activity, children, renderActivityStatus, renderAttach
 
 CarouselLayout.defaultProps = {
   children: undefined,
+  hideTimestamp: false,
   renderActivityStatus: false,
   renderAvatar: false,
   showCallout: true
@@ -72,6 +82,7 @@ CarouselLayout.defaultProps = {
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
+  hideTimestamp: PropTypes.bool,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),

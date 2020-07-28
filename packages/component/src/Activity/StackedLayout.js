@@ -85,7 +85,14 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, renderAvatar, showCallout }) => {
+const StackedLayout = ({
+  activity,
+  hideTimestamp,
+  renderActivityStatus,
+  renderAttachment,
+  renderAvatar,
+  showCallout
+}) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -197,10 +204,10 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
         <div className="webchat__stacked-layout__alignment-pad" />
       </div>
       {showActivityStatus && (
-        <div aria-hidden={true} className="webchat__stacked-layout__status">
+        <div className="webchat__stacked-layout__status">
           <div className="webchat__stacked-layout__avatar-gutter" />
           <div className="webchat__stacked-layout__nub-pad" />
-          {renderActivityStatus()}
+          {renderActivityStatus({ hideTimestamp })}
           <div className="webchat__stacked-layout__alignment-pad" />
         </div>
       )}
@@ -209,6 +216,7 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
 };
 
 StackedLayout.defaultProps = {
+  hideTimestamp: false,
   renderActivityStatus: false,
   renderAvatar: false,
   showCallout: true
@@ -230,6 +238,7 @@ StackedLayout.propTypes = {
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
+  hideTimestamp: PropTypes.bool,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
