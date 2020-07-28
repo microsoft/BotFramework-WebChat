@@ -17,12 +17,12 @@ import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
 import useCreateActivityRenderer from './hooks/useCreateActivityRenderer';
 import useCreateActivityStatusRenderer from './hooks/useCreateActivityStatusRenderer';
+import useCreateAvatarRenderer from './hooks/useCreateAvatarRenderer';
 import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
 import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
-import useRenderAvatar from './hooks/useRenderAvatar';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -107,7 +107,7 @@ const BasicTranscript2 = ({ className }) => {
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const createAvatarRenderer = useRenderAvatar();
+  const createAvatarRenderer = useCreateAvatarRenderer();
   const groupActivities = useGroupActivities();
   const hideAllTimestamps = groupTimestamp === false;
   const localize = useLocalizer();
