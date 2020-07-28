@@ -6,6 +6,10 @@
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
+    <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.js"></script> -->
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime@0.13.3/runtime.js"></script>
+
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -15,7 +19,8 @@
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <!-- <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js"></script> -->
+    <script src="/webchat-es5.js"></script>
     <style>
       html,
       body {
@@ -95,13 +100,33 @@
       (async function() {
         // Importing from UMD bundle.
         const {
-          React: { useCallback, useEffect, useMemo, useState },
+          React: { useCallback, useEffect, useMemo, useRef, useState },
           WebChat: {
             Components: { BasicWebChat, Composer },
             createDirectLine,
             hooks: { useConnectivityStatus, useSendMessage }
           }
         } = window;
+
+        function useDebugDeps(depsMap, name) {
+          const lastDepsMapRef = useRef({});
+
+          const { current: lastDepsMap } = lastDepsMapRef;
+          const keys = new Set([...Object.keys(depsMap), ...Object.keys(lastDepsMap)]);
+          const keysChanged = Array.from(keys).filter(key => !Object.is(depsMap[key], lastDepsMap[key]));
+
+          if (keysChanged.length) {
+            console.groupCollapsed(`Changes found in ${name}`);
+
+            keysChanged.forEach(key => {
+              console.log(key, { from: lastDepsMap[key], to: depsMap[key] });
+            });
+
+            console.groupEnd();
+          }
+
+          lastDepsMapRef.current = depsMap;
+        }
 
         const NEXT_MESSAGES = [
           'Exercitation laboris enim ad Lorem.',
@@ -192,7 +217,7 @@
               channelData: { state: 'sent' },
               from: { role: 'user' },
               id: '1.0',
-              text: 'Lorem pariatur ea veniam exercitation aliqua qui officia.',
+              text: 'Lorem pariatur ea veniam.',
               timestamp: new Date(Date.now() - 5001).toISOString(),
               type: 'message'
             });
@@ -201,7 +226,7 @@
               channelData: { state: 'sent' },
               from: { role: 'user' },
               id: '1.1',
-              text: 'Duis duis irure proident dolor labore labore pariatur proident duis.',
+              text: 'Duis duis irure proident dolor labore.',
               timestamp: new Date(Date.now() - 5001).toISOString(),
               type: 'message'
             });
@@ -215,32 +240,13 @@
               type: 'message'
             });
 
-            // activityDeferredObservable.next({
-            //   attachmentLayout: 'carousel',
-            //   attachments: [
-            //     {
-            //       content:
-            //         'Veniam labore labore tempor deserunt sunt veniam labore pariatur consectetur id sint. Elit ex non ullamco deserunt dolore ad ullamco occaecat irure qui. Quis anim exercitation consequat qui labore cillum. Eu consectetur ut dolor incididunt elit incididunt sunt pariatur ea quis consequat occaecat Lorem. Ad minim deserunt amet aliqua. Reprehenderit commodo quis eiusmod anim voluptate. Do amet anim ut commodo.',
-            //       contentType: 'text/markdown'
-            //     },
-            //     {
-            //       content:
-            //         'Incididunt et ullamco sunt sunt ad laboris proident. Deserunt commodo quis dolor commodo labore. Nostrud minim mollit amet labore ullamco aliquip. Ut in quis consequat ad est eiusmod sint cillum nisi. Adipisicing culpa nulla nostrud amet consectetur irure est velit qui occaecat laboris voluptate.',
-            //       contentType: 'text/markdown'
-            //     },
-            //     {
-            //       content:
-            //         'Reprehenderit veniam Lorem cillum consectetur minim consequat anim culpa in consequat ut et dolore mollit. Nisi qui magna exercitation nostrud esse labore sit. In aliquip nisi amet id velit mollit nulla esse velit aute culpa consequat commodo.',
-            //       contentType: 'text/markdown'
-            //     }
-            //   ],
-            //   from: { role: 'bot' },
-            //   id: '2',
-            //   text:
-            //     'Sit mollit laborum et sunt eu nisi enim ullamco proident magna labore dolor est. Amet aute non consequat duis aute aute enim nulla. Magna non do excepteur enim nostrud incididunt ad tempor labore anim ex. Velit sunt ullamco deserunt voluptate cillum dolor ipsum deserunt cupidatat anim. Incididunt qui aliquip cillum veniam commodo et. Laborum aliqua dolor laborum mollit dolore labore reprehenderit ut nisi laboris.',
-            //   timestamp: new Date().toISOString(),
-            //   type: 'message'
-            // });
+            activityDeferredObservable.next({
+              from: { role: 'bot' },
+              id: '2.0',
+              text: 'Excepteur mollit ipsum id cupidatat.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
 
             activityDeferredObservable.next({
               attachments: [
@@ -248,30 +254,17 @@
                   contentType: 'image/jpeg',
                   contentUrl:
                     'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
-                  // content: 'Cupidatat pariatur fugiat aliqua ex excepteur nostrud magna laboris duis laborum labore.',
-                  // contentType: 'text/markdown'
                 },
                 {
                   contentType: 'image/jpeg',
                   contentUrl:
                     'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
-                  // content:
-                  //   'In consectetur eiusmod officia irure elit Lorem qui labore voluptate reprehenderit nostrud magna laborum occaecat.',
-                  // contentType: 'text/markdown'
                 }
-                // {
-                //   contentType: 'image/jpeg',
-                //   contentUrl:
-                //     'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg'
-                //   // content:
-                //   //   'In consectetur eiusmod officia irure elit Lorem qui labore voluptate reprehenderit nostrud magna laborum occaecat.',
-                //   // contentType: 'text/markdown'
-                // }
               ],
               from: { role: 'bot' },
-              id: '3',
+              id: '2.1',
               text:
-                'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia magna in pariatur mollit dolor reprehenderit magna et.',
+                'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia.',
               timestamp: new Date().toISOString(),
               type: 'message'
             });
@@ -288,24 +281,6 @@
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
-
-        // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        // const { token } = await res.json();
-
-        const SendOnConnect = () => {
-          // const [connectivityStatus] = useConnectivityStatus();
-          // const sendMessage = useSendMessage();
-
-          // useEffect(() => {
-          //   if (connectivityStatus === 'connected') {
-          //     sendMessage('layout carousel');
-          //     sendMessage('card breakfast');
-          //     sendMessage('card sports');
-          //   }
-          // }, [connectivityStatus, sendMessage]);
-
-          return false;
-        };
 
         const Toggle = ({ checked, children, disabled, onChange, type }) => {
           const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
@@ -328,12 +303,7 @@
         }
 
         function createCustomActivityMiddleware(attachmentLayout) {
-          return () => next => args => {
-            const activity = { ...args.activity, attachmentLayout };
-            // const activity = patchActivity(args.activity);
-
-            return next({ ...args, activity });
-          };
+          return () => next => args => next({ ...args, activity: { ...args.activity, attachmentLayout } });
         }
 
         const App = () => {
@@ -494,7 +464,8 @@
               userAvatarInitials: userAvatarInitials ? 'WW' : undefined,
 
               groupTimestamp: 5000,
-              showAvatarInGroup: showAvatarForEveryActivity ? true : showAvatarInGroup
+              showAvatarInGroup: showAvatarForEveryActivity ? true : showAvatarInGroup,
+              transitionDuration: '.3s'
             }),
             [
               botAvatarInitials,
@@ -506,6 +477,21 @@
               userNub,
               userOnTop
             ]
+          );
+
+          useDebugDeps(
+            {
+              botAvatarInitials,
+              botNub,
+              botOnTop,
+              showAvatarForEveryActivity,
+              showAvatarInGroup,
+              styleOptions,
+              userAvatarInitials,
+              userNub,
+              userOnTop
+            },
+            'index.html'
           );
 
           return (
@@ -649,15 +635,12 @@
                 </section>
               </div>
               <Composer
-                // directLine={window.WebChat.createDirectLine({ token })}
                 activityMiddleware={activityMiddleware}
                 directLine={directLine}
                 dir={rtl ? 'rtl' : undefined}
                 styleOptions={styleOptions}
               >
                 <BasicWebChat />
-                {/* <BasicGroupedTranscript /> */}
-                <SendOnConnect />
               </Composer>
             </div>
           );

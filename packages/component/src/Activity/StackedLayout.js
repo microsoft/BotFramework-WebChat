@@ -171,14 +171,14 @@ const StackedLayout = ({ activity, renderActivityStatus, renderAttachment, rende
               </Bubble>
             </div>
           )}
-          {/* attachments do not have an ID, it is always indexed by number */}
           {attachments.map((attachment, index) => (
-            /* eslint-disable-next-line react/no-array-index-key */
             <div
               aria-roledescription="attachment"
               className={classNames('webchat__stacked-layout__attachment-row', {
                 'webchat__stacked-layout__attachment-row--first': !index
               })}
+              /* attachments do not have an ID, it is always indexed by number */
+              /* eslint-disable-next-line react/no-array-index-key */
               key={index}
             >
               <ScreenReaderText text={attachedAlt} />

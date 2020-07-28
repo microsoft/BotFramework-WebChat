@@ -316,6 +316,7 @@ const BasicTranscript2 = ({ className }) => {
     bubbleNubOffset,
     createActivityStatusRenderer,
     createAvatarRenderer,
+    hideAllTimestamps,
     showAvatarInGroup
   ]);
 
