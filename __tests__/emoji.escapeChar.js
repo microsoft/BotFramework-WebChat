@@ -9,15 +9,15 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('Correct emoticon should be replaced as emoji when copy/pasted from clipboard', async () => {
+test('Copy/pasted text with incidental emoticons will (undesirably) replace emoticons with emoji', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
-      styleOptions: { emojiSet: true }
+      styleOptions: { emojiSet: { '):': '☹️' } }
     }
   });
 
   // create input text and copy to clipboard
-  await pageObjects.sendTextToClipboard(':) <3');
+  await pageObjects.sendTextToClipboard('function enabled(): boolean { return true; }');
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
@@ -37,15 +37,15 @@ test('Correct emoticon should be replaced as emoji when copy/pasted from clipboa
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('Emoticons appended after copy/pasted will still be replaced as emoji', async () => {
+test('Copy/pasted text with escaped emoticons will replace to fully escaped emoticon', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
-      styleOptions: { emojiSet: true }
+      styleOptions: { emojiSet: { '):': '☹️' } }
     }
   });
 
   // create input text and copy to clipboard
-  await pageObjects.sendTextToClipboard(':) <3');
+  await pageObjects.sendTextToClipboard('function enabled(\\): boolean { return true; }');
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
@@ -60,7 +60,21 @@ test('Emoticons appended after copy/pasted will still be replaced as emoji', asy
     .keyUp(Key.CONTROL)
     .perform();
 
-  await pageObjects.typeInSendBox(':o');
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('Typed text with escaped emoticons will replace to fully escaped emoticon', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: { emojiSet: { '):': '☹️' } }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.typeInSendBox('function enabled(\\): boolean { return true; }');
 
   const base64PNG = await driver.takeScreenshot();
 

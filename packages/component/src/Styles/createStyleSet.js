@@ -200,7 +200,7 @@ export default function createStyleSet(options) {
       '<\\3': '💔'
     };
   } else if (Object.prototype.toString.call(options.emojiSet) !== '[object Object]') {
-    // TODO: Add a warning for invalid value.
+    console.warn('emojiSet must be a boolean or an object with emoticon: emojiValues');
     options.emojiSet = false;
   }
 

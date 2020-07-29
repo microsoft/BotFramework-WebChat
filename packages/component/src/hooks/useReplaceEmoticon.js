@@ -2,18 +2,15 @@
 
 import { useCallback } from 'react';
 
+import escapeRegexp from '../Utils/escapeRegexp';
 import useStyleOptions from './useStyleOptions';
-
-function escapeRegexp(emoticon) {
-  return emoticon.replace(/[\\^$*+?.()|[\]{}]/gu, '\\$&');
-}
 
 export default function useReplaceEmoticon() {
   const [{ emojiSet }] = useStyleOptions();
 
   return useCallback(
     valueWithEmoticon => {
-      const escapedString =
+      const escapedEmoticonRegExp =
         Object.prototype.toString.call(emojiSet) === '[object Object]' &&
         Object.keys(emojiSet)
           .sort()
@@ -22,7 +19,7 @@ export default function useReplaceEmoticon() {
 
       const emojiRegExp =
         Object.prototype.toString.call(emojiSet) === '[object Object]'
-          ? new RegExp(escapedString, 'gmu')
+          ? new RegExp(escapedEmoticonRegExp, 'gmu')
           : /([()-/03:;<DOP\\op|]{2,3})/gmu;
 
       const emoticonMatches = valueWithEmoticon.match(emojiRegExp);
@@ -31,6 +28,16 @@ export default function useReplaceEmoticon() {
 
       if (!!emojiSet && emoticonMatches) {
         emoticonMatches.forEach(emoticon => {
+          const escapeString = escapeRegexp('\\' + emoticon);
+          const emoticonEscapeStringRegExp = new RegExp(escapeString, 'gm');
+
+          const needEscape = emoticonEscapeStringRegExp.test(valueWithEmoticon);
+
+          if (needEscape) {
+            const splitEmoticon = emoticon.split('').join('\\');
+            valueWithEmoji = valueWithEmoticon.replace(emoticon, splitEmoticon);
+          }
+
           if (emojiSet[emoticon]) {
             valueWithEmoji = valueWithEmoji.replace(emoticon, emojiSet[emoticon]);
           }
