@@ -75,6 +75,15 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
             .sendKeys(Key.TAB)
             .keyUp(Key.SHIFT)
             .perform();
+        } else if (job.type === 'send access key') {
+          await driver
+            .actions()
+            .keyDown(Key.ALT)
+            .keyDown(Key.SHIFT)
+            .sendKeys(job.payload.key)
+            .keyUp(Key.SHIFT)
+            .keyUp(Key.ALT)
+            .perform();
         } else if (job.type === 'snapshot') {
           expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
         } else if (job.type === 'save file') {

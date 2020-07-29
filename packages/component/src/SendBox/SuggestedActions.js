@@ -4,15 +4,17 @@ import { css } from 'glamor';
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useDirection from '../hooks/useDirection';
+import useFocusOnAccessKey from '../Utils/AccessKeySink/useFocusOnAccessKey';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useSuggestedActionsAccessKey from '../hooks/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
 const SUGGESTED_ACTION_STACKED_CSS = css({
@@ -44,9 +46,13 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
+  const focusRef = useRef();
   const localize = useLocalizer();
+
+  useFocusOnAccessKey(accessKey, focusRef);
 
   const suggestedActionsContainerText = localize(
     'SUGGESTED_ACTIONS_ALT',
@@ -55,19 +61,13 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 
-  if (!suggestedActions.length) {
-    return (
-      <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
-        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
-      </div>
-    );
-  }
-
   const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
     <SuggestedAction
+      accessKey={index ? accessKey : undefined}
       ariaHidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
       displayText={displayText}
+      ref={index ? undefined : focusRef}
       image={image}
       key={index}
       text={text}
