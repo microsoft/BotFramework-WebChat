@@ -15,6 +15,12 @@
         min-width: 360px;
       }
 
+      .form-input {
+        left: 0;
+        position: absolute;
+        top: 0;
+      }
+
       :focus {
         background-color: gold !important;
       }
@@ -22,7 +28,7 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <input accesskey="S" className="form-input" type="text" />
+    <input accesskey="S" class="form-input" type="text" value="This box is outside." />
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useEffect },
@@ -71,6 +77,11 @@
         await host.snapshot();
 
         await host.sendAccessKey('A');
+
+        await host.snapshot();
+
+        // This will send the focus to a control outside of Web Chat.
+        await host.sendAccessKey('S');
 
         await host.snapshot();
 
