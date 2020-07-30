@@ -1,6 +1,10 @@
 {
   "_comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
 
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "_ACCESS_KEY_ALT.comment": "This is for screen reader for aria-keyshortcuts property.",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
+  "_ACCESS_KEY_FOR_MAC_ALT.comment": "This is for screen reader for aria-keyshortcuts property on a Mac.",
   "ACTIVITY_ARIA_LABEL_ALT": "activity",
   "_ACTIVITY_ARIA_LABEL_ALT.comment": "This is for screen reader for aria-label for each activity.",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 said:",
@@ -62,7 +66,8 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Microphone on",
   "_SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT.comment": "This is for screen reader and is the label of the microphone button, when clicked, will open microphone.",
   "SPEECH_INPUT_STARTING": "Starting…",
-  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content. Press $1 to select.",
+  "_SUGGESTED_ACTIONS_ALT_HAS_CONTENT.comment": "$1 will be \"ACCESS_KEY_ALT\".",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Is empty",
   "SUGGESTED_ACTIONS_ALT": "Suggested Actions Container: $1",
   "_SUGGESTED_ACTIONS_ALT.comment": "This is for screen reader. $1 will be one of \"SUGGESTED_ACTIONS_ALT_*\".",

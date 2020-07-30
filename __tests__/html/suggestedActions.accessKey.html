@@ -85,6 +85,12 @@
 
         await host.snapshot();
 
+        const keyShortcuts = [].map.call(document.querySelectorAll('[aria-keyshortcuts]'), element =>
+          element.getAttribute('aria-keyshortcuts')
+        );
+
+        expect(keyShortcuts).toEqual(new Array(6).fill('Alt + Shift + A'));
+
         await host.done();
       })().catch(async err => {
         console.error(err);

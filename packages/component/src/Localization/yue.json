@@ -1,5 +1,7 @@
 {
   "_.comment": "The content of this file is contributed by the community.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_MAC_ALT": "Ctrl + Alt + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "訊息",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot 嘅附件：",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 話：",

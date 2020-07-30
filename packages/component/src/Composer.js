@@ -603,7 +603,7 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
-  suggestedActionsAccessKey: 'A',
+  suggestedActionsAccessKey: 'A a Å å',
   toastMiddleware: undefined,
   toastRenderer: undefined,
   typingIndicatorMiddleware: undefined,

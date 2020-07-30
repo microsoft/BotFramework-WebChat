@@ -2,32 +2,42 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import Context from './internal/Context';
-import firstTabbableDescendant from '../firstTabbableDescendant';
+import firstTabbableDescendant, { isTabbable } from '../firstTabbableDescendant';
+import useNavigatorPlatform from '../../hooks/internal/useNavigatorPlatform';
 
 const Surface = ({ children, ...otherProps }) => {
   const contextRef = useRef({ focii: [] });
 
+  const [{ apple }] = useNavigatorPlatform();
+
   const handleKeyUp = useCallback(event => {
-    const { altKey, key, shiftKey } = event;
+    const { altKey, ctrlKey, key, shiftKey } = event;
 
-    if (altKey && shiftKey) {
-      const focii = contextRef.current.focii.filter(entry => entry.key === key);
+    // On Apple, most modern browsers use ALT+CTRL.
+    // Otherwise, we use ALT+SHIFT.
+    if (altKey && (apple ? ctrlKey : shiftKey)) {
+      const focii = contextRef.current.focii.filter(entry => entry.keys.includes(key));
 
-      if (focii.length > 1) {
-        throw new Error(
-          `botframework-webchat: More than one element registered for access key "${key}", only the last one will be triggered.`
-        );
-      }
+      const currentFocus = focii.findIndex(
+        ({ ref: { current } }) => current === document.activeElement || current.contains(document.activeElement)
+      );
+      const nextFocus = focii[(currentFocus + 1) % focii.length];
 
-      const [focus] = focii;
-
-      if (focus) {
+      if (nextFocus) {
         event.preventDefault();
         event.stopPropagation();
 
-        const firstTabbable = firstTabbableDescendant(focus.ref.current);
+        const {
+          ref: { current }
+        } = nextFocus;
 
-        firstTabbable && firstTabbable.focus();
+        if (isTabbable(current)) {
+          current.focus();
+        } else {
+          const firstTabbable = firstTabbableDescendant(current);
+
+          firstTabbable && firstTabbable.focus();
+        }
       }
     }
   }, []);

@@ -4,17 +4,17 @@ import { css } from 'glamor';
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useDirection from '../hooks/useDirection';
-import useFocusOnAccessKey from '../Utils/AccessKeySink/useFocusOnAccessKey';
+import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import useSuggestedActionsAccessKey from '../hooks/useSuggestedActionsAccessKey';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
 const SUGGESTED_ACTION_STACKED_CSS = css({
@@ -49,25 +49,21 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
-  const focusRef = useRef();
   const localize = useLocalizer();
-
-  useFocusOnAccessKey(accessKey, focusRef);
+  const localizeAccessKey = useLocalizeAccessKey();
 
   const suggestedActionsContainerText = localize(
     'SUGGESTED_ACTIONS_ALT',
     suggestedActions.length
-      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
+      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT', localizeAccessKey(accessKey))
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 
   const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
     <SuggestedAction
-      accessKey={index ? accessKey : undefined}
       ariaHidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
       displayText={displayText}
-      ref={index ? undefined : focusRef}
       image={image}
       key={index}
       text={text}

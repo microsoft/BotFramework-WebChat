@@ -56,7 +56,6 @@ import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
-import useSuggestedActionsAccessKey from './useSuggestedActionsAccessKey';
 import useTimeoutForSend from './useTimeoutForSend';
 import useTrackDimension from './useTrackDimension';
 import useTrackEvent from './useTrackEvent';
@@ -134,7 +133,6 @@ export {
   useStyleSet,
   useSubmitSendBox,
   useSuggestedActions,
-  useSuggestedActionsAccessKey,
   useTextBoxSubmit,
   useTextBoxValue,
   useTimeoutForSend,
