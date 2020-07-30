@@ -5,7 +5,7 @@ const FUNCTION_NAMES = ['debug', 'error', 'info', 'log', 'trace', 'warn'];
 let history = [];
 
 function isDeprecation(text) {
-  return ~text.indexOf('deprecate');
+  return text.includes('deprecate');
 }
 
 function shiftDeprecationHistory() {

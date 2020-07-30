@@ -261,7 +261,7 @@ useCreateActivityRenderer(): ({
 
 This function will return a function that, when called, will return a function to render the specified activity.
 
-If a render function is returned, calling the function must return visualization of the activity. The visualization may varies based on the activity status, avatar, and bubble nub (a.k.a. callout).
+If a render function is returned, calling the function must return visualization of the activity. The visualization may vary based on the activity status, avatar, and bubble nub (a.k.a. callout).
 
 If the activity middleware want to hide the activity, it must return `false` instead of a render function. The middleware should not return a render function that, when called, will return `false`.
 
@@ -270,9 +270,9 @@ For `renderActivityStatus` and `renderAvatar`, it could be one of the followings
 -  `false`: Do not render activity status or avatar.
 -  `() => React.Element`: Render activity status or avatar by calling this function.
 
-If `showCallout` is truthy, the activity should render the bubble nub anda avatar. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
+If `showCallout` is truthy, the activity should render the bubble nub and an avatar. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
 
-If `showCallout` is falsy but `renderAvatar` is truthy, the activity should not render the avatar, but leave a space for the avatar to keep align with other activities.
+If `showCallout` is falsy but `renderAvatar` is truthy, the activity should not render the avatar, but leave a space for the avatar to keep aligned with other activities.
 
 ## `useCreateActivityStatusRenderer`
 
