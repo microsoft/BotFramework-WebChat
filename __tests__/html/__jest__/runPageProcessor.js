@@ -24,7 +24,7 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
   }
 
   if (!webChatTestLoaded) {
-    throw new Error('"testharness.js" did not loaded on the page.');
+    throw new Error('"testharness.js" did not load on the page.');
   }
 
   if (await driver.executeScript(() => !(window.React && window.ReactDOM && window.ReactTestUtils))) {

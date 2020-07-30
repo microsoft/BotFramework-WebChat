@@ -10,7 +10,9 @@ import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
+import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
@@ -50,26 +52,6 @@ const ROOT_CSS = css({
     }
   }
 });
-
-function intersectionOf(arg0, ...args) {
-  return args.reduce(
-    (interim, arg) =>
-      interim.reduce((intersection, item) => {
-        arg.includes(item) && intersection.push(item);
-
-        return intersection;
-      }, []),
-    arg0
-  );
-}
-
-function removeInline(array, ...items) {
-  items.forEach(item => {
-    const index = array.indexOf(item);
-
-    ~index && array.splice(index, 1);
-  });
-}
 
 function firstTabbableDescendant(element) {
   // This is best-effort for finding a tabbable element.

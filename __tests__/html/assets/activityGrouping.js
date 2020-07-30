@@ -152,6 +152,7 @@ const ActivityGroupingBadges = () => {
       {badges.map(badge => (
         <React.Fragment key={badge}>
           <nobr className="badges__badge">{badge}</nobr>
+          {/* Using zero-width space to break separate <nobr> into another line if needed. */}
           {'\u200B'}
         </React.Fragment>
       ))}
