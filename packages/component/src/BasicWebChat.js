@@ -26,7 +26,8 @@ const ROOT_CSS = css({
 const SINK_CSS = css({
   display: 'flex',
   flex: 1,
-  flexDirection: 'column'
+  flexDirection: 'column',
+  overflow: 'hidden'
 });
 
 const CONNECTIVITY_STATUS_CSS = css({
