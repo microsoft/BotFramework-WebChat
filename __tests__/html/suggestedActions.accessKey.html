@@ -101,6 +101,9 @@
         // This will send the focus to a control outside of Web Chat.
         await host.sendAccessKey('S');
 
+        // We need to wait for flipper button animation to complete.
+        await sleep(1000);
+
         await host.snapshot();
 
         await host.done();

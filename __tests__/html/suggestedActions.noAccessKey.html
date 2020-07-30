@@ -72,7 +72,7 @@
         await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
 
         expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content.'
+          'Suggested Actions Container: Has content'
         );
 
         expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
