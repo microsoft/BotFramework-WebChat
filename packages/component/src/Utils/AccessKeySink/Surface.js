@@ -10,37 +10,40 @@ const Surface = ({ children, ...otherProps }) => {
 
   const [{ apple }] = useNavigatorPlatform();
 
-  const handleKeyUp = useCallback(event => {
-    const { altKey, ctrlKey, key, shiftKey } = event;
+  const handleKeyUp = useCallback(
+    event => {
+      const { altKey, ctrlKey, key, shiftKey } = event;
 
-    // On Apple, most modern browsers use ALT+CTRL.
-    // Otherwise, we use ALT+SHIFT.
-    if (altKey && (apple ? ctrlKey : shiftKey)) {
-      const focii = contextRef.current.focii.filter(entry => entry.keys.includes(key));
+      // On Apple, most modern browsers use ALT+CTRL.
+      // Otherwise, we use ALT+SHIFT.
+      if (altKey && (apple ? ctrlKey : shiftKey)) {
+        const focii = contextRef.current.focii.filter(entry => entry.keys.includes(key));
 
-      const currentFocus = focii.findIndex(
-        ({ ref: { current } }) => current === document.activeElement || current.contains(document.activeElement)
-      );
-      const nextFocus = focii[(currentFocus + 1) % focii.length];
+        const currentFocus = focii.findIndex(
+          ({ ref: { current } }) => current === document.activeElement || current.contains(document.activeElement)
+        );
+        const nextFocus = focii[(currentFocus + 1) % focii.length];
 
-      if (nextFocus) {
-        event.preventDefault();
-        event.stopPropagation();
+        if (nextFocus) {
+          event.preventDefault();
+          event.stopPropagation();
 
-        const {
-          ref: { current }
-        } = nextFocus;
+          const {
+            ref: { current }
+          } = nextFocus;
 
-        if (isTabbable(current)) {
-          current.focus();
-        } else {
-          const firstTabbable = firstTabbableDescendant(current);
+          if (isTabbable(current)) {
+            current.focus();
+          } else {
+            const firstTabbable = firstTabbableDescendant(current);
 
-          firstTabbable && firstTabbable.focus();
+            firstTabbable && firstTabbable.focus();
+          }
         }
       }
-    }
-  }, []);
+    },
+    [apple]
+  );
 
   return (
     <Context.Provider value={contextRef.current}>

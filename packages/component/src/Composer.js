@@ -652,7 +652,7 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
-  suggestedActionsAccessKey: PropTypes.string,
+  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
   toastMiddleware: PropTypes.func,
   toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.func,

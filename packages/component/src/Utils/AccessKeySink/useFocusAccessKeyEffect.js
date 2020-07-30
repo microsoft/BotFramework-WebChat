@@ -9,8 +9,8 @@ function removeInline(array, item) {
 }
 
 export default function useFocusAccessKeyEffect(key, ref) {
-  if (!key || typeof key !== 'string') {
-    throw new Error('botframework-webchat: "key" must be defined and of type "string".');
+  if (key && typeof key !== 'string') {
+    throw new Error('botframework-webchat: if defined, "key" must be of type "string".');
   } else if (!ref || !('current' in ref)) {
     throw new Error('botframework-webchat: "ref" must be defined and has "current" property.');
   }
@@ -18,10 +18,12 @@ export default function useFocusAccessKeyEffect(key, ref) {
   const context = useContext();
 
   useEffect(() => {
-    const entry = { keys: key.split(/\s+/gu), ref };
+    if (key) {
+      const entry = { keys: key.split(/\s+/gu), ref };
 
-    context.focii.push(entry);
+      context.focii.push(entry);
 
-    return () => removeInline(context.focii, entry);
-  }, [context]);
+      return () => removeInline(context.focii, entry);
+    }
+  }, [context, key, ref]);
 }

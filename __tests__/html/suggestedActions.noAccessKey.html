@@ -15,12 +15,6 @@
         min-width: 360px;
       }
 
-      .form-input {
-        left: 0;
-        position: absolute;
-        top: 0;
-      }
-
       :focus {
         background-color: gold !important;
       }
@@ -28,7 +22,6 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <input accesskey="S" class="form-input" type="text" value="This box is outside." />
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useEffect },
@@ -38,7 +31,7 @@
           hooks: { useConnectivityStatus, useSendMessage },
           renderWebChat
         },
-        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, sleep, timeouts, token }
+        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
       } = window;
 
       (async function() {
@@ -58,13 +51,20 @@
           return false;
         };
 
-        render(
-          <Composer directLine={directLine} store={store}>
-            <BasicWebChat />
-            <SendOnConnect />
-          </Composer>,
-          document.getElementById('webchat')
-        );
+        function renderWebChat(props) {
+          return new Promise(resolve => {
+            render(
+              <Composer directLine={directLine} store={store} {...props}>
+                <BasicWebChat />
+                <SendOnConnect />
+              </Composer>,
+              document.getElementById('webchat'),
+              resolve
+            );
+          });
+        }
+
+        await renderWebChat({ suggestedActionsAccessKey: false });
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
@@ -72,14 +72,24 @@
         await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
 
         expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content. Press Alt + Shift + A to select.'
+          'Suggested Actions Container: Has content.'
+        );
+
+        expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
+
+        // Change access key on-the-fly, it should update screen reader text.
+
+        await renderWebChat({ suggestedActionsAccessKey: 'Z z' });
+
+        expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
+          'Suggested Actions Container: Has content. Press Alt + Shift + Z to select.'
         );
 
         expect(
           [].map.call(document.querySelectorAll('[aria-keyshortcuts]'), element =>
             element.getAttribute('aria-keyshortcuts')
           )
-        ).toEqual(new Array(6).fill('Alt + Shift + A'));
+        ).toEqual(new Array(6).fill('Alt + Shift + Z'));
 
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
@@ -87,19 +97,7 @@
 
         await host.snapshot();
 
-        await host.sendAccessKey('A');
-
-        await host.snapshot();
-
-        await host.sendAccessKey('A');
-
-        // We need to wait for flipper button animation to complete.
-        await sleep(1000);
-
-        await host.snapshot();
-
-        // This will send the focus to a control outside of Web Chat.
-        await host.sendAccessKey('S');
+        await host.sendAccessKey('Z');
 
         await host.snapshot();
 

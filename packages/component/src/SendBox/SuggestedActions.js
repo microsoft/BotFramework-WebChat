@@ -55,7 +55,9 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const suggestedActionsContainerText = localize(
     'SUGGESTED_ACTIONS_ALT',
     suggestedActions.length
-      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT', localizeAccessKey(accessKey))
+      ? accessKey
+        ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY', localizeAccessKey(accessKey))
+        : localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 

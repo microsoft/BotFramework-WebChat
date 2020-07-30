@@ -73,14 +73,13 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
     <div
       aria-hidden={ariaHidden}
       className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
-      ref={forwardedRef}
     >
       <AccessibleButton
-        aria-keyshortcuts={localizeAccessKey(accessKey)}
+        {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}
         className="webchat__suggested-action__button"
         disabled={disabled}
-        ref={focusRef}
         onClick={handleClick}
+        ref={focusRef}
         type="button"
       >
         {image && (
