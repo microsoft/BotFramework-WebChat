@@ -263,7 +263,7 @@ This function will return a function that, when called, will return a function t
 
 If a render function is returned, calling the function must return visualization of the activity. The visualization may vary based on the activity status, avatar, and bubble nub (a.k.a. callout).
 
-If the activity middleware want to hide the activity, it must return `false` instead of a render function. The middleware should not return a render function that, when called, will return `false`.
+If the activity middleware wants to hide the activity, it must return `false` instead of a render function. The middleware should not return a render function that, when called, will return `false`.
 
 For `renderActivityStatus` and `renderAvatar`, it could be one of the followings:
 
