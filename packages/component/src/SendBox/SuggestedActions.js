@@ -61,6 +61,14 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 
+  if (!suggestedActions.length) {
+    return (
+      <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
+        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
+      </div>
+    );
+  }
+
   const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
     <SuggestedAction
       ariaHidden={true}
