@@ -66,7 +66,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Microphone on",
   "_SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT.comment": "This is for screen reader and is the label of the microphone button, when clicked, will open microphone.",
   "SPEECH_INPUT_STARTING": "Starting…",
-  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content.",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Has content. Press $1 to select.",
   "_SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY.comment": "$1 will be \"ACCESS_KEY_ALT\".",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Is empty",

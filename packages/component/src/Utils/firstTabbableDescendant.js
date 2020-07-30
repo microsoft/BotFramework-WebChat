@@ -19,12 +19,16 @@ export default function firstTabbableDescendant(element) {
   });
 }
 
-function isTabbable(element) {
+function orSelf(element) {
   if (!element) {
     return;
   }
 
-  return element.matches(SELECTOR);
+  if (element.matches(SELECTOR)) {
+    return element;
+  }
+
+  return firstTabbableDescendant(element);
 }
 
-export { isTabbable };
+export { orSelf };

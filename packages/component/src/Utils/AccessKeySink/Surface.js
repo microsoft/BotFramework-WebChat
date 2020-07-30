@@ -2,20 +2,19 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import Context from './internal/Context';
-import firstTabbableDescendant, { isTabbable } from '../firstTabbableDescendant';
+import { orSelf as firstTabbableDescendantOrSelf } from '../firstTabbableDescendant';
 import useNavigatorPlatform from '../../hooks/internal/useNavigatorPlatform';
 
 const Surface = ({ children, ...otherProps }) => {
-  const contextRef = useRef({ focii: [] });
-
   const [{ apple }] = useNavigatorPlatform();
+  const contextRef = useRef({ focii: [] });
 
   const handleKeyUp = useCallback(
     event => {
       const { altKey, ctrlKey, key, shiftKey } = event;
 
-      // On Apple, most modern browsers use ALT+CTRL.
-      // Otherwise, we use ALT+SHIFT.
+      // On Apple, most modern browsers use CTRL + OPTION as modifiers.
+      // Otherwise, we use ALT + SHIFT as modifierse.
       if (altKey && (apple ? ctrlKey : shiftKey)) {
         const focii = contextRef.current.focii.filter(entry => entry.keys.includes(key));
 
@@ -28,17 +27,9 @@ const Surface = ({ children, ...otherProps }) => {
           event.preventDefault();
           event.stopPropagation();
 
-          const {
-            ref: { current }
-          } = nextFocus;
+          const tabbable = firstTabbableDescendantOrSelf(nextFocus.ref.current);
 
-          if (isTabbable(current)) {
-            current.focus();
-          } else {
-            const firstTabbable = firstTabbableDescendant(current);
-
-            firstTabbable && firstTabbable.focus();
-          }
+          tabbable && tabbable.focus();
         }
       }
     },

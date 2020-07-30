@@ -10,9 +10,9 @@ function removeInline(array, item) {
 
 export default function useFocusAccessKeyEffect(key, ref) {
   if (key && typeof key !== 'string') {
-    throw new Error('botframework-webchat: if defined, "key" must be of type "string".');
+    throw new Error('useFocusAccessKeyEffect: If defined, "key" must be of type "string".');
   } else if (!ref || !('current' in ref)) {
-    throw new Error('botframework-webchat: "ref" must be defined and has "current" property.');
+    throw new Error('useFocusAccessKeyEffect: "ref" must be defined and has "current" property.');
   }
 
   const context = useContext();
