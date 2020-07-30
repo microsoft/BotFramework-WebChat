@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
@@ -42,63 +42,61 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = forwardRef(
-  ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }, forwardedRef) => {
-    const [_, setSuggestedActions] = useSuggestedActions();
-    const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
-    const [accessKey] = useSuggestedActionsAccessKey();
-    const [direction] = useDirection();
-    const [disabled] = useDisabled();
-    const focus = useFocus();
-    const focusRef = useRef();
-    const localizeAccessKey = useLocalizeAccessKey();
-    const performCardAction = usePerformCardAction();
-    const scrollToEnd = useScrollToEnd();
+const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
+  const [_, setSuggestedActions] = useSuggestedActions();
+  const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const [accessKey] = useSuggestedActionsAccessKey();
+  const [direction] = useDirection();
+  const [disabled] = useDisabled();
+  const focus = useFocus();
+  const focusRef = useRef();
+  const localizeAccessKey = useLocalizeAccessKey();
+  const performCardAction = usePerformCardAction();
+  const scrollToEnd = useScrollToEnd();
 
-    const handleClick = useCallback(
-      ({ target }) => {
-        performCardAction({ displayText, text, type, value }, { target });
+  const handleClick = useCallback(
+    ({ target }) => {
+      performCardAction({ displayText, text, type, value }, { target });
 
-        // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
-        type === 'openUrl' && setSuggestedActions([]);
+      // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
+      type === 'openUrl' && setSuggestedActions([]);
 
-        focus('sendBoxWithoutKeyboard');
-        scrollToEnd();
-      },
-      [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
-    );
+      focus('sendBoxWithoutKeyboard');
+      scrollToEnd();
+    },
+    [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
+  );
 
-    useFocusAccessKeyEffect(accessKey, focusRef);
+  useFocusAccessKeyEffect(accessKey, focusRef);
 
-    return (
-      <div
-        aria-hidden={ariaHidden}
-        className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
-        ref={forwardedRef}
+  return (
+    <div
+      aria-hidden={ariaHidden}
+      className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
+      ref={forwardedRef}
+    >
+      <AccessibleButton
+        aria-keyshortcuts={localizeAccessKey(accessKey)}
+        className="webchat__suggested-action__button"
+        disabled={disabled}
+        ref={focusRef}
+        onClick={handleClick}
+        type="button"
       >
-        <AccessibleButton
-          aria-keyshortcuts={localizeAccessKey(accessKey)}
-          className="webchat__suggested-action__button"
-          disabled={disabled}
-          ref={focusRef}
-          onClick={handleClick}
-          type="button"
-        >
-          {image && (
-            <img
-              className={classNames(
-                'webchat__suggested-action__image',
-                direction === 'rtl' && 'webchat__suggested-action__image--rtl'
-              )}
-              src={image}
-            />
-          )}
-          <nobr className="webchat__suggested-action__button-text">{buttonText}</nobr>
-        </AccessibleButton>
-      </div>
-    );
-  }
-);
+        {image && (
+          <img
+            className={classNames(
+              'webchat__suggested-action__image',
+              direction === 'rtl' && 'webchat__suggested-action__image--rtl'
+            )}
+            src={image}
+          />
+        )}
+        <nobr className="webchat__suggested-action__button-text">{buttonText}</nobr>
+      </AccessibleButton>
+    </div>
+  );
+};
 
 SuggestedAction.defaultProps = {
   'aria-hidden': false,
