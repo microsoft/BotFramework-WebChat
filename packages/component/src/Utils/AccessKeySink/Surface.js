@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
-import AccessKeySinkContext from './internal/Context';
 import { orSelf as firstTabbableDescendantOrSelf } from '../firstTabbableDescendant';
+import AccessKeySinkContext from './internal/Context';
 import useNavigatorPlatform from '../../hooks/internal/useNavigatorPlatform';
 
 const Surface = ({ children, ...otherProps }) => {
@@ -37,11 +37,11 @@ const Surface = ({ children, ...otherProps }) => {
   );
 
   return (
-    <Context.Provider value={contextRef.current}>
+    <AccessKeySinkContext.Provider value={contextRef.current}>
       <div onKeyUp={handleKeyUp} {...otherProps}>
         {children}
       </div>
-    </Context.Provider>
+    </AccessKeySinkContext.Provider>
   );
 };
 
