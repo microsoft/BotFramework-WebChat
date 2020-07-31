@@ -12,14 +12,16 @@
       (async function() {
         window.WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+            directLine: window.WebChat.createDirectLine({
+              token: await token.fetchDirectLineToken('https://webchat-mockbot2.azurewebsites.net/api/token/directline')
+            }),
             store: createStore()
           },
           document.getElementById('webchat')
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        // await pageObjects.wait(conditions.minNumActivitiesShown(1), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(1), timeouts.directLine);
 
         await host.snapshot();
         await host.done();

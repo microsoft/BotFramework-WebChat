@@ -16,7 +16,7 @@
               conversationStartProperties: {
                 locale: 'zh-CN'
               },
-              token: await token.fetchDirectLineToken()
+              token: await token.fetchDirectLineToken('https://webchat-mockbot2.azurewebsites.net/api/token/directline')
             }),
             store: createStore()
           },
@@ -24,7 +24,7 @@
         );
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        // await pageObjects.wait(conditions.minNumActivitiesShown(1), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(1), timeouts.directLine);
 
         await host.snapshot();
         await host.done();
