@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
