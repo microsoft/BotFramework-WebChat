@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
-import Context from './internal/Context';
+import AccessKeySinkContext from './internal/Context';
 import { orSelf as firstTabbableDescendantOrSelf } from '../firstTabbableDescendant';
 import useNavigatorPlatform from '../../hooks/internal/useNavigatorPlatform';
 

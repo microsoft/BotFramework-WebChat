@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import Context from './Context';
+import AccessKeySinkContext from './Context';
 
 export default function useAccessKeySinkContext() {
   return useContext(Context);

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import useContext from './internal/useContext';
+import useAccessKeySinkContext from './internal/useContext';
 
 function removeInline(array, item) {
   const index = array.indexOf(item);
@@ -15,7 +15,7 @@ export default function useFocusAccessKeyEffect(key, ref) {
     throw new Error('useFocusAccessKeyEffect: "ref" must be defined and has "current" property.');
   }
 
-  const context = useContext();
+  const context = useAccessKeySinkContext();
 
   useEffect(() => {
     if (key) {
