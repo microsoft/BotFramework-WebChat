@@ -8,16 +8,23 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
+import getActivityUniqueId from './Utils/getActivityUniqueId';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import intersectionOf from './Utils/intersectionOf';
+import isZeroOrPositive from './Utils/isZeroOrPositive';
+import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
+import useCreateActivityRenderer from './hooks/useCreateActivityRenderer';
+import useCreateActivityStatusRenderer from './hooks/useCreateActivityStatusRenderer';
+import useCreateAvatarRenderer from './hooks/useCreateAvatarRenderer';
 import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
+import useGroupActivities from './hooks/useGroupActivities';
 import useLocalizer from './hooks/useLocalizer';
-import useRenderActivity from './hooks/useRenderActivity';
-import useRenderAttachment from './hooks/useRenderAttachment';
+import useMemoize from './hooks/internal/useMemoize';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 
@@ -36,6 +43,7 @@ const ROOT_CSS = css({
     '& .webchat__basic-transcript__scrollable': {
       display: 'flex',
       flexDirection: 'column',
+      overflowX: 'hidden',
       WebkitOverflowScrolling: 'touch'
     },
 
@@ -44,30 +52,6 @@ const ROOT_CSS = css({
     }
   }
 });
-
-function useMemoize(fn) {
-  return useMemo(() => {
-    let cache = [];
-
-    return run => {
-      const nextCache = [];
-      const result = run((...args) => {
-        const { result } = [...cache, ...nextCache].find(
-          ({ args: cachedArgs }) =>
-            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[index]))
-        ) || { result: fn(...args) };
-
-        nextCache.push({ args, result });
-
-        return result;
-      });
-
-      cache = nextCache;
-
-      return result;
-    };
-  }, [fn]);
-}
 
 function firstTabbableDescendant(element) {
   // This is best-effort for finding a tabbable element.
@@ -93,21 +77,335 @@ function nextSiblingAll(element) {
   return [].slice.call(children, elementIndex + 1);
 }
 
-const BasicTranscript = ({ className }) => {
-  const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
-  const [{ hideScrollToEndButton }] = useStyleOptions();
+function validateAllActivitiesTagged(activities, bins) {
+  return activities.every(activity => bins.some(bin => bin.includes(activity)));
+}
+
+const BasicTranscript2 = ({ className }) => {
+  const [{ activity: activityStyleSet }] = useStyleSet();
+  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
-  const [animatingToEnd] = useAnimatingToEnd();
   const [direction] = useDirection();
-  const [sticky] = useSticky();
-  const focus = useFocus();
-  const renderAttachment = useRenderAttachment();
-  const scrollToEndButtonRef = useRef();
+
+  const createActivityRenderer = useCreateActivityRenderer();
+  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
+  const createAvatarRenderer = useCreateAvatarRenderer();
+  const groupActivities = useGroupActivities();
+  const hideAllTimestamps = groupTimestamp === false;
   const localize = useLocalizer();
 
-  const renderActivity = useRenderActivity(renderAttachment);
-  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  // Gets renderer for every activities.
+  // Some activities that are not visible, will return a falsy renderer.
+
+  // Converting from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
+  // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
+  const createActivityRendererWithLiteralArgs = useCallback(
+    (activity, nextVisibleActivity) => createActivityRenderer({ activity, nextVisibleActivity }),
+    [createActivityRenderer]
+  );
+
+  // Create a memoized context of the createActivityRenderer function.
+  const activitiesWithRenderer = useMemoize(
+    createActivityRendererWithLiteralArgs,
+    createActivityRendererWithLiteralArgsMemoized => {
+      // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
+      // In next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return memoized result instead.
+      // This is an improvement to React useMemo(), because it only allows 1 memoization.
+      // useMemoize() allows any number of memoization.
+
+      const activitiesWithRenderer = [];
+      let nextVisibleActivity;
+
+      for (let index = activities.length - 1; index >= 0; index--) {
+        const activity = activities[index];
+        const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
+
+        if (renderActivity) {
+          activitiesWithRenderer.splice(0, 0, {
+            activity,
+            renderActivity
+          });
+
+          nextVisibleActivity = activity;
+        }
+      }
+
+      return activitiesWithRenderer;
+    },
+    [activities]
+  );
+
+  const visibleActivities = useMemo(() => activitiesWithRenderer.map(({ activity }) => activity), [
+    activitiesWithRenderer
+  ]);
+
+  // Tag activities based on types.
+  // The default implementation tag into 2 types: sender and status.
+
+  const { activitiesGroupBySender, activitiesGroupByStatus } = useMemo(() => {
+    const { sender: activitiesGroupBySender, status: activitiesGroupByStatus } = groupActivities({
+      activities: visibleActivities
+    });
+
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupBySender)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped in the "sender" property. Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
+
+    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped in the "status" property. Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
+
+    return {
+      activitiesGroupBySender,
+      activitiesGroupByStatus
+    };
+  }, [groupActivities, visibleActivities]);
+
+  // Create a tree of activities with 2 dimensions: sender, followed by status.
+
+  const activityTree = useMemo(() => {
+    const visibleActivitiesPendingGrouping = [...visibleActivities];
+    const activityTree = [];
+
+    while (visibleActivitiesPendingGrouping.length) {
+      const [activity] = visibleActivitiesPendingGrouping;
+      const senderTree = [];
+      const activitiesWithSameSender = activitiesGroupBySender.find(activities => activities.includes(activity));
+
+      activityTree.push(senderTree);
+
+      activitiesWithSameSender.forEach(activity => {
+        const activitiesWithSameStatus = activitiesGroupByStatus.find(activities => activities.includes(activity));
+
+        const activitiesWithSameSenderAndStatus = intersectionOf(
+          visibleActivitiesPendingGrouping,
+          activitiesWithSameSender,
+          activitiesWithSameStatus
+        );
+
+        if (activitiesWithSameSenderAndStatus.length) {
+          senderTree.push(activitiesWithSameSenderAndStatus);
+          removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameSenderAndStatus);
+        }
+      });
+    }
+
+    // Assertion: All activities in visibleActivities, must be assigned to the activityTree
+    if (
+      !visibleActivities.every(activity =>
+        activityTree.some(activitiesWithSameSender =>
+          activitiesWithSameSender.some(activitiesWithSameSenderAndStatus =>
+            activitiesWithSameSenderAndStatus.includes(activity)
+          )
+        )
+      )
+    ) {
+      console.warn('botframework-webchat internal: Not all visible activities are grouped in the activityTree.', {
+        visibleActivities,
+        activityTree
+      });
+    }
+
+    return activityTree;
+  }, [activitiesGroupBySender, activitiesGroupByStatus, visibleActivities]);
+
+  // Flatten the tree back into an array with information related to rendering.
+
+  const renderingElements = useMemo(() => {
+    const renderingElements = [];
+    const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
+    const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
+
+    activityTree.forEach(activitiesWithSameSender => {
+      const [[firstActivity]] = activitiesWithSameSender;
+      const renderAvatar = createAvatarRenderer({ activity: firstActivity });
+
+      activitiesWithSameSender.forEach((activitiesWithSameSenderAndStatus, indexWithinSenderGroup) => {
+        const firstInSenderGroup = !indexWithinSenderGroup;
+        const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSender.length - 1;
+
+        activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
+          // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
+          const renderActivityStatus = createActivityStatusRenderer({
+            activity
+          });
+
+          const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
+          const lastInSenderAndStatusGroup =
+            indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+
+          const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
+          const key = getActivityUniqueId(activity) || renderingElements.length;
+          const {
+            channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
+            from: { role },
+            text
+          } = activity;
+
+          const topSideNub = role === 'user' ? topSideUserNub : topSideBotNub;
+
+          let showCallout;
+
+          // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
+          if (showAvatarInGroup === 'sender') {
+            if (topSideNub) {
+              showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;
+            } else {
+              showCallout = lastInSenderGroup && lastInSenderAndStatusGroup;
+            }
+          } else if (showAvatarInGroup === 'status') {
+            if (topSideNub) {
+              showCallout = firstInSenderAndStatusGroup;
+            } else {
+              showCallout = lastInSenderAndStatusGroup;
+            }
+          } else {
+            showCallout = true;
+          }
+
+          renderingElements.push({
+            activity,
+
+            // "hideTimestamp" is a render-time parameter for renderActivityStatus().
+            // If set, it will hide if timestamp is being shown, but it will continue to show
+            // retry prompt. And show the screen reader version of the timestamp.
+            hideTimestamp:
+              hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
+            key,
+
+            // When "liveRegionKey" change, it was show up in the live region momentarily.
+            liveRegionKey: key + '|' + (messageBackDisplayText || text),
+            renderActivity,
+            renderActivityStatus,
+            renderAvatar,
+
+            // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
+            shouldSpeak: activity.channelData && activity.channelData.speak,
+            showCallout
+          });
+        });
+      });
+    });
+
+    return renderingElements;
+  }, [
+    activitiesWithRenderer,
+    activityTree,
+    bubbleFromUserNubOffset,
+    bubbleNubOffset,
+    createActivityStatusRenderer,
+    createAvatarRenderer,
+    hideAllTimestamps,
+    showAvatarInGroup
+  ]);
+
+  const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
+
+  return (
+    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
+      {/* This <section> is for live region only. Contents are made invisible through CSS. */}
+      <section
+        aria-atomic={false}
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-roledescription={transcriptRoleDescription}
+        role="log"
+      >
+        {renderingElements.map(({ activity, liveRegionKey }) => (
+          <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+        ))}
+      </section>
+      <InternalTranscriptScrollable activities={renderingActivities}>
+        {renderingElements.map(
+          ({
+            activity,
+            key,
+            hideTimestamp,
+            renderActivity,
+            renderActivityStatus,
+            renderAvatar,
+            shouldSpeak,
+            showCallout
+          }) => (
+            <li
+              aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
+              className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
+              key={key}
+            >
+              {renderActivity({
+                hideTimestamp,
+                renderActivityStatus,
+                renderAvatar,
+                showCallout
+              })}
+              {shouldSpeak && <SpeakActivity activity={activity} />}
+            </li>
+          )
+        )}
+      </InternalTranscriptScrollable>
+    </div>
+  );
+};
+
+BasicTranscript2.defaultProps = {
+  className: ''
+};
+
+BasicTranscript2.propTypes = {
+  className: PropTypes.string
+};
+
+const InternalScreenReaderTranscript = ({ renderingElements }) => {
+  const localize = useLocalizer();
+
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  return (
+    <section
+      aria-atomic={false}
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-roledescription={transcriptRoleDescription}
+      role="log"
+    >
+      {renderingElements.map(({ activity, liveRegionKey }) => (
+        <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+      ))}
+    </section>
+  );
+};
+
+InternalScreenReaderTranscript.propTypes = {
+  renderingElements: PropTypes.arrayOf(
+    PropTypes.shape({
+      activity: PropTypes.any,
+      liveRegionKey: PropTypes.string
+    })
+  ).isRequired
+};
+
+// Separating high-frequency hooks to improve performance.
+const InternalTranscriptScrollable = ({ activities, children }) => {
+  const [{ activities: activitiesStyleSet }] = useStyleSet();
+  const [{ hideScrollToEndButton }] = useStyleOptions();
+  const [animatingToEnd] = useAnimatingToEnd();
+  const [sticky] = useSticky();
+  const focus = useFocus();
+  const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1] || {}); // Activity ID of the last visible activity in the list.
+  const localize = useLocalizer();
+  const scrollToEndButtonRef = useRef();
+
+  const lastReadActivityIdRef = useRef(lastVisibleActivityId);
+  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
@@ -125,70 +423,6 @@ const BasicTranscript = ({ className }) => {
       firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
     }
   }, [focus, scrollToEndButtonRef]);
-
-  const renderActivityElement = useCallback(
-    (activity, nextVisibleActivity) =>
-      renderActivity({
-        activity,
-        nextVisibleActivity
-      }),
-    [renderActivity]
-  );
-
-  const memoizeRenderActivityElement = useMemoize(renderActivityElement);
-
-  const activityElementsWithMetadata = useMemo(
-    () =>
-      memoizeRenderActivityElement(renderActivityElement => {
-        const { result: activityElementsWithMetadata } = [...activities].reverse().reduce(
-          ({ nextVisibleActivity, result }, activity, index) => {
-            const element = renderActivityElement(activity, nextVisibleActivity);
-
-            // Until the activity passes through middleware, it is unknown whether the activity will be visible.
-            // If the activity does not render, it will not be spoken if text-to-speech is enabled.
-            if (element) {
-              const {
-                channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-                text
-              } = activity;
-
-              const key = (activity.channelData && activity.channelData.clientActivityID) || activity.id || index;
-
-              result = [
-                {
-                  activity,
-                  element,
-                  key,
-
-                  // If this key changes, the content of this attachment will be reannounced.
-                  liveRegionKey: key + '|' + (messageBackDisplayText || text),
-
-                  // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-                  shouldSpeak: activity.channelData && activity.channelData.speak
-                },
-                ...result
-              ];
-
-              nextVisibleActivity = activity;
-            }
-
-            return { nextVisibleActivity, result };
-          },
-          { nextVisibleActivity: undefined, result: [] }
-        );
-
-        return activityElementsWithMetadata;
-      }),
-    [activities, memoizeRenderActivityElement]
-  );
-
-  // Activity ID of the last visible activity in the list.
-  const { activity: { id: lastVisibleActivityId } = {} } =
-    activityElementsWithMetadata[activityElementsWithMetadata.length - 1] || {};
-
-  const lastReadActivityIdRef = useRef(lastVisibleActivityId);
-
-  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   if (sticky) {
     // If it is sticky, the user is at the bottom of the transcript, everything is read.
@@ -223,73 +457,39 @@ const BasicTranscript = ({ className }) => {
       return -1;
     }
 
-    return activityElementsWithMetadata.findIndex(({ activity: { id } }) => id === lastReadActivityIdRef.current);
-  }, [
-    activityElementsWithMetadata,
-    allActivitiesRead,
-    animatingToEnd,
-    hideScrollToEndButton,
-    lastReadActivityIdRef,
-    sticky
-  ]);
+    return activities.findIndex(activity => getActivityUniqueId(activity) === lastReadActivityIdRef.current);
+  }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
 
   return (
-    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
-      <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
-        <div aria-hidden={true} className="webchat__basic-transcript__filler" />
-
-        {/* This <section> is for live region only. Contents are made invisible through CSS. */}
-        <section
-          aria-atomic={false}
-          aria-live="polite"
-          aria-relevant="additions"
-          aria-roledescription={transcriptRoleDescription}
-          role="log"
-        >
-          {activityElementsWithMetadata.map(({ activity, liveRegionKey }) => (
-            <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
-          ))}
-        </section>
-
-        <ul
-          aria-roledescription={transcriptRoleDescription}
-          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-        >
-          {activityElementsWithMetadata.map(({ activity, element, key, shouldSpeak }, index) => (
-            <React.Fragment key={key}>
-              <li
-                aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
-                className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
-              >
-                {element}
-                {shouldSpeak && <SpeakActivity activity={activity} />}
-              </li>
-              {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
-              {index === renderSeparatorAfterIndex && (
-                <ScrollToEndButton
-                  aria-valuemax={activityElementsWithMetadata.length}
-                  aria-valuenow={index + 1}
-                  onClick={handleScrollToEndButtonClick}
-                  ref={scrollToEndButtonRef}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </ul>
-        <BasicTypingIndicator />
-      </ScrollToBottomPanel>
-    </div>
+    <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+      <div aria-hidden={true} className="webchat__basic-transcript__filler" />
+      <ul
+        aria-roledescription={transcriptRoleDescription}
+        className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+      >
+        {React.Children.map(children, (child, index) => (
+          <React.Fragment>
+            {child}
+            {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
+            {index === renderSeparatorAfterIndex && (
+              <ScrollToEndButton
+                aria-valuemax={activities.length}
+                aria-valuenow={index + 1}
+                onClick={handleScrollToEndButtonClick}
+                ref={scrollToEndButtonRef}
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </ul>
+      <BasicTypingIndicator />
+    </ScrollToBottomPanel>
   );
 };
 
-BasicTranscript.defaultProps = {
-  className: ''
+InternalTranscriptScrollable.propTypes = {
+  activities: PropTypes.array.isRequired,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
-BasicTranscript.propTypes = {
-  className: PropTypes.string
-};
-
-export default BasicTranscript;
-
-export { useMemoize };
+export default BasicTranscript2;

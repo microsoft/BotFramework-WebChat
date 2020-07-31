@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="assets/activityGrouping.js"
+      type="text/babel"
+      data-presets="env,stage-3,react"
+    ></script>
+    <link href="assets/activityGrouping.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useContext, useState },
+        ReactDOM: { render },
+        WebChat: {
+          Components: { BasicWebChat, Composer }
+        },
+        WebChatTest: {
+          conditions,
+          classNames,
+          createDirectLineWithTranscript,
+          createStore,
+          expect,
+          ActivityGroupingBadges,
+          ActivityGroupingContext,
+          ActivityGroupingPanel,
+          ActivityGroupingSurface,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function() {
+        const TestHarness = () => {
+          const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
+          const [store, setStore] = useState(() => createStore());
+
+          useEffect(() => {
+            setStore(createStore());
+          }, [directLine, setStore]);
+
+          return (
+            <div className={classNames('test-harness', { 'test-harness--wide': wide })} dir={rtl ? 'rtl' : 'ltr'}>
+              {!!directLine && !!store && (
+                <Composer
+                  activityMiddleware={activityMiddleware}
+                  directLine={directLine}
+                  dir={rtl ? 'rtl' : undefined}
+                  store={store}
+                  styleOptions={styleOptions}
+                >
+                  <BasicWebChat className="webchat" />
+                  <ActivityGroupingBadges />
+                  <ActivityGroupingPanel />
+                </Composer>
+              )}
+            </div>
+          );
+        };
+
+        render(
+          <ActivityGroupingSurface>
+            <TestHarness />
+          </ActivityGroupingSurface>,
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

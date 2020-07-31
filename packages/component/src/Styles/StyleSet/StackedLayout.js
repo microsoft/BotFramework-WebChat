@@ -1,79 +1,82 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
+export default function createStackedLayoutStyle({
+  avatarSize,
+  bubbleMaxWidth,
+  bubbleMinWidth,
+  paddingRegular,
+  transitionDuration
+}) {
   return {
-    '&.webchat__stacked_extra_left_indent': {
-      marginLeft: paddingRegular * 2
-    },
+    '&.webchat__stacked-layout': {
+      marginLeft: paddingRegular,
+      marginRight: paddingRegular,
 
-    '&:not(.webchat__stacked_extra_left_indent)': {
-      marginLeft: paddingRegular
-    },
+      '& .webchat__stacked-layout__alignment-pad': {
+        transitionDuration,
+        transitionProperty: 'width',
+        width: 0
+      },
 
-    '&.webchat__stacked_extra_right_indent': {
-      marginRight: paddingRegular * 2
-    },
+      '&.webchat__stacked-layout--extra-trailing .webchat__stacked-layout__alignment-pad': {
+        width: paddingRegular
+      },
 
-    '&:not(.webchat__stacked_extra_right_indent)': {
-      marginRight: paddingRegular
-    },
-    '&:not(.webchat__stackedLayout--rtl)': {
-      '&:not(.webchat__stackedLayout--fromUser)': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginRight: paddingRegular
-        },
+      '& .webchat__stacked-layout__avatar-gutter': {
+        transitionDuration,
+        transitionProperty: 'width',
+        width: 0
+      },
 
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginLeft: paddingRegular
+      '& .webchat__stacked-layout__attachment': {
+        maxWidth: bubbleMaxWidth,
+        minWidth: bubbleMinWidth,
+        transitionDuration,
+        transitionProperty: 'max-width, min-width'
+      },
+
+      '& .webchat__stacked-layout__attachment-row': {
+        marginTop: paddingRegular,
+        width: '100%'
+      },
+
+      '&.webchat__stacked-layout--no-message .webchat__stacked-layout__attachment-row.webchat__stacked-layout__attachment-row--first': {
+        marginTop: 0
+      },
+
+      '& .webchat__stacked-layout__message': {
+        maxWidth: bubbleMaxWidth,
+        overflow: 'hidden',
+        transitionDuration,
+        transitionProperty: 'max-width'
+      },
+
+      '& .webchat__stacked-layout__nub-pad': {
+        transitionDuration,
+        transitionProperty: 'width',
+        width: 0
+      },
+
+      '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar': {
+        '& .webchat__stacked-layout__avatar-gutter': {
+          width: avatarSize
         }
       },
 
-      '&.webchat__stackedLayout--fromUser': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginLeft: paddingRegular
+      '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub': {
+        '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
+          maxWidth: bubbleMaxWidth + paddingRegular
         },
 
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginRight: paddingRegular
-        }
-      }
-    },
-
-    '&.webchat__stackedLayout--rtl': {
-      '&:not(.webchat__stackedLayout--fromUser)': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginLeft: paddingRegular
-        },
-
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginRight: paddingRegular
+        '& .webchat__stacked-layout__nub-pad': {
+          width: paddingRegular
         }
       },
 
-      '&.webchat__stackedLayout--fromUser': {
-        '&.webchat__stacked_indented_content > .webchat__stackedLayout__avatar': {
-          marginRight: paddingRegular
-        },
-
-        '& > .webchat__stackedLayout__content > .webchat__stacked_item_indented': {
-          marginLeft: paddingRegular
+      '&:not(.webchat__stacked-layout--top-callout)': {
+        '& .webchat__stacked-layout__avatar-gutter, & .webchat__stacked-layout__content': {
+          justifyContent: 'flex-end'
         }
-      }
-    },
-
-    '& > .webchat__stackedLayout__content': {
-      '& > .webchat__row': {
-        '& > .bubble, & > .timestamp': {
-          maxWidth: bubbleMaxWidth
-        },
-
-        '&.attachment > .bubble': {
-          minWidth: bubbleMinWidth
-        }
-      },
-
-      '& > *:not(:first-child):not(:last-child)': {
-        marginTop: paddingRegular
       }
     }
   };

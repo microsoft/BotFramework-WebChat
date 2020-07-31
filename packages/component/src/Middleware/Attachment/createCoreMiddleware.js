@@ -12,7 +12,7 @@ export default function createCoreMiddleware() {
   return () => next => {
     const Attachment = ({
       activity = {},
-      activity: { from: { role } } = {},
+      activity: { from: { role } = {} } = {},
       attachment,
       attachment: { contentType, contentUrl, thumbnailUrl } = {}
     }) =>

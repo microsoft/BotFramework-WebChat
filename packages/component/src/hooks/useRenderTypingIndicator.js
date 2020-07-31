@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-
-import WebChatUIContext from '../WebChatUIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useRenderTypingIndicator() {
-  return useContext(WebChatUIContext).typingIndicatorRenderer;
+  return useWebChatUIContext().typingIndicatorRenderer;
 }

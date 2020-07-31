@@ -53,6 +53,7 @@ import {
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
+import createDefaultGroupActivitiesMiddleware from './Middleware/GroupActivities/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
@@ -155,6 +156,19 @@ function createFocusContext({ sendBoxFocusRef, transcriptFocusRef }) {
   };
 }
 
+function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp }) {
+  const runMiddleware = concatMiddleware(
+    groupActivitiesMiddleware,
+    createDefaultGroupActivitiesMiddleware({ groupTimestamp })
+  )()(() => {
+    throw new Error('botframework-webchat internal: No middleware is execute for groupActivities.');
+  });
+
+  return {
+    groupActivities: ({ activities }) => runMiddleware({ activities })
+  };
+}
+
 function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStrings) {
   if (!overrideLocalizedStrings) {
     return localizedStrings;
@@ -191,6 +205,7 @@ const Composer = ({
   disabled,
   extraStyleSet,
   grammars,
+  groupActivitiesMiddleware,
   groupTimestamp,
   locale,
   onTelemetry,
@@ -306,6 +321,15 @@ const Composer = ({
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
     [extraStyleSet, patchedStyleOptions, styleSet]
+  );
+
+  const groupActivitiesContext = useMemo(
+    () =>
+      createGroupActivitiesContext({
+        groupActivitiesMiddleware,
+        groupTimestamp: patchedStyleSet.options.groupTimestamp
+      }),
+    [groupActivitiesMiddleware, patchedStyleSet.options.groupTimestamp]
   );
 
   const hoistedDispatchers = useMemo(
@@ -429,6 +453,7 @@ const Composer = ({
     () => ({
       ...cardActionContext,
       ...focusContext,
+      ...groupActivitiesContext,
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
@@ -467,6 +492,7 @@ const Composer = ({
       directLine,
       disabled,
       focusContext,
+      groupActivitiesContext,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -563,6 +589,7 @@ Composer.defaultProps = {
   disabled: false,
   extraStyleSet: undefined,
   grammars: [],
+  groupActivitiesMiddleware: undefined,
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
   onTelemetry: undefined,
@@ -610,6 +637,7 @@ Composer.propTypes = {
   disabled: PropTypes.bool,
   extraStyleSet: PropTypes.any,
   grammars: PropTypes.arrayOf(PropTypes.string),
+  groupActivitiesMiddleware: PropTypes.func,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,

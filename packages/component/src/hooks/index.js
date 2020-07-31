@@ -4,6 +4,9 @@ import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useByteFormatter from './useByteFormatter';
 import useConnectivityStatus from './useConnectivityStatus';
+import useCreateActivityRenderer from './useCreateActivityRenderer';
+import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
+import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
@@ -14,6 +17,7 @@ import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocus from './useFocus';
 import useFocusSendBox from './useFocusSendBox';
+import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
@@ -74,6 +78,9 @@ export {
   useAvatarForUser,
   useByteFormatter,
   useConnectivityStatus,
+  useCreateActivityRenderer,
+  useCreateActivityStatusRenderer,
+  useCreateAvatarRenderer,
   useDateFormatter,
   useDebouncedNotifications,
   useDictateInterims,
@@ -84,6 +91,7 @@ export {
   useEmitTypingIndicator,
   useFocus,
   useFocusSendBox,
+  useGetSendTimeoutForActivity,
   useGrammars,
   useGroupTimestamp,
   useLanguage,

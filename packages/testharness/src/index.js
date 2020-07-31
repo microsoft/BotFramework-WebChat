@@ -6,6 +6,7 @@ import 'script-loader!../../../node_modules/react-dom/umd/react-dom-test-utils.d
 import '../assets/index.css';
 
 import { decode } from 'base64-arraybuffer';
+import classNames from 'classnames';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import lolex from 'lolex';
@@ -23,12 +24,14 @@ import * as pageObjects from './pageObjects/index';
 import * as token from './token/index';
 import concatArrayBuffer from './speech/concatArrayBuffer';
 import createDeferredObservable from './utils/createDeferredObservable';
+import createDirectLineWithTranscript from './utils/createDirectLineWithTranscript';
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
 import iterateAsyncIterable from './utils/iterateAsyncIterable';
+import loadTranscriptAsset from './utils/loadTranscriptAsset';
 import MockAudioContext from './speech/speechSynthesis/MockAudioContext';
 import pageError from './host/pageError';
 import parseURLParams from './utils/parseURLParams';
@@ -37,7 +40,7 @@ import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiff
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
-import subscribeConsole, { getHistory as getConsoleHistory } from './utils/subscribeConsole';
+import subscribeConsole, { getHistory as getConsoleHistory, shiftDeprecationHistory } from './utils/subscribeConsole';
 
 function waitForFinishKey() {
   const { promise, resolve } = createDeferred();
@@ -80,7 +83,12 @@ if (!webDriverMode) {
           break;
 
         case 'done':
-          log('WebChatTest: Done.');
+          if (job.payload.deprecation) {
+            log('WebChatTest: Done. Please check console for logs related to deprecation.');
+          } else {
+            log('WebChatTest: Done.');
+          }
+
           break;
 
         case 'snapshot':
@@ -124,15 +132,23 @@ if (!webDriverMode) {
   window.addEventListener('error', ({ error }) => jobs.post(pageError(error)));
 }
 
-webDriverMode && subscribeConsole();
+subscribeConsole();
 
-!webDriverMode && console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
+if (webDriverMode) {
+  setTimeout(() => {
+    document.body.className += ' webdriver';
+  }, 0);
+} else {
+  console.warn('WebChatTest: Running without Web Driver, will mock all host functions.');
+}
 
 export {
+  classNames,
   concatArrayBuffer,
   conditions,
   createDeferred,
   createDeferredObservable,
+  createDirectLineWithTranscript,
   createQueuedArrayBufferAudioSource,
   createRunHookActivityMiddleware,
   createStore,
@@ -146,12 +162,14 @@ export {
   host,
   iterateAsyncIterable,
   jobs,
+  loadTranscriptAsset,
   MockAudioContext,
   pageObjects,
   parseURLParams,
   pcmWaveArrayBufferToRiffWaveArrayBuffer,
   recognizeRiffWaveArrayBuffer,
   shareObservable,
+  shiftDeprecationHistory,
   sleep,
   timeouts,
   token,

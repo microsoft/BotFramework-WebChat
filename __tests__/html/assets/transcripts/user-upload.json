@@ -1,0 +1,55 @@
+[
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "1.0",
+    "text": "Commodo ullamco sint aute duis in cillum pariatur culpa. Qui mollit cillum occaecat ipsum.",
+    "timestamp": -600002,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "2.0",
+    "text": "Fugiat sunt proident reprehenderit laboris elit Lorem Lorem et commodo.",
+    "timestamp": -300001,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "3.0",
+    "text": "Ea ipsum sunt ipsum dolore non in. Laborum eiusmod velit esse ipsum.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "attachments": [
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg",
+        "name": "surface1.jpg",
+        "thumbnailUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
+      },
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg",
+        "name": "surface2.jpg",
+        "thumbnailUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
+      }
+    ],
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "4.0",
+    "text": "Sunt sint enim officia.",
+    "timestamp": 0,
+    "type": "message"
+  }
+]

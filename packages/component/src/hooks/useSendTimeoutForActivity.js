@@ -1,11 +1,17 @@
-import useStyleOptions from './useStyleOptions';
+import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
+
+let showDeprecationNotes = true;
 
 export default function useSendTimeoutForActivity(activity) {
-  const [{ sendTimeout, sendTimeoutForAttachments }] = useStyleOptions();
+  if (showDeprecationNotes) {
+    console.warn(
+      'botframework-webchat: "useSendTimeoutForActivity" is deprecated and will be removed on or after 2022-07-28. Please use "useGetSendTimeoutForActivity()" instead.'
+    );
 
-  if (typeof sendTimeout === 'function') {
-    return sendTimeout(activity);
+    showDeprecationNotes = false;
   }
 
-  return activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout;
+  const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
+
+  return getSendTimeoutForActivity({ activity });
 }

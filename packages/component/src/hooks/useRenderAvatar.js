@@ -1,27 +1,17 @@
-import { useMemo } from 'react';
+import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 
-import useStyleOptions from './useStyleOptions';
-import useWebChatUIContext from './internal/useWebChatUIContext';
+let showDeprecationNotes = true;
 
 export default function useRenderAvatar({ activity }) {
-  const [styleOptions] = useStyleOptions();
-  const { avatarRenderer } = useWebChatUIContext();
+  if (showDeprecationNotes) {
+    console.warn(
+      'botframework-webchat: "useRenderAvatar" is deprecated and will be removed on or after 2022-07-28. Please use "useRenderAvatar()" instead.'
+    );
 
-  return useMemo(() => {
-    const { from: { role } = {} } = activity;
+    showDeprecationNotes = false;
+  }
 
-    const fromUser = role === 'user';
+  const createAvatarRenderer = useCreateAvatarRenderer();
 
-    const result = avatarRenderer({ activity, fromUser, styleOptions });
-
-    if (result !== false && typeof result !== 'function') {
-      console.warn(
-        'botframework-webchat: avatarMiddleware should return a function to render the avatar, or return false if avatar should be hidden.'
-      );
-
-      return () => result;
-    }
-
-    return result;
-  }, [activity, avatarRenderer, styleOptions]);
+  return createAvatarRenderer({ activity });
 }

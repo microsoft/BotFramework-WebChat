@@ -1,0 +1,35 @@
+[
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "1.0",
+    "text": "Sint Lorem eiusmod aliqua cillum velit.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "attachmentLayout": "carousel",
+    "attachments": [
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
+      },
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
+      },
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg"
+      }
+    ],
+    "from": {
+      "role": "bot"
+    },
+    "id": "2.0",
+    "text": "This is carousel. Voluptate nulla occaecat enim non commodo non est qui ipsum ad.",
+    "timestamp": 0,
+    "type": "message"
+  }
+]

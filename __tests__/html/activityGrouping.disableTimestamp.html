@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        lolex,
+        React: { useMemo },
+        WebChat: { renderWebChat },
+        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+      } = window;
+
+      (async function() {
+        const clock = lolex.install();
+        const directLine = await createDirectLineWithTranscript([
+          {
+            from: { role: 'bot' },
+            id: '1.0',
+            text: 'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.',
+            timestamp: -300001,
+            type: 'message'
+          },
+          {
+            channelData: { state: 'sent' },
+            from: { role: 'user' },
+            id: '2.0',
+            text: 'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.',
+            timestamp: -300001,
+            type: 'message'
+          },
+          {
+            channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sending' },
+            from: { role: 'user' },
+            text: 'Elit adipisicing laborum sit anim.',
+            type: 'message'
+          },
+          {
+            channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sending' },
+            from: { role: 'user' },
+            text: 'Nostrud enim enim ipsum pariatur commodo.',
+            type: 'message'
+          },
+          {
+            channelData: { state: 'sent' },
+            from: { role: 'user' },
+            text: 'Culpa id proident sit officia aliquip.',
+            timestamp: -5001,
+            type: 'message'
+          },
+          {
+            from: { role: 'bot' },
+            id: '3.0',
+            text: 'Quis sit aliquip sit velit in velit magna culpa velit qui.',
+            timestamp: 0,
+            type: 'message'
+          }
+        ]);
+
+        renderWebChat(
+          {
+            directLine,
+            store: createStore(),
+            styleOptions: {
+              botAvatarInitials: 'Bot',
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserNubOffset: 0,
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserTextColor: 'White',
+              bubbleNubOffset: 0,
+              bubbleNubSize: 10,
+              bubbleTextColor: 'White',
+              groupTimestamp: false,
+              userAvatarInitials: 'You'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+
+        clock.tick(1000);
+
+        await host.snapshot();
+
+        clock.tick(29000);
+
+        await host.snapshot();
+
+        directLine.activityDeferredObservable.next({
+          channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sent' },
+          from: { role: 'user' },
+          id: '2.1',
+          text: 'Elit adipisicing laborum sit anim.',
+          timestamp: -300001,
+          type: 'message'
+        });
+
+        directLine.activityDeferredObservable.next({
+          channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sent' },
+          from: { role: 'user' },
+          id: '2.2',
+          text: 'Nostrud enim enim ipsum pariatur commodo.',
+          timestamp: -5001,
+          type: 'message'
+        });
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
