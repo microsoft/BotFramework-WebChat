@@ -4,7 +4,7 @@ import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
@@ -27,6 +27,8 @@ import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
+import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
 
 const ROOT_CSS = css({
   '&.webchat__basic-transcript': {
@@ -71,7 +73,9 @@ const BasicTranscript2 = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [activities] = useActivities();
+  const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
+  const [rootElementRef] = useTranscriptRootElementRef();
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
@@ -259,6 +263,15 @@ const BasicTranscript2 = ({ className }) => {
           renderingElements.push({
             activity,
 
+            // After the element is mounted, set it to activityElementsRef.
+            callbackRef: activityElement => {
+              const entry = activityElementsRef.current.find(({ activityID }) => activityID === activity.id);
+
+              if (entry) {
+                entry.element = activityElement;
+              }
+            },
+
             // "hideTimestamp" is a render-time parameter for renderActivityStatus().
             // If set, it will hide if timestamp is being shown, but it will continue to show
             // retry prompt. And show the screen reader version of the timestamp.
@@ -280,9 +293,24 @@ const BasicTranscript2 = ({ className }) => {
       });
     });
 
+    const { current: activityElements } = activityElementsRef;
+
+    // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
+
+    activityElementsRef.current = renderingElements.map(({ activity: { id }, key }) => {
+      const existingEntry = activityElements.find(entry => entry.key === key);
+
+      return {
+        activityID: id,
+        element: existingEntry && existingEntry.element,
+        key
+      };
+    });
+
     return renderingElements;
   }, [
     activitiesWithRenderer,
+    activityElementsRef,
     activityTree,
     bubbleFromUserNubOffset,
     bubbleNubOffset,
@@ -295,7 +323,11 @@ const BasicTranscript2 = ({ className }) => {
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
 
   return (
-    <div className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')} dir={direction}>
+    <div
+      className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')}
+      dir={direction}
+      ref={rootElementRef}
+    >
       {/* This <section> is for live region only. Contents are made invisible through CSS. */}
       <section
         aria-atomic={false}
@@ -312,6 +344,7 @@ const BasicTranscript2 = ({ className }) => {
         {renderingElements.map(
           ({
             activity,
+            callbackRef,
             key,
             hideTimestamp,
             renderActivity,
@@ -324,6 +357,7 @@ const BasicTranscript2 = ({ className }) => {
               aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
               className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
               key={key}
+              ref={callbackRef}
             >
               {renderActivity({
                 hideTimestamp,
