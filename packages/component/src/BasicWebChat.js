@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
@@ -20,6 +21,13 @@ import useTranscriptFocusRef from './hooks/internal/useTranscriptFocusRef';
 const ROOT_CSS = css({
   display: 'flex',
   flexDirection: 'column'
+});
+
+const SINK_CSS = css({
+  display: 'flex',
+  flex: 1,
+  flexDirection: 'column',
+  overflow: 'hidden'
 });
 
 const CONNECTIVITY_STATUS_CSS = css({
@@ -46,18 +54,20 @@ const BasicWebChat = ({ className }) => {
   const [transcriptFocusRef] = useTranscriptFocusRef();
 
   return (
-    <TypeFocusSinkBox
-      className={classNames(ROOT_CSS + '', rootStyleSet + '', className + '')}
-      disabled={disabled}
-      ref={transcriptFocusRef}
-      role="complementary"
-      sendFocusRef={sendBoxFocusRef}
-    >
-      {!options.hideToaster && <BasicToaster className={TOASTER_CSS + ''} />}
-      <BasicTranscript className={TRANSCRIPT_CSS + ''} />
-      <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
-      {!options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
-    </TypeFocusSinkBox>
+    <AccessKeySinkSurface className={classNames(ROOT_CSS + '', rootStyleSet + '', className + '')}>
+      <TypeFocusSinkBox
+        className={SINK_CSS + ''}
+        disabled={disabled}
+        ref={transcriptFocusRef}
+        role="complementary"
+        sendFocusRef={sendBoxFocusRef}
+      >
+        {!options.hideToaster && <BasicToaster className={TOASTER_CSS + ''} />}
+        <BasicTranscript className={TRANSCRIPT_CSS + ''} />
+        <BasicConnectivityStatus className={CONNECTIVITY_STATUS_CSS + ''} />
+        {!options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
+      </TypeFocusSinkBox>
+    </AccessKeySinkSurface>
   );
 };
 

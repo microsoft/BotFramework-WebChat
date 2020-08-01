@@ -117,7 +117,7 @@ const DEFAULT_OPTIONS = {
 
   // Suggested actions 'stacked' layout
   suggestedActionsStackedHeight: undefined, // defaults to 'auto'
-  suggestedActionsStackedOverflow: null,
+  suggestedActionsStackedOverflow: undefined, // defaults to 'auto'
 
   // Timestamp
   groupTimestamp: true,

@@ -101,6 +101,13 @@ if (!webDriverMode) {
           log(`WebChatTest: Saving "${job.payload.filename}" to "${result}".`);
           break;
 
+        case 'send access key':
+          log(
+            `WebChatTest: Please press this key sequence: ALT-SHIFT-${job.payload.key}.`
+          );
+          await waitForFinishKey();
+          break;
+
         case 'send keys':
           log(
             `WebChatTest: Please press this key sequence: ${job.payload.keys

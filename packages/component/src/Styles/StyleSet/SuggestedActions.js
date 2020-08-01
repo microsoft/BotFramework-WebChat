@@ -10,7 +10,7 @@ export default function createSuggestedActionsStyle({
   if (suggestedActionLayout === 'stacked') {
     return {
       height: suggestedActionsStackedHeight || 'auto',
-      overflowY: suggestedActionsStackedOverflow,
+      overflowY: suggestedActionsStackedOverflow || 'auto',
       paddingBottom: paddingRegular / 2,
       paddingLeft: paddingRegular / 2,
       paddingRight: paddingRegular / 2,

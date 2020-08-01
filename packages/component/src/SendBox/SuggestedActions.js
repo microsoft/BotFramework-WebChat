@@ -10,9 +10,11 @@ import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useDirection from '../hooks/useDirection';
+import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
 const SUGGESTED_ACTION_STACKED_CSS = css({
@@ -44,14 +46,18 @@ const connectSuggestedActions = (...selectors) =>
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStyleSet: suggestedActionsStyleSetForReactFilm }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const localize = useLocalizer();
+  const localizeAccessKey = useLocalizeAccessKey();
 
   const suggestedActionsContainerText = localize(
     'SUGGESTED_ACTIONS_ALT',
     suggestedActions.length
-      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
+      ? accessKey
+        ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY', localizeAccessKey(accessKey))
+        : localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 

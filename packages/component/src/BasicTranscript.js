@@ -8,8 +8,8 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
+import firstTabbableDescendant from './Utils/firstTabbableDescendant';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
-import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import removeInline from './Utils/removeInline';
@@ -52,20 +52,6 @@ const ROOT_CSS = css({
     }
   }
 });
-
-function firstTabbableDescendant(element) {
-  // This is best-effort for finding a tabbable element.
-  // For a comprehensive list, please refer to https://allyjs.io/data-tables/focusable.html and update this list accordingly.
-  const focusables = element.querySelectorAll(
-    'a[href], audio, button, details, details summary, embed, iframe, input, object, rect, select, svg[focusable], textarea, video, [tabindex]'
-  );
-
-  return [].find.call(focusables, focusable => {
-    const tabIndex = getTabIndex(focusable);
-
-    return typeof tabIndex === 'number' && tabIndex >= 0;
-  });
-}
 
 function nextSiblingAll(element) {
   const {
