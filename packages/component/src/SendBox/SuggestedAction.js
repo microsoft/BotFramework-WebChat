@@ -111,7 +111,7 @@ SuggestedAction.defaultProps = {
   'aria-hidden': false,
   displayText: '',
   image: '',
-  imageAlt: '',
+  imageAlt: undefined,
   text: '',
   type: '',
   value: undefined
