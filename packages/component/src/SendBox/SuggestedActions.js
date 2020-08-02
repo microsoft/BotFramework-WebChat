@@ -69,12 +69,13 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     );
   }
 
-  const children = suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
+  const children = suggestedActions.map(({ displayText, image, imageAltText, text, title, type, value }, index) => (
     <SuggestedAction
       ariaHidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
       displayText={displayText}
       image={image}
+      imageAlt={imageAltText}
       key={index}
       text={text}
       type={type}
@@ -123,6 +124,7 @@ SuggestedActions.propTypes = {
     PropTypes.shape({
       displayText: PropTypes.string,
       image: PropTypes.string,
+      imageAltText: PropTypes.string,
       text: PropTypes.string,
       title: PropTypes.string,
       type: PropTypes.string.isRequired,

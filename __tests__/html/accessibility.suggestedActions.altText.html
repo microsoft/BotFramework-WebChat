@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChat: { renderWebChat },
+        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, expect, host, pageObjects, timeouts }
+      } = window;
+
+      (async function() {
+        const directLine = createDirectLineWithTranscript([
+          {
+            from: { role: 'bot' },
+            id: '0',
+            timestamp: 0,
+            type: 'message',
+            text: 'Please select one of the actions below.',
+            suggestedActions: {
+              actions: [
+                {
+                  image: `https://github.com/compulim/BotFramework-MockBot/raw/master/public/assets/square-icon.png`,
+                  imageAltText: 'A blue square.',
+                  title: 'square-icon.png',
+                  type: 'imBack'
+                }
+              ],
+              to: []
+            }
+          }
+        ]);
+
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.ui);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.ui);
+
+        const altTexts = [].map.call(document.querySelectorAll('.webchat__suggested-action__image'), element =>
+          element.getAttribute('alt')
+        );
+
+        expect(altTexts).toEqual(['A blue square.']);
+
+        await host.snapshot();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
