@@ -38,7 +38,7 @@ export default function useObserveScrollPosition(observer, deps) {
 
       const { activityID } = entry || {};
 
-      observer && observer({ activityID, scrollTop });
+      observer && observer({ ...(activityID ? { activityID } : {}), scrollTop });
     },
     // This hook is very similar to useEffect, which internally use useCallback.
     // The "deps" is treated as the dependencies for the useCallback.
