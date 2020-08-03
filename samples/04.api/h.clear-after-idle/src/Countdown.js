@@ -14,7 +14,7 @@ export default function Countdown({ to }) {
   const [, setForceRefresh] = useState({});
 
   const timeRemaining = Math.max(0, to - Date.now());
-  const perInterval = useCallback(() => setForceRefresh({}), [setForceRefresh, to]);
+  const perInterval = useCallback(() => setForceRefresh({}), [setForceRefresh]);
 
   useInterval(perInterval, Math.max(0, Math.min(REFRESH_INTERVAL, to - Date.now())));
 
