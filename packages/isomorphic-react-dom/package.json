@@ -11,7 +11,7 @@
     "eslint": "eslint src/**/*.js",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
     "start:babel": "npm run build:babel",
-    "start:note": "echo \"isomorphic-react-dom\" is not under active development; running in non-watch mode.",
+    "start:note": "echo \"isomorphic-react-dom is not under active development; running in non-watch mode.\"",
     "start:webpack": "npm run build:webpack"
   },
   "author": "",
