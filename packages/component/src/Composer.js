@@ -439,7 +439,7 @@ const Composer = ({
     return typingIndicatorRenderer || createTypingIndicatorRenderer(typingIndicatorMiddleware);
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
-  const transcriptActivityElementsRef = useRef({});
+  const transcriptActivityElementsRef = useRef([]);
   const transcriptRootElementRef = useRef();
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
