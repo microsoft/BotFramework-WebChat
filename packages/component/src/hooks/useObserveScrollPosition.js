@@ -43,7 +43,7 @@ export default function useObserveScrollPosition(observer, deps) {
     // This hook is very similar to useEffect, which internally use useCallback.
     // The "deps" is treated as the dependencies for the useCallback.
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [activityElementsRef, getTranscriptScrollableElement, ...deps]
+    [activityElementsRef, getTranscriptScrollableElement, ...(deps || [])]
   );
 
   useScrollToBottomObserveScrollPosition(effectCallback);
