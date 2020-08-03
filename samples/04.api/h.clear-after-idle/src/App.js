@@ -23,7 +23,7 @@ function App() {
   const [resetAt, setResetAt] = useState(() => Date.now() + IDLE_TIMEOUT);
   const [session, setSession] = useState();
 
-  const resetConversation = useCallback(() => {
+  const initConversation = useCallback(() => {
     setSession(false);
 
     (async function() {
@@ -45,8 +45,8 @@ function App() {
     })();
   }, [setResetAt, setSession]);
 
-  useTimeoutAt(resetConversation, resetAt);
-  useEffect(resetConversation, [resetConversation]);
+  useTimeoutAt(initConversation, resetAt);
+  useEffect(initConversation, [initConversation]);
 
   return (
     <div className="App">
