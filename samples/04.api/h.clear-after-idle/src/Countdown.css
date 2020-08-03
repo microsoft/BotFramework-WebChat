@@ -1,0 +1,10 @@
+.countdown {
+  color: #767676;
+  font: 'Calibri', 'Helvetica Neue', Arial, sans-serif;
+  padding: 0 20px;
+  text-align: right;
+}
+
+.countdown__time.countdown__time--red {
+  color: #E00;
+}
