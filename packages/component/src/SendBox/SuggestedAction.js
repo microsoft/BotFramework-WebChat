@@ -42,7 +42,16 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
+const SuggestedAction = ({
+  'aria-hidden': ariaHidden,
+  buttonText,
+  displayText,
+  image,
+  imageAlt,
+  text,
+  type,
+  value
+}) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();
@@ -84,6 +93,7 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
       >
         {image && (
           <img
+            alt={imageAlt}
             className={classNames(
               'webchat__suggested-action__image',
               direction === 'rtl' && 'webchat__suggested-action__image--rtl'
@@ -101,6 +111,7 @@ SuggestedAction.defaultProps = {
   'aria-hidden': false,
   displayText: '',
   image: '',
+  imageAlt: undefined,
   text: '',
   type: '',
   value: undefined
@@ -111,6 +122,7 @@ SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
   displayText: PropTypes.string,
   image: PropTypes.string,
+  imageAlt: PropTypes.string,
   text: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.any
