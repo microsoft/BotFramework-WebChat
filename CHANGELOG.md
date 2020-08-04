@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985), [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012) and [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3380](https://github.com/microsoft/BotFramework-WebChat/pull/3380)
    -  Development dependencies
       -  Root package
          -  [`@babel/plugin-proposal-class-properties@7.10.4`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
