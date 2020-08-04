@@ -17,7 +17,13 @@ let config = {
     path: resolve(__dirname, 'dist')
   },
   plugins: [
-    new CopyWebpackPlugin([{ from: 'public', to: '.' }]),
+    new CopyWebpackPlugin({
+      patterns: [{
+        from: 'public',
+        noErrorOnMissing: true,
+        to: '.'
+      }]
+    }),
     new HtmlWebpackPlugin({
       inject: false,
       template: 'src/index.pug',
