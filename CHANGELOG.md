@@ -36,6 +36,74 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  When the initials is `undefined`, no gutter space will be reserved for the avatar.
    -  When the initials is `""` (empty string), gutter space will be reserved, but not avatar will be shown.
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#2985](https://github.com/microsoft/BotFramework-WebChat/pull/2985), [#3012](https://github.com/microsoft/BotFramework-WebChat/pull/3012) and [#3150](https://github.com/microsoft/BotFramework-WebChat/pull/3150)
+   -  Development dependencies
+      -  Root package
+         -  [`@babel/plugin-proposal-class-properties@7.10.4`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+         -  [`@babel/plugin-proposal-object-rest-spread@7.11.0`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+         -  [`@babel/plugin-transform-runtime@7.11.0`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+         -  [`@babel/preset-env@7.11.0`](https://npmjs.com/package/@babel/preset-env)
+         -  [`@babel/preset-react@7.10.4`](https://npmjs.com/package/@babel/preset-react)
+         -  [`@babel/preset-typescript@7.10.4`](https://npmjs.com/package/@babel/preset-typescript)
+         -  [`@babel/runtime@7.11.0`](https://npmjs.com/package/@babel/runtime)
+         -  [`babel-jest@26.2.2`](https://npmjs.com/package/babel-jest)
+         -  [`concurrently@5.2.0`](https://npmjs.com/package/concurrently)
+         -  [`core-js@3.6.5`](https://npmjs.com/package/core-js)
+         -  [`global-agent@2.1.12`](https://npmjs.com/package/global-agent)
+         -  [`husky@4.2.5`](https://npmjs.com/package/husky)
+         -  [`jest@26.2.2`](https://npmjs.com/package/jest)
+         -  [`jest-image-snapshot@4.1.0`](https://npmjs.com/package/jest-image-snapshot)
+         -  [`jest-junit@11.1.0`](https://npmjs.com/package/jest-junit)
+         -  [`jest-trx-results-processor@2.0.3`](https://npmjs.com/package/jest-trx-results-processor)
+         -  [`lerna@3.22.1`](https://npmjs.com/package/lerna)
+         -  [`lint-staged@10.2.11`](https://npmjs.com/package/lint-staged)
+         -  [`prettier@2.0.5`](https://npmjs.com/package/prettier)
+         -  [`serve@11.3.2`](https://npmjs.com/package/serve)
+         -  [`serve-handler@6.1.3`](https://npmjs.com/package/serve-handler)
+         -  Removed unused package [`@azure/storage-blob@12.1.0`](https://npmjs.com/package/@azure/storage-blob)
+      -  Other packages
+         -  [`@babel/cli@7.10.5`](https://npmjs.com/package/@babel/cli)
+         -  [`@babel/core@7.11.0`](https://npmjs.com/package/@babel/core)
+         -  [`@babel/plugin-proposal-class-properties@7.10.4`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+         -  [`@babel/plugin-proposal-object-rest-spread@7.11.0`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+         -  [`@babel/plugin-transform-runtime@7.11.0`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+         -  [`@babel/preset-env@7.11.0`](https://npmjs.com/package/@babel/preset-env)
+         -  [`@babel/preset-react@7.10.4`](https://npmjs.com/package/@babel/preset-react)
+         -  [`@babel/preset-typescript@7.10.4`](https://npmjs.com/package/@babel/preset-typescript)
+         -  [`@types/node@14.0.27`](https://npmjs.com/package/@types/node)
+         -  [`@typescript-eslint/eslint-plugin@3.8.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+         -  [`@typescript-eslint/parser@3.8.0`](https://npmjs.com/package/@typescript-eslint/parser)
+         -  [`babel-jest@26.2.2`](https://npmjs.com/package/babel-jest)
+         -  [`concurrently@5.2.0`](https://npmjs.com/package/concurrently)
+         -  [`core-js@3.6.5`](https://npmjs.com/package/core-js)
+         -  [`cross-env@7.0.2`](https://npmjs.com/package/cross-env)
+         -  [`css-loader@4.2.0`](https://npmjs.com/package/css-loader)
+         -  [`eslint-plugin-prettier@3.1.4`](https://npmjs.com/package/eslint-plugin-prettier)
+         -  [`eslint-plugin-react-hooks@4.0.8`](https://npmjs.com/package/eslint-plugin-react-hooks)
+         -  [`eslint-plugin-react@7.20.5`](https://npmjs.com/package/eslint-plugin-react)
+         -  [`eslint@7.6.0`](https://npmjs.com/package/eslint)
+         -  [`global-agent@2.1.12`](https://npmjs.com/package/global-agent)
+         -  [`globalize-compiler@1.1.1`](https://npmjs.com/package/globalize-compiler)
+         -  [`jest@26.2.2`](https://npmjs.com/package/jest)
+         -  [`node-dev@5.1.0`](https://npmjs.com/package/node-dev)
+         -  [`prettier@2.0.5`](https://npmjs.com/package/prettier)
+         -  [`serve@11.3.2`](https://npmjs.com/package/serve)
+         -  [`simple-update-in@2.2.0`](https://npmjs.com/package/simple-update-in)
+         -  [`source-map-loader@1.0.1`](https://npmjs.com/package/source-map-loader)
+         -  [`terser-webpack-plugin@3.1.0`](https://npmjs.com/package/terser-webpack-plugin)
+         -  [`typescript@3.9.7`](https://npmjs.com/package/typescript)
+         -  [`webpack-cli@3.3.12`](https://npmjs.com/package/webpack-cli)
+         -  [`webpack-stats-plugin@0.3.2`](https://npmjs.com/package/webpack-stats-plugin)
+         -  [`webpack@4.44.1`](https://npmjs.com/package/webpack)
+   -  Production dependencies
+      -  `core`
+      -  `bundle`
+      -  `component`
+      -  `directlinespeech`
+      -  `embed`
+
 ### Added
 
 -  Resolves [#3250](https://github.com/microsoft/BotFramework-WebChat/issues/3250). Added activity grouping feature, by [@compulim](https://github.com/compulim), in PR [#3365](https://github.com/microsoft/BotFramework-WebChat/pull/3365)
