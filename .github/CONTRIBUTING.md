@@ -48,8 +48,8 @@ npm run bootstrap
 
 There are two ways to build: one-off and continuous build.
 
-- For one-off, run `npm run build`
-- For continuous build, run `npm start`
+- For one-off building, run `npm run build`
+- For continuous building, run `npm start`
 
 The bundle output will be located at:
 
@@ -66,6 +66,7 @@ There are few ways you can play the build:
    - Navigate to http://localhost:3000/, and click on "Official MockBot" on the upper right corner
 - Playing with `webchat-loader`
    - Navigate to https://compulim.github.io/webchat-loader/
+   - In the version dropdown, select `http://localhost:5000/webchat-es5.js`
 - Write your own web app
    - `<script src="http://localhost:5000/webchat.js"></script>`
    - Or using tarballs
@@ -96,20 +97,20 @@ For stability, Web Chat use Docker for hosting the test environment.
 
 ### Running the test suite
 
-> Tests under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the testing page.
+> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the testing page.
 
 There are 2 ways to run the test suite, either one-off or continuously:
 
 - For one-off testing, `node_modules/.bin/jest`
-- To run continuously, `npm test`
+- For continuous testing, `npm test`
    - To speed up continuous testing, you can install [watchman](https://facebook.github.io/watchman/)
 
 If your development box has less than 4 cores, you will need to reduce the number of simultaneous test agents:
 
-- One-off: run `node_modules/.bin/jest --maxWorkers 1`
-- Continuous testing: run `npm test -- --maxWorkers 1`
+- For one-off testing: run `node_modules/.bin/jest --maxWorkers 1`
+- For continuous testing: run `npm test -- --maxWorkers 1`
 
-Our CI pipeline run with 4 test agents simultaneously. If new tests are added, please make sure they can be run simultaneously.
+Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can be run simultaneously.
 
 ### Troubleshooting the test suite
 
@@ -119,11 +120,12 @@ We run test suite on every commit and requires 100% test pass. If the test suite
 - Test reliability issue, please see [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
 - Polluted development environment, for example:
    - Outdated `node_modules` content
+   - Outdated Node.js or NPM
 
 When the test suite failed:
 
 1. Re-run the test suite
-   1. If it succeeded but a specific test fail intermittently, please comment on [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
+   1. If it succeeded but a specific test fail intermittently, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
 1. If it continue to fail, please fresh clone the repository and run the test suite without your changes
    1. If you suspect your environment is polluted, please use [Windows Sandbox](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview) and/or a new Linux distro on WSL
 1. If it still fail repeatedly, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) to us.
