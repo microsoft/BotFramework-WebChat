@@ -172,6 +172,45 @@ There are checks that automation will not be able to capture. For example:
    - All samples must also comes with hosted live demo
    - Please discuss with us if a specific bot is needed for the live demo
 
+# Workflow
+
+Here list how we generally work when [fixing a bug](#fixing-bug) or [implementing a new feature](#implement-new-feature).
+
+## Fixing bug
+
+Write the bug repro as a test, before fixing the bug.
+
+1. Clone/prepare the repository or nuke an existing repository
+   - To nuke, run `npm run tableflip`
+1. Run continuous build, run `npm start`
+1. Convert bug into a test case, under `__tests__/html/this-is-the-bug.html`
+1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/this-is-the-bug.html`
+   - Make sure the test fail
+1. Fix the bug
+1. Re-run `npm run start:docker` to refresh the code inside Docker
+1. Re-run the test, it should succeed
+   - Verify screenshots if any
+1. Add a log entry to `CHANGELOG.md`
+1. File a pull request
+
+## Implementing new feature
+
+1. Clone/prepare the repository or nuke an existing repository
+   - To nuke, run `npm run tableflip`
+1. Run continuous build, run `npm start`
+1. Clone `__tests__/html/simple.html` to `my-feature.html`, use it as a playground
+1. Navigate to the new playground at http://localhost:5001/my-feature.html
+1. Implement the feature while modifying the playground
+1. After the feature is completed, write more tests to include cases that need more attention, and unhappy paths
+1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/my-feature*.html`
+   - Verify screenshots
+1. Write a new sample with `README.md`
+   - This is the user story and proof-of-record on how the feature will work
+   - Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/README.md)
+1. Add more design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs) as needed
+1. Add a few log entries to `CHANGELOG.md`
+1. File a pull request
+
 ## Additional context
 
 ### Adding languages
