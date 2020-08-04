@@ -98,11 +98,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
          -  [`webpack-stats-plugin@0.3.2`](https://npmjs.com/package/webpack-stats-plugin)
          -  [`webpack@4.44.1`](https://npmjs.com/package/webpack)
    -  Production dependencies
-      -  `core`
-      -  `bundle`
-      -  `component`
-      -  `directlinespeech`
-      -  `embed`
+      -  [`@babel/plugin-proposal-async-generator-functions@7.10.5`](https://npmjs.com/package/@babel/plugin-proposal-async-generator-functions)
+      -  [`@babel/runtime@7.11.0`](https://npmjs.com/package/@babel/runtime)
+      -  [`@babel/standalone@7.11.0`](https://npmjs.com/package/@babel/standalone)
+      -  [`core-js@3.6.5`](https://npmjs.com/package/core-js)
+      -  [`event-iterator@2.0.0`](https://npmjs.com/package/event-iterator)
+      -  [`expect@26.2.0`](https://npmjs.com/package/expect)
+      -  [`globalize@1.5.0`](https://npmjs.com/package/globalize)
+      -  [`markdown-it-attrs@3.0.3`](https://npmjs.com/package/markdown-it-attrs)
+      -  [`markdown-it@11.0.0`](https://npmjs.com/package/markdown-it)
+      -  [`math-random@2.0.0`](https://npmjs.com/package/math-random)
+      -  [`sanitize-html@1.27.2`](https://npmjs.com/package/sanitize-html)
+      -  [`simple-update-in@2.2.0`](https://npmjs.com/package/simple-update-in)
+      -  [`url-search-params-polyfill@8.1.0`](https://npmjs.com/package/url-search-params-polyfill)
+      -  [`whatwg-fetch@3.2.0`](https://npmjs.com/package/whatwg-fetch)
 
 ### Added
 
