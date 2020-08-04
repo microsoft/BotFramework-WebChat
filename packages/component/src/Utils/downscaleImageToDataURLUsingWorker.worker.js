@@ -7,16 +7,16 @@
 
 // This file will also get loaded by IE11, please make sure you hand-transpile it correctly.
 
-export default function() {
+export default function () {
   function blobToDataURL(blob) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const reader = new FileReader();
 
-      reader.onerror = function(event) {
+      reader.onerror = function (event) {
         reject(event.error || new Error(event.message));
       };
 
-      reader.onloadend = function() {
+      reader.onloadend = function () {
         resolve(reader.result);
       };
 
@@ -50,7 +50,7 @@ export default function() {
     };
   }
 
-  onmessage = function(event) {
+  onmessage = function (event) {
     const data = event.data;
     const arrayBuffer = data.arrayBuffer;
     const maxHeight = data.maxHeight;
@@ -60,10 +60,10 @@ export default function() {
     const port = event.ports[0];
 
     return Promise.resolve()
-      .then(function() {
+      .then(function () {
         return createImageBitmap(new Blob([arrayBuffer], { resizeQuality: 'high' }));
       })
-      .then(function(imageBitmap) {
+      .then(function (imageBitmap) {
         const dimension = keepAspectRatio(imageBitmap.width, imageBitmap.height, maxWidth, maxHeight);
         const height = dimension.height;
         const width = dimension.width;
@@ -77,13 +77,13 @@ export default function() {
 
         return convertToBlob({ type: type, quality: quality });
       })
-      .then(function(blob) {
+      .then(function (blob) {
         return blobToDataURL(blob);
       })
-      .then(function(dataURL) {
+      .then(function (dataURL) {
         return port.postMessage({ result: dataURL });
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.error(err);
 
         port.postMessage({
