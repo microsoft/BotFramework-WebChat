@@ -27,6 +27,14 @@ const coreConfig = {
             {
                 test: require.resolve('adaptivecards'),
                 use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
+            },
+            {
+                test: /\.js$/,
+                include: /(node_modules\/engine.io-client|node_modules\/socket.io-client|node_modules\/smartsupp-websocket)/,
+                loader: 'babel-loader',
+                options: {
+                    presets: ["es2015"]
+                }
             }
         ]
     }
