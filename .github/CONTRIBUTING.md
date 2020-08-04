@@ -149,6 +149,7 @@ There are checks that automation will not be able to capture. For example:
    - For fixing bug, the original bug repro must be coded as a new test
    - For feature work, please add as much tests as needed to future-proof the feature, include both happy and unhappy paths
    - We prefer integration tests than unit tests
+   - Avoid using timeout in tests, use [fake timer](https://www.npmjs.com/package/lolex) instead
 - [Secure by default](https://en.wikipedia.org/wiki/Secure_by_default)
 - Benchmark
    - Performance should not drop significantly
