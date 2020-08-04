@@ -193,7 +193,7 @@ Write the bug repro as a test, before fixing the bug.
 1. Run continuous build, run `npm start`
 1. Convert bug into a test case, under `__tests__/html/this-is-the-bug.html`
 1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/this-is-the-bug.html`
-   - Make sure the test fail
+   - Make sure the test fail as described in the repro
 1. Fix the bug
 1. Re-run `npm run start:docker` to refresh the code inside Docker
 1. Re-run the test, it should succeed
