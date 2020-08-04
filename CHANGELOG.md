@@ -108,6 +108,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`markdown-it-attrs@3.0.3`](https://npmjs.com/package/markdown-it-attrs)
       -  [`markdown-it@11.0.0`](https://npmjs.com/package/markdown-it)
       -  [`math-random@2.0.0`](https://npmjs.com/package/math-random)
+      -  [`memoize-one@5.1.1`](https://npmjs.com/package/memoize-one)
+      -  [`on-error-resume-next@1.1.0`](https://npmjs.com/package/on-error-resume-next)
       -  [`sanitize-html@1.27.2`](https://npmjs.com/package/sanitize-html)
       -  [`simple-update-in@2.2.0`](https://npmjs.com/package/simple-update-in)
       -  [`url-search-params-polyfill@8.1.0`](https://npmjs.com/package/url-search-params-polyfill)
