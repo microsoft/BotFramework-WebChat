@@ -31,7 +31,7 @@ These are development environments we tested:
 
 - Windows 10 Professional
    - With WSL1 or [WSL2](https://aka.ms/wsl2) installed
-- Ubuntu 18 running under WSL2
+- [Ubuntu 18 running under WSL2](https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q)
 
 ## Preparing the repository
 
@@ -194,6 +194,8 @@ Write the bug repro as a test, before fixing the bug.
 1. File a pull request
 
 ## Implementing new feature
+
+Write the user story while implementing the feature.
 
 1. Clone/prepare the repository or nuke an existing repository
    - To nuke, run `npm run tableflip`
