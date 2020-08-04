@@ -110,7 +110,7 @@ If your development box has less than 4 cores, you will need to reduce the numbe
 - For one-off testing: run `node_modules/.bin/jest --maxWorkers 1`
 - For continuous testing: run `npm test -- --maxWorkers 1`
 
-Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can be run simultaneously.
+Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can run simultaneously.
 
 ### Troubleshooting the test suite
 
@@ -127,7 +127,7 @@ When the test suite failed:
 1. Re-run the test suite
    1. If it succeeded but a specific test fail intermittently, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
 1. If it continue to fail, please fresh clone the repository and run the test suite without your changes
-   1. If you suspect your environment is polluted, please use [Windows Sandbox](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview) and/or a new Linux distro on WSL
+   1. If you suspect your environment is polluted, please use [Windows Sandbox](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview) and/or a new Linux distro on WSL to verify
 1. If it still fail repeatedly, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) to us.
 
 ## Static code analysis
@@ -144,10 +144,10 @@ There are checks that automation will not be able to capture. For example:
    - Add a new log to `CHANGELOG.md`
    - Fill out the pull request form for traceability
    - Make sure imports, members, variables, etc, are sorted alphabetically
-   - Avoid one-off variables, prefer JavaScript shorthands, shorter and faster code are better
-   - No global pollution: no specific tab order, minimize `z-index`, all polyfills must complies to standards
+   - Avoid one-off variables, prefer JavaScript shorthands, shorter and faster code
+   - No global pollution: no specific tab order, minimize `z-index` usage and requires a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context), all polyfills must complies to ECMAScript/W3C standards
 - Tests
-   - Tests are important to reduce our burden. If new tests are needed but not included, we will not merge your pull request
+   - Tests are important to reduce our burden. If new tests are needed but not included, we will reject your pull request
    - For fixing bug, the original bug repro must be coded as a new test
    - For feature work, please add as much tests as needed to future-proof the feature, include both happy and unhappy paths
    - We prefer integration tests than unit tests
@@ -166,10 +166,15 @@ There are checks that automation will not be able to capture. For example:
       - Firefox
       - IE11 (except speech features)
    - Safari on macOS
-   - Safari on iOS
+   - Safari on iOS or iPadOS
    - Chrome on Android
 - Accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
    - Tab order, content readability, assistive technology-only text, color contrast, etc.
+   - Assistive technology and browser compatibility
+      - NVDA: Chrome and Firefox
+      - Narrator: Edge family and IE11
+      - VoiceOver: Safari
+      - TalkBack: Chrome on Android
 - Internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 - Feature documentation, samples, live demo, operational
    - All samples must also comes with hosted live demo
