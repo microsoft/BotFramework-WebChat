@@ -29,13 +29,13 @@ Please install the follow in your development environment:
 
 These are development environments we tested:
 
-- Windows 10 Pro
+- Windows 10 Professional
    - With WSL1 or [WSL2](https://aka.ms/wsl2) installed
 - Ubuntu 18 running under WSL2
 
 ## Preparing the repository
 
-Web Chat is monorepo and use [`lerna`](https://lerna.js.org/) for management. After the repository is cloned, run the following to install all dependencies.
+Web Chat is a monorepo and use [`lerna`](https://lerna.js.org/) for management. After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
 
 ```sh
 npm ci
@@ -60,26 +60,15 @@ The bundle output will be located at:
 
 There are few ways you can play the build:
 
-- [Playing with playground](#playing-with-playground)
-- [Playing with `webchat-loader`](#playing-with-webchat-loader)
+- Playing with playground
+   - `cd packages/playground`
+   - `npm start`
+   - Navigate to http://localhost:3000/, and click on "Official MockBot" on the upper right corner
+- Playing with `webchat-loader`
+   - Navigate to https://compulim.github.io/webchat-loader/
 - Write your own web app
    - `<script src="http://localhost:5000/webchat.js"></script>`
    - Or using tarballs
-
-## Playing with playground
-
-Web Chat repository contains a playground app for development testing.
-
-```sh
-cd packages/playground
-npm start
-```
-
-Then navigate to http://localhost:3000/, and click on "Official MockBot" on the upper right corner to get started.
-
-## Playing with `webchat-loader`
-
-Navigate to https://compulim.github.io/webchat-loader/.
 
 # Readying for publication
 
@@ -106,6 +95,8 @@ For stability, Web Chat use Docker for hosting the test environment.
    - To stop/cleanup, run `docker-compose down`
 
 ### Running the test suite
+
+> Tests under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the testing page.
 
 There are 2 ways to run the test suite, either one-off or continuously:
 
