@@ -36,6 +36,7 @@ interface SmartsuppHandoffOptions {
     name?: string
     email?: string
     phone?: string
+    notification?: string
     variables?: {[key: string]: string}
 }
 
@@ -366,9 +367,9 @@ export class Chat extends React.Component<ChatProps, {}> {
                 id: this.props.user.id,
                 key: options.key,
                 domain: document.domain || "localhost",
-                name: options.name,
-                email: options.email,
-                phone: options.phone,
+                name: options.name || null,
+                email: options.email || null,
+                phone: options.phone || null,
                 variables: options.variables
             },
             connection: {
@@ -379,6 +380,13 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.smartsupp.connect().then(() => {
             console.log('Smartsupp connected')
+
+            this.smartsupp.chatMessage({
+                content: {
+                    type: 'text',
+                    text: options.notification || '🤖',
+                },
+            })
         }).catch((err) => {
             console.error(err) 
         })
