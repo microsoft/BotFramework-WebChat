@@ -35,7 +35,7 @@ These are development environments we tested:
 
 ## Preparing the repository
 
-Web Chat is a monorepo and use [`lerna`](https://lerna.js.org/) for management. After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
+Web Chat is a monorepo and use [`lerna`](https://lerna.js.org/). After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
 
 ```sh
 npm ci
@@ -86,7 +86,7 @@ Automated tests in Web Chat are designed to run inside a stable and isolated tes
 
 ### Starting the test environment
 
-For stability, Web Chat use Docker for hosting the test environment.
+For environment stability, Web Chat use Docker for hosting the test environment.
 
 - Docker with [Windows Subsystem for Linux 2 (a.k.a. WSL2)](https://aka.ms/wsl2)
    - To start, run `npm run start:docker`
@@ -97,7 +97,7 @@ For stability, Web Chat use Docker for hosting the test environment.
 
 ### Running the test suite
 
-> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the testing page.
+> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the page. To update the Docker version, restart Docker.
 
 There are 2 ways to run the test suite, either one-off or continuously:
 
