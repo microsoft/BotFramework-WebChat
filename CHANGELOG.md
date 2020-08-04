@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/standalone@7.11.0`](https://npmjs.com/package/@babel/standalone)
       -  [`core-js@3.6.5`](https://npmjs.com/package/core-js)
       -  [`event-iterator@2.0.0`](https://npmjs.com/package/event-iterator)
-      -  [`expect@26.2.0`](https://npmjs.com/package/expect)
+      -  [`expect@25.5.0`](https://npmjs.com/package/expect)
       -  [`globalize@1.5.0`](https://npmjs.com/package/globalize)
       -  [`markdown-it-attrs@3.0.3`](https://npmjs.com/package/markdown-it-attrs)
       -  [`markdown-it@11.0.0`](https://npmjs.com/package/markdown-it)
