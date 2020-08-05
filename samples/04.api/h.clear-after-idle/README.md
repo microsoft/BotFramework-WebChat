@@ -23,96 +23,75 @@ This sample shows how to replace Web Chat's store to clear the conversation.
 
 # Code
 
-> Jump to [completed code](#completed-code) to see the end-result `App.js`, `Timer.js`, and `useTimer.js`.
+> Jump to [completed code](#completed-code) to see the end-result `App.js`, `useTimeoutAt.js`, `Countdown.js`, and `useInterval.js`.
 
 ## Overview
 
-This sample demonstrates how to clear the conversation data and start a new conversation with the user after the conversation has sat idle for a set time. To accomplish this, we created a custom hook - `useTimer` - that takes a callback as a parameter, which is called when the timer expires, and returns an array containing the time remaining in milliseconds - `timeRemaining` - and a method to set the time remaining - `setTimeRemaining`.
+This sample demonstrates how to clear the conversation data and start a new conversation with the user after the conversation has sat idle for a set time.
+
+To accomplish this, we created a state - `resetAt` - to indicate when we should reset the UI, in epoch time. Then, we created a custom hook - `useTimeoutAt` - that takes a callback as a parameter, which is called when the timer expires.
 
 <!-- prettier-ignore-start -->
 ```js
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-export default function useTimer(fn, step = 1000) {
-  const [timeRemaining, setTimeRemaining] = useState();
-
+export default function useTimeoutAt(fn, at) {
   useEffect(() => {
-    let timeout;
-    if (timeRemaining > 0) {
-      timeout = setTimeout(() => setTimeRemaining(ms => (ms > step ? ms - step : 0)), step);
-    } else if (timeRemaining === 0) {
-      setTimeRemaining();
-      fn();
-    }
+    const timer = setTimeout(fn, Math.max(0, at - Date.now()));
 
-    return () => clearTimeout(timeout);
-  }, [fn, timeRemaining, setTimeRemaining, step]);
-
-  return [timeRemaining, setTimeRemaining];
+    return () => clearTimeout(timer);
+  }, [fn, at]);
 }
 ```
 <!-- prettier-ignore-end -->
 
-We also created a custom store middleware that resets the timer by calling `setTimeRemaining` with the default time interval when the user submits the send box.
+We also created a custom store middleware that resets the timer by calling `setResetAt` with the default time interval when the user submits the send box, or when the connection established.
 
 <!-- prettier-ignore-start -->
 ```js
-setStore(
-  createStore({}, ({ dispatch }) => next => action => {
-    if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-      dispatch({
-        type: 'WEB_CHAT/SEND_EVENT',
-        payload: {
-          name: 'webchat/join',
-          value: { language: window.navigator.language }
-        }
-      });
-    } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-      // Reset the timer when the user sends an activity
-      setTimeRemaining(TIME_INTERVAL);
+setSession({
+  directLine: createDirectLine({ token }),
+  key,
+  store: createStore({}, () => next => action => {
+    if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED' || action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+      // Reset the timer when the connection established, or the user sends an activity
+      setResetAt(Date.now() + IDLE_TIMEOUT);
     }
 
     return next(action);
   })
-);
+});
 ```
 <!-- prettier-ignore-end -->
 
-If the user stops participating in the conversation and the timer expires, we will replace the store to clear the conversation data. However, when the store is replaced, Web Chat dispatches a `'DIRECT_LINE/DISCONNECT'`, so we also need to request a new token. The `initConversation` method handles both replacing the custom store and requesting a new Direct Line token to start a new conversation with the bot. This function is passed to the `useTimer` hook so the conversation will be restarted when the timer expires.
+If the user stops participating in the conversation and the timer expires, we will replace the store to clear the conversation data. However, when the store is replaced, Web Chat dispatches a `'DIRECT_LINE/DISCONNECT'`, so we also need to request a new token. The `initConversation` method handles both replacing the custom store and requesting a new Direct Line token to start a new conversation with the bot. This function is passed to the `useTimeoutAt` hook so the conversation will be restarted when the timer expires.
 
 <!-- prettier-ignore-start -->
 ```js
 const initConversation = useCallback(() => {
-  setStore(
-    createStore({}, ({ dispatch }) => next => action => {
-      if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-        dispatch({
-          type: 'WEB_CHAT/SEND_EVENT',
-          payload: {
-            name: 'webchat/join',
-            value: { language: window.navigator.language }
-          }
-        });
-      } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-        // Reset the timer when the user sends an activity
-        setTimeRemaining(TIME_INTERVAL);
-      }
-
-      return next(action);
-    })
-  );
+  setSession(false);
 
   (async function() {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-    const { token } = await res.json();
+    const token = await fetchToken();
+    const key = Date.now();
 
-    setDirectLine(createDirectLine({ token }));
-  })().catch(error => console.log(error));
-}, [setStore, setDirectLine]);
+    setSession({
+      directLine: createDirectLine({ token }),
+      key,
+      store: createStore({}, () => next => action => {
+        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED' || action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+          // Reset the timer when the connection established, or the user sends an activity
+          setResetAt(Date.now() + IDLE_TIMEOUT);
+        }
 
-useEffect(initConversation, []);
+        return next(action);
+      })
+    });
+  })();
+}, [setResetAt, setSession]);
 
-const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
+useTimeoutAt(initConversation, resetAt);
+useEffect(initConversation, [initConversation]);
 ```
 <!-- prettier-ignore-end -->
 
@@ -126,50 +105,52 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 
 import './App.css';
-import Timer from './Timer';
-import useTimer from './utils/useTimer';
+import Countdown from './Countdown';
+import useTimeoutAt from './utils/useTimeoutAt';
 
-const TIME_INTERVAL = 30000;
+const IDLE_TIMEOUT = 30000;
+
+async function fetchToken() {
+  const res = await fetch('https://webchat-mockbot2.azurewebsites.net/api/token/directline', { method: 'POST' });
+  const { token } = await res.json();
+
+  return token;
+}
 
 function App() {
-  const [directLine, setDirectLine] = useState(createDirectLine({}));
-  const [store, setStore] = useState();
+  const [resetAt, setResetAt] = useState(() => Date.now() + IDLE_TIMEOUT);
+  const [session, setSession] = useState();
 
   const initConversation = useCallback(() => {
-    setStore(
-      createStore({}, ({ dispatch }) => next => action => {
-        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-          dispatch({
-            type: 'WEB_CHAT/SEND_EVENT',
-            payload: {
-              name: 'webchat/join',
-              value: { language: window.navigator.language }
-            }
-          });
-        } else if (action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
-          setTimeRemaining(TIME_INTERVAL);
-        }
-
-        return next(action);
-      })
-    );
+    setSession(false);
 
     (async function() {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-      const { token } = await res.json();
+      const token = await fetchToken();
+      const key = Date.now();
 
-      setDirectLine(createDirectLine({ token }));
-    })().catch(error => console.log(error));
-  }, [setStore, setDirectLine]);
+      setSession({
+        directLine: createDirectLine({ token }),
+        key,
+        store: createStore({}, () => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED' || action.type === 'WEB_CHAT/SUBMIT_SEND_BOX') {
+            setResetAt(Date.now() + IDLE_TIMEOUT);
+          }
 
-  useEffect(initConversation, []);
+          return next(action);
+        })
+      });
+    })();
+  }, [setResetAt, setSession]);
 
-  const [timeRemaining, setTimeRemaining] = useTimer(initConversation);
+  useTimeoutAt(initConversation, resetAt);
+  useEffect(initConversation, [initConversation]);
 
   return (
     <div className="App">
-      <Timer timeRemaining={timeRemaining} />
-      <ReactWebChat className="chat" directLine={directLine} store={store} />
+      <Countdown to={resetAt} />
+      {!!session && (
+        <ReactWebChat className="chat" directLine={session.directLine} key={session.key} store={session.store} />
+      )}
     </div>
   );
 }
