@@ -634,7 +634,8 @@ useObserveScrollPosition(observer: (ScrollObserver? | false), deps: any[]): void
 type ScrollObserver = (position: ScrollPosition) => void;
 
 type ScrollPosition {
-  scrollTop: number
+  activityID: string;
+  scrollTop: number;
 }
 ```
 <!-- prettier-ignore-end -->
@@ -855,16 +856,17 @@ This function is for rendering typing indicator for all participants of the conv
 useScrollTo(): (position: ScrollPosition, options: ScrollOptions) => void
 
 type ScrollOptions {
-  behavior: 'auto' | 'smooth'
+  behavior: 'auto' | 'smooth';
 }
 
 type ScrollPosition {
-  scrollTop: number
+  activityID: string;
+  scrollTop: number;
 }
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called, will scroll the transcript to the specific scroll position.
+This hook will return a function that, when called, will scroll the transcript to the specific scroll position. If both `activityID` and `scrollTop` is specified, `scrollTop` will be preferred since it gives higher precision.
 
 If `options` is passed with `behavior` set to `smooth`, it will smooth-scrolling to the scroll position. Otherwise, it will jump to the scroll position instantly.
 
