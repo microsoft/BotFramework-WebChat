@@ -439,6 +439,9 @@ const Composer = ({
     return typingIndicatorRenderer || createTypingIndicatorRenderer(typingIndicatorMiddleware);
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
+  const transcriptActivityElementsRef = useRef([]);
+  const transcriptRootElementRef = useRef();
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -482,7 +485,9 @@ const Composer = ({
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
+      transcriptActivityElementsRef,
       transcriptFocusRef,
+      transcriptRootElementRef,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
       username,
@@ -520,7 +525,9 @@ const Composer = ({
       suggestedActionsAccessKey,
       telemetryDimensionsRef,
       trackDimension,
+      transcriptActivityElementsRef,
       transcriptFocusRef,
+      transcriptRootElementRef,
       userID,
       username,
       webSpeechPonyfill
