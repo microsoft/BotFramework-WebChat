@@ -1,5 +1,11 @@
 import pcmWaveArrayBufferToRiffWaveArrayBuffer from './pcmWaveArrayBufferToRiffWaveArrayBuffer';
 
+beforeAll(() => {
+  // When running under JSDOM, the ArrayBuffer and Uint8Array.buffer doesn't match.
+  // This code is to pair them up.
+  global.ArrayBuffer = new Uint8Array().buffer.constructor;
+});
+
 test('throw if not ArrayBuffer', () => {
   expect(() => pcmWaveArrayBufferToRiffWaveArrayBuffer(new Int16Array())).toThrow();
 });
