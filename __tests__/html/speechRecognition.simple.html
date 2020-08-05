@@ -27,7 +27,7 @@
         token
       } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         const queryParams = window.WebChatTest.parseURLParams(location.hash);
         const {
           sa: speechAuthorizationToken,
@@ -56,7 +56,7 @@
         // Since we construct the MockAudioContext in the iterable, we need to start the iteration sooner.
         // The iterateAsyncIterable() will iterate the async iterable immediately and return a new iterable.
         const bufferSourceAsyncIterable = iterateAsyncIterable(
-          new EventIterator((push, stop) => {
+          new EventIterator(({ push, stop }) => {
             let allBuffers = [];
             let timer;
 

@@ -9,14 +9,14 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "adaptivecards": "1.2.5",
+    "adaptivecards": "1.2.6",
     "botframework-directlinejs": "0.12.0",
     "botframework-webchat": "0.0.0-0",
-    "classnames": "^2.2.6",
-    "glamor": "^2.20.40",
-    "memoize-one": "^5.0.2",
-    "on-error-resume-next": "^1.0.0",
-    "react-scripts": "^3.0.0",
+    "classnames": "2.2.6",
+    "glamor": "2.20.40",
+    "memoize-one": "5.1.1",
+    "on-error-resume-next": "1.1.0",
+    "react-scripts": "3.4.1",
     "rxjs": "5"
   },
   "scripts": {
