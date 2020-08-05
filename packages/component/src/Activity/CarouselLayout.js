@@ -3,7 +3,7 @@ import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from '
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useDirection from '../hooks/useDirection';
@@ -15,10 +15,18 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
+const CarouselLayout = ({
+  activity,
+  children,
+  hideTimestamp,
+  renderActivityStatus,
+  renderAttachment,
+  renderAvatar,
+  showCallout
+}) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const filmStyleSet = createBasicStyleSet({ cursor: null });
+  const filmStyleSet = useMemo(() => createBasicStyleSet({ cursor: null }), []);
   const leftSideFlipper = direction === 'rtl' ? '>' : '<';
   const localize = useLocalizer();
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';
@@ -28,9 +36,14 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
       <FilmContext.Consumer>
         {({ scrollBarWidth }) => (
           <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
-            <CarouselFilmStrip activity={activity} nextVisibleActivity={nextVisibleActivity}>
-              {children}
-            </CarouselFilmStrip>
+            <CarouselFilmStrip
+              activity={activity}
+              hideTimestamp={hideTimestamp}
+              renderActivityStatus={renderActivityStatus}
+              renderAttachment={renderAttachment}
+              renderAvatar={renderAvatar}
+              showCallout={showCallout}
+            />
             {scrollBarWidth !== '100%' && (
               <React.Fragment>
                 <Flipper
@@ -60,13 +73,20 @@ const CarouselLayout = ({ activity, children, nextVisibleActivity }) => {
 
 CarouselLayout.defaultProps = {
   children: undefined,
-  nextVisibleActivity: undefined
+  hideTimestamp: false,
+  renderActivityStatus: false,
+  renderAvatar: false,
+  showCallout: true
 };
 
 CarouselLayout.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  nextVisibleActivity: PropTypes.any
+  hideTimestamp: PropTypes.bool,
+  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
+  renderAttachment: PropTypes.func.isRequired,
+  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
+  showCallout: PropTypes.bool
 };
 
 export default CarouselLayout;

@@ -1,0 +1,76 @@
+[
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "1.0",
+    "text": "Proident sunt nostrud incididunt veniam occaecat minim elit nulla labore exercitation nulla.",
+    "timestamp": -300001,
+    "type": "message"
+  },
+  {
+    "from": {
+      "role": "bot"
+    },
+    "id": "1.1",
+    "text": "Ullamco veniam ea non quis elit.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "attachmentLayout": "carousel",
+    "attachments": [
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
+      },
+      {
+        "contentType": "image/jpeg",
+        "contentUrl": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
+      }
+    ],
+    "from": {
+      "role": "bot"
+    },
+    "id": "1.2",
+    "text": "This is carousel.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "2.0",
+    "text": "Aliquip laborum veniam sunt do aliquip anim.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "2.1",
+    "text": "Voluptate amet velit culpa excepteur voluptate cupidatat eu do magna occaecat.",
+    "timestamp": 0,
+    "type": "message"
+  },
+  {
+    "channelData": {
+      "state": "sent"
+    },
+    "from": {
+      "role": "user"
+    },
+    "id": "2.2",
+    "text": "Cupidatat et qui quis in excepteur qui voluptate mollit dolore nisi tempor ut.",
+    "timestamp": 0,
+    "type": "message"
+  }
+]

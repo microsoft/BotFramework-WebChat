@@ -67,7 +67,9 @@ test('prepend text', async () => {
       activityStatusMiddleware: () => next => args => {
         const nextRender = next(args);
 
-        if (nextRender) {
+        // "nextRender" may render a screen reader only timestamp. Thus, not returning falsy.
+        // We should only prepend when "hideTimestamp" is not set.
+        if (!args.hideTimestamp) {
           if (args.activity.from.role === 'user') {
             return React.createElement('span', {}, ['User at ', nextRender]);
           } else {

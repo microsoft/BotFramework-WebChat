@@ -16,6 +16,10 @@
       "destination": "__tests__/html/assets/:filename"
     },
     {
+      "source": "/assets/transcripts/:filename",
+      "destination": "__tests__/html/assets/transcripts/:filename"
+    },
+    {
       "source": "/__dist__/testharness.js",
       "destination": "packages/testharness/dist/testharness.js"
     },

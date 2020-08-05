@@ -20,11 +20,11 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
   const webChatTestLoaded = await driver.executeScript(() => !!window.WebChatTest);
 
   if (!webChatLoaded) {
-    throw new Error('"webchat.js" is not loaded on the page.');
+    throw new Error('"webchat.js" did not load on the page, or the page was not found.');
   }
 
   if (!webChatTestLoaded) {
-    throw new Error('"testharness.js" is not loaded on the page.');
+    throw new Error('"testharness.js" did not load on the page.');
   }
 
   if (await driver.executeScript(() => !(window.React && window.ReactDOM && window.ReactTestUtils))) {
@@ -75,6 +75,15 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
             .sendKeys(Key.TAB)
             .keyUp(Key.SHIFT)
             .perform();
+        } else if (job.type === 'send access key') {
+          await driver
+            .actions()
+            .keyDown(Key.ALT)
+            .keyDown(Key.SHIFT)
+            .sendKeys(job.payload.key)
+            .keyUp(Key.SHIFT)
+            .keyUp(Key.ALT)
+            .perform();
         } else if (job.type === 'snapshot') {
           expect(await driver.takeScreenshot()).toMatchImageSnapshot(customImageSnapshotOptions);
         } else if (job.type === 'save file') {
@@ -85,6 +94,8 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
           console.log(`Saved to ${filename}`);
 
           result = filename;
+        } else if (job.type === 'expect deprecation') {
+          result = (await driver.executeScript(() => window.WebChatTest.shiftDeprecationHistory())).length;
         } else {
           throw new Error(`Unknown job type "${job.type}".`);
         }

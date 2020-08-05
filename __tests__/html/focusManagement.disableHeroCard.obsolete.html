@@ -21,8 +21,8 @@
 
         window.WebChat.renderWebChat(
           {
-            attachmentMiddleware: () => next => args => {
-              const { activity, attachment } = args;
+            attachmentMiddleware: () => next => (...args) => {
+              const [{ activity, attachment }] = args;
               const { activities } = store.getState();
               const messageActivities = activities.filter(activity => activity.type === 'message');
               const mostRecent = messageActivities.pop() === activity;
@@ -37,7 +37,7 @@
                 );
               }
 
-              return next(args);
+              return next(...args);
             },
             directLine,
             store

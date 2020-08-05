@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .decorated-activity {
+        border: solid 2px limegreen;
+      }
+
+      .decorated-attachment {
+        border: solid 2px purple;
+      }
+
+      .attachment-figure {
+        margin: 0;
+      }
+
+      .attachment-figure-caption {
+        background-color: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+      } = window;
+
+      (async function() {
+        const activityMiddleware = () => next => (...renderActivityArgs) => {
+          const [{ activity }] = renderActivityArgs;
+
+          const renderActivity = next(...renderActivityArgs);
+
+          if (/^1/.test(activity.id)) {
+            return (children, ...renderAttachmentArgs) => (
+              <div className="decorated-activity">
+                {renderActivity(
+                  (...renderAttachmentArgs) => (
+                    <div className="decorated-attachment">{children(...renderAttachmentArgs)}</div>
+                  ),
+                  ...renderActivityArgs
+                )}
+              </div>
+            );
+          } else if (/^2/.test(activity.id)) {
+            return (children, ...renderAttachmentArgs) =>
+              renderActivity((...renderAttachmentArgs) => {
+                const [firstArg] = renderAttachmentArgs;
+                const {
+                  attachment,
+                  attachment: { contentType }
+                } = firstArg;
+
+                if (/^image\//.test(contentType)) {
+                  return (
+                    <figure className="attachment-figure">
+                      {children(...renderAttachmentArgs)}
+                      <figcaption className="attachment-figure-caption">
+                        {children(
+                          {
+                            ...firstArg,
+                            attachment: {
+                              ...attachment,
+                              contentType: 'application/octet-stream'
+                            }
+                          },
+                          ...renderAttachmentArgs
+                        )}
+                      </figcaption>
+                    </figure>
+                  );
+                }
+
+                return children(...renderAttachmentArgs);
+              }, ...renderActivityArgs);
+          }
+
+          return renderActivity;
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            activityMiddleware,
+            directLine: await createDirectLineWithTranscript([
+              {
+                attachmentLayout: 'carousel',
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                  },
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+                  }
+                ],
+                from: {
+                  role: 'bot'
+                },
+                id: '1.0',
+                text:
+                  'Decorating activity of **carousel layout**. Also decorate attachment without using attachment middleware.',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg'
+                  }
+                ],
+                from: {
+                  role: 'bot'
+                },
+                id: '1.1',
+                text:
+                  'Decorating activity of **stacked layout**. Also decorate attachment without using attachment middleware.',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                attachmentLayout: 'carousel',
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg',
+                    name: 'surface1.jpg'
+                  },
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
+                    name: 'surface2.jpg'
+                  }
+                ],
+                from: {
+                  role: 'bot'
+                },
+                id: '2.10',
+                text: 'Rendering attachment twice by calling downstreamer twice, in **carousel layout**.',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface4.jpg',
+                    name: 'surface4.jpg'
+                  }
+                ],
+                from: {
+                  role: 'bot'
+                },
+                id: '2.1',
+                text: 'Rendering attachment twice by calling downstreamer twice, in **stacked layout**.',
+                timestamp: 0,
+                type: 'message'
+              }
+            ]),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

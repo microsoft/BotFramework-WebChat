@@ -59,6 +59,9 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useAvatarForUser`](#useavatarforuser)
 -  [`useByteFormatter`](#useByteFormatter)
 -  [`useConnectivityStatus`](#useconnectivitystatus)
+-  [`useCreateActivityRenderer`](#usecreateactivityrenderer)
+-  [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
+-  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
 -  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
 -  [`useDictateInterims`](#usedictateinterims)
@@ -69,6 +72,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocus`](#usefocus)
 -  [`useFocusSendBox`](#usefocussendbox)
+-  [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
@@ -83,9 +87,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
 -  [`useRelativeTimeFormatter`](#useRelativeTimeFormatter)
--  [`useRenderActivity`](#userenderactivity)
--  [`useRenderActivityStatus`](#userenderactivitystatus)
+-  [`useRenderActivity`](#userenderactivity) (Deprecated)
+-  [`useRenderActivityStatus`](#userenderactivitystatus) (Deprecated)
 -  [`useRenderAttachment`](#userenderattachment)
+-  [`useRenderAvatar`](#userenderavatar) (Deprecated)
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useRenderToast`](#userendertoast)
 -  [`useRenderTypingIndicator`](#userendertypingindicator)
@@ -97,7 +102,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
--  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity)
+-  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity) (Deprecated)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
 -  [`useSetNotification`](#usesetnotification)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
@@ -234,6 +239,77 @@ This function will return the Direct Line connectivity status:
 -  `reconnecting`: Reconnecting after interruption
 -  `sagaerror`: Errors on JavaScript renderer; please see the browser's console
 -  `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
+
+## `useCreateActivityRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateActivityRenderer(): ({
+  activity: Activity
+}) =>
+  (
+    false |
+    ({
+      hideTimestamp: boolean,
+      renderActivityStatus: false | () => React.Element,
+      renderAvatar: false | () => React.Element,
+      showCallout: boolean
+    }) => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+This function will return a function that, when called, will return a function to render the specified activity.
+
+If a render function is returned, calling the function must return visualization of the activity. The visualization may vary based on the activity status, avatar, and bubble nub (a.k.a. callout).
+
+If the activity middleware wants to hide the activity, it must return `false` instead of a render function. The middleware should not return a render function that, when called, will return `false`.
+
+For `renderActivityStatus` and `renderAvatar`, it could be one of the followings:
+
+-  `false`: Do not render activity status or avatar.
+-  `() => React.Element`: Render activity status or avatar by calling this function.
+
+If `showCallout` is truthy, the activity should render the bubble nub and an avatar. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
+
+If `showCallout` is falsy but `renderAvatar` is truthy, the activity should not render the avatar, but leave a space for the avatar to keep aligned with other activities.
+
+## `useCreateActivityStatusRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateActivityStatusRenderer(): ({
+  activity: Activity,
+  sendState: 'sending' | 'send failed' | 'sent'
+}) =>
+  (
+    false |
+    ({
+      hideTimestamp: boolean
+    }) => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+This function will return a function that, when called, will return a function to render the activity status for the specified activity. Activity status could be a timestamp or a retry prompt.
+
+When `hideTimestamp` is set to `true`, the activity status middleware should hide if it is rendering a timestamp for the activity. Although the timestamp is hidden, activity status should consider rendering accessible counterpart.
+
+## `useCreateAvatarRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateAvatarRenderer(): ({
+  activity: Activity
+}) =>
+  (
+    false |
+    () => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+This function will return a function that, when called, will return a function to render the avatar for the specified activity.
 
 ## `useDateFormatter`
 
@@ -378,6 +454,16 @@ useFocusSendBox(): () => void
 > This function is deprecated. Developers should migrate to [`useFocus`](#usefocus).
 
 When called, this function will send focus to the send box.
+
+## `useGetSendTimeoutForActivity`
+
+<!-- prettier-ignore-start -->
+```js
+useGetSendTimeoutForActivity(): ({ activity: Activity }) => number
+```
+<!-- prettier-ignore-end -->
+
+When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useGrammars`
 
@@ -636,7 +722,9 @@ useRenderActivity(
 ```
 <!-- prettier-ignore-end -->
 
-This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `nextVisibleActivity`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
+> This function is deprecated. Developers should migrate to [`useCreateActivityRenderer`](#usecreateactivityrenderer).
+
+This function is for rendering an activity and its attachments inside a React element. Because of the parent-child relationship, the caller will need to pass a render function in order for the attachment to create a render function for the activity. When rendering the activity, the caller will need to pass `activity` and `nextVisibleActivity`. This function is a composition of `activityRendererMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`.
 
 Note that not all activities are rendered, e.g. the event activity. Because of this, those activities will not be rendered. The `nextVisibleActivity` is the pointer to the next visible activity and is intended for the activity status renderer on grouping timestamps for adjacent activities.
 
@@ -650,14 +738,16 @@ Today, we pass `activity` and `nextVisibleActivity` to the middleware, so the `a
 
 <!-- prettier-ignore-start -->
 ```js
-useRenderActivityStatus(): ({
+useRenderActivityStatus({
   activity: Activity,
   nextVisibleActivity: Activity
 }) => React.Element
 ```
 <!-- prettier-ignore-end -->
 
-This function is for rendering the status of an activity. The caller will need to pass `activity` and `nextVisibleActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop.
+> This function is deprecated. Developers should migrate to [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer).
+
+This function is for rendering the status of an activity. The caller will need to pass `activity` and `nextVisibleActivity` as parameters. This function is a composition of `activityStatusRendererMiddleware`, which is passed as a prop to `<ReactWebChat>`ord `<Composer>`.
 
 ## `useRenderAttachment`
 
@@ -670,13 +760,30 @@ useRenderAttachment(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function is for rendering an attachments inside a React element. The caller will need to pass `activity` and `attachment` as parameters. This function is a composition of `attachmentRendererMiddleware`, which is passed as a prop.
+This function is for rendering an attachments inside a React element. The caller will need to pass `activity` and `attachment` as parameters. This function is a composition of `attachmentRendererMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`.
 
 <!-- prettier-ignore-start -->
 ```js
 () => next => { activity, attachment } => next({ activity, attachment })
 ```
 <!-- prettier-ignore-end -->
+
+## `useRenderAvatar`
+
+<!-- prettier-ignore-start -->
+```js
+useRenderAvatar({
+  activity: Activity
+}) => (
+  false |
+  () => React.Element
+)
+```
+<!-- prettier-ignore-end -->
+
+> This function is deprecated. Developers should migrate to [`useCreateAvatarRenderer`](#usecreateavatarrenderer).
+
+This function is for rendering the avatar of an activity. The caller will need to pass `activity` as parameter. This function is a composition of `avatarRendererMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`.
 
 ## `useRenderMarkdownAsHTML`
 
@@ -713,7 +820,7 @@ useRenderToast(): ({ notification: Notification }) => React.Element
 ```
 <!-- prettier-ignore-end -->
 
-This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter to the function. This function is a composition of `toastMiddleware`, which is passed as a prop to Web Chat.
+This function is for rendering a toast for the notification toaster. The caller will need to pass `notification` as parameter to the function. This function is a composition of `toastMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`.
 
 ## `useRenderTypingIndicator`
 
@@ -735,7 +842,7 @@ useRenderTypingIndicator():
 ```
 <!-- prettier-ignore-end -->
 
-This function is for rendering typing indicator for all participants of the conversation. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop to Web Chat. The caller will pass the following arguments:
+This function is for rendering typing indicator for all participants of the conversation. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`. The caller will pass the following arguments:
 
 -  `activeTyping` lists of participants who are actively typing.
 -  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
@@ -840,9 +947,11 @@ When called, this function will send a `postBack` activity to the bot.
 
 ## `useSendTimeoutForActivity`
 
+> This function is deprecated. Developers should migrate to [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity).
+
 <!-- prettier-ignore-start -->
 ```js
-useSendTimeoutForActivity(): (activity: Activity) => number
+useSendTimeoutForActivity(activity: Activity) => number
 ```
 <!-- prettier-ignore-end -->
 

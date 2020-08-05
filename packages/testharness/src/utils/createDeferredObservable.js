@@ -15,6 +15,7 @@ export default function createDeferredObservable(subscribe) {
 
     return () => {
       removeInline(observers, observer);
+
       unsubscribe && unsubscribe();
     };
   });

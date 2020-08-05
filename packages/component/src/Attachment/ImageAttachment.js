@@ -8,10 +8,6 @@ const ImageAttachment = ({ attachment }) => (
 );
 
 ImageAttachment.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array.isRequired
-  }).isRequired,
-
   // Either attachment.contentUrl or attachment.thumbnailUrl must be specified.
   attachment: PropTypes.oneOfType([
     PropTypes.shape({

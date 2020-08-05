@@ -1,0 +1,12 @@
+{
+  "transcriptNames": [
+    "attachment-without-message.json",
+    "carousel-hero-cards.json",
+    "carousel-layout.json",
+    "markdown-message.json",
+    "multiple-lines-multiple-files.json",
+    "simple-messages.json",
+    "single-line-no-files.json",
+    "user-upload.json"
+  ]
+}

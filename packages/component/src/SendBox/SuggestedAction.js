@@ -1,17 +1,20 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
 import useDirection from '../hooks/useDirection';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
+import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
+import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 import useSuggestedActions from '../hooks/useSuggestedActions';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 
 const SUGGESTED_ACTION_CSS = css({
   '&.webchat__suggested-action': {
@@ -39,12 +42,24 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, image, text, type, value }) => {
+const SuggestedAction = ({
+  'aria-hidden': ariaHidden,
+  buttonText,
+  displayText,
+  image,
+  imageAlt,
+  text,
+  type,
+  value
+}) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+  const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
   const [disabled] = useDisabled();
   const focus = useFocus();
+  const focusRef = useRef();
+  const localizeAccessKey = useLocalizeAccessKey();
   const performCardAction = usePerformCardAction();
   const scrollToEnd = useScrollToEnd();
 
@@ -61,19 +76,24 @@ const SuggestedAction = ({ 'aria-hidden': ariaHidden, buttonText, displayText, i
     [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
   );
 
+  useFocusAccessKeyEffect(accessKey, focusRef);
+
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
     >
       <AccessibleButton
+        {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}
         className="webchat__suggested-action__button"
         disabled={disabled}
         onClick={handleClick}
+        ref={focusRef}
         type="button"
       >
         {image && (
           <img
+            alt={imageAlt}
             className={classNames(
               'webchat__suggested-action__image',
               direction === 'rtl' && 'webchat__suggested-action__image--rtl'
@@ -91,6 +111,7 @@ SuggestedAction.defaultProps = {
   'aria-hidden': false,
   displayText: '',
   image: '',
+  imageAlt: undefined,
   text: '',
   type: '',
   value: undefined
@@ -101,6 +122,7 @@ SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
   displayText: PropTypes.string,
   image: PropTypes.string,
+  imageAlt: PropTypes.string,
   text: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.any

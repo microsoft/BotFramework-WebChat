@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Enable recomposition mode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://unpkg.com/babel-standalone@6/babel.js"></script> -->
+    <script crossorigin="anonymous" src="https://unpkg.com/regenerator-runtime@0.13.3/runtime.js"></script>
+
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/classnames@2.2.6"></script>
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
+    <!-- <script src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js"></script> -->
+    <script src="/webchat-es5.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background-color: #fafafa;
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+      }
+
+      .app {
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: auto;
+        max-width: 720px;
+        min-width: 360px;
+        transition-duration: 0.5s;
+        transition-property: width;
+        width: 360px;
+      }
+
+      .app--wide {
+        width: 720px;
+      }
+
+      .options-bar {
+        background-color: floralwhite;
+        border: solid 2px #ccc;
+        border-radius: 4px;
+        bottom: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        margin: 10px;
+        overflow: hidden;
+        position: fixed;
+        right: 0;
+        z-index: 1;
+      }
+
+      .options-bar__body {
+        height: 100%;
+        padding: 10px;
+      }
+
+      .options-bar--minimized .options-bar__body {
+        height: 0;
+        padding: 0 10px;
+      }
+
+      .options-bar__header {
+        background-color: rgba(0, 0, 0, 0.1);
+        display: flex;
+        padding: 10px;
+      }
+
+      .transcript {
+        flex: 1;
+      }
+
+      .transcript > li + li {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      (async function() {
+        // Importing from UMD bundle.
+        const {
+          React: { useCallback, useEffect, useMemo, useRef, useState },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            createDirectLine,
+            hooks: { useConnectivityStatus, useSendMessage }
+          }
+        } = window;
+
+        function useDebugDeps(depsMap, name) {
+          const lastDepsMapRef = useRef({});
+
+          const { current: lastDepsMap } = lastDepsMapRef;
+          const keys = new Set([...Object.keys(depsMap), ...Object.keys(lastDepsMap)]);
+          const keysChanged = Array.from(keys).filter(key => !Object.is(depsMap[key], lastDepsMap[key]));
+
+          if (keysChanged.length) {
+            console.groupCollapsed(`Changes found in ${name}`);
+
+            keysChanged.forEach(key => {
+              console.log(key, { from: lastDepsMap[key], to: depsMap[key] });
+            });
+
+            console.groupEnd();
+          }
+
+          lastDepsMapRef.current = depsMap;
+        }
+
+        const NEXT_MESSAGES = [
+          'Exercitation laboris enim ad Lorem.',
+          'Irure velit ad laborum reprehenderit cupidatat excepteur.',
+          'Velit veniam deserunt aliquip velit irure officia cupidatat sint velit minim minim sit et.',
+          'Nisi cupidatat officia dolore sint eu amet.',
+          'Ea fugiat amet sit est.',
+          'Laboris irure do laborum laborum aliquip minim deserunt aute officia velit mollit Lorem amet.',
+          'Sint quis aliquip ut do sit consequat occaecat sunt occaecat exercitation aliqua.',
+          'Commodo elit aliqua voluptate exercitation in minim amet enim.',
+          'Nulla magna dolore et adipisicing quis qui sit cillum qui nisi.',
+          'Amet exercitation sit culpa duis exercitation magna labore.',
+          'Exercitation qui dolor labore ex quis fugiat consectetur consectetur et cillum voluptate.',
+          'Elit dolor pariatur quis in elit irure qui sit exercitation commodo voluptate.',
+          'Reprehenderit ullamco qui ullamco nostrud consequat excepteur minim aute elit incididunt ad aliqua ad ipsum.',
+          'Officia reprehenderit et excepteur ipsum fugiat eu fugiat excepteur consequat occaecat aute Lorem.',
+          'Cillum cupidatat occaecat consectetur ut anim veniam consequat Lorem quis.',
+          'Et velit velit fugiat est irure anim est Lorem veniam cillum tempor eu consequat esse.',
+          'Fugiat dolore velit quis tempor laboris laborum cupidatat excepteur eiusmod enim tempor proident fugiat nulla.',
+          'Sunt do labore anim tempor nulla deserunt elit elit adipisicing consequat.'
+        ];
+
+        function shareObservable(observable) {
+          let observers = [];
+          let subscription;
+
+          return new Observable(observer => {
+            if (!subscription) {
+              subscription = observable.subscribe({
+                complete() {
+                  observers.forEach(observer => observer.complete());
+                },
+
+                error(err) {
+                  observers.forEach(observer => observer.error(err));
+                },
+
+                next(value) {
+                  observers.forEach(observer => observer.next(value));
+                }
+              });
+            }
+
+            observers.push(observer);
+
+            return () => {
+              observers = observers.filter(o => o !== observer);
+
+              if (!observers.length) {
+                subscription.unsubscribe();
+                subscription = null;
+              }
+            };
+          });
+        }
+
+        function createDeferredObservable(subscribe) {
+          const observers = [];
+          const observable = new Observable(observer => {
+            const unsubscribe = subscribe && subscribe(observer);
+
+            observers.push(observer);
+
+            return () => {
+              removeInline(observers, observer);
+              unsubscribe && unsubscribe();
+            };
+          });
+
+          return {
+            complete: () => observers.forEach(observer => observer.complete()),
+            error: error => observers.forEach(observer => observer.error(error)),
+            next: value => observers.forEach(observer => observer.next(value)),
+            observable
+          };
+        }
+
+        const connectionStatusDeferredObservable = createDeferredObservable(() => {
+          connectionStatusDeferredObservable.next(0);
+        });
+
+        const activityDeferredObservable = createDeferredObservable(({ next }) => {
+          connectionStatusDeferredObservable.next(1);
+          connectionStatusDeferredObservable.next(2);
+
+          setTimeout(() => {
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1.0',
+              text: 'Lorem pariatur ea veniam.',
+              timestamp: new Date(Date.now() - 5001).toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1.1',
+              text: 'Duis duis irure proident dolor labore.',
+              timestamp: new Date(Date.now() - 5001).toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              channelData: { state: 'sent' },
+              from: { role: 'user' },
+              id: '1.2',
+              text: 'Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              from: { role: 'bot' },
+              id: '2.0',
+              text: 'Excepteur mollit ipsum id cupidatat.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+
+            activityDeferredObservable.next({
+              attachments: [
+                {
+                  contentType: 'image/jpeg',
+                  contentUrl:
+                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                },
+                {
+                  contentType: 'image/jpeg',
+                  contentUrl:
+                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+                }
+              ],
+              from: { role: 'bot' },
+              id: '2.1',
+              text:
+                'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia.',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+          }, 100);
+        });
+
+        const directLine = {
+          activity$: shareObservable(activityDeferredObservable.observable),
+          connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
+          postActivity: () => {}
+        };
+
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const Toggle = ({ checked, children, disabled, onChange, type }) => {
+          const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
+          const style = useMemo(() => ({ userSelect: 'none' }), []);
+
+          return (
+            <label style={style}>
+              <input checked={checked} disabled={disabled} onChange={handleChange} type={type || 'checkbox'} />
+              {children}
+            </label>
+          );
+        };
+
+        function getComboNumber(states) {
+          return states.reduce((value, state, index) => value + (state ? Math.pow(2, index) : 0), 0);
+        }
+
+        function comboNumberSetter(value, setters) {
+          setters.forEach((setter, index) => setter(!!(value & Math.pow(2, index))));
+        }
+
+        function createCustomActivityMiddleware(attachmentLayout) {
+          return () => next => args => next({ ...args, activity: { ...args.activity, attachmentLayout } });
+        }
+
+        const App = () => {
+          const [wide, setWide] = useState(false);
+          const [rtl, setRTL] = useState(false);
+          const [botAvatarInitials, setBotAvatarInitials] = useState(true);
+          const [botNub, setBotNub] = useState(true);
+          const [botOnTop, setBotOnTop] = useState(true);
+          const [userAvatarInitials, setUserAvatarInitials] = useState(true);
+          const [userNub, setUserNub] = useState(true);
+          const [userOnTop, setUserOnTop] = useState(true);
+          const [carouselLayout, setCarouselLayout] = useState(false);
+
+          const activityMiddleware = useMemo(
+            () => createCustomActivityMiddleware(carouselLayout ? 'carousel' : 'stacked'),
+            [carouselLayout]
+          );
+
+          const setBotOnTop2 = useCallback(() => setBotOnTop(true), [setBotOnTop]);
+          const setBotOnBottom = useCallback(() => setBotOnTop(false), [setBotOnTop]);
+          const setUserOnTop2 = useCallback(() => setUserOnTop(true), [setUserOnTop]);
+          const setUserOnBottom = useCallback(() => setUserOnTop(false), [setUserOnTop]);
+
+          const setCarouselLayout2 = useCallback(() => setCarouselLayout(true), [setCarouselLayout]);
+          const setStackedLayout = useCallback(() => setCarouselLayout(false), [setCarouselLayout]);
+
+          const styleValueAndSetters = [
+            [botAvatarInitials, setBotAvatarInitials],
+            [botNub, setBotNub],
+            [botOnTop, setBotOnTop],
+            [userAvatarInitials, setUserAvatarInitials],
+            [userNub, setUserNub],
+            [userOnTop, setUserOnTop],
+            [carouselLayout, setCarouselLayout]
+          ];
+
+          const styleValues = styleValueAndSetters.map(([value]) => value);
+          const styleSetters = styleValueAndSetters.map(([_, setter]) => setter);
+
+          const styleComboNumber = getComboNumber(styleValues);
+          const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
+
+          const handleStyleComboNumberChange = useCallback(({ target: { value } }) => setStyleComboNumber(value), [
+            setStyleComboNumber
+          ]);
+
+          const handlePlusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber + 1), [
+            styleComboNumber,
+            setStyleComboNumber
+          ]);
+
+          const handleMinusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber - 1), [
+            styleComboNumber,
+            setStyleComboNumber
+          ]);
+
+          const viewValueAndSetters = [
+            [wide, setWide],
+            [rtl, setRTL]
+          ];
+
+          const viewValues = viewValueAndSetters.map(([value]) => value);
+          const viewSetters = viewValueAndSetters.map(([_, setter]) => setter);
+
+          const viewComboNumber = getComboNumber(viewValues);
+          const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
+
+          const handleViewComboNumberChange = useCallback(({ target: { value } }) => setViewComboNumber(value), [
+            setViewComboNumber
+          ]);
+
+          const handlePlusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber + 1), [
+            viewComboNumber,
+            setViewComboNumber
+          ]);
+
+          const handleMinusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber - 1), [
+            viewComboNumber,
+            setViewComboNumber
+          ]);
+
+          const handleAddMessage = useCallback(() => {
+            activityDeferredObservable.next({
+              from: { role: 'bot' },
+              id: Math.random()
+                .toString(36)
+                .substr(2),
+              text: NEXT_MESSAGES.shift(),
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            });
+          }, []);
+
+          const [minimized, setMinimized] = useState(false);
+          const handleMinimizeClick = useCallback(() => setMinimized(!minimized), [minimized, setMinimized]);
+
+          const [showAvatarInGroup, setShowAvatarInGroup] = useState('status');
+          const [showAvatarForEveryActivity, setShowAvatarForEveryActivity] = useState(false);
+
+          const setShowAvatarInSenderGroup = useCallback(() => {
+            setShowAvatarForEveryActivity(false);
+            setShowAvatarInGroup('sender');
+          }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
+
+          const setShowAvatarInStatusGroup = useCallback(() => {
+            setShowAvatarForEveryActivity(false);
+            setShowAvatarInGroup('status');
+          }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
+
+          const setShowAvatarInGroupType = useCallback(sender => setShowAvatarInGroup('sender'), [
+            setShowAvatarInGroup
+          ]);
+
+          const groupingValueAndSetters = [
+            [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
+            [showAvatarForEveryActivity, setShowAvatarForEveryActivity]
+          ];
+
+          const groupingValues = groupingValueAndSetters.map(([value]) => value);
+          const groupingSetters = groupingValueAndSetters.map(([_, setter]) => setter);
+
+          const groupingComboNumber = getComboNumber(groupingValues);
+          const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [
+            ...groupingSetters
+          ]);
+
+          const handleGroupingComboNumberChange = useCallback(
+            ({ target: { value } }) => setGroupingComboNumber(value),
+            [setGroupingComboNumber]
+          );
+
+          const handlePlusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber + 1), [
+            groupingComboNumber,
+            setGroupingComboNumber
+          ]);
+
+          const handleMinusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber - 1), [
+            groupingComboNumber,
+            setGroupingComboNumber
+          ]);
+
+          const styleOptions = useMemo(
+            () => ({
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserTextColor: 'White',
+              bubbleTextColor: 'White',
+
+              botAvatarInitials: botAvatarInitials ? 'WC' : undefined,
+              bubbleFromUserNubOffset: userOnTop ? 0 : undefined,
+              bubbleFromUserNubSize: userNub ? 10 : undefined,
+              bubbleNubOffset: botOnTop ? 0 : undefined,
+              bubbleNubSize: botNub ? 10 : undefined,
+              userAvatarInitials: userAvatarInitials ? 'WW' : undefined,
+
+              groupTimestamp: 5000,
+              showAvatarInGroup: showAvatarForEveryActivity ? true : showAvatarInGroup,
+              transitionDuration: '.3s'
+            }),
+            [
+              botAvatarInitials,
+              botNub,
+              botOnTop,
+              showAvatarForEveryActivity,
+              showAvatarInGroup,
+              userAvatarInitials,
+              userNub,
+              userOnTop
+            ]
+          );
+
+          useDebugDeps(
+            {
+              botAvatarInitials,
+              botNub,
+              botOnTop,
+              showAvatarForEveryActivity,
+              showAvatarInGroup,
+              styleOptions,
+              userAvatarInitials,
+              userNub,
+              userOnTop
+            },
+            'index.html'
+          );
+
+          return (
+            <div className={classNames('app', { 'app--wide': wide })} dir={rtl ? 'rtl' : undefined}>
+              <div className={classNames('options-bar', { 'options-bar--minimized': minimized })} dir="ltr">
+                <header className="options-bar__header">
+                  <button className="options-bar__minimize-button" onClick={handleMinimizeClick}>
+                    Minimize
+                  </button>
+                </header>
+                <section className="options-bar__body">
+                  <div>
+                    <Toggle checked={wide} onChange={setWide}>
+                      View: Wide
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={rtl} onChange={setRTL}>
+                      View: Right-to-left
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleViewComboNumberChange} type="number" value={viewComboNumber} />
+                    <button onClick={handlePlusOneViewComboNumber}>+</button>
+                    <button onClick={handleMinusOneViewComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle
+                      checked={!showAvatarForEveryActivity && showAvatarInGroup === 'sender'}
+                      onChange={setShowAvatarInSenderGroup}
+                      type="radio"
+                    >
+                      Show avatar: On sender
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!showAvatarForEveryActivity && showAvatarInGroup === 'status'}
+                      onChange={setShowAvatarInStatusGroup}
+                      type="radio"
+                    >
+                      Show avatar: On status
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={showAvatarForEveryActivity} onChange={setShowAvatarForEveryActivity} type="radio">
+                      Show avatar: On every activity
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleGroupingComboNumberChange} type="number" value={groupingComboNumber} />
+                    <button onClick={handlePlusOneGroupingComboNumber}>+</button>
+                    <button onClick={handleMinusOneGroupingComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
+                      Bot: Avatar
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={botNub} onChange={setBotNub}>
+                      Bot: Nub
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={botOnTop}
+                      disabled={!botAvatarInitials && !botNub}
+                      onChange={setBotOnTop2}
+                      type="radio"
+                    >
+                      Bot: On top
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!botOnTop}
+                      disabled={!botAvatarInitials && !botNub}
+                      onChange={setBotOnBottom}
+                      type="radio"
+                    >
+                      Bot: On bottom
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
+                      User: Avatar
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={userNub} onChange={setUserNub}>
+                      User: Nub
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={userOnTop}
+                      disabled={!userAvatarInitials && !userNub}
+                      onChange={setUserOnTop2}
+                      type="radio"
+                    >
+                      User: On top
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle
+                      checked={!userOnTop}
+                      disabled={!userAvatarInitials && !userNub}
+                      onChange={setUserOnBottom}
+                      type="radio"
+                    >
+                      User: On bottom
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <Toggle checked={!carouselLayout} onChange={setStackedLayout} type="radio">
+                      Layout: Stacked
+                    </Toggle>
+                  </div>
+                  <div>
+                    <Toggle checked={carouselLayout} onChange={setCarouselLayout2} type="radio">
+                      Layout: Carousel
+                    </Toggle>
+                  </div>
+                  <hr />
+                  <div>
+                    <input onChange={handleStyleComboNumberChange} type="number" value={styleComboNumber} />
+                    <button onClick={handlePlusOneStyleComboNumber}>+</button>
+                    <button onClick={handleMinusOneStyleComboNumber}>-</button>
+                  </div>
+                  <hr />
+                  <div>
+                    <button onClick={handleAddMessage}>Add message</button>
+                  </div>
+                </section>
+              </div>
+              <Composer
+                activityMiddleware={activityMiddleware}
+                directLine={directLine}
+                dir={rtl ? 'rtl' : undefined}
+                styleOptions={styleOptions}
+              >
+                <BasicWebChat />
+              </Composer>
+            </div>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('webchat'));
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

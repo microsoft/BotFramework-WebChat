@@ -53,6 +53,7 @@ import {
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
+import createDefaultGroupActivitiesMiddleware from './Middleware/GroupActivities/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
@@ -155,6 +156,19 @@ function createFocusContext({ sendBoxFocusRef, transcriptFocusRef }) {
   };
 }
 
+function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp }) {
+  const runMiddleware = concatMiddleware(
+    groupActivitiesMiddleware,
+    createDefaultGroupActivitiesMiddleware({ groupTimestamp })
+  )()(() => {
+    throw new Error('botframework-webchat internal: No middleware is execute for groupActivities.');
+  });
+
+  return {
+    groupActivities: ({ activities }) => runMiddleware({ activities })
+  };
+}
+
 function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStrings) {
   if (!overrideLocalizedStrings) {
     return localizedStrings;
@@ -191,6 +205,7 @@ const Composer = ({
   disabled,
   extraStyleSet,
   grammars,
+  groupActivitiesMiddleware,
   groupTimestamp,
   locale,
   onTelemetry,
@@ -201,6 +216,7 @@ const Composer = ({
   sendTypingIndicator,
   styleOptions,
   styleSet,
+  suggestedActionsAccessKey,
   toastMiddleware,
   toastRenderer,
   typingIndicatorMiddleware,
@@ -306,6 +322,15 @@ const Composer = ({
   const patchedStyleSet = useMemo(
     () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
     [extraStyleSet, patchedStyleOptions, styleSet]
+  );
+
+  const groupActivitiesContext = useMemo(
+    () =>
+      createGroupActivitiesContext({
+        groupActivitiesMiddleware,
+        groupTimestamp: patchedStyleSet.options.groupTimestamp
+      }),
+    [groupActivitiesMiddleware, patchedStyleSet.options.groupTimestamp]
   );
 
   const hoistedDispatchers = useMemo(
@@ -429,6 +454,7 @@ const Composer = ({
     () => ({
       ...cardActionContext,
       ...focusContext,
+      ...groupActivitiesContext,
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
@@ -452,6 +478,7 @@ const Composer = ({
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
+      suggestedActionsAccessKey,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
@@ -467,6 +494,7 @@ const Composer = ({
       directLine,
       disabled,
       focusContext,
+      groupActivitiesContext,
       hoistedDispatchers,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -489,6 +517,7 @@ const Composer = ({
       sendTypingIndicator,
       setDictateAbortable,
       styleOptions,
+      suggestedActionsAccessKey,
       telemetryDimensionsRef,
       trackDimension,
       transcriptFocusRef,
@@ -563,6 +592,7 @@ Composer.defaultProps = {
   disabled: false,
   extraStyleSet: undefined,
   grammars: [],
+  groupActivitiesMiddleware: undefined,
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
   onTelemetry: undefined,
@@ -573,6 +603,7 @@ Composer.defaultProps = {
   sendTypingIndicator: false,
   styleOptions: {},
   styleSet: undefined,
+  suggestedActionsAccessKey: 'A a Å å',
   toastMiddleware: undefined,
   toastRenderer: undefined,
   typingIndicatorMiddleware: undefined,
@@ -610,6 +641,7 @@ Composer.propTypes = {
   disabled: PropTypes.bool,
   extraStyleSet: PropTypes.any,
   grammars: PropTypes.arrayOf(PropTypes.string),
+  groupActivitiesMiddleware: PropTypes.func,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
@@ -620,6 +652,7 @@ Composer.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any,
+  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
   toastMiddleware: PropTypes.func,
   toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.func,

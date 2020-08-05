@@ -2,7 +2,19 @@ import intercept from './intercept';
 
 const FUNCTION_NAMES = ['debug', 'error', 'info', 'log', 'trace', 'warn'];
 
-const history = [];
+let history = [];
+
+function isDeprecation(text) {
+  return text.includes('deprecate');
+}
+
+function shiftDeprecationHistory() {
+  const deprecation = history.filter(({ args }) => isDeprecation(args[0]));
+
+  history = history.filter(({ args }) => !isDeprecation(args[0]));
+
+  return deprecation;
+}
 
 function getHistory() {
   return history;
@@ -30,4 +42,4 @@ export default function subscribeConsole() {
   };
 }
 
-export { getHistory }
+export { getHistory, shiftDeprecationHistory };
