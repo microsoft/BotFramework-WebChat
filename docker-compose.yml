@@ -60,7 +60,7 @@ services:
     - /dev/shm:/dev/shm
 
   selenium-hub:
-    image: selenium/hub:3.141.59-zirconium
+    image: selenium/hub:3.141.59-20200719
     container_name: selenium-hub
     environment:
     - GRID_BROWSER_TIMEOUT=60
