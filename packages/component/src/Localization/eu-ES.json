@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Fitxategi honen edukia blokeatuta dago. Ekarpenak onartzen dira, baina baliteke aldaketen balidazioa atzeratzea.",
+  "ACCESS_KEY_ALT": "Alt + Maius + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ktrl + Aukera + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "jarduera",
   "ACTIVITY_BOT_SAID_ALT": "$1 bot-ak hau esan du:",
   "ACTIVITY_YOU_SAID_ALT": "Hau esan duzu:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofonoa aktibatuta dago",
   "SPEECH_INPUT_STARTING": "Hasten…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Edukia du",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Edukia du. Sakatu $1 hautatzeko.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Hutsik dago",
   "SUGGESTED_ACTIONS_ALT": "Iradokitako ekintzen edukitzailea: $1",
   "TEXT_INPUT_ALT": "Mezua idazteko koadroa",

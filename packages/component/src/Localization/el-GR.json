@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Το περιεχόμενο αυτού του αρχείου είναι κλειδωμένο. Οι συνεισφορές είναι ευπρόσδεκτες, αλλά η επικύρωση αλλαγών μπορεί να καθυστερήσει.",
+  "ACCESS_KEY_ALT": "ALT + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "CTRL + Option + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "δραστηριότητα",
   "ACTIVITY_BOT_SAID_ALT": "Το bot $1 είπε:",
   "ACTIVITY_YOU_SAID_ALT": "Είπατε:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Μικρόφωνο ενεργό",
   "SPEECH_INPUT_STARTING": "Έναρξη…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Έχει περιεχόμενο",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Έχει περιεχόμενο. Πατήστε $1 για επιλογή.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Είναι κενό",
   "SUGGESTED_ACTIONS_ALT": "Κοντέινερ προτεινόμενων ενεργειών: $1",
   "TEXT_INPUT_ALT": "Πλαίσιο εισαγωγής μηνύματος",
