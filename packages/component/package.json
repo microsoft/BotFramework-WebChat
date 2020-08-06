@@ -56,7 +56,7 @@
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.2.6",
     "event-target-shim": "5.0.1",
-    "event-target-shim-es5": "1.1.0",
+    "event-target-shim-es5": "1.1.1-master.0cf7879",
     "glamor": "2.20.40",
     "globalize": "1.5.0",
     "markdown-it": "11.0.0",

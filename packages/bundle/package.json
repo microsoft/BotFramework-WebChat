@@ -39,7 +39,7 @@
     "core-js": "3.6.5",
     "markdown-it": "11.0.0",
     "markdown-it-attrs": "3.0.3",
-    "markdown-it-attrs-es5": "1.1.0",
+    "markdown-it-attrs-es5": "1.1.1-master.c821c50",
     "markdown-it-for-inline": "0.1.1",
     "memoize-one": "5.1.1",
     "microsoft-cognitiveservices-speech-sdk": "1.10.1",
