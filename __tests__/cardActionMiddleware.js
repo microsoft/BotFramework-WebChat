@@ -82,9 +82,9 @@ test('card action "signin"', async () => {
 
   // When the "Sign in" button is clicked, the focus move to it, need to blur it.
   await driver.executeScript(() => {
-    for (let element of document.querySelectorAll(':focus')) {
-      element.blur();
-    }
+    const { activeElement } = document;
+
+    activeElement && activeElement.blur();
   });
 
   const base64PNG = await driver.takeScreenshot();

@@ -1,5 +1,11 @@
 import concatArrayBuffer from './concatArrayBuffer';
 
+beforeAll(() => {
+  // When running under JSDOM, the ArrayBuffer and Uint8Array.buffer doesn't match.
+  // This code is to pair them up.
+  global.ArrayBuffer = new Uint8Array().buffer.constructor;
+});
+
 test('no ArrayBuffer', () => {
   const actual = concatArrayBuffer();
 
