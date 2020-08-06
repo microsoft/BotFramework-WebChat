@@ -23,7 +23,7 @@ const ROOT_CSS = css({
   }
 });
 
-const BasicToast = ({ notification: { alt, id, level, message } }) => {
+const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
   const [{ toast: toastStyleSet }] = useStyleSet();
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
   const localize = useLocalizer();
