@@ -46,7 +46,7 @@
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.2",
     "url-search-params-polyfill": "8.1.0",
-    "web-speech-cognitive-services": "7.0.0",
+    "web-speech-cognitive-services": "7.0.1",
     "whatwg-fetch": "3.2.0"
   },
   "devDependencies": {

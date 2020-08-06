@@ -63,6 +63,6 @@
     "microsoft-cognitiveservices-speech-sdk": "1.10.1",
     "p-defer": "3.0.0",
     "p-defer-es5": "1.2.1",
-    "web-speech-cognitive-services": "7.0.0-master.da7babf"
+    "web-speech-cognitive-services": "7.0.1"
   }
 }
