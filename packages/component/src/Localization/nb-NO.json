@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Innholdet i denne filen er låst. Bidrag er velkomne, men validering av endring kan bli forsinket.",
+  "ACCESS_KEY_ALT": "Alt + Skift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Tilvalg + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "aktivitet",
   "ACTIVITY_BOT_SAID_ALT": "Roboten $1 sa:",
   "ACTIVITY_YOU_SAID_ALT": "Du sa:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon på",
   "SPEECH_INPUT_STARTING": "Starter ...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Har innhold",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Har innhold. Trykk på $1 for å velge.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Er tom",
   "SUGGESTED_ACTIONS_ALT": "Beholder for foreslåtte handlinger: $1",
   "TEXT_INPUT_ALT": "Meldingsinndataboks",

@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] El contingut d'aquest fitxer està bloquejat. Les aportacions són benvingudes, però la validació dels canvis es pot retardar.",
+  "ACCESS_KEY_ALT": "Alt + Maj + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Opció + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "activitat",
   "ACTIVITY_BOT_SAID_ALT": "El bot $1 ha dit:",
   "ACTIVITY_YOU_SAID_ALT": "Heu dit:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Micròfon activat",
   "SPEECH_INPUT_STARTING": "Iniciant…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Té contingut",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Té contingut. Premeu $1 per seleccionar.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "És buit",
   "SUGGESTED_ACTIONS_ALT": "Contenidor d'accions suggerides: $1",
   "TEXT_INPUT_ALT": "Quadre d'entrada del missatge",
