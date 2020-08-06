@@ -9,13 +9,10 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({
-              conversationStartProperties: {
-                locale: 'xx-YY'
-              },
               token: await token.fetchDirectLineToken('https://webchat-mockbot2.azurewebsites.net/api/token/directline')
             }),
             store: createStore()
