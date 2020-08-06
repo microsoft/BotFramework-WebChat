@@ -118,6 +118,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`memoize-one@5.1.1`](https://npmjs.com/package/memoize-one)
       -  [`on-error-resume-next@1.1.0`](https://npmjs.com/package/on-error-resume-next)
       -  [`p-defer-es5@1.2.1`](https://npmjs.com/package/p-defer-es5)
+      -  [`react-say@2.0.1`](https://npmjs.com/package/react-say)
       -  [`sanitize-html@1.27.2`](https://npmjs.com/package/sanitize-html)
       -  [`simple-update-in@2.2.0`](https://npmjs.com/package/simple-update-in)
       -  [`url-search-params-polyfill@8.1.0`](https://npmjs.com/package/url-search-params-polyfill)
