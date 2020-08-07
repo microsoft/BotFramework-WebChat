@@ -22,8 +22,9 @@
 -
 -
 
--  [ ] I have added tests and executed locally
 <!-- For bugs, add the bug repro as a test. Otherwise, add tests to futureproof your work. -->
+-  [ ] I have added tests and executed them locally
+-  [ ] I have updated `CHANGELOG.md`
 
 ## Review Checklist
 
