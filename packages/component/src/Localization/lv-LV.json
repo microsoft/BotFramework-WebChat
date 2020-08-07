@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Šī faila saturs ir bloķēts. Ieguldījumi tiek gaidīti, taču izmaiņu validācija var tikt aizkavēta.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "darbība",
   "ACTIVITY_BOT_SAID_ALT": "Robots $1 teica:",
   "ACTIVITY_YOU_SAID_ALT": "Jūs teicāt:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Ieslēgt mikrofonu",
   "SPEECH_INPUT_STARTING": "Sākas ievade…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Ir saturs",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Ietver saturu. Lai atlasītu, nospiediet taustiņu $1.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Ir tukšs",
   "SUGGESTED_ACTIONS_ALT": "Ieteicamo darbību konteiners. $1",
   "TEXT_INPUT_ALT": "Ziņojuma ievades lodziņš",

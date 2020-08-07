@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Kandungan fail ini telah dikunci. Sumbangan dialu-alukan, tetapi pengesahan perubahan mungkin ditunda.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "aktiviti",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 berkata:",
   "ACTIVITY_YOU_SAID_ALT": "Anda berkata:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon dihidupkan",
   "SPEECH_INPUT_STARTING": "Bermula…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Mengandungi kandungan",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Mengandungi kandungan. Tekan $1 untuk memilih.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Tidak diisi",
   "SUGGESTED_ACTIONS_ALT": "Bekas Cadangan Tindakan: $1",
   "TEXT_INPUT_ALT": "Kotak input mesej",

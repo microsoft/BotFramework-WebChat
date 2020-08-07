@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] เนื้อหาของไฟล์นี้ถูกล็อก ยินดีรับการสนับสนุน แต่การตรวจสอบความถูกต้องของการเปลี่ยนแปลงอาจล่าช้า",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + ตัวเลือก + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "กิจกรรม",
   "ACTIVITY_BOT_SAID_ALT": "บอท $1 กล่าวว่า:",
   "ACTIVITY_YOU_SAID_ALT": "คุณพูดว่า:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "เปิดไมโครโฟน",
   "SPEECH_INPUT_STARTING": "กำลังเริ่ม...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "มีเนื้อหา",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "มีเนื้อหา กด $1 เพื่อเลือก",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "ว่างเปล่า",
   "SUGGESTED_ACTIONS_ALT": "คอนเทนเนอร์การดำเนินการที่แนะนำ: $1",
   "TEXT_INPUT_ALT": "กล่องป้อนข้อความ",

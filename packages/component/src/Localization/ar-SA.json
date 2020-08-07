@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] محتوى هذا الملف مؤمن. نرحب بالمساهمات، ولكن التحقق من صحة التغيير قد يتأخر.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "النشاط",
   "ACTIVITY_BOT_SAID_ALT": "قابل الروبوت $1:",
   "ACTIVITY_YOU_SAID_ALT": "لقد قلت:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "الميكروفون قيد التشغيل",
   "SPEECH_INPUT_STARTING": "البدء…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "يتضمن محتوىً",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "يتضمن محتوى. اضغط على $1 للتحديد.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "فارغ",
   "SUGGESTED_ACTIONS_ALT": "حاوية الإجراءات المقترحة: $1",
   "TEXT_INPUT_ALT": "مربع إدخال الرسالة",

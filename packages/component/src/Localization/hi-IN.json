@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] इस फ़ाइल की सामग्री लॉक है. योगदानकर्ताओं का स्वागत है, लेकिन परिवर्तन सत्यापन में देरी हो सकती है.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + विकल्प + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "गतिविधि",
   "ACTIVITY_BOT_SAID_ALT": "बॉट $1 ने कहा:",
   "ACTIVITY_YOU_SAID_ALT": "आपने कहा:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "माइक्रोफ़ोन चालू करें",
   "SPEECH_INPUT_STARTING": "आरंभ हो रहा है…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "इसमें सामग्री है",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "सामग्री है. चयन करने के लिए $1 दबाएँ.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "खाली है",
   "SUGGESTED_ACTIONS_ALT": "सुझाई गई कार्रवाइयों का कंटेनर: $1",
   "TEXT_INPUT_ALT": "संदेश इनपुट बॉक्स",
