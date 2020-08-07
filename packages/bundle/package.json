@@ -31,7 +31,7 @@
   "dependencies": {
     "@babel/runtime": "7.11.0",
     "adaptivecards": "1.2.6",
-    "botframework-directlinejs": "0.12.0",
+    "botframework-directlinejs": "0.11.6-master.8df1caa",
     "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
