@@ -3,6 +3,6 @@
  */
 
 describe('conversationStartProperties', () => {
-  test('should get "Hello and welcome!" message.', () =>
+  test('with non ISO format locale should get "Hello and welcome!" message.', () =>
     runHTMLTest('conversationStartProperties.sendNonISOFormat.html'));
 });

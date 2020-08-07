@@ -3,6 +3,6 @@
  */
 
 describe('conversationStartProperties', () => {
-  test('should get "Hello and welcome!" message.', () =>
+  test('with no locale is sent should get "Hello and welcome!" message.', () =>
     runHTMLTest('conversationStartProperties.noLocaleIsSent.html'));
 });

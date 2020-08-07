@@ -3,5 +3,6 @@
  */
 
 describe('conversationStartProperties', () => {
-  test('should get "Hello and welcome!" message.', () => runHTMLTest('conversationStartProperties.sendEnUs.html'));
+  test('with locale of en-US should get "Hello and welcome!" message.', () =>
+    runHTMLTest('conversationStartProperties.sendEnUs.html'));
 });

@@ -3,6 +3,6 @@
  */
 
 describe('conversationStartProperties', () => {
-  test('should get "Hello and welcome!" in Simplified Chinese.', () =>
+  test('with locale of zh-CN should get "Hello and welcome!" in Simplified Chinese.', () =>
     runHTMLTest('conversationStartProperties.sendZhCn.html'));
 });

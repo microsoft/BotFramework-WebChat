@@ -3,6 +3,6 @@
  */
 
 describe('conversationStartProperties', () => {
-  test('should get "Hello and welcome!" message.', () =>
+  test('with locale of invalid type should get "Hello and welcome!" message.', () =>
     runHTMLTest('conversationStartProperties.sendInvalidType.html'));
 });
