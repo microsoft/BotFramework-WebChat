@@ -74,5 +74,5 @@ const renderMarkdown = (
         __html = text.replace(/ */, '\u00A0');
     }
 
-    return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
+    return <div className="format-markdown markdown-body" dangerouslySetInnerHTML={{ __html }} />;
 };
