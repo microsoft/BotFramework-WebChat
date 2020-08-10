@@ -95,9 +95,11 @@ For environment stability, Web Chat uses Docker for hosting the test environment
    - To start, run `docker-compose up --build`
    - To stop/cleanup, run `docker-compose down`
 
+> On Windows, set environment variable `COMPOSE_CONVERT_WINDOWS_PATHS=1`.
+
 ### Running the test suite
 
-> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the page. To update the Docker version, restart Docker.
+> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the page. To update the page, restart Docker.
 
 There are 2 ways to run the test suite, either one-off or continuously:
 
@@ -111,6 +113,8 @@ If your development box has less than 4 cores, you will need to reduce the numbe
 - For continuous testing: run `npm test -- --maxWorkers 1`
 
 Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can run simultaneously.
+
+> To run Web Driver test, locally, download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to project root. Then set environment variable `WEBCHAT_TEST_ENV=chrome-local` before running Jest.
 
 ### Troubleshooting the test suite
 
@@ -145,10 +149,10 @@ There are checks that automation will not be able to capture. For example:
    - Fill out the pull request form for traceability
    - Make sure imports, members, variables, etc, are sorted alphabetically
    - Avoid one-off variables, prefer JavaScript shorthands, shorter and faster code
-   - No global pollution: 
-      - no specific tab order, 
+   - No global pollution:
+      - no specific tab order,
       - minimize `z-index` usage
-         - if z-index is ultimately required, use a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context), 
+         - if z-index is ultimately required, use a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context),
       - all polyfills must comply with ECMAScript/W3C standards
 
 - Tests
@@ -156,6 +160,7 @@ There are checks that automation will not be able to capture. For example:
    - For fixing a vbug, the original bug repro must be included as a new test
    - For feature work, please add as many tests as needed to future-proof the feature, including both happy and unhappy paths
    - We prefer integration tests over unit tests
+      - Visual regression tests are preferred and we use [`pixelmatch`](https://npmjs.com/package/pixelmatch) via [`jest-image-snapshot`](https://npmjs.com/package/jest-image-snapshot)
    - Avoid using timeout in tests. Instead, use [fake timer](https://www.npmjs.com/package/lolex) instead
 - [Secure by default](https://en.wikipedia.org/wiki/Secure_by_default)
 - Benchmark
@@ -176,12 +181,12 @@ There are checks that automation will not be able to capture. For example:
 - For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
    - Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
    - Assistive technology and browser compatibility
-      - NVDA: Chrome and Firefox
+      - NVDA/JAWS: Chrome and Firefox
       - Narrator: Edge family and IE11
       - VoiceOver: Safari
       - TalkBack: Chrome on Android
 - For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
-- Feature documentation, samples, live demo, operational
+- Feature documentation, samples, live demo, operation of demo bots
    - All samples must also come with a hosted live demo
    - Please discuss with us if a specific bot is needed for the live demo
 
