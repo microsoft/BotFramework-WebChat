@@ -2,7 +2,7 @@
 
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
-import createStore from './createStore';
+import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
@@ -37,6 +37,7 @@ export {
   connect,
   Constants,
   createStore,
+  createStoreWithDevTools,
   disconnect,
   dismissNotification,
   emitTypingIndicator,

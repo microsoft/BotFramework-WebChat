@@ -148,6 +148,38 @@ export default () => {
 
 See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react/).
 
+### Experimental support for Redux DevTools
+
+Web Chat internally use Redux for state management. [Redux DevTools](https://github.com/reduxjs/redux-devtools) is enabled in the NPM build as an opt-in feature.
+
+This is for glancing into how Web Chat works. This is not an API explorer and is not an endorsement of using the Redux store to programmatically access the UI. The [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) should be used instead.
+
+To use Redux DevTools, use the `createStoreWithDevTools` function for creating a Redux DevTools-enabled store.
+
+<!-- prettier-ignore-start -->
+```diff
+  import React, { useMemo } from 'react';
+- import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
++ import ReactWebChat, { createDirectLine, createStoreWithDevTools } from 'botframework-webchat';
+
+  export default () => {
+    const directLine = useMemo(() => createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }), []);
+-   const store = useMemo(() => createStore(), []);
++   const store = useMemo(() => createStoreWithDevTools(), []);
+
+    return <ReactWebChat directLine={directLine} store={store} userID="YOUR_USER_ID" />;
+  };
+```
+<!-- prettier-ignore-end -->
+
+There are some limitations when using the Redux DevTools:
+
+- The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
+- Many UI states are stored in React context and state. They are not exposed in the Redux store.
+- Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
+- Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) instead.
+- Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) is the official API for accessing the UI.
+
 # Customizing the Web Chat UI
 
 Web Chat is designed to be customizable without forking the source code. The table below outlines what kind of customizations you can achieve when you are importing Web Chat in different ways. This list is not exhaustive.
