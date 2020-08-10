@@ -10,7 +10,7 @@ provided by the bot. You will only need to do this once across all repos using o
 
 # Thank you
 
-Thanks for your interest in improving Web Chat. We invest heavily in engineering excellence to reduce our workloads and enable us to move faster. To start the development, please familiar yourself with the development process and these automation tools.
+Thanks for your interest in improving Web Chat. We invest heavily in engineering excellence to reduce our workloads and enable us to move faster. To start the development, please familiarize yourself with the development process and these automation tools.
 
 > If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/microsoft/BotFramework-WebChat/issues/).
 >
@@ -35,7 +35,7 @@ These are development environments we tested:
 
 ## Preparing the repository
 
-Web Chat is a monorepo and use [`lerna`](https://lerna.js.org/). After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
+Web Chat is a monorepo and uses [`lerna`](https://lerna.js.org/). After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
 
 ```sh
 npm ci
@@ -56,9 +56,9 @@ The bundle output will be located at:
 - http://localhost:5000/webchat.js (also `webchat-es5.js` and `webchat-minimal.js`)
 - `packages/bundle/dist/webchat*.js`
 
-# Playing the build
+# Playing with the build
 
-There are few ways you can play the build:
+There are few ways you can play with the build:
 
 - Playing with playground
    - `cd packages/playground`
@@ -73,7 +73,7 @@ There are few ways you can play the build:
 
 # Readying for publication
 
-We care about software quality. It helps prevent regressions, reduce maintenance costs, minimize chores, and enable us to move faster.
+We care about software quality. Quality checking prevents regressions, reduces maintenance costs, minimizes chores, and enables us to move faster.
 
 Before submitting the pull request, please check your build by running these checks:
 
@@ -86,7 +86,7 @@ Automated tests in Web Chat are designed to run inside a stable and isolated tes
 
 ### Starting the test environment
 
-For environment stability, Web Chat use Docker for hosting the test environment.
+For environment stability, Web Chat uses Docker for hosting the test environment.
 
 - Docker with [Windows Subsystem for Linux 2 (a.k.a. WSL2)](https://aka.ms/wsl2)
    - To start, run `npm run start:docker`
@@ -125,16 +125,16 @@ We run test suite on every commit and requires 100% test pass. If the test suite
 When the test suite failed:
 
 1. Re-run the test suite
-   1. If it succeeded but a specific test fail intermittently, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
-1. If it continue to fail, please fresh clone the repository and run the test suite without your changes
+   1. If it succeeded but a specific test fails intermittently, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
+1. If it continues to fail, please fresh clone the repository and run the test suite without your changes
    1. If you suspect your environment is polluted, please use [Windows Sandbox](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview) and/or a new Linux distro on WSL to verify
-1. If it still fail repeatedly, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) to us.
+1. If it still fails repeatedly, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) to us.
 
 ## Static code analysis
 
 Run `npm run eslint` for static code analysis.
 
-If you need to skip any ESLint errors, we prefer using `eslint-disable-next-line`. Comments are required on why the rule is disabled.
+If you need to skip any ESLint errors, we recommend `eslint-disable-next-line`. Comments are required on why the rule is disabled.
 
 # Final checks
 
@@ -145,13 +145,18 @@ There are checks that automation will not be able to capture. For example:
    - Fill out the pull request form for traceability
    - Make sure imports, members, variables, etc, are sorted alphabetically
    - Avoid one-off variables, prefer JavaScript shorthands, shorter and faster code
-   - No global pollution: no specific tab order, minimize `z-index` usage and requires a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context), all polyfills must complies to ECMAScript/W3C standards
+   - No global pollution: 
+      - no specific tab order, 
+      - minimize `z-index` usage
+         - if z-index is ultimately required, use a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context), 
+      - all polyfills must comply with ECMAScript/W3C standards
+
 - Tests
-   - Tests are important to reduce our burden. If new tests are needed but not included, we will reject your pull request
-   - For fixing bug, the original bug repro must be coded as a new test
-   - For feature work, please add as much tests as needed to future-proof the feature, include both happy and unhappy paths
+   - Tests are important to reduces our maintenence burden. Pull requests without needed tests will not be approved or merged into the project.
+   - For fixing a vbug, the original bug repro must be included as a new test
+   - For feature work, please add as many tests as needed to future-proof the feature, including both happy and unhappy paths
    - We prefer integration tests over unit tests
-   - Avoid using timeout in tests, use [fake timer](https://www.npmjs.com/package/lolex) instead
+   - Avoid using timeout in tests. Instead, use [fake timer](https://www.npmjs.com/package/lolex) instead
 - [Secure by default](https://en.wikipedia.org/wiki/Secure_by_default)
 - Benchmark
    - Performance should not drop significantly
@@ -168,16 +173,16 @@ There are checks that automation will not be able to capture. For example:
    - Safari on macOS
    - Safari on iOS or iPadOS
    - Chrome on Android
-- Accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
-   - Tab order, content readability, assistive technology-only text, color contrast, etc.
+- For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
+   - Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
    - Assistive technology and browser compatibility
       - NVDA: Chrome and Firefox
       - Narrator: Edge family and IE11
       - VoiceOver: Safari
       - TalkBack: Chrome on Android
-- Internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
+- For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
 - Feature documentation, samples, live demo, operational
-   - All samples must also comes with hosted live demo
+   - All samples must also come with a hosted live demo
    - Please discuss with us if a specific bot is needed for the live demo
 
 # Workflow
@@ -201,14 +206,14 @@ Write the bug repro as a test, before fixing the bug.
 1. Add a log entry to `CHANGELOG.md`
 1. File a pull request
 
-## Implementing new feature
+## Implementing new features
 
 Write the user story while implementing the feature.
 
 1. Clone/prepare the repository or nuke an existing repository
    - To nuke, run `npm run tableflip`
 1. Run continuous build, run `npm start`
-1. Clone `__tests__/html/simple.html` to `my-feature.html`, use it as a playground
+1. Clone `__tests__/html/simple.html` to `my-feature.html` and use it as a playground
 1. Navigate to the new playground at http://localhost:5001/my-feature.html
 1. Implement the feature while modifying the playground
 1. After the feature is completed, write more tests to include cases that need more attention, and unhappy paths

@@ -4,7 +4,7 @@
 
 ## Changelog Entry
 
-<!-- Please paste your new entry from CHANGELOG.MD here. Not needed for works related to development purpose only. -->
+<!-- Please paste your new entry from CHANGELOG.MD here. Entry is not required for work only related to development purposes. -->
 
 ## Description
 
