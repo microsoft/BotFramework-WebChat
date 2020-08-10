@@ -40,7 +40,7 @@ jobs:
           path: packages/playground/build.zip
 
       - id: deploy
-        uses: azure/webapps-deploy@v2.1
+        uses: azure/webapps-deploy@v2.1.2
         with:
           app-name: webchat-playground
           slot-name: production

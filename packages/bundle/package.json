@@ -39,14 +39,14 @@
     "core-js": "3.6.5",
     "markdown-it": "11.0.0",
     "markdown-it-attrs": "3.0.3",
-    "markdown-it-attrs-es5": "1.1.0",
+    "markdown-it-attrs-es5": "1.2.0",
     "markdown-it-for-inline": "0.1.1",
     "memoize-one": "5.1.1",
     "microsoft-cognitiveservices-speech-sdk": "1.10.1",
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.2",
     "url-search-params-polyfill": "8.1.0",
-    "web-speech-cognitive-services": "7.0.0",
+    "web-speech-cognitive-services": "7.0.1",
     "whatwg-fetch": "3.2.0"
   },
   "devDependencies": {
