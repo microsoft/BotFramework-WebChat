@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Der Inhalt dieser Datei ist gesperrt. Beiträge sind willkommen, die Änderungsüberprüfung kann jedoch verzögert werden.",
+  "ACCESS_KEY_ALT": "ALT + UMSCHALT + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "STRG + Wahltaste + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "Aktivität",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 sagte:",
   "ACTIVITY_YOU_SAID_ALT": "Sie sagten:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon an",
   "SPEECH_INPUT_STARTING": "Wird gestartet ...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Hat Inhalte",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Hat Inhalt. Drücken Sie $1, um auszuwählen.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Ist leer",
   "SUGGESTED_ACTIONS_ALT": "Container „Empfohlene Aktivitäten“: $1",
   "TEXT_INPUT_ALT": "Eingabefeld für Nachricht",

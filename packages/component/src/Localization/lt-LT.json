@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Šio failo turinys užrakintas. Galite prisidėti, tačiau gali užtrukti, kol keitimai bus patikrinti.",
+  "ACCESS_KEY_ALT": "Alt + Shift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + parinktis + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "veikla",
   "ACTIVITY_BOT_SAID_ALT": "Robotas $1 pasakė:",
   "ACTIVITY_YOU_SAID_ALT": "Pasakėte:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofonas įjungtas",
   "SPEECH_INPUT_STARTING": "Pradedama…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Yra turinio",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Yra turinys. Norėdami pasirinkti, paspauskite $1.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Yra tuščias",
   "SUGGESTED_ACTIONS_ALT": "Rekomenduojamų veiksmų konteineris: $1",
   "TEXT_INPUT_ALT": "Pranešimo įvedimo laukas",

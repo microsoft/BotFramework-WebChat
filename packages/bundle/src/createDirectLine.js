@@ -3,6 +3,7 @@ import { DirectLine } from 'botframework-directlinejs';
 export default function createDirectLine({
   botAgent,
   conversationId,
+  conversationStartProperties,
   domain,
   fetch,
   pollingInterval,
@@ -15,6 +16,7 @@ export default function createDirectLine({
   return new DirectLine({
     botAgent,
     conversationId,
+    conversationStartProperties,
     domain,
     fetch,
     pollingInterval,

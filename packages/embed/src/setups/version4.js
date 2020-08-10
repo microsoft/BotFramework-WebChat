@@ -8,7 +8,15 @@ export default async function setupVersionFamily4(
 ) {
   assets && (await Promise.all(assets.map(loadAsset)));
 
-  const directLine = window.WebChat.createDirectLine({ domain, secret, token, webSocket });
+  const directLine = window.WebChat.createDirectLine({
+    conversationStartProperties: {
+      locale: language
+    },
+    domain,
+    secret,
+    token,
+    webSocket
+  });
 
   // TODO: Should we support Bing Speech in Web Chat v4?
 

@@ -1,5 +1,7 @@
 {
   "_comment": "[CI-LOCKED] Innehållet i den här filen är låst. Bidrag välkomnas men verifieringen av ändrar kan fördröjas.",
+  "ACCESS_KEY_ALT": "Alt + Skift + $1",
+  "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Alt + $1",
   "ACTIVITY_ARIA_LABEL_ALT": "aktivitet",
   "ACTIVITY_BOT_SAID_ALT": "Roboten $1 sade:",
   "ACTIVITY_YOU_SAID_ALT": "Du sade:",
@@ -43,6 +45,7 @@
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon på",
   "SPEECH_INPUT_STARTING": "Startar ...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Har innehåll",
+  "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Har innehåll. Välj genom att trycka på $1.",
   "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Är tom",
   "SUGGESTED_ACTIONS_ALT": "Behållare för förslag på åtgärd: $1",
   "TEXT_INPUT_ALT": "Inmatningsruta för meddelande",

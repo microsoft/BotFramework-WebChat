@@ -62,6 +62,9 @@ test('Load Web Chat v4', async () => {
 
   expect(window.WebChat.createDirectLine).toHaveBeenCalledTimes(1);
   expect(window.WebChat.createDirectLine).toHaveBeenCalledWith({
+    conversationStartProperties: {
+      locale: 'ja-JP'
+    },
     domain: 'https://directline.botframework.com',
     secret: 'secret',
     token: 'token',
