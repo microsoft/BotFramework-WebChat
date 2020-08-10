@@ -1,7 +1,7 @@
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
-import { Constants, createStore, version } from 'botframework-webchat-core';
+import { Constants, createStore, createStoreWithDevTools, version } from 'botframework-webchat-core';
 
 import ReactWebChat, {
   Components,
@@ -46,12 +46,14 @@ export {
   Constants,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
+  createStoreWithDevTools,
   createStyleSet,
   hooks,
   renderWebChat,
   version
 };
 
+// Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,

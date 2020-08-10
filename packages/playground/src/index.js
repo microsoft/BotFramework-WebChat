@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore } from 'botframework-webchat';
+import { createStoreWithDevTools } from 'botframework-webchat';
 
 import App from './App';
 
@@ -27,7 +27,7 @@ window.addEventListener('keydown', event => {
   }
 });
 
-store = createStore(
+store = createStoreWithDevTools(
   onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY))),
   ({ dispatch }) => next => action => {
     if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
