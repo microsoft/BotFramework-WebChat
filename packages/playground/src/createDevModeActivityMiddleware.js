@@ -83,12 +83,16 @@ const ConnectedDevModeDecorator = connectToWebChat(({ markActivity, webSpeechPon
   )
 );
 
-export default function() {
+export default function () {
   return () => next => card => {
     return children => {
-      const content = next(card)(children);
+      const renderActivity = next(card);
 
-      return !!content && <ConnectedDevModeDecorator card={card}>{content}</ConnectedDevModeDecorator>;
+      return (
+        !!renderActivity && (
+          <ConnectedDevModeDecorator card={card}>{renderActivity(children)}</ConnectedDevModeDecorator>
+        )
+      );
     };
   };
 }

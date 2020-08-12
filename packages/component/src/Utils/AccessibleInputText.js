@@ -21,27 +21,33 @@ import React, { forwardRef, useRef } from 'react';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleInputText = forwardRef(({ disabled, onChange, tabIndex, ...props }, forwardedRef) => {
-  const targetRef = useRef();
+const AccessibleInputText = forwardRef(
+  ({ disabled, onChange, onFocus, onSelect, tabIndex, ...props }, forwardedRef) => {
+    const targetRef = useRef();
 
-  const ref = forwardedRef || targetRef;
+    const ref = forwardedRef || targetRef;
 
-  return (
-    <input
-      aria-disabled={disabled || undefined}
-      onChange={disabled ? undefined : onChange}
-      readOnly={disabled}
-      ref={ref}
-      tabIndex={disabled ? -1 : tabIndex}
-      {...props}
-      type="text"
-    />
-  );
-});
+    return (
+      <input
+        aria-disabled={disabled || undefined}
+        onChange={disabled ? undefined : onChange}
+        onFocus={disabled ? undefined : onFocus}
+        onSelect={disabled ? undefined : onSelect}
+        readOnly={disabled}
+        ref={ref}
+        tabIndex={disabled ? -1 : tabIndex}
+        {...props}
+        type="text"
+      />
+    );
+  }
+);
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
   onChange: undefined,
+  onFocus: undefined,
+  onSelect: undefined,
   tabIndex: undefined
 };
 
@@ -50,6 +56,8 @@ AccessibleInputText.displayName = 'AccessibleInputText';
 AccessibleInputText.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onSelect: PropTypes.func,
   tabIndex: PropTypes.number,
   type: PropTypes.oneOf(['text']).isRequired
 };

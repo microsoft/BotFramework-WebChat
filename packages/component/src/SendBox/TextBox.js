@@ -1,15 +1,17 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
+import getDiffIndex from '../Utils/getDiffIndex';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
+import useReplaceEmoticon from '../hooks/internal/useReplaceEmoticon';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useStopDictate from '../hooks/useStopDictate';
@@ -98,18 +100,27 @@ function useTextBoxSubmit() {
 
 function useTextBoxValue() {
   const [value, setSendBox] = useSendBoxValue();
+  const replaceEmoticon = useReplaceEmoticon();
   const stopDictate = useStopDictate();
 
   const setter = useCallback(
-    value => {
-      setSendBox(value);
+    (value, { selectionStart }) => {
+      const { emojiChange, valueWithEmoji } = replaceEmoticon({ selectionStart, value });
+
+      setSendBox(valueWithEmoji);
       stopDictate();
+
+      return { value: valueWithEmoji };
     },
-    [setSendBox, stopDictate]
+    [replaceEmoticon, setSendBox, stopDictate]
   );
 
   return [value, setter];
 }
+
+// Please add test for checking the caret position.
+// Because in our screenshot test, we hide the cursor (blink is time-sensitive and making test unreliable)
+// So we didn't actually tested whether "selectionStart" is correctly set or not.
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
@@ -117,14 +128,107 @@ const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
+  const [, setSendBox] = useSendBoxValue();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
   const localize = useLocalizer();
   const submitTextBox = useTextBoxSubmit();
+  const noDiff = -1;
+  const inputRef = useRef();
+  const undoStackRef = useRef([]);
 
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
+  const nextSelectionRef = useRef();
+  const prevSelectionRef = useRef();
 
-  const handleChange = useCallback(({ target: { value } }) => setTextBoxValue(value), [setTextBoxValue]);
+  useEffect(() => {
+    if (nextSelectionRef.current) {
+      inputRef.current.selectionStart = nextSelectionRef.current.selectionStart;
+      inputRef.current.selectionEnd = nextSelectionRef.current.selectionEnd;
+
+      nextSelectionRef.current = undefined;
+    }
+  }, [inputRef, nextSelectionRef, nextSelectionRef.current]);
+
+  const handleChange = useCallback(
+    event => {
+      const {
+        target: { selectionEnd, selectionStart, value }
+      } = event;
+
+      // If it was empty, push to undo stack.
+
+      // Test: "abc", blur, focus, select all, press backspace, type "def", press ctrl-z, expect "", press ctrl-z, expect "abc"
+      // Test: "abc", blur, focus, select all, type "def", press ctrl-z, expect "abc"
+
+      if (typeof valueAfterFocusRef.current !== 'undefined') {
+        undoStackRef.current.push({
+          selectionEnd: prevSelectionRef.current.selectionEnd,
+          selectionStart: prevSelectionRef.current.selectionStart,
+          value: valueAfterFocusRef.current
+        });
+
+        valueAfterFocusRef.current = undefined;
+      }
+
+      const { value: nextValue } = setTextBoxValue(value, { selectionStart }, undoStackRef);
+
+      if (nextValue !== value) {
+        undoStackRef.current.push({
+          selectionEnd,
+          selectionStart,
+          value
+        });
+
+        valueAfterFocusRef.current = nextValue;
+      }
+    },
+    [prevSelectionRef, setTextBoxValue, undoStackRef, setTextBoxValue, valueAfterFocusRef]
+  );
+
+  const valueAfterFocusRef = useRef();
+
+  const handleFocus = useCallback(() => {
+    valueAfterFocusRef.current = inputRef.current.value;
+  }, [inputRef, valueAfterFocusRef]);
+
+  const undo = useCallback(
+    (event, undoStackRef) => {
+      const {
+        target: { selectionStart }
+      } = event;
+      const prevValue = undoStackRef.current.pop();
+
+      if (prevValue) {
+        setSendBox(prevValue.value);
+
+        nextSelectionRef.current = {
+          selectionEnd: prevValue.selectionEnd,
+          selectionStart: prevValue.selectionStart
+        };
+
+        valueAfterFocusRef.current = prevValue.value;
+      } else {
+        console.log('!!!');
+        setSendBox(''); // Do we need this one?
+        valueAfterFocusRef.current = '';
+      }
+    },
+    [inputRef, nextSelectionRef, setSendBox]
+  );
+
+  const handleKeyDown = useCallback(
+    event => {
+      const { ctrlKey, key } = event;
+
+      if (ctrlKey && (key === 'Z' || key === 'z')) {
+        event.preventDefault();
+
+        undo(event, undoStackRef);
+      }
+    },
+    [undo]
+  );
 
   const handleKeyPress = useCallback(
     event => {
@@ -140,6 +244,13 @@ const TextBox = ({ className }) => {
     [submitTextBox]
   );
 
+  const handleSelect = useCallback(
+    ({ target: { selectionEnd, selectionStart } }) => {
+      prevSelectionRef.current = { selectionEnd, selectionStart };
+    },
+    [prevSelectionRef]
+  );
+
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
@@ -150,6 +261,21 @@ const TextBox = ({ className }) => {
     },
     [submitTextBox]
   );
+
+  const getRef = (...refs) => {
+    const filteredRefs = refs.filter(() => true);
+    if (!filteredRefs.length) return null;
+    if (filteredRefs.length === 1) return filteredRefs[0];
+    return inst => {
+      for (const ref of filteredRefs) {
+        if (typeof ref === 'function') {
+          ref(inst);
+        } else if (ref) {
+          ref.current = inst;
+        }
+      }
+    };
+  };
 
   return (
     <form
@@ -175,9 +301,12 @@ const TextBox = ({ className }) => {
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
                 onChange={disabled ? undefined : handleChange}
+                onFocus={disabled ? undefined : handleFocus}
+                onKeyDown={disabled ? undefined : handleKeyDown}
+                onSelect={disabled ? undefined : handleSelect}
                 placeholder={typeYourMessageString}
                 readOnly={disabled}
-                ref={sendFocusRef}
+                ref={getRef(sendFocusRef, inputRef)}
                 type="text"
                 value={textBoxValue}
               />
@@ -189,10 +318,13 @@ const TextBox = ({ className }) => {
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
                   onChange={disabled ? undefined : handleChange}
+                  onFocus={disabled ? undefined : handleFocus}
+                  onKeyDown={disabled ? undefined : handleKeyDown}
                   onKeyPress={disabled ? undefined : handleKeyPress}
+                  onSelect={disabled ? undefined : handleSelect}
                   placeholder={typeYourMessageString}
                   readOnly={disabled}
-                  ref={sendFocusRef}
+                  ref={getRef(sendFocusRef, inputRef)}
                   rows="1"
                   value={textBoxValue}
                 />

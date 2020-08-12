@@ -21,7 +21,7 @@ import React, { forwardRef, useRef } from 'react';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleTextArea = forwardRef(({ disabled, onChange, tabIndex, ...props }, forwardedRef) => {
+const AccessibleTextArea = forwardRef(({ disabled, onChange, onFocus, onSelect, tabIndex, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
@@ -30,6 +30,8 @@ const AccessibleTextArea = forwardRef(({ disabled, onChange, tabIndex, ...props 
     <textarea
       aria-disabled={disabled || undefined}
       onChange={disabled ? undefined : onChange}
+      onFocus={disabled ? undefined : onFocus}
+      onSelect={disabled ? undefined : onSelect}
       readOnly={disabled}
       ref={ref}
       tabIndex={disabled ? -1 : tabIndex}
@@ -41,6 +43,8 @@ const AccessibleTextArea = forwardRef(({ disabled, onChange, tabIndex, ...props 
 AccessibleTextArea.defaultProps = {
   disabled: undefined,
   onChange: undefined,
+  onFocus: undefined,
+  onSelect: undefined,
   tabIndex: undefined
 };
 
@@ -49,6 +53,8 @@ AccessibleTextArea.displayName = 'AccessibleTextArea';
 AccessibleTextArea.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onSelect: PropTypes.func,
   tabIndex: PropTypes.number
 };
 
