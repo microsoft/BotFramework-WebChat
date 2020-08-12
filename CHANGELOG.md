@@ -131,6 +131,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3354](https://github.com/microsoft/BotFramework-WebChat/issues/3354). Added access key (<kbd>ALT</kbd> + <kbd>SHIFT</kbd> + <kbd>A</kbd> for Windows and <kbd>CTRL</kbd> + <kbd>OPTION</kbd> + <kbd>A</kbd> for Mac) to suggested actions, by [@compulim](https://github.com/compulim), in PR [#3367](https://github.com/microsoft/BotFramework-WebChat/pull/3367)
 -  Resolves [#3247](https://github.com/microsoft/BotFramework-WebChat/issues/3247). Support activity ID on `useObserveScrollPosition` and `useScrollTo` hook, by [@compulim](https://github.com/compulim), in PR [#3372](https://github.com/microsoft/BotFramework-WebChat/pull/3372)
 -  Added support for [Redux DevTools](https://github.com/zalmoxisus/redux-devtools-extension), by [@tpdewolf](https://github.com/tpdewolf) and [@compulim](https://github.com/compulim), in PR [#3277](https://github.com/microsoft/BotFramework-WebChat/pull/3277)
+-  Convert typed emoticons into Emoji in the Textbox: [#3249](https://github.com/microsoft/BotFramework-WebChat/issues/3249), by [@corinagum](https://github.com/corinagum), in PR [#xxx](https://github.com/microsoft/BotFramework-WebChat/pull/xxx)
 
 ### Fixed
 
@@ -140,6 +141,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Fixes [#2828](https://github.com/microsoft.com/BotFramework-WebChat/issues/2828). Updated [`04.api/h.clear-after-idle` sample](https://microsoft.github.io/BotFramework-WebChat/04.api/h.clear-after-idle/), by [@compulim](https://github.com/compulim), in PR [#3376](https://github.com/microsoft/BotFramework-WebChat/pull/3376)
+-  Convert typed emoticons into Emoji in the Textbox sample: [#3249](https://github.com/microsoft/BotFramework-WebChat/issues/3249), by [@corinagum](https://github.com/corinagum), in PR [#xxx](https://github.com/microsoft/BotFramework-WebChat/pull/xxx)
 
 ## [4.9.2] - 2020-07-14
 
