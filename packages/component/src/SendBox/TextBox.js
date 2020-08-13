@@ -311,6 +311,7 @@ const TextBox = ({ className }) => {
     };
   };
 
+  // TODO: [P2] Add enterkeyhint="send" and inputmode="text".
   return (
     <form
       aria-disabled={disabled}

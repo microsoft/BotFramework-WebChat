@@ -438,4 +438,26 @@ describe('Emoji', () => {
 
     await expectTextBox('', 0, 0);
   });
+
+  test('Sequence 22', async () => {
+    await driver.executeScript(textBox => textBox.focus(), textBox);
+    await driver.actions().sendKeys('abc:)').perform();
+    await expectTextBox('abc😊', 5, 5);
+
+    await sendUndoKey();
+
+    await expectTextBox('abc:)', 5, 5);
+
+    await driver.actions().sendKeys(':)').perform();
+
+    await expectTextBox('abc:)😊', 7, 7);
+
+    await sendUndoKey();
+
+    await expectTextBox('abc:):)', 7, 7);
+
+    await sendUndoKey();
+
+    await expectTextBox('', 0, 0);
+  });
 });
