@@ -7,7 +7,7 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
-// import getDiffIndex from '../Utils/getDiffIndex';
+import indexOfFirstDifference from '../Utils/indexOfFirstDifference';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
@@ -104,16 +104,22 @@ function useTextBoxValue() {
   const stopDictate = useStopDictate();
 
   const setter = useCallback(
-    (nextValue, { selectionEnd, selectionStart }) => {
+    (nextValue, { selectionEnd, selectionStart } = {}) => {
       if (typeof nextValue !== 'string') {
         throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
       }
 
-      let nextSelectionEnd = selectionEnd;
-      let nextSelectionStart = selectionStart;
-
-      if (nextValue.length === value.length + 1) {
-        // We only do emoji conversion when a single character is added.
+      // TODO: Add test for
+      // 1. useSendBoxTextBoxValue('abc');
+      // 2. useSendBoxTextBoxValue('abc', { selectionEnd: 3, selectionStart: 3 });
+      if (
+        typeof selectionEnd === 'number' &&
+        typeof selectionStart === 'number' &&
+        nextValue.length === value.length + 1
+      ) {
+        // We only do emoji conversion when it is not a clipboard paste.
+        // But currently, we can't tell between typing or pasting.
+        // So, we can only put our best effort by detecting a single character addition.
         const { emojiChange, valueWithEmoji } = replaceEmoticon({ selectionStart, value: nextValue });
 
         if (valueWithEmoji !== nextValue) {
@@ -154,11 +160,10 @@ const TextBox = ({ className }) => {
   const inputRef = useRef();
   const undoStackRef = useRef([]);
 
+  const placeCheckpointOnChangeRef = useRef(false);
+  const prevInputStateRef = useRef();
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
-  const nextSelectionRef = useRef();
-  const prevInputStateRef = useRef();
-  const placeCheckpointOnChangeRef = useRef(false);
 
   const rememberInputState = useCallback(() => {
     const {
@@ -168,20 +173,27 @@ const TextBox = ({ className }) => {
     prevInputStateRef.current = { selectionEnd, selectionStart, value };
   }, [inputRef, prevInputStateRef]);
 
+  const setSelectionRangeAndValue = useCallback(
+    ({ selectionEnd, selectionStart, value }) => {
+      // This is for moving the selection while setting the send box value.
+      // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
+
+      if (inputRef.current) {
+        inputRef.current.value = value;
+
+        inputRef.current.selectionStart = selectionStart;
+        inputRef.current.selectionEnd = selectionEnd;
+      }
+
+      setSendBox(value);
+    },
+    [setSendBox]
+  );
+
   useEffect(() => {
-    // This is for TypeFocusSink. When the focus in on the script, then starting press "a".
+    // This is for TypeFocusSink. When the focus in on the script, then starting press "a", without this line, it would cause errors.
     rememberInputState();
   }, [rememberInputState]);
-
-  useEffect(() => {
-    // If nextSelectionRef is set, move to this selection.
-    if (nextSelectionRef.current) {
-      inputRef.current.selectionStart = nextSelectionRef.current.selectionStart;
-      inputRef.current.selectionEnd = nextSelectionRef.current.selectionEnd;
-
-      nextSelectionRef.current = undefined;
-    }
-  }, [inputRef, nextSelectionRef, nextSelectionRef.current]);
 
   const handleChange = useCallback(
     event => {
@@ -199,11 +211,11 @@ const TextBox = ({ className }) => {
         placeCheckpointOnChangeRef.current = false;
       }
 
-      const { selectionEnd: nextSelectionEnd, selectionStart: nextSelectionStart, value: nextValue } = setTextBoxValue(
-        value,
-        { selectionStart },
-        undoStackRef
-      );
+      const {
+        selectionEnd: nextSelectionEnd,
+        selectionStart: nextSelectionStart,
+        value: nextValue
+      } = setTextBoxValue(value, { selectionEnd, selectionStart });
 
       // If an emoticon is converted to emoji, place another checkpoint.
       if (nextValue !== value) {
@@ -215,10 +227,11 @@ const TextBox = ({ className }) => {
 
         placeCheckpointOnChangeRef.current = true;
 
-        nextSelectionRef.current = {
+        setSelectionRangeAndValue({
           selectionEnd: nextSelectionEnd,
-          selectionStart: nextSelectionStart
-        };
+          selectionStart: nextSelectionStart,
+          value: nextValue
+        });
       }
     },
     [prevInputStateRef, setTextBoxValue, undoStackRef, setTextBoxValue]
@@ -241,20 +254,17 @@ const TextBox = ({ className }) => {
         const poppedInputState = undoStackRef.current.pop();
 
         if (poppedInputState) {
-          setSendBox(poppedInputState.value);
+          prevInputStateRef.current = { ...poppedInputState };
 
-          nextSelectionRef.current = {
-            selectionEnd: poppedInputState.selectionEnd,
-            selectionStart: poppedInputState.selectionStart
-          };
+          setSelectionRangeAndValue(poppedInputState);
         } else {
+          prevInputStateRef.current = { selectionEnd: 0, selectionStart: 0, value: '' };
+
           setSendBox(''); // Do we need this one?
         }
-
-        rememberInputState();
       }
     },
-    [rememberInputState, setSendBox, undoStackRef]
+    [setSendBox, undoStackRef]
   );
 
   // TODO: I think we can take away this one.
@@ -284,7 +294,6 @@ const TextBox = ({ className }) => {
     [prevInputStateRef]
   );
 
-  // TODO: [P2] On submit, we should throw away the undo stack.
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
@@ -292,6 +301,9 @@ const TextBox = ({ className }) => {
       // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
       // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
       submitTextBox();
+
+      // After submit, we will clear the undo stack.
+      undoStackRef.current = [];
     },
     [submitTextBox]
   );
@@ -311,7 +323,6 @@ const TextBox = ({ className }) => {
     };
   };
 
-  // TODO: [P2] Add enterkeyhint="send" and inputmode="text".
   return (
     <form
       aria-disabled={disabled}
@@ -335,6 +346,8 @@ const TextBox = ({ className }) => {
                 className="webchat__send-box-text-box__input"
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
+                enterKeyHint="send"
+                inputMode="text"
                 onChange={disabled ? undefined : handleChange}
                 onFocus={disabled ? undefined : handleFocus}
                 onKeyDown={disabled ? undefined : handleKeyDown}
@@ -352,6 +365,8 @@ const TextBox = ({ className }) => {
                   className="webchat__send-box-text-box__text-area"
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
+                  enterKeyHint="send"
+                  inputMode="text"
                   onChange={disabled ? undefined : handleChange}
                   onFocus={disabled ? undefined : handleFocus}
                   onKeyDown={disabled ? undefined : handleKeyDown}

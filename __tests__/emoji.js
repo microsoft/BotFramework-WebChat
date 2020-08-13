@@ -458,6 +458,10 @@ describe('Emoji', () => {
 
     await sendUndoKey();
 
+    await expectTextBox('abc:)', 5, 5);
+
+    await sendUndoKey();
+
     await expectTextBox('', 0, 0);
   });
 });

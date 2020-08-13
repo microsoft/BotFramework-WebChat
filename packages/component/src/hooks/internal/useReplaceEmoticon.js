@@ -28,6 +28,7 @@ export default function useReplaceEmoticon() {
         return true;
       });
 
+      // Move signature to { replacementStart, replacementEnd, value } or { offset, length, value }
       return { emojiChange, valueWithEmoji: nextValue };
     },
     [emojiSet]
