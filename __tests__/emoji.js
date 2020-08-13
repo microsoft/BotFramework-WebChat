@@ -1,16 +1,11 @@
 import { Key } from 'selenium-webdriver';
 
-import { imageSnapshotOptions, timeouts } from './constants.json';
+import { timeouts } from './constants.json';
 import getSendBoxTextBox from './setup/elements/getSendBoxTextBox.js';
 import getTranscript from './setup/elements/getTranscript.js';
-import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
-
-function sleep(ms = 1000) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 jest.setTimeout(timeouts.test);
 
@@ -18,7 +13,7 @@ describe('Emoji', () => {
   let driver, textBox, transcript;
 
   beforeEach(async () => {
-    driver = (await setupWebDriver({ props: { styleOptions: { emojiSet: true } } })).driver;
+    driver = (await setupWebDriver()).driver;
 
     textBox = await getSendBoxTextBox(driver);
     transcript = await getTranscript(driver);
@@ -26,13 +21,21 @@ describe('Emoji', () => {
 
   async function expectTextBox(value, selectionStart, selectionEnd) {
     // To improve test reliability, we will wait up to 500 ms for the expectation.
-    const getActual = () => driver.executeScript(({ selectionEnd, selectionStart, value }) => ({ selectionEnd, selectionStart, value }), textBox);
+    const getActual = () =>
+      driver.executeScript(
+        ({ selectionEnd, selectionStart, value }) => ({ selectionEnd, selectionStart, value }),
+        textBox
+      );
 
-    await driver.wait(async () => {
-      const actual = await getActual();
+    await driver
+      .wait(async () => {
+        const actual = await getActual();
 
-      return actual.selectionEnd === selectionEnd && actual.selectionStart == selectionStart && actual.value === value;
-    }, timeouts.ui).catch(() => {});
+        return (
+          actual.selectionEnd === selectionEnd && actual.selectionStart == selectionStart && actual.value === value
+        );
+      }, timeouts.ui)
+      .catch(() => {});
 
     const resultTask = getActual();
 
@@ -53,7 +56,7 @@ describe('Emoji', () => {
     return sendKeyChord(Key.CONTROL, 'z');
   }
 
-  test('Key sequence 0', async () => {
+  test('Sequence 0', async () => {
     await transcript.click();
 
     await driver.actions().sendKeys('abc').perform();
@@ -65,7 +68,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 1', async () => {
+  test('Sequence 1', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc', Key.ARROW_LEFT, Key.ARROW_LEFT, '123').perform();
     await sendUndoKey();
@@ -77,7 +80,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 2', async () => {
+  test('Sequence 2', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
     await driver.executeScript(textBox => textBox.blur(), textBox);
@@ -89,7 +92,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 3', async () => {
+  test('Sequence 3', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('ab', Key.ARROW_LEFT, ':-)').perform();
 
@@ -108,7 +111,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 4', async () => {
+  test('Sequence 4', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc', Key.ARROW_LEFT, Key.BACK_SPACE).perform();
     await sendUndoKey();
@@ -120,11 +123,18 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 5', async () => {
+  test('Sequence 5', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
 
     await driver.actions().sendKeys('abc').perform();
-    await driver.actions().sendKeys(Key.ARROW_LEFT).keyDown(Key.SHIFT).sendKeys(Key.ARROW_LEFT).keyUp(Key.SHIFT).sendKeys('d').perform();
+    await driver
+      .actions()
+      .sendKeys(Key.ARROW_LEFT)
+      .keyDown(Key.SHIFT)
+      .sendKeys(Key.ARROW_LEFT)
+      .keyUp(Key.SHIFT)
+      .sendKeys('d')
+      .perform();
 
     await expectTextBox('adc', 2, 2);
 
@@ -137,7 +147,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 6', async () => {
+  test('Sequence 6', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
 
     await driver.actions().sendKeys('abc').perform();
@@ -145,7 +155,14 @@ describe('Emoji', () => {
     await driver.executeScript(textBox => textBox.blur(), textBox);
     await driver.executeScript(textBox => textBox.focus(), textBox);
 
-    await driver.actions().sendKeys(Key.ARROW_LEFT).keyDown(Key.SHIFT).sendKeys(Key.ARROW_LEFT).keyUp(Key.SHIFT).sendKeys('d').perform();
+    await driver
+      .actions()
+      .sendKeys(Key.ARROW_LEFT)
+      .keyDown(Key.SHIFT)
+      .sendKeys(Key.ARROW_LEFT)
+      .keyUp(Key.SHIFT)
+      .sendKeys('d')
+      .perform();
 
     await expectTextBox('adc', 2, 2);
 
@@ -158,7 +175,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 7', async () => {
+  test('Sequence 7', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:)').perform();
 
@@ -181,7 +198,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 8', async () => {
+  test('Sequence 8', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
     await driver.executeScript(textBox => textBox.blur(), textBox);
@@ -193,7 +210,7 @@ describe('Emoji', () => {
     await expectTextBox('abc', 0, 3);
   });
 
-  test('Key sequence 9', async () => {
+  test('Sequence 9', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
     await driver.executeScript(textBox => textBox.blur(), textBox);
@@ -205,7 +222,7 @@ describe('Emoji', () => {
     await expectTextBox('abc', 0, 3);
   });
 
-  test('Key sequence 10', async () => {
+  test('Sequence 10', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:)').perform();
     await sendUndoKey();
@@ -217,7 +234,7 @@ describe('Emoji', () => {
     await expectTextBox('abc:)', 5, 5);
   });
 
-  test('Key sequence 11', async () => {
+  test('Sequence 11', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:)').perform();
 
@@ -233,7 +250,7 @@ describe('Emoji', () => {
     await expectTextBox('abc:)123', 8, 8);
   });
 
-  test('Key sequence 12', async () => {
+  test('Sequence 12', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:)').perform();
 
@@ -252,7 +269,7 @@ describe('Emoji', () => {
     await expectTextBox('abc:)', 5, 5);
   });
 
-  test('Key sequence 13', async () => {
+  test('Sequence 13', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:)').perform();
     await sendUndoKey();
@@ -265,7 +282,7 @@ describe('Emoji', () => {
     await expectTextBox('abc:)', 5, 5);
   });
 
-  test('Key sequence 14', async () => {
+  test('Sequence 14', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
     await sendControlKey('a');
@@ -287,7 +304,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 15', async () => {
+  test('Sequence 15', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
     await sendControlKey('a');
@@ -304,7 +321,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 16', async () => {
+  test('Sequence 16', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys(':').perform();
     await sendControlKey('ax');
@@ -327,7 +344,7 @@ describe('Emoji', () => {
   });
 
   // Currently, this test do not reflect what the real browser would behave due to technical limitation.
-  test('Key sequence 17', async () => {
+  test('Sequence 17', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('-)').perform();
     await sendControlKey('ax');
@@ -348,7 +365,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 18', async () => {
+  test('Sequence 18', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc:1)', Key.ARROW_LEFT, Key.BACK_SPACE).perform();
 
@@ -364,7 +381,7 @@ describe('Emoji', () => {
   });
 
   // Currently, this test do not reflect what the real browser would behave due to technical limitation.
-  test('Key sequence 19', async () => {
+  test('Sequence 19', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
 
@@ -382,7 +399,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 20', async () => {
+  test('Sequence 20', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys('abc').perform();
 
@@ -398,7 +415,7 @@ describe('Emoji', () => {
     await expectTextBox('', 0, 0);
   });
 
-  test('Key sequence 21', async () => {
+  test('Sequence 21', async () => {
     await driver.executeScript(textBox => textBox.focus(), textBox);
     await driver.actions().sendKeys(')').perform();
     await sendControlKey('ax');
