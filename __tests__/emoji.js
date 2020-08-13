@@ -464,4 +464,56 @@ describe('Emoji', () => {
 
     await expectTextBox('', 0, 0);
   });
+
+  test('Sequence 23', async () => {
+    await driver.executeScript(textBox => textBox.focus(), textBox);
+    await driver.actions().sendKeys('abc', Key.ARROW_LEFT, ')', Key.ARROW_LEFT, ':)').perform();
+    await expectTextBox('ab😊)c', 4, 4);
+
+    await sendUndoKey();
+
+    await expectTextBox('ab:))c', 4, 4);
+
+    await sendUndoKey();
+
+    await expectTextBox('ab)c', 2, 2);
+
+    await sendUndoKey();
+
+    await expectTextBox('abc', 2, 2);
+
+    await sendUndoKey();
+
+    await expectTextBox('', 0, 0);
+  });
+
+  test('Sequence 24', async () => {
+    await driver.executeScript(textBox => textBox.focus(), textBox);
+    await driver.actions().sendKeys('abc', Key.ARROW_LEFT, ')', Key.ARROW_LEFT, ':)').perform();
+    await expectTextBox('ab😊)c', 4, 4);
+
+    await sendUndoKey();
+
+    await expectTextBox('ab:))c', 4, 4);
+
+    await driver.actions().sendKeys(Key.ARROW_RIGHT, Key.BACK_SPACE).perform();
+
+    await expectTextBox('ab:)c', 4, 4);
+
+    await sendUndoKey();
+
+    await expectTextBox('ab:))c', 5, 5);
+
+    await sendUndoKey();
+
+    await expectTextBox('ab)c', 2, 2);
+
+    await sendUndoKey();
+
+    await expectTextBox('abc', 2, 2);
+
+    await sendUndoKey();
+
+    await expectTextBox('', 0, 0);
+  });
 });

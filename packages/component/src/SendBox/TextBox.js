@@ -7,7 +7,6 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
-import indexOfFirstDifference from '../Utils/indexOfFirstDifference';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
@@ -99,53 +98,44 @@ function useTextBoxSubmit() {
 }
 
 function useTextBoxValue() {
-  const [value, setSendBox] = useSendBoxValue();
+  const [value, setValue] = useSendBoxValue();
   const replaceEmoticon = useReplaceEmoticon();
   const stopDictate = useStopDictate();
 
   const setter = useCallback(
+    // TODO: Add test for
+    // 1. useSendBoxTextBoxValue('abc');
+    // 2. useSendBoxTextBoxValue('abc', { selectionEnd: 3, selectionStart: 3 });
     (nextValue, { selectionEnd, selectionStart } = {}) => {
       if (typeof nextValue !== 'string') {
         throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
       }
 
-      // TODO: Add test for
-      // 1. useSendBoxTextBoxValue('abc');
-      // 2. useSendBoxTextBoxValue('abc', { selectionEnd: 3, selectionStart: 3 });
-      if (
-        typeof selectionEnd === 'number' &&
-        typeof selectionStart === 'number' &&
-        nextValue.length === value.length + 1
-      ) {
-        // We only do emoji conversion when it is not a clipboard paste.
-        // But currently, we can't tell between typing or pasting.
-        // So, we can only put our best effort by detecting a single character addition.
-        const { emojiChange, valueWithEmoji } = replaceEmoticon({ selectionStart, value: nextValue });
+      // Currently, we cannot detect whether the change is due to clipboard paste or pressing a key on the keyboard.
+      // We should not change to emoji when the user is pasting text.
+      // We would assume, for a single character addition, the user must be pressing a key.
+      if (nextValue.length === value.length + 1) {
+        const result = replaceEmoticon({ selectionEnd, selectionStart, value: nextValue });
 
-        if (valueWithEmoji !== nextValue) {
-          nextSelectionEnd = nextSelectionStart = emojiChange;
-          nextValue = valueWithEmoji;
-        }
+        selectionEnd = result.selectionEnd;
+        selectionStart = result.selectionStart;
+        nextValue = result.value;
       }
 
-      setSendBox(nextValue);
+      setValue(nextValue);
       stopDictate();
 
       return {
-        selectionEnd: nextSelectionEnd,
-        selectionStart: nextSelectionStart,
+        selectionEnd,
+        selectionStart,
         value: nextValue
       };
     },
-    [replaceEmoticon, setSendBox, stopDictate, value]
+    [replaceEmoticon, setValue, stopDictate, value]
   );
 
   return [value, setter];
 }
-
-// Please add test for checking the caret position.
-// Because in our screenshot test, we hide the cursor (blink is time-sensitive and making test unreliable)
-// So we didn't actually tested whether "selectionStart" is correctly set or not.
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
@@ -173,12 +163,12 @@ const TextBox = ({ className }) => {
     prevInputStateRef.current = { selectionEnd, selectionStart, value };
   }, [inputRef, prevInputStateRef]);
 
+  // This is for moving the selection while setting the send box value.
+  // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
   const setSelectionRangeAndValue = useCallback(
     ({ selectionEnd, selectionStart, value }) => {
-      // This is for moving the selection while setting the send box value.
-      // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
-
       if (inputRef.current) {
+        // We need to set the value, before selectionStart/selectionEnd.
         inputRef.current.value = value;
 
         inputRef.current.selectionStart = selectionStart;
@@ -190,10 +180,8 @@ const TextBox = ({ className }) => {
     [setSendBox]
   );
 
-  useEffect(() => {
-    // This is for TypeFocusSink. When the focus in on the script, then starting press "a", without this line, it would cause errors.
-    rememberInputState();
-  }, [rememberInputState]);
+  // This is for TypeFocusSink. When the focus in on the script, then starting press "a", without this line, it would cause errors.
+  useEffect(rememberInputState, [rememberInputState]);
 
   const handleChange = useCallback(
     event => {
@@ -202,36 +190,20 @@ const TextBox = ({ className }) => {
       } = event;
 
       if (placeCheckpointOnChangeRef.current) {
-        undoStackRef.current.push({
-          selectionEnd: prevInputStateRef.current.selectionEnd,
-          selectionStart: prevInputStateRef.current.selectionStart,
-          value: prevInputStateRef.current.value
-        });
+        undoStackRef.current.push({ ...prevInputStateRef.current });
 
         placeCheckpointOnChangeRef.current = false;
       }
 
-      const {
-        selectionEnd: nextSelectionEnd,
-        selectionStart: nextSelectionStart,
-        value: nextValue
-      } = setTextBoxValue(value, { selectionEnd, selectionStart });
+      const nextInputState = setTextBoxValue(value, { selectionEnd, selectionStart });
 
       // If an emoticon is converted to emoji, place another checkpoint.
-      if (nextValue !== value) {
-        undoStackRef.current.push({
-          selectionEnd,
-          selectionStart,
-          value
-        });
+      if (nextInputState.value !== value) {
+        undoStackRef.current.push({ selectionEnd, selectionStart, value });
 
         placeCheckpointOnChangeRef.current = true;
 
-        setSelectionRangeAndValue({
-          selectionEnd: nextSelectionEnd,
-          selectionStart: nextSelectionStart,
-          value: nextValue
-        });
+        setSelectionRangeAndValue(nextInputState);
       }
     },
     [prevInputStateRef, setTextBoxValue, undoStackRef, setTextBoxValue]
@@ -243,12 +215,19 @@ const TextBox = ({ className }) => {
     placeCheckpointOnChangeRef.current = true;
   }, [placeCheckpointOnChangeRef, rememberInputState]);
 
-  // TODO: [P1] We should support key repeat (holding Z should keep undo-ing)
-  const handleKeyDown = useCallback(
+  const handleKeyPress = useCallback(
     event => {
-      const { ctrlKey, key } = event;
+      const { ctrlKey, key, shiftKey } = event;
 
-      if (ctrlKey && (key === 'Z' || key === 'z')) {
+      if (key === 'Enter' && !shiftKey) {
+        event.preventDefault();
+
+        // If text box is submitted, focus on the send box
+        submitTextBox(true);
+
+        // After submit, we will clear the undo stack.
+        undoStackRef.current = [];
+      } else if (ctrlKey && (key === 'Z' || key === 'z')) {
         event.preventDefault();
 
         const poppedInputState = undoStackRef.current.pop();
@@ -260,26 +239,11 @@ const TextBox = ({ className }) => {
         } else {
           prevInputStateRef.current = { selectionEnd: 0, selectionStart: 0, value: '' };
 
-          setSendBox(''); // Do we need this one?
+          setSendBox('');
         }
       }
     },
-    [setSendBox, undoStackRef]
-  );
-
-  // TODO: I think we can take away this one.
-  const handleKeyPress = useCallback(
-    event => {
-      const { key, shiftKey } = event;
-
-      if (key === 'Enter' && !shiftKey) {
-        event.preventDefault();
-
-        // If text box is submitted, focus on the send box
-        submitTextBox(true);
-      }
-    },
-    [submitTextBox]
+    [setSendBox, submitTextBox, undoStackRef]
   );
 
   const handleSelect = useCallback(
@@ -350,7 +314,7 @@ const TextBox = ({ className }) => {
                 inputMode="text"
                 onChange={disabled ? undefined : handleChange}
                 onFocus={disabled ? undefined : handleFocus}
-                onKeyDown={disabled ? undefined : handleKeyDown}
+                onKeyPress={disabled ? undefined : handleKeyPress}
                 onSelect={disabled ? undefined : handleSelect}
                 placeholder={typeYourMessageString}
                 readOnly={disabled}
@@ -369,7 +333,6 @@ const TextBox = ({ className }) => {
                   inputMode="text"
                   onChange={disabled ? undefined : handleChange}
                   onFocus={disabled ? undefined : handleFocus}
-                  onKeyDown={disabled ? undefined : handleKeyDown}
                   onKeyPress={disabled ? undefined : handleKeyPress}
                   onSelect={disabled ? undefined : handleSelect}
                   placeholder={typeYourMessageString}

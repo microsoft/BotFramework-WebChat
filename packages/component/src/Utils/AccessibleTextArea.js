@@ -21,7 +21,7 @@ import React, { forwardRef, useRef } from 'react';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleTextArea = forwardRef(({ disabled, onChange, onFocus, onSelect, tabIndex, ...props }, forwardedRef) => {
+const AccessibleTextArea = forwardRef(({ disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
   const targetRef = useRef();
 
   const ref = forwardedRef || targetRef;
@@ -29,8 +29,11 @@ const AccessibleTextArea = forwardRef(({ disabled, onChange, onFocus, onSelect, 
   return (
     <textarea
       aria-disabled={disabled || undefined}
+      enterKeyHint={enterKeyHint}
+      inputMode={inputMode}
       onChange={disabled ? undefined : onChange}
       onFocus={disabled ? undefined : onFocus}
+      onKeyPress={disabled ? undefined : onKeyPress}
       onSelect={disabled ? undefined : onSelect}
       readOnly={disabled}
       ref={ref}
@@ -42,8 +45,11 @@ const AccessibleTextArea = forwardRef(({ disabled, onChange, onFocus, onSelect, 
 
 AccessibleTextArea.defaultProps = {
   disabled: undefined,
+  enterKeyHint: undefined,
+  inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
+  onKeyPress: undefined,
   onSelect: undefined,
   tabIndex: undefined
 };
@@ -52,8 +58,11 @@ AccessibleTextArea.displayName = 'AccessibleTextArea';
 
 AccessibleTextArea.propTypes = {
   disabled: PropTypes.bool,
+  enterKeyHint: PropTypes.string,
+  inputMode: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
+  onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
   tabIndex: PropTypes.number
 };
