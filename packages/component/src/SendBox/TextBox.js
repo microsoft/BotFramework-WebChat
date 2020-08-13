@@ -7,7 +7,7 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
-import getDiffIndex from '../Utils/getDiffIndex';
+// import getDiffIndex from '../Utils/getDiffIndex';
 import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useLocalizer from '../hooks/useLocalizer';
@@ -104,15 +104,34 @@ function useTextBoxValue() {
   const stopDictate = useStopDictate();
 
   const setter = useCallback(
-    (value, { selectionStart }) => {
-      const { emojiChange, valueWithEmoji } = replaceEmoticon({ selectionStart, value });
+    (nextValue, { selectionEnd, selectionStart }) => {
+      if (typeof nextValue !== 'string') {
+        throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
+      }
 
-      setSendBox(valueWithEmoji);
+      let nextSelectionEnd = selectionEnd;
+      let nextSelectionStart = selectionStart;
+
+      if (nextValue.length === value.length + 1) {
+        // We only do emoji conversion when a single character is added.
+        const { emojiChange, valueWithEmoji } = replaceEmoticon({ selectionStart, value: nextValue });
+
+        if (valueWithEmoji !== nextValue) {
+          nextSelectionEnd = nextSelectionStart = emojiChange;
+          nextValue = valueWithEmoji;
+        }
+      }
+
+      setSendBox(nextValue);
       stopDictate();
 
-      return { value: valueWithEmoji };
+      return {
+        selectionEnd: nextSelectionEnd,
+        selectionStart: nextSelectionStart,
+        value: nextValue
+      };
     },
-    [replaceEmoticon, setSendBox, stopDictate]
+    [replaceEmoticon, setSendBox, stopDictate, value]
   );
 
   return [value, setter];
@@ -132,16 +151,30 @@ const TextBox = ({ className }) => {
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
   const localize = useLocalizer();
   const submitTextBox = useTextBoxSubmit();
-  const noDiff = -1;
   const inputRef = useRef();
   const undoStackRef = useRef([]);
 
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
   const nextSelectionRef = useRef();
-  const prevSelectionRef = useRef();
+  const prevInputStateRef = useRef();
+  const placeCheckpointOnChangeRef = useRef(false);
+
+  const rememberInputState = useCallback(() => {
+    const {
+      current: { selectionEnd, selectionStart, value }
+    } = inputRef;
+
+    prevInputStateRef.current = { selectionEnd, selectionStart, value };
+  }, [inputRef, prevInputStateRef]);
 
   useEffect(() => {
+    // This is for TypeFocusSink. When the focus in on the script, then starting press "a".
+    rememberInputState();
+  }, [rememberInputState]);
+
+  useEffect(() => {
+    // If nextSelectionRef is set, move to this selection.
     if (nextSelectionRef.current) {
       inputRef.current.selectionStart = nextSelectionRef.current.selectionStart;
       inputRef.current.selectionEnd = nextSelectionRef.current.selectionEnd;
@@ -156,23 +189,23 @@ const TextBox = ({ className }) => {
         target: { selectionEnd, selectionStart, value }
       } = event;
 
-      // If it was empty, push to undo stack.
-
-      // Test: "abc", blur, focus, select all, press backspace, type "def", press ctrl-z, expect "", press ctrl-z, expect "abc"
-      // Test: "abc", blur, focus, select all, type "def", press ctrl-z, expect "abc"
-
-      if (typeof valueAfterFocusRef.current !== 'undefined') {
+      if (placeCheckpointOnChangeRef.current) {
         undoStackRef.current.push({
-          selectionEnd: prevSelectionRef.current.selectionEnd,
-          selectionStart: prevSelectionRef.current.selectionStart,
-          value: valueAfterFocusRef.current
+          selectionEnd: prevInputStateRef.current.selectionEnd,
+          selectionStart: prevInputStateRef.current.selectionStart,
+          value: prevInputStateRef.current.value
         });
 
-        valueAfterFocusRef.current = undefined;
+        placeCheckpointOnChangeRef.current = false;
       }
 
-      const { value: nextValue } = setTextBoxValue(value, { selectionStart }, undoStackRef);
+      const { selectionEnd: nextSelectionEnd, selectionStart: nextSelectionStart, value: nextValue } = setTextBoxValue(
+        value,
+        { selectionStart },
+        undoStackRef
+      );
 
+      // If an emoticon is converted to emoji, place another checkpoint.
       if (nextValue !== value) {
         undoStackRef.current.push({
           selectionEnd,
@@ -180,43 +213,24 @@ const TextBox = ({ className }) => {
           value
         });
 
-        valueAfterFocusRef.current = nextValue;
-      }
-    },
-    [prevSelectionRef, setTextBoxValue, undoStackRef, setTextBoxValue, valueAfterFocusRef]
-  );
-
-  const valueAfterFocusRef = useRef();
-
-  const handleFocus = useCallback(() => {
-    valueAfterFocusRef.current = inputRef.current.value;
-  }, [inputRef, valueAfterFocusRef]);
-
-  const undo = useCallback(
-    (event, undoStackRef) => {
-      const {
-        target: { selectionStart }
-      } = event;
-      const prevValue = undoStackRef.current.pop();
-
-      if (prevValue) {
-        setSendBox(prevValue.value);
+        placeCheckpointOnChangeRef.current = true;
 
         nextSelectionRef.current = {
-          selectionEnd: prevValue.selectionEnd,
-          selectionStart: prevValue.selectionStart
+          selectionEnd: nextSelectionEnd,
+          selectionStart: nextSelectionStart
         };
-
-        valueAfterFocusRef.current = prevValue.value;
-      } else {
-        console.log('!!!');
-        setSendBox(''); // Do we need this one?
-        valueAfterFocusRef.current = '';
       }
     },
-    [inputRef, nextSelectionRef, setSendBox]
+    [prevInputStateRef, setTextBoxValue, undoStackRef, setTextBoxValue]
   );
 
+  const handleFocus = useCallback(() => {
+    rememberInputState();
+
+    placeCheckpointOnChangeRef.current = true;
+  }, [placeCheckpointOnChangeRef, rememberInputState]);
+
+  // TODO: [P1] We should support key repeat (holding Z should keep undo-ing)
   const handleKeyDown = useCallback(
     event => {
       const { ctrlKey, key } = event;
@@ -224,12 +238,26 @@ const TextBox = ({ className }) => {
       if (ctrlKey && (key === 'Z' || key === 'z')) {
         event.preventDefault();
 
-        undo(event, undoStackRef);
+        const poppedInputState = undoStackRef.current.pop();
+
+        if (poppedInputState) {
+          setSendBox(poppedInputState.value);
+
+          nextSelectionRef.current = {
+            selectionEnd: poppedInputState.selectionEnd,
+            selectionStart: poppedInputState.selectionStart
+          };
+        } else {
+          setSendBox(''); // Do we need this one?
+        }
+
+        rememberInputState();
       }
     },
-    [undo]
+    [rememberInputState, setSendBox, undoStackRef]
   );
 
+  // TODO: I think we can take away this one.
   const handleKeyPress = useCallback(
     event => {
       const { key, shiftKey } = event;
@@ -245,12 +273,18 @@ const TextBox = ({ className }) => {
   );
 
   const handleSelect = useCallback(
-    ({ target: { selectionEnd, selectionStart } }) => {
-      prevSelectionRef.current = { selectionEnd, selectionStart };
+    ({ target: { selectionEnd, selectionStart, value } }) => {
+      if (value === prevInputStateRef.current.value) {
+        // When caret move, we should push to undo stack on change.
+        placeCheckpointOnChangeRef.current = true;
+      }
+
+      prevInputStateRef.current = { selectionEnd, selectionStart, value };
     },
-    [prevSelectionRef]
+    [prevInputStateRef]
   );
 
+  // TODO: [P2] On submit, we should throw away the undo stack.
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
