@@ -22,7 +22,10 @@ import React, { forwardRef, useRef } from 'react';
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleInputText = forwardRef(
-  ({ disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
+  (
+    { disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props },
+    forwardedRef
+  ) => {
     const targetRef = useRef();
 
     const ref = forwardedRef || targetRef;
@@ -34,6 +37,7 @@ const AccessibleInputText = forwardRef(
         inputMode={inputMode}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
+        onKeyDown={disabled ? undefined : onKeyDown}
         onKeyPress={disabled ? undefined : onKeyPress}
         onSelect={disabled ? undefined : onSelect}
         readOnly={disabled}
@@ -52,6 +56,7 @@ AccessibleInputText.defaultProps = {
   inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
+  onKeyDown: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
   tabIndex: undefined
@@ -65,6 +70,7 @@ AccessibleInputText.propTypes = {
   inputMode: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
+  onKeyDown: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
   tabIndex: PropTypes.number,

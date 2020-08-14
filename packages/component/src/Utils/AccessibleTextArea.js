@@ -21,27 +21,33 @@ import React, { forwardRef, useRef } from 'react';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleTextArea = forwardRef(({ disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
-  const targetRef = useRef();
+const AccessibleTextArea = forwardRef(
+  (
+    { disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props },
+    forwardedRef
+  ) => {
+    const targetRef = useRef();
 
-  const ref = forwardedRef || targetRef;
+    const ref = forwardedRef || targetRef;
 
-  return (
-    <textarea
-      aria-disabled={disabled || undefined}
-      enterKeyHint={enterKeyHint}
-      inputMode={inputMode}
-      onChange={disabled ? undefined : onChange}
-      onFocus={disabled ? undefined : onFocus}
-      onKeyPress={disabled ? undefined : onKeyPress}
-      onSelect={disabled ? undefined : onSelect}
-      readOnly={disabled}
-      ref={ref}
-      tabIndex={disabled ? -1 : tabIndex}
-      {...props}
-    />
-  );
-});
+    return (
+      <textarea
+        aria-disabled={disabled || undefined}
+        enterKeyHint={enterKeyHint}
+        inputMode={inputMode}
+        onChange={disabled ? undefined : onChange}
+        onFocus={disabled ? undefined : onFocus}
+        onKeyDown={disabled ? undefined : onKeyDown}
+        onKeyPress={disabled ? undefined : onKeyPress}
+        onSelect={disabled ? undefined : onSelect}
+        readOnly={disabled}
+        ref={ref}
+        tabIndex={disabled ? -1 : tabIndex}
+        {...props}
+      />
+    );
+  }
+);
 
 AccessibleTextArea.defaultProps = {
   disabled: undefined,
@@ -49,6 +55,7 @@ AccessibleTextArea.defaultProps = {
   inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
+  onKeyDown: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
   tabIndex: undefined
@@ -62,6 +69,7 @@ AccessibleTextArea.propTypes = {
   inputMode: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
+  onKeyDown: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
   tabIndex: PropTypes.number

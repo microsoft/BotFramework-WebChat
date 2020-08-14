@@ -115,11 +115,15 @@ function useTextBoxValue() {
       // We should not change to emoji when the user is pasting text.
       // We would assume, for a single character addition, the user must be pressing a key.
       if (nextValue.length === value.length + 1) {
-        const result = replaceEmoticon({ selectionEnd, selectionStart, value: nextValue });
+        const {
+          selectionEnd: nextSelectionEnd,
+          selectionStart: nextSelectionStart,
+          value: nextValueWithEmoji
+        } = replaceEmoticon({ selectionEnd, selectionStart, value: nextValue });
 
-        selectionEnd = result.selectionEnd;
-        selectionStart = result.selectionStart;
-        nextValue = result.value;
+        selectionEnd = nextSelectionEnd;
+        selectionStart = nextSelectionStart;
+        nextValue = nextValueWithEmoji;
       }
 
       setValue(nextValue);
@@ -215,6 +219,27 @@ const TextBox = ({ className }) => {
     placeCheckpointOnChangeRef.current = true;
   }, [placeCheckpointOnChangeRef, rememberInputState]);
 
+  const handleKeyDown = useCallback(
+    event => {
+      const { ctrlKey, key } = event;
+
+      if (ctrlKey && (key === 'Z' || key === 'z')) {
+        event.preventDefault();
+
+        const poppedInputState = undoStackRef.current.pop();
+
+        if (poppedInputState) {
+          prevInputStateRef.current = { ...poppedInputState };
+        } else {
+          prevInputStateRef.current = { selectionEnd: 0, selectionStart: 0, value: '' };
+        }
+
+        setSelectionRangeAndValue(prevInputStateRef.current);
+      }
+    },
+    [prevInputStateRef, setSelectionRangeAndValue, undoStackRef]
+  );
+
   const handleKeyPress = useCallback(
     event => {
       const { ctrlKey, key, shiftKey } = event;
@@ -227,23 +252,9 @@ const TextBox = ({ className }) => {
 
         // After submit, we will clear the undo stack.
         undoStackRef.current = [];
-      } else if (ctrlKey && (key === 'Z' || key === 'z')) {
-        event.preventDefault();
-
-        const poppedInputState = undoStackRef.current.pop();
-
-        if (poppedInputState) {
-          prevInputStateRef.current = { ...poppedInputState };
-
-          setSelectionRangeAndValue(poppedInputState);
-        } else {
-          prevInputStateRef.current = { selectionEnd: 0, selectionStart: 0, value: '' };
-
-          setSendBox('');
-        }
       }
     },
-    [setSendBox, submitTextBox, undoStackRef]
+    [submitTextBox, undoStackRef]
   );
 
   const handleSelect = useCallback(
@@ -314,6 +325,7 @@ const TextBox = ({ className }) => {
                 inputMode="text"
                 onChange={disabled ? undefined : handleChange}
                 onFocus={disabled ? undefined : handleFocus}
+                onKeyDown={disabled ? undefined : handleKeyDown}
                 onKeyPress={disabled ? undefined : handleKeyPress}
                 onSelect={disabled ? undefined : handleSelect}
                 placeholder={typeYourMessageString}
@@ -333,6 +345,7 @@ const TextBox = ({ className }) => {
                   inputMode="text"
                   onChange={disabled ? undefined : handleChange}
                   onFocus={disabled ? undefined : handleFocus}
+                  onKeyDown={disabled ? undefined : handleKeyDown}
                   onKeyPress={disabled ? undefined : handleKeyPress}
                   onSelect={disabled ? undefined : handleSelect}
                   placeholder={typeYourMessageString}
