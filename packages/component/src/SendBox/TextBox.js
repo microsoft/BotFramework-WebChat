@@ -151,20 +151,20 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
   const localize = useLocalizer();
   const submitTextBox = useTextBoxSubmit();
-  const inputRef = useRef();
+  const inputElementRef = useRef();
   const undoStackRef = useRef([]);
 
   const inputRefCallback = useCallback(
-    ref => {
+    element => {
       if (typeof forwardedRef === 'function') {
-        forwardedRef(ref);
-      } else {
-        forwardedRef.current = ref;
+        forwardedRef(element);
+      } else if (forwardedRef) {
+        forwardedRef.current = element;
       }
 
-      inputRef.current = ref;
+      inputElementRef.current = element;
     },
-    [forwardedRef, inputRef]
+    [forwardedRef, inputElementRef]
   );
 
   const placeCheckpointOnChangeRef = useRef(false);
@@ -175,21 +175,21 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const rememberInputState = useCallback(() => {
     const {
       current: { selectionEnd, selectionStart, value }
-    } = inputRef;
+    } = inputElementRef;
 
     prevInputStateRef.current = { selectionEnd, selectionStart, value };
-  }, [inputRef, prevInputStateRef]);
+  }, [inputElementRef, prevInputStateRef]);
 
   // This is for moving the selection while setting the send box value.
   // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
   const setSelectionRangeAndValue = useCallback(
     ({ selectionEnd, selectionStart, value }) => {
-      if (inputRef.current) {
+      if (inputElementRef.current) {
         // We need to set the value, before selectionStart/selectionEnd.
-        inputRef.current.value = value;
+        inputElementRef.current.value = value;
 
-        inputRef.current.selectionStart = selectionStart;
-        inputRef.current.selectionEnd = selectionEnd;
+        inputElementRef.current.selectionStart = selectionStart;
+        inputElementRef.current.selectionEnd = selectionEnd;
       }
 
       setSendBox(value);
