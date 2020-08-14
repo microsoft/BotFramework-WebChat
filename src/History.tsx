@@ -197,7 +197,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                     { content }
                 </div>
             </div>
-            {lastActivityIsDisclaimer && <DisclaimerCard activity={activityDisclaimer}/>}
+            {lastActivityIsDisclaimer && <DisclaimerCard activity={activityDisclaimer} onImageLoad={ () => this.autoscroll() }/>}
             </div>
         );
     }

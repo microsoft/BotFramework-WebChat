@@ -4,6 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { doCardAction, IDoCardAction } from './Chat';
+import { FormattedText } from './FormattedText';
 import { filteredActivities } from './History';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
@@ -25,6 +26,8 @@ interface DisclaimerProps {
 
   children: React.ReactNode;
   doCardAction: IDoCardAction;
+
+  onImageLoad: () => void;
 }
 
 export const activityIsDisclaimer = (activity: Activity) => {
@@ -71,7 +74,13 @@ class Disclaimer extends React.Component<DisclaimerProps, {}> {
     return (
       <div>
       <div className="disclaimer__card">
-        <span className="disclaimer__card__message">{this.props.text}</span>
+        <div className="disclaimer__card__message">
+          <FormattedText
+            text={ this.props.text }
+            format={ 'markdown' }
+            onImageLoad={ this.props.onImageLoad }
+          />
+        </div>
         <div className="disclaimer__card__buttons">
           <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
             <button key={index} type="button" onClick={e => this.actionClick(e, action) } title={ action.title }>
