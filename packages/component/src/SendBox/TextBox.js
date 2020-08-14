@@ -234,9 +234,9 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
 
   const handleKeyDown = useCallback(
     event => {
-      const { ctrlKey, key } = event;
+      const { ctrlKey, key, metaKey } = event;
 
-      if (ctrlKey && (key === 'Z' || key === 'z')) {
+      if ((ctrlKey || metaKey) && (key === 'Z' || key === 'z')) {
         event.preventDefault();
 
         const poppedInputState = undoStackRef.current.pop();
