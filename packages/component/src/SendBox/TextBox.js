@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, forwardRef } from 'react';
+import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
