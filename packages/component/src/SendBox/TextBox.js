@@ -144,14 +144,16 @@ function useTextBoxValue() {
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
-  const [{ sendBoxTextWrap }] = useStyleOptions();
-  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
-  const [disabled] = useDisabled();
   const [, setSendBox] = useSendBoxValue();
+  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
-  const localize = useLocalizer();
-  const submitTextBox = useTextBoxSubmit();
   const inputElementRef = useRef();
+  const localize = useLocalizer();
+  const placeCheckpointOnChangeRef = useRef(false);
+  const prevInputStateRef = useRef();
+  const submitTextBox = useTextBoxSubmit();
   const undoStackRef = useRef([]);
 
   const inputRefCallback = useCallback(
@@ -167,8 +169,6 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
     [forwardedRef, inputElementRef]
   );
 
-  const placeCheckpointOnChangeRef = useRef(false);
-  const prevInputStateRef = useRef();
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 
@@ -179,6 +179,10 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
 
     prevInputStateRef.current = { selectionEnd, selectionStart, value };
   }, [inputElementRef, prevInputStateRef]);
+
+  // This is for TypeFocusSink. When the focus in on the script, then starting press "a", without this line, it would cause errors.
+  // We call rememberInputState() when "onFocus" event is fired, but since this is from TypeFocusSink, we are not able to receive "onFocus" event before it happen.
+  useEffect(rememberInputState, [rememberInputState]);
 
   // This is for moving the selection while setting the send box value.
   // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
@@ -194,11 +198,8 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
 
       setSendBox(value);
     },
-    [setSendBox]
+    [inputElementRef, setSendBox]
   );
-
-  // This is for TypeFocusSink. When the focus in on the script, then starting press "a", without this line, it would cause errors.
-  useEffect(rememberInputState, [rememberInputState]);
 
   const handleChange = useCallback(
     event => {
@@ -223,7 +224,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
         setSelectionRangeAndValue(nextInputState);
       }
     },
-    [prevInputStateRef, setTextBoxValue, undoStackRef, setTextBoxValue]
+    [placeCheckpointOnChangeRef, prevInputStateRef, setSelectionRangeAndValue, setTextBoxValue, undoStackRef]
   );
 
   const handleFocus = useCallback(() => {
@@ -279,7 +280,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
 
       prevInputStateRef.current = { selectionEnd, selectionStart, value };
     },
-    [prevInputStateRef]
+    [placeCheckpointOnChangeRef, prevInputStateRef]
   );
 
   const handleSubmit = useCallback(
@@ -293,7 +294,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
       // After submit, we will clear the undo stack.
       undoStackRef.current = [];
     },
-    [submitTextBox]
+    [submitTextBox, undoStackRef]
   );
 
   return (
