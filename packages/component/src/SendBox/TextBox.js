@@ -261,7 +261,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
         event.preventDefault();
 
         // If text box is submitted, focus on the send box
-        submitTextBox(true);
+        submitTextBox('sendbox');
 
         // After submit, we will clear the undo stack.
         undoStackRef.current = [];
@@ -314,7 +314,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
           disabled={disabled}
-          enterKeyHint="send"
+          enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
           inputMode="text"
           onChange={disabled ? undefined : handleChange}
           onFocus={disabled ? undefined : handleFocus}
@@ -334,7 +334,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
             className="webchat__send-box-text-box__text-area"
             data-id="webchat-sendbox-input"
             disabled={disabled}
-            enterKeyHint="send"
+            enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
             inputMode="text"
             onChange={disabled ? undefined : handleChange}
             onFocus={disabled ? undefined : handleFocus}

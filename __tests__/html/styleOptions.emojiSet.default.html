@@ -13,13 +13,7 @@
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
-            store: createStore(),
-            styleOptions: {
-              emojiSet: {
-                ':)': '😊'
-              }
-              // emojiSet: true
-            }
+            store: createStore()
           },
           document.getElementById('webchat')
         );

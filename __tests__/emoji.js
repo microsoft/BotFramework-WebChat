@@ -53,7 +53,7 @@ describe('Emoji', () => {
   }
 
   function sendUndoKey() {
-    return sendKeyChord(Key.CONTROL, 'z');
+    return sendControlKey('z');
   }
 
   test('Sequence 0', async () => {

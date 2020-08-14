@@ -14,15 +14,15 @@ export default function useReplaceEmoticon() {
     // But if the caret position is after the second parenthesis, we will not change it but leave it as "abc:))xyz".
     // This is because the user already decided to undo the emoji and just added a parenthesis after the emoticon. It should not affect the emoticon.
     ({ selectionEnd, selectionStart, value }) => {
-      if (typeof selectionEnd === 'number') {
+      if (typeof selectionEnd !== 'number') {
         console.warn(
           'botframework-webchat: The first argument passed to "useReplaceEmoticon" must contains "selectionEnd" of type number, indicating the caret position.'
         );
-      } else if (typeof selectionStart === 'number') {
+      } else if (typeof selectionStart !== 'number') {
         console.warn(
           'botframework-webchat: The first argument passed to "useReplaceEmoticon" must contains "selectionStart" of type number, indicating the caret position.'
         );
-      } else if (typeof value === 'string') {
+      } else if (typeof value !== 'string') {
         console.warn(
           'botframework-webchat: The first argument passed to "useReplaceEmoticon" must contains "value" of type string.'
         );
