@@ -27,7 +27,8 @@ $width: 280px;
 
     .gd-date-picker-select-day {
       margin: 5px 10% 0px 10%;
-      min-height: 2em;
+      height: fit-content;
+      padding: 4px 0px 4px 0px;
       border-radius: 4px;
       background-color: white;
       border-color: $gd_dark_sky_blue;
