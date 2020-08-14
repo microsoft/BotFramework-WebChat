@@ -32,9 +32,9 @@ This code features the Direct Line App Service Extension protocol (Direct Line A
 The `index.html` page has the following main goals:
 
 -  To import the Web Chat bundle CDN script
--  [Obtain a Direct Line ASE-specific token](obtain-a-direct-line-ase-specific-token)
+-  [Obtain a Direct Line ASE-specific token](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline-extension-webchat-client?view=azure-bot-service-4.0#integrate-web-chat-client)
    -  The token should have an issuer and audience of https://directlineextension.botframework.com/
-   -  The token should be generated from the Direct Line ASE-specific API at https://yourbot/.bot/v3/directline/tokens/generate
+   -  The token should be generated from the Direct Line ASE-specific API at https://<your_bot>.azurewebsites.net/.bot/v3/directline/tokens/generate
 -  Render using the Direct Line ASE chat adapter
 
 This sample starts with the [full-bundle CDN sample](../a.full-bundle/README.md) as the base template.
