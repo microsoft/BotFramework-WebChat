@@ -110,7 +110,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     componentDidMount() {
         this.props.updateInput(
             true,
-            'Please select Date, or skip above.'
+            'Please select Date.'
         );
         this.getAvailableTimes( moment(), true );
     }
