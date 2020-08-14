@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, forwardRef } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
@@ -143,7 +143,7 @@ function useTextBoxValue() {
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
-const TextBox = ({ className }) => {
+const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
@@ -153,6 +153,19 @@ const TextBox = ({ className }) => {
   const submitTextBox = useTextBoxSubmit();
   const inputRef = useRef();
   const undoStackRef = useRef([]);
+
+  const inputRefCallback = useCallback(
+    ref => {
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(ref);
+      } else {
+        forwardedRef.current = ref;
+      }
+
+      inputRef.current = ref;
+    },
+    [forwardedRef, inputRef]
+  );
 
   const placeCheckpointOnChangeRef = useRef(false);
   const prevInputStateRef = useRef();
@@ -242,7 +255,7 @@ const TextBox = ({ className }) => {
 
   const handleKeyPress = useCallback(
     event => {
-      const { ctrlKey, key, shiftKey } = event;
+      const { key, shiftKey } = event;
 
       if (key === 'Enter' && !shiftKey) {
         event.preventDefault();
@@ -283,21 +296,6 @@ const TextBox = ({ className }) => {
     [submitTextBox]
   );
 
-  const getRef = (...refs) => {
-    const filteredRefs = refs.filter(() => true);
-    if (!filteredRefs.length) return null;
-    if (filteredRefs.length === 1) return filteredRefs[0];
-    return inst => {
-      for (const ref of filteredRefs) {
-        if (typeof ref === 'function') {
-          ref(inst);
-        } else if (ref) {
-          ref.current = inst;
-        }
-      }
-    };
-  };
-
   return (
     <form
       aria-disabled={disabled}
@@ -310,60 +308,68 @@ const TextBox = ({ className }) => {
       )}
       onSubmit={disabled ? PREVENT_DEFAULT_HANDLER : handleSubmit}
     >
-      {
-        // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
-        // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
-        <TypeFocusSinkContext.Consumer>
-          {({ sendFocusRef }) =>
-            !sendBoxTextWrap ? (
-              <AccessibleInputText
-                aria-label={sendBoxString}
-                className="webchat__send-box-text-box__input"
-                data-id="webchat-sendbox-input"
-                disabled={disabled}
-                enterKeyHint="send"
-                inputMode="text"
-                onChange={disabled ? undefined : handleChange}
-                onFocus={disabled ? undefined : handleFocus}
-                onKeyDown={disabled ? undefined : handleKeyDown}
-                onKeyPress={disabled ? undefined : handleKeyPress}
-                onSelect={disabled ? undefined : handleSelect}
-                placeholder={typeYourMessageString}
-                readOnly={disabled}
-                ref={getRef(sendFocusRef, inputRef)}
-                type="text"
-                value={textBoxValue}
-              />
-            ) : (
-              <div className="webchat__send-box-text-box__text-area-box">
-                <AccessibleTextArea
-                  aria-label={sendBoxString}
-                  className="webchat__send-box-text-box__text-area"
-                  data-id="webchat-sendbox-input"
-                  disabled={disabled}
-                  enterKeyHint="send"
-                  inputMode="text"
-                  onChange={disabled ? undefined : handleChange}
-                  onFocus={disabled ? undefined : handleFocus}
-                  onKeyDown={disabled ? undefined : handleKeyDown}
-                  onKeyPress={disabled ? undefined : handleKeyPress}
-                  onSelect={disabled ? undefined : handleSelect}
-                  placeholder={typeYourMessageString}
-                  readOnly={disabled}
-                  ref={getRef(sendFocusRef, inputRef)}
-                  rows="1"
-                  value={textBoxValue}
-                />
-                <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
-              </div>
-            )
-          }
-        </TypeFocusSinkContext.Consumer>
-      }
+      {!sendBoxTextWrap ? (
+        <AccessibleInputText
+          aria-label={sendBoxString}
+          className="webchat__send-box-text-box__input"
+          data-id="webchat-sendbox-input"
+          disabled={disabled}
+          enterKeyHint="send"
+          inputMode="text"
+          onChange={disabled ? undefined : handleChange}
+          onFocus={disabled ? undefined : handleFocus}
+          onKeyDown={disabled ? undefined : handleKeyDown}
+          onKeyPress={disabled ? undefined : handleKeyPress}
+          onSelect={disabled ? undefined : handleSelect}
+          placeholder={typeYourMessageString}
+          readOnly={disabled}
+          ref={inputRefCallback}
+          type="text"
+          value={textBoxValue}
+        />
+      ) : (
+        <div className="webchat__send-box-text-box__text-area-box">
+          <AccessibleTextArea
+            aria-label={sendBoxString}
+            className="webchat__send-box-text-box__text-area"
+            data-id="webchat-sendbox-input"
+            disabled={disabled}
+            enterKeyHint="send"
+            inputMode="text"
+            onChange={disabled ? undefined : handleChange}
+            onFocus={disabled ? undefined : handleFocus}
+            onKeyDown={disabled ? undefined : handleKeyDown}
+            onKeyPress={disabled ? undefined : handleKeyPress}
+            onSelect={disabled ? undefined : handleSelect}
+            placeholder={typeYourMessageString}
+            readOnly={disabled}
+            ref={inputRefCallback}
+            rows="1"
+            value={textBoxValue}
+          />
+          <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
+        </div>
+      )}
       {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
+});
+
+TextBoxCore.defaultProps = {
+  className: ''
 };
+
+TextBoxCore.propTypes = {
+  className: PropTypes.string
+};
+
+const TextBox = ({ className }) => (
+  // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
+  // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
+  <TypeFocusSinkContext.Consumer>
+    {({ sendFocusRef }) => <TextBoxCore className={className} ref={sendFocusRef} />}
+  </TypeFocusSinkContext.Consumer>
+);
 
 TextBox.defaultProps = {
   className: ''
