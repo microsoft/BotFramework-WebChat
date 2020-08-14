@@ -22,10 +22,7 @@ import React, { forwardRef, useRef } from 'react';
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleInputText = forwardRef(
-  (
-    { disabled, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props },
-    forwardedRef
-  ) => {
+  ({ disabled, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
     const targetRef = useRef();
 
     const ref = forwardedRef || targetRef;

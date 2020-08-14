@@ -103,9 +103,6 @@ function useTextBoxValue() {
   const stopDictate = useStopDictate();
 
   const setter = useCallback(
-    // TODO: Add test for
-    // 1. useSendBoxTextBoxValue('abc');
-    // 2. useSendBoxTextBoxValue('abc', { selectionEnd: 3, selectionStart: 3 });
     (nextValue, { selectionEnd, selectionStart } = {}) => {
       if (typeof nextValue !== 'string') {
         throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
