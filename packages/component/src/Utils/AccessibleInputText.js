@@ -23,7 +23,7 @@ import React, { forwardRef, useRef } from 'react';
 
 const AccessibleInputText = forwardRef(
   (
-    { disabled, enterKeyHint, inputMode, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props },
+    { disabled, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props },
     forwardedRef
   ) => {
     const targetRef = useRef();
@@ -33,8 +33,6 @@ const AccessibleInputText = forwardRef(
     return (
       <input
         aria-disabled={disabled || undefined}
-        enterKeyHint={enterKeyHint}
-        inputMode={inputMode}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
@@ -52,8 +50,6 @@ const AccessibleInputText = forwardRef(
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
-  enterKeyHint: undefined,
-  inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
   onKeyDown: undefined,
@@ -66,8 +62,6 @@ AccessibleInputText.displayName = 'AccessibleInputText';
 
 AccessibleInputText.propTypes = {
   disabled: PropTypes.bool,
-  enterKeyHint: PropTypes.string,
-  inputMode: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
