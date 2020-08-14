@@ -259,7 +259,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
         event.preventDefault();
 
         // If text box is submitted, focus on the send box
-        submitTextBox('sendbox');
+        submitTextBox('sendBox');
 
         // After submit, we will clear the undo stack.
         undoStackRef.current = [];
