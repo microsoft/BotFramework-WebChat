@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.10.0] - 2020-08-18
+
 ### Breaking changes
 
 -  Due to the complexity, we are no longer exposing `<CarouselLayout>` and `<StackedLayout>`. Please use `<BasicTranscript>` to render the transcript instead.
