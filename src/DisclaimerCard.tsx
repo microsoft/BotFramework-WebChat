@@ -116,6 +116,7 @@ export const DisclaimerCard = connect(
     return {
       // from stateProps
       text: ownProps.activity.text,
+      onImageLoad: ownProps.onImageLoad,
       activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
 
       // from dispatchProps
