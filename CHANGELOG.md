@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.10.0] - 2020-08-18
+
 ### Breaking changes
 
 -  Due to the complexity, we are no longer exposing `<CarouselLayout>` and `<StackedLayout>`. Please use `<BasicTranscript>` to render the transcript instead.
@@ -38,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3380](https://github.com/microsoft/BotFramework-WebChat/pull/3380) and [#3388](https://github.com/microsoft/BotFramework-WebChat/pull/3388)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3380](https://github.com/microsoft/BotFramework-WebChat/pull/3380), [#3388](https://github.com/microsoft/BotFramework-WebChat/pull/3388), and [#3418](https://github.com/microsoft/BotFramework-WebChat/pull/3418)
    -  Development dependencies
       -  Root package
          -  [`@babel/plugin-proposal-class-properties@7.10.4`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
@@ -106,6 +108,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/runtime@7.11.0`](https://npmjs.com/package/@babel/runtime)
       -  [`@babel/standalone@7.11.0`](https://npmjs.com/package/@babel/standalone)
       -  [`abort-controller-es5@1.2.0`](https://npmjs.com/package/abort-controller-es5)
+      -  [`botframework-directlinejs@0.13.0`](https://npmjs.com/package/botframework-directlinejs)
       -  [`core-js@3.6.5`](https://npmjs.com/package/core-js)
       -  [`event-iterator@2.0.0`](https://npmjs.com/package/event-iterator)
       -  [`event-target-shim-es5@1.2.0`](https://npmjs.com/package/event-target-shim-es5)
