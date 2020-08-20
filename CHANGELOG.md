@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Default `botAvatarInitials` and `userAvatarInitials` is changed to `undefined`, from `""` (empty string)
    -  When the initials is `undefined`, no gutter space will be reserved for the avatar.
    -  When the initials is `""` (empty string), gutter space will be reserved, but not avatar will be shown.
+-  [`useRenderActivity`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderactivity) hook is being deprecated, in favor of the new [`useCreateActivityRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateactivityrenderer) hook.
+-  [`useRenderActivityStatus`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderactivitystatus) hook is being deprecated, in favor of the new [`useCreateActivityStatusRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateactivitystatusrenderer) hook.
+-  [`useRenderAvatar`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderavatar) hook is being deprecated, in favor of the new [`useCreateAvatarRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateavatarrenderer) hook.
 
 #### Change in general middleware design
 
@@ -44,35 +47,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 Previously, when a middleware is called, they are passed with a single argument.
 
-Starting from 4.10.0, multiple arguments could be passed to the middleware. It should pass all arguments to the downstream middleware.
+Starting from 4.10.0, multiple arguments could be passed to the middleware. All middleware should pass all arguments to the downstream middleware. This change enables future extension to the middleware pattern.
 
 For example, a passthrough middleware was:
 
+<!-- prettier-ignore-start -->
 ```js
 () => next => card => next(card)
 ```
+<!-- prettier-ignore-end -->
 
 It should become:
 
+<!-- prettier-ignore-start -->
 ```js
 () => next => (...args) => next(...args)
 ```
+<!-- prettier-ignore-end -->
 
-This also applies to the render function returned by activity middleware.
+This also applies to the render function returned by activity middleware. The previous signature was:
 
-The previous signature was:
-
+<!-- prettier-ignore-start -->
 ```js
 () => next => card => children => next(card)(children)
 ```
+<!-- prettier-ignore-end -->
 
 It should become:
 
+<!-- prettier-ignore-start -->
 ```js
 () => next => (...setupArgs) => (...renderArgs) => next(...setupArgs)(...renderArgs)
 ```
+<!-- prettier-ignore-end -->
 
-> Please read the following section for another change in the activity middleware signature.
+> Note: Please read the following section for another change in the activity middleware signature for decorators.
 
 #### Change in activity middleware
 
@@ -80,10 +89,7 @@ It should become:
 
 Previously, when an activity middleware hide a specific activity from view, it returns a function, `() => false`.
 
-Starting from 4.10.0, if an activity need to be hide from view, the middleware should return `false` instead of `() => false`. This change has a few benefits:
-
-- Ability to avoid unnecessary render for decoration activity middleware;
-- Transcript can correctly group activities and ignore activities which are not in view.
+Starting from 4.10.0, if an activity need to be hide from view, the middleware should return `false` instead of `() => false`. This change allows transcript to correctly group activities and ignore activities that are not in view.
 
 To avoid the `TypeError: x is not a function` error, middleware should aware that downstream middleware may return `false` instead of a function.
 
@@ -91,19 +97,32 @@ For example, when an event activity is being hide from the view, the terminator 
 
 Previously, a simple decorator was:
 
+<!-- prettier-ignore-start -->
 ```js
-() => next => (...setupArgs) => (...renderArgs) => <div>{next(...setupArgs)(...renderArgs)}</div>;
-```
+() => next => (...setupArgs) => (...renderArgs) => {
+  const render = next(...setupArgs);
+  const element = render(...renderArgs);
 
-It should check the result from downstream middleware. If it is falsy, it should pass it as-is to upstream middleware:
-
-```js
-() => next => (...setupArgs) => {
-   const render = next(...setupArgs);
-
-   return render && (...renderArgs) => <div>{render(...renderArgs)}</div>;
+  return element && <div>{element}</div>;
 }
 ```
+<!-- prettier-ignore-end -->
+
+It should check the result from downstream middleware. If it is falsy, it should return as-is to the upstream middleware:
+
+<!-- prettier-ignore-start -->
+```js
+() => next => (...setupArgs) => {
+  const render = next(...setupArgs);
+
+  return render && (...renderArgs) => {
+    const element = render(...renderArgs);
+
+    return element && <div>{element}</div>;
+  };
+}
+```
+<!-- prettier-ignore-end -->
 
 ### Changed
 
