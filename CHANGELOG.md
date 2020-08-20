@@ -37,6 +37,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Default `botAvatarInitials` and `userAvatarInitials` is changed to `undefined`, from `""` (empty string)
    -  When the initials is `undefined`, no gutter space will be reserved for the avatar.
    -  When the initials is `""` (empty string), gutter space will be reserved, but not avatar will be shown.
+- Change in activity middleware:
+   -  Previously, when an activity middleware want to hide a specific activity from view, it returns a function, `() => false`.
+   -  Starting from 4.10.0, when an activity should be hidden, the middleware should return `false` instead of `() => false`.
+   -  To avoid `TypeError: x is not a function` error, middleware should aware that downstream middleware may return `false` instead of a function.
+   -  Middleware which decorate downstream rendering, should aware that downstream middleware may return `false`, instead of `() => false`. In that case, they should not render any decorations. They should pass the `false` (or falsy) value as-is to upstream middleware.
+      -  For example, a simple decorator was `() => next => (...args) => <div>{next(...args)}</div>`.
+      -  They would become `() => next => (...args) => { const element = next(...args); return element && <div>{element}</div>; }`.
+- Change in general middleware design:
+   -  Previously, when a middleware is called, they are passed with a single argument.
+      -  For example, a passthrough middleware was `() => next => card => next(card)`.
+   -  Starting from 4.10.0, multiple arguments could be passed to the middleware. It should pass all arguments to the downstream middleware.
+      -  The passthrough middleware would become `() => next => (...args) => next(...args)`.
 
 ### Changed
 
