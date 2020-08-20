@@ -87,13 +87,13 @@ It should become:
 
 > This change will impact activity middleware used for decoration.
 
-Previously, when an activity middleware hide a specific activity from view, it returns a function, `() => false`.
+Previously, when an activity middleware hid a specific activity from view, it returned a function, `() => false`.
 
-Starting from 4.10.0, if an activity need to be hide from view, the middleware should return `false` instead of `() => false`. This change allows transcript to correctly group activities and ignore activities that are not in view.
+Starting in 4.10.0, if an activity needs to be hidden from the view, the middleware should return `false` instead of `() => false`. This change allows transcript to correctly group activities and ignore activities that are not in view.
 
-To avoid the `TypeError: x is not a function` error, middleware should aware that downstream middleware may return `false` instead of a function.
+To avoid the `TypeError: x is not a function` error, all middleware should be aware that downstream middleware may return `false` instead of a function.
 
-For example, when an event activity is being hide from the view, the terminator middleware will now return `false`. All decoration middleware should check if the downstream result is `false` (or falsy value), and return the value as-is to upstream middleware.
+For example, when an event activity is hidden from the view, the terminator middleware will now return `false`. All decoration middleware should check if the downstream result is `false` (or falsy value), and return the value as-is to upstream middleware.
 
 Previously, a simple decorator was:
 
