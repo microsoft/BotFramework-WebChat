@@ -65,9 +65,7 @@ export default function({
 
               try {
                 if (utterance.audioStream) {
-                  const { format, streamReader } = utterance.audioStream;
-
-                  await playCognitiveServicesStream(audioContext, format, streamReader, { signal });
+                  await playCognitiveServicesStream(audioContext, utterance.audioStream, { signal });
                 } else {
                   await playWhiteNoise(audioContext);
                 }
