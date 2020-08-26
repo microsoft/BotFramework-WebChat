@@ -14,11 +14,7 @@
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <!-- <script
-      crossorigin="anonymous"
-      src="https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat.js"
-    ></script> -->
-    <script src="/webchat.js"></script>
+
     <style>
       html,
       body {
@@ -47,7 +43,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      (async function() {
+      (async function () {
         const {
           React: { useCallback, useEffect },
           WebChat: {

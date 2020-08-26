@@ -99,7 +99,7 @@ const Composer = ({
   }, [accessToken]);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       try {
         const { clientId, redirectURI, tenantId } = await fetchJSON('/api/aad/settings');
         const msalConfig = {
@@ -121,13 +121,13 @@ const Composer = ({
   }, []);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       if (getAccount()) {
         const { accessToken } = await acquireToken();
         setAccessToken(accessToken);
       }
     })();
-  }, [msal]);
+  }, [acquireToken, getAccount, msal]);
 
   const context = useMemo(
     () => ({
