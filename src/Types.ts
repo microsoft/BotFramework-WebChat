@@ -9,6 +9,8 @@ export interface FormatOptions {
     fullHeight?: boolean;
     display_name?: string;
     alignment?: string;
+    widgetUrl?: string;
+    widgetSameAsLogo: boolean;
 }
 
 export interface ActivityOrID {

@@ -37,6 +37,7 @@ interface FloatingIconProps {
     logoColor: string;
     bottomOffset: number;
     rightOffset: number;
+    url: string;
 }
 
 /**
@@ -48,7 +49,7 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
     }
 
     render() {
-        const { alignment, visible, activity, logoColor, bottomOffset, rightOffset, leftOffset } = this.props;
+        const { alignment, visible, activity, logoColor, bottomOffset, rightOffset, leftOffset, url } = this.props;
 
         const floatingIconStyle = {
           ...(bottomOffset > 0) && { bottom: bottomOffset },
@@ -69,7 +70,8 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
                 )}
 
                 <div style={{ backgroundColor: logoColor }} className={`wc-floating`}>
-                    <LogoSVG color="white" />
+                     {url ? <img src={url} style={{width: 55, height: 55, borderRadius: 80}} />
+                      : <LogoSVG color="white" /> }
                 </div>
             </div>
         );
@@ -94,6 +96,7 @@ export const FloatingIcon = connect(
         leftOffset: stateProps.format.leftOffset,
         logoColor: stateProps.format.themeColor,
         bottomOffset: stateProps.format.bottomOffset,
-        rightOffset: stateProps.format.rightOffset
+        rightOffset: stateProps.format.rightOffset,
+        url: stateProps.format.widgetSameAsLogo ? stateProps.format.logoUrl : stateProps.format.widgetUrl
     })
 )(FloatingIconView);
