@@ -30,14 +30,14 @@
         transition: color .2s ease, background-color .2s ease;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
-        box-shadow: none;    
+        box-shadow: none;
     }
 
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
         margin: 0;
         padding: 0;
     }
-    
+
     .wc-app p {
       color: inherit;
     }
@@ -91,7 +91,7 @@
           padding-left: 0.25em;
       }
     }
-    
+
     .wc-header {
         background-color: #fff;
         box-sizing: border-box;
@@ -354,7 +354,7 @@
             }
         }
 
-        .disclaimer__card { 
+        .disclaimer__card {
             animation: disclaimerAnimation 1s;
             background-color: white;
             bottom: $consoleHeight;
@@ -453,7 +453,8 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
-        transition:visibility 1s $cubic, opacity .3s $cubic, height .6s $cubic, width .6s $cubic;
+        transition: all 1s $cubic;
+        transition-delay: 2s;
 
         &.visible {
             opacity: 1;
@@ -517,7 +518,7 @@
       letter-spacing: 0.03em;
       font-size: 12px;
     }
-    
+
     .wc-message-avatar{
         width: 25px;
         height: 25px;
@@ -612,7 +613,7 @@
               font-size: 12px;
             }
           }
-    
+
           &__submit {
             width: 70%;
             margin-top: $contact_padding_v;
@@ -1031,13 +1032,13 @@
           background-size: 300%;
           transition: background-position .4s;
         }
-        
+
         &::after {
           content: "";
           display: block;
           clear: both;
         }
-        
+
         &__disabled {
           background-color: #eff0f1;
         }
@@ -1079,15 +1080,15 @@
             padding-top:11.5px;
             padding-bottom: 12px;
             letter-spacing: 0.4px;
-            /* making input font size 16 rather than 15 should prevent 
+            /* making input font size 16 rather than 15 should prevent
             safari iOS from auto zooming onto text field,
             and thus should solve other sizing issues.  */
             @include mobileAndTablet {
               font-size: 16px;
             }
         }
-        
-        
+
+
         ::-webkit-input-placeholder {color: #979999; opacity: 1;}
         :-moz-placeholder           {color: #979999; opacity: 1;}
         ::-moz-placeholder          {color: #979999; opacity: 1;}
@@ -1136,7 +1137,7 @@
             left: 12px;
             right: 60px;
             top: 12px;
-            
+
 
             input {
                 background-color: rgba(128, 128, 128, 0.1);

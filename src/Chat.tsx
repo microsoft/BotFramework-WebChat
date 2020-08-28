@@ -506,7 +506,7 @@ export class Chat extends React.Component<ChatProps, State> {
                     style={{ display: 'none'}}
                 >
                     <FloatingIcon
-                        visible={!open && !opened}
+                        visible={!open}
                         clicked={() => this.toggle()}
                     />
 
