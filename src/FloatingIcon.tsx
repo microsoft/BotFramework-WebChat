@@ -43,7 +43,10 @@ interface FloatingIconProps {
   logoColor: string;
   bottomOffset: number;
   rightOffset: number;
+<<<<<<< HEAD
   url: string;
+=======
+>>>>>>> 6df6d3c843aa59a463bb604592048b29c4c6d4e5
 }
 
 /**
