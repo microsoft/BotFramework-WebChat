@@ -208,6 +208,8 @@ export interface FormatState {
     carouselMargin: number;
     themeColor: string;
     logoUrl: string;
+    widgetUrl: string;
+    widgetSameAsLogo: boolean;
     bottomOffset: number;
     topOffset: number;
     rightOffset: number;
@@ -247,6 +249,8 @@ export const format: Reducer<FormatState> = (
         carouselMargin: undefined,
         themeColor: undefined,
         logoUrl: undefined,
+        widgetUrl: undefined,
+        widgetSameAsLogo: false,
         bottomOffset: undefined,
         topOffset: undefined,
         rightOffset: undefined,

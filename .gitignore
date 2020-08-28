@@ -29,3 +29,4 @@ CognitiveServices.js.map
 /test/uploads
 .env
 /.idea/
+.node-version
