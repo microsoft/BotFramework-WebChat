@@ -221,12 +221,15 @@ const CarouselFilmStrip = ({
           <div className="webchat__carousel-filmstrip__complimentary">
             <div className="webchat__carousel-filmstrip__nub-pad" />
             <div className="webchat__carousel-filmstrip__complimentary-content c">
-              <ul className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list" ref={itemContainerRef}>
-                {/* attachments do not have an ID, it is always indexed by number */}
+              <ul
+                className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
+                ref={itemContainerRef}
+              >
                 {attachments.map((attachment, index) => (
                   <li
                     aria-roledescription="attachment"
                     className="webchat__carousel-filmstrip__attachment react-film__filmstrip__item"
+                    /* Attachments do not have an ID, it is always indexed by number */
                     /* eslint-disable-next-line react/no-array-index-key */
                     key={index}
                   >
