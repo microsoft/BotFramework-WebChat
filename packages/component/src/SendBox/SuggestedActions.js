@@ -16,7 +16,7 @@ import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions .webchat__suggested-actions__stack': {
@@ -55,7 +55,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const filmStyleSet = useMemo(
     () =>
       // TODO: We should put these variables in styleOptions.

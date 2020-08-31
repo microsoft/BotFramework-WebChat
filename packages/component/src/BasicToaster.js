@@ -12,7 +12,7 @@ import useDebouncedNotifications from './hooks/useDebouncedNotifications';
 import useLocalizer from './hooks/useLocalizer';
 import useRenderToast from './hooks/useRenderToast';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   display: 'flex',
@@ -71,7 +71,7 @@ const BasicToaster = () => {
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
   const renderToast = useRenderToast();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
   const sortedNotifications = useMemo(() => sortNotifications(debouncedNotifications), [debouncedNotifications]);

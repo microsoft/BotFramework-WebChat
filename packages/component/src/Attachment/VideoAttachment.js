@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import VideoContent from './VideoContent';
 
 const ROOT_STYLE = {
@@ -13,7 +13,7 @@ const ROOT_STYLE = {
 
 const VideoAttachment = ({ attachment }) => {
   const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div className={classNames(rootClassName, videoAttachmentStyleSet + '')}>

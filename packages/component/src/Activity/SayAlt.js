@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 // TODO: [P3] Although this is for development purpose, prettify it
 const ROOT_STYLE = {
@@ -10,7 +10,7 @@ const ROOT_STYLE = {
 };
 
 const SayAlt = ({ speak }) => {
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return !!speak && <pre className={rootClassName}>{speak}</pre>;
 };

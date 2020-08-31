@@ -1,9 +1,8 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
@@ -22,7 +21,7 @@ const ROOT_STYLE = {
 };
 
 const ScreenReaderText = ({ id, text }) => {
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div className={rootClassName} id={id}>

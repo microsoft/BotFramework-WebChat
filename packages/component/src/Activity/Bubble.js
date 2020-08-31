@@ -8,7 +8,7 @@ import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useDirection from '../hooks/useDirection';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__bubble': {
@@ -74,7 +74,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
       bubbleFromUserNubOffset
     }
   ] = useStyleOptions();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const { borderWidth, nubOffset, nubSize, side } = fromUser
     ? {

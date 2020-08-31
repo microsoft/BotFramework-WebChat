@@ -5,7 +5,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__typingIndicator': {
@@ -17,7 +17,7 @@ const TypingAnimation = () => {
   const [{ typingAnimation: typingAnimationStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const localize = useLocalizer();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <React.Fragment>

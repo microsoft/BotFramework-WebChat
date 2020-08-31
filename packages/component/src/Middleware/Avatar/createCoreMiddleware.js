@@ -6,7 +6,7 @@ import concatMiddleware from '../concatMiddleware';
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
 import useStyleSet from '../../hooks/useStyleSet';
-import useStyleToClassName from '../../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   overflow: 'hidden',
@@ -21,7 +21,7 @@ const ROOT_STYLE = {
 
 const DefaultAvatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div

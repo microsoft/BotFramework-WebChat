@@ -12,7 +12,7 @@ import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActions from '../hooks/useSuggestedActions';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 
@@ -62,7 +62,7 @@ const SuggestedAction = ({
   const localizeAccessKey = useLocalizeAccessKey();
   const performCardAction = usePerformCardAction();
   const scrollToEnd = useScrollToEnd();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleClick = useCallback(
     ({ target }) => {

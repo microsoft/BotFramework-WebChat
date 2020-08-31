@@ -8,7 +8,7 @@ import useAvatarForBot from './hooks/useAvatarForBot';
 import useDateFormatter from './hooks/useDateFormatter';
 import useLocalizer from './hooks/useLocalizer';
 import useStripMarkdown from './hooks/internal/useStripMarkdown';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   color: 'transparent',
@@ -33,7 +33,7 @@ const ScreenReaderActivity = ({ activity }) => {
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const {
     attachments = [],

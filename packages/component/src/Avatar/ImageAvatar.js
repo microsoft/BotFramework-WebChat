@@ -6,7 +6,7 @@ import CroppedImage from '../Utils/CroppedImage';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '& .webchat__imageAvatar__image': {
@@ -18,7 +18,7 @@ const ImageAvatar = ({ fromUser }) => {
   const [{ image: avatarImageForBot }] = useAvatarForBot();
   const [{ image: avatarImageForUser }] = useAvatarForUser();
   const [{ imageAvatar: imageAvatarStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const avatarImage = fromUser ? avatarImageForUser : avatarImageForBot;
 

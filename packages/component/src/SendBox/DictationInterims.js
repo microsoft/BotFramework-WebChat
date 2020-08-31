@@ -11,7 +11,7 @@ import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
@@ -37,7 +37,7 @@ const DictationInterims = ({ className }) => {
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
   const localize = useLocalizer();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>

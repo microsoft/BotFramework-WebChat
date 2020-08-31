@@ -95,8 +95,8 @@ const DISPATCHERS = {
 
 const emotionPool = {};
 
-function styleSetToClassNames(styleToClassName, styleSet) {
-  return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToClassName(style)));
+function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
+  return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
 function createCardActionContext({ cardActionMiddleware, directLine, dispatch }) {
@@ -324,23 +324,23 @@ const Composer = ({
     transcriptFocusRef
   ]);
 
-  const styleToClassName = useMemo(() => {
+  const styleToEmotionObject = useMemo(() => {
     // Emotion don't hash with nonce. We need to provide the pooling mechanism.
     // 1. If 2 instances use different nonce, they should result in different hash;
     // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
     const emotion =
       emotionPool[nonce] || (emotionPool[emotion] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
-    return style => emotion.css(style) + '';
+    return style => emotion.css(style);
   }, [nonce]);
 
   const patchedStyleSet = useMemo(
     () =>
-      styleSetToClassNames(styleToClassName, {
+      styleSetToEmotionObjects(styleToEmotionObject, {
         ...(styleSet || createStyleSet(patchedStyleOptions)),
         ...extraStyleSet
       }),
-    [extraStyleSet, patchedStyleOptions, styleSet, styleToClassName]
+    [extraStyleSet, patchedStyleOptions, styleSet, styleToEmotionObject]
   );
 
   const groupActivitiesContext = useMemo(
@@ -501,7 +501,7 @@ const Composer = ({
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
-      styleToClassName,
+      styleToEmotionObject,
       suggestedActionsAccessKey,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
@@ -544,7 +544,7 @@ const Composer = ({
       sendTypingIndicator,
       setDictateAbortable,
       styleOptions,
-      styleToClassName,
+      styleToEmotionObject,
       suggestedActionsAccessKey,
       telemetryDimensionsRef,
       trackDimension,

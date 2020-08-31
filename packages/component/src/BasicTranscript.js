@@ -28,7 +28,7 @@ import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
 import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
@@ -76,7 +76,7 @@ const BasicTranscript2 = ({ className }) => {
   const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
   const [rootElementRef] = useTranscriptRootElementRef();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();

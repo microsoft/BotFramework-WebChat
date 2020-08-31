@@ -14,7 +14,7 @@ import useDirection from './hooks/useDirection';
 import useDictateState from './hooks/useDictateState';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
@@ -52,12 +52,12 @@ const BasicSendBox = ({ className }) => {
   const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
-  const styleToClassName = useStyleToClassName();
+  const styleToEmotionObject = useStyleToEmotionObject();
 
-  const dictationInterimsClassName = styleToClassName(DICTATION_INTERIMS_STYLE);
-  const microphoneButtonClassName = styleToClassName(MICROPHONE_BUTTON_STYLE);
-  const rootClassName = styleToClassName(ROOT_STYLE);
-  const textBoxClassName = styleToClassName(TEXT_BOX_STYLE);
+  const dictationInterimsClassName = styleToEmotionObject(DICTATION_INTERIMS_STYLE) + '';
+  const microphoneButtonClassName = styleToEmotionObject(MICROPHONE_BUTTON_STYLE) + '';
+  const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
+  const textBoxClassName = styleToEmotionObject(TEXT_BOX_STYLE) + '';
 
   const supportSpeechRecognition = !!SpeechRecognition;
 

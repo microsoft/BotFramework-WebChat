@@ -13,7 +13,7 @@ import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
 import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   display: 'flex',
@@ -29,7 +29,7 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
   const localize = useLocalizer();
   const dismissNotification = useDismissNotification();
   const renderMarkdownInline = useInternalRenderMarkdownInline();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
   const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message, renderMarkdownInline]);
@@ -46,7 +46,7 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
           'webchat__toast--success': level === 'success',
           'webchat__toast--warn': level === 'warn'
         },
-        rootClassName,
+        rootClassName + '',
         toastStyleSet + ''
       )}
       role="dialog"

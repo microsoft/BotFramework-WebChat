@@ -16,7 +16,7 @@ import useSendBoxFocusRef from './hooks/internal/useSendBoxFocusRef';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useTranscriptFocusRef from './hooks/internal/useTranscriptFocusRef';
-import useStyleToClassName from './hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   display: 'flex',
@@ -52,14 +52,14 @@ const BasicWebChat = ({ className }) => {
   const [options] = useStyleOptions();
   const [sendBoxFocusRef] = useSendBoxFocusRef();
   const [transcriptFocusRef] = useTranscriptFocusRef();
-  const styleToClassName = useStyleToClassName();
+  const styleToEmotionObject = useStyleToEmotionObject();
 
-  const connectivityStatusClassName = styleToClassName(CONNECTIVITY_STATUS_STYLE);
-  const rootClassName = styleToClassName(ROOT_STYLE);
-  const sendBoxClassName = styleToClassName(SEND_BOX_CSS);
-  const sinkClassName = styleToClassName(SINK_STYLE);
-  const toasterClassName = styleToClassName(TOASTER_STYLE);
-  const transcriptClassName = styleToClassName(TRANSCRIPT_STYLE);
+  const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
+  const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
+  const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
+  const sinkClassName = styleToEmotionObject(SINK_STYLE) + '';
+  const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
+  const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
   return (
     <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')}>

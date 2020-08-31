@@ -5,7 +5,7 @@ import React from 'react';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   alignItems: 'center',
@@ -20,7 +20,7 @@ const InitialsAvatar = ({ fromUser }) => {
   const [{ initials: avatarInitialsForBot }] = useAvatarForBot();
   const [{ initials: avatarInitialsForUser }] = useAvatarForUser();
   const [{ initialsAvatar: initialsAvatarStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div
