@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import useDirection from '../../hooks/useDirection';
-import useStyleToClassName from '../../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__send-icon': {
@@ -14,7 +14,7 @@ const ROOT_STYLE = {
 
 const SendIcon = () => {
   const [direction] = useDirection();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <svg

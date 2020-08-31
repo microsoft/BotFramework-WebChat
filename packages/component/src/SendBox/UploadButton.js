@@ -9,7 +9,7 @@ import useDisabled from '../hooks/useDisabled';
 import useLocalizer from '../hooks/useLocalizer';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   overflow: 'hidden',
@@ -89,7 +89,7 @@ const UploadButton = () => {
   const [disabled] = useDisabled();
   const inputRef = useRef();
   const localize = useLocalizer();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
 
   const { current } = inputRef;

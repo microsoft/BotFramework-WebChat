@@ -16,7 +16,7 @@ import useStopDictate from '../hooks/useStopDictate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -150,7 +150,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const localize = useLocalizer();
   const placeCheckpointOnChangeRef = useRef(false);
   const prevInputStateRef = useRef();
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const submitTextBox = useTextBoxSubmit();
   const undoStackRef = useRef([]);
 

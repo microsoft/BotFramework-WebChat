@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   overflow: 'hidden',
@@ -19,7 +19,7 @@ const ROOT_STYLE = {
 };
 
 const CroppedImage = ({ alt, className, height, src, width }) => {
-  const rootClassName = useStyleToClassName()(ROOT_STYLE);
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sizeStyle = useMemo(() => ({ height, width }), [height, width]);
 
   return (

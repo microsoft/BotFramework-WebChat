@@ -8,7 +8,7 @@ import createCustomEvent from '../Utils/createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import useStyleOptions from '../hooks/useStyleOptions';
-import useStyleToClassName from '../hooks/internal/useStyleToClassName';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import walkMarkdownTokens from './walkMarkdownTokens';
 
 function replaceAnchorWithButton(markdownTokens) {
@@ -48,7 +48,7 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
   const [markdownIt] = useInternalMarkdownIt();
   const [{ accent }] = useStyleOptions();
-  const styleToClassName = useStyleToClassName();
+  const styleToClassName = useStyleToEmotionObject();
 
   // We inlined the style here because this style is:
   // 1. Internal to Web Chat
@@ -66,7 +66,7 @@ const InlineMarkdown = ({ children, onReference, references }) => {
           fontSize: 'inherit',
           padding: 0
         }
-      }),
+      }) + '',
     [accent]
   );
 
