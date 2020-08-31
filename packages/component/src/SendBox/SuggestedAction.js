@@ -1,4 +1,3 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
@@ -13,10 +12,11 @@ import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import usePerformCardAction from '../hooks/usePerformCardAction';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToClassName from '../hooks/internal/useStyleToClassName';
 import useSuggestedActions from '../hooks/useSuggestedActions';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 
-const SUGGESTED_ACTION_CSS = css({
+const ROOT_STYLE = {
   '&.webchat__suggested-action': {
     display: 'flex',
     flexDirection: 'column',
@@ -27,7 +27,7 @@ const SUGGESTED_ACTION_CSS = css({
       overflow: 'hidden'
     }
   }
-});
+};
 
 const connectSuggestedAction = (...selectors) =>
   connectToWebChat(
@@ -62,6 +62,7 @@ const SuggestedAction = ({
   const localizeAccessKey = useLocalizeAccessKey();
   const performCardAction = usePerformCardAction();
   const scrollToEnd = useScrollToEnd();
+  const rootClassName = useStyleToClassName()(ROOT_STYLE);
 
   const handleClick = useCallback(
     ({ target }) => {
@@ -81,7 +82,7 @@ const SuggestedAction = ({
   return (
     <div
       aria-hidden={ariaHidden}
-      className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '', 'webchat__suggested-action')}
+      className={classNames('webchat__suggested-action', rootClassName, suggestedActionStyleSet + '')}
     >
       <AccessibleButton
         {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}

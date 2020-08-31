@@ -26,7 +26,6 @@ import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActi
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
-import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createToasterStyle from './StyleSet/Toaster';
@@ -221,10 +220,7 @@ export default function createStyleSet(options) {
     imageAvatar: createImageAvatarStyle(options),
     initialsAvatar: createInitialsAvatarStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
-    options: {
-      ...options,
-      suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
-    },
+    options: { ...options }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(options),
     scrollToEndButton: createScrollToEndButtonStyle(options),
     sendBox: createSendBoxStyle(options),

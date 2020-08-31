@@ -1,7 +1,6 @@
 import { Composer as SayComposer } from 'react-say';
 import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
 
-import { css } from 'glamor';
 import { Provider } from 'react-redux';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -12,6 +11,7 @@ import createActivityRenderer from './Middleware/createActivityRenderer';
 import createActivityStatusRenderer from './Middleware/createActivityStatusRenderer';
 import createAttachmentRenderer from './Middleware/createAttachmentRenderer';
 import createAvatarRenderer from './Middleware/createAvatarRenderer';
+import createCSSKey from './Utils/createCSSKey';
 import createCustomEvent from './Utils/createCustomEvent';
 import createToastRenderer from './Middleware/createToastRenderer';
 import createTypingIndicatorRenderer from './Middleware/createTypingIndicatorRenderer';
@@ -67,6 +67,7 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './Speech/BypassSpeechSynthesisPonyfill';
+import createEmotion from 'create-emotion';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -92,8 +93,10 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-function styleSetToClassNames(styleSet) {
-  return mapMap(styleSet, (style, key) => (key === 'options' ? style : css(style)));
+const emotionPool = {};
+
+function styleSetToClassNames(styleToClassName, styleSet) {
+  return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToClassName(style)));
 }
 
 function createCardActionContext({ cardActionMiddleware, directLine, dispatch }) {
@@ -208,6 +211,7 @@ const Composer = ({
   groupActivitiesMiddleware,
   groupTimestamp,
   locale,
+  nonce,
   onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
@@ -320,9 +324,23 @@ const Composer = ({
     transcriptFocusRef
   ]);
 
+  const styleToClassName = useMemo(() => {
+    // Emotion don't hash with nonce. We need to provide the pooling mechanism.
+    // 1. If 2 instances use different nonce, they should result in different hash;
+    // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
+    const emotion =
+      emotionPool[nonce] || (emotionPool[emotion] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
+
+    return style => emotion.css(style) + '';
+  }, [nonce]);
+
   const patchedStyleSet = useMemo(
-    () => styleSetToClassNames({ ...(styleSet || createStyleSet(patchedStyleOptions)), ...extraStyleSet }),
-    [extraStyleSet, patchedStyleOptions, styleSet]
+    () =>
+      styleSetToClassNames(styleToClassName, {
+        ...(styleSet || createStyleSet(patchedStyleOptions)),
+        ...extraStyleSet
+      }),
+    [extraStyleSet, patchedStyleOptions, styleSet, styleToClassName]
   );
 
   const groupActivitiesContext = useMemo(
@@ -474,6 +492,7 @@ const Composer = ({
       language: locale,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
+      nonce,
       onTelemetry,
       renderMarkdown,
       selectVoice: patchedSelectVoice,
@@ -482,6 +501,7 @@ const Composer = ({
       setDictateAbortable,
       styleOptions,
       styleSet: patchedStyleSet,
+      styleToClassName,
       suggestedActionsAccessKey,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
@@ -506,6 +526,7 @@ const Composer = ({
       internalRenderMarkdownInline,
       locale,
       localizedGlobalize,
+      nonce,
       onTelemetry,
       patchedActivityRenderer,
       patchedActivityStatusRenderer,
@@ -523,6 +544,7 @@ const Composer = ({
       sendTypingIndicator,
       setDictateAbortable,
       styleOptions,
+      styleToClassName,
       suggestedActionsAccessKey,
       telemetryDimensionsRef,
       trackDimension,
@@ -560,7 +582,7 @@ const ComposeWithStore = ({ onTelemetry, store, ...props }) => {
   return (
     <ErrorBoundary onError={handleError}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <ScrollToBottomComposer>
+        <ScrollToBottomComposer nonce={props.nonce}>
           <Composer onTelemetry={onTelemetry} {...props} />
         </ScrollToBottomComposer>
       </Provider>
@@ -603,6 +625,7 @@ Composer.defaultProps = {
   groupActivitiesMiddleware: undefined,
   groupTimestamp: undefined,
   locale: window.navigator.language || 'en-US',
+  nonce: undefined,
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
@@ -652,6 +675,7 @@ Composer.propTypes = {
   groupActivitiesMiddleware: PropTypes.func,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
+  nonce: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,

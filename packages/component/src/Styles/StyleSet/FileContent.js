@@ -26,6 +26,7 @@ export default function createFileContentStyle({ accent, bubbleTextColor, paddin
       '&:not(.webchat__fileContent__downloadIcon--rtl)': {
         marginLeft: paddingRegular
       },
+
       '&.webchat__fileContent__downloadIcon--rtl': {
         marginRight: paddingRegular
       }

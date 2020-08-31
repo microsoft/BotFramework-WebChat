@@ -10,14 +10,10 @@ test('getter should get styleSet from props', async () => {
     props: { styleSet: { options: {}, root: { backgroundColor: 'Red' } } }
   });
 
-  await expect(pageObjects.runHook('useStyleSet', [], result => result[0])).resolves.toMatchInlineSnapshot(`
-          Object {
-            "options": Object {},
-            "root": Object {
-              "data-css-1mjk9yt": "",
-            },
-          }
-        `);
+  const styleSet = await pageObjects.runHook('useStyleSet', [], result => result[0]);
+
+  expect(styleSet).toHaveProperty('options', {});
+  expect(styleSet).toHaveProperty('root', expect.stringMatching(/^webchat--css-\w{5}-1v40psm$/u));
 });
 
 test('setter should be falsy', async () => {

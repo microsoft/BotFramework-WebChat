@@ -1,4 +1,3 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -6,27 +5,31 @@ import React from 'react';
 import useAvatarForBot from '../hooks/useAvatarForBot';
 import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToClassName from '../hooks/internal/useStyleToClassName';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   alignItems: 'center',
   display: 'flex',
 
   '& .webchat__initialsAvatar__initials': {
     justifyContent: 'center'
   }
-});
+};
 
 const InitialsAvatar = ({ fromUser }) => {
   const [{ initials: avatarInitialsForBot }] = useAvatarForBot();
   const [{ initials: avatarInitialsForUser }] = useAvatarForUser();
   const [{ initialsAvatar: initialsAvatarStyleSet }] = useStyleSet();
+  const rootClassName = useStyleToClassName()(ROOT_STYLE);
 
   return (
     <div
       className={classNames(
-        ROOT_CSS + '',
         'webchat__initialsAvatar',
-        fromUser && 'webchat__initialsAvatar--fromUser',
+        {
+          'webchat__initialsAvatar--fromUser': fromUser
+        },
+        rootClassName,
         initialsAvatarStyleSet + ''
       )}
     >

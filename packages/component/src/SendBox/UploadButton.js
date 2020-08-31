@@ -1,4 +1,3 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import React, { useCallback, useRef } from 'react';
 
@@ -10,8 +9,9 @@ import useDisabled from '../hooks/useDisabled';
 import useLocalizer from '../hooks/useLocalizer';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToClassName from '../hooks/internal/useStyleToClassName';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   overflow: 'hidden',
   position: 'relative',
 
@@ -23,7 +23,7 @@ const ROOT_CSS = css({
     left: 0,
     top: 0
   }
-});
+};
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
@@ -89,6 +89,7 @@ const UploadButton = () => {
   const [disabled] = useDisabled();
   const inputRef = useRef();
   const localize = useLocalizer();
+  const rootClassName = useStyleToClassName()(ROOT_STYLE);
   const sendFiles = useSendFiles();
 
   const { current } = inputRef;
@@ -110,7 +111,7 @@ const UploadButton = () => {
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', uploadButtonStyleSet + '')}>
+    <div className={classNames(rootClassName, uploadButtonStyleSet + '')}>
       <input
         aria-disabled={disabled}
         aria-hidden="true"

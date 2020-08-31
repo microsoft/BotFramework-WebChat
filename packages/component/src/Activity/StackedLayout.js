@@ -1,6 +1,5 @@
 /* eslint complexity: ["error", 30] */
 
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -15,9 +14,10 @@ import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToClassName from '../hooks/internal/useStyleToClassName';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   '&.webchat__stacked-layout': {
     position: 'relative', // This is to keep screen reader text in the destinated area.
 
@@ -62,7 +62,7 @@ const ROOT_CSS = css({
       flexShrink: 0
     }
   }
-});
+};
 
 const connectStackedLayout = (...selectors) =>
   connectToWebChat(
@@ -99,6 +99,7 @@ const StackedLayout = ({
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
+  const rootClassName = useStyleToClassName()(ROOT_STYLE);
   const showActivityStatus = typeof renderActivityStatus === 'function';
 
   const {
@@ -139,7 +140,7 @@ const StackedLayout = ({
     <div
       aria-labelledby={ariaLabelId}
       aria-roledescription="activity"
-      className={classNames('webchat__stacked-layout', ROOT_CSS + '', stackedLayoutStyleSet + '', {
+      className={classNames('webchat__stacked-layout', rootClassName, stackedLayoutStyleSet + '', {
         'webchat__stacked-layout--extra-trailing': extraTrailing,
         'webchat__stacked-layout--from-user': fromUser,
         'webchat__stacked-layout--hide-avatar': hasAvatar && !showAvatar,

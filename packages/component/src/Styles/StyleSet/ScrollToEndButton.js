@@ -38,7 +38,7 @@ export default function createScrollToEndButtonStyle({
       color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
     },
 
-    ':not(.webchat__overlay--rtl)': {
+    '&:not(.webchat__overlay--rtl)': {
       right: 20
     },
 

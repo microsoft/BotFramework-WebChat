@@ -1,7 +1,6 @@
 /* eslint react/forbid-dom-props: "off" */
 /* eslint react/no-danger: "off" */
 
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
@@ -14,14 +13,15 @@ import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
 import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
+import useStyleToClassName from './hooks/internal/useStyleToClassName';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   display: 'flex',
 
   '& .webchat__toast__text': {
     flex: 1
   }
-});
+};
 
 const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
   const [{ toast: toastStyleSet }] = useStyleSet();
@@ -29,6 +29,7 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
   const localize = useLocalizer();
   const dismissNotification = useDismissNotification();
   const renderMarkdownInline = useInternalRenderMarkdownInline();
+  const rootClassName = useStyleToClassName()(ROOT_STYLE);
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
   const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message, renderMarkdownInline]);
@@ -37,12 +38,17 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
     <div
       aria-describedby={contentId}
       aria-label={localize('TOAST_TITLE_ALT')}
-      className={classNames(ROOT_CSS + '', toastStyleSet + '', {
-        'webchat__toast--error': level === 'error',
-        'webchat__toast--info': level === 'info',
-        'webchat__toast--success': level === 'success',
-        'webchat__toast--warn': level === 'warn'
-      })}
+      className={classNames(
+        'webchat__toast',
+        {
+          'webchat__toast--error': level === 'error',
+          'webchat__toast--info': level === 'info',
+          'webchat__toast--success': level === 'success',
+          'webchat__toast--warn': level === 'warn'
+        },
+        rootClassName,
+        toastStyleSet + ''
+      )}
       role="dialog"
     >
       <div className="webchat__toast__iconBox">
