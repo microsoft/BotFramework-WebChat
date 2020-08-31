@@ -90,8 +90,6 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
         side: 'bot'
       };
 
-  console.log(bubbleStyleSet);
-
   return (
     <div
       aria-hidden={ariaHidden}
