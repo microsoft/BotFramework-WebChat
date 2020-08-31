@@ -174,11 +174,11 @@ To use Redux DevTools, use the `createStoreWithDevTools` function for creating a
 
 There are some limitations when using the Redux DevTools:
 
-- The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
-- Many UI states are stored in React context and state. They are not exposed in the Redux store.
-- Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
-- Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) instead.
-- Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) is the official API for accessing the UI.
+-  The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
+-  Many UI states are stored in React context and state. They are not exposed in the Redux store.
+-  Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
+-  Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) instead.
+-  Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) is the official API for accessing the UI.
 
 # Customizing the Web Chat UI
 

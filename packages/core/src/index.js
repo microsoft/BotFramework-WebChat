@@ -1,4 +1,5 @@
-/* global process:readonly */
+/*eslint node/no-missing-import: "off" */
+/*node/prefer-global/process:readonly */
 
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';

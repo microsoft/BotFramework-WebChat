@@ -1,4 +1,4 @@
-/* global process */
+/* node/prefer-global/process */
 
 import 'core-js/features/object/entries';
 

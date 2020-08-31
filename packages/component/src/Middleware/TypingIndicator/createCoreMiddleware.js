@@ -1,3 +1,5 @@
+/* eslint react/prop-types: "off"*/
+
 import classNames from 'classnames';
 import React from 'react';
 

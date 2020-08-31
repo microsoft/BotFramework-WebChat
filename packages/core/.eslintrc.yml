@@ -126,6 +126,7 @@ rules:
   node/no-new-require: error
   node/no-path-concat: error
   node/no-sync: error
+  node/no-unpublished-import: off
   node/prefer-global/buffer: error
 
   # Group - ECMAScript 6

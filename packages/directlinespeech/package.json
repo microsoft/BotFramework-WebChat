@@ -37,6 +37,7 @@
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.7.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "global-agent": "^2.1.12",
     "has-resolved": "^1.1.0",
@@ -64,5 +65,8 @@
     "p-defer": "3.0.0",
     "p-defer-es5": "1.2.1",
     "web-speech-cognitive-services": "^7.0.2-master.6004e4b"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
