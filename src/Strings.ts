@@ -428,7 +428,24 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: "Kuuntelee...",
         uploadFile: "Lataa tiedosto",
         speak: "Puhu"
-    }
+    },
+    'ro-ro': {
+        title: "Conversație",
+        send: "Trimite",
+        unknownFile: "[File of type '%1']",
+        unknownCard: "[Unknown Card '%1']",
+        receiptVat: "VAT",
+        receiptTax: "Tax",
+        receiptTotal: "Total",
+        messageRetry: "repeta",
+        messageFailed: "Nu s-a putut trimite",
+        messageSending: "Se trimite",
+        timeSent: " în %1",
+        consolePlaceholder: "Scrie mesajul tău ...",
+        listeningIndicator: "Listening...",
+        uploadFile: "Incarca un fisier",
+        speak: "Speak"
+    },
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -478,6 +495,8 @@ function mapLocale(locale: string) {
         } else {
             return 'pt-pt';
         }
+    } else if (locale.startsWith('ro')) {
+        return 'ro-ro';
     } else if (locale.startsWith('ru')) {
         return 'ru-ru';
     } else if (locale.startsWith('sv')) {
