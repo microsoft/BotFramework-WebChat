@@ -38,4 +38,5 @@
 -  [ ] Documents reviewed (docs, samples, live demo)
 -  [ ] Internationalization reviewed (strings, unit formatting)
 -  [ ] `package.json` and `package-lock.json` reviewed
+-  [ ] Security reviewed (no data URIs, check for nonce leak)
 -  [ ] Tests reviewed (coverage, legitimacy)
