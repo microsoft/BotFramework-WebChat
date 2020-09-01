@@ -102,10 +102,12 @@ const CarouselLayout = props => {
   );
 };
 
+CarouselLayout.defaultProps = {
+  ...CarouselLayoutCore.defaultProps
+};
+
 CarouselLayout.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array
-  }).isRequired
+  ...CarouselLayoutCore.propTypes
 };
 
 export default CarouselLayout;

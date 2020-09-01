@@ -46,7 +46,7 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
           'webchat__toast--success': level === 'success',
           'webchat__toast--warn': level === 'warn'
         },
-        rootClassName + '',
+        rootClassName,
         toastStyleSet + ''
       )}
       role="dialog"

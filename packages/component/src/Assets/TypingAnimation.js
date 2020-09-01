@@ -8,9 +8,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
-  '&.webchat__typingIndicator': {
-    '&.webchat__typingIndicator--rtl': { transform: 'scale(-1, 1)' }
-  }
+  '&.webchat__typingIndicator.webchat__typingIndicator--rtl': { transform: 'scale(-1, 1)' }
 };
 
 const TypingAnimation = () => {

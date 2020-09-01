@@ -2,6 +2,7 @@ import { Composer as SayComposer } from 'react-say';
 import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
 
 import { Provider } from 'react-redux';
+import createEmotion from 'create-emotion';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -67,7 +68,6 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './Speech/BypassSpeechSynthesisPonyfill';
-import createEmotion from 'create-emotion';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -329,7 +329,7 @@ const Composer = ({
     // 1. If 2 instances use different nonce, they should result in different hash;
     // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
     const emotion =
-      emotionPool[nonce] || (emotionPool[emotion] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
+      emotionPool[nonce] || (emotionPool[nonce] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
     return style => emotion.css(style);
   }, [nonce]);
