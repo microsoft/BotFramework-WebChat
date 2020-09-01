@@ -65,19 +65,27 @@ const checkSupportWebWorker = memoizeOne(async () => {
     return false;
   }
 
+  let worker;
+
   try {
-    await createWorker(() => postMessage('ready'));
+    worker = await createWorker('function(){postMessage("ready")}');
   } catch (err) {
     return false;
   }
+
+  worker.terminate();
 
   return true;
 });
 
 const checkSupport = memoizeOne(async () => {
-  const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
+  try {
+    const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
 
-  return results.every(result => result);
+    return results.every(result => result);
+  } catch (err) {
+    return false;
+  }
 });
 
 export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality) {
