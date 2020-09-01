@@ -21,7 +21,7 @@ For example, in a strict CSP environment, the basic policy should be:
 ```
 <!-- prettier-ignore-end -->
 
-> Additional source for `script-src` will be needed depends on whether nonce or `'self'` is used to load Web Chat.
+> Additional source for `script-src` will be needed depends on nonce or `'self'` source is used to load Web Chat.
 
 Additional directives may be needed to operate the bot properly. For example, if the bot would display an image, an additional `img-src` directive may be added to allow images from a different domain. For details, please see [#3445](https://github.com/microsoft/BotFramework-WebChat/issues/3445.
 
@@ -37,11 +37,12 @@ Additional directives may be needed to operate the bot properly. For example, if
    -  Web Socket connection to wss://directline.botframework.com for receiving activities
    -  When using protocols other than Direct Line or Web Chat channel, the source will be different
 -  `img-src blob:`
-   -  `blob:` will allow some inlined images in Web Chat to be loaded via `blob:` scheme. For example, connectivity status spinner and typing indicator
-      -  You can use `styleOptions` to load these images from your source and modify this directive as needed
--  `script-src 'nonce-a1b2c3d' 'strict-dynamic' 'unsafe-eval'`
-   -  `nonce-a1b2c3d` will allow JavaScript code through this nonce. This should be a per-policy, unique, and unguessable value
-      -  When loading Web Chat using CDN, you should provide this nonce, for example, `<script nonce="a1b2c3d" src="https://cdn.botframework.com/...">`
+   -  `blob:` will allow images in Web Chat to be loaded via `blob:` scheme. Types of images using `blob:` scheme:
+      -  Inlined assets. For example, connectivity status spinner and typing indicator
+         -  You can use `styleOptions` to load these images from your source and modify this directive as needed
+      -  Bot attached images using data URI, will be converted to URL with scheme of `blob:`
+      -  User uploaded images are downscaled as thumbnails with scheme of `blob:`
+-  `script-src 'strict-dynamic'`
    -  (Optional) `strict-dynamic` will allow Web Chat to use Web Worker to downscale image on upload
       -  If `strict-dynamic` is not provided, Web Chat will fallback to main thread to downscale image
 -  `style-src 'nonce-a1b2c3d'`
@@ -62,7 +63,11 @@ WebChat.renderWebChat({
 
 ## Limitations
 
-Currently, the nonce is used for injecting `<style>` elements only. It is not used for other elements, including `<img>` and other media elements.
+Currently, the nonce is used for injecting `<style>` elements only. It is not used for other elements, including `<img>` and other media elements. For details, please see [#3445](https://github.com/microsoft/BotFramework-WebChat/issues/3445.
+
+## Nonce exposure
+
+Any code executed inside Web Chat context could retrieve the nonce. When adding customization code to Web Chat, please make sure the nonce is not exposed.
 
 ## Additional context
 
