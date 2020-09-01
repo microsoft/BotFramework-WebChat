@@ -1,5 +1,5 @@
 {
-  "name": "@dvorakjan/feedbot-webchat",
+  "name": "@feedyou-ai/feedbot-webchat",
   "version": "0.14.1-5",
   "description": "Embeddable web chat control for the Microsoft Bot Framework modified by Feedyou",
   "main": "built/BotChat.js",
@@ -25,16 +25,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://git@github.com/wearefeedyou/feedbot-webchat.git"
+    "url": "git://git@github.com/feedyou-ai/feedbot-webchat.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/feedyou-ai"
   },
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
     "@types/google.analytics": "0.0.40",
     "adaptivecards": "1.0.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.1",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",
     "core-js": "2.4.1",
@@ -56,6 +56,9 @@
     "@types/react": "15.6.1",
     "@types/react-dom": "15.5.7",
     "@types/react-redux": "5.0.5",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.1",
     "awesome-typescript-loader": "3.1.2",
     "concurrently": "3.1.0",
     "expose-loader": "0.7.3",

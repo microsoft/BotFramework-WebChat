@@ -15,18 +15,18 @@
 <body>
 
   <!-- PUT THIS CODE RIGHT BEFORE THE </BODY> TAG (you can also use some tag manager like GTM for this) -->
-  <link href="https://feedyou.azureedge.net/webchat/latest/botchat.css" rel="stylesheet" />
-  <script src="https://feedyou.azureedge.net/webchat/latest/botchat-es5.js"></script>
+  <link href="https://feedyou.azureedge.net/webchat/master/botchat.css" rel="stylesheet" />
+  <script src="https://feedyou.azureedge.net/webchat/master/botchat-es5.js"></script>
   <script>
     window.addEventListener('load', function (){
       BotChat.App({
         // YOU WILL RECIEVE FOLLOWING ... VALUES FROM FEEDYOU
-        directLine: { secret: "..." }, // TRY THIS DURING TESTING: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
-        bot: { id: 'feedbot-...' }, // TRY THESE DURING TESTING: feedbot-demo-webchat
+        directLine: { secret: "flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo" }, // TRY THIS DURING TESTING: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
+        bot: { id: 'feedbot-demo-webchat' }, // TRY THESE DURING TESTING: feedbot-demo-webchat
           
         theme: { mainColor: "#e51836" },
         header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" },
-        disableInputWhenNotNeeded: true,
+        disableInputWhenNotNeeded: false,
         autoExpandTimeout: 5000,
  
         // SEE https://github.com/wearefeedyou/feedbot-webchat FOR OPTIONAL PARAMS 
