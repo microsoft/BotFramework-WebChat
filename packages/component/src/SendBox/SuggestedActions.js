@@ -14,9 +14,9 @@ import useLocalizer from '../hooks/useLocalizer';
 import useNonce from '../hooks/internal/useNonce';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions .webchat__suggested-actions__stack': {
@@ -47,7 +47,14 @@ const connectSuggestedActions = (...selectors) =>
   );
 
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
-  const [{ suggestedActionLayout }] = useStyleOptions();
+  const [
+    {
+      suggestedActionLayout,
+      suggestedActionsCarouselFlipperBoxWidth,
+      suggestedActionsCarouselFlipperCursor,
+      suggestedActionsCarouselFlipperSize
+    }
+  ] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
@@ -58,11 +65,10 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const filmStyleSet = useMemo(
     () =>
-      // TODO: We should put these variables in styleOptions.
       createBasicStyleSetForReactFilm({
-        cursor: null,
-        flipperBoxWidth: 40,
-        flipperSize: 20
+        cursor: suggestedActionsCarouselFlipperCursor,
+        flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
+        flipperSize: suggestedActionsCarouselFlipperSize
       }),
     []
   );
