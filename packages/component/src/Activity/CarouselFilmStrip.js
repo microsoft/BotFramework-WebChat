@@ -1,6 +1,6 @@
 /* eslint complexity: ["error", 30] */
 
-import { useItemContainerRef, useScrollableRef } from 'react-film';
+import { useItemContainerCallbackRef, useScrollableCallbackRef } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -134,8 +134,8 @@ const CarouselFilmStrip = ({
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const showActivityStatus = typeof renderActivityStatus === 'function';
 
-  const itemContainerRef = useItemContainerRef();
-  const scrollableRef = useScrollableRef();
+  const itemContainerCallbackRef = useItemContainerCallbackRef();
+  const scrollableCallbackRef = useScrollableCallbackRef();
 
   const {
     attachments = [],
@@ -191,7 +191,7 @@ const CarouselFilmStrip = ({
         carouselFilmStripStyleSet + '',
         (className || '') + ''
       )}
-      ref={scrollableRef}
+      ref={scrollableCallbackRef}
       role="group"
     >
       <div className="webchat__carousel-filmstrip__main">
@@ -223,7 +223,7 @@ const CarouselFilmStrip = ({
             <div className="webchat__carousel-filmstrip__complimentary-content c">
               <ul
                 className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
-                ref={itemContainerRef}
+                ref={itemContainerCallbackRef}
               >
                 {attachments.map((attachment, index) => (
                   <li

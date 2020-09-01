@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
