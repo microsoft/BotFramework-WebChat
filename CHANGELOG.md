@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Support Content Security Policy, in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443) by [@compulim](https://github.com/compulim)
    -  Moved from [`glamor@2.20.40`](https://npmjs.com/package/glamor) to [`create-emotion@10.0.27`](https://npmjs.com/package/create-emotion)
    -  Inlined assets are now using `blob:` scheme, instead of `data:` scheme
+   -  Detect Web Worker support by loading a dummy Web Worker, instead of checking `window.MessagePort` and `window.Worker`
+   -  Data URI used in image of attachments will be converted to URL with scheme of `blob:`
    -  Bumped dependencies
       -  [`react-film@3.0.0`](https://npmjs.com/package/react-film)
       -  [`react-scroll-to-bottom@4.0.0`](https://npmjs.com/package/react-scroll-to-bottom)
