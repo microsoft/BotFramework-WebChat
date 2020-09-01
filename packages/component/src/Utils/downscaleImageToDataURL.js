@@ -5,8 +5,8 @@ import downscaleImageToDataURLUsingWorker, {
 
 export default async function downscaleImageToDataURL(blob, maxWidth, maxHeight, type, quality) {
   if (await supportWorker()) {
-    return await downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality);
+    return downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality);
   }
 
-  return await downscaleImageToDataURLUsingBrowser(blob, maxWidth, maxHeight, type, quality);
+  return downscaleImageToDataURLUsingBrowser(blob, maxWidth, maxHeight, type, quality);
 }

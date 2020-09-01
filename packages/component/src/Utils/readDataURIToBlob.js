@@ -1,6 +1,6 @@
 import { toByteArray } from 'base64-js';
 
-const PATTERN = /^data:([^,]*?)(;(base64)){0,1},([A-Za-z0-9\+\/=]+)/u;
+const PATTERN = /^data:([^,]*?)(;(base64)){0,1},([A-Za-z0-9+/=]+)/u;
 
 const DEFAULT_CONTENT_TYPE = 'text/plain;charset=US-ASCII';
 
