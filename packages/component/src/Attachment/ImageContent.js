@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import CroppedImage from '../Utils/CroppedImage';
-
 import useStyleOptions from '../hooks/useStyleOptions';
 
 const ImageContent = ({ alt, src }) => {

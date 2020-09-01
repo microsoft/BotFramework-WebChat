@@ -1,9 +1,9 @@
 import blobToArrayBuffer from './blobToArrayBuffer';
 import memoizeOne from 'memoize-one';
-import worker from './downscaleImageToDataURLUsingWorker.worker';
+import workerFunction from './downscaleImageToDataURLUsingWorker.worker';
 
-function createWorker() {
-  const blob = new Blob([`(${worker})()`], { type: 'text/javascript' });
+function createWorker(fn) {
+  const blob = new Blob([`(${fn})()`], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
   return new Promise((resolve, reject) => {
@@ -24,7 +24,7 @@ async function getWorker() {
   if (workerPromise) {
     worker = await workerPromise;
   } else {
-    workerPromise = createWorker();
+    workerPromise = createWorker(workerFunction);
 
     worker = await workerPromise;
     worker.addEventListener('error', () => {
@@ -41,7 +41,7 @@ async function getWorker() {
 // 1. OffscreenCanvas.getContext has a toll
 // 2. Developers could bring polyfills
 
-const checkSupport = memoizeOne(() => {
+const checkSupportOffscreenCanvas = () => {
   const hasOffscreenCanvas =
     typeof window.OffscreenCanvas !== 'undefined' &&
     (typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' ||
@@ -57,13 +57,27 @@ const checkSupport = memoizeOne(() => {
     }
   }
 
-  return (
-    typeof window.createImageBitmap !== 'undefined' &&
-    typeof window.MessageChannel !== 'undefined' &&
-    hasOffscreenCanvas &&
-    isOffscreenCanvasSupportGetContext2D &&
-    typeof window.Worker !== 'undefined'
-  );
+  return typeof window.createImageBitmap !== 'undefined' && hasOffscreenCanvas && isOffscreenCanvasSupportGetContext2D;
+};
+
+const checkSupportWebWorker = memoizeOne(async () => {
+  if (typeof window.MessageChannel === 'undefined' || typeof window.Worker === 'undefined') {
+    return false;
+  }
+
+  try {
+    await createWorker(() => postMessage('ready'));
+  } catch (err) {
+    return false;
+  }
+
+  return true;
+});
+
+const checkSupport = memoizeOne(async () => {
+  const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
+
+  return results.every(result => result);
 });
 
 export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality) {

@@ -21,6 +21,7 @@ A simple web page with Web Chat and [Content Security Policy](https://developer.
 
 -  Type `hello`: you should be able to type to the bot and receive a response in plain text
 -  Type `carousel`: you should see multiple cards, without images
+-  Upload a file: you should see the file uploaded successfully with a thumbnail
 
 # Code
 
