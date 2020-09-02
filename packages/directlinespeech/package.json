@@ -52,7 +52,7 @@
     "webpack-stats-plugin": "^0.3.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "7.11.2",
     "abort-controller": "3.0.0",
     "abort-controller-es5": "1.2.0",
     "base64-arraybuffer": "0.2.0",

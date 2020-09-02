@@ -33,7 +33,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@babel/plugin-proposal-async-generator-functions": "^7.10.5",
+    "@babel/plugin-proposal-async-generator-functions": "7.10.5",
     "@babel/runtime": "^7.11.2",
     "@babel/standalone": "^7.11.4",
     "abort-controller": "3.0.0",
