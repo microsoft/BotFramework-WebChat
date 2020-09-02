@@ -29,7 +29,7 @@
     "start:webpack": "npm run build:webpack -- --watch"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "7.11.2",
     "adaptivecards": "1.2.6",
     "botframework-directlinejs": "0.13.0",
     "botframework-directlinespeech-sdk": "0.0.0-0",
