@@ -44,10 +44,10 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "7.11.2",
     "jsonwebtoken": "8.5.1",
-    "math-random": "^2.0.1",
-    "mime": "^2.4.6",
+    "math-random": "2.0.1",
+    "mime": "2.4.6",
     "p-defer": "3.0.0",
     "p-defer-es5": "1.2.1",
     "redux": "4.0.4",
@@ -56,6 +56,6 @@
     "simple-update-in": "2.2.0"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=12.0.0"
   }
 }

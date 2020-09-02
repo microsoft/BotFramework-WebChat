@@ -126,7 +126,13 @@ rules:
   node/no-new-require: error
   node/no-path-concat: error
   node/no-sync: error
-  node/no-missing-import: off
+  node/no-missing-import:
+    - error
+    - tryExtensions:
+        - ".js"
+        - ".json"
+        - ".node"
+        - ".ts"
   node/no-unpublished-import: off
   node/prefer-global/buffer: error
 

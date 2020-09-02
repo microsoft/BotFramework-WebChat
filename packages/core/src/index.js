@@ -1,6 +1,3 @@
-/*eslint node/no-missing-import: "off" */
-/*node/prefer-global/process:readonly */
-
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
