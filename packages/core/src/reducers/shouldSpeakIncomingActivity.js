@@ -1,5 +1,5 @@
-import { START_SPEAKING_ACTIVITY } from '../../lib/actions/startSpeakingActivity';
-import { STOP_SPEAKING_ACTIVITY } from '../../lib/actions/stopSpeakingActivity';
+import { START_SPEAKING_ACTIVITY } from '../actions/startSpeakingActivity';
+import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
 
 export default function shouldSpeakIncomingActivity(state = false, { type }) {
   switch (type) {

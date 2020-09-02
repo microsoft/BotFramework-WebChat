@@ -1,8 +1,8 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 
-import { MARK_ACTIVITY } from '../../lib/actions/markActivity';
+import { MARK_ACTIVITY } from '../actions/markActivity';
 import { of as activitiesOf } from '../selectors/activities';
-import { SET_DICTATE_STATE } from '../../lib/actions/setDictateState';
+import { SET_DICTATE_STATE } from '../actions/setDictateState';
 import { WILL_START } from '../constants/DictateState';
 import dictateStateSelector from '../selectors/dictateState';
 import speakingActivity from '../definitions/speakingActivity';
