@@ -325,7 +325,7 @@ const Composer = ({
   ]);
 
   const styleToEmotionObject = useMemo(() => {
-    // Emotion don't hash with nonce. We need to provide the pooling mechanism.
+    // Emotion doesn't hash with nonce. We need to provide the pooling mechanism.
     // 1. If 2 instances use different nonce, they should result in different hash;
     // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
     const emotion =

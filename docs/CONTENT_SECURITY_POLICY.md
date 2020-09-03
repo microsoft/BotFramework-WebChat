@@ -2,7 +2,7 @@
 
 Starting from 4.10.1, [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) is supported.
 
-> In this article, we are using a nonce of `a1b2c3d`. In production system, it should be a random and unguessable value that would change every time a policy is applied.
+> In this article, we are using a nonce of `a1b2c3d`. In a production system, it should be a random and unguessable value that changes every time a policy is applied.
 
 To enable Web Chat in a CSP-enforced environment, the following directives must be configured:
 
@@ -21,7 +21,7 @@ For example, in a strict CSP environment, the basic policy should be:
 ```
 <!-- prettier-ignore-end -->
 
-> Additional source for `script-src` will be needed depends on nonce or `'self'` source is used to load Web Chat.
+> Additional source for `script-src` will be needed depending on whether nonce or `'self'` source is used to load Web Chat.
 
 Additional directives may be needed to operate the bot properly. For example, if the bot would display an image, an additional `img-src` directive may be added to allow images from a different domain. For details, please see [#3445](https://github.com/microsoft/BotFramework-WebChat/issues/3445.
 
