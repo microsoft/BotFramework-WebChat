@@ -149,10 +149,13 @@ We will rectify message order using the `replyToId` property.
 
 -  When a message with a `replyToId` property arrives, Web Chat will check if it received the activity with the specified ID:
    -  If an activity were received with the specified ID, Web Chat will render the activity immediately
+   -  If another activity with the same `replyToId` is rendered, Web Chat will render the activity immediately
+      -  Another activity with the same `replyToId` means, either the predecessor has arrived or declared as lost
    -  If no activities were received with the specified ID, Web Chat will wait up to 5 seconds for the referencing activity to arrive
       -  If the activity arrive within 5 seconds, Web Chat will render the activity in the same render loop
       -  If the activity did not arrive within 5 seconds, Web Chat will render the activity
--  When a message without a `replyToId` property arrive, Web Chat will render the activity immediately
+-  When a message without a `replyToId` property arrive, or is the first activity in the transcript, Web Chat will render the activity immediately
+   -  Currently, there is a limitation in the Bot Framework SDK. The first activity will always comes with a `replyToId` property even it is not replying to any conversations
 
 ## UX: Live region transcript
 
