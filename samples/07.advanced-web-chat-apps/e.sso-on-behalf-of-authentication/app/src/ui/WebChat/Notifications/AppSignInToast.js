@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { hooks } from 'botframework-webchat';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 
@@ -25,7 +25,7 @@ export const AppSignInToast = ({ notification }) => {
       dismissNotification(id);
       setNotification({ ...notification, message: '' });
     }
-  }, [!onSignIn]);
+  }, [dismissNotification, id, notification, onSignIn, setNotification]);
 
   return (
     <div aria-label="Sign in" role="dialog" className="app__signInNotification">

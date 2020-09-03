@@ -1,3 +1,5 @@
+/* eslint react/prop-types: "off"*/
+
 import { Constants } from 'botframework-webchat-core';
 import React, { useMemo } from 'react';
 

@@ -1,4 +1,4 @@
-export default function({ accent, paddingRegular, primaryFont }) {
+export default function ({ accent, paddingRegular, primaryFont }) {
   return {
     '&.webchat__adaptive-card-renderer': {
       '& .ac-input, & .ac-inlineActionButton, & .ac-quickActionButton': {

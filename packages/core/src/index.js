@@ -1,5 +1,3 @@
-/* global process:readonly */
-
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore, { withDevTools as createStoreWithDevTools } from './createStore';

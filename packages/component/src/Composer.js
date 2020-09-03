@@ -310,7 +310,8 @@ const Composer = ({
     dispatch
   ]);
 
-  const patchedSelectVoice = useCallback(selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
+  const patchedSelectVoice = useMemo(() => selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
+    locale,
     selectVoice
   ]);
 

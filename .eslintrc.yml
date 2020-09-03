@@ -117,16 +117,6 @@ rules:
     varsIgnorePattern: ^_
   no-use-before-define: error
 
-  # Group - Node.js and CommonJS
-  callback-return: error
-  global-require: error
-  handle-callback-err: error
-  no-buffer-constructor: error
-  no-mixed-requires: error
-  no-new-require: error
-  no-path-concat: error
-  no-sync: error
-
   # Group - ECMAScript 6
   arrow-body-style:
   - error

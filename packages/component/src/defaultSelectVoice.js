@@ -1,4 +1,4 @@
-export default function({ language }, voices, activity) {
+export default function ({ language }, voices, activity) {
   // Find the first voice based on this order:
   // 1. Voice with language same as locale as defined in the activity
   // 2. Voice with language same as locale as passed into Web Chat

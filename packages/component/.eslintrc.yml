@@ -10,6 +10,7 @@ rules:
   react/button-has-type: error
   react/default-props-match-prop-types: error
   react/destructuring-assignment: error
+  react/display-name: off
   react/forbid-component-props:
   - error
   - forbid:

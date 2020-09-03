@@ -10,14 +10,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "botframework-webchat": "^4.7.1",
-    "react": "^16.8.6",
+    "botframework-webchat": "^4.10.0",
+    "react": "16.8.6",
     "react-dom": "16.8.6"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
-    "@babel/preset-react": "^7.7.4"
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4"
   }
 }

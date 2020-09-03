@@ -2,7 +2,7 @@ import { CONNECT_FULFILLED, CONNECT_PENDING, CONNECT_REJECTED, CONNECT_STILL_PEN
 
 import { RECONNECT_PENDING, RECONNECT_FULFILLED } from '../actions/reconnect';
 
-import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
+import { DISCONNECT_FULFILLED } from '../actions/disconnect';
 import { SAGA_ERROR } from '../actions/sagaError';
 
 const DEFAULT_STATE = 'uninitialized';

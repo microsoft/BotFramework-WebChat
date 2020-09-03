@@ -16,11 +16,7 @@ export const BotSignInToast = ({ notification }) => {
   const [authenticating, setAuthenticating] = useState();
   const { acquireToken, getAccount, onSignIn } = useContext(OAuthContext);
   const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
-  const { current: invokeId } = useRef(
-    random()
-      .toString(36)
-      .substr(2, 10)
-  );
+  const { current: invokeId } = useRef(random().toString(36).substr(2, 10));
 
   const [activities] = useActivities();
   const dismissNotification = useDismissNotification();
@@ -36,7 +32,7 @@ export const BotSignInToast = ({ notification }) => {
       const { accessToken } = await acquireToken({ scopes: [resourceURI] });
       return accessToken;
     },
-    [acquireToken, getAccount]
+    [acquireToken, getAccount, onSignIn]
   );
 
   const handleDismiss = useCallback(() => {
@@ -66,11 +62,11 @@ export const BotSignInToast = ({ notification }) => {
         });
       }
     }
-  }, [activities]);
+  }, [activities, content, dismissNotification, id, invokeId, setNotification]);
 
   useEffect(() => {
     if (authenticating) {
-      (async function() {
+      (async function () {
         try {
           const token = await exchangeToken(uri);
           token &&
@@ -95,7 +91,19 @@ export const BotSignInToast = ({ notification }) => {
         }
       })();
     }
-  }, [authenticating, dismissNotification, postActivity, setNotification]);
+  }, [
+    authenticating,
+    connectionName,
+    content,
+    dismissNotification,
+    exchangeToken,
+    id,
+    invokeId,
+    oauthId,
+    postActivity,
+    setNotification,
+    uri
+  ]);
 
   const handleAgreeClick = useCallback(() => {
     !authenticating && setAuthenticating(true);
