@@ -53,7 +53,7 @@ function* queueIncomingActivity({ userID }) {
     const { replyToId } = activity;
 
     // To speed up the first activity render time, we do not delay the first activity.
-    // Even it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
+    // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
     // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
     if (replyToId && initialActivities.length) {
       // Either the activity replied to is in the transcript or after timeout.
