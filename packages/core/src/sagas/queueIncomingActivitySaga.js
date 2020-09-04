@@ -25,11 +25,13 @@ function* takeEveryAndSelect(actionType, selector, fn) {
 
 // Wait for specific activity to arrive in the transcript.
 // We will use the initial set of activities to close time gaps between select() and take().
+// If another activity with the same "replyToId" is already rendered (in the "activities" array),
+// we will skip the wait as we already waited long enough for the missing activity to show up.
 function* waitForActivityId(replyToId, initialActivities) {
   let activities = initialActivities;
 
   for (;;) {
-    const replied = activities.find(activity => activity.id === replyToId);
+    const replied = activities.find(activity => activity.id === replyToId || activity.replyToId === replyToId);
 
     if (replied) {
       break;
@@ -50,7 +52,10 @@ function* queueIncomingActivity({ userID }) {
     // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then release this one.
     const { replyToId } = activity;
 
-    if (replyToId) {
+    // To speed up the first activity render time, we do not delay the first activity.
+    // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
+    // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
+    if (replyToId && initialActivities.length) {
       // Either the activity replied to is in the transcript or after timeout.
       yield race([waitForActivityId(replyToId, initialActivities), call(sleep, REPLY_TIMEOUT)]);
     }

@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  To support Content Security Policy, [`glamor`](https://npmjs.com/package/glamor) is being replaced by [`create-emotion`](https://npmjs.com/package/create-emotion). The CSS hash and rule name is being prefixed with `webchat--css` with a random value.
 
+### Fixed
+
+-  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Removed delay of first activity with `replyToId` pointing to a missing activity, by [@compulim](https://github.com/compulim) in PR [#3450](https://github.com/microsoft/BotFramework-WebChat/pull/3450)
+
 ### Changed
 
 -  Support Content Security Policy, in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443) by [@compulim](https://github.com/compulim)
