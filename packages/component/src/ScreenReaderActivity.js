@@ -1,6 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import { css } from 'glamor';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,8 +8,9 @@ import useAvatarForBot from './hooks/useAvatarForBot';
 import useDateFormatter from './hooks/useDateFormatter';
 import useLocalizer from './hooks/useLocalizer';
 import useStripMarkdown from './hooks/internal/useStripMarkdown';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   color: 'transparent',
   height: 1,
   overflow: 'hidden',
@@ -18,7 +18,7 @@ const ROOT_CSS = css({
   top: 0,
   whiteSpace: 'nowrap',
   width: 1
-});
+};
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   few: 'ACTIVITY_NUM_ATTACHMENTS_FEW_ALT',
@@ -33,6 +33,7 @@ const ScreenReaderActivity = ({ activity }) => {
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const {
     attachments = [],
@@ -57,7 +58,7 @@ const ScreenReaderActivity = ({ activity }) => {
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (
-    <article aria-atomic={true} aria-roledescription="message" className={ROOT_CSS} role="region">
+    <article aria-atomic={true} aria-roledescription="message" className={rootClassName} role="region">
       <p>
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>

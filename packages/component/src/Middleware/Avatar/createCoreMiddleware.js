@@ -1,4 +1,3 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -7,8 +6,9 @@ import concatMiddleware from '../concatMiddleware';
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
 import useStyleSet from '../../hooks/useStyleSet';
+import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   overflow: 'hidden',
   position: 'relative',
 
@@ -17,20 +17,21 @@ const ROOT_CSS = css({
     position: 'absolute',
     top: 0
   }
-});
+};
 
 const DefaultAvatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(
-        ROOT_CSS + '',
         'webchat__defaultAvatar',
-        fromUser && 'webchat__defaultAvatar--fromUser',
+        { 'webchat__defaultAvatar--fromUser': fromUser },
+        rootClassName,
         avatarStyleSet + '',
-        className
+        (className || '') + ''
       )}
     >
       <InitialsAvatar fromUser={fromUser} />

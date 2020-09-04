@@ -9,27 +9,31 @@ export default function CarouselFlipper({
   transcriptOverlayButtonColorOnHover
 }) {
   return {
-    '& > div.slider > div.button': {
-      backgroundColor: transcriptOverlayButtonBackground,
-      color: transcriptOverlayButtonColor,
-      outline: 0
-    },
+    '&.webchat__carousel-layout': {
+      '& .react-film__flipper': {
+        '& .react-film__flipper__body': {
+          backgroundColor: transcriptOverlayButtonBackground,
+          color: transcriptOverlayButtonColor,
+          outline: 0
+        },
 
-    '&:disabled, &[aria-disabled="true"]': {
-      '& > div.slider > div.button': {
-        backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-        color: transcriptOverlayButtonColorOnDisabled
+        '&:disabled, &[aria-disabled="true"]': {
+          '& .react-film__flipper__body': {
+            backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+            color: transcriptOverlayButtonColorOnDisabled
+          }
+        },
+
+        '&:focus .react-film__flipper__body': {
+          backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
+          color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
+        },
+
+        '&:hover .react-film__flipper__body': {
+          backgroundColor: transcriptOverlayButtonBackgroundOnHover,
+          color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
+        }
       }
-    },
-
-    '&:focus > div.slider > div.button': {
-      backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
-      color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
-    },
-
-    '&:hover > div.slider > div.button': {
-      backgroundColor: transcriptOverlayButtonBackgroundOnHover,
-      color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
     }
   };
 }

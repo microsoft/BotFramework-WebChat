@@ -24,7 +24,8 @@ export default function createErrorNotificationStyle({
       '&:not(.webchat__error--rtl)': {
         paddingRight: connectivityIconPadding
       },
-      '.webchat__error--rtl': {
+
+      '&.webchat__error--rtl': {
         paddingLeft: connectivityIconPadding
       }
     }

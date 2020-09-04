@@ -10,104 +10,104 @@ export default function CarouselFilmStrip({
   transitionDuration
 }) {
   return {
-    '&.webchat__carousel-layout': {
+    '&.webchat__carousel-filmstrip': {
       // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function
       // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
       '@supports (-moz-appearance: none)': {
         marginBottom: -17
       },
 
-      '& .webchat__carousel-layout__attachment': {
+      '& .webchat__carousel-filmstrip__attachment': {
         minWidth: bubbleMinWidth,
         maxWidth: bubbleMaxWidth,
         transitionDuration,
         transitionProperty: 'max-width, min-width'
       },
 
-      '& .webchat__carousel-layout__message': {
+      '& .webchat__carousel-filmstrip__message': {
         maxWidth: bubbleMaxWidth,
         transitionDuration,
         transitionProperty: 'max-width'
       },
 
-      '&.webchat__carousel-layout--hide-nub, &.webchat__carousel-layout--show-nub, &.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {
-        '& .webchat__carousel-layout__message': {
+      '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub, &.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
+        '& .webchat__carousel-filmstrip__message': {
           maxWidth: bubbleMaxWidth + paddingRegular
         }
       },
 
-      '& .webchat__carousel-layout__alignment-pad': {
+      '& .webchat__carousel-filmstrip__alignment-pad': {
         transitionDuration,
         transitionProperty: 'width',
         width: paddingRegular
       },
 
-      '&.webchat__carousel-layout--extra-trailing .webchat__carousel-layout__alignment-pad': {
+      '&.webchat__carousel-filmstrip--extra-trailing .webchat__carousel-filmstrip__alignment-pad': {
         width: paddingRegular * 2
       },
 
-      '&:not(.webchat__carousel-layout--no-message) .webchat__carousel-layout__attachments': {
+      '&:not(.webchat__carousel-filmstrip--no-message) .webchat__carousel-filmstrip__attachments': {
         marginTop: paddingRegular
       },
 
-      '& .webchat__carousel-layout__avatar-gutter': {
+      '& .webchat__carousel-filmstrip__avatar-gutter': {
         alignItems: 'flex-end',
         transitionDuration,
         transitionProperty: 'width'
       },
 
-      '& .webchat__carousel-layout__nub-pad': {
+      '& .webchat__carousel-filmstrip__nub-pad': {
         transitionDuration,
         transitionProperty: 'width',
         width: 0
       },
 
-      '&.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {
-        '& .webchat__carousel-layout__avatar-gutter': {
+      '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
+        '& .webchat__carousel-filmstrip__avatar-gutter': {
           width: avatarSize
         }
       },
 
-      '&.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar, &.webchat__carousel-layout--hide-nub, &.webchat__carousel-layout--show-nub': {
-        '& .webchat__carousel-layout__nub-pad': {
+      '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar, &.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub': {
+        '& .webchat__carousel-filmstrip__nub-pad': {
           width: paddingRegular
         }
       },
 
-      '&:not(.webchat__carousel-layout--top-callout) .webchat__carousel-layout__avatar-gutter': {
+      '&:not(.webchat__carousel-filmstrip--top-callout) .webchat__carousel-filmstrip__avatar-gutter': {
         justifyContent: 'flex-end'
       },
 
-      ...mirrorStyle('.webchat__carousel-layout--rtl', {
-        '& .webchat__carousel-layout__avatar-gutter': {
+      ...mirrorStyle('&.webchat__carousel-filmstrip--rtl', {
+        '& .webchat__carousel-filmstrip__avatar-gutter': {
           marginLeft: paddingRegular
         },
 
-        '& .webchat__carousel-layout__attachments': {
+        '& .webchat__carousel-filmstrip__attachments': {
           marginLeft: -paddingRegular
         },
 
-        '& .webchat__carousel-layout__attachment': {
+        '& .webchat__carousel-filmstrip__attachment': {
           paddingLeft: paddingRegular
         },
 
-        '&.webchat__carousel-layout--hide-avatar, &.webchat__carousel-layout--show-avatar': {
-          '& .webchat__carousel-layout__attachments': {
+        '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
+          '& .webchat__carousel-filmstrip__attachments': {
             marginLeft: -(avatarSize + paddingRegular * 2)
           },
 
-          '& .webchat__carousel-layout__attachment:first-child': {
+          '& .webchat__carousel-filmstrip__attachment:first-child': {
             paddingLeft: avatarSize + paddingRegular * 2
           }
         },
 
-        '&.webchat__carousel-layout--hide-nub, &.webchat__carousel-layout--show-nub': {
-          '&:not(.webchat__carousel-layout--hide-avatar.webchat__carousel-layout--show-avatar)': {
-            '& .webchat__carousel-layout__attachments': {
+        '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub': {
+          '&:not(.webchat__carousel-filmstrip--hide-avatar.webchat__carousel-filmstrip--show-avatar)': {
+            '& .webchat__carousel-filmstrip__attachments': {
               marginLeft: -paddingRegular * 2
             },
 
-            '& .webchat__carousel-layout__attachment:first-child': {
+            '& .webchat__carousel-filmstrip__attachment:first-child': {
               paddingLeft: paddingRegular * 2
             }
           }

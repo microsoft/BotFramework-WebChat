@@ -1,6 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
-import { css } from 'glamor';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -29,8 +28,9 @@ import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
 import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
     overflow: 'hidden',
     // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
@@ -53,7 +53,7 @@ const ROOT_CSS = css({
       listStyleType: 'none'
     }
   }
-});
+};
 
 function nextSiblingAll(element) {
   const {
@@ -76,6 +76,7 @@ const BasicTranscript2 = ({ className }) => {
   const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
   const [rootElementRef] = useTranscriptRootElementRef();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
@@ -324,7 +325,7 @@ const BasicTranscript2 = ({ className }) => {
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', 'webchat__basic-transcript', className + '')}
+      className={classNames('webchat__basic-transcript', rootClassName, (className || '') + '')}
       dir={direction}
       ref={rootElementRef}
     >

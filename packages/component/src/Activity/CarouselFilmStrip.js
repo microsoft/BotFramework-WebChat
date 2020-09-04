@@ -1,7 +1,6 @@
 /* eslint complexity: ["error", 30] */
 
-import { css } from 'glamor';
-import { Context as FilmContext } from 'react-film';
+import { useItemContainerCallbackRef, useScrollableCallbackRef } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -17,10 +16,11 @@ import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-const ROOT_CSS = css({
-  '&.webchat__carousel-layout': {
+const ROOT_STYLE = {
+  '&.webchat__carousel-filmstrip': {
     display: 'flex',
     flexDirection: 'column',
     MsOverflowStyle: 'none',
@@ -34,69 +34,69 @@ const ROOT_CSS = css({
       display: 'none'
     },
 
-    '& .webchat__carousel-layout__alignment-pad': {
+    '& .webchat__carousel-filmstrip__alignment-pad': {
       flexShrink: 0
     },
 
-    '& .webchat__carousel-layout__attachment': {
+    '& .webchat__carousel-filmstrip__attachment': {
       flex: 1
     },
 
-    '& .webchat__carousel-layout__attachments': {
+    '& .webchat__carousel-filmstrip__attachments': {
       display: 'flex',
       listStyleType: 'none',
       margin: 0,
       padding: 0
     },
 
-    '& .webchat__carousel-layout__avatar': {
+    '& .webchat__carousel-filmstrip__avatar': {
       flexShrink: 0
     },
 
-    '& .webchat__carousel-layout__avatar-gutter': {
+    '& .webchat__carousel-filmstrip__avatar-gutter': {
       display: 'flex',
       flexDirection: 'column',
       flexShrink: 0
     },
 
-    '& .webchat__carousel-layout__complimentary': {
+    '& .webchat__carousel-filmstrip__complimentary': {
       display: 'flex'
     },
 
-    '& .webchat__carousel-layout__complimentary-content': {
+    '& .webchat__carousel-filmstrip__complimentary-content': {
       display: 'flex',
       flexGrow: 1,
       flexDirection: 'column'
     },
 
-    '& .webchat__carousel-layout__content': {
+    '& .webchat__carousel-filmstrip__content': {
       display: 'flex',
       flexGrow: 1,
       flexDirection: 'column'
     },
 
-    '& .webchat__carousel-layout__filler': {
+    '& .webchat__carousel-filmstrip__filler': {
       flexGrow: 10000,
       flexShrink: 1
     },
 
-    '& .webchat__carousel-layout__main': {
+    '& .webchat__carousel-filmstrip__main': {
       display: 'flex'
     },
 
-    '& .webchat__carousel-layout__message': {
+    '& .webchat__carousel-filmstrip__message': {
       display: 'flex'
     },
 
-    '& .webchat__carousel-layout__nub-pad': {
+    '& .webchat__carousel-filmstrip__nub-pad': {
       flexShrink: 0
     },
 
-    '& .webchat__carousel-layout__status': {
+    '& .webchat__carousel-filmstrip__status': {
       display: 'flex'
     }
   }
-});
+};
 
 const connectCarouselFilmStrip = (...selectors) =>
   connectToWebChat(
@@ -115,15 +115,13 @@ const connectCarouselFilmStrip = (...selectors) =>
     ...selectors
   );
 
-const WebChatCarouselFilmStrip = ({
+const CarouselFilmStrip = ({
   activity,
   className,
   hideTimestamp,
-  itemContainerRef,
   renderActivityStatus,
   renderAttachment,
   renderAvatar,
-  scrollableRef,
   showCallout
 }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
@@ -133,7 +131,11 @@ const WebChatCarouselFilmStrip = ({
   const [direction] = useDirection();
   const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__id');
   const localize = useLocalizer();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const showActivityStatus = typeof renderActivityStatus === 'function';
+
+  const itemContainerCallbackRef = useItemContainerCallbackRef();
+  const scrollableCallbackRef = useScrollableCallbackRef();
 
   const {
     attachments = [],
@@ -172,29 +174,36 @@ const WebChatCarouselFilmStrip = ({
   return (
     <div
       aria-labelledby={ariaLabelId}
-      className={classNames('webchat__carousel-layout', ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
-        'webchat__carousel-layout--extra-trailing': extraTrailing,
-        'webchat__carousel-layout--hide-avatar': hasAvatar && !showAvatar,
-        'webchat__carousel-layout--hide-nub': hasNub && !showNub,
-        'webchat__carousel-layout--no-message': !activityDisplayText,
-        'webchat__carousel-layout--rtl': direction === 'rtl',
-        'webchat__carousel-layout--show-avatar': showAvatar,
-        'webchat__carousel-layout--show-nub': showNub,
-        'webchat__carousel-layout--top-callout': topAlignedCallout
-      })}
-      ref={scrollableRef}
+      className={classNames(
+        'webchat__carousel-filmstrip',
+        {
+          'webchat__carousel-filmstrip--extra-trailing': extraTrailing,
+          'webchat__carousel-filmstrip--hide-avatar': hasAvatar && !showAvatar,
+          'webchat__carousel-filmstrip--hide-nub': hasNub && !showNub,
+          'webchat__carousel-filmstrip--no-message': !activityDisplayText,
+          'webchat__carousel-filmstrip--rtl': direction === 'rtl',
+          'webchat__carousel-filmstrip--show-avatar': showAvatar,
+          'webchat__carousel-filmstrip--show-nub': showNub,
+          'webchat__carousel-filmstrip--top-callout': topAlignedCallout
+        },
+        'react-film__filmstrip',
+        rootClassName,
+        carouselFilmStripStyleSet + '',
+        (className || '') + ''
+      )}
+      ref={scrollableCallbackRef}
       role="group"
     >
-      <div className="webchat__carousel-layout__main">
-        <div className="webchat__carousel-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
-        <div className="webchat__carousel-layout__content">
+      <div className="webchat__carousel-filmstrip__main">
+        <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
+        <div className="webchat__carousel-filmstrip__content">
           {!!activityDisplayText && (
             // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
             /* eslint-disable-next-line react/forbid-dom-props */
-            <div aria-roledescription="message" className="webchat__carousel-layout__message" id={ariaLabelId}>
+            <div aria-roledescription="message" className="webchat__carousel-filmstrip__message" id={ariaLabelId}>
               <ScreenReaderText text={greetingAlt} />
               <Bubble
-                className="webchat__carousel-layout__bubble"
+                className="webchat__carousel-filmstrip__bubble"
                 fromUser={fromUser}
                 nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
               >
@@ -206,17 +215,24 @@ const WebChatCarouselFilmStrip = ({
                   }
                 })}
               </Bubble>
-              <div className="webchat__carousel-layout__filler" />
+              <div className="webchat__carousel-filmstrip__filler" />
             </div>
           )}
-          <div className="webchat__carousel-layout__complimentary">
-            <div className="webchat__carousel-layout__nub-pad" />
-            <div className="webchat__carousel-layout__complimentary-content">
-              <ul className="webchat__carousel-layout__attachments" ref={itemContainerRef}>
-                {/* attachments do not have an ID, it is always indexed by number */}
+          <div className="webchat__carousel-filmstrip__complimentary">
+            <div className="webchat__carousel-filmstrip__nub-pad" />
+            <div className="webchat__carousel-filmstrip__complimentary-content c">
+              <ul
+                className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
+                ref={itemContainerCallbackRef}
+              >
                 {attachments.map((attachment, index) => (
-                  /* eslint-disable-next-line react/no-array-index-key */
-                  <li aria-roledescription="attachment" className="webchat__carousel-layout__attachment" key={index}>
+                  <li
+                    aria-roledescription="attachment"
+                    className="webchat__carousel-filmstrip__attachment react-film__filmstrip__item"
+                    /* Attachments do not have an ID, it is always indexed by number */
+                    /* eslint-disable-next-line react/no-array-index-key */
+                    key={index}
+                  >
                     <ScreenReaderText text={attachedAlt} />
                     {/* eslint-disable-next-line react/no-array-index-key */}
                     <Bubble fromUser={fromUser} key={index} nub={false}>
@@ -228,12 +244,12 @@ const WebChatCarouselFilmStrip = ({
             </div>
           </div>
         </div>
-        <div className="webchat__carousel-layout__alignment-pad" />
+        <div className="webchat__carousel-filmstrip__alignment-pad" />
       </div>
       {showActivityStatus && (
-        <div className="webchat__carousel-layout__status">
-          <div className="webchat__carousel-layout__avatar-gutter" />
-          <div className="webchat__carousel-layout__nub-pad" />
+        <div className="webchat__carousel-filmstrip__status">
+          <div className="webchat__carousel-filmstrip__avatar-gutter" />
+          <div className="webchat__carousel-filmstrip__nub-pad" />
           {renderActivityStatus({ hideTimestamp })}
         </div>
       )}
@@ -241,7 +257,7 @@ const WebChatCarouselFilmStrip = ({
   );
 };
 
-WebChatCarouselFilmStrip.defaultProps = {
+CarouselFilmStrip.defaultProps = {
   className: '',
   hideTimestamp: false,
   renderActivityStatus: false,
@@ -249,7 +265,7 @@ WebChatCarouselFilmStrip.defaultProps = {
   showCallout: false
 };
 
-WebChatCarouselFilmStrip.propTypes = {
+CarouselFilmStrip.propTypes = {
   activity: PropTypes.shape({
     attachments: PropTypes.array,
     channelData: PropTypes.shape({
@@ -267,21 +283,11 @@ WebChatCarouselFilmStrip.propTypes = {
   }).isRequired,
   className: PropTypes.string,
   hideTimestamp: PropTypes.bool,
-  itemContainerRef: PropTypes.any.isRequired,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  scrollableRef: PropTypes.any.isRequired,
   showCallout: PropTypes.bool
 };
-
-const CarouselFilmStrip = props => (
-  <FilmContext.Consumer>
-    {({ itemContainerRef, scrollableRef }) => (
-      <WebChatCarouselFilmStrip itemContainerRef={itemContainerRef} scrollableRef={scrollableRef} {...props} />
-    )}
-  </FilmContext.Consumer>
-);
 
 export default CarouselFilmStrip;
 

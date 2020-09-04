@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -12,15 +11,16 @@ import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
 } = Constants;
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   alignItems: 'center',
   display: 'flex'
-});
+};
 
 const connectDictationInterims = (...selectors) =>
   connectToWebChat(
@@ -37,15 +37,16 @@ const DictationInterims = ({ className }) => {
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
   const localize = useLocalizer();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return dictateState === STARTING || dictateState === STOPPING ? (
-    <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
+    <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
       {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
     </p>
   ) : (
     dictateState === DICTATING &&
       (dictateInterims.length ? (
-        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'dictating')}>
+        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}>
           {dictateInterims.map((interim, index) => (
             <span key={index}>
               {interim}
@@ -54,7 +55,7 @@ const DictationInterims = ({ className }) => {
           ))}
         </p>
       ) : (
-        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
+        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
           {localize('SPEECH_INPUT_LISTENING')}
         </p>
       ))

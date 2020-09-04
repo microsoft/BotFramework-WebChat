@@ -1,9 +1,10 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-const ROOT_CSS = css({
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const ROOT_STYLE = {
   overflow: 'hidden',
   position: 'relative',
 
@@ -15,13 +16,14 @@ const ROOT_CSS = css({
     transform: 'translate(-50%, -50%)',
     width: '100%'
   }
-});
+};
 
 const CroppedImage = ({ alt, className, height, src, width }) => {
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sizeStyle = useMemo(() => ({ height, width }), [height, width]);
 
   return (
-    <div className={classNames(ROOT_CSS + '', className + '')} style={sizeStyle}>
+    <div className={classNames(rootClassName, (className || '') + '')} style={sizeStyle}>
       <img alt={alt} src={src} />
     </div>
   );

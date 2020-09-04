@@ -1,6 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
 
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -9,8 +8,9 @@ import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useDirection from '../hooks/useDirection';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   '&.webchat__bubble': {
     display: 'flex',
     position: 'relative',
@@ -26,7 +26,7 @@ const ROOT_CSS = css({
       overflow: 'hidden'
     }
   }
-});
+};
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
   if (typeof nubSize !== 'number') {
@@ -74,6 +74,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
       bubbleFromUserNubOffset
     }
   ] = useStyleOptions();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const { borderWidth, nubOffset, nubSize, side } = fromUser
     ? {
@@ -94,8 +95,6 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
       aria-hidden={ariaHidden}
       className={classNames(
         'webchat__bubble',
-        ROOT_CSS + '',
-        bubbleStyleSet + '',
         {
           'webchat__bubble--from-user': fromUser,
           'webchat__bubble--hide-nub': nub !== true && nub !== false,
@@ -103,7 +102,9 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub 
           'webchat__bubble--rtl': direction === 'rtl',
           'webchat__bubble--show-nub': nub === true
         },
-        className + '' || ''
+        rootClassName,
+        bubbleStyleSet + '',
+        (className || '') + ''
       )}
     >
       <div className="webchat__bubble__nub-pad" />

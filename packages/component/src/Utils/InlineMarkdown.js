@@ -1,6 +1,5 @@
 /* eslint react/no-danger: "off" */
 
-import { css } from 'glamor';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
@@ -9,6 +8,7 @@ import createCustomEvent from '../Utils/createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import useStyleOptions from '../hooks/useStyleOptions';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import walkMarkdownTokens from './walkMarkdownTokens';
 
 function replaceAnchorWithButton(markdownTokens) {
@@ -48,13 +48,14 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
   const [markdownIt] = useInternalMarkdownIt();
   const [{ accent }] = useStyleOptions();
+  const styleToClassName = useStyleToEmotionObject();
 
   // We inlined the style here because this style is:
   // 1. Internal to Web Chat
   // 2. Not customizable from developers (other than setting `styleOptions.accent`)
   const className = useMemo(
     () =>
-      css({
+      styleToClassName({
         '& button[data-markdown-href]': {
           appearance: 'none',
           backgroundColor: 'transparent',

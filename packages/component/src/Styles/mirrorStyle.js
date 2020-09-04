@@ -13,9 +13,11 @@ export default function mirrorStyle(mirrorSelector, styles) {
     }
   }
 
+  const relative = /^&\s*/gu.exec(mirrorSelector) || '';
+
   return mirrorSelector
     ? {
-        [`:not(${mirrorSelector})`]: styles,
+        [`${relative}:not(${mirrorSelector.substr(relative.length)})`]: styles,
         [mirrorSelector]: mirrored
       }
     : mirrored;

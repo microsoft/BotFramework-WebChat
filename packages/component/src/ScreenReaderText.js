@@ -1,11 +1,11 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
-import { css } from 'glamor';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const ROOT_CSS = css({
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const ROOT_STYLE = {
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
   color: 'transparent',
   height: 1,
@@ -19,13 +19,17 @@ const ROOT_CSS = css({
   top: 0,
   whiteSpace: 'nowrap',
   width: 1
-});
+};
 
-const ScreenReaderText = ({ id, text }) => (
-  <div className={classNames(ROOT_CSS + '')} id={id}>
-    {text}
-  </div>
-);
+const ScreenReaderText = ({ id, text }) => {
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  return (
+    <div className={rootClassName} id={id}>
+      {text}
+    </div>
+  );
+};
 
 ScreenReaderText.defaultProps = {
   id: undefined

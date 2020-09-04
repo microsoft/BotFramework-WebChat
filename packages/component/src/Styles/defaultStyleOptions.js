@@ -115,9 +115,14 @@ const DEFAULT_OPTIONS = {
   suggestedActionLayout: 'carousel', // either 'carousel' or 'stacked'
   suggestedActionTextColor: null,
 
-  // Suggested actions 'stacked' layout
+  // Suggested actions carousel layout
+  suggestedActionsCarouselFlipperCursor: null, // Cursor when mouse over on flipper
+  suggestedActionsCarouselFlipperBoxWidth: 40, // Flipper bounding box size
+  suggestedActionsCarouselFlipperSize: 20, // Flipper visible size
+
+  // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // defaults to 'auto'
-  suggestedActionsStackedOverflow: undefined, // defaults to 'auto'
+  suggestedActionsStackedOverflow: undefined, // defaults to 'auto',
 
   // Timestamp
   groupTimestamp: true,

@@ -22,6 +22,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  To support Content Security Policy, [`glamor`](https://npmjs.com/package/glamor) is being replaced by [`create-emotion`](https://npmjs.com/package/create-emotion). The CSS hash and rule name is being prefixed with `webchat--css` with a random value.
+
+### Changed
+
+-  Support Content Security Policy, in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443) by [@compulim](https://github.com/compulim)
+   -  Moved from [`glamor@2.20.40`](https://npmjs.com/package/glamor) to [`create-emotion@10.0.27`](https://npmjs.com/package/create-emotion)
+   -  Inlined assets are now using `blob:` scheme, instead of `data:` scheme
+   -  Detect Web Worker support by loading a dummy Web Worker, instead of checking `window.MessagePort` and `window.Worker`
+   -  Data URI used in image of attachments will be converted to URL with scheme of `blob:`
+   -  Bumped dependencies
+      -  [`react-film@3.0.0`](https://npmjs.com/package/react-film)
+      -  [`react-scroll-to-bottom@4.0.0`](https://npmjs.com/package/react-scroll-to-bottom)
 -  Bumped all dependencies to the latest versions, by [@corinagum](https://github.com/corinagum) in PR [#3380](https://github.com/microsoft/BotFramework-WebChat/pull/3380), [#3442](https://github.com/microsoft/BotFramework-WebChat/pull/3442)
    -  Development dependencies
       -  Root package
@@ -113,6 +127,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`url-search-params-polyfill@8.1.0`](https://npmjs.com/package/url-search-params-polyfill)
       -  [`web-speech-cognitive-services@7.0.2-master.6004e4b`](https://npmjs.com/package/web-speech-cognitive-services)
       -  [`whatwg-fetch@3.4.0`](https://npmjs.com/package/whatwg-fetch)
+
+### Samples
+
+-  Added Content Security Policy sample, by [@compulim](https://github.com/compulim), in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443)
 
 ## [4.10.0] - 2020-08-18
 

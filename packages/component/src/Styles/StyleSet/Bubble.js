@@ -130,7 +130,7 @@ export default function createBubbleStyle({
         }
       },
 
-      ...mirrorStyle('.webchat__bubble--rtl', {
+      ...mirrorStyle('&.webchat__bubble--rtl', {
         '&:not(.webchat__bubble--from-user)': {
           '&.webchat__bubble--show-nub': {
             // Hide border radius if there is a nub on the top/bottom left corner

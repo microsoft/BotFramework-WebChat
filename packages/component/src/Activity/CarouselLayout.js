@@ -1,6 +1,12 @@
-import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
+import {
+  Composer as FilmComposer,
+  createBasicStyleSet as createBasicStyleSetForReactFilm,
+  Flipper,
+  useScrollBarWidth,
+  useScrolling,
+  useStyleSetClassNames as useReactFilmStyleSetClassNames
+} from 'react-film';
 
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
@@ -8,16 +14,19 @@ import React, { useMemo } from 'react';
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
+import useNonce from '../hooks/internal/useNonce';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
-  overflow: 'hidden',
-  position: 'relative'
-});
+const ROOT_STYLE = {
+  '&.webchat__carousel-layout': {
+    overflow: 'hidden',
+    position: 'relative'
+  }
+};
 
-const CarouselLayout = ({
+const CarouselLayoutCore = ({
   activity,
-  children,
   hideTimestamp,
   renderActivityStatus,
   renderAttachment,
@@ -25,68 +34,80 @@ const CarouselLayout = ({
   showCallout
 }) => {
   const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
+  const [{ root: filmRootClassName }] = useReactFilmStyleSetClassNames();
   const [direction] = useDirection();
-  const filmStyleSet = useMemo(() => createBasicStyleSet({ cursor: null }), []);
+  const [scrollBarWidth] = useScrollBarWidth();
+  const [scrolling] = useScrolling();
   const leftSideFlipper = direction === 'rtl' ? '>' : '<';
   const localize = useLocalizer();
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
-    <Composer dir={direction} numItems={React.Children.count(children)}>
-      <FilmContext.Consumer>
-        {({ scrollBarWidth }) => (
-          <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
-            <CarouselFilmStrip
-              activity={activity}
-              hideTimestamp={hideTimestamp}
-              renderActivityStatus={renderActivityStatus}
-              renderAttachment={renderAttachment}
-              renderAvatar={renderAvatar}
-              showCallout={showCallout}
-            />
-            {scrollBarWidth !== '100%' && (
-              <React.Fragment>
-                <Flipper
-                  aria-label={localize('CAROUSEL_FLIPPER_LEFT_ALT')}
-                  blurFocusOnClick={true}
-                  className={classNames(carouselFlipperStyleSet + '', filmStyleSet.leftFlipper + '')}
-                  mode="left"
-                >
-                  <div className="button">{leftSideFlipper}</div>
-                </Flipper>
-                <Flipper
-                  aria-label={localize('CAROUSEL_FLIPPER_RIGHT_ALT')}
-                  blurFocusOnClick={true}
-                  className={classNames(carouselFlipperStyleSet + '', filmStyleSet.rightFlipper + '')}
-                  mode="right"
-                >
-                  <div className="button">{rightSideFlipper}</div>
-                </Flipper>
-              </React.Fragment>
-            )}
-          </div>
+    <div
+      className={classNames('webchat__carousel-layout', rootClassName, carouselFlipperStyleSet + '', filmRootClassName)}
+    >
+      <div className={classNames('react-film__main', { 'react-film__main--scrolling': scrolling })}>
+        <CarouselFilmStrip
+          activity={activity}
+          hideTimestamp={hideTimestamp}
+          renderActivityStatus={renderActivityStatus}
+          renderAttachment={renderAttachment}
+          renderAvatar={renderAvatar}
+          showCallout={showCallout}
+        />
+        {scrollBarWidth !== '100%' && (
+          <React.Fragment>
+            <Flipper aria-label={localize('CAROUSEL_FLIPPER_LEFT_ALT')} blurFocusOnClick={true} mode="left">
+              {leftSideFlipper}
+            </Flipper>
+            <Flipper aria-label={localize('CAROUSEL_FLIPPER_RIGHT_ALT')} blurFocusOnClick={true} mode="right">
+              {rightSideFlipper}
+            </Flipper>
+          </React.Fragment>
         )}
-      </FilmContext.Consumer>
-    </Composer>
+      </div>
+    </div>
   );
 };
 
-CarouselLayout.defaultProps = {
-  children: undefined,
+CarouselLayoutCore.defaultProps = {
   hideTimestamp: false,
   renderActivityStatus: false,
   renderAvatar: false,
   showCallout: true
 };
 
-CarouselLayout.propTypes = {
-  activity: PropTypes.any.isRequired,
-  children: PropTypes.any,
+CarouselLayoutCore.propTypes = {
+  activity: PropTypes.shape({
+    attachments: PropTypes.array
+  }).isRequired,
   hideTimestamp: PropTypes.bool,
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   showCallout: PropTypes.bool
+};
+
+const CarouselLayout = props => {
+  const { activity: { attachments = [] } = {} } = props;
+  const [direction] = useDirection();
+  const [nonce] = useNonce();
+  const filmStyleSet = useMemo(() => createBasicStyleSetForReactFilm({ cursor: null }), []);
+
+  return (
+    <FilmComposer dir={direction} nonce={nonce} numItems={attachments.length} styleSet={filmStyleSet}>
+      <CarouselLayoutCore {...props} />
+    </FilmComposer>
+  );
+};
+
+CarouselLayout.defaultProps = {
+  ...CarouselLayoutCore.defaultProps
+};
+
+CarouselLayout.propTypes = {
+  ...CarouselLayoutCore.propTypes
 };
 
 export default CarouselLayout;

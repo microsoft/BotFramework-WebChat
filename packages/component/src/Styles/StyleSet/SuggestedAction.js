@@ -58,10 +58,11 @@ export default function createSuggestedActionStyle({
       '& .webchat__suggested-action__image': {
         height: suggestedActionImageHeight,
 
-        ':not(.webchat__suggested-action__image--rtl)': {
+        '&:not(.webchat__suggested-action__image--rtl)': {
           paddingRight: paddingRegular
         },
-        '.webchat__suggested-action__image--rtl': {
+
+        '&.webchat__suggested-action__image--rtl': {
           paddingLeft: paddingRegular
         }
       },

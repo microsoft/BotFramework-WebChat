@@ -1,14 +1,19 @@
-import { css } from 'glamor';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
 // TODO: [P3] Although this is for development purpose, prettify it
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   color: 'Red',
   margin: 0
-});
+};
 
-const SayAlt = ({ speak }) => !!speak && <pre className={ROOT_CSS}>{speak}</pre>;
+const SayAlt = ({ speak }) => {
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  return !!speak && <pre className={rootClassName}>{speak}</pre>;
+};
 
 SayAlt.defaultProps = {
   speak: ''

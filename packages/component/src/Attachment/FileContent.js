@@ -1,4 +1,3 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -9,8 +8,9 @@ import useByteFormatter from '../hooks/useByteFormatter';
 import useDirection from '../hooks/useDirection';
 import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
-const ROOT_CSS = css({
+const ROOT_STYLE = {
   display: 'flex',
 
   '& .webchat__fileContent__buttonLink': {
@@ -23,7 +23,7 @@ const ROOT_CSS = css({
     flex: 1,
     flexDirection: 'column'
   }
-});
+};
 
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
@@ -65,6 +65,7 @@ const FileContent = ({ className, href, fileName, size }) => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
 
@@ -83,7 +84,7 @@ const FileContent = ({ className, href, fileName, size }) => {
   return (
     <div
       aria-hidden={true}
-      className={classNames('webchat__fileContent', ROOT_CSS + '', fileContentStyleSet + '', (className || '') + '')}
+      className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', (className || '') + '')}
     >
       <ScreenReaderText text={alt} />
       {href ? (
