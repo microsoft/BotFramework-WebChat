@@ -1,0 +1,43 @@
+name: Develop Build and Deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 9.9.0
+      uses: actions/setup-node@v1
+      with:
+        node-version: 9.9.0
+    - name: Install dependencies
+      run: |
+        npm install
+    - name: Build application
+      run: |
+        npm run prepublish
+      env:
+        NODE_PATH: src
+    - name: Upload application to S3
+      uses: jakejarvis/s3-sync-action@v0.5.1
+      with:
+        args: --acl public-read --sse --delete
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_DEVELOP_BUCKET_NAME }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_DEVELOP_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_DEVELOP_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        SOURCE_DIR: public
+    - name: Invalidate Cloudfront cache
+      uses: awact/cloudfront-action@0.1.2
+      env:
+        SOURCE_PATH: '/*'
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_DEVELOP_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_DEVELOP_SECRET_ACCESS_KEY }}
+        DISTRIBUTION_ID: ${{ secrets.AWS_DEVELOP_CLOUDFRONT_DISTRIBUTION_ID }}
