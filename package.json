@@ -83,7 +83,8 @@
     "tslint": "5.10.0",
     "tslint-loader": "3.6.0",
     "typescript": "2.3",
-    "webpack": "^4.44.1"
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "files": [
     "built/",
