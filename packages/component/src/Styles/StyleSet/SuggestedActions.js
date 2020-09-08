@@ -54,7 +54,8 @@ export default function createSuggestedActionsStyle({
       },
 
       '& .webchat__suggested-actions__stack': {
-        height: suggestedActionsStackedHeight || 'auto',
+        height: 'auto',
+        maxHeight: suggestedActionsStackedHeight || 'auto',
         overflowY: suggestedActionsStackedOverflow || 'auto',
         paddingBottom: paddingRegular / 2,
         paddingLeft: paddingRegular / 2,
