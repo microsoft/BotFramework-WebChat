@@ -125,7 +125,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
 
                 console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
 
-                return value;
+                return Promise.resolve(value);
               }
             : null,
         target
