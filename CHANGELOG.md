@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Removed delay of first activity with `replyToId` pointing to a missing activity, by [@compulim](https://github.com/compulim) in PR [#3450](https://github.com/microsoft/BotFramework-WebChat/pull/3450)
+-  Fixes [#3439](https://github.com/microsoft/BotFramework-WebChat/issues/3439). Use consistent return type in default CardActionContext.getSignInUrl(), by [@stevengum](https://github.com/stevengum) in PR [#3459](https://github.com/microsoft/BotFramework-WebChat/pull/3459)
 
 ### Changed
 
