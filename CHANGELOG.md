@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Bumped [`botframework-directlinejs@0.13.1`](https://npmjs.com/package/botframework-directlinejs), by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -  Support Content Security Policy, in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443) by [@compulim](https://github.com/compulim)
    -  Moved from [`glamor@2.20.40`](https://npmjs.com/package/glamor) to [`create-emotion@10.0.27`](https://npmjs.com/package/create-emotion)
    -  Inlined assets are now using `blob:` scheme, instead of `data:` scheme
