@@ -172,9 +172,22 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.10": {
+      "redirects": [
+        ["*", "4.10.1"]
+      ]
+    },
     "4.10.0": {
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.10.0/webchat-es5.js", "sha384-nB4tinBxptD4DwQRrhIiZL2tKeB0n2aHg2b+/RoBi801c0zU2BRRL21pKMYYhr/j"]
+      ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2022-09-10.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.10.1": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.10.1/webchat-es5.js", "sha384-ZT32ehV2SkikXkWvH8cO0OsMgQoYg+zd09eBP5oJrcrL3FJWqPSB1IGifTBYKccw"]
       ],
       "private": true,
       "versionFamily": "4"
