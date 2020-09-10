@@ -368,9 +368,7 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
         <code>fetchCredentials</code>
       </td>
       <td>
-        <code>async () => ({<br />&nbsp;&nbsp;authorizationToken: string,<br />&nbsp;&nbsp;region: string<br />}) ||</code>
-        <br />
-        <code>async () => ({<br />&nbsp;&nbsp;region: string,<br />&nbsp;&nbsp;subscriptionKey: string</br>})</code>
+        <pre>async () => ({<br />&nbsp;&nbsp;authorizationToken: string,<br />&nbsp;&nbsp;region: string<br />}) ||<br /><br />async () => ({<br />&nbsp;&nbsp;region: string,<br />&nbsp;&nbsp;subscriptionKey: string<br />})</pre>
       </td>
       <td>(Required)</td>
       <td>
