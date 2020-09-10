@@ -328,7 +328,7 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
       </td>
       <td>
         <code>
-          <a href="https://github.com/microsoft/cognitive-services-speech-sdk-js/blob/master/src/sdk/Audio/AudioConfig.ts">AudioConfig.fromDefaultMicrophoneInput()</a>
+          <a href="https://github.com/microsoft/cognitive-services-speech-sdk-js/blob/master/src/sdk/Audio/AudioConfig.ts">fromDefaultMicrophoneInput()</a>
         </code>
       </td>
       <td>
@@ -383,7 +383,7 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
         <code>string</code>
       </td>
       <td>
-        <code>window?.navigator?.language || 'en-US'</code>
+        <pre>window?.navigator?.language ||<br />'en-US'</pre>
       </td>
       <td>Language used for speech recognition</td>
     </tr>
