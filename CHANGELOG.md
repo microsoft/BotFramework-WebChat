@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped development dependency [`node-fetch@2.6.1`](https://npmjs.com/package/node-fetch) in PR [#3467](https://github.com/microsoft/BotFramework-WebChat/pull/3467) by [@dependabot](https://github.com/dependabot)
+
 ## [4.10.1] - 2020-09-09
 
 ### Breaking changes
