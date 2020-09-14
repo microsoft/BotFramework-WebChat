@@ -303,6 +303,103 @@ window.WebChat.renderWebChat(
 
 > The code above will requires transpilation for browser which do not support the [spread operator](https://caniuse.com/#feat=mdn-javascript_operators_spread_spread_in_destructuring).
 
+## Supported options
+
+These are the options to pass when calling `createDirectLineSpeechAdapters`.
+
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Type</td>
+      <td>Default</td>
+      <td>Description</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>audioConfig</code>
+      </td>
+      <td>
+        <code>
+          <a href="https://github.com/microsoft/cognitive-services-speech-sdk-js/blob/master/src/sdk/Audio/AudioConfig.ts">AudioConfig</a>
+        </code>
+      </td>
+      <td>
+        <code>
+          <a href="https://github.com/microsoft/cognitive-services-speech-sdk-js/blob/master/src/sdk/Audio/AudioConfig.ts">fromDefaultMicrophoneInput()</a>
+        </code>
+      </td>
+      <td>
+        Audio input object to use in Speech SDK.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>audioContext</code>
+      </td>
+      <td>
+        <code>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext">AudioContext</a>
+        </code>
+      </td>
+      <td>
+        <code>window.AudioContext || window.webkitAudioContext</code>
+      </td>
+      <td>
+        <code>AudioContext</code> used for constructing audio graph used for speech synthesis. Can be used to prime the Web Audio engine or as a ponyfill.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>audioInputDeviceId</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>
+        <code>undefined</code>
+      </td>
+      <td>Device ID of the audio input device. Ignored if <code>audioConfig</code> is specified.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>fetchCredentials</code>
+      </td>
+      <td>
+        <pre>async () => ({<br />&nbsp;&nbsp;authorizationToken: string,<br />&nbsp;&nbsp;region: string<br />}) ||<br /><br />async () => ({<br />&nbsp;&nbsp;region: string,<br />&nbsp;&nbsp;subscriptionKey: string<br />})</pre>
+      </td>
+      <td>(Required)</td>
+      <td>
+        An asynchornous function to fetch credentials, including region and either authorization token or subscription key.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>speechRecognitionLanguage</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>
+        <pre>window?.navigator?.language ||<br />'en-US'</pre>
+      </td>
+      <td>Language used for speech recognition</td>
+    </tr>
+    <tr>
+      <td>
+        <code>userID</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>(A random ID)</td>
+      <td>User ID for all outgoing activities.</td>
+    </tr>
+  </tbody>
+</table>
+
 ## Known issues
 
 ### Differences in `conversationUpdate` behaviors
@@ -412,3 +509,31 @@ When the bot send activities to the user, it can send both plain text and Markdo
 Attachments are not synthesized. The bot should provide a `speak` field for speech synthesis.
 
 As attachments are not synthesized, `speak` property in Adaptive Cards are ignored. The bot should provide a `speak` field for speech synthesis.
+
+### Selecting voice
+
+> Please [submit a feature request](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) if this behavior is not desirable.
+
+Voice can only be selected using Speech Synthesis Markup Language (SSML). For example, the following bot code will use a Japanese voice "NanamiNeural" for synthesis.
+
+<!-- prettier-ignore-start -->
+```js
+await context.sendActivity(
+  MessageFactory.text(
+    `Echo: ${context.activity.text}`,
+    `
+    <speak
+      version="1.0"
+      xmlns="https://www.w3.org/2001/10/synthesis"
+      xmlns:mstts="https://www.w3.org/2001/mstts"
+      xml:lang="en-US"
+    >
+      <voice name="ja-JP-NanamiNeural">素晴らしい!</voice>
+    </speak>
+    `
+  )
+);
+```
+<!-- prettier-ignore-end -->
+
+Please refer to [this article on SSML support](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup).
