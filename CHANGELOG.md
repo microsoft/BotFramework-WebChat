@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped development dependency [`node-fetch@2.6.1`](https://npmjs.com/package/node-fetch) in PR [#3467](https://github.com/microsoft/BotFramework-WebChat/pull/3467) by [@dependabot](https://github.com/dependabot)
+
+## [4.10.1] - 2020-09-09
+
 ### Breaking changes
 
 -  To support Content Security Policy, [`glamor`](https://npmjs.com/package/glamor) is being replaced by [`create-emotion`](https://npmjs.com/package/create-emotion). The CSS hash and rule name is being prefixed with `webchat--css` with a random value.
@@ -29,9 +35,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Removed delay of first activity with `replyToId` pointing to a missing activity, by [@compulim](https://github.com/compulim) in PR [#3450](https://github.com/microsoft/BotFramework-WebChat/pull/3450)
+-  Fixes [#3444](https://github.com/microsoft/BotFramework-WebChat/issues/3444). Make suggested actions container height styleOption flexible, by [@corinagum](https://github.com/corinagum) in PR [#3456](https://github.com/microsoft/BotFramework-WebChat/pull/3456)
 
 ### Changed
 
+-  Bumped [`botframework-directlinejs@0.13.1`](https://npmjs.com/package/botframework-directlinejs), by [@compulim](https://github.com/compulim) in PR [#3461](https://github.com/microsoft/BotFramework-WebChat/pull/3461)
 -  Support Content Security Policy, in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443) by [@compulim](https://github.com/compulim)
    -  Moved from [`glamor@2.20.40`](https://npmjs.com/package/glamor) to [`create-emotion@10.0.27`](https://npmjs.com/package/create-emotion)
    -  Inlined assets are now using `blob:` scheme, instead of `data:` scheme

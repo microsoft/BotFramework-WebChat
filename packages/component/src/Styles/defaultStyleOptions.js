@@ -121,7 +121,7 @@ const DEFAULT_OPTIONS = {
   suggestedActionsCarouselFlipperSize: 20, // Flipper visible size
 
   // Suggested actions stacked layout
-  suggestedActionsStackedHeight: undefined, // defaults to 'auto'
+  suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
   suggestedActionsStackedOverflow: undefined, // defaults to 'auto',
 
   // Timestamp
