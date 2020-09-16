@@ -392,17 +392,7 @@ const MinimizableWebChat = () => {
   const [token, setToken] = useState();
 
   const handleFetchToken = useCallback(async () => {
-    let { conversationId } = sessionStorage;
     let token;
-
-    if (conversationId) {
-      const res = await fetch(`https://directline.botframework.com/v3/directline/conversations/${conversationId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization':
-        }
-      })
-    }
 
     if (!token) {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
