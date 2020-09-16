@@ -13,9 +13,8 @@ export default function createFaultyDirectLine(directLineOptions) {
       console.warn('Sending artificial error');
 
       return Observable.throw(new Error('artificial error'));
-    } else {
-      return workingPostActivity.call(underlying, activity);
     }
+    return workingPostActivity.call(underlying, activity);
   };
 
   underlying.setFaulty = nextFaulty => {
