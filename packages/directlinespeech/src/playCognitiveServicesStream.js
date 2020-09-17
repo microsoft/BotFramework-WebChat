@@ -104,8 +104,12 @@ function multiplySampleRate(source, sampleRateMultiplier) {
 export default async function playCognitiveServicesStream(audioContext, stream, { signal = {} } = {}) {
   if (!audioContext) {
     throw new Error('botframework-directlinespeech-sdk: audioContext must be specified.');
-  } else if (!stream || !stream.format || stream.read !== 'function') {
+  } else if (!stream) {
     throw new Error('botframework-directlinespeech-sdk: stream must be specified.');
+  } else if (!stream.format) {
+    throw new Error('botframework-directlinespeech-sdk: stream is missing format.');
+  } else if (typeof stream.read !== 'function') {
+    throw new Error('botframework-directlinespeech-sdk: stream is missing read().');
   }
 
   const queuedBufferSourceNodes = [];
@@ -121,7 +125,7 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
         // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
         abortPromise.catch(() => {}),
         streamRead(array.buffer).then(numBytes =>
-          numBytes === array.byteLength ? array : numBytes ? array.subarray(0, numBytes) : undefined
+          numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined
         )
       ]);
 
