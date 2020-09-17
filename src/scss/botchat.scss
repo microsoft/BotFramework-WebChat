@@ -489,6 +489,56 @@
         }
     }
 
+    .conversations {
+        margin-top: 62px;
+        height: 774px;
+        overflow: auto;
+
+        .conversation {
+            display: flex;
+            align-items: center;
+            padding: 10px 0px;
+            cursor: pointer;
+
+            &-widget {
+                min-width: 40px;
+                min-height: 40px;
+                margin: 10px;
+                display: flex;
+                align-items: center;
+                background-color: $gideon-sky-blue;
+                border-radius: 50%;
+            }
+
+            &-body {
+                display: flex;
+                width: 322px;
+            }
+
+            &-text {
+                display: flex;
+                width: 200px;
+                flex-direction: column;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &-message {
+                text-align: left;
+                margin-top: 5px;
+                color: $gideon-gray;
+            }
+
+            &-date {
+                margin-left: auto;
+                width: 100px;
+                font-size: 12px;
+                margin-left: 22px;
+            }
+        }
+    }
+
 /* messages */
 
     .wc-message-wrapper {

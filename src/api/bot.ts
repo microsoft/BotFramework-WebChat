@@ -60,6 +60,10 @@ export const availableTimes = (
     return axios.get(`${baseUrl}/api/v1/availabilities/available_times?directLine=${directLine}&conversation_id=${conversationId}&start_date=${startDate}`);
 };
 
+export const getPastConversations = (baseUrl: string, userId: string, directLine: string): any => {
+    return axios.get(`${baseUrl}/api/v1/bot/past_conversations?msft_user_id=${userId}&directLine=${directLine}`);
+};
+
 export const mapMessagesToActivities = (messages: any, userId: any): Activity[] => {
     return messages.map((m: any, i: number) => {
         return {

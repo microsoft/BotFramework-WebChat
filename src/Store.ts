@@ -405,6 +405,27 @@ export interface HistoryState {
     selectedDisclaimerActivity: Activity;
 }
 
+export interface ConversationState {
+    conversations: Conversation[];
+    selectedConversation?: Conversation;
+}
+
+export interface Conversation {
+    id: string;
+    msft_conversation_id: string;
+    status: string;
+    updated_at: string;
+    message: string;
+}
+
+export type ConversationAction = {
+    type: 'Set_Conversations';
+    conversations: Conversation[];
+} | {
+    type: 'Set_Selected_Conversation';
+    conversation: Conversation;
+};
+
 export type HistoryAction = {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
@@ -434,6 +455,32 @@ const copyArrayWithUpdatedItem = <T>(array: T[], i: number, item: T) => [
     item,
     ...array.slice(i + 1)
 ];
+
+export const conversations: Reducer<ConversationState> = (
+    state: ConversationState = {
+        conversations: [],
+        selectedConversation: null
+    },
+    action: ConversationAction
+) => {
+    switch (action.type) {
+        case 'Set_Conversations': {
+            return {
+                ...state,
+                conversations: [...action.conversations]
+            };
+        }
+        case 'Set_Selected_Conversation': {
+            console.log('here');
+            return {
+                ...state,
+                selectedConversation: action.conversation
+            };
+        }
+        default:
+            return state;
+    }
+};
 
 export const history: Reducer<HistoryState> = (
     state: HistoryState = {
@@ -609,7 +656,7 @@ export const adaptiveCards: Reducer<AdaptiveCardsState> = (
     }
 };
 
-export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
+export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction | ConversationAction;
 
 const nullAction = { type: null } as ChatActions;
 
@@ -620,6 +667,7 @@ export interface ChatState {
     history: HistoryState;
     shell: ShellState;
     size: SizeState;
+    conversations: ConversationState;
 }
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
@@ -843,7 +891,8 @@ export const createStore = () =>
             format,
             history,
             shell,
-            size
+            size,
+            conversations
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,

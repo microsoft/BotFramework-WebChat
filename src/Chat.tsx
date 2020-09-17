@@ -9,13 +9,13 @@ import { parseReferrer } from 'analytics-utils';
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
 import { connect, Provider } from 'react-redux';
-import { conversationHistory, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
+import { conversationHistory, getPastConversations, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
-import { ChatActions, createStore, sendMessage } from './Store';
+import { ChatActions, Conversation, createStore, sendMessage } from './Store';
 import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
@@ -49,6 +49,7 @@ export interface State {
 
 import { FloatingIcon } from './FloatingIcon';
 import { History } from './History';
+import PastConversations from './PastConversations';
 import { Shell, ShellFunctions } from './Shell';
 
 export class Chat extends React.Component<ChatProps, State> {
@@ -296,6 +297,13 @@ export class Chat extends React.Component<ChatProps, State> {
                     });
 
                     const campaign = parseReferrer(document.referrer, window.location.href);
+                    getPastConversations(this.props.gid, user.id, this.props.directLine.secret)
+                        .then(({data: { conversations }}: any) => {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Conversations',
+                                conversations: conversations.reverse()
+                            });
+                        });
 
                     verifyConversation(
                         this.props.gid,
@@ -370,7 +378,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         });
 
                         conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
-                        .then((res: any) => {
+                         .then((res: any) => {
                             const state = this.store.getState();
                             const messages = res.data.messages.reverse();
 
@@ -381,13 +389,13 @@ export class Chat extends React.Component<ChatProps, State> {
                         });
 
                         // Ping server with activity every 30 seconds
-                        setInterval(() => {
-                            ping(
-                                this.props.gid,
-                                conversationId,
-                                this.props.directLine.secret
-                            );
-                        }, 10000);
+                        // setInterval(() => {
+                        //     ping(
+                        //         this.props.gid,
+                        //         conversationId,
+                        //         this.props.directLine.secret
+                        //     );
+                        // }, 10000);
 
                         // Only initialize convo for user if it's their first time
                         // interacting with the chatbot
@@ -500,8 +508,17 @@ export class Chat extends React.Component<ChatProps, State> {
     render() {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
+        const { selectedConversation, conversations } = state.conversations;
 
         const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
+
+        const setSelectedConversation = (conversation: Conversation) => {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_Selected_Conversation',
+                conversation
+            });
+            this.forceUpdate();
+        };
 
         // only render real stuff after we know our dimensions
         return (
@@ -545,12 +562,16 @@ export class Chat extends React.Component<ChatProps, State> {
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" /> */}
                                 </div>
                         }
-                        <History
-                            onCardAction={ this._handleCardAction }
-                            ref={ this._saveHistoryRef }
-                            gid={ this.props.gid }
-                            directLine={ this.props.directLine }
-                        />
+
+                        {!selectedConversation
+                            ? <PastConversations setSelectedConversation={setSelectedConversation} />
+                            : <History
+                                onCardAction={this._handleCardAction}
+                                ref={this._saveHistoryRef}
+                                gid={this.props.gid}
+                                directLine={this.props.directLine}
+                            />
+                        }
 
                         <Shell ref={ this._saveShellRef } />
 
