@@ -2,10 +2,10 @@ function createFetchSpeechServicesCredentials() {
   let expireAfter = 0;
   let resultPromise;
 
-  return () => {
+  return (url = 'https://webchat-mockbot.azurewebsites.net/speechservices/token') => {
     if (!resultPromise || Date.now() > expireAfter) {
       expireAfter = Date.now() + 5000;
-      resultPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      resultPromise = fetch(url, { method: 'POST' })
         .then(res => res.json())
         .catch(err => {
           expireAfter = 0;

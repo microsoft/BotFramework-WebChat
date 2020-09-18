@@ -29,6 +29,7 @@ import createQueuedArrayBufferAudioSource from './speech/speechRecognition/creat
 import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
+import fetchSpeechServicesCredentials from './token/fetchSpeechServicesCredentials';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
 import iterateAsyncIterable from './utils/iterateAsyncIterable';
 import loadTranscriptAsset from './utils/loadTranscriptAsset';
@@ -163,6 +164,7 @@ export {
   EventIterator,
   expect,
   fetchSpeechData,
+  fetchSpeechServicesCredentials,
   float32ArraysToPcmWaveArrayBuffer,
   getActionHistory,
   getConsoleHistory,

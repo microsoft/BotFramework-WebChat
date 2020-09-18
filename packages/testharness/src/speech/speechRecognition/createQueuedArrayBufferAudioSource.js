@@ -8,7 +8,6 @@ import {
   AudioStreamNodeAttachedEvent,
   AudioStreamNodeAttachingEvent,
   AudioStreamNodeDetachedEvent
-  // AudioStreamNodeErrorEvent,
 } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/AudioSourceEvents';
 
 import { createNoDashGuid } from '../../external/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
@@ -57,27 +56,25 @@ class QueuedArrayBufferAudioSource {
     return PromiseHelper.fromResult(true);
   };
 
-  id = () => {
-    return this._id;
-  };
+  id = () => this._id;
 
+  // Returns an IAudioSourceNode asynchronously.
+  // Reference at node_modules/microsoft-cognitiveservices-speech-sdk/distrib/es2015/src/common/IAudioSource.d.ts
   attach = audioNodeId => {
     this.onEvent(new AudioStreamNodeAttachingEvent(this._id, audioNodeId));
 
-    return this.upload(audioNodeId).onSuccessContinueWith(streamReader => {
+    return this.upload(audioNodeId).onSuccessContinueWith(stream => {
       this.onEvent(new AudioStreamNodeAttachedEvent(this._id, audioNodeId));
 
       return {
         detach: () => {
-          streamReader.close();
-
           delete this._streams[audioNodeId];
 
           this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
           this.turnOff();
         },
         id: () => audioNodeId,
-        read: () => streamReader.read()
+        read: stream.read.bind(stream)
       };
     });
   };
@@ -100,6 +97,7 @@ class QueuedArrayBufferAudioSource {
     return PromiseHelper.fromResult(true);
   };
 
+  // Creates a new Stream object merge all chunks from _queue into a single IAudioStreamNode
   upload = audioNodeId => {
     return this.turnOn().onSuccessContinueWith(() => {
       const stream = new Stream(audioNodeId);
@@ -118,9 +116,10 @@ class QueuedArrayBufferAudioSource {
         });
       }
 
+      // Stream will only close the internal stream writer.
       stream.close();
 
-      return stream.getReader();
+      return stream;
     });
   };
 
