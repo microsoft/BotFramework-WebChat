@@ -66,7 +66,16 @@ class QueuedArrayBufferAudioSource {
     return this.upload(audioNodeId).onSuccessContinueWith(stream => {
       this.onEvent(new AudioStreamNodeAttachedEvent(this._id, audioNodeId));
 
-      return stream;
+      return {
+        detach: () => {
+          delete this._streams[audioNodeId];
+
+          this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
+          this.turnOff();
+        },
+        id: () => audioNodeId,
+        read: stream.read.bind(stream)
+      };
     });
   };
 
@@ -110,7 +119,7 @@ class QueuedArrayBufferAudioSource {
       // Stream will only close the internal stream writer.
       stream.close();
 
-      return stream();
+      return stream;
     });
   };
 
