@@ -1,50 +1,75 @@
 import * as moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Conversation, ConversationState } from './Store';
+import { findInitial } from './History';
+import { ChatState, Conversation, FormatState } from './Store';
 
 export interface Props {
   conversations: Conversation[];
   setSelectedConversation: (conversation: Conversation) => void;
+  format: FormatState;
 }
 
-class PastConversations extends React.Component<Props> {
+class PastConversationsView extends React.Component<Props> {
   render() {
-    const { conversations, setSelectedConversation } = this.props;
-    console.log('TCL: PastConversations -> render -> conversations', conversations);
+    const { conversations, setSelectedConversation, format: {display_name, themeColor} } = this.props;
+
+    const avatarColor = themeColor ? themeColor : '#c3ccd0';
+    const avatarInitial = display_name && typeof(display_name) === 'string' ? findInitial(display_name) : 'B';
 
     return (
-      <div className="conversations">
-        {conversations.length > 0 && conversations.map((conversation: Conversation) => {
-          console.log(conversation);
-          return (
-            <div onClick={() => setSelectedConversation(conversation)} className="conversation">
-              <div className="conversation-widget">BR</div>
-              <div className="conversation-body">
-                <div className="conversation-text">
-                  <div>{conversation.msft_conversation_id}</div>
-                  <div className="conversation-message">Message</div>
-                </div>
-                <div className="conversation-date">
-                  {moment(conversation.updated_at).fromNow()}
-                </div>
-              </div>
-            </div>
-          );
-        }
-        )}
+      <div className="conversations-wrapper">
+        <div className="conversations-header">Conversations</div>
+        <div className="conversations">
+          {conversations.length > 0 &&
+            conversations
+              .filter(
+                (conversation: Conversation) =>
+                  conversation.conversation_messages.length > 0
+              )
+              .map((conversation: Conversation) => {
+                const { conversation_messages } = conversation;
+                const recentMessage =
+                  conversation_messages.length > 0 &&
+                  conversation_messages[conversation_messages.length - 1]
+                    .message;
+                return (
+                  <div
+                    onClick={() => setSelectedConversation(conversation)}
+                    className="conversation"
+                  >
+                    <div className="conversation-widget" style={{backgroundColor: avatarColor}}>{avatarInitial}</div>
+                    <div className="conversation-body">
+                      <div className="conversation-text">
+                        <div className="conversation-name">
+                          {display_name ? display_name : 'Bot'}
+                        </div>
+                        <div className="conversation-message">
+                          {recentMessage}
+                        </div>
+                      </div>
+                      <div className="conversation-date">
+                        {moment(conversation.updated_at).fromNow()}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+        </div>
       </div>
     );
   }
 }
 
-export default connect(
-  (state: ConversationState) => ({
-      conversations: state.conversations
+export const PastConversations = connect(
+  (state: ChatState) => ({
+    conversations: state.conversations,
+    format: state.format
   }),
   {},
   (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
-    conversations: stateProps.conversations,
+    format: stateProps.format,
+    conversations: stateProps.conversations.conversations,
     setSelectedConversation: ownProps.setSelectedConversation
   })
-)(PastConversations);
+)(PastConversationsView);

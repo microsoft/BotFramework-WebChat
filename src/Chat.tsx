@@ -9,7 +9,7 @@ import { parseReferrer } from 'analytics-utils';
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
 import { connect, Provider } from 'react-redux';
-import { conversationHistory, getPastConversations, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
+import { conversationHistory, getPastConversations, mapMessagesToActivities, newConversation, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
@@ -49,7 +49,7 @@ export interface State {
 
 import { FloatingIcon } from './FloatingIcon';
 import { History } from './History';
-import PastConversations from './PastConversations';
+import { PastConversations } from './PastConversations';
 import { Shell, ShellFunctions } from './Shell';
 
 export class Chat extends React.Component<ChatProps, State> {
@@ -298,10 +298,17 @@ export class Chat extends React.Component<ChatProps, State> {
 
                     const campaign = parseReferrer(document.referrer, window.location.href);
                     getPastConversations(this.props.gid, user.id, this.props.directLine.secret)
-                        .then(({data: { conversations }}: any) => {
+                    .then(({data: { conversations }}: any) => {
+                            const formattedConversations =
+                                conversations.map((conversation: Conversation) => {
+                                    return {
+                                        ...conversation,
+                                        conversation_messages: conversation.conversation_messages.reverse()
+                                    };
+                                }).reverse();
                             this.store.dispatch<ChatActions>({
                                 type: 'Set_Conversations',
-                                conversations: conversations.reverse()
+                                conversations: formattedConversations
                             });
                         });
 
@@ -324,7 +331,13 @@ export class Chat extends React.Component<ChatProps, State> {
                             display: true
                         });
 
-                        const { bot_display_options } = res.data;
+                        const { bot_display_options, bot_id, organization_id } = res.data;
+
+                        this.store.dispatch<ChatActions>({
+                            type: 'Set_Conversation_Ids',
+                            botId: bot_id,
+                            organizationId: organization_id
+                        });
 
                         if (bot_display_options && bot_display_options.display_title) {
                             this.store.dispatch<ChatActions>({
@@ -377,16 +390,16 @@ export class Chat extends React.Component<ChatProps, State> {
                             }
                         });
 
-                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
-                         .then((res: any) => {
-                            const state = this.store.getState();
-                            const messages = res.data.messages.reverse();
+                        // conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
+                        //  .then((res: any) => {
+                        //     const state = this.store.getState();
+                        //     const messages = res.data.messages.reverse();
 
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Messages',
-                                activities: mapMessagesToActivities(messages, state.connection.user.id)
-                            });
-                        });
+                        //     this.store.dispatch<ChatActions>({
+                        //         type: 'Set_Messages',
+                        //         activities: mapMessagesToActivities(messages, state.connection.user.id)
+                        //     });
+                        // });
 
                         // Ping server with activity every 30 seconds
                         // setInterval(() => {
@@ -475,6 +488,31 @@ export class Chat extends React.Component<ChatProps, State> {
         }
     }
 
+    newConversationClick = () => {
+        const {
+            connection: {
+                botConnection,
+                user
+            },
+            conversations: { botId, organizationId }
+        }: any = this.store.getState();
+
+        newConversation(
+            this.props.gid,
+            botId,
+            botConnection.conversationId,
+            user.id, organizationId,
+            this.props.directLine.secret,
+            window.location.toString()
+        ).then(({ data: { conversation } }: any) => {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_Selected_Conversation',
+                conversation
+            });
+            this.forceUpdate();
+        });
+    }
+
     private calculateChatviewPanelStyle = (format: FormatOptions) => {
         const alignment = format && format.alignment;
         const fullHeight = format && format.fullHeight;
@@ -508,14 +546,27 @@ export class Chat extends React.Component<ChatProps, State> {
     render() {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
-        const { selectedConversation, conversations } = state.conversations;
+        const { selectedConversation } = state.conversations;
+        console.log('TCL: render -> selectedConversation', selectedConversation);
 
         const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
 
         const setSelectedConversation = (conversation: Conversation) => {
             this.store.dispatch<ChatActions>({
+                type: 'Set_Messages',
+                activities: mapMessagesToActivities(conversation.conversation_messages, state.connection.user.id)
+            });
+            this.store.dispatch<ChatActions>({
                 type: 'Set_Selected_Conversation',
                 conversation
+            });
+            this.forceUpdate();
+        };
+
+        const removeSelectedConversation = () => {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_Selected_Conversation',
+                conversation: null
             });
             this.forceUpdate();
         };
@@ -541,6 +592,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         {
                             !!state.format.chatTitle &&
                                 <div className="wc-header">
+                                    {selectedConversation && <button onClick={() => removeSelectedConversation()}>Back</button>}
                                     <img
                                         className="wc-header--logo"
                                         src={state.format.logoUrl ?
@@ -573,18 +625,23 @@ export class Chat extends React.Component<ChatProps, State> {
                             />
                         }
 
-                        <Shell ref={ this._saveShellRef } />
+                        {selectedConversation
+                            ? <Shell ref={ this._saveShellRef } />
+                            : (<div className="new-conversation-button-wrapper">
+                                 <button className="new-conversation-button" onClick={() => this.newConversationClick()}>Begin a New Conversation</button>
+                               </div>
+                            )
+                        }
 
-                              <div className="wc-footer">
-                                <a href="https://gideon.legal">
-                                  <span>Powered by</span>
-                                  <img
-                                      className="wc-footer--logo"
-                                      src="https://s3.amazonaws.com/com.gideon.static.dev/logotype-v1.1.0.svg"
-                                    />
-                                </a>
-
-                              </div>
+                        <div className="wc-footer">
+                            <a href="https://gideon.legal">
+                                <span>Powered by</span>
+                                <img
+                                    className="wc-footer--logo"
+                                    src="https://s3.amazonaws.com/com.gideon.static.dev/logotype-v1.1.0.svg"
+                                />
+                            </a>
+                        </div>
 
                         {
                             this.props.resize === 'detect' &&

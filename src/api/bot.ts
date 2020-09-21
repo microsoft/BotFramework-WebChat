@@ -18,6 +18,25 @@ export const verifyConversation = (
     });
 };
 
+export const newConversation = (
+    baseUrl: string,
+    botId: string,
+    msftConversationId: string,
+    msftUserId: string,
+    organizationId: string,
+    directLine: string,
+    originatingUrl: string
+): any => {
+    return axios.post(`${baseUrl}/api/v1/bot/new_conversation`, {
+        bot_id: botId,
+        msft_conversation_id: msftConversationId,
+        msft_user_id: msftUserId,
+        organization_id: organizationId,
+        directLine,
+        originating_url: originatingUrl
+    });
+};
+
 export const step = (
     baseUrl: string,
     msftConversationId: string,

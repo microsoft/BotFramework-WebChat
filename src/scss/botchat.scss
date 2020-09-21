@@ -104,7 +104,7 @@
         right: 0;
         top: 0;
         z-index: 1;
-        box-shadow: 0 4px 16px 0 rgba(156, 112, 0, 0.12);
+        border-bottom: 2px solid $gideon-logo-yellow;
         max-width: $chatWidth;
         display: flex;
         line-height: 1.2em;
@@ -131,6 +131,7 @@
             min-width: $logo-size;
             max-width: $logo-size;
             margin: 0;
+            border-radius: 50%;
         }
 
         $topMargin: 10px;
@@ -489,52 +490,96 @@
         }
     }
 
-    .conversations {
+    .new-conversation-button-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 10px;
+
+        .new-conversation-button {
+            height: 55px;
+            border-radius: 12px;
+            color: $gideon-dark-blue;
+            border: 2px solid $gideon-dark-blue;
+            background-color: white;
+            padding: 0px 15px;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+
+    .conversations-wrapper {
         margin-top: 62px;
-        height: 774px;
-        overflow: auto;
+        width: 100%;
+
+        .conversations-header {
+            font-size: 16px;
+            color: $gideon-dark-grey;
+            padding: 17px;
+            padding-bottom: 0px;
+        }
+
+        .conversations {
+            height: 630px;
+            overflow: auto;
+        }
 
         .conversation {
             display: flex;
             align-items: center;
             padding: 10px 0px;
             cursor: pointer;
+            width: 100%;
 
             &-widget {
                 min-width: 40px;
                 min-height: 40px;
                 margin: 10px;
+                margin-left: 15px;
                 display: flex;
                 align-items: center;
-                background-color: $gideon-sky-blue;
+                justify-content: center;
                 border-radius: 50%;
+                color: white;
+                font-size: 18px;
             }
 
             &-body {
                 display: flex;
-                width: 322px;
+                width: 100%;
             }
 
-            &-text {
-                display: flex;
-                width: 200px;
-                flex-direction: column;
+            // &-text {
+            // }
+
+            &-name {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                color: $gideon-dark-grey;
+                padding-bottom: 3px;
+                max-width: 200px;
             }
 
             &-message {
                 text-align: left;
                 margin-top: 5px;
-                color: $gideon-gray;
+                font-size: 14px;
+                color: $gideon-silver;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
             }
 
             &-date {
                 margin-left: auto;
-                width: 100px;
-                font-size: 12px;
-                margin-left: 22px;
+                font-size: 14px;
+                color: $gideon-gray;
+                margin-right: 5px;
             }
         }
     }

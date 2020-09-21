@@ -408,6 +408,8 @@ export interface HistoryState {
 export interface ConversationState {
     conversations: Conversation[];
     selectedConversation?: Conversation;
+    botId: string;
+    organizationId: string;
 }
 
 export interface Conversation {
@@ -415,7 +417,7 @@ export interface Conversation {
     msft_conversation_id: string;
     status: string;
     updated_at: string;
-    message: string;
+    conversation_messages: any[];
 }
 
 export type ConversationAction = {
@@ -424,6 +426,10 @@ export type ConversationAction = {
 } | {
     type: 'Set_Selected_Conversation';
     conversation: Conversation;
+} | {
+    type: 'Set_Conversation_Ids';
+    botId: string;
+    organizationId: string;
 };
 
 export type HistoryAction = {
@@ -459,7 +465,9 @@ const copyArrayWithUpdatedItem = <T>(array: T[], i: number, item: T) => [
 export const conversations: Reducer<ConversationState> = (
     state: ConversationState = {
         conversations: [],
-        selectedConversation: null
+        selectedConversation: null,
+        botId: null,
+        organizationId: null
     },
     action: ConversationAction
 ) => {
@@ -467,14 +475,20 @@ export const conversations: Reducer<ConversationState> = (
         case 'Set_Conversations': {
             return {
                 ...state,
-                conversations: [...action.conversations]
+                conversations: action.conversations
             };
         }
         case 'Set_Selected_Conversation': {
-            console.log('here');
             return {
                 ...state,
                 selectedConversation: action.conversation
+            };
+        }
+        case 'Set_Conversation_Ids': {
+            return {
+                ...state,
+                botId: action.botId,
+                organizationId: action.organizationId
             };
         }
         default:

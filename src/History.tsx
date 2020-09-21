@@ -278,7 +278,7 @@ const measurePaddedWidth = (el: HTMLElement): number => {
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
-const findInitial = (title: string): string => {
+export const findInitial = (title: string): string => {
   return title.toUpperCase().replace('THE ', '').trim()[0];
 };
 
