@@ -1,22 +1,31 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Checkbox, Dropdown, initializeIcons, Stack } from '@fluentui/react';
+
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 import { createStoreWithDevTools } from 'botframework-webchat-core';
 import './App.css';
 
 function App() {
+  initializeIcons(); // @fluentui icons
+  const stackTokens = { childrenGap: 10 };
   const REDUX_STORE_KEY = 'REDUX_STORE';
 
   const mainRef = useRef();
-
   const [dir, setDirUI] = useState(() => window.sessionStorage.getItem('PLAYGROUND_DIRECTION') || 'auto');
+
+  const [hideSendBox, setHideSendBox] = useState(false);
 
   const [locale, setLocale] = useState(
     () => window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language
   );
 
-  const [sendTimeout, setSendTimeout] = useState(() => window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '');
+  const [sendTimeout, setSendTimeout] = useState(
+    () => window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || 20000
+  );
 
   const [sendTypingIndicator, setSendTypingIndicator] = useState(false);
+
+  const [uiDisabled, setDisabledUI] = useState(false);
 
   useEffect(() => {
     document.querySelector('html').setAttribute('lang', locale);
@@ -63,6 +72,7 @@ function App() {
 
         setToken(token);
       } catch (err) {
+        // eslint-disable-next-line
         console.log(err);
 
         // TODO: change to TOAST
@@ -81,6 +91,7 @@ function App() {
     handleUseMockBot('https://webchat-mockbot.azurewebsites.net');
 
     // TODO: Change to TOAST
+    // eslint-disable-next-line
     console.log('Playground: Started conversation with Official MockBot');
   }, [handleUseMockBot]);
 
@@ -88,6 +99,7 @@ function App() {
     handleUseMockBot('http://localhost:3978');
 
     // TODO: Change to TOAST
+    // eslint-disable-next-line
     console.log('Playground: Started conversation with locally running MockBot');
   }, [handleUseMockBot]);
 
@@ -98,38 +110,59 @@ function App() {
   */
 
   const handleDirChange = useCallback(
-    ({ target: { value } }) => {
-      setDirUI(value);
-      window.sessionStorage.setItem('PLAYGROUND_DIRECTION', value);
+    (e, { key }) => {
+      setDirUI(key);
+      window.sessionStorage.setItem('PLAYGROUND_DIRECTION', key);
     },
     [setDirUI]
   );
 
-  const handleLanguageChange = useCallback(
-    ({ target: { value } }) => {
-      setLocale(value);
-      document.querySelector('html').setAttribute('lang', value || window.navigator.language);
-      window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
+  const handleLocaleChange = useCallback(
+    (e, { key }) => {
+      setLocale(key);
+      document.querySelector('html').setAttribute('lang', key || window.navigator.language);
+      window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', key);
     },
     [setLocale]
   );
 
-  const handleSendTimeoutChange = useCallback(
-    ({ target: { value } }) => {
-      setSendTimeout(value);
-      window.sessionStorage.setItem('PLAYGROUND_SEND_TIMEOUT', value);
-    },
-    [setSendTimeout]
-  );
-
   const handleSendTypingIndicatorChange = useCallback(
-    ({ target: { checked } }) => {
+    (e, checked) => {
+      console.log(checked);
       setSendTypingIndicator(!!checked);
     },
     [setSendTypingIndicator]
   );
 
+  const handleUIDisabledChange = useCallback(
+    (e, checked) => {
+      setDisabledUI(!!checked);
+    },
+    [setDisabledUI]
+  );
+
   /// END Web Chat props
+
+  /*
+  /// Style Options
+  */
+
+  const handleHideSendBoxChange = useCallback(
+    ({ target: { checked } }) => {
+      setHideSendBox(!!checked);
+    },
+    [setHideSendBox]
+  );
+
+  const handleSendTimeoutChange = useCallback(
+    (e, { key }) => {
+      setSendTimeout(key);
+      window.sessionStorage.setItem('PLAYGROUND_SEND_TIMEOUT', key);
+    },
+    [setSendTimeout]
+  );
+
+  /// END Style Options
 
   useEffect(() => {
     const { current } = mainRef;
@@ -141,16 +174,89 @@ function App() {
 
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
+  const dirOptions = [
+    { key: 'auto', text: 'Default (auto)' },
+    { key: 'ltr', text: 'Left to Right' },
+    { key: 'rtl', text: 'Right to left' }
+  ];
+
+  const localeOptions = [
+    { key: '', text: `Default: ${window.navigator.language}` },
+    { key: 'ar-SA', text: 'Arabic (Saudi Arabia)' },
+    { key: 'eu-ES', text: 'Basque' },
+    { key: 'bg-BG', text: 'Bulgarian' },
+    { key: 'ca-ES', text: 'Catalan' },
+    { key: 'yue', text: 'Cantonese' },
+    { key: 'zh-Hans', text: 'Chinese (Simplified)' },
+    { key: 'zh-Hant', text: 'Chinese (Traditional)' },
+    { key: 'hr-HR', text: 'Croatian' },
+    { key: 'cs-CZ', text: 'Czech' },
+    { key: 'da-DK', text: 'Danish' },
+    { key: 'nl-NL', text: 'Dutch' },
+    { key: 'ar-EG', text: 'Egyptian Arabic' },
+    { key: 'en-US', text: 'English' },
+    { key: 'et-EE', text: 'Estonian' },
+    { key: 'fi-FI', text: 'Finnish' },
+    { key: 'fr-FR', text: 'French' },
+    { key: 'gl-ES', text: 'Galician' },
+    { key: 'de-DE', text: 'German' },
+    { key: 'el-GR', text: 'Greek' },
+    { key: 'he-IL', text: 'Hebrew' },
+    { key: 'hi-IN', text: 'Hindi' },
+    { key: 'hu-HU', text: 'Hungarian' },
+    { key: 'id-ID', text: 'Indonesian' },
+    { key: 'it-IT', text: 'Italian' },
+    { key: 'ja-JP', text: 'Japanese' },
+    { key: 'ar-JO', text: 'Jordanian Arabic' },
+    { key: 'kk-KZ', text: 'Kazakh' },
+    { key: 'ko-kr', text: 'Korean' },
+    { key: 'lv-LV', text: 'Latvian' },
+    { key: 'lt-LT', text: 'Lithuanian' },
+    { key: 'ms-MY', text: 'Malay' },
+    { key: 'nb-NO', text: 'Norwegian (Bokmål)' },
+    { key: 'pl-PL', text: 'Polish' },
+    { key: 'pt-BR', text: 'Portuguese (Brazil)' },
+    { key: 'pt-PT', text: 'Portuguese (Portugal)' },
+    { key: 'ro-RO', text: 'Romanian' },
+    { key: 'ru-RU', text: 'Russian' },
+    { key: 'sr-Cyrl', text: 'Serbian (Cyrillic)' },
+    { key: 'sr-Latn', text: 'Serbian (Latin)' },
+    { key: 'sk-SK', text: 'Slovak' },
+    { key: 'sl-SI', text: 'Slovenian' },
+    { key: 'es-ES', text: 'Spanish' },
+    { key: 'sv-SE', text: 'Swedish' },
+    { key: 'th-TH', text: 'Thai' },
+    { key: 'tr-TR', text: 'Turkish' },
+    { key: 'uk-UA', text: 'Ukrainian' },
+    { key: 'vi-VN', text: 'Vietnamese' }
+  ];
+
+  const sendTimeoutOptions = [
+    { key: '1000', text: '1 second' },
+    { key: '2000', text: '2 seconds' },
+    { key: '5000', text: '5 seconds' },
+    { key: '20000', text: '20 seconds (Default)' },
+    { key: '60000', text: '1 minute' },
+    { key: '120000', text: '2 minutes' },
+    { key: '300000', text: '5 minutes (> browser timeout)' }
+  ];
+
+  const styleOptions = {
+    hideSendBox: hideSendBox,
+    sendTimeout: +sendTimeout
+  };
+
   return (
     <div id="app-container" ref={mainRef}>
       <ReactWebChat
         className="webchat"
         dir={dir}
         directLine={directLine}
+        disabled={uiDisabled}
         locale={locale}
-        sendTimeout={+sendTimeout || undefined}
-        sendTypingIndicator={true}
+        sendTypingIndicator={sendTypingIndicator}
         store={store}
+        styleOptions={styleOptions}
       />
       <div className="button-bar">
         <fieldset>
@@ -170,86 +276,31 @@ function App() {
         </fieldset>
         <fieldset>
           <legend>Web Chat props</legend>
-          <label>
-            Direction:
-            <select onChange={handleDirChange} value={dir}>
-              <option value="auto">Default (auto)</option>
-              <option value="ltr">Left to Right</option>
-              <option value="rtl">Right to Left</option>
-            </select>
-          </label>
-          <label>
-            Locale:
-            <select onChange={handleLanguageChange} value={locale}>
-              <option value="">Default ({window.navigator.language})</option>
-              <option value="ar-SA">Arabic (Saudi Arabia)</option>
-              <option value="eu-ES">Basque</option>
-              <option value="bg-BG">Bulgarian</option>
-              <option value="ca-ES">Catalan</option>
-              <option value="yue">Cantonese</option>
-              <option value="zh-Hans">Chinese (Simplified)</option>
-              <option value="zh-Hant">Chinese (Traditional)</option>
-              <option value="hr-HR">Croatian</option>
-              <option value="cs-CZ">Czech</option>
-              <option value="da-DK">Danish</option>
-              <option value="nl-NL">Dutch</option>
-              <option value="ar-EG">Egyptian Arabic</option>
-              <option value="en-US">English</option>
-              <option value="et-EE">Estonian</option>
-              <option value="fi-FI">Finnish</option>
-              <option value="fr-FR">French</option>
-              <option value="gl-ES">Galician</option>
-              <option value="de-DE">German</option>
-              <option value="el-GR">Greek</option>
-              <option value="he-IL">Hebrew</option>
-              <option value="hi-IN">Hindi</option>
-              <option value="hu-HU">Hungarian</option>
-              <option value="id-ID">Indonesian</option>
-              <option value="it-IT">Italian</option>
-              <option value="ja-JP">Japanese</option>
-              <option value="ar-JO">Jordanian Arabic</option>
-              <option value="kk-KZ">Kazakh</option>
-              <option value="ko-kr">Korean</option>
-              <option value="lv-LV">Latvian</option>
-              <option value="lt-LT">Lithuanian</option>
-              <option value="ms-MY">Malay</option>
-              <option value="nb-NO">Norwegian (Bokmål)</option>
-              <option value="pl-PL">Polish</option>
-              <option value="pt-BR">Portuguese (Brazil)</option>
-              <option value="pt-PT">Portuguese (Portugal)</option>
-              <option value="ro-RO">Romanian</option>
-              <option value="ru-RU">Russian</option>
-              <option value="sr-Cyrl">Serbian (Cyrillic)</option>
-              <option value="sr-Latn">Serbian (Latin)</option>
-              <option value="sk-SK">Slovak</option>
-              <option value="sl-SI">Slovenian</option>
-              <option value="es-ES">Spanish</option>
-              <option value="sv-SE">Swedish</option>
-              <option value="th-TH">Thai</option>
-              <option value="tr-TR">Turkish</option>
-              <option value="uk-UA">Ukrainian</option>
-              <option value="vi-VN">Vietnamese</option>
-            </select>
-          </label>
-          <label title="Turn on airplane mode to test this feature">
-            Send timeout:
-            <select onChange={handleSendTimeoutChange} value={sendTimeout}>
-              <option value="1000">1 second</option>
-              <option value="2000">2 seconds</option>
-              <option value="5000">5 seconds</option>
-              <option defaultValue value="20000">
-                20 seconds (Default)
-              </option>
-              <option value="60000">1 minute</option>
-              <option value="120000">2 minutes</option>
-              <option value="300000">5 minutes (&gt; browser timeout)</option>
-            </select>
-          </label>
-          <label title="Send 'echo-typing' to the bot to turn this feature on and off">
-            Send typing indicator:
-            <input checked={sendTypingIndicator} onChange={handleSendTypingIndicatorChange} type="checkbox" unchecked />
-          </label>
+          <Stack tokens={stackTokens}>
+            <Dropdown label="Direction" onChange={handleDirChange} options={dirOptions} selectedKey={dir} />
+
+            <Dropdown label="Locale" onChange={handleLocaleChange} options={localeOptions} selectedKey={locale} />
+
+            {/* info icon: Send 'echo-typing' to the bot to turn this feature on and off */}
+            <Checkbox
+              label="Send typing indicator"
+              checked={sendTypingIndicator}
+              onChange={handleSendTypingIndicatorChange}
+            />
+
+            <Checkbox label="Disable UI" checked={uiDisabled} onChange={handleUIDisabledChange} />
+          </Stack>
         </fieldset>
+        <Stack tokens={stackTokens}>
+          <Checkbox label="Hide SendBox" checked={hideSendBox} onChange={handleHideSendBoxChange} />
+          {/* info icon: Turn on airplane mode to test this feature */}
+          <Dropdown
+            label="Send timeout"
+            onChange={handleSendTimeoutChange}
+            options={sendTimeoutOptions}
+            selectedKey={sendTimeout}
+          />
+        </Stack>
       </div>
     </div>
   );
