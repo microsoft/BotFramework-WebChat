@@ -17,6 +17,25 @@ class PastConversationsView extends React.Component<Props> {
     const avatarColor = themeColor ? themeColor : '#c3ccd0';
     const avatarInitial = display_name && typeof(display_name) === 'string' ? findInitial(display_name) : 'B';
 
+    moment.updateLocale('en', {
+      relativeTime : {
+          future: 'in %s',
+          past: '%s ago',
+          s  : '1s',
+          ss : n => `${n}s`,
+          m:  '1m',
+          mm: n => `${n}m`,
+          h:  '1h',
+          hh: n => `${n}h`,
+          d:  '1d',
+          dd: n => `${n}d`,
+          M:  '1mo',
+          MM: n => `${n}mo`,
+          y:  '1y',
+          yy: n => `${n}y`
+      }
+  });
+
     return (
       <div className="conversations-wrapper">
         <div className="conversations-header">Conversations</div>

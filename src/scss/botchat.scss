@@ -115,6 +115,21 @@
             max-width: $chatWidthMobile;
         }
 
+        &-backButton {
+            border: none !important;
+            background-color: unset !important;
+            margin-right: 20px;
+            position: relative;
+            outline: none;
+
+            svg {
+                position: absolute;
+                top: 0;
+                left: -10px;
+                fill: $gideon-dark-blue;
+            }
+        }
+
         span {
             font-size: 18px;
             vertical-align: middle;
@@ -299,6 +314,7 @@
     $floatingBottom:34px;
     $floatingHeight:55px;
     $bottom:$floatingBottom + $floatingHeight + 20px;
+    $chatHeight: calc(100vh - #{$bottom} - 20px);
     $cubic:cubic-bezier(0.25, 0.8, 0.25, 1);
 
 
@@ -324,7 +340,7 @@
             display: block;
             width: $chatWidth;
             max-width: 80vw;
-            height: calc(100vh - #{$bottom} - 20px);
+            height: $chatHeight;
 
             @include mobileAndTablet {
                 max-width: $chatWidthMobile;
@@ -523,7 +539,7 @@
         }
 
         .conversations {
-            height: 630px;
+            max-height: calc( #{$chatHeight} - #{$headerTotalHeight} - 32px - 30px); //height of chat panel minus header and conversations header and room for style
             overflow: auto;
         }
 
@@ -552,9 +568,6 @@
                 width: 100%;
             }
 
-            // &-text {
-            // }
-
             &-name {
                 white-space: nowrap;
                 overflow: hidden;
@@ -572,14 +585,14 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-width: 200px;
+                max-width: 220px;
             }
 
             &-date {
                 margin-left: auto;
                 font-size: 14px;
                 color: $gideon-gray;
-                margin-right: 5px;
+                margin-right: 10px;
             }
         }
     }

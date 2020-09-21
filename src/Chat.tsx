@@ -547,7 +547,6 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open, opened, display } = this.state;
         const { selectedConversation } = state.conversations;
-        console.log('TCL: render -> selectedConversation', selectedConversation);
 
         const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
 
@@ -592,7 +591,11 @@ export class Chat extends React.Component<ChatProps, State> {
                         {
                             !!state.format.chatTitle &&
                                 <div className="wc-header">
-                                    {selectedConversation && <button onClick={() => removeSelectedConversation()}>Back</button>}
+                                    {selectedConversation &&
+                                        (<button onClick={() => removeSelectedConversation()} className="wc-header-backButton">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40px" height="40px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                                        </button>)
+                                    }
                                     <img
                                         className="wc-header--logo"
                                         src={state.format.logoUrl ?
