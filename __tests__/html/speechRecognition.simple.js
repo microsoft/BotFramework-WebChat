@@ -2,9 +2,9 @@
  * @jest-environment ./__tests__/html/__jest__/perTest/WebChatEnvironment.js
  */
 
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
-import fetchSpeechServicesAuthorizationToken from './__jest__/utils/fetchSpeechServicesAuthorizationToken';
+const fetchSpeechServicesAuthorizationToken = require('./__jest__/utils/fetchSpeechServicesAuthorizationToken');
 
 const {
   COGNITIVE_SERVICES_REGION,
