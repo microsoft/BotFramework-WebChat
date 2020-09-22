@@ -76,13 +76,23 @@ module.exports = {
       }
     },
     {
+      displayName: 'unit-tests',
+      testMatch: ['<rootDir>/packages/**/*.spec.js', '<rootDir>/packages/**/*.test.js'],
+      testPathIgnorePatterns: [
+        '<rootDir>/packages/playground/',
+      ],
+      transform: {
+        '\\.[jt]sx?$': '<rootDir>/__tests__/unit/__jest__/babel-jest-config.js'
+      }
+    },
+    {
       displayName: 'webchat-html',
       setupFilesAfterEnv: ['<rootDir>/__tests__/html/__jest__/perTest/setupAfterEnv.js'],
       testMatch: ['<rootDir>/__tests__/html/**/*.js'],
       testPathIgnorePatterns: [
-        '<rootDir>/__tests__/html/__dist__',
+        '<rootDir>/__tests__/html/__dist__/',
         '<rootDir>/__tests__/html/__jest__/',
-        '<rootDir>/__tests__/html/assets'
+        '<rootDir>/__tests__/html/assets/'
       ]
     },
     {
