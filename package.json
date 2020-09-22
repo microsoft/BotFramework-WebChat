@@ -35,6 +35,7 @@
   "dependencies": {
     "@types/react-datepicker": "^1.1.7",
     "adaptivecards": "1.0.0",
+    "analytics-utils": "^0.2.2",
     "axios": "^0.18.1",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",

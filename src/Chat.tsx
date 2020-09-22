@@ -4,6 +4,8 @@ import { findDOMNode } from 'react-dom';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 
+import { parseReferrer } from 'analytics-utils';
+
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
 import { connect, Provider } from 'react-redux';
@@ -293,12 +295,15 @@ export class Chat extends React.Component<ChatProps, State> {
                         }
                     });
 
+                    const campaign = parseReferrer(document.referrer, window.location.href);
+
                     verifyConversation(
                         this.props.gid,
                         conversationId,
                         user.id,
                         this.props.directLine.secret,
-                        window.location.toString()
+                        window.location.toString(),
+                        campaign
                     )
                     .then((res: any) => {
                         // Only save these when we successfully connect

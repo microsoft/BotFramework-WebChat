@@ -21,6 +21,7 @@
         "src/BotChat.ts",
         "src/CognitiveServices/lib.ts",
         "src/jspeech.d.ts",
-        "src/simple-update-in.d.ts"
+        "src/simple-update-in.d.ts",
+        "src/analytics-utils.d.ts"
     ]
 }

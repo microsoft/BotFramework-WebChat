@@ -6,13 +6,15 @@ export const verifyConversation = (
     msftConversationId: string,
     msftUserId: string,
     directLine: string,
-    originatingUrl: string
+    originatingUrl: string,
+    campaignParams: object
 ): any => {
     return axios.post(`${baseUrl}/api/v1/bot/conversations`, {
         msft_conversation_id: msftConversationId,
         originating_url: originatingUrl,
         msft_user_id: msftUserId,
-        directLine
+        directLine,
+        campaignParams
     });
 };
 
