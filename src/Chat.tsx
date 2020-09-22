@@ -76,6 +76,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private gaEventsSubscription: Subscription;
     private gtmEventsSubscription: Subscription;
     private handoffSubscription: Subscription;
+    private webchatCollapseSubscribtion: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -309,6 +310,13 @@ export class Chat extends React.Component<ChatProps, {}> {
             .filter((activity: any) => activity.type === "event" && activity.name === "handoff")
             .subscribe((activity: any) => this._smartsuppHandoff(JSON.parse(activity.value)))
 
+        this.webchatCollapseSubscribtion = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "webchat-collapse")
+            .subscribe(() => {
+                const wrapper = document.getElementsByClassName('feedbot-wrapper')[0]
+                wrapper && wrapper.classList.add('collapsed')
+            })
+
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
         if (!this.props.directLine || !this.props.directLine.conversationId) {
@@ -410,6 +418,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.gaEventsSubscription.unsubscribe();
         this.gtmEventsSubscription.unsubscribe();
         this.handoffSubscription.unsubscribe();
+        this.webchatCollapseSubscribtion.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)

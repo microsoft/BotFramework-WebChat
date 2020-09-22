@@ -51,13 +51,6 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
             props.botConnection = new DirectLine({...(props.directLine || {}), token: body.token});
             delete props.directLine
 
-            props.botConnection.activity$
-                .filter(activity => activity.type === "event" && activity.name === "webchat-collapse")
-                .subscribe(_ => {
-                    const wrapper = document.getElementsByClassName('feedbot-wrapper')[0]
-                    wrapper && wrapper.classList.add('collapsed')
-                })
-
             if (body.testMode && window.location.hash !== '#feedbot-test-mode') {
                 document.getElementsByTagName('body')[0].classList.add('feedbot-disabled')
                 return
