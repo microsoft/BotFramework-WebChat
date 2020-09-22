@@ -23,6 +23,8 @@
       }
     }
 
+    
+
     li{
       color: $c_brand;
       border: 1px solid $c_brand;
@@ -48,5 +50,9 @@
         background-color: $c_brand;
         color: #ffffff;
     }
+  }
 
+  li.wc-suggested-options-option-selected {
+    background-color: $c_brand;
+    color: #ffffff;
   }

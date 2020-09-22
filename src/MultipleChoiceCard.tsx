@@ -18,11 +18,20 @@ export interface MessagePaneProps {
 
     children: React.ReactNode;
     doCardAction: IDoCardAction;
+    multipleSelect: boolean;
 }
 
-class SuggestedActions extends React.Component<MessagePaneProps, {}> {
+export interface MultipleChoiceState {
+    selected: boolean[];
+}
+
+class SuggestedActions extends React.Component<MessagePaneProps, MultipleChoiceState> {
     constructor(props: MessagePaneProps) {
         super(props);
+
+        this.state = {
+            selected: []
+        };
     }
 
     actionClick(e: React.MouseEvent<HTMLElement>, cardAction: CardAction) {
@@ -36,8 +45,37 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         e.stopPropagation();
     }
 
+    handleSelect(index: number) {
+        const newSelection = this.state.selected.slice();
+        newSelection[index] = !newSelection[index];
+        this.setState({selected: newSelection});
+    }
+
+    submitMultipleSelect(e: React.MouseEvent<HTMLElement>) {
+        this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
+        const cardType = this.props.activityWithSuggestedActions.suggestedActions.actions[0].type;
+        const selectedAnswers: string[] = [];
+        this.state.selected.forEach((selected, index) => {
+            if (selected) {
+                selectedAnswers.push(this.props.activityWithSuggestedActions.suggestedActions.actions[index].value);
+            }
+        });
+        this.props.doCardAction(cardType, JSON.stringify({ selected: selectedAnswers }));
+        this.props.resetShellInput();
+        e.stopPropagation();
+    }
+
     componentDidMount() {
-        this.props.chooseOption('Choose an option above...');
+        if (this.props.multipleSelect) {
+            this.props.chooseOption('Select all that apply...');
+            if (this.state.selected.length === 0) {
+                const defaultSelected = new Array(this.props.activityWithSuggestedActions.suggestedActions.actions.length).fill(false);
+                this.setState({ selected: defaultSelected });
+            }
+        } else {
+            this.props.chooseOption('Choose an option above...');
+        }
+
     }
 
     shouldComponentUpdate(nextProps: MessagePaneProps) {
@@ -51,10 +89,11 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         return (
             <div className="wc-suggested-options">
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
-                    <li key={ index } onClick={e => this.actionClick(e, action) } title={ action.title }>
+                    <li className={this.props.multipleSelect && this.state.selected[index] ? 'wc-suggested-options-option-selected' : 'wc-suggested-options-option'} key={ index } onClick={e => this.props.multipleSelect ? this.handleSelect(index) : this.actionClick(e, action) } title={ action.title }>
                         { action.title }
                     </li>
                 ) }</ul>
+                {this.props.multipleSelect && <button onClick={e => this.submitMultipleSelect(e)}>Submit</button>}
             </div>
         );
     }
@@ -86,6 +125,10 @@ export const MultipleChoiceCard = connect(
         // from ownProps
         children: ownProps.children,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage)
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+        multipleSelect: stateProps.activityWithSuggestedActions &&
+            stateProps.activityWithSuggestedActions.entities &&
+            stateProps.activityWithSuggestedActions.entities.length > 0 &&
+            stateProps.activityWithSuggestedActions.entities[0].multiple_selection
     })
 )(SuggestedActions);

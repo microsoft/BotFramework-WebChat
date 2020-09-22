@@ -74,11 +74,20 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
       if (!(key in json)) {
         return currentText;
       }
-      const newLine = key + ': ' + json[key];
+      const newLine = ' * ' + key + ': ' + json[key];
       if (currentText !== '') {
         return currentText.concat('\n', newLine);
       }
       return currentText.concat(newLine);
+    }
+
+    formatSelectedOptions = (json: { [key: string]: string[] }) => {
+      const selected = json.selected;
+      let frmt = '';
+      selected.forEach(s => {
+        frmt += ` * ${s}\n`;
+      });
+      return frmt;
     }
 
     parseDate = (date: string) => {
@@ -116,10 +125,16 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
         const o = JSON.parse(text);
         let formattedText = '';
         if (o && typeof o === 'object') {
-          formattedText = this.addFormattedKey(formattedText, 'name', o);
-          formattedText = this.addFormattedKey(formattedText, 'email', o);
-          formattedText = this.addFormattedKey(formattedText, 'phone', o);
-          return formattedText;
+          if (('name' in o || 'email' in o || 'phone' in o)) {
+            formattedText = this.addFormattedKey(formattedText, 'name', o);
+            formattedText = this.addFormattedKey(formattedText, 'email', o);
+            formattedText = this.addFormattedKey(formattedText, 'phone', o);
+            return formattedText;
+          } else if ('selected' in o) {
+            return this.formatSelectedOptions(o);
+          } else {
+            return text;
+          }
         } else {
           return text;
         }
@@ -138,7 +153,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 <div>
                     <FormattedText
                         text={ this.formatText(activity.text) }
-                        format={ activity.textFormat }
+                        format="markdown"
                         onImageLoad={ props.onImageLoad }
                     />
                     <Attachments
