@@ -79,7 +79,11 @@ module.exports = {
       displayName: 'webchat-html',
       setupFilesAfterEnv: ['<rootDir>/__tests__/html/__jest__/perTest/setupAfterEnv.js'],
       testMatch: ['<rootDir>/__tests__/html/**/*.js'],
-      testPathIgnorePatterns: ['<rootDir>/__tests__/html/__jest__/']
+      testPathIgnorePatterns: [
+        '<rootDir>/__tests__/html/__dist__',
+        '<rootDir>/__tests__/html/__jest__/',
+        '<rootDir>/__tests__/html/assets'
+      ]
     },
     {
       displayName: 'webchat-webdriver',
@@ -93,24 +97,4 @@ module.exports = {
   ],
   // All tests are configured in the "projects" properties, ignoring the root.
   testPathIgnorePatterns: ['<rootDir>']
-  // setupFilesAfterEnv: [
-  //   // '<rootDir>/__tests__/setup/setupDotEnv.js',
-  //   // '<rootDir>/__tests__/setup/setupGlobalAgent.js',
-  //   // '<rootDir>/__tests__/setup/preSetupTestFramework.js',
-  //   // '<rootDir>/__tests__/setup/setupImageSnapshot.js',
-  //   // '<rootDir>/__tests__/setup/setupTimeout.js',
-  //   '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js'
-  // ],
-  // testPathIgnorePatterns: [
-  //   '<rootDir>/__tests__/html/assets',
-  //   '<rootDir>/__tests__/html/__dist__',
-  //   '<rootDir>/__tests__/html/__jest__',
-  //   '<rootDir>/__tests__/setup/',
-  //   '<rootDir>/packages/directlinespeech/__tests__/utilities/',
-  //   '<rootDir>/packages/playground/',
-  //   '<rootDir>/samples/'
-  // ],
-  // transform: {
-  //   '\\.[jt]sx?$': './babel-jest-config.js'
-  // }
 };
