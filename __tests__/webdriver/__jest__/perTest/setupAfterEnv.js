@@ -4,7 +4,7 @@ require('global-agent/bootstrap');
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot');
 const { join } = require('path');
 
-const { browser, imageSnapshotOptions, timeouts } = require('../constants.json');
+const { browserName, imageSnapshotOptions, timeouts } = require('../constants.json');
 
 // We have multple .babelrc files. Some load JSX and some don't.
 // For those don't load JSX, we will not setup WebDriver for it.
@@ -26,7 +26,7 @@ expect.extend({
     ...imageSnapshotOptions,
     customSnapshotsDir: join(
       __dirname,
-      browser === 'chrome-docker' ? '../../__image_snapshots__/' : '../../__image_snapshots__.local/'
+      browserName === 'chrome-docker' ? '../../__image_snapshots__/' : '../../__image_snapshots__.local/'
     )
   })
 });
