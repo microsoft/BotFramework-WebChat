@@ -1,0 +1,37 @@
+import { imageSnapshotOptions, timeouts } from './__jest__/constants.json';
+
+import allImagesLoaded from './__jest__/conditions/allImagesLoaded';
+import minNumActivitiesShown from './__jest__/conditions/minNumActivitiesShown.js';
+
+// selenium-webdriver API doc:
+// https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
+
+jest.setTimeout(timeouts.test);
+
+test('hero card', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
+
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  // Wait for transcript to scroll to bottom
+  await driver.sleep(1000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('null renderMarkdown function', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { renderMarkdown: null } });
+
+  await pageObjects.sendMessageViaSendBox('echo **This text should be plain text**', { waitForSend: true });
+
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});

@@ -3,4 +3,4 @@
 
 FROM selenium/node-chrome:3.141.59-zirconium
 
-ADD __tests__/setup/local ~/Downloads
+ADD __tests__/__jest__/downloads ~/Downloads

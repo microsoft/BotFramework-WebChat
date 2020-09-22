@@ -9,8 +9,8 @@ services:
       dockerfile: Dockerfile-selenium
     depends_on:
     - selenium-hub
-    - webchat
-    - webchat2
+    - webchat-html
+    - webchat-webdriver
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
@@ -24,16 +24,16 @@ services:
     ports:
     - "4444:4444"
 
-  webchat:
+  webchat-html:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness
-    ports:
-    - "5080:80"
-
-  webchat2:
-    build:
-      context: ./
-      dockerfile: Dockerfile-testharness2
+      dockerfile: Dockerfile-testharness-html
     ports:
     - "5081:80"
+
+  webchat-webdriver:
+    build:
+      context: ./
+      dockerfile: Dockerfile-testharness-webdriver
+    ports:
+    - "5080:80"

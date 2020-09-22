@@ -47,41 +47,70 @@ module.exports = {
             testResult.failureMessages.forEach(message => {
               const match = /^See diff for details: (.*)/m.exec(message);
 
-              match &&
-                testResultNode
-                  .ele('ResultFiles')
-                  .ele('ResultFile')
-                  .att('path', match[1]);
+              match && testResultNode.ele('ResultFiles').ele('ResultFile').att('path', match[1]);
             });
 
-            testResultNode.att('testName', `${relative(__dirname, testSuiteResult.testFilePath)} › ${testResult.fullName}`);
+            testResultNode.att(
+              'testName',
+              `${relative(__dirname, testSuiteResult.testFilePath)} › ${testResult.fullName}`
+            );
           }
         ]
       }
     ],
-    ['./__tests__/setup/NUnitTestReporter', {
-      filename: join(__dirname, 'coverage/nunit3.xml'),
-      jestResultFilename: join(__dirname, 'coverage/jest.json')
-    }]
+    [
+      './__tests__/__jest__/NUnitTestReporter',
+      {
+        filename: join(__dirname, 'coverage/nunit3.xml'),
+        jestResultFilename: join(__dirname, 'coverage/jest.json')
+      }
+    ]
   ],
-  setupFilesAfterEnv: [
-    '<rootDir>/__tests__/setup/setupDotEnv.js',
-    '<rootDir>/__tests__/setup/setupGlobalAgent.js',
-    '<rootDir>/__tests__/setup/preSetupTestFramework.js',
-    '<rootDir>/__tests__/setup/setupImageSnapshot.js',
-    '<rootDir>/__tests__/setup/setupTimeout.js',
-    '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js'
+  projects: [
+    {
+      displayName: 'directlinespeech-sdk',
+      testMatch: ['<rootDir>/packages/directlinespeech/__tests__/**/*.js'],
+      testPathIgnorePatterns: ['<rootDir>/packages/directlinespeech/__tests__/utilities/'],
+      transform: {
+        '\\.[jt]sx?$': '<rootDir>/packages/directlinespeech/babel-jest-config.js'
+      }
+    },
+    {
+      displayName: 'webchat-html',
+      setupFilesAfterEnv: ['<rootDir>/__tests__/html/__jest__/perTest/setupAfterEnv.js'],
+      testMatch: ['<rootDir>/__tests__/html/**/*.js'],
+      testPathIgnorePatterns: ['<rootDir>/__tests__/html/__jest__/']
+    },
+    {
+      displayName: 'webchat-webdriver',
+      setupFilesAfterEnv: ['<rootDir>/__tests__/webdriver/__jest__/perTest/setupAfterEnv.js'],
+      testMatch: ['<rootDir>/__tests__/webdriver/**/*.js'],
+      testPathIgnorePatterns: ['<rootDir>/__tests__/webdriver/__jest__/'],
+      transform: {
+        '\\.[jt]sx?$': '<rootDir>/__tests__/webdriver/__jest__/babel-jest-config.js'
+      }
+    }
   ],
-  testPathIgnorePatterns: [
-    '<rootDir>/__tests__/html/assets',
-    '<rootDir>/__tests__/html/__dist__',
-    '<rootDir>/__tests__/html/__jest__',
-    '<rootDir>/__tests__/setup/',
-    '<rootDir>/packages/directlinespeech/__tests__/utilities/',
-    '<rootDir>/packages/playground/',
-    '<rootDir>/samples/'
-  ],
-  transform: {
-    '\\.[jt]sx?$': './babel-jest-config.js'
-  }
+  // All tests are configured in the "projects" properties, ignoring the root.
+  testPathIgnorePatterns: ['<rootDir>']
+  // setupFilesAfterEnv: [
+  //   // '<rootDir>/__tests__/setup/setupDotEnv.js',
+  //   // '<rootDir>/__tests__/setup/setupGlobalAgent.js',
+  //   // '<rootDir>/__tests__/setup/preSetupTestFramework.js',
+  //   // '<rootDir>/__tests__/setup/setupImageSnapshot.js',
+  //   // '<rootDir>/__tests__/setup/setupTimeout.js',
+  //   '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js'
+  // ],
+  // testPathIgnorePatterns: [
+  //   '<rootDir>/__tests__/html/assets',
+  //   '<rootDir>/__tests__/html/__dist__',
+  //   '<rootDir>/__tests__/html/__jest__',
+  //   '<rootDir>/__tests__/setup/',
+  //   '<rootDir>/packages/directlinespeech/__tests__/utilities/',
+  //   '<rootDir>/packages/playground/',
+  //   '<rootDir>/samples/'
+  // ],
+  // transform: {
+  //   '\\.[jt]sx?$': './babel-jest-config.js'
+  // }
 };
