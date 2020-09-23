@@ -206,6 +206,14 @@
         overflow: hidden;
     }
 
+    .restart-message {
+        padding: 15px;
+        color: $gideon-silver;
+        text-align: center;
+        font-size: 14px;
+        font-style: italic;
+    }
+
     .wc-suggested-actions {
         background-color: #ffffff;
         bottom: $consoleHeight;

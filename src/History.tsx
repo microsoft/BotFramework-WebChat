@@ -245,15 +245,17 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 this.largeWidth = this.props.size.width * 2;
                 content = <this.measurableCarousel/>;
             } else {
-                const activities = filteredActivities(this.props.activities, this.props.format.strings.pingMessage, this.props.format.strings.restartMessage);
+                const activities = filteredActivities(this.props.activities, this.props.format.strings.pingMessage);
 
                 activityDisclaimer = activities.length > 0 ? activities[activities.length - 1] : undefined;
                 lastActivityIsDisclaimer = activityDisclaimer && activityDisclaimer.entities && activityDisclaimer.entities.length > 0 && activityDisclaimer.entities[0].node_type === 'disclaimer';
 
                 content = activities
                 .map((activity, index) =>
-                    ((activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) && !activityIsDisclaimer(activity)) &&
-                        <WrappedActivity
+                    ((activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) && !activityIsDisclaimer(activity)) ?
+                    (activity.type === 'message' && activity.text) === this.props.format.strings.restartMessage
+                        ? <div className="restart-message">— Conversation Reconnected —</div>
+                        : <WrappedActivity
                             format={ this.props.format }
                             key={ 'message' + index }
                             activity={ activity }
@@ -285,7 +287,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 gid={ this.props.gid}
                                 directLine={ this.props.directLine }
                             />
-                        </WrappedActivity>
+                        </WrappedActivity> : ''
                 );
             }
         }
@@ -316,7 +318,7 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
-        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage, state.format.strings.restartMessage)),
+        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage)),
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
@@ -375,9 +377,9 @@ export const History = connect(
     }
 )(HistoryView);
 
-export const filteredActivities = (activities: Activity[], pingMessage: string, restartMessage: string) => {
+export const filteredActivities = (activities: Activity[], pingMessage: string) => {
     const notPingMessage = (activity: Activity, index: number) => {
-        return (activity.type !== 'message' || (activity.text !== pingMessage && activity.text !== restartMessage));
+        return (activity.type !== 'message' || (activity.text !== pingMessage));
     };
 
     // Remove initial ping message from list of activities. User should not see this
