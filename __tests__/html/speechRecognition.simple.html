@@ -15,13 +15,14 @@
         EventIterator,
         expect,
         fetchSpeechData,
+        fetchSpeechServicesCredentials,
         float32ArraysToPcmWaveArrayBuffer,
         host,
         iterateAsyncIterable,
         MockAudioContext,
+        pageObjects,
         pcmWaveArrayBufferToRiffWaveArrayBuffer,
         recognizeRiffWaveArrayBuffer,
-        pageObjects,
         shareObservable,
         timeouts,
         token
@@ -29,19 +30,30 @@
 
       (async function () {
         const queryParams = window.WebChatTest.parseURLParams(location.hash);
-        const {
-          sa: speechAuthorizationToken,
-          sr: speechRegion,
-          ss: speechSubscriptionKey,
-          t: channelType
-        } = queryParams;
+        let { sa: speechAuthorizationToken, sr: speechRegion, ss: speechSubscriptionKey, t: channelType } = queryParams;
 
         if (!channelType) {
-          throw new Error('Channel type must be passed via hash, #t=dl or #t=dlspeech');
-        } else if (!speechRegion || !(speechAuthorizationToken || speechSubscriptionKey)) {
-          throw new Error(
-            'Speech region and authorization token or subscription key must be passed via hash, #sr=westus2&sa=a1b2c3d or #sr=westus2&ss=a1b2c3d.'
+          console.warn(
+            'Channel type is not specified, assuming Direct Line. To change channel type, pass it via hash, #t=dl or #t=dlspeech.'
           );
+
+          channelType = 'dl';
+        } else if (channelType !== 'dl' && channelType !== 'dlspeech') {
+          throw new Error('Invalid channel type specified, must be either "dl" or "dlspeech".');
+        } else if (speechSubscriptionKey && !speechRegion) {
+          throw new Error('Speech region must be specified when speech subscription key is specified.');
+        }
+
+        if (!speechAuthorizationToken && !speechSubscriptionKey) {
+          console.warn('Both speech authorization token and subscription key are not passed, will fetch it from bot.');
+
+          const {
+            authorizationToken: fetchedSpeechAuthorizationToken,
+            region: fetchedSpeechRegion
+          } = await fetchSpeechServicesCredentials();
+
+          speechAuthorizationToken = fetchedSpeechAuthorizationToken;
+          speechRegion = fetchedSpeechRegion;
         }
 
         const speechCredentials = {

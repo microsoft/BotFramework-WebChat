@@ -2,7 +2,7 @@
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 
-import cognitiveServicesPromiseToESPromise from './cognitiveServicesPromiseToESPromise';
+import cognitiveServicesAsyncFunctionToESAsyncFunction from './cognitiveServicesAsyncFunctionToESAsyncFunction';
 import createMultiBufferingPlayer from './createMultiBufferingPlayer';
 
 // Safari requires an audio buffer with a sample rate of 22050 Hz.
@@ -101,29 +101,39 @@ function multiplySampleRate(source, sampleRateMultiplier) {
   return target;
 }
 
-export default async function playCognitiveServicesStream(
-  audioContext,
-  audioFormat,
-  streamReader,
-  { signal = {} } = {}
-) {
+export default async function playCognitiveServicesStream(audioContext, stream, { signal = {} } = {}) {
+  if (!audioContext) {
+    throw new Error('botframework-directlinespeech-sdk: audioContext must be specified.');
+  } else if (!stream) {
+    throw new Error('botframework-directlinespeech-sdk: stream must be specified.');
+  } else if (!stream.format) {
+    throw new Error('botframework-directlinespeech-sdk: stream is missing format.');
+  } else if (typeof stream.read !== 'function') {
+    throw new Error('botframework-directlinespeech-sdk: stream is missing read().');
+  }
+
   const queuedBufferSourceNodes = [];
 
   try {
+    const { format } = stream;
     const abortPromise = abortToReject(signal);
+    const array = new Uint8Array(DEFAULT_BUFFER_SIZE);
+    const streamRead = cognitiveServicesAsyncFunctionToESAsyncFunction(stream.read.bind(stream));
 
     const read = () =>
       Promise.race([
         // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
-        abortPromise.catch(() => ({ isEnd: true })),
-        cognitiveServicesPromiseToESPromise(streamReader.read())
+        abortPromise.catch(() => {}),
+        streamRead(array.buffer).then(numBytes =>
+          numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined
+        )
       ]);
 
     if (signal.aborted) {
       throw new Error('aborted');
     }
 
-    let newSamplesPerSec = audioFormat.samplesPerSec;
+    let newSamplesPerSec = format.samplesPerSec;
     let sampleRateMultiplier = 1;
 
     // Safari requires a minimum sample rate of 22100 Hz.
@@ -132,7 +142,7 @@ export default async function playCognitiveServicesStream(
     // For security, data will only be upsampled up to 96000 Hz.
     while (newSamplesPerSec < MIN_SAMPLE_RATE && newSamplesPerSec < 96000) {
       sampleRateMultiplier++;
-      newSamplesPerSec = audioFormat.samplesPerSec * sampleRateMultiplier;
+      newSamplesPerSec = format.samplesPerSec * sampleRateMultiplier;
     }
 
     // The third parameter is the sample size in bytes.
@@ -141,14 +151,14 @@ export default async function playCognitiveServicesStream(
     // If the multiplier 3x, it will handle 6144 samples per buffer.
     const player = createMultiBufferingPlayer(
       audioContext,
-      { ...audioFormat, samplesPerSec: newSamplesPerSec },
-      (DEFAULT_BUFFER_SIZE / (audioFormat.bitsPerSample / 8)) * sampleRateMultiplier
+      { ...format, samplesPerSec: newSamplesPerSec },
+      (DEFAULT_BUFFER_SIZE / (format.bitsPerSample / 8)) * sampleRateMultiplier
     );
 
     // For security, the maximum number of chunks handled will be 1000.
     for (
       let chunk = await read(), maxChunks = 0;
-      !chunk.isEnd && maxChunks < 1000 && !signal.aborted;
+      chunk && maxChunks < 1000 && !signal.aborted;
       chunk = await read(), maxChunks++
     ) {
       if (signal.aborted) {
@@ -159,10 +169,10 @@ export default async function playCognitiveServicesStream(
       // And each sample (A/B) will be an 8 to 32-bit number.
 
       // Convert the 8 - 32-bit number into a floating-point number, as required by Web Audio API.
-      const interleavedArray = formatAudioDataArrayBufferToFloatArray(audioFormat, chunk.buffer);
+      const interleavedArray = formatAudioDataArrayBufferToFloatArray(format, chunk.buffer);
 
       // Deinterleave data back into two array buffer, e.g. "AAAAA" and "BBBBB".
-      const multiChannelArray = deinterleave(interleavedArray, audioFormat);
+      const multiChannelArray = deinterleave(interleavedArray, format);
 
       // Upsample data if necessary. If the multiplier is 2x, "AAAAA" will be upsampled to "AAAAAAAAAA" (with anti-alias).
       const upsampledMultiChannelArray = multiChannelArray.map(array =>

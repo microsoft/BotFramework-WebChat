@@ -57,8 +57,6 @@ describe.each([['without internal HTTP support'], ['with internal HTTP support',
 
       await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
     });
-
-    
   }
 );
 
