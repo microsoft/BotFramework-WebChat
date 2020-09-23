@@ -6,16 +6,16 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { parseReferrer } from 'analytics-utils';
 
-import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
+import { Activity, CardActionTypes, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
-import { connect, Provider } from 'react-redux';
-import { conversationHistory, getPastConversations, mapMessagesToActivities, newConversation, ping, step, verifyUserConnection } from './api/bot';
+import { Provider } from 'react-redux';
+import { conversationHistory, getPastConversations, mapMessagesToActivities, step, verifyUserConnection } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
-import { ChatActions, Conversation, createStore, sendMessage } from './Store';
+import { ChatActions, Conversation, createStore } from './Store';
 import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 

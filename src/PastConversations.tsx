@@ -3,7 +3,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { findInitial } from './History';
 import { ChatState, Conversation, FormatState } from './Store';
-import { strings } from './Strings';
 
 export interface Props {
   conversations: Conversation[];
