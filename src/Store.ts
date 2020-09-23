@@ -357,6 +357,7 @@ export type ConnectionAction = {
 } | {
     type: 'Set_Verification',
     verification: Verification;
+    user: User;
 };
 
 export const connection: Reducer<ConnectionState> = (
@@ -385,7 +386,8 @@ export const connection: Reducer<ConnectionState> = (
         case 'Set_Verification':
             return {
                 ...state,
-                verification: action.verification
+                verification: action.verification,
+                user: action.user
             };
         case 'Connection_Change':
             return {

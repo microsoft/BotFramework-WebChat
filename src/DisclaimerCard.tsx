@@ -100,7 +100,7 @@ export const DisclaimerCard = connect(
   (state: ChatState) => {
     return {
       // passed down to MessagePaneView
-      activityWithSuggestedActions: activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage)),
+      activityWithSuggestedActions: activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage, state.format.strings.restartMessage)),
       // only used to create helper functions below
       botConnection: state.connection.botConnection,
       user: state.connection.user,

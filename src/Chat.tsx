@@ -9,7 +9,7 @@ import { parseReferrer } from 'analytics-utils';
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { isMobile } from 'react-device-detect';
 import { connect, Provider } from 'react-redux';
-import { conversationHistory, getPastConversations, mapMessagesToActivities, newConversation, ping, step, verifyConversation } from './api/bot';
+import { conversationHistory, getPastConversations, mapMessagesToActivities, newConversation, ping, step, verifyUserConnection } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
@@ -45,6 +45,7 @@ export interface State {
     opened: boolean;
     display: boolean;
     orginalBodyClass: string;
+    isNew: boolean;
 }
 
 import { FloatingIcon } from './FloatingIcon';
@@ -58,7 +59,8 @@ export class Chat extends React.Component<ChatProps, State> {
         open: false,
         opened: false,
         display: false,
-        orginalBodyClass: document.body.className
+        orginalBodyClass: document.body.className,
+        isNew: false
     };
 
     private store = createStore();
@@ -248,13 +250,6 @@ export class Chat extends React.Component<ChatProps, State> {
         this.setSize();
         const msftUserId = window.localStorage.getItem('msft_user_id');
 
-        const isNew = true;
-        let botConnection: any = null;
-
-        botConnection = this.props.directLine ?
-            (this.botConnection = new DirectLine(this.props.directLine)) :
-            this.props.botConnection;
-
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
         }
@@ -273,184 +268,98 @@ export class Chat extends React.Component<ChatProps, State> {
         }
 
         this.store.dispatch<ChatActions>({
-            type: 'Start_Connection',
-            user,
-            bot: this.props.bot,
-            botConnection,
-            selectedActivity: this.props.selectedActivity
+            type: 'Set_Verification',
+            verification: {
+                attempted: true
+            },
+            user
         });
-
-        const state = this.store.getState();
-
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus: any) => {
-            if (connectionStatus === 2) {  // wait for connection is 'OnLine' to send data to bot
-
-                const botCopy: any = botConnection;
-                const conversationId = botCopy.conversationId;
-
-                if (!state.connection.verification.attempted) {
-                    this.store.dispatch<ChatActions>({
-                        type: 'Set_Verification',
-                        verification: {
-                            attempted: true
-                        }
-                    });
-
-                    const campaign = parseReferrer(document.referrer, window.location.href);
-                    getPastConversations(this.props.gid, user.id, this.props.directLine.secret)
-                    .then(({data: { conversations }}: any) => {
-                            const formattedConversations =
-                                conversations.map((conversation: Conversation) => {
-                                    return {
-                                        ...conversation,
-                                        conversation_messages: conversation.conversation_messages.reverse()
-                                    };
-                                }).reverse();
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Conversations',
-                                conversations: formattedConversations
-                            });
-                        });
-
-                    verifyConversation(
-                        this.props.gid,
-                        conversationId,
-                        user.id,
-                        this.props.directLine.secret,
-                        window.location.toString(),
-                        campaign
-                    )
-                    .then((res: any) => {
-                        // Only save these when we successfully connect
-                        // uncomment when re-enabling chat history
-                        window.localStorage.setItem('msft_conversation_id', conversationId);
-                        window.localStorage.setItem('gid', this.props.gid);
-                        window.localStorage.setItem('msft_user_id', user.id);
-
-                        this.setState({
-                            display: true
-                        });
-
-                        const { bot_display_options, bot_id, organization_id } = res.data;
-
-                        this.store.dispatch<ChatActions>({
-                            type: 'Set_Conversation_Ids',
-                            botId: bot_id,
-                            organizationId: organization_id
-                        });
-
-                        if (bot_display_options && bot_display_options.display_title) {
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Chat_Title',
-                                chatTitle: bot_display_options.display_title
-                            });
-                        }
-
-                        if (bot_display_options && bot_display_options.color) {
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Theme_Color',
-                                themeColor: bot_display_options.color
-                            });
-                        }
-
-                        if (bot_display_options) {
-                            const { alignment, bottomOffset, topOffset, leftOffset, rightOffset, fullHeight, display_name, widget_url, widget_same_as_logo  } = bot_display_options;
-
-                            this.store.dispatch({
-                                type: 'Set_Format_Options',
-                                formatOptions: {
-                                    alignment,
-                                    bottomOffset,
-                                    topOffset,
-                                    leftOffset,
-                                    rightOffset,
-                                    fullHeight,
-                                    display_name,
-                                    widgetSameAsLogo: widget_same_as_logo,
-                                    widgetUrl: widget_url
-                                }
-                            });
-                        }
-
-                        if (bot_display_options && bot_display_options.logo_url) {
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Logo_Img',
-                                logoUrl: bot_display_options.logo_url
-                            });
-                        }
-
-                        if (!isMobile && bot_display_options && bot_display_options.open_on_load) {
-                            this.toggle();
-                        }
-
-                        this.store.dispatch<ChatActions>({
-                            type: 'Set_Verification',
-                            verification: {
-                                status: 1
-                            }
-                        });
-
-                        // conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
-                        //  .then((res: any) => {
-                        //     const state = this.store.getState();
-                        //     const messages = res.data.messages.reverse();
-
-                        //     this.store.dispatch<ChatActions>({
-                        //         type: 'Set_Messages',
-                        //         activities: mapMessagesToActivities(messages, state.connection.user.id)
-                        //     });
-                        // });
-
-                        // Ping server with activity every 30 seconds
-                        // setInterval(() => {
-                        //     ping(
-                        //         this.props.gid,
-                        //         conversationId,
-                        //         this.props.directLine.secret
-                        //     );
-                        // }, 10000);
-
-                        // Only initialize convo for user if it's their first time
-                        // interacting with the chatbot
-                        if (isNew) {
-                            // Send initial message to start conversation
-                            this.store.dispatch(sendMessage(state.format.strings.pingMessage, state.connection.user, state.format.locale));
-                        }
-                    })
-                    .catch((err: any) => {
-                        this.store.dispatch<ChatActions>({
-                            type: 'Set_Verification',
-                            verification: {
-                                status: 2
-                            }
-                        });
-                    });
-                }
-            }
-
-            if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
-                const refGrammarId = botConnection.referenceGrammarId;
-                if (refGrammarId) {
-                    this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-                }
-            }
-
-            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
-        });
-
-        this.activitySubscription = botConnection.activity$.subscribe(
-            (activity: Activity) => this.handleIncomingActivity(activity),
-            (error: Error) => konsole.log('activity$ error', error)
-        );
-
-        if (this.props.selectedActivity) {
-            this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
+        const campaign = parseReferrer(document.referrer, window.location.href);
+        getPastConversations(this.props.gid, user.id, this.props.directLine.secret)
+            .then(({data: { conversations }}: any) => {
+                const formattedConversations =
+                    conversations.map((conversation: Conversation) => {
+                        return {
+                            ...conversation,
+                            conversation_messages: conversation.conversation_messages.reverse()
+                        };
+                    }).reverse();
                 this.store.dispatch<ChatActions>({
-                    type: 'Select_Activity',
-                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
+                    type: 'Set_Conversations',
+                    conversations: formattedConversations
                 });
             });
-        }
+
+        verifyUserConnection(
+            this.props.gid,
+            user.id,
+            this.props.directLine.secret,
+            window.location.toString(),
+            campaign
+        )
+            .then((res: any) => {
+                // Only save these when we successfully connect
+                // uncomment when re-enabling chat history
+                window.localStorage.setItem('gid', this.props.gid);
+                window.localStorage.setItem('msft_user_id', user.id);
+
+                this.setState({
+                    display: true
+                });
+
+                const { bot_display_options, bot_id, organization_id } = res.data;
+
+                this.store.dispatch<ChatActions>({
+                    type: 'Set_Conversation_Ids',
+                    botId: bot_id,
+                    organizationId: organization_id
+                });
+
+                if (bot_display_options && bot_display_options.display_title) {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Chat_Title',
+                        chatTitle: bot_display_options.display_title
+                    });
+                }
+
+                if (bot_display_options && bot_display_options.color) {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Theme_Color',
+                        themeColor: bot_display_options.color
+                    });
+                }
+
+                if (bot_display_options) {
+                    const { alignment, bottomOffset, topOffset, leftOffset, rightOffset, fullHeight, display_name, widget_url, widget_same_as_logo  } = bot_display_options;
+
+                    this.store.dispatch({
+                        type: 'Set_Format_Options',
+                        formatOptions: {
+                            alignment,
+                            bottomOffset,
+                            topOffset,
+                            leftOffset,
+                            rightOffset,
+                            fullHeight,
+                            display_name,
+                            widgetSameAsLogo: widget_same_as_logo,
+                            widgetUrl: widget_url
+                        }
+                    });
+                }
+
+                if (bot_display_options && bot_display_options.logo_url) {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Logo_Img',
+                        logoUrl: bot_display_options.logo_url
+                    });
+                }
+
+                if (!isMobile && bot_display_options && bot_display_options.open_on_load) {
+                    this.toggle();
+                }
+
+            });
     }
 
     componentWillUnmount() {
@@ -489,28 +398,8 @@ export class Chat extends React.Component<ChatProps, State> {
     }
 
     newConversationClick = () => {
-        const {
-            connection: {
-                botConnection,
-                user
-            },
-            conversations: { botId, organizationId }
-        }: any = this.store.getState();
-
-        newConversation(
-            this.props.gid,
-            botId,
-            botConnection.conversationId,
-            user.id, organizationId,
-            this.props.directLine.secret,
-            window.location.toString()
-        ).then(({ data: { conversation } }: any) => {
-            this.store.dispatch<ChatActions>({
-                type: 'Set_Selected_Conversation',
-                conversation
-            });
-            this.forceUpdate();
-        });
+        this.setState({ isNew: true });
+        this.forceUpdate();
     }
 
     private calculateChatviewPanelStyle = (format: FormatOptions) => {
@@ -545,8 +434,9 @@ export class Chat extends React.Component<ChatProps, State> {
 
     render() {
         const state = this.store.getState();
-        const { open, opened, display } = this.state;
+        const { open, display, isNew } = this.state;
         const { selectedConversation } = state.conversations;
+        const color = state.format.themeColor;
 
         const chatviewPanelStyle = this.calculateChatviewPanelStyle(state.format);
 
@@ -564,9 +454,14 @@ export class Chat extends React.Component<ChatProps, State> {
 
         const removeSelectedConversation = () => {
             this.store.dispatch<ChatActions>({
+                type: 'Set_Messages',
+                activities: []
+            });
+            this.store.dispatch<ChatActions>({
                 type: 'Set_Selected_Conversation',
                 conversation: null
             });
+            this.setState({ isNew: false });
             this.forceUpdate();
         };
 
@@ -590,8 +485,8 @@ export class Chat extends React.Component<ChatProps, State> {
                     >
                         {
                             !!state.format.chatTitle &&
-                                <div className="wc-header">
-                                    {selectedConversation &&
+                                <div className="wc-header" style={{borderBottomColor: color}}>
+                                    {(selectedConversation || isNew) &&
                                         (<button onClick={() => removeSelectedConversation()} className="wc-header-backButton">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40px" height="40px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
                                         </button>)
@@ -618,17 +513,19 @@ export class Chat extends React.Component<ChatProps, State> {
                                 </div>
                         }
 
-                        {!selectedConversation
-                            ? <PastConversations setSelectedConversation={setSelectedConversation} />
-                            : <History
+                        {(selectedConversation || isNew)
+                            ? <History
                                 onCardAction={this._handleCardAction}
                                 ref={this._saveHistoryRef}
                                 gid={this.props.gid}
                                 directLine={this.props.directLine}
+                                handleIncomingActivity={(activity: Activity) => this.handleIncomingActivity(activity)}
+                                isNew={isNew}
                             />
+                            :  <PastConversations setSelectedConversation={setSelectedConversation} />
                         }
 
-                        {selectedConversation
+                        {(selectedConversation || isNew)
                             ? <Shell ref={ this._saveShellRef } />
                             : (<div className="new-conversation-button-wrapper">
                                  <button className="new-conversation-button" onClick={() => this.newConversationClick()}>Begin a New Conversation</button>

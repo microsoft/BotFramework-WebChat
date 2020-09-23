@@ -1,16 +1,14 @@
 import axios from 'axios';
 import { Activity } from 'botframework-directlinejs';
 
-export const verifyConversation = (
+export const verifyUserConnection = (
     baseUrl: string,
-    msftConversationId: string,
     msftUserId: string,
     directLine: string,
     originatingUrl: string,
     campaignParams: object
 ): any => {
     return axios.post(`${baseUrl}/api/v1/bot/conversations`, {
-        msft_conversation_id: msftConversationId,
         originating_url: originatingUrl,
         msft_user_id: msftUserId,
         directLine,

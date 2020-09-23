@@ -3,6 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { findInitial } from './History';
 import { ChatState, Conversation, FormatState } from './Store';
+import { strings } from './Strings';
 
 export interface Props {
   conversations: Conversation[];
@@ -12,7 +13,7 @@ export interface Props {
 
 class PastConversationsView extends React.Component<Props> {
   render() {
-    const { conversations, setSelectedConversation, format: {display_name, themeColor} } = this.props;
+    const { conversations, setSelectedConversation, format: {display_name, themeColor, strings} } = this.props;
 
     const avatarColor = themeColor ? themeColor : '#c3ccd0';
     const avatarInitial = display_name && typeof(display_name) === 'string' ? findInitial(display_name) : 'B';
@@ -43,15 +44,13 @@ class PastConversationsView extends React.Component<Props> {
           {conversations.length > 0 &&
             conversations
               .filter(
-                (conversation: Conversation) =>
-                  conversation.conversation_messages.length > 0
+                ({conversation_messages}: Conversation) =>
+                  conversation_messages.filter((cm: any) => cm.sender_type === 'chatbot_user').length > 1
               )
               .map((conversation: Conversation) => {
                 const { conversation_messages } = conversation;
-                const recentMessage =
-                  conversation_messages.length > 0 &&
-                  conversation_messages[conversation_messages.length - 1]
-                    .message;
+                const filteredMessages = conversation_messages.filter((cm: any) => cm.message && cm.message !== strings.restartMessage);
+                const recentMessage = filteredMessages[filteredMessages.length - 1].message;
                 return (
                   <div
                     onClick={() => setSelectedConversation(conversation)}
