@@ -15,9 +15,7 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  modulePathIgnorePatterns: [
-    '<rootDir>/samples/**'
-  ],
+  modulePathIgnorePatterns: ['<rootDir>/samples/**'],
   reporters: [
     'default',
     [
@@ -81,12 +79,7 @@ module.exports = {
     {
       displayName: 'unit-tests',
       testMatch: ['<rootDir>/packages/**/*.spec.js', '<rootDir>/packages/**/*.test.js'],
-      testPathIgnorePatterns: [
-        '<rootDir>/packages/playground/',
-      ],
-      transform: {
-        '\\.[jt]sx?$': '<rootDir>/__tests__/unit/__jest__/babel-jest-config.js'
-      }
+      testPathIgnorePatterns: ['<rootDir>/packages/playground/']
     },
     {
       displayName: 'webchat-html',
@@ -102,13 +95,13 @@ module.exports = {
       displayName: 'webchat-webdriver',
       setupFilesAfterEnv: ['<rootDir>/__tests__/webdriver/__jest__/perTest/setupAfterEnv.js'],
       testMatch: ['<rootDir>/__tests__/webdriver/**/*.js'],
-      testPathIgnorePatterns: ['<rootDir>/__tests__/webdriver/__jest__/'],
-      transform: {
-        '\\.[jt]sx?$': '<rootDir>/__tests__/webdriver/__jest__/babel-jest-config.js'
-      }
+      testPathIgnorePatterns: ['<rootDir>/__tests__/webdriver/__jest__/']
     }
   ],
   // All tests are configured in the "projects" properties, ignoring the root.
   testMatch: [],
-  testPathIgnorePatterns: ['<rootDir>/']
+  testPathIgnorePatterns: ['<rootDir>/'],
+  transform: {
+    '\\.[jt]sx?$': '<rootDir>/babel-jest-config.js'
+  }
 };
