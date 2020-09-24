@@ -43,6 +43,8 @@ const store = window.WebChat.createStore({}, ({ dispatch } => next => action => 
 
 Expand your middleware method to filter the activities you want to listen for (in this case, incoming activities). When the incoming activity is received, the activities will be further filtered to wait for the `activity.name` of `'sample:backchannel'`
 
+> When processing any bot activities, always validate its content against an allowed list and treat it as user input.
+
 ```diff
   const store = window.WebChat.createStore(
     {},
