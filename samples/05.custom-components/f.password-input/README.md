@@ -189,6 +189,8 @@ Finally, set up `activityMiddleware` to add the `<PasswordInputActivity />` comp
 
 When the bot send an event activity with the name `passwordInput`, show the `<PasswordInputActivity>` component instead.
 
+> When processing any bot activities, always validate its content against an allowed list and treat it as user input.
+
 ```diff
 + const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
 +   const { name, type } = activity;
