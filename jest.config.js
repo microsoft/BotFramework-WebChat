@@ -15,7 +15,7 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  modulePathIgnorePatterns: ['<rootDir>/samples/**'],
+  modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
   reporters: [
     'default',
     [
