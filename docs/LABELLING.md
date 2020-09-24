@@ -21,7 +21,7 @@ Below are a list of labels that differ from the recommended set from above:
 
 ### Status labels:
 
--  instead of `needs-triage`, the following will be used:
+-  Instead of `needs-triage`, the following will be used:
    -  `needs-scheduling`
    -  `needs-scope`
    -  `needs-repro`
@@ -43,5 +43,5 @@ Label renames:
 
 ### Notes:
 
--  At the time of writing this document, Automation labels have not been implemented in Web Chat
--  ALL bugs not scheduled for the current milestone should be listed in `front-burner`
+-  At the time of writing this document, automation labels have not been implemented in Web Chat
+-  All bugs not scheduled for the current milestone should be listed in `front-burner`
