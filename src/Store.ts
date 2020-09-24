@@ -1,5 +1,6 @@
 import { HostConfig } from 'adaptivecards';
 import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
+import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
@@ -27,6 +28,16 @@ export const sendMessage = (text: string, from: User, locale: string) => ({
         textFormat: 'plain',
         timestamp: (new Date()).toISOString()
     }} as ChatActions);
+
+export const addMessageToConversation = (id: string, message: string, senderType: string, conversationId: string) => ({
+    type: 'Add_Message_To_Conversation',
+    conversation_id: conversationId,
+    message: {
+        id,
+        message,
+        sender_type: senderType
+    }
+} as ChatActions);
 
 export const sendFiles = (files: FileList, from: User, locale: string) => ({
     type: 'Send_Message',
@@ -432,6 +443,13 @@ export type ConversationAction = {
     type: 'Set_Conversation_Ids';
     botId: string;
     organizationId: string;
+} | {
+    type: 'Add_Message_To_Conversation';
+    conversation_id: string;
+    message: any;
+} | {
+    type: 'Add_Conversation';
+    conversation: Conversation;
 };
 
 export type HistoryAction = {
@@ -491,6 +509,37 @@ export const conversations: Reducer<ConversationState> = (
                 ...state,
                 botId: action.botId,
                 organizationId: action.organizationId
+            };
+        }
+        case 'Add_Message_To_Conversation': {
+            const conversation = state.conversations.find((conversation: Conversation) => conversation.msft_conversation_id === action.conversation_id);
+            const updatedConversations = state.conversations.filter((conversation: Conversation) => conversation.msft_conversation_id !== action.conversation_id);
+            const now = moment().format();
+            return {
+                ...state,
+                conversations: [
+                    {
+                        ...conversation,
+                        conversation_messages: [
+                            ...conversation.conversation_messages,
+                            action.message
+                        ],
+                        updated_at: now
+                    },
+                    ...updatedConversations
+                ]
+            };
+        }
+        case 'Add_Conversation': {
+            return {
+                ...state,
+                conversations: [
+                    ...state.conversations,
+                    {
+                        ...action.conversation,
+                        conversation_messages: []
+                    }
+                ]
             };
         }
         default:

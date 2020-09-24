@@ -44,6 +44,7 @@ export interface HistoryProps {
     bot: User;
     selectedActivity: BehaviorSubject<ActivityOrID>;
     handleIncomingActivity: (activity: Activity) => void;
+    handleNewConversation: (conversation: Conversation) => void;
     speechOptions?: SpeechOptions;
 }
 
@@ -76,6 +77,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             handleIncomingActivity,
             startConversation,
             restartConversation,
+            handleNewConversation,
             format,
             selectActivity,
             speechOptions,
@@ -108,7 +110,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         organizationId,
                         directLine.secret,
                         window.location.toString()
-                    );
+                    ).then(({data: {conversation}}: any) => {
+                        handleNewConversation(conversation);
+                    });
 
                     // Send initial message to start conversation
                     startConversation(sendMessage(format.strings.pingMessage, user, format.locale));
@@ -371,7 +375,8 @@ export const History = connect(
         gid: ownProps.gid,
         directLine: ownProps.directLine,
         handleIncomingActivity: ownProps.handleIncomingActivity,
-        isNew: ownProps.isNew
+        isNew: ownProps.isNew,
+        handleNewConversation: ownProps.handleNewConversation
     }), {
         withRef: true
     }

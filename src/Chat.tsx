@@ -15,7 +15,7 @@ import { guid } from './GUID';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
-import { ChatActions, Conversation, createStore } from './Store';
+import { addMessageToConversation, ChatActions, Conversation, createStore } from './Store';
 import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
@@ -139,6 +139,7 @@ export class Chat extends React.Component<ChatProps, State> {
         switch (activity.type) {
             case 'message':
                 this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
+                this.store.dispatch<ChatActions>(addMessageToConversation(activity.id, activity.text, activity.from.id === state.connection.user.id ? 'chatbot_user' : 'bot', activity.conversation.id));
                 break;
 
             case 'typing':
@@ -402,6 +403,22 @@ export class Chat extends React.Component<ChatProps, State> {
         this.forceUpdate();
     }
 
+    handleNewConversation = (conversation: Conversation) => {
+        const conversationWithMessages: Conversation = {
+            ...conversation,
+            conversation_messages: []
+        };
+        this.store.dispatch<ChatActions>({
+            type: 'Add_Conversation',
+            conversation
+        });
+        this.store.dispatch<ChatActions>({
+            type: 'Set_Selected_Conversation',
+            conversation: conversationWithMessages
+        });
+        this.forceUpdate();
+    }
+
     private calculateChatviewPanelStyle = (format: FormatOptions) => {
         const alignment = format && format.alignment;
         const fullHeight = format && format.fullHeight;
@@ -486,10 +503,10 @@ export class Chat extends React.Component<ChatProps, State> {
                         {
                             !!state.format.chatTitle &&
                                 <div className="wc-header" style={{borderBottomColor: color}}>
-                                    {(selectedConversation || isNew) &&
-                                        (<button onClick={() => removeSelectedConversation()} className="wc-header-backButton">
+                                    {selectedConversation &&
+                                        <button onClick={() => removeSelectedConversation()} className="wc-header-backButton">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40px" height="40px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
-                                        </button>)
+                                        </button>
                                     }
                                     <img
                                         className="wc-header--logo"
@@ -521,11 +538,12 @@ export class Chat extends React.Component<ChatProps, State> {
                                 directLine={this.props.directLine}
                                 handleIncomingActivity={(activity: Activity) => this.handleIncomingActivity(activity)}
                                 isNew={isNew}
+                                handleNewConversation={(conversation: Conversation) => this.handleNewConversation(conversation)}
                             />
                             :  <PastConversations setSelectedConversation={setSelectedConversation} />
                         }
 
-                        {(selectedConversation || isNew)
+                        {selectedConversation
                             ? <Shell ref={ this._saveShellRef } />
                             : (<div className="new-conversation-button-wrapper">
                                  <button className="new-conversation-button" onClick={() => this.newConversationClick()}>Begin a New Conversation</button>

@@ -44,7 +44,7 @@ class PastConversationsView extends React.Component<Props> {
             conversations
               .filter(
                 ({conversation_messages}: Conversation) =>
-                  conversation_messages.filter((cm: any) => cm.sender_type === 'chatbot_user').length > 1
+                  conversation_messages.filter((cm: any) => cm.sender_type === 'chatbot_user').length > 0
               )
               .map((conversation: Conversation) => {
                 const { conversation_messages } = conversation;
