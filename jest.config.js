@@ -5,9 +5,11 @@ module.exports = {
     '<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/*.{spec,test}.{js,jsx,ts,tsx}',
     '!<rootDir>/*.json',
-    '!<rootDir>/node_modules/**',
-    '!<rootDir>/packages/playground/**',
-    '!<rootDir>/samples/**'
+  ],
+  coveragePathIgnorePatterns: [
+    '!<rootDir>/node_modules/',
+    '!<rootDir>/packages/playground/',
+    '!<rootDir>/samples/'
   ],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
   globals: {
