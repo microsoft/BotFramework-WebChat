@@ -74,7 +74,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
       if (!(key in json)) {
         return currentText;
       }
-      const newLine = ' * ' + key + ': ' + json[key];
+      const newLine = key + ': ' + json[key];
       if (currentText !== '') {
         return currentText.concat('\n', newLine);
       }
@@ -85,7 +85,11 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
       const selected = json.selected;
       let frmt = '';
       selected.forEach(s => {
-        frmt += ` * ${s}\n`;
+        if (frmt !== '') {
+          frmt += '\n';
+        }
+
+        frmt += `${s}`;
       });
       return frmt;
     }
@@ -153,7 +157,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 <div>
                     <FormattedText
                         text={ this.formatText(activity.text) }
-                        format="markdown"
+                        format={activity.textFormat}
                         onImageLoad={ props.onImageLoad }
                     />
                     <Attachments
