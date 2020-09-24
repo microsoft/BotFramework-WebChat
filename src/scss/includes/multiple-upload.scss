@@ -14,6 +14,9 @@
   }
 
   .wc-suggested-options{
+    display: flex;
+    flex-direction: column;
+
     ul{
       overflow-y: auto;
       overflow-x: hidden;
@@ -22,8 +25,6 @@
         max-height: 28vh;
       }
     }
-
-    
 
     li{
       color: $c_brand;
@@ -49,6 +50,11 @@
     li:active {
         background-color: $c_brand;
         color: #ffffff;
+    }
+
+    &-submit {
+      align-self: center;
+      width: 60%;
     }
   }
 

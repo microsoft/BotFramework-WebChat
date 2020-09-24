@@ -93,7 +93,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, MultipleChoiceS
                         { action.title }
                     </li>
                 ) }</ul>
-                {this.props.multipleSelect && <button onClick={e => this.submitMultipleSelect(e)}>Submit</button>}
+                {this.props.multipleSelect && <button className="wc-suggested-options-submit" onClick={e => this.submitMultipleSelect(e)}>Submit</button>}
             </div>
         );
     }
