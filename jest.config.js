@@ -15,6 +15,9 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/samples/**'
+  ],
   reporters: [
     'default',
     [
@@ -106,5 +109,6 @@ module.exports = {
     }
   ],
   // All tests are configured in the "projects" properties, ignoring the root.
-  testPathIgnorePatterns: ['<rootDir>']
+  testMatch: [],
+  testPathIgnorePatterns: ['<rootDir>/']
 };
