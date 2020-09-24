@@ -13,7 +13,7 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
+  modulePathIgnorePatterns: ['<rootDir>/samples/'],
   reporters: [
     'default',
     [
@@ -68,7 +68,7 @@ module.exports = {
   projects: [
     {
       displayName: 'directlinespeech-sdk',
-      modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
+      modulePathIgnorePatterns: ['<rootDir>/samples/'],
       testMatch: ['<rootDir>/packages/directlinespeech/__tests__/**/*.js'],
       testPathIgnorePatterns: ['<rootDir>/packages/directlinespeech/__tests__/utilities/'],
       transform: {
@@ -77,13 +77,13 @@ module.exports = {
     },
     {
       displayName: 'unit-tests',
-      modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
+      modulePathIgnorePatterns: ['<rootDir>/samples/'],
       testMatch: ['<rootDir>/packages/**/*.spec.js', '<rootDir>/packages/**/*.test.js'],
       testPathIgnorePatterns: ['<rootDir>/packages/playground/']
     },
     {
       displayName: 'webchat-html',
-      modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
+      modulePathIgnorePatterns: ['<rootDir>/samples/'],
       setupFilesAfterEnv: ['<rootDir>/__tests__/html/__jest__/perTest/setupAfterEnv.js'],
       testMatch: ['<rootDir>/__tests__/html/**/*.js'],
       testPathIgnorePatterns: [
@@ -94,7 +94,7 @@ module.exports = {
     },
     {
       displayName: 'webchat-webdriver',
-      modulePathIgnorePatterns: ['<rootDir>/samples/**/*'],
+      modulePathIgnorePatterns: ['<rootDir>/samples/'],
       setupFilesAfterEnv: ['<rootDir>/__tests__/webdriver/__jest__/perTest/setupAfterEnv.js'],
       testMatch: ['<rootDir>/__tests__/webdriver/**/*.js'],
       testPathIgnorePatterns: ['<rootDir>/__tests__/webdriver/__jest__/']
