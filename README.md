@@ -110,6 +110,13 @@ WebChat looks for following parameters in the URL when implemented on any page:
   * `#feedbot-test-mode` sets `testMode: true` into the `userData` object enables test mode in the chatbot for given user
   * `#feedbot-intro-dialog` overrides default bot dialog which is started when user opens webchat and also value set by `introDialog.id` in the webchat settings 
 
+### Window events
+WebChat is listening for following custom events on global `window` object:
+  * `feedbot:trigger-dialog` starts selected dialog specified in `dialog` property of `CustomEvent` (for example `window.dispatchEvent(new CustomEvent('feedbot:trigger-dialog', { detail: 'package-status' }))`)
+  * `feedbot:start-over` restarts conversation, which is the same behavior as `startOverTrigger` callback in config above (for example `window.dispatchEvent(new CustomEvent('feedbot:start-over'))`)
+
+If support of Internet Explorer is required, please provide use [fallback](https://gomakethings.com/custom-events-in-internet-explorer-with-vanilla-js/) to support custom event creation there.
+
 ### Advanced customization
 If you want to use WebChat directly as the component in your React app or you just want to customize it more than described above, check out the [advanced README](https://github.com/wearefeedyou/feedbot-webchat/blob/master/README-ADVANCED.md) or contact [Feedyou](mailto:hello@feedyou.agency) directly.
 

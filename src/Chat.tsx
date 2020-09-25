@@ -293,6 +293,9 @@ export class Chat extends React.Component<ChatProps, {}> {
             console.log('starting over')
             sendPostBack(botConnection, "start over", {}, this.props.user, this.props.locale)
         })
+        window.addEventListener('feedbot:start-over', () => {
+            sendPostBack(botConnection, "start over", {}, this.props.user, this.props.locale)
+        })
         
         this.fbPixelEventsSubscription = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "facebook-pixel-track-event")
@@ -335,6 +338,24 @@ export class Chat extends React.Component<ChatProps, {}> {
                 konsole.log('"beginIntroDialog" event sent');
             });
         }
+
+        // FEEDYOU - way to trigger dialog from anywhere using window event
+        // polyfill needed for IEs https://gomakethings.com/custom-events-in-internet-explorer-with-vanilla-js/
+        window.addEventListener('feedbot:trigger-dialog', (event: CustomEvent) => {
+            console.log('feedbot:trigger-dialog', event.detail, event)
+            const dialogId = event.detail
+            if (dialogId) {
+                botConnection.postActivity({
+                    from: this.props.user,
+                    name: 'beginIntroDialog',
+                    type: 'event',
+                    value: '',
+                    channelData: {id: dialogId}
+                }).subscribe(function (id: any) {
+                    konsole.log('"beginIntroDialog" event sent', dialogId);
+                });
+            }
+        })
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus: any) =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
