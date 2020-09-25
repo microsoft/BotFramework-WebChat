@@ -20,6 +20,8 @@ This sample shows how to set up a Web Chat client that will forward all incoming
 
 First, we will set up our store to use middleware that will dispatch an event whenever an incoming activity is received.
 
+> When processing any bot activities, always validate its content against an allowed list and treat it as user input.
+
 ```diff
   const store = window.WebChat.createStore(
     {},

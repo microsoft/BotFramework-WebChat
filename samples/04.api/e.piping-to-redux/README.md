@@ -61,6 +61,8 @@ if (color) {
 
 Here is `dispatchIncomingActivityMiddleware`:
 
+> When processing any bot activities, always validate its content against an allowed list and treat it as user input.
+
 <!-- prettier-ignore-start -->
 ```js
 export default function(dispatch) {
