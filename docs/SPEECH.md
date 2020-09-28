@@ -258,6 +258,10 @@ If you customize Web Chat to perform any text-to-speech operations before user g
 
 You can present a splash screen with a tap-to-continue button, which will ready the engine by sending an empty utterance to unblock Safari.
 
+#### Special considerations for Cordova on Android
+
+Cordova apps require additional permission for speech synthesis on Android. An example plugin that works with Web Chat is the [`cordova-plugin-k-webrtc-permission`](https://www.npmjs.com/package/cordova-plugin-k-webrtc-permission). Please note that this plugin can enable permissions beyond the necessary scope for Web Chat, and developers should only enable what their particular application needs.
+
 ## Setting up Web Chat
 
 To use Cognitive Services in Web Chat, you will need to add minimal setup code to set up Web Chat with your Cognitive Services subscription.
