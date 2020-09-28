@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Resolves [#3281](https://github.com/microsoft/BotFramework-WebChat/issues/3281). Added documentation on speech permissions for Cordova apps on Android, by [@corinagum](https://github.com/corinagum), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Resolves [#3281](https://github.com/microsoft/BotFramework-WebChat/issues/3281). Added documentation on speech permissions for Cordova apps on Android, by [@corinagum](https://github.com/corinagum), in PR [#3508](https://github.com/microsoft/BotFramework-WebChat/pull/3508)
 
 ## [4.10.1] - 2020-09-09
 
