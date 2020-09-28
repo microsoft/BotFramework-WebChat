@@ -123,9 +123,11 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
                   );
                 }
 
-                console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
+                console.warn(
+                  'botframework-webchat: No-magic-code OAuth flow is not supported on this Direct Line adapter.'
+                );
 
-                return value;
+                return Promise.resolve(value);
               }
             : null,
         target

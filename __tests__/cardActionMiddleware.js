@@ -91,3 +91,53 @@ test('card action "signin"', async () => {
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('card action "signin" when directLine.getSessionId is falsy', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    disableNoMagicCode: true,
+    props: {
+      cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
+        if (cardAction.type === 'signin') {
+          getSignInUrl().then(url => {
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              payload: {
+                text: `Signing into ${new URL(url).host}`
+              }
+            });
+          });
+        } else {
+          return next(cardAction);
+        }
+      }
+    },
+    useProductionBot: true
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+  const transcript = await getTranscript(driver);
+  const openUrlButton = await transcript.findElement(By.css('button'));
+
+  await openUrlButton.click();
+  await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+
+  // When the "Sign in" button is clicked, the focus move to it, need to blur it.
+  await driver.executeScript(() => {
+    const { activeElement } = document;
+
+    activeElement && activeElement.blur();
+  });
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  expect(await pageObjects.getConsoleErrors()).toEqual([]);
+  expect(await pageObjects.getConsoleWarnings()).toEqual([
+    'botframework-webchat: No-magic-code OAuth flow is not supported on this Direct Line adapter.'
+  ]);
+});

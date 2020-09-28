@@ -97,7 +97,7 @@ describe('speech synthesis', () => {
     await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-    expect((await pageObjects.getConsoleLogs()).filter(([type]) => type === 'error')).toEqual([]);
+    expect(await pageObjects.getConsoleErrors()).toEqual([]);
   });
 
   test('should stop synthesis after clicking on microphone button', async () => {
