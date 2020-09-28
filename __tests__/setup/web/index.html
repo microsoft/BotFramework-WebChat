@@ -3,7 +3,7 @@
   <head>
     <title>Web Chat: Automated test harness</title>
     <script>
-      !(function() {
+      !(function () {
         'use strict';
 
         const { console } = window;
@@ -99,9 +99,7 @@
             payload: {
               activity: {
                 from: { id: 'bot' },
-                id: Math.random()
-                  .toString(36)
-                  .substr(2, 10),
+                id: Math.random().toString(36).substr(2, 10),
                 name: 'hook',
                 type: 'event',
                 value: { args, name, reject, resolve }
@@ -146,6 +144,7 @@
         let {
           createDirectLine,
           createStyleSet,
+          disableNoMagicCode,
           props,
           setup,
           storeInitialState = {},
@@ -184,6 +183,10 @@
 
           createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
           directLine = (createDirectLine || window.WebChat.createDirectLine)({ token });
+        }
+
+        if (disableNoMagicCode) {
+          directLine.getSessionId = undefined;
         }
 
         const store = (window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
