@@ -260,31 +260,9 @@ You can also use any speech engines which support [W3C Web Speech API standard](
 
 # How to test with Web Chat's latest bits
 
-_Testing unreleased features is only available via MyGet packaging at this time._
+Web Chat latest bits are available on the [Web Chat daily releases page](https://github.com/microsoft/BotFramework-WebChat/releases/daily).
 
-If you want to test a feature or bug fix that has not yet been released, you will want to point your Web Chat package to Web Chat's daily feed, as opposed the official npmjs feed.
-
-Currently, you may access Web Chat's dailies by subscribing to our MyGet feed. To do this, you will need to update the registry in your project. **This change is reversible, and our directions include how to revert back to subscribing to the official release**.
-
-## Subscribe to latest bits on `myget.org`
-
-To do this you may add your packages and then change the registry of your project.
-
-1. Add your project dependencies other than Web Chat.
-1. In your project's root directory, create a `.npmrc` file
-1. Add the following line to your file: `registry=https://botbuilder.myget.org/F/botframework-webchat/npm/`
-1. Add Web Chat to your project dependencies `npm i botframework-webchat --save`
-1. Note that in your `package-lock.json`, the registries pointed to are now MyGet. The Web Chat project has upstream source proxy enabled, which will redirect non-MyGet packages to `npmjs.com`.
-
-## Re-subscribe to official release on `npmjs.com`
-
-Re-subscribing requires that you reset your registry.
-
-1. Delete your `.npmrc file`
-1. Delete your root `package-lock.json`
-1. Remove your `node_modules` directory
-1. Reinstall your packages with `npm i`
-1. Note that in your `package-lock.json`, the registries are pointing to https://npmjs.com/ again.
+Dailies will be released after 3:00AM Pacific Standard Time when changes have been committed to the main branch.
 
 # Contributing
 
