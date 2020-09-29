@@ -1,13 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback } from 'react';
 
-import useDirection from '../hooks/useDirection';
-import useLocalizer from '../hooks/useLocalizer';
-import useScrollToEnd from '../hooks/useScrollToEnd';
+import { safari } from '../Utils/detectBrowser';
 import useStyleSet from '../hooks/useStyleSet';
 
-import { safari } from '../Utils/detectBrowser';
+const { useDirection, useLocalizer, useScrollToEnd } = hooks;
 
 const ScrollToEndButton = forwardRef(
   (

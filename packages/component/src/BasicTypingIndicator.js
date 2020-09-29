@@ -1,5 +1,6 @@
-import useActiveTyping from './hooks/useActiveTyping';
-import useRenderTypingIndicator from './hooks/useRenderTypingIndicator';
+import { hooks } from 'botframework-webchat-api';
+
+const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
 function useTypingIndicatorVisible() {
   const [activeTyping] = useActiveTyping();

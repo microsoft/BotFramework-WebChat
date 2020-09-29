@@ -17,7 +17,7 @@ export default function createActivityStatusRenderer(additionalMiddleware) {
       // The next line is not a React component. It is a render function.
       // eslint-disable-next-line react/display-name
       return () => (
-        <ErrorBox error={err} message="Failed to render activity status">
+        <ErrorBox error={err} type="render activity">
           <pre>{JSON.stringify({ message, stack }, null, 2)}</pre>
         </ErrorBox>
       );

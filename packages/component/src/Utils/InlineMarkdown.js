@@ -1,15 +1,17 @@
 /* eslint react/no-danger: "off" */
 
+import { hooks } from 'botframework-webchat-api';
+import createCustomEvent from 'botframework-webchat-api/lib/utils/createCustomEvent';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
-import createCustomEvent from '../Utils/createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import walkMarkdownTokens from './walkMarkdownTokens';
+
+const { useStyleOptions } = hooks;
 
 function replaceAnchorWithButton(markdownTokens) {
   return walkMarkdownTokens(markdownTokens, markdownToken => {

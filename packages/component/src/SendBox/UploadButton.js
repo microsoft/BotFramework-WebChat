@@ -1,15 +1,17 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { useCallback, useRef } from 'react';
 
+// TODO: No /lib/
+import downscaleImageToDataURL from 'botframework-webchat-api/lib/utils/downscaleImageToDataURL';
+
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
-import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
-import useDisabled from '../hooks/useDisabled';
-import useLocalizer from '../hooks/useLocalizer';
-import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useDisabled, useLocalizer, useSendFiles } = hooks;
 
 const ROOT_STYLE = {
   overflow: 'hidden',

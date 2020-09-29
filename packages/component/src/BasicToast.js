@@ -1,6 +1,7 @@
 /* eslint react/forbid-dom-props: "off" */
 /* eslint react/no-danger: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
@@ -9,11 +10,11 @@ import DismissIcon from './Toast/DismissIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
 import ScreenReaderText from './ScreenReaderText';
-import useDismissNotification from './hooks/useDismissNotification';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const { useDismissNotification, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',

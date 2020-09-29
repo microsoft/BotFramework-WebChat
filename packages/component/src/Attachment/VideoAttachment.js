@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import VideoContent from './VideoContent';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import VideoContent from './VideoContent';
 
 const ROOT_STYLE = {
   display: 'flex',

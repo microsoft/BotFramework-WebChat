@@ -1,13 +1,11 @@
+import { hooks } from 'botframework-webchat-api';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
-import useDisabled from '../hooks/useDisabled';
-import useFocus from '../hooks/useFocus';
-import useLocalizer from '../hooks/useLocalizer';
-import useScrollToEnd from '../hooks/useScrollToEnd';
-import useSubmitSendBox from '../hooks/useSubmitSendBox';
+
+const { useDisabled, useFocus, useLocalizer, useScrollToEnd, useSubmitSendBox } = hooks;
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(

@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -15,20 +16,23 @@ import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
-import useActivities from './hooks/useActivities';
-import useCreateActivityRenderer from './hooks/useCreateActivityRenderer';
-import useCreateActivityStatusRenderer from './hooks/useCreateActivityStatusRenderer';
-import useCreateAvatarRenderer from './hooks/useCreateAvatarRenderer';
-import useDirection from './hooks/useDirection';
-import useFocus from './hooks/useFocus';
-import useGroupActivities from './hooks/useGroupActivities';
-import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
-import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
 import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const {
+  useActivities,
+  useCreateActivityRenderer,
+  useCreateActivityStatusRenderer,
+  useCreateAvatarRenderer,
+  useDirection,
+  useFocus,
+  useGroupActivities,
+  useLocalizer,
+  useStyleOptions
+} = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
@@ -71,7 +75,7 @@ function validateAllActivitiesTagged(activities, bins) {
   return activities.every(activity => bins.some(bin => bin.includes(activity)));
 }
 
-const BasicTranscript2 = ({ className }) => {
+const BasicTranscript = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
   const [
     { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
@@ -381,11 +385,11 @@ const BasicTranscript2 = ({ className }) => {
   );
 };
 
-BasicTranscript2.defaultProps = {
+BasicTranscript.defaultProps = {
   className: ''
 };
 
-BasicTranscript2.propTypes = {
+BasicTranscript.propTypes = {
   className: PropTypes.string
 };
 
@@ -522,4 +526,4 @@ InternalTranscriptScrollable.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
-export default BasicTranscript2;
+export default BasicTranscript;

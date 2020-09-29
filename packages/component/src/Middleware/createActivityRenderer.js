@@ -1,12 +1,14 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import concatMiddleware from './concatMiddleware';
 import createCoreActivityMiddleware from './Activity/createCoreMiddleware';
 import ErrorBox from '../ErrorBox';
-import useTrackException from '../hooks/useTrackException';
+
+const { useTrackException } = hooks;
 
 const SilentError = ({ message }) => {
   const trackException = useTrackException();

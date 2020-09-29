@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import WebChatReduxContext from './WebChatReduxContext';
-import WebChatUIContext from './WebChatUIContext';
+// TODO: Think about if we should also include WebChatUIContext.
+import WebChatReduxContext from 'botframework-webchat-api/lib/hooks/internal/WebChatReduxContext';
+import WebChatAPIContext from 'botframework-webchat-api/lib/hooks/internal/WebChatAPIContext';
 
 function removeUndefinedValues(map) {
   return Object.keys(map).reduce((result, key) => {
@@ -43,9 +44,9 @@ export default function connectToWebChat(...selectors) {
     )(Component);
 
     const WebChatConnectedComponent = props => (
-      <WebChatUIContext.Consumer>
+      <WebChatAPIContext.Consumer>
         {context => <ConnectedComponent {...props} context={context} />}
-      </WebChatUIContext.Consumer>
+      </WebChatAPIContext.Consumer>
     );
 
     return WebChatConnectedComponent;

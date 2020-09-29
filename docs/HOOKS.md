@@ -65,6 +65,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
 -  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
+-  [`useDictateAbortable`](#usedictateabortable)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
 -  [`useDirection`](#useDirection)
@@ -361,6 +362,10 @@ When called, this hook will return a debounced array of notifications.
 Due to debouncing, notifications retrieved using this hook may not be current. At the time of convergence, this hook will trigger another render.
 
 For the debounce behavior, please read our [article regarding notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md).
+
+## `useDictateAbortable`
+
+(TODO: TBD)
 
 ## `useDictateInterims`
 

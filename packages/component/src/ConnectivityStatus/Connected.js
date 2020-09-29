@@ -1,7 +1,9 @@
+import { hooks } from 'botframework-webchat-api';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useLocalizer from '../hooks/useLocalizer';
+
+const { useLocalizer } = hooks;
 
 const ConnectivityStatusConnected = () => {
   const localize = useLocalizer();

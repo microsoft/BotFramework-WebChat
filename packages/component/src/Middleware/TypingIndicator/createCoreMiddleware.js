@@ -1,12 +1,13 @@
 /* eslint react/prop-types: "off"*/
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
 import TypingAnimation from '../../Assets/TypingAnimation';
-import useDirection from '../../hooks/useDirection';
-import useLocalizer from '../../hooks/useLocalizer';
 import useStyleSet from '../../hooks/useStyleSet';
+
+const { useDirection, useLocalizer } = hooks;
 
 const DotIndicator = () => {
   const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();

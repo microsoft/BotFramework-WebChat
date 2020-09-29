@@ -3,12 +3,14 @@
 
 // The content rendered here is sanitized.
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../hooks/useStyleSet';
+
+const { useRenderMarkdownAsHTML } = hooks;
 
 const TextContent = ({ contentType, text }) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();

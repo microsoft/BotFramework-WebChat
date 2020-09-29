@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  Specific hooks are only available when using HTML version of Web Chat
+-  `activityMiddleware`, `attachmentMiddleware`, etc, now support passing in an array for multiple middleware
+
 ### Fixed
 
 -  Fixes [#3489](https://github.com/microsoft/BotFramework-WebChat/issues/3489). [Accessibility]: Fix AT saying 'Bot undefined said', by [@corinagum](https://github.com/corinagum) in PR [#3524](https://github.com/microsoft/BotFramework-WebChat/pull/3524)

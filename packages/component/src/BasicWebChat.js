@@ -1,9 +1,14 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 /* eslint react/no-unsafe: off */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+// TODO: No /lib/
+import useSendBoxFocusRef from 'botframework-webchat-api/lib/hooks/internal/useSendBoxFocusRef';
+import useTranscriptFocusRef from 'botframework-webchat-api/lib/hooks/internal/useTranscriptFocusRef';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
@@ -11,12 +16,10 @@ import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
-import useDisabled from './hooks/useDisabled';
-import useSendBoxFocusRef from './hooks/internal/useSendBoxFocusRef';
-import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import useTranscriptFocusRef from './hooks/internal/useTranscriptFocusRef';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const { useDisabled, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',

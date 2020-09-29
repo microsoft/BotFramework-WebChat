@@ -1,34 +1,35 @@
 /* eslint no-console: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
 import ScreenReaderText from './ScreenReaderText';
-import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
-import useTrackException from './hooks/useTrackException';
 
-const ErrorBox = ({ children, error, message }) => {
+const { useLocalizer, useTrackException } = hooks;
+
+const ErrorBox = ({ error, type }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const trackException = useTrackException();
 
   useEffect(() => {
-    const errorObject = error || new Error(message);
+    const errorObject = error || new Error(type);
 
     trackException(errorObject, false);
 
-    console.group(`botframework-webchat: ${message}`);
+    console.group(`botframework-webchat: ${type}`);
     console.error(errorObject);
     console.groupEnd();
-  }, [error, message, trackException]);
+  }, [error, type, trackException]);
 
   return (
     <React.Fragment>
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
       <div className={errorBoxStyleSet}>
-        <div>{message}</div>
-        <div>{children}</div>
+        <div>{type}</div>
+        <div>{error.stack}</div>
       </div>
     </React.Fragment>
   );
@@ -37,13 +38,13 @@ const ErrorBox = ({ children, error, message }) => {
 ErrorBox.defaultProps = {
   children: undefined,
   error: undefined,
-  message: ''
+  type: ''
 };
 
 ErrorBox.propTypes = {
   children: PropTypes.any,
-  error: PropTypes.instanceOf(Error),
-  message: PropTypes.string
+  error: PropTypes.instanceOf(Error).isRequired,
+  type: PropTypes.string
 };
 
 export default ErrorBox;
