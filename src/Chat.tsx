@@ -14,7 +14,7 @@ import { ActivityOrID, FormatOptions } from './Types';
 import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
 import { ConnectionStatus } from 'botframework-directlinejs';
-import { createVisitorClient, VisitorClient, MessageSubType } from 'smartsupp-websocket'
+//import { createVisitorClient, VisitorClient, MessageSubType } from 'smartsupp-websocket'
 
 declare const fbq: Function;
 declare const dataLayer: Array<Object>;
@@ -83,7 +83,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private historyRef: React.Component;
     private chatviewPanelRef: HTMLElement;
 
-    private smartsupp: VisitorClient
+    //private smartsupp: VisitorClient
 
     private resizeListener = () => this.setSize();
 
@@ -92,7 +92,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private _saveChatviewPanelRef = this.saveChatviewPanelRef.bind(this);
     private _saveHistoryRef = this.saveHistoryRef.bind(this);
     private _saveShellRef = this.saveShellRef.bind(this);
-    private _smartsuppHandoff = this.smartsuppHandoff.bind(this);
+    //private _smartsuppHandoff = this.smartsuppHandoff.bind(this);
 
     constructor(props: ChatProps) {
         super(props);
@@ -259,7 +259,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 };
                 console.log('User data', newActivity.channelData.userData)
                 return botConnection.postActivityOriginal(newActivity);
-            } else if (this.smartsupp && activity.type === "message") {
+            /*} else if (this.smartsupp && activity.type === "message") {
                 console.log('Smartsupp send', activity.text, activity)
                 this.smartsupp.chatMessage({
                     content: {
@@ -267,7 +267,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                         text: activity.text,
                     },
                 })
-                return new Observable()
+                return new Observable()*/
             } else {
                 return botConnection.postActivityOriginal(activity);
             }
@@ -309,9 +309,9 @@ export class Chat extends React.Component<ChatProps, {}> {
             .filter((activity: any) => activity.type === "event" && activity.name === "google-tag-manager-track-event")
             .subscribe((activity: any) => trackGoogleTagManagerEvent(JSON.parse(activity.value)))
 
-        this.handoffSubscription = botConnection.activity$
+        /*this.handoffSubscription = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "handoff")
-            .subscribe((activity: any) => this._smartsuppHandoff(JSON.parse(activity.value)))
+            .subscribe((activity: any) => this._smartsuppHandoff(JSON.parse(activity.value)))*/
 
         this.webchatCollapseSubscribtion = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "webchat-collapse")
@@ -388,7 +388,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    smartsuppHandoff(options: SmartsuppHandoffOptions) {
+    /*smartsuppHandoff(options: SmartsuppHandoffOptions) {
         console.log('SMARTSUPP HANDOFF')
 
         this.smartsupp = createVisitorClient({
@@ -432,7 +432,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 } });      
             }  
         })
-    }
+    }*/
 
     componentWillUnmount() {
         this.fbPixelEventsSubscription.unsubscribe();
