@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped Cognitive Services Speech SDK to 1.13.1, by [@compulim](https://github.com/compulim) in PR [#3432](https://github.com/microsoft/BotFramework-WebChat/pull/3432)
    -  [`microsoft-cognitiveservices-speech-sdk@1.13.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)
 
+### Added
+
+-  Resolves [#3281](https://github.com/microsoft/BotFramework-WebChat/issues/3281). Added documentation on speech permissions for Cordova apps on Android, by [@corinagum](https://github.com/corinagum), in PR [#3508](https://github.com/microsoft/BotFramework-WebChat/pull/3508)
+
 ## [4.10.1] - 2020-09-09
 
 ### Breaking changes
@@ -1028,7 +1032,7 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Fixes [#1627](https://github.com/microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#2090](https://github.com/microsoft/BotFramework-WebChat/pull/2090)
 -  Fixes [#2001](https://github.com/microsoft/BotFramework-WebChat/issues/2001). Strip Markdown from ARIA labels, so screen readers do not speak Markdown in text, by [@corinagum](https://github.com/corinagum) in PR [#2096](https://github.com/microsoft/BotFramework-WebChat/pull/2096)
 -  Fixes [#1926](https://github.com/microsoft/BotFramework-WebChat/issues/1926). Fixed scroll stickiness issue when submitting an Adaptive Card form with suggested actions opened, by [@compulim](https://github.com/compulim) in PR [#2107](https://github.com/microsoft/BotFramework-WebChat/pull/2107)
--  Fixes [#2110](https://github.com/microsoft/BotFramework-WebChat/issues/2110). Fixed sendBox input/textarea background color issue, by [@tdurnford](https://github.com/johndoe) in PR [#2111](https://github.com/microsoft/BotFramework-WebChat/pull/2111)
+-  Fixes [#2110](https://github.com/microsoft/BotFramework-WebChat/issues/2110). Fixed sendBox input/textarea background color issue, by [@tdurnford](https://github.com/tdurnford) in PR [#2111](https://github.com/microsoft/BotFramework-WebChat/pull/2111)
 -  Fixes [#2104](https://github.com/microsoft/BotFramework-WebChat/issues/2104). Remove deprecated `/master/webchat**.js` links from samples, by [@corinagum](https://github.com/corinagum) in PR [#2105](https://github.com/microsoft/BotFramework-WebChat/pull/2105)
 -  Fixes [#1863](https://github.com/microsoft/BotFramework-WebChat/issues/1863). Remove title, subtitle, and text of cards from being spoken by [@corinagum](https://github.com/corinagum) in PR [#2118](https://github.com/microsoft/BotFramework-WebChat/pull/2118)
 -  Fixes [#2134](https://github.com/microsoft/BotFramework-WebChat/issues/2134). Added `azure-pipelines.yml` for embed package, by [@compulim](https://github.com/compulim) in PR [#2135](https://github.com/microsoft/BotFramework-WebChat/pull/2135)
