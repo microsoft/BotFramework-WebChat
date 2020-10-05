@@ -12,8 +12,6 @@ export default function createCoreMiddleware() {
   return [
     () => next => {
       const Attachment = args => {
-        // console.log('defaultAttachmentMiddleware', { activity, args, attachment });
-
         const {
           activity = {},
           activity: { from: { role } = {} } = {},

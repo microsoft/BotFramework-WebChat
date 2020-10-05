@@ -37,7 +37,7 @@ export function forRenderer(type, ...middleware) {
       } catch (err) {
         // The next line is not a React component. It is a render function.
         // eslint-disable-next-line react/display-name
-        return () => <ErrorBox error={err} message={`initialization of ${type}`} />;
+        return <ErrorBox error={err} message={`initialization of ${type}`} />;
       }
     };
   };

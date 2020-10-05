@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { isValidElement, useMemo } from 'react';
 
 import useCreateAttachmentRenderer from '../useCreateAttachmentRenderer';
 import useWebChatAPIContext from './useWebChatAPIContext';
@@ -18,6 +18,10 @@ export default function useCreateActivityRendererInternal(createAttachmentRender
       }
 
       return renderActivityOptions => {
+        if (isValidElement(renderActivity)) {
+          return renderActivity;
+        }
+
         const activityElement = renderActivity(
           (...renderAttachmentArgs) => createAttachmentRenderer(...renderAttachmentArgs),
           renderActivityOptions

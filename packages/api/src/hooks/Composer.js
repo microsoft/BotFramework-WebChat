@@ -41,9 +41,7 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
-// import concatMiddleware from './Middleware/concatMiddleware';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
-// import createDefaultGroupActivitiesMiddleware from './Middleware/GroupActivities/createCoreMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import Dictation from './internal/Dictation';
@@ -307,7 +305,16 @@ const Composer = ({
         'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
       );
 
-    return activityRenderer || applyMiddlewareForRenderer('activity', ...singleToArray(activityMiddleware))({});
+    return (
+      activityRenderer ||
+      applyMiddlewareForRenderer('activity', ...singleToArray(activityMiddleware), () => () => ({ activity }) => {
+        if (activity) {
+          throw new Error(`No renderer for activity of type "${activity.type}"`);
+        } else {
+          throw new Error('No activity to render');
+        }
+      })({})
+    );
   }, [activityMiddleware, activityRenderer]);
 
   const patchedActivityStatusRenderer = useMemo(() => {
@@ -336,7 +343,7 @@ const Composer = ({
     return applyMiddlewareForRenderer(
       'attachment',
       ...singleToArray(attachmentMiddleware),
-      () => () => ({ attachment }) => () => {
+      () => () => ({ attachment }) => {
         if (attachment) {
           throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
         } else {
@@ -384,7 +391,7 @@ const Composer = ({
 
     return (
       typingIndicatorRenderer ||
-      applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware))({})
+      applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware), () => () => () => false)({})
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
