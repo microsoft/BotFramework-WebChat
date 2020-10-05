@@ -3,13 +3,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-// TODO: No /lib/
-import useForceRender from 'botframework-webchat-api/lib/hooks/internal/useForceRender';
-import useTimer from 'botframework-webchat-api/lib/hooks/internal/useTimer';
-
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
+import useForceRender from '../hooks/internal/useForceRender';
 import useStyleSet from '../hooks/useStyleSet';
+import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;

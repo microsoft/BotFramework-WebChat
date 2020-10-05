@@ -1,11 +1,11 @@
 /* eslint react/no-danger: "off" */
 
 import { hooks } from 'botframework-webchat-api';
-import createCustomEvent from 'botframework-webchat-api/lib/utils/createCustomEvent';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
+import createCustomEvent from './createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
@@ -89,11 +89,7 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
   const html = useMemo(() => {
     const tree = markdownIt.parseInline(children, {
-      references: references.reduce(
-        // (references, key) => ({ ...references, [key]: { href: `#${key}` } }),
-        (references, key) => ({ ...references, [key]: { href: `#${refToHref[key]}` } }),
-        {}
-      )
+      references: references.reduce((references, key) => ({ ...references, [key]: { href: `#${refToHref[key]}` } }), {})
     });
 
     // Turn "<a href="#retry">Retry</a>" into "<button data-ref="retry" type="button">Retry</button>"

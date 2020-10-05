@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { createElement, useCallback, useState } from 'react';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
 import useErrorBoxClass from '../internal/useErrorBoxClass';
@@ -12,7 +12,7 @@ const UserlandBoundary = ({ children, type }) => {
   // console.log('UserlandBoundary', { children });
 
   return error ? (
-    React.createElement(errorBoxClass, { error, type })
+    createElement(errorBoxClass, { error, type })
   ) : (
     <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
   );

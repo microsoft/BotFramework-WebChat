@@ -4,8 +4,10 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
+import useFocus from '../hooks/useFocus';
+import useScrollToEnd from '../hooks/useScrollToEnd';
 
-const { useDisabled, useFocus, useLocalizer, useScrollToEnd, useSubmitSendBox } = hooks;
+const { useDisabled, useLocalizer, useSubmitSendBox } = hooks;
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(

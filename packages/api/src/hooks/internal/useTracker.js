@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { checkSupport as supportWorker } from '../../utils/downscaleImageToDataURLUsingWorker';
 import { speechSynthesis } from './BypassSpeechSynthesisPonyfill';
 import useLanguage from '../useLanguage';
 import useTrackDimension from '../useTrackDimension';
@@ -38,10 +37,6 @@ function useTracker() {
     // TODO: [P2] #2937 Differentiate between Cognitive Services and browser speech
     trackDimension('prop:speechSynthesis', !!speechSynthesisCapability + '');
   }, [trackDimension, speechSynthesisCapability]);
-
-  useEffect(() => {
-    trackDimension('capability:downscaleImage:workerType', supportWorker() ? 'web worker' : 'main');
-  }, [trackDimension]);
 
   useEffect(() => {
     trackEvent('init');

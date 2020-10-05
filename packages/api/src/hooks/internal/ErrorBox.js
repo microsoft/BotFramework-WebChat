@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { createElement, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import useTrackException from '../useTrackException';
 import useErrorBoxClass from './useErrorBoxClass';
+import useTrackException from '../useTrackException';
 
 const ErrorBox = ({ error, type }) => {
   const [errorBoxClass] = useErrorBoxClass();
@@ -15,7 +15,7 @@ const ErrorBox = ({ error, type }) => {
   // console.log({ error, errorBoxClass, type });
   // console.trace();
 
-  return React.createElement(errorBoxClass, { error, type });
+  return createElement(errorBoxClass, { error, type });
 };
 
 ErrorBox.defaultProps = {

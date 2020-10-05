@@ -1,5 +1,4 @@
 import blobToArrayBuffer from './blobToArrayBuffer';
-import memoizeOne from 'memoize-one';
 import workerFunction from './downscaleImageToDataURLUsingWorker.worker';
 
 function createWorker(fn) {
@@ -60,33 +59,47 @@ const checkSupportOffscreenCanvas = () => {
   return typeof window.createImageBitmap !== 'undefined' && hasOffscreenCanvas && isOffscreenCanvasSupportGetContext2D;
 };
 
-const checkSupportWebWorker = memoizeOne(async () => {
-  if (typeof window.MessageChannel === 'undefined' || typeof window.Worker === 'undefined') {
-    return false;
-  }
+let checkSupportWebWorkerPromise;
 
-  let worker;
+function checkSupportWebWorker() {
+  return (
+    checkSupportWebWorkerPromise ||
+    (checkSupportWebWorkerPromise = (async () => {
+      if (typeof window.MessageChannel === 'undefined' || typeof window.Worker === 'undefined') {
+        return false;
+      }
 
-  try {
-    worker = await createWorker('function(){postMessage("ready")}');
-  } catch (err) {
-    return false;
-  }
+      let worker;
 
-  worker.terminate();
+      try {
+        worker = await createWorker('function(){postMessage("ready")}');
+      } catch (err) {
+        return false;
+      }
 
-  return true;
-});
+      worker.terminate();
 
-const checkSupport = memoizeOne(async () => {
-  try {
-    const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
+      return true;
+    })())
+  );
+}
 
-    return results.every(result => result);
-  } catch (err) {
-    return false;
-  }
-});
+let checkSupportPromise;
+
+function checkSupport() {
+  return (
+    checkSupportPromise ||
+    (checkSupportPromise = (async () => {
+      try {
+        const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
+
+        return results.every(result => result);
+      } catch (err) {
+        return false;
+      }
+    })())
+  );
+}
 
 export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality) {
   return new Promise((resolve, reject) => {

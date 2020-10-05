@@ -6,9 +6,10 @@ import React, { useCallback } from 'react';
 import connectToWebChat from '../../../connectToWebChat';
 import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
+import useFocus from '../../../hooks/useFocus';
 import useStyleSet from '../../../hooks/useStyleSet';
 
-const { useFocus, useLocalizer, usePostActivity } = hooks;
+const { useLocalizer, usePostActivity } = hooks;
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }

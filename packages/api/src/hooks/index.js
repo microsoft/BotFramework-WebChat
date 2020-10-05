@@ -17,8 +17,6 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
-import useFocus from './useFocus';
-import useFocusSendBox from './useFocusSendBox';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
 import useGroupActivities from './useGroupActivities';
@@ -29,7 +27,6 @@ import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
 import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
-// import useObserveScrollPosition from './useObserveScrollPosition';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
@@ -38,11 +35,8 @@ import useRenderActivity from './useRenderActivity';
 import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
 import useRenderAvatar from './useRenderAvatar';
-import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
-// import useScrollTo from './useScrollTo';
-// import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
 import useSendFiles from './useSendFiles';
@@ -56,8 +50,6 @@ import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
 import useStopDictate from './useStopDictate';
 import useStyleOptions from './useStyleOptions';
-// TODO: Move useStyleSet to component (DOM only)
-// import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
 import useTimeoutForSend from './useTimeoutForSend';
@@ -69,11 +61,6 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
-
-// import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
-// import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
-// import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
-// import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 
 export {
   useActiveTyping,
@@ -95,8 +82,6 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
-  useFocus,
-  useFocusSendBox,
   useGetSendTimeoutForActivity,
   useGrammars,
   useGroupActivities,
@@ -107,9 +92,6 @@ export {
   useLocalizeDate,
   useLocalizer,
   useMarkActivityAsSpoken,
-  // useMicrophoneButtonClick,
-  // useMicrophoneButtonDisabled,
-  // useObserveScrollPosition,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
@@ -118,12 +100,8 @@ export {
   useRenderActivityStatus,
   useRenderAttachment,
   useRenderAvatar,
-  useRenderMarkdownAsHTML,
   useRenderToast,
   useRenderTypingIndicator,
-  // useScrollTo,
-  // useScrollToEnd,
-  // useSendBoxSpeechInterimsVisible,
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
@@ -137,17 +115,13 @@ export {
   useStartDictate,
   useStopDictate,
   useStyleOptions,
-  // useStyleSet,
   useSubmitSendBox,
   useSuggestedActions,
-  // useTextBoxSubmit,
-  // useTextBoxValue,
   useTimeoutForSend,
   useTrackDimension,
   useTrackEvent,
   useTrackException,
   useTrackTiming,
-  // useTypingIndicatorVisible,
   useUserID,
   useUsername,
   useVoiceSelector,

@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback } from 'react';
 
 import { safari } from '../Utils/detectBrowser';
+import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
-const { useDirection, useLocalizer, useScrollToEnd } = hooks;
+const { useDirection, useLocalizer } = hooks;
 
 const ScrollToEndButton = forwardRef(
   (

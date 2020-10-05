@@ -1,8 +1,7 @@
-import concatMiddleware from '../concatMiddleware';
 import createToastMiddleware from '../../Toast/createToastMiddleware';
 
 function createCoreMiddleware() {
-  return concatMiddleware(
+  return [
     () => next => (...args) => {
       const [
         {
@@ -15,7 +14,7 @@ function createCoreMiddleware() {
       return id !== 'connectivitystatus' && next(...args);
     },
     createToastMiddleware()
-  );
+  ];
 }
 
 export default createCoreMiddleware;

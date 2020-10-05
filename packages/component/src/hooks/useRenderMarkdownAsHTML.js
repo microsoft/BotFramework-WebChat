@@ -1,10 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
-import useStyleOptions from '../hooks/useStyleOptions';
-import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import useWebChatUIContext from './internal/useWebChatUIContext';
+
+const { useStyleOptions } = hooks;
 
 export default function useRenderMarkdownAsHTML() {
-  const { renderMarkdown } = useWebChatAPIContext();
+  const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
 
   return useMemo(() => renderMarkdown && (markdown => renderMarkdown(markdown, styleOptions)), [

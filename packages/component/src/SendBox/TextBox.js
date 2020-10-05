@@ -3,26 +3,17 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 
-// TODO: No /lib/
-import useReplaceEmoticon from 'botframework-webchat-api/lib/hooks/internal/useReplaceEmoticon';
-
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import connectToWebChat from '../connectToWebChat';
+import useFocus from '../hooks/useFocus';
+import useReplaceEmoticon from '../hooks/internal/useReplaceEmoticon';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
-const {
-  useDisabled,
-  useFocus,
-  useLocalizer,
-  useSendBoxValue,
-  useStopDictate,
-  useStyleOptions,
-  useSubmitSendBox
-} = hooks;
+const { useDisabled, useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useSubmitSendBox } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {

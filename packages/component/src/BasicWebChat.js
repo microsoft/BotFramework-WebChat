@@ -6,18 +6,16 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-// TODO: No /lib/
-import useSendBoxFocusRef from 'botframework-webchat-api/lib/hooks/internal/useSendBoxFocusRef';
-import useTranscriptFocusRef from 'botframework-webchat-api/lib/hooks/internal/useTranscriptFocusRef';
-
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
+import useSendBoxFocusRef from './hooks/internal/useSendBoxFocusRef';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useTranscriptFocusRef from './hooks/internal/useTranscriptFocusRef';
 
 const { useDisabled, useStyleOptions } = hooks;
 

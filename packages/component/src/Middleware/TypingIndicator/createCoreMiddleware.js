@@ -23,5 +23,5 @@ const DotIndicator = () => {
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware() {
-  return () => () => ({ visible }) => visible && <DotIndicator />;
+  return [() => () => ({ visible }) => visible && <DotIndicator />];
 }

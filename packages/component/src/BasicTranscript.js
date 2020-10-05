@@ -16,6 +16,7 @@ import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useFocus from './hooks/useFocus';
 import useMemoize from './hooks/internal/useMemoize';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
@@ -28,7 +29,6 @@ const {
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useDirection,
-  useFocus,
   useGroupActivities,
   useLocalizer,
   useStyleOptions

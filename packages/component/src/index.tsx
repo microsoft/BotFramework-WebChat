@@ -39,7 +39,13 @@ import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 // TODO: Add deprecation notes when someone is using hooks from bf-wc-component, instead of bf-wc-core.
-import { hooks } from 'botframework-webchat-api';
+import { hooks as apiHooks } from 'botframework-webchat-api';
+import * as componentHooks from './hooks/index';
+
+const hooks = {
+  ...apiHooks,
+  ...componentHooks
+};
 
 const version = process.env.npm_package_version;
 

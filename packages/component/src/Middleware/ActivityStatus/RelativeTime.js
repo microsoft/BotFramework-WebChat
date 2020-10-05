@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
-import useForceRenderAtInterval from 'botframework-webchat-api/lib/hooks/internal/useForceRenderAtInterval';
 
 import ScreenReaderText from '../../ScreenReaderText';
+import useForceRenderAtInterval from '../../hooks/internal/useForceRenderAtInterval';
 
 const { useDateFormatter, useLocalizer, useRelativeTimeFormatter } = hooks;
 

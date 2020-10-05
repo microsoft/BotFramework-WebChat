@@ -5,13 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
-// import createActivityRenderer from './Middleware/createActivityRenderer';
-// import createActivityStatusRenderer from './Middleware/createActivityStatusRenderer';
-// import createAttachmentRenderer from './Middleware/createAttachmentRenderer';
-// import createAvatarRenderer from './Middleware/createAvatarRenderer';
 import createCustomEvent from '../utils/createCustomEvent';
-// import createToastRenderer from './Middleware/createToastRenderer';
-// import createTypingIndicatorRenderer from './Middleware/createTypingIndicatorRenderer';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
@@ -48,13 +42,13 @@ import {
 } from 'botframework-webchat-core';
 
 // import concatMiddleware from './Middleware/concatMiddleware';
-// import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
+import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 // import createDefaultGroupActivitiesMiddleware from './Middleware/GroupActivities/createCoreMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import Dictation from './internal/Dictation';
 import mapMap from '../utils/mapMap';
-// import observableToPromise from './utils/observableToPromise';
+import observableToPromise from './utils/observableToPromise';
 import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import WebChatAPIContext from './internal/WebChatAPIContext';
@@ -63,6 +57,7 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './internal/BypassSpeechSynthesisPonyfill';
+
 import applyMiddleware, { forRenderer as applyMiddlewareForRenderer } from './middleware/applyMiddleware';
 import patchStyleOptions from '../patchStyleOptions';
 import singleToArray from './utils/singleToArray';
@@ -91,77 +86,46 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-// TODO: Fix this
 function createCardActionContext({ cardActionMiddleware, directLine, dispatch }) {
+  const runMiddleware = applyMiddleware(
+    'card action',
+    ...singleToArray(cardActionMiddleware),
+    createDefaultCardActionMiddleware()
+  )({ dispatch });
+
   return {
-    onCardAction: () => {
-      throw new Error('Implement onCardAction');
-    }
-  };
+    onCardAction: (cardAction, { target } = {}) =>
+      runMiddleware({
+        cardAction,
+        getSignInUrl:
+          cardAction.type === 'signin'
+            ? () => {
+                const { value } = cardAction;
 
-  // const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
+                if (directLine.getSessionId) {
+                  // TODO: [P3] We should change this one to async/await.
+                  //       This is the first place in this project to use async.
+                  //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
 
-  // return {
-  //   onCardAction: (cardAction, { target } = {}) =>
-  //     runMiddleware(({ cardAction: { type } }) => {
-  //       throw new Error(`Web Chat: received unknown card action "${type}"`);
-  //     })({
-  //       cardAction,
-  //       getSignInUrl:
-  //         cardAction.type === 'signin'
-  //           ? () => {
-  //               const { value } = cardAction;
+                  return observableToPromise(directLine.getSessionId()).then(
+                    sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
+                  );
+                }
 
-  //               if (directLine.getSessionId) {
-  //                 // TODO: [P3] We should change this one to async/await.
-  //                 //       This is the first place in this project to use async.
-  //                 //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
+                console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
 
-  //                 return observableToPromise(directLine.getSessionId()).then(
-  //                   sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
-  //                 );
-  //               }
-
-  //               console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
-
-  //               return value;
-  //             }
-  //           : null,
-  //       target
-  //     })
-  // };
-}
-
-function createFocusContext({ sendBoxFocusRef, transcriptFocusRef }) {
-  return {
-    focus: where => {
-      const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxFocusRef : transcriptFocusRef;
-      const { current } = ref || {};
-
-      if (current) {
-        if (where === 'sendBoxWithoutKeyboard') {
-          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
-          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
-          const readOnly = current.getAttribute('readonly');
-
-          current.setAttribute('readonly', 'readonly');
-
-          setTimeout(() => {
-            current.focus();
-            readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-          }, 0);
-        } else {
-          current.focus();
-        }
-      }
-    }
+                return value;
+              }
+            : null,
+        target
+      })
   };
 }
 
 function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp }) {
   const runMiddleware = applyMiddleware(
     'group activities',
-    groupActivitiesMiddleware,
+    ...singleToArray(groupActivitiesMiddleware),
     createDefaultGroupActivitiesMiddleware({ groupTimestamp })
   );
 
@@ -204,6 +168,7 @@ const Composer = ({
   dir,
   directLine,
   disabled,
+  downscaleImageToDataURL,
   grammars,
   groupActivitiesMiddleware,
   groupTimestamp,
@@ -227,13 +192,10 @@ const Composer = ({
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const dispatch = useDispatch();
-  const sendBoxFocusRef = useRef();
   const telemetryDimensionsRef = useRef({});
-  const transcriptFocusRef = useRef();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
-
   const patchedStyleOptions = useMemo(() => patchStyleOptions(styleOptions, { groupTimestamp, sendTimeout }), [
     groupTimestamp,
     sendTimeout,
@@ -276,11 +238,6 @@ const Composer = ({
   const patchedSelectVoice = useMemo(() => selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
     locale,
     selectVoice
-  ]);
-
-  const focusContext = useMemo(() => createFocusContext({ sendBoxFocusRef, transcriptFocusRef }), [
-    sendBoxFocusRef,
-    transcriptFocusRef
   ]);
 
   const groupActivitiesContext = useMemo(
@@ -350,19 +307,8 @@ const Composer = ({
         'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
       );
 
-    // console.log({ activityMiddleware, activityRenderer });
-
     return activityRenderer || applyMiddlewareForRenderer('activity', ...singleToArray(activityMiddleware))({});
   }, [activityMiddleware, activityRenderer]);
-
-  // const patchedActivityRenderer = useMemo(() => {
-  //   activityRenderer &&
-  //     console.warn(
-  //       'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
-  //     );
-
-  //   return activityRenderer || createActivityRenderer(activityMiddleware);
-  // }, [activityMiddleware, activityRenderer]);
 
   const patchedActivityStatusRenderer = useMemo(() => {
     activityStatusRenderer &&
@@ -372,22 +318,11 @@ const Composer = ({
 
     return (
       activityStatusRenderer ||
-      applyMiddlewareForRenderer(
-        'activity status',
-        ...singleToArray(activityStatusMiddleware),
-        () => () => () => false
+      applyMiddlewareForRenderer('activity status', ...singleToArray(activityStatusMiddleware), () => () => () =>
+        false
       )({})
     );
   }, [activityStatusMiddleware, activityStatusRenderer]);
-
-  // const patchedActivityStatusRenderer = useMemo(() => {
-  //   activityStatusRenderer &&
-  //     console.warn(
-  //       'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15, please use "activityStatusMiddleware" instead.'
-  //     );
-
-  //   return activityStatusRenderer || createActivityStatusRenderer(activityStatusMiddleware);
-  // }, [activityStatusMiddleware, activityStatusRenderer]);
 
   const patchedAttachmentRenderer = useMemo(() => {
     if (attachmentRenderer) {
@@ -400,8 +335,6 @@ const Composer = ({
 
     return applyMiddlewareForRenderer(
       'attachment',
-      // TODO: [P2] Currently, attachmentMiddleware is on legacy middleware interface.
-      //       For uniformity, we are patching the legacy interface into the current one.
       ...singleToArray(attachmentMiddleware),
       () => () => ({ attachment }) => () => {
         if (attachment) {
@@ -412,15 +345,6 @@ const Composer = ({
       }
     )({});
   }, [attachmentMiddleware, attachmentRenderer]);
-
-  // const patchedAttachmentRenderer = useMemo(() => {
-  //   attachmentRenderer &&
-  //     console.warn(
-  //       'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2022-06-15, please use "attachmentMiddleware" instead.'
-  //     );
-
-  //   return attachmentRenderer || createAttachmentRenderer(attachmentMiddleware);
-  // }, [attachmentMiddleware, attachmentRenderer]);
 
   const patchedAvatarRenderer = useMemo(() => {
     avatarRenderer &&
@@ -434,15 +358,6 @@ const Composer = ({
     );
   }, [avatarMiddleware, avatarRenderer]);
 
-  // const patchedAvatarRenderer = useMemo(() => {
-  //   avatarRenderer &&
-  //     console.warn(
-  //       'Web Chat: "avatarRenderer" is deprecated and will be removed on 2022-06-15, please use "avatarMiddleware" instead.'
-  //     );
-
-  //   return avatarRenderer || createAvatarRenderer(avatarMiddleware);
-  // }, [avatarMiddleware, avatarRenderer]);
-
   const patchedToastRenderer = useMemo(() => {
     toastRenderer &&
       console.warn(
@@ -451,7 +366,7 @@ const Composer = ({
 
     return (
       toastRenderer ||
-      applyMiddlewareForRenderer('toast', ...singleToArray(toastRenderer), () => () => ({ notification }) => {
+      applyMiddlewareForRenderer('toast', ...singleToArray(toastMiddleware), () => () => ({ notification }) => {
         if (notification) {
           throw new Error(`No renderer for notification of type "${notification.contentType}"`);
         } else {
@@ -460,15 +375,6 @@ const Composer = ({
       })({})
     );
   }, [toastMiddleware, toastRenderer]);
-
-  // const patchedToastRenderer = useMemo(() => {
-  //   toastRenderer &&
-  //     console.warn(
-  //       'Web Chat: "toastRenderer" is deprecated and will be removed on 2022-06-15, please use "toastMiddleware" instead.'
-  //     );
-
-  //   return toastRenderer || createToastRenderer(toastMiddleware);
-  // }, [toastMiddleware, toastRenderer]);
 
   const patchedTypingIndicatorRenderer = useMemo(() => {
     typingIndicatorRenderer &&
@@ -481,15 +387,6 @@ const Composer = ({
       applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware))({})
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
-
-  // const patchedTypingIndicatorRenderer = useMemo(() => {
-  //   typingIndicatorRenderer &&
-  //     console.warn(
-  //       'Web Chat: "typingIndicatorRenderer" is deprecated and will be removed on 2022-06-15, please use "typingIndicatorMiddleware" instead.'
-  //     );
-
-  //   return typingIndicatorRenderer || createTypingIndicatorRenderer(typingIndicatorMiddleware);
-  // }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
@@ -505,7 +402,6 @@ const Composer = ({
   const context = useMemo(
     () => ({
       ...cardActionContext,
-      ...focusContext,
       ...groupActivitiesContext,
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
@@ -516,6 +412,7 @@ const Composer = ({
       dir: patchedDir,
       directLine,
       disabled,
+      downscaleImageToDataURL,
       grammars: patchedGrammars,
       internalErrorBoxClass,
       language: locale,
@@ -524,14 +421,12 @@ const Composer = ({
       onTelemetry,
       renderMarkdown,
       selectVoice: patchedSelectVoice,
-      sendBoxFocusRef,
       sendTypingIndicator,
       setDictateAbortable,
       styleOptions: patchedStyleOptions,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
-      transcriptFocusRef,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
       username,
@@ -542,14 +437,13 @@ const Composer = ({
       dictateAbortable,
       directLine,
       disabled,
-      focusContext,
+      downscaleImageToDataURL,
       groupActivitiesContext,
       hoistedDispatchers,
       internalErrorBoxClass,
       locale,
       localizedGlobalize,
       onTelemetry,
-      renderMarkdown,
       patchedActivityRenderer,
       patchedActivityStatusRenderer,
       patchedAttachmentRenderer,
@@ -561,19 +455,16 @@ const Composer = ({
       patchedStyleOptions,
       patchedToastRenderer,
       patchedTypingIndicatorRenderer,
-      sendBoxFocusRef,
+      renderMarkdown,
       sendTypingIndicator,
       setDictateAbortable,
       telemetryDimensionsRef,
       trackDimension,
-      transcriptFocusRef,
       userID,
       username,
       webSpeechPonyfill
     ]
   );
-
-  // TODO: Check if react-say support RN or not
 
   return (
     <WebChatAPIContext.Provider value={context}>
@@ -643,6 +534,7 @@ Composer.defaultProps = {
   children: undefined,
   dir: 'auto',
   disabled: false,
+  downscaleImageToDataURL: undefined,
   grammars: [],
   groupActivitiesMiddleware: undefined,
   groupTimestamp: undefined,
@@ -688,10 +580,11 @@ Composer.propTypes = {
     token: PropTypes.string
   }).isRequired,
   disabled: PropTypes.bool,
-  internalErrorBoxClass: PropTypes.func, // This is for internal use only. We don't allow customization of error box.
+  downscaleImageToDataURL: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  internalErrorBoxClass: PropTypes.func.isRequired, // This is for internal use only. We don't allow customization of error box.
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),

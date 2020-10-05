@@ -136,8 +136,6 @@ const StackedLayout = ({
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
 
-  console.log('stackedlayout', { hideTimestamp, renderActivityStatus });
-
   return (
     <div
       aria-labelledby={ariaLabelId}
