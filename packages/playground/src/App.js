@@ -126,14 +126,14 @@ function App() {
         // eslint-disable-next-line
         console.log(err);
 
-        // TODO: change to TOAST
+        // TODO: (#3515) change to TOAST
         // eslint-disable-next-line no-alert
         alert(`Failed to get Direct Line token for ${url} bot`);
       }
     },
     [setToken]
   );
-  // TODO: remember if user was connected to official mock bot or local, then fetch token from that
+  // TODO: (#3515) remember if user was connected to official mock bot or local, then fetch token from that
   const handleResetClick = useCallback(() => {
     window.sessionStorage.removeItem('REDUX_STORE');
     window.location.reload();
@@ -147,7 +147,7 @@ function App() {
   const handleStartConversationWithOfficialMockBot = useCallback(() => {
     handleUseMockBot('https://webchat-mockbot.azurewebsites.net');
 
-    // TODO: Change to TOAST
+    // TODO: (#3515) Change to TOAST
     // eslint-disable-next-line
     console.log('Playground: Started conversation with Official MockBot');
   }, [handleUseMockBot]);
@@ -155,7 +155,7 @@ function App() {
   const handleStartConversationWithLocalMockBot = useCallback(() => {
     handleUseMockBot('http://localhost:3978');
 
-    // TODO: Change to TOAST
+    // TODO: (#3515) Change to TOAST
     // eslint-disable-next-line
     console.log('Playground: Started conversation with locally running MockBot');
   }, [handleUseMockBot]);
@@ -314,7 +314,7 @@ function App() {
         styleOptions={styleOptions}
       />
       <div className="button-bar">
-        {/* TODO: enable search */}
+        {/* TODO: (#3515) enable search */}
         {/* eslint-disable-next-line no-console */}
         <SearchBox placeholder="Search" onSearch={newValue => console.log('value is ' + newValue)} />
         <fieldset>
@@ -348,7 +348,7 @@ function App() {
             />
             <Dropdown label="Locale" onChange={handleLocaleChange} options={localeOptions} selectedKey={locale} />
 
-            {/* TODO:  info icon: Send 'echo-typing' to the bot to turn this feature on and off */}
+            {/* TODO: (#3515) info icon: Send 'echo-typing' to the bot to turn this feature on and off */}
             <Toggle
               label="Send typing indicator"
               checked={sendTypingIndicator}
@@ -404,7 +404,7 @@ function App() {
               options={groupTimestampOptions}
               selectedKey={groupTimestamp}
             />
-            {/* TODO:  info icon: Send 'herocard long title' to the bot to turn this feature on and off */}
+            {/* TODO: (#3515) info icon: Send 'herocard long title' to the bot to turn this feature on and off */}
             <Toggle
               label="Rich card wrap title"
               checked={richCardWrapTitle}
@@ -412,15 +412,15 @@ function App() {
               onText="On"
               offText="Off"
             />
-            {/* TODO: info icon: Turn on airplane mode to test this feature */}
+            {/*  (#3515) info icon: Turn on airplane mode to test this feature */}
             <Dropdown
               label="Send timeout"
               onChange={handleSendTimeoutChange}
               options={sendTimeoutOptions}
               selectedKey={sendTimeout}
             />
-            {/* TODO: info icon: Send 'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/' test 'break-all */}
-            {/* TODO: info icon: Send '箸より重いものを持ったことがない箸より重いものを持ったことがない' test 'keep-all */}
+            {/* TODO: (#3515) info: Send 'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/' test 'break-all */}
+            {/* TODO: (#3515) info: Send '箸より重いものを持ったことがない箸より重いものを持ったことがない' test 'keep-all */}
             <Dropdown
               label="Word break"
               onChange={handleWordBreakChange}

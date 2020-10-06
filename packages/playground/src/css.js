@@ -1,3 +1,4 @@
+// TODO: (#3515) make into proper emotion objects
 const PlaygroundStyles = `html,
 body {
   height: 100%;
