@@ -9,12 +9,13 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@emotion/core": "^10.0.35",
     "@fluentui/react": "^7.137.3",
     "adaptivecards": "1.2.6",
     "botframework-directlinejs": "^0.13.0",
     "botframework-webchat": "0.0.0-0",
     "classnames": "2.2.6",
-    "glamor": "2.20.40",
+    "create-emotion": "10.0.27",
     "memoize-one": "5.1.1",
     "on-error-resume-next": "1.1.0",
     "react-scripts": "3.4.1",

@@ -1,4 +1,4 @@
-html,
+const PlaygroundStyles = `html,
 body {
   height: 100%;
 }
@@ -36,9 +36,7 @@ fieldset {
   display: flex;
   flex-direction: column;
 }
-fieldset > label > select, fieldset > label > input {
-  margin-left: 5px;
-}
+
 fieldset > button {
 
   background-color: rgba(128, 128, 128, .2);
@@ -59,4 +57,5 @@ fieldset > button:hover {
   height: 100%;
   margin: 0;
   max-width: 500px
-}
+}`;
+export default PlaygroundStyles;
