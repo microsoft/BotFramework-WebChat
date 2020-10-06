@@ -19,6 +19,7 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
 import singleToArray from './Utils/singleToArray';
+import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 const { useStyleOptions } = hooks;
