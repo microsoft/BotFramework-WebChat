@@ -26,10 +26,14 @@ function App() {
   /*
   /// STATE
   */
-
-  const [botAvatarInitials, setBotAvatarInitials] = useState(() =>
-    window.sessionStorage.getItem('PLAYGROUND_BOT_AVATAR_INITIALS' || '')
-  );
+  // Will need to be reworked once avatar images are brought in
+  const [botAvatarInitials, setBotAvatarInitials] = useState(() => {
+    const sessionStorageBotInitials = window.sessionStorage.getItem('PLAYGROUND_BOT_AVATAR_INITIALS');
+    if (sessionStorageBotInitials === '') {
+      return undefined;
+    }
+    return sessionStorageBotInitials;
+  });
 
   const [bubbleNub, setBubbleNub] = useState(false);
 
@@ -39,15 +43,19 @@ function App() {
 
   const [hideSendBox, setHideSendBox] = useState(false);
 
-  const [groupTimestamp, setGroupTimestamp] = useState(
-    () => window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP') || true
-  );
+  const [groupTimestamp, setGroupTimestamp] = useState(() => {
+    const sessionStorageTimestamp = window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP');
+    if (typeof sessionStorageTimestamp === 'string') {
+      return sessionStorageTimestamp === 'true';
+    }
+    return sessionStorageTimestamp || true;
+  });
 
   const [locale, setLocale] = useState(
     () => window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language
   );
 
-  const [messageActivityWordBreak, setMessageActivityWordBreak] = useState('');
+  const [messageActivityWordBreak, setMessageActivityWordBreak] = useState('break-word');
 
   const [richCardWrapTitle, setRichCardWrapTitle] = useState(false);
 
@@ -59,9 +67,14 @@ function App() {
 
   const [uiDisabled, setDisabledUI] = useState(false);
 
-  const [userAvatarInitials, setUserAvatarInitials] = useState(() =>
-    window.sessionStorage.getItem('PLAYGROUND_USER_AVATAR_INITIALS' || '')
-  );
+  // Will need to be reworked once avatar images are brought in
+  const [userAvatarInitials, setUserAvatarInitials] = useState(() => {
+    const sessionStorageUserInitials = window.sessionStorage.getItem('PLAYGROUND_USER_AVATAR_INITIALS');
+    if (sessionStorageUserInitials === '') {
+      return undefined;
+    }
+    return sessionStorageUserInitials;
+  });
 
   useEffect(() => {
     document.querySelector('html').setAttribute('lang', locale);
@@ -192,9 +205,10 @@ function App() {
   const handleBotAvatarInitialsChange = useCallback(
     (e, newVal) => {
       if (newVal === '') {
-        newVal = undefined;
+        setBotAvatarInitials(undefined);
+      } else {
+        setBotAvatarInitials(newVal);
       }
-      setBotAvatarInitials(newVal);
       window.sessionStorage.setItem('PLAYGROUND_BOT_AVATAR_INITIALS', newVal);
     },
     [setBotAvatarInitials]
@@ -247,17 +261,18 @@ function App() {
   const handleUserAvatarInitialsChange = useCallback(
     (e, newVal) => {
       if (newVal === '') {
-        newVal = undefined;
+        setUserAvatarInitials(undefined);
+      } else {
+        setUserAvatarInitials(newVal);
       }
-      setUserAvatarInitials(newVal);
       window.sessionStorage.setItem('PLAYGROUND_USER_AVATAR_INITIALS', newVal);
     },
     [setUserAvatarInitials]
   );
 
   const handleWordBreakChange = useCallback(
-    (e, checked) => {
-      setMessageActivityWordBreak(!!checked);
+    (e, { key }) => {
+      setMessageActivityWordBreak(key);
     },
     [setMessageActivityWordBreak]
   );
