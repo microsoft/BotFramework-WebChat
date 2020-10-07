@@ -50,7 +50,7 @@ const ScreenReaderActivity = ({ activity }) => {
 
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials)
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
   ).replace(/\s{2,}/gu, ' ');
   const numAttachmentsAlt =
     !!attachments.length && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, attachments.length);
