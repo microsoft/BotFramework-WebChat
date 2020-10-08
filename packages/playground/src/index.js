@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { initializeIcons } from '@fluentui/react';
 import onErrorResumeNext from 'on-error-resume-next';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -8,19 +8,18 @@ import { createStoreWithDevTools } from 'botframework-webchat';
 
 import App from './App';
 
-css.global('html, body, #root', { height: '100%' });
-css.global('body', { margin: 0 });
+initializeIcons(); // @fluentui icons
 
 const REDUX_STORE_KEY = 'REDUX_STORE';
 let store;
 
 window.addEventListener('keydown', event => {
-  const { ctrlKey, keyCode } = event;
+  const { ctrlKey, key } = event;
 
-  if (ctrlKey && keyCode === 82) {
+  if (ctrlKey && (key === 'r' || key === 'R')) {
     // CTRL-R
     sessionStorage.removeItem(REDUX_STORE_KEY);
-  } else if (ctrlKey && keyCode === 83) {
+  } else if (ctrlKey && (key === 's' || key === 'S')) {
     // CTRL-S
     event.preventDefault();
     store && console.log(store.getState());
