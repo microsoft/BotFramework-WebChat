@@ -73,9 +73,10 @@ const BasicWebChat = ({ className, ...props }) => {
         {!options.hideToaster && <BasicToaster className={toasterClassName} />}
         <BasicTranscript className={transcriptClassName} />
         <BasicConnectivityStatus className={connectivityStatusClassName} />
-        {(!options.hideSendBox &&
-          props.sendBoxRenderer !== undefined &&
-          props.sendBoxRenderer({ sendBoxClassName })) || <BasicSendBox className={sendBoxClassName} />}
+        {!options.hideSendBox &&
+          ((props.sendBoxRenderer !== undefined && props.sendBoxRenderer({ sendBoxClassName })) || (
+            <BasicSendBox className={sendBoxClassName} />
+          ))}
       </TypeFocusSinkBox>
     </AccessKeySinkSurface>
   );
