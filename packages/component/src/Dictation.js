@@ -1,23 +1,28 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
 import { Constants } from 'botframework-webchat-core';
-// import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
-import useActivities from '../useActivities';
-import useDictateInterims from '../useDictateInterims';
-import useDictateState from '../useDictateState';
-import useDisabled from '../useDisabled';
-import useEmitTypingIndicator from '../useEmitTypingIndicator';
-import useLanguage from '../useLanguage';
-import useSendBoxValue from '../useSendBoxValue';
-import useSendTypingIndicator from '../useSendTypingIndicator';
-import useSetDictateState from './useSetDictateState';
-import useSettableDictateAbortable from './useSettableDictateAbortable';
-import useShouldSpeakIncomingActivity from '../useShouldSpeakIncomingActivity';
-import useStopDictate from '../useStopDictate';
-import useSubmitSendBox from '../useSubmitSendBox';
-import useWebSpeechPonyfill from '../useWebSpeechPonyfill';
+import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+// TODO: [PXX] No /lib/
+import useSetDictateState from 'botframework-webchat-api/lib/hooks/internal/useSetDictateState';
+
+const {
+  useActivities,
+  useDictateInterims,
+  useDictateState,
+  useDisabled,
+  useEmitTypingIndicator,
+  useLanguage,
+  useSendBoxValue,
+  useSendTypingIndicator,
+  useShouldSpeakIncomingActivity,
+  useStopDictate,
+  useSubmitSendBox
+} = hooks;
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }

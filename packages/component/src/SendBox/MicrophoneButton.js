@@ -11,13 +11,14 @@ import React, { useCallback, useState } from 'react';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 
 const { DictateState } = Constants;
 
 const {
-  useDictateAbortable,
   useDictateInterims,
   useDictateState,
   useDisabled,
@@ -25,8 +26,7 @@ const {
   useSendBoxValue,
   useShouldSpeakIncomingActivity,
   useStartDictate,
-  useStopDictate,
-  useWebSpeechPonyfill
+  useStopDictate
 } = hooks;
 
 const ROOT_STYLE = {

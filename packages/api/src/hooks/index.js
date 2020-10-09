@@ -10,7 +10,6 @@ import useCreateAttachmentForScreenReaderRenderer from './useCreateAttachmentFor
 import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
-import useDictateAbortable from './useDictateAbortable';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
 import useDirection from './useDirection';
@@ -60,7 +59,6 @@ import useTrackTiming from './useTrackTiming';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
-import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
 export {
   useActiveTyping,
@@ -75,7 +73,6 @@ export {
   useCreateAvatarRenderer,
   useDateFormatter,
   useDebouncedNotifications,
-  useDictateAbortable,
   useDictateInterims,
   useDictateState,
   useDirection,
@@ -124,6 +121,5 @@ export {
   useTrackTiming,
   useUserID,
   useUsername,
-  useVoiceSelector,
-  useWebSpeechPonyfill
+  useVoiceSelector
 };

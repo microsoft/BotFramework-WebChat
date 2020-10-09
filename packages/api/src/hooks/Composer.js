@@ -1,5 +1,3 @@
-import { Composer as SayComposer } from 'react-say';
-
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -11,7 +9,6 @@ import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-import useReferenceGrammarID from './useReferenceGrammarID';
 
 import {
   clearSuggestedActions,
@@ -44,17 +41,11 @@ import {
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
-import Dictation from './internal/Dictation';
 import mapMap from '../utils/mapMap';
 import observableToPromise from './utils/observableToPromise';
 import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import WebChatAPIContext from './internal/WebChatAPIContext';
-
-import {
-  speechSynthesis as bypassSpeechSynthesis,
-  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
-} from './internal/BypassSpeechSynthesisPonyfill';
 
 import applyMiddleware, { forRenderer as applyMiddlewareForRenderer } from './middleware/applyMiddleware';
 import patchStyleOptions from '../patchStyleOptions';
@@ -184,11 +175,8 @@ const Composer = ({
   typingIndicatorMiddleware,
   typingIndicatorRenderer,
   userID,
-  username,
-  webSpeechPonyfillFactory
+  username
 }) => {
-  const [dictateAbortable, setDictateAbortable] = useState();
-  const [referenceGrammarID] = useReferenceGrammarID();
   const dispatch = useDispatch();
   const telemetryDimensionsRef = useRef({});
 
@@ -251,21 +239,6 @@ const Composer = ({
     () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher(...args))),
     [dispatch]
   );
-
-  const webSpeechPonyfill = useMemo(() => {
-    const ponyfill = webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID });
-    const { speechSynthesis, SpeechSynthesisUtterance } = ponyfill || {};
-
-    return {
-      ...ponyfill,
-      speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
-      SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
-    };
-  }, [referenceGrammarID, webSpeechPonyfillFactory]);
-
-  const dictationOnError = useCallback(err => {
-    console.error(err);
-  }, []);
 
   const patchedLocalizedStrings = useMemo(
     () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
@@ -417,7 +390,6 @@ const Composer = ({
       activityStatusRenderer: patchedActivityStatusRenderer,
       attachmentRenderer: patchedAttachmentRenderer,
       avatarRenderer: patchedAvatarRenderer,
-      dictateAbortable,
       dir: patchedDir,
       directLine,
       disabled,
@@ -431,19 +403,16 @@ const Composer = ({
       renderMarkdown,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
-      setDictateAbortable,
       styleOptions: patchedStyleOptions,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
-      username,
-      webSpeechPonyfill
+      username
     }),
     [
       cardActionContext,
-      dictateAbortable,
       directLine,
       disabled,
       downscaleImageToDataURL,
@@ -466,21 +435,16 @@ const Composer = ({
       patchedTypingIndicatorRenderer,
       renderMarkdown,
       sendTypingIndicator,
-      setDictateAbortable,
       telemetryDimensionsRef,
       trackDimension,
       userID,
-      username,
-      webSpeechPonyfill
+      username
     ]
   );
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <SayComposer ponyfill={webSpeechPonyfill}>
-        {typeof children === 'function' ? children(context) : children}
-      </SayComposer>
-      <Dictation onError={dictationOnError} />
+      {typeof children === 'function' ? children(context) : children}
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );
@@ -559,8 +523,7 @@ Composer.defaultProps = {
   typingIndicatorMiddleware: undefined,
   typingIndicatorRenderer: undefined,
   userID: '',
-  username: '',
-  webSpeechPonyfillFactory: undefined
+  username: ''
 };
 
 Composer.propTypes = {
@@ -606,6 +569,5 @@ Composer.propTypes = {
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorRenderer: PropTypes.func,
   userID: PropTypes.string,
-  username: PropTypes.string,
-  webSpeechPonyfillFactory: PropTypes.func
+  username: PropTypes.string
 };

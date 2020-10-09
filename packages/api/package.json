@@ -59,9 +59,7 @@
     "globalize": "1.5.0",
     "math-random": "2.0.1",
     "prop-types": "15.7.2",
-    "react-dictate-button": "1.2.3-master.6b4fe72",
     "react-redux": "7.2.0",
-    "react-say": "2.0.2-master.ee7cd76",
     "redux": "4.0.5",
     "simple-update-in": "2.2.0"
   },

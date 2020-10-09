@@ -1,10 +1,11 @@
 import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
+import { Composer as SayComposer } from 'react-say';
 import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
-import React, { useMemo, useRef } from 'react';
 import createEmotion from 'create-emotion';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
@@ -15,6 +16,7 @@ import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddlew
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
+import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
@@ -22,7 +24,7 @@ import singleToArray from './Utils/singleToArray';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
-const { useStyleOptions } = hooks;
+const { useReferenceGrammarID, useStyleOptions } = hooks;
 
 const emotionPool = {};
 
@@ -56,11 +58,27 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-const ComposerCore = ({ children, extraStyleSet, nonce, renderMarkdown, styleSet, suggestedActionsAccessKey }) => {
+const ComposerCore = ({
+  children,
+  extraStyleSet,
+  nonce,
+  renderMarkdown,
+  styleSet,
+  suggestedActionsAccessKey,
+  webSpeechPonyfillFactory
+}) => {
+  const [dictateAbortable, setDictateAbortable] = useState();
+  const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const sendBoxFocusRef = useRef();
+  const transcriptActivityElementsRef = useRef([]);
   const transcriptFocusRef = useRef();
+  const transcriptRootElementRef = useRef();
+
+  const dictationOnError = useCallback(err => {
+    console.error(err);
+  }, []);
 
   const focusContext = useMemo(() => createFocusContext({ sendBoxFocusRef, transcriptFocusRef }), [
     sendBoxFocusRef,
@@ -98,25 +116,37 @@ const ComposerCore = ({ children, extraStyleSet, nonce, renderMarkdown, styleSet
     [extraStyleSet, styleOptions, styleSet, styleToEmotionObject]
   );
 
-  const transcriptActivityElementsRef = useRef([]);
-  const transcriptRootElementRef = useRef();
+  const webSpeechPonyfill = useMemo(() => {
+    const ponyfill = webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID });
+    const { speechSynthesis, SpeechSynthesisUtterance } = ponyfill || {};
+
+    return {
+      ...ponyfill,
+      speechSynthesis: speechSynthesis || bypassSpeechSynthesis,
+      SpeechSynthesisUtterance: SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance
+    };
+  }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
   const context = useMemo(
     () => ({
       ...focusContext,
+      dictateAbortable,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
       renderMarkdown,
       sendBoxFocusRef,
+      setDictateAbortable,
       styleSet: patchedStyleSet,
       styleToEmotionObject,
       suggestedActionsAccessKey,
       transcriptActivityElementsRef,
       transcriptFocusRef,
-      transcriptRootElementRef
+      transcriptRootElementRef,
+      webSpeechPonyfill
     }),
     [
+      dictateAbortable,
       focusContext,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -124,15 +154,26 @@ const ComposerCore = ({ children, extraStyleSet, nonce, renderMarkdown, styleSet
       patchedStyleSet,
       renderMarkdown,
       sendBoxFocusRef,
+      setDictateAbortable,
       styleToEmotionObject,
       suggestedActionsAccessKey,
       transcriptActivityElementsRef,
       transcriptFocusRef,
-      transcriptRootElementRef
+      transcriptRootElementRef,
+      webSpeechPonyfill
     ]
   );
 
-  return <WebChatUIContext.Provider value={context}>{children}</WebChatUIContext.Provider>;
+  return (
+    <React.Fragment>
+      <SayComposer ponyfill={webSpeechPonyfill}>
+        <WebChatUIContext.Provider value={context}>
+          {children}
+          <Dictation onError={dictationOnError} />
+        </WebChatUIContext.Provider>
+      </SayComposer>
+    </React.Fragment>
+  );
 };
 
 ComposerCore.defaultProps = {
@@ -140,7 +181,8 @@ ComposerCore.defaultProps = {
   nonce: undefined,
   renderMarkdown: undefined,
   styleSet: undefined,
-  suggestedActionsAccessKey: 'A a Å å'
+  suggestedActionsAccessKey: 'A a Å å',
+  webSpeechPonyfillFactory: undefined
 };
 
 ComposerCore.propTypes = {
@@ -148,7 +190,8 @@ ComposerCore.propTypes = {
   nonce: PropTypes.string,
   renderMarkdown: PropTypes.func,
   styleSet: PropTypes.any,
-  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string])
+  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
+  webSpeechPonyfillFactory: PropTypes.func
 };
 
 const Composer = ({
@@ -164,6 +207,7 @@ const Composer = ({
   suggestedActionsAccessKey,
   toastMiddleware,
   typingIndicatorMiddleware,
+  webSpeechPonyfillFactory,
   ...composerProps
 }) => {
   const { nonce, onTelemetry } = composerProps;
@@ -203,32 +247,35 @@ const Composer = ({
   );
 
   return (
-    <APIComposer
-      activityMiddleware={patchedActivityMiddleware}
-      activityStatusMiddleware={patchedActivityStatusMiddleware}
-      attachmentMiddleware={patchedAttachmentMiddleware}
-      avatarMiddleware={patchedAvatarMiddleware}
-      cardActionMiddleware={patchedCardActionMiddleware}
-      downscaleImageToDataURL={downscaleImageToDataURL}
-      internalErrorBoxClass={ErrorBox}
-      nonce={nonce}
-      toastMiddleware={patchedToastMiddleware}
-      typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
-      {...composerProps}
-    >
-      <ScrollToBottomComposer nonce={nonce}>
-        <ComposerCore
-          extraStyleSet={extraStyleSet}
-          nonce={nonce}
-          renderMarkdown={renderMarkdown}
-          styleSet={styleSet}
-          suggestedActionsAccessKey={suggestedActionsAccessKey}
-        >
-          {children}
-        </ComposerCore>
-      </ScrollToBottomComposer>
-      {onTelemetry && <UITracker />}
-    </APIComposer>
+    <React.Fragment>
+      <APIComposer
+        activityMiddleware={patchedActivityMiddleware}
+        activityStatusMiddleware={patchedActivityStatusMiddleware}
+        attachmentMiddleware={patchedAttachmentMiddleware}
+        avatarMiddleware={patchedAvatarMiddleware}
+        cardActionMiddleware={patchedCardActionMiddleware}
+        downscaleImageToDataURL={downscaleImageToDataURL}
+        internalErrorBoxClass={ErrorBox}
+        nonce={nonce}
+        toastMiddleware={patchedToastMiddleware}
+        typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
+        {...composerProps}
+      >
+        <ScrollToBottomComposer nonce={nonce}>
+          <ComposerCore
+            extraStyleSet={extraStyleSet}
+            nonce={nonce}
+            renderMarkdown={renderMarkdown}
+            styleSet={styleSet}
+            suggestedActionsAccessKey={suggestedActionsAccessKey}
+            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+          >
+            {children}
+          </ComposerCore>
+        </ScrollToBottomComposer>
+        {onTelemetry && <UITracker />}
+      </APIComposer>
+    </React.Fragment>
   );
 };
 
@@ -250,7 +297,8 @@ Composer.defaultProps = {
   toastMiddleware: undefined,
   toastRenderer: undefined,
   typingIndicatorMiddleware: undefined,
-  typingIndicatorRenderer: undefined
+  typingIndicatorRenderer: undefined,
+  webSpeechPonyfillFactory: undefined
 };
 
 Composer.propTypes = {
@@ -271,7 +319,9 @@ Composer.propTypes = {
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  typingIndicatorRenderer: PropTypes.func
+  typingIndicatorRenderer: PropTypes.func,
+  // TODO: [PXX] Fix this PropTypes
+  webSpeechPonyfillFactory: PropTypes.any
 };
 
 export default Composer;

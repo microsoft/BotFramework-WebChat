@@ -12,12 +12,13 @@ import TextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
   DictateState: { DICTATING, STARTING }
 } = Constants;
 
-const { useActivities, useDirection, useDictateState, useStyleOptions, useWebSpeechPonyfill } = hooks;
+const { useActivities, useDirection, useDictateState, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '& > .main': {
