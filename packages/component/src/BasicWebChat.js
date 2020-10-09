@@ -46,7 +46,7 @@ const TRANSCRIPT_STYLE = {
   flex: 1
 };
 
-const BasicWebChat = ({ className }) => {
+const BasicWebChat = ({ className, ...props }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [options] = useStyleOptions();
@@ -73,9 +73,9 @@ const BasicWebChat = ({ className }) => {
         {!options.hideToaster && <BasicToaster className={toasterClassName} />}
         <BasicTranscript className={transcriptClassName} />
         <BasicConnectivityStatus className={connectivityStatusClassName} />
-        {(!options.hideSendBox && sendBoxRenderer !== undefined && sendBoxRenderer({ sendBoxClassName })) || (
-          <BasicSendBox className={sendBoxClassName} />
-        )}
+        {(!options.hideSendBox &&
+          props.sendBoxRenderer !== undefined &&
+          props.sendBoxRenderer({ sendBoxClassName })) || <BasicSendBox className={sendBoxClassName} />}
       </TypeFocusSinkBox>
     </AccessKeySinkSurface>
   );
