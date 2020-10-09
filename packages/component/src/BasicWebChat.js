@@ -73,7 +73,9 @@ const BasicWebChat = ({ className }) => {
         {!options.hideToaster && <BasicToaster className={toasterClassName} />}
         <BasicTranscript className={transcriptClassName} />
         <BasicConnectivityStatus className={connectivityStatusClassName} />
-        {!options.hideSendBox && <BasicSendBox className={sendBoxClassName} />}
+        {(!options.hideSendBox && sendBoxRenderer !== undefined && sendBoxRenderer({ sendBoxClassName })) || (
+          <BasicSendBox className={sendBoxClassName} />
+        )}
       </TypeFocusSinkBox>
     </AccessKeySinkSurface>
   );
@@ -82,9 +84,11 @@ const BasicWebChat = ({ className }) => {
 export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
-  className: ''
+  className: '',
+  sendBoxRenderer: undefined
 };
 
 BasicWebChat.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  sendBoxRenderer: PropTypes.func
 };

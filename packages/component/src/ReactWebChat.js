@@ -14,7 +14,7 @@ import Composer from './Composer';
 
 const ReactWebChat = ({ className, ...composerProps }) => (
   <Composer {...composerProps}>
-    <BasicWebChat className={className} />
+    <BasicWebChat className={className} {...composerProps} />
   </Composer>
 );
 
@@ -22,10 +22,12 @@ export default ReactWebChat;
 
 ReactWebChat.defaultProps = {
   className: undefined,
-  ...Composer.defaultProps
+  ...Composer.defaultProps,
+  ...BasicWebChat.defaultProps
 };
 
 ReactWebChat.propTypes = {
   className: PropTypes.string,
-  ...Composer.propTypes
+  ...Composer.propTypes,
+  ...BasicWebChat.propTypes
 };
