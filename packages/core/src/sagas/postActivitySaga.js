@@ -82,7 +82,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
-    const echoBackCall = call(function*() {
+    const echoBackCall = call(function* () {
       for (;;) {
         const {
           payload: { activity }
@@ -114,6 +114,8 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
 
     yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } });
   } catch (err) {
+    console.error('botframework-webchat: Failed to post activity to chat adapter.', err);
+
     yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: err });
   } finally {
     if (yield cancelled()) {

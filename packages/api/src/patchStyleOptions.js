@@ -26,7 +26,7 @@ export default function patchStyleOptions(
   options,
   { groupTimestamp: groupTimestampFromProps, sendTimeout: sendTimeoutFromProps }
 ) {
-  options = { ...defaultStyleOptions, ...options };
+  const patchedOptions = { ...defaultStyleOptions, ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
 
@@ -37,11 +37,9 @@ export default function patchStyleOptions(
     bubbleFromUserNubOffset,
     bubbleNubOffset,
     emojiSet,
-    groupTimestamp,
-    sendTimeout,
     suggestedActionBorder,
     suggestedActionDisabledBorder
-  } = options;
+  } = patchedOptions;
 
   if (bubbleBorder) {
     console.warn(
@@ -51,15 +49,15 @@ export default function patchStyleOptions(
     const { color, style, width } = parseBorder(bubbleBorder);
 
     if (color && color !== 'initial') {
-      options.bubbleBorderColor = color;
+      patchedOptions.bubbleBorderColor = color;
     }
 
     if (style && style !== 'initial') {
-      options.bubbleBorderStyle = style;
+      patchedOptions.bubbleBorderStyle = style;
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleBorderWidth = parseInt(width, 10);
+      patchedOptions.bubbleBorderWidth = parseInt(width, 10);
     }
   }
 
@@ -71,15 +69,15 @@ export default function patchStyleOptions(
     const { color, style, width } = parseBorder(bubbleFromUserBorder);
 
     if (color && color !== 'initial') {
-      options.bubbleFromUserBorderColor = color;
+      patchedOptions.bubbleFromUserBorderColor = color;
     }
 
     if (style && style !== 'initial') {
-      options.bubbleFromUserBorderStyle = style;
+      patchedOptions.bubbleFromUserBorderStyle = style;
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleFromUserBorderWidth = parseInt(width, 10);
+      patchedOptions.bubbleFromUserBorderWidth = parseInt(width, 10);
     }
   }
 
@@ -91,15 +89,15 @@ export default function patchStyleOptions(
     const { color, style, width } = parseBorder(suggestedActionBorder);
 
     if (color && color !== 'initial') {
-      options.suggestedActionBorderColor = color;
+      patchedOptions.suggestedActionBorderColor = color;
     }
 
     if (style && style !== 'initial') {
-      options.suggestedActionBorderStyle = style;
+      patchedOptions.suggestedActionBorderStyle = style;
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.suggestedActionBorderWidth = parseInt(width, 10);
+      patchedOptions.suggestedActionBorderWidth = parseInt(width, 10);
     }
   }
 
@@ -111,32 +109,32 @@ export default function patchStyleOptions(
     const { color, style, width } = parseBorder(suggestedActionDisabledBorder);
 
     if (color && color !== 'initial') {
-      options.suggestedActionDisabledBorderColor = color;
+      patchedOptions.suggestedActionDisabledBorderColor = color;
     }
 
     if (style && style !== 'initial') {
-      options.suggestedActionDisabledBorderStyle = style;
+      patchedOptions.suggestedActionDisabledBorderStyle = style;
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.suggestedActionDisabledBorderWidth = parseInt(width, 10);
+      patchedOptions.suggestedActionDisabledBorderWidth = parseInt(width, 10);
     }
   }
 
   if (bubbleFromUserNubOffset === 'top') {
-    options.bubbleFromUserNubOffset = 0;
+    patchedOptions.bubbleFromUserNubOffset = 0;
   } else if (typeof bubbleFromUserNubOffset !== 'number') {
-    options.bubbleFromUserNubOffset = -0;
+    patchedOptions.bubbleFromUserNubOffset = -0;
   }
 
   if (bubbleNubOffset === 'top') {
-    options.bubbleNubOffset = 0;
+    patchedOptions.bubbleNubOffset = 0;
   } else if (typeof bubbleNubOffset !== 'number') {
-    options.bubbleNubOffset = -0;
+    patchedOptions.bubbleNubOffset = -0;
   }
 
   if (emojiSet === true) {
-    options.emojiSet = {
+    patchedOptions.emojiSet = {
       ':)': '😊',
       ':-)': '😊',
       '(:': '😊',
@@ -163,32 +161,32 @@ export default function patchStyleOptions(
       '</3': '💔',
       '<\\3': '💔'
     };
-  } else if (Object.prototype.toString.call(options.emojiSet) !== '[object Object]') {
+  } else if (Object.prototype.toString.call(patchedOptions.emojiSet) !== '[object Object]') {
     console.warn('botframework-webchat: emojiSet must be a boolean or an object with emoticon: emojiValues');
-    options.emojiSet = false;
+    patchedOptions.emojiSet = false;
   }
 
-  if (typeof groupTimestampFromProps !== 'undefined' && typeof groupTimestamp === 'undefined') {
+  if (typeof groupTimestampFromProps !== 'undefined' && typeof options.groupTimestamp === 'undefined') {
     console.warn(
       'Web Chat: "groupTimestamp" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
     );
 
-    options.groupTimestamp = groupTimestampFromProps;
+    patchedOptions.groupTimestamp = groupTimestampFromProps;
   }
 
-  if (typeof sendTimeoutFromProps !== 'undefined' && typeof sendTimeout === 'undefined') {
+  if (typeof sendTimeoutFromProps !== 'undefined' && typeof options.sendTimeout === 'undefined') {
     console.warn(
       'Web Chat: "sendTimeout" has been moved to "styleOptions". This deprecation migration will be removed on or after January 1 2022.'
     );
 
-    options.sendTimeout = sendTimeoutFromProps;
+    patchedOptions.sendTimeout = sendTimeoutFromProps;
   }
 
-  if (options.slowConnectionAfter < 0) {
+  if (patchedOptions.slowConnectionAfter < 0) {
     console.warn('Web Chat: "slowConnectionAfter" cannot be negative, will set to 0.');
 
-    options.slowConnectionAfter = 0;
+    patchedOptions.slowConnectionAfter = 0;
   }
 
-  return options;
+  return patchedOptions;
 }

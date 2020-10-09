@@ -84,7 +84,9 @@ export default class DirectLineSpeech {
 
       // Do not send the activity if it was from speech.
       if (!isSpeech) {
-        this.dialogServiceConnector.sendActivityAsync(activity);
+        // Starting from Speech SDK 1.13.0, they accept JSON text instead of JavaScript object.
+        // https://github.com/microsoft/cognitive-services-speech-sdk-js/commit/2f3a35446692b6d492a6c68e3237a48de67e293f
+        this.dialogServiceConnector.sendActivityAsync(JSON.stringify(activity));
       }
 
       this._activityObserver &&

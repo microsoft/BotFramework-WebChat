@@ -1,4 +1,4 @@
-import getAllLocalizedStrings from '../Localization/getAllLocalizedStrings';
+import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import normalizeLanguage from './normalizeLanguage';
 
 const strings = getAllLocalizedStrings();

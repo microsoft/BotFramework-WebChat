@@ -37,6 +37,7 @@ describe('telemetry', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",

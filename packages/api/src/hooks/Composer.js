@@ -391,7 +391,9 @@ const Composer = ({
 
     return (
       typingIndicatorRenderer ||
-      applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware), () => () => () => false)({})
+      applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware), () => () => () =>
+        false
+      )({})
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
