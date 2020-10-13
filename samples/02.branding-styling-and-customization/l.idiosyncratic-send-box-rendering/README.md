@@ -15,7 +15,7 @@ Pass down a renderer to Web Chat to render the send box.
 
 # Things to try out
 
--  Modify the sendBoxRenderer parameter to what you want and witness the results.
+-  Modify the sendBoxMiddleware parameter to what you want and witness the results.
 
 # Code
 
@@ -28,7 +28,7 @@ Pass down a renderer to Web Chat to render the send box.
 This code shows how to pass down your own renderer for the send box.
 You might want to implement certain branding, UX or just revant the HTML structure.
 
-When you render the webchat element, simply pass a function in the `sendBoxRenderer` prop.
+When you render the webchat element, simply pass a function in the `sendBoxMiddleware` prop.
 
 ## Completed code
 
@@ -77,7 +77,7 @@ Here is the finished `index.html`:
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token }),
-            sendBoxRenderer: function (props) {
+            sendBoxMiddleware: function (props) {
               return window.React.createElement(
                 'div',
                 { className: 'main' },

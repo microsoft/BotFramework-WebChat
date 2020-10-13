@@ -39,7 +39,7 @@
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token }),
-            sendBoxRenderer: function (props) {
+            sendBoxMiddleware: function (props) {
               return window.React.createElement(
                 'div',
                 { className: 'main' },

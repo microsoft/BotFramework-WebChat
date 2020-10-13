@@ -74,7 +74,7 @@ const BasicWebChat = ({ className, ...props }) => {
         <BasicTranscript className={transcriptClassName} />
         <BasicConnectivityStatus className={connectivityStatusClassName} />
         {!options.hideSendBox &&
-          ((props.sendBoxRenderer !== undefined && props.sendBoxRenderer({ sendBoxClassName })) || (
+          ((props.sendBoxMiddleware !== undefined && props.sendBoxMiddleware({ sendBoxClassName })) || (
             <BasicSendBox className={sendBoxClassName} />
           ))}
       </TypeFocusSinkBox>
@@ -86,10 +86,10 @@ export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
   className: '',
-  sendBoxRenderer: undefined
+  sendBoxMiddleware: undefined
 };
 
 BasicWebChat.propTypes = {
   className: PropTypes.string,
-  sendBoxRenderer: PropTypes.func
+  sendBoxMiddleware: PropTypes.func
 };

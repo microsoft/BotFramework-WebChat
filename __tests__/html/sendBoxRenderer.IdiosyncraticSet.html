@@ -17,7 +17,7 @@
           {
             directLine: createDirectLine({ token: await token.fetchDirectLineToken() }),
             store: createStore(),
-            sendBoxRenderer: function (props) {
+            sendBoxMiddleware: function (props) {
               return window.React.createElement(
                 'div',
                 { className: 'main' },
