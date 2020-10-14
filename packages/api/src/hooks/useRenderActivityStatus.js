@@ -14,8 +14,6 @@ import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 
 // Despite deprecation, useRenderActivityStatus() can be retrofitted using useCreateActivityStatusRenderer().
 
-const RETURN_FALSE = () => false;
-
 let showDeprecationNotes = true;
 
 export default function useRenderActivityStatus({ activity, nextVisibleActivity }) {
@@ -31,8 +29,6 @@ export default function useRenderActivityStatus({ activity, nextVisibleActivity 
 
   return useMemo(() => {
     const renderActivityStatus = createActivityStatusRenderer({ activity, nextVisibleActivity });
-
-    console.log('useRenderActivityStatus', { renderActivityStatus });
 
     return !!renderActivityStatus && renderActivityStatus;
   }, [activity, createActivityStatusRenderer, nextVisibleActivity]);

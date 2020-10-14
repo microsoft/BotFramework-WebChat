@@ -10,7 +10,7 @@ export default function useSendFiles() {
   const trackEvent = useTrackEvent();
 
   return useCallback(
-    async files => {
+    files => {
       if (files && files.length) {
         sendFiles(files);
 

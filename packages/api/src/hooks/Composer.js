@@ -340,9 +340,9 @@ const Composer = ({
         }
 
         return () => result;
-      } else {
-        return result;
       }
+
+      return result;
     };
   }, [attachmentMiddleware, attachmentRenderer]);
 
@@ -491,18 +491,20 @@ const ComposeWithStore = ({ internalRenderErrorBox, onTelemetry, store, ...props
   ) : (
     <ErrorBoundary onError={handleError}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <Composer onTelemetry={onTelemetry} internalRenderErrorBox={internalRenderErrorBox} {...props} />
+        <Composer internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
       </Provider>
     </ErrorBoundary>
   );
 };
 
 ComposeWithStore.defaultProps = {
+  internalRenderErrorBox: undefined,
   onTelemetry: undefined,
   store: undefined
 };
 
 ComposeWithStore.propTypes = {
+  internalRenderErrorBox: PropTypes.any,
   onTelemetry: PropTypes.func,
   store: PropTypes.any
 };
@@ -531,9 +533,11 @@ Composer.defaultProps = {
   grammars: [],
   groupActivitiesMiddleware: undefined,
   groupTimestamp: undefined,
+  internalErrorBoxClass: undefined,
   locale: window.navigator.language || 'en-US',
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
+  renderMarkdown: undefined,
   selectVoice: undefined,
   sendTimeout: undefined,
   sendTypingIndicator: false,
@@ -580,6 +584,7 @@ Composer.propTypes = {
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
+  renderMarkdown: PropTypes.func,
   selectVoice: PropTypes.func,
   sendTimeout: PropTypes.number,
   sendTypingIndicator: PropTypes.bool,
