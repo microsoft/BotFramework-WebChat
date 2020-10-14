@@ -1,4 +1,4 @@
-import { getLocaleString, localize } from '../../lib/Localization/Localize';
+import { getLocaleString, localize } from './Localize';
 
 const originalWarn = console.warn;
 let warnings;

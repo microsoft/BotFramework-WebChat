@@ -1,4 +1,4 @@
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import PrecompiledGlobalize from '../../lib/external/PrecompiledGlobalize';
 
 export default function getLocaleString(value, language) {
   const globalize = PrecompiledGlobalize(language);

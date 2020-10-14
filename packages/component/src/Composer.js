@@ -7,6 +7,10 @@ import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
+import {
+  speechSynthesis as bypassSpeechSynthesis,
+  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
+} from './hooks/internal/BypassSpeechSynthesisPonyfill';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -25,6 +29,8 @@ import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
+
+const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const emotionPool = {};
 
@@ -255,7 +261,8 @@ const Composer = ({
         avatarMiddleware={patchedAvatarMiddleware}
         cardActionMiddleware={patchedCardActionMiddleware}
         downscaleImageToDataURL={downscaleImageToDataURL}
-        internalErrorBoxClass={ErrorBox}
+        // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
+        internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
         nonce={nonce}
         toastMiddleware={patchedToastMiddleware}
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
@@ -271,9 +278,9 @@ const Composer = ({
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
           >
             {children}
+            {onTelemetry && <UITracker />}
           </ComposerCore>
         </ScrollToBottomComposer>
-        {onTelemetry && <UITracker />}
       </APIComposer>
     </React.Fragment>
   );
@@ -320,8 +327,7 @@ Composer.propTypes = {
   toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorRenderer: PropTypes.func,
-  // TODO: [PXX] Fix this PropTypes
-  webSpeechPonyfillFactory: PropTypes.any
+  webSpeechPonyfillFactory: PropTypes.func
 };
 
 export default Composer;

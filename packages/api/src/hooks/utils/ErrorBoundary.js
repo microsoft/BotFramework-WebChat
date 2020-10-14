@@ -1,21 +1,23 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+const RenderChildrenFunction = ({ children }) => (typeof children === 'function' ? children() : children);
 
 class ErrorBoundary extends Component {
   constructor() {
     super();
 
-    this.state = { error: undefined };
+    this.state = { hasError: false };
   }
 
   componentDidCatch(error) {
-    this.setState({ error });
+    this.setState({ hasError: true });
 
     this.props.onError(error);
   }
 
   render() {
-    return !this.state.error && this.props.children;
+    return !this.state.hasError && <RenderChildrenFunction>{this.props.children}</RenderChildrenFunction>;
   }
 }
 

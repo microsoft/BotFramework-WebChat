@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
 import createCustomEvent from '../utils/createCustomEvent';
@@ -313,10 +313,10 @@ const Composer = ({
       return attachmentRenderer;
     }
 
-    return applyMiddlewareForRenderer(
+    const renderer = applyMiddlewareForRenderer(
       'attachment',
       ...singleToArray(attachmentMiddleware),
-      () => () => ({ attachment }) => {
+      () => () => ({ attachment }) => () => {
         if (attachment) {
           throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
         } else {
@@ -324,6 +324,26 @@ const Composer = ({
         }
       }
     )({});
+
+    let showDeprecationNotes = true;
+
+    return (...args) => {
+      const result = renderer(...args);
+
+      if (isValidElement(result)) {
+        if (showDeprecationNotes) {
+          console.warn(
+            'botframework-webchat: Please upgrade the attachment middleware with a new signature. For details, please see HOOKS.md#usecreateattachmentrenderer.'
+          );
+
+          showDeprecationNotes = false;
+        }
+
+        return () => result;
+      } else {
+        return result;
+      }
+    };
   }, [attachmentMiddleware, attachmentRenderer]);
 
   const patchedAvatarRenderer = useMemo(() => {
@@ -556,7 +576,7 @@ Composer.propTypes = {
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-  internalErrorBoxClass: PropTypes.func.isRequired, // This is for internal use only. We don't allow customization of error box.
+  internalErrorBoxClass: PropTypes.func, // This is for internal use only. We don't allow customization of error box.
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),

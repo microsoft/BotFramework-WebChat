@@ -3,16 +3,27 @@ import React, { createElement, useCallback, useState } from 'react';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
 import useErrorBoxClass from '../internal/useErrorBoxClass';
+import useTrackException from '../useTrackException';
 
 const UserlandBoundary = ({ children, type }) => {
   const [error, setError] = useState();
   const [errorBoxClass] = useErrorBoxClass();
-  const handleError = useCallback(({ error }) => setError(error));
+  const trackException = useTrackException();
 
-  // console.log('UserlandBoundary', { children });
+  const handleError = useCallback(error => {
+    setError(error);
+
+    const errorObject = error || new Error(type);
+
+    trackException(errorObject, false);
+
+    console.group(`botframework-webchat: ${type}`);
+    console.error(errorObject);
+    console.groupEnd();
+  }, [trackException]);
 
   return error ? (
-    createElement(errorBoxClass, { error, type })
+    !!errorBoxClass && createElement(errorBoxClass, { error, type })
   ) : (
     <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
   );

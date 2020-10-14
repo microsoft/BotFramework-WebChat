@@ -1,3 +1,5 @@
+import { isValidElement } from 'react';
+
 import useCreateAttachmentRenderer from './useCreateAttachmentRenderer';
 
 let showDeprecationNotes = true;
@@ -14,8 +16,8 @@ export default function useRenderAttachment() {
   const createAttachmentRenderer = useCreateAttachmentRenderer();
 
   return (...renderArgs) => {
-    const render = createAttachmentRenderer(...renderArgs);
+    const result = createAttachmentRenderer(...renderArgs);
 
-    return !!render && render();
+    return !!result && isValidElement(result) ? result : result();
   };
 }

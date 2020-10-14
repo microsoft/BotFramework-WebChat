@@ -10,7 +10,6 @@ export default function applyMiddleware(type, ...middleware) {
       throw new Error(`reached terminator of ${type}`);
     });
 }
-
 export function forRenderer(type, ...middleware) {
   return (...setupArgs) => {
     const runMiddleware = concatMiddleware(...middleware)(...setupArgs)(() => (
@@ -31,12 +30,10 @@ export function forRenderer(type, ...middleware) {
           return <UserlandBoundary type={`render of ${type}`}>{render}</UserlandBoundary>;
         } else {
           return (...renderTimeArgs) => (
-            <UserlandBoundary type={`render of ${type}`}>{render(...renderTimeArgs)}</UserlandBoundary>
+            <UserlandBoundary type={`render of ${type}`}>{() => render(...renderTimeArgs)}</UserlandBoundary>
           );
         }
       } catch (err) {
-        // The next line is not a React component. It is a render function.
-        // eslint-disable-next-line react/display-name
         return <ErrorBox error={err} message={`initialization of ${type}`} />;
       }
     };

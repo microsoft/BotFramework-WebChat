@@ -62,6 +62,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useCreateActivityRenderer`](#usecreateactivityrenderer)
 -  [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
 -  [`useCreateAttachmentForScreenReaderRenderer`](#useCreateAttachmentForScreenReaderRenderer)
+-  [`useCreateAttachmentRenderer`](#usecreateattachmentrenderer)
 -  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
 -  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
@@ -313,6 +314,23 @@ useCreateAttachmentForScreenReaderRenderer(): ({
 <!-- prettier-ignore-end -->
 
 This hook will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
+
+## `useCreateAttachmentRenderer``
+
+<!-- prettier-ignore-start -->
+```js
+useCreateAttachmentRenderer(): ({
+  activity: Activity,
+  attachment: Attachment
+}) =>
+  (
+    false |
+    () => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+([PXX] TBD)
 
 ## `useCreateAvatarRenderer`
 

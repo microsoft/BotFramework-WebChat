@@ -1,4 +1,4 @@
-import getLocaleString from '../../lib/Localization/getLocaleString';
+import getLocaleString from './getLocaleString';
 
 test('should return formatted date for "en"', async () => {
   const actual = getLocaleString(new Date(2000, 11, 23, 12, 34, 56, 789), 'en');
