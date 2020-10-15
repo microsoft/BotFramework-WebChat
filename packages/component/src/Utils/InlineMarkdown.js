@@ -67,7 +67,7 @@ const InlineMarkdown = ({ children, onReference, references }) => {
           padding: 0
         }
       }) + '',
-    [accent]
+    [accent, styleToClassName]
   );
 
   // Markdown-It only support references in uppercase.
