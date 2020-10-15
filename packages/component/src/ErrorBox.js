@@ -18,7 +18,7 @@ const ErrorBox = ({ error, type }) => {
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
       <div className={errorBoxStyleSet}>
         <div>{type}</div>
-        <div>{error.stack}</div>
+        <pre>{error.stack}</pre>
       </div>
     </React.Fragment>
   );

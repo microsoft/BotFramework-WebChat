@@ -27,7 +27,6 @@ import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
 import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
-import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
 import Context from './hooks/internal/WebChatUIContext';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -37,8 +36,7 @@ import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
-// TODO: Add deprecation notes when someone is using hooks from bf-wc-component, instead of bf-wc-core.
-import { hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
+import { concatMiddleware, hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
 import * as componentHooks from './hooks/index';
 
 const hooks = {

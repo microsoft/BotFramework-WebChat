@@ -25,6 +25,7 @@ export {
   useScrollTo,
   useScrollToEnd,
   useSendBoxSpeechInterimsVisible,
+  // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.
   useSendFiles,
   useStyleSet,
   useTextBoxSubmit,

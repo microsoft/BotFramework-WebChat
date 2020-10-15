@@ -8,8 +8,6 @@ export default function createCoreMiddleware() {
     () => next => (...args) => {
       const [{ activity }] = args;
 
-      // console.log('defaultActivity', { activity, args });
-
       // TODO: [P4] Can we simplify these if-statement to something more readable?
 
       const { type } = activity;

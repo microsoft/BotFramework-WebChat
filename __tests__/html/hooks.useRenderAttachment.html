@@ -63,6 +63,7 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.ui);
 
         await host.snapshot();
         await host.done();

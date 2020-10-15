@@ -315,7 +315,7 @@ useCreateAttachmentForScreenReaderRenderer(): ({
 
 This hook will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
 
-## `useCreateAttachmentRenderer``
+## `useCreateAttachmentRenderer`
 
 <!-- prettier-ignore-start -->
 ```js
@@ -383,7 +383,13 @@ For the debounce behavior, please read our [article regarding notification syste
 
 ## `useDictateAbortable`
 
-(TODO: TBD)
+<!-- prettier-ignore-start -->
+```js
+useDictateAbortable(): [boolean]
+```
+<!-- prettier-ignore-end -->
+
+When called, this hook will return `true` if current dictation is abortable, otherwise, `false`.
 
 ## `useDictateInterims`
 
