@@ -1,13 +1,13 @@
 import { isValidElement, useMemo } from 'react';
 
-import useCreateAttachmentRenderer from '../useCreateAttachmentRenderer';
+import useRenderAttachment from '../useRenderAttachment';
 import useWebChatAPIContext from './useWebChatAPIContext';
 
-export default function useCreateActivityRendererInternal(createAttachmentRendererOverride) {
+export default function useCreateActivityRendererInternal(renderAttachmentOverride) {
   const { activityRenderer: createActivityRenderer } = useWebChatAPIContext();
-  const defaultCreateAttachmentRenderer = useCreateAttachmentRenderer();
+  const defaultRenderAttachment = useRenderAttachment();
 
-  const createAttachmentRenderer = createAttachmentRendererOverride || defaultCreateAttachmentRenderer;
+  const renderAttachment = renderAttachmentOverride || defaultRenderAttachment;
 
   return useMemo(
     () => (...createActivityRendererOptions) => {
@@ -22,15 +22,10 @@ export default function useCreateActivityRendererInternal(createAttachmentRender
           return renderActivity;
         }
 
-        const activityElement = renderActivity((...renderAttachmentArgs) => {
-          // Currently, the API signature for renderActivity is:
-          //   renderActivity(({ activity, attachment }) => React.Element)
-          // We will bridge newer version of createAttachmentRenderer to the older API for now.
-          const result = createAttachmentRenderer(...renderAttachmentArgs);
-
-          // return isValidElement(result) ? () => result : result;
-          return isValidElement(result) ? result : result();
-        }, renderActivityOptions);
+        const activityElement = renderActivity(
+          (...renderAttachmentArgs) => renderAttachment(...renderAttachmentArgs),
+          renderActivityOptions
+        );
 
         // "activityElement" cannot be false. If the middleware want to hide the "activityElement", it should return "false" when we call createActivityRenderer().
         activityElement ||
@@ -41,6 +36,6 @@ export default function useCreateActivityRendererInternal(createAttachmentRender
         return activityElement;
       };
     },
-    [createActivityRenderer, createAttachmentRenderer]
+    [createActivityRenderer, renderAttachment]
   );
 }

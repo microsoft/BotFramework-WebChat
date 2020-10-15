@@ -304,6 +304,48 @@ const Composer = ({
     );
   }, [activityStatusMiddleware, activityStatusRenderer]);
 
+  // const patchedAttachmentRenderer = useMemo(() => {
+  //   if (attachmentRenderer) {
+  //     console.warn(
+  //       'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2022-06-15, please use "attachmentMiddleware" instead.'
+  //     );
+
+  //     return attachmentRenderer;
+  //   }
+
+  //   const renderer = applyMiddlewareForRenderer(
+  //     'attachment',
+  //     ...singleToArray(attachmentMiddleware),
+  //     () => () => ({ attachment }) => () => {
+  //       if (attachment) {
+  //         throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+  //       } else {
+  //         throw new Error('No attachment to render');
+  //       }
+  //     }
+  //   )({});
+
+  //   let showDeprecationNotes = true;
+
+  //   return (...args) => {
+  //     const result = renderer(...args);
+
+  //     if (isValidElement(result)) {
+  //       if (showDeprecationNotes) {
+  //         console.warn(
+  //           'botframework-webchat: Please upgrade the attachment middleware with a new signature. For details, please see HOOKS.md#usecreateattachmentrenderer.'
+  //         );
+
+  //         showDeprecationNotes = false;
+  //       }
+
+  //       return () => result;
+  //     }
+
+  //     return result;
+  //   };
+  // }, [attachmentMiddleware, attachmentRenderer]);
+
   const patchedAttachmentRenderer = useMemo(() => {
     if (attachmentRenderer) {
       console.warn(
@@ -313,10 +355,11 @@ const Composer = ({
       return attachmentRenderer;
     }
 
-    const renderer = applyMiddlewareForRenderer(
+    // Attachment renderer
+    return applyMiddleware(
       'attachment',
       ...singleToArray(attachmentMiddleware),
-      () => () => ({ attachment }) => () => {
+      () => () => ({ attachment }) => {
         if (attachment) {
           throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
         } else {
@@ -324,26 +367,6 @@ const Composer = ({
         }
       }
     )({});
-
-    let showDeprecationNotes = true;
-
-    return (...args) => {
-      const result = renderer(...args);
-
-      if (isValidElement(result)) {
-        if (showDeprecationNotes) {
-          console.warn(
-            'botframework-webchat: Please upgrade the attachment middleware with a new signature. For details, please see HOOKS.md#usecreateattachmentrenderer.'
-          );
-
-          showDeprecationNotes = false;
-        }
-
-        return () => result;
-      }
-
-      return result;
-    };
   }, [attachmentMiddleware, attachmentRenderer]);
 
   const patchedAvatarRenderer = useMemo(() => {

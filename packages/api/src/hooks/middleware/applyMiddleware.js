@@ -10,6 +10,7 @@ export default function applyMiddleware(type, ...middleware) {
       throw new Error(`reached terminator of ${type}`);
     });
 }
+
 export function forRenderer(type, ...middleware) {
   return (...setupArgs) => {
     const runMiddleware = concatMiddleware(...middleware)(...setupArgs)(() => (
