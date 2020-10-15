@@ -7,7 +7,7 @@ import React, { useCallback, useMemo } from 'react';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
-// TODO: [PXX] No /lib/
+// TODO: [P1] #3350 No /lib/, we need to move setDictateState from bf-wc-core (Redux) to React Context.
 import useSetDictateState from 'botframework-webchat-api/lib/hooks/internal/useSetDictateState';
 
 const {

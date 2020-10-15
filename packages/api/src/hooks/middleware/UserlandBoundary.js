@@ -1,29 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { createElement, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
-import useErrorBoxClass from '../internal/useErrorBoxClass';
-import useTrackException from '../useTrackException';
+import ErrorBox from '../internal/ErrorBox';
 
 const UserlandBoundary = ({ children, type }) => {
   const [error, setError] = useState();
-  const [errorBoxClass] = useErrorBoxClass();
-  const trackException = useTrackException();
 
-  const handleError = useCallback(error => {
-    setError(error);
-
-    const errorObject = error || new Error(type);
-
-    trackException(errorObject, false);
-
-    console.group(`botframework-webchat: ${type}`);
-    console.error(errorObject);
-    console.groupEnd();
-  }, [trackException]);
+  const handleError = useCallback(error => setError(error), []);
 
   return error ? (
-    !!errorBoxClass && createElement(errorBoxClass, { error, type })
+    <ErrorBox error={error} type={type} />
   ) : (
     <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
   );

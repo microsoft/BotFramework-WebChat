@@ -163,7 +163,7 @@ const DEFAULT_OPTIONS = {
   spinnerAnimationWidth: 16,
   spinnerAnimationPadding: 12,
 
-  // TODO: [PXX] This is only supported on HTML.
+  // TODO: [P0] #3322 This is only supported on HTML.
   enableUploadThumbnail: true,
   uploadThumbnailContentType: 'image/jpeg',
   uploadThumbnailHeight: 360,
