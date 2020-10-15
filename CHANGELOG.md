@@ -398,8 +398,8 @@ It should check the result from downstream middleware. If it is falsy, it should
 ### Breaking changes
 
 -  Affecting Adaptive Cards, legacy cards and suggested actions
-   -  For `openUrl` card action, we are now whitelisting the URL scheme using the same whitelist from the default Markdown + sanitize engine, which includes `data`, `http`, `https`, `ftp`, `mailto`, `sip`, and `tel`
-   -  To whitelist a different set of URL schemes, please implement the card action middleware to override this behavior
+   -  For `openUrl` card action, we are now allow-listing the URL scheme using the same allow list from the default Markdown + sanitize engine, which includes `data`, `http`, `https`, `ftp`, `mailto`, `sip`, and `tel`
+   -  To allow list a different set of URL schemes, please implement the card action middleware to override this behavior
 
 ### Added
 
