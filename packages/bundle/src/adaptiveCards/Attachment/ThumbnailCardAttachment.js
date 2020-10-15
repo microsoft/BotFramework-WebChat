@@ -17,6 +17,7 @@ ThumbnailCardAttachment.propTypes = {
       buttons: PropTypes.array,
       images: PropTypes.arrayOf(
         PropTypes.shape({
+          alt: PropTypes.string.isRequired,
           tap: PropTypes.any,
           url: PropTypes.string.isRequired
         })

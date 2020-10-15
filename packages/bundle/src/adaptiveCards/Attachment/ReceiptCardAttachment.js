@@ -24,11 +24,15 @@ ReceiptCardAttachment.propTypes = {
       items: PropTypes.arrayOf(
         PropTypes.shape({
           image: PropTypes.shape({
+            alt: PropTypes.string.isRequired,
             tap: PropTypes.any,
             url: PropTypes.string.isRequired
           }),
           price: PropTypes.string.isRequired,
+          quantity: PropTypes.string,
           subtitle: PropTypes.string,
+          tap: PropTypes.any,
+          text: PropTypes.string,
           title: PropTypes.string.isRequired
         })
       ),
