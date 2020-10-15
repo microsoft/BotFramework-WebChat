@@ -172,8 +172,8 @@ There are checks that automation will not be able to capture. For example:
 -  Cross browser compatibility
    -  Windows 10
       -  Chrome
-      -  Edge Chromium
-      -  Edge UWP
+      -  Microsoft Edge Chromium
+      -  Microsoft Edge UWP (Legacy)
       -  Firefox
       -  IE11 (except speech features)
    -  Safari on macOS
@@ -183,7 +183,7 @@ There are checks that automation will not be able to capture. For example:
    -  Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
    -  Assistive technology and browser compatibility
       -  NVDA/JAWS: Chrome and Firefox
-      -  Narrator: Edge family and IE11
+      -  Narrator: Microsoft Edge family and IE11
       -  VoiceOver: Safari
       -  TalkBack: Chrome on Android
 -  For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
