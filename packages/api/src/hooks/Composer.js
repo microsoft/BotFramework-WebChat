@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
 import createCustomEvent from '../utils/createCustomEvent';
@@ -356,17 +356,13 @@ const Composer = ({
     }
 
     // Attachment renderer
-    return applyMiddleware(
-      'attachment',
-      ...singleToArray(attachmentMiddleware),
-      () => () => ({ attachment }) => {
-        if (attachment) {
-          throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-        } else {
-          throw new Error('No attachment to render');
-        }
+    return applyMiddleware('attachment', ...singleToArray(attachmentMiddleware), () => () => ({ attachment }) => {
+      if (attachment) {
+        throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+      } else {
+        throw new Error('No attachment to render');
       }
-    )({});
+    })({});
   }, [attachmentMiddleware, attachmentRenderer]);
 
   const patchedAvatarRenderer = useMemo(() => {

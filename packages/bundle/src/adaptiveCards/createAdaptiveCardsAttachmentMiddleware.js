@@ -11,6 +11,8 @@ import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
 export default function createAdaptiveCardsAttachmentMiddleware() {
+  // This is not returning a React component, but a render function.
+  /* eslint-disable-next-line react/display-name */
   return () => next => (...args) => {
     const [{ activity, attachment }] = args;
 
