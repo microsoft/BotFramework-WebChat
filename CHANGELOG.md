@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Updated comment to include GitHub issue # in `postActivity()` method of `DirectLineSpeech` class, by [@stevkan](https://github.com/stevkan) in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX)
 -  Bumped development dependency [`node-fetch@2.6.1`](https://npmjs.com/package/node-fetch) in PR [#3467](https://github.com/microsoft/BotFramework-WebChat/pull/3467) by [@dependabot](https://github.com/dependabot)
 -  Bumped Cognitive Services Speech SDK to 1.13.1, by [@compulim](https://github.com/compulim) in PR [#3432](https://github.com/microsoft/BotFramework-WebChat/pull/3432)
    -  [`microsoft-cognitiveservices-speech-sdk@1.13.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)

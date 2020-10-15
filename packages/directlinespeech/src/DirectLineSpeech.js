@@ -71,7 +71,7 @@ export default class DirectLineSpeech {
   postActivity(activity) {
     // Currently, Web Chat set user ID on all outgoing activities.
     // As Direct Line Speech maintains its own user ID, Web Chat should not set the user ID.
-    // TODO: [P2] We should move user ID into options of DirectLineJS, instead of Web Chat.
+    // TODO: [P2] #3538 We should move user ID into options of DirectLineJS, instead of Web Chat.
     activity = {
       ...activity,
       from: { role: 'user' }
