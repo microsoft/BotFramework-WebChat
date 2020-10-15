@@ -7,7 +7,6 @@ import BasicWebChat from './BasicWebChat';
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
 import ErrorBox from './ErrorBox';
-// import Localize, { localize } from './Localization/Localize';
 import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
 import Timestamp from './Middleware/ActivityStatus/Timestamp';
@@ -39,7 +38,7 @@ import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 // TODO: Add deprecation notes when someone is using hooks from bf-wc-component, instead of bf-wc-core.
-import { hooks as apiHooks } from 'botframework-webchat-api';
+import { hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
 import * as componentHooks from './hooks/index';
 
 const hooks = {
@@ -52,7 +51,7 @@ const version = process.env.npm_package_version;
 const Components = {
   BasicWebChat,
   Composer,
-  // Localize,
+  Localize,
 
   // Components for recomposing activities and attachments
   AudioContent,
@@ -105,6 +104,6 @@ export {
   defaultStyleOptions,
   getTabIndex,
   hooks,
-  // localize,
+  localize,
   version
 };
