@@ -199,8 +199,8 @@ Here list how we generally work when [fixing a bug](#fixing-bug) or [implementin
 
 Write the bug repro as a test, before fixing the bug.
 
-1. Clone/prepare the repository or nuke an existing repository
-   -  To nuke, run `npm run tableflip`
+1. Clone/prepare the repository or reset an existing repository
+   -  To reset the repo, run `npm run tableflip`
 1. Run continuous build, run `npm start`
 1. Convert bug into a test case, under `__tests__/html/this-is-the-bug.html`
 1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/this-is-the-bug.html`
@@ -216,8 +216,8 @@ Write the bug repro as a test, before fixing the bug.
 
 Write the user story while implementing the feature.
 
-1. Clone/prepare the repository or nuke an existing repository
-   -  To nuke, run `npm run tableflip`
+1. Clone/prepare the repository or reset an existing repository
+   -  To reset the repo, run `npm run tableflip`
 1. Run continuous build, run `npm start`
 1. Clone `__tests__/html/simple.html` to `my-feature.html` and use it as a playground
 1. Navigate to the new playground at http://localhost:5001/my-feature.html
