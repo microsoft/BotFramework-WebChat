@@ -68,6 +68,7 @@ test('receipt card', async () => {
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -82,6 +83,7 @@ test('receipt card with quantity', async () => {
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   const base64PNG = await driver.takeScreenshot();
 
