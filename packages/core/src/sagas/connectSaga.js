@@ -160,7 +160,7 @@ function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   });
 }
 
-export default function*() {
+export default function* () {
   for (;;) {
     const {
       payload: { directLine, userID: userIDFromAction, username }
@@ -174,6 +174,10 @@ export default function*() {
       userID: rectifyUserID(directLine, userIDFromAction),
       username
     };
+
+    if (directLine.setUserId) {
+      directLine.setUserId(meta.userID);
+    }
 
     // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
     // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.
