@@ -144,5 +144,3 @@ export interface ICommonContent {
   text?: string;
   title?: string;
 }
-
-export { addCardAction };
