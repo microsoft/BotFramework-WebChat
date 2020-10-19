@@ -23,7 +23,7 @@ const ThumbnailCardContent = ({ actionPerformedClassName, content, disabled }) =
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
-        const [{ tap, url }] = images;
+        const [{ alt, tap, url }] = images;
 
         builder.addTextBlock(
           title,
@@ -32,7 +32,7 @@ const ThumbnailCardContent = ({ actionPerformedClassName, content, disabled }) =
         );
 
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: richCardWrapTitle }, firstColumn);
-        builder.addImage(url, lastColumn, tap);
+        builder.addImage(url, lastColumn, tap, alt);
         builder.addTextBlock(text, { wrap: true });
         builder.addButtons(buttons);
       } else {
@@ -63,6 +63,7 @@ ThumbnailCardContent.propTypes = {
     buttons: PropTypes.array,
     images: PropTypes.arrayOf(
       PropTypes.shape({
+        alt: PropTypes.string.isRequired,
         tap: PropTypes.any,
         url: PropTypes.string.isRequired
       })

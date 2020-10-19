@@ -6,7 +6,7 @@ When we designed Web Chat, we heavily considered the importance of customization
 
 1. Using all of our layers: using all of our layers as-is,
 2. Using just business layers: building their own UI from the ground up using Web Chat's business logic, or
-3. Using business layers and some UI components: opting into our UI but replacing just a handful of components as needed.
+3. Using business layers and some UI components: opting into our UI but replacing just a handful of components as needed. Note that composition mode is not available in all scenarios (e.g. adding further functionality like a button to the SendBox).
 
 In this sample, we are demonstrating the ability to rebuild Web Chat UI using just the business layer of Web Chat.
 

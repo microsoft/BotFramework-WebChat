@@ -38,11 +38,12 @@ VideoCardContent.propTypes = {
     autoloop: PropTypes.bool,
     autostart: PropTypes.bool,
     image: PropTypes.shape({
-      url: PropTypes.string
+      url: PropTypes.string.isRequired
     }),
     media: PropTypes.arrayOf(
       PropTypes.shape({
-        url: PropTypes.string
+        profile: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired
       })
     )
   }).isRequired,
