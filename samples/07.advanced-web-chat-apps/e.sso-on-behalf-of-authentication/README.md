@@ -16,10 +16,6 @@ Instead of OpenID, most enterprise apps use OAuth plus a user profile API to ide
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
-# Test out the hosted sample
-
--  [Try out MockBot](https://webchat-sample-obo.azurewebsites.net/)
-
 # How to run locally
 
 This demo integrates with multiple services. There are multiple services you need to setup in order to host the demo.
