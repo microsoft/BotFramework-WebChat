@@ -32,6 +32,8 @@ import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
+    display: 'flex',
+    flexDirection: 'column',
     overflow: 'hidden',
     // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
     // Stacking context help isolating elements that use "z-index" from global pollution.

@@ -1,23 +1,27 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import textFormatToContentType from './Utils/textFormatToContentType';
 import useAvatarForBot from './hooks/useAvatarForBot';
+import useCreateAttachmentForScreenReaderRenderer from './hooks/useCreateAttachmentForScreenReaderRenderer';
 import useDateFormatter from './hooks/useDateFormatter';
 import useLocalizer from './hooks/useLocalizer';
 import useStripMarkdown from './hooks/internal/useStripMarkdown';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
-  color: 'transparent',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  top: 0,
-  whiteSpace: 'nowrap',
-  width: 1
+  '&.webchat__screen-reader-activity': {
+    color: 'transparent',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    top: 0,
+    whiteSpace: 'nowrap',
+    width: 1
+  }
 };
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
@@ -30,6 +34,7 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
 
 const ScreenReaderActivity = ({ activity }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
+  const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -48,23 +53,41 @@ const ScreenReaderActivity = ({ activity }) => {
   const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
   const displayText = messageBackDisplayText || text;
 
+  const attachmentForScreenReaderRenderers = attachments
+    .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
+    .filter(render => render);
+
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
     : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
   ).replace(/\s{2,}/gu, ' ');
+  const numGenericAttachments = attachments.length - attachmentForScreenReaderRenderers.length;
+
   const numAttachmentsAlt =
-    !!attachments.length && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, attachments.length);
+    !!numGenericAttachments && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, numGenericAttachments);
   const textAlt = useStripMarkdown(contentTypeMarkdown && displayText) || displayText;
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (
-    <article aria-atomic={true} aria-roledescription="message" className={rootClassName} role="region">
+    <article
+      aria-atomic={true}
+      aria-roledescription="message"
+      className={classNames('webchat__screen-reader-activity', rootClassName)}
+      role="region"
+    >
       <p>
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
+      {!!attachmentForScreenReaderRenderers.length && (
+        <ul>
+          {attachmentForScreenReaderRenderers.map((render, index) => (
+            <li key={index}>{render()}</li>
+          ))}
+        </ul>
+      )}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
-      <p>{timestampAlt}</p>
+      <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
     </article>
   );
 };

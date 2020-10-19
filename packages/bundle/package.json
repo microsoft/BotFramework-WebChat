@@ -45,6 +45,7 @@
     "microsoft-cognitiveservices-speech-sdk": "1.13.1",
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.4",
+    "source-map-loader": "1.1.1",
     "url-search-params-polyfill": "8.1.0",
     "web-speech-cognitive-services": "7.0.2-master.6004e4b",
     "whatwg-fetch": "3.4.0"

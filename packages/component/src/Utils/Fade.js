@@ -19,7 +19,10 @@ const Fade = ({ children, fadeAfter }) => {
 
 Fade.defaultProps = {
   children: undefined,
-  fadeAfter: 1000
+
+  // TODO: [PXX] This is for debugging only. Revert this line.
+  fadeAfter: 6000000
+  // fadeAfter: 1000
 };
 
 Fade.propTypes = {

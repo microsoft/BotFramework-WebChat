@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import createEmotion from 'create-emotion';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
+import applyAttachmentForScreenReaderMiddleware from './Middleware/applyAttachmentForScreenReaderMiddleware';
 import createActivityRenderer from './Middleware/createActivityRenderer';
 import createActivityStatusRenderer from './Middleware/createActivityStatusRenderer';
 import createAttachmentRenderer from './Middleware/createAttachmentRenderer';
@@ -199,6 +200,7 @@ const Composer = ({
   activityRenderer,
   activityStatusMiddleware,
   activityStatusRenderer,
+  attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
   attachmentRenderer,
   avatarMiddleware,
@@ -424,6 +426,40 @@ const Composer = ({
     return activityStatusRenderer || createActivityStatusRenderer(activityStatusMiddleware);
   }, [activityStatusMiddleware, activityStatusRenderer]);
 
+  const patchedAttachmentForScreenReaderRenderer = useMemo(() => {
+    const patchedAttachmentForScreenReaderRenderer = applyAttachmentForScreenReaderMiddleware(
+      attachmentForScreenReaderMiddleware
+    );
+
+    // The new function returned is for validating the result of attachmentForScreenReaderMiddleware.
+    // TODO: [PXX] Add tests
+    return (...args) => {
+      const renderAttachmentForScreenReader = patchedAttachmentForScreenReaderRenderer(...args);
+
+      if (renderAttachmentForScreenReader === false) {
+        return false;
+      } else if (typeof renderAttachmentForScreenReader === 'function') {
+        return (...renderArgs) => {
+          const element = renderAttachmentForScreenReader(...renderArgs);
+
+          if (!isValidElement(element)) {
+            console.error(
+              'botframework-webchat: Renderer of attachmentForScreenReaderMiddleware should return React element only.'
+            );
+          }
+
+          return element;
+        };
+      }
+
+      console.error(
+        'botframework-webchat: attachmentForScreenReaderMiddleware should only return either false or a render function.'
+      );
+
+      return false;
+    };
+  }, [attachmentForScreenReaderMiddleware]);
+
   const patchedAttachmentRenderer = useMemo(() => {
     attachmentRenderer &&
       console.warn(
@@ -484,6 +520,7 @@ const Composer = ({
       activityStatusRenderer: patchedActivityStatusRenderer,
       attachmentRenderer: patchedAttachmentRenderer,
       avatarRenderer: patchedAvatarRenderer,
+      createAttachmentForScreenReaderRenderer: patchedAttachmentForScreenReaderRenderer,
       dictateAbortable,
       dir: patchedDir,
       directLine,
@@ -532,6 +569,7 @@ const Composer = ({
       onTelemetry,
       patchedActivityRenderer,
       patchedActivityStatusRenderer,
+      patchedAttachmentForScreenReaderRenderer,
       patchedAttachmentRenderer,
       patchedAvatarRenderer,
       patchedDir,
@@ -614,6 +652,7 @@ Composer.defaultProps = {
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
   activityStatusRenderer: undefined,
+  attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
   attachmentRenderer: undefined,
   avatarMiddleware: undefined,
@@ -651,6 +690,7 @@ Composer.propTypes = {
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.func,
   activityStatusRenderer: PropTypes.func,
+  attachmentForScreenReaderMiddleware: PropTypes.func,
   attachmentMiddleware: PropTypes.func,
   attachmentRenderer: PropTypes.func,
   avatarMiddleware: PropTypes.func,
