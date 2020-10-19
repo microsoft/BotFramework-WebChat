@@ -16,7 +16,7 @@ const HeroCardContent = ({ actionPerformedClassName, content, disabled }) => {
     const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
     if (content) {
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap, image.alt));
 
       builder.addCommon(content);
 
@@ -44,8 +44,9 @@ HeroCardContent.propTypes = {
   content: PropTypes.shape({
     images: PropTypes.arrayOf(
       PropTypes.shape({
+        alt: PropTypes.string.isRequired,
         tap: PropTypes.any,
-        url: PropTypes.string
+        url: PropTypes.string.isRequired
       })
     ),
     tap: PropTypes.any

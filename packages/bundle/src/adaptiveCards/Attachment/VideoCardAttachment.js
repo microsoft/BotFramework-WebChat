@@ -19,10 +19,11 @@ VideoCardAttachment.propTypes = {
       autoloop: PropTypes.bool,
       autostart: PropTypes.bool,
       image: PropTypes.shape({
-        url: PropTypes.string
+        url: PropTypes.string.isRequired
       }),
       media: PropTypes.arrayOf(
         PropTypes.shape({
+          profile: PropTypes.string.isRequired,
           url: PropTypes.string
         })
       )
