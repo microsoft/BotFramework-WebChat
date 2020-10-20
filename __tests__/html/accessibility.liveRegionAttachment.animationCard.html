@@ -44,7 +44,17 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        // Replace the animation with a static image.
+        document
+          .querySelector('.webchat__bubble__content img')
+          .setAttribute(
+            'src',
+            'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+          );
+
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.fetch);
 
         await host.snapshot();
         await host.done();
