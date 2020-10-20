@@ -16,12 +16,18 @@ const RICH_CARD_CONTENT_TYPES = [
 
 export default function createAdaptiveCardsAttachmentMiddleware() {
   return () => next => (...args) => {
-    const [{ activity, attachment }] = args;
+    const [
+      {
+        activity,
+        attachment,
+        attachment: { content, contentType }
+      }
+    ] = args;
 
-    return RICH_CARD_CONTENT_TYPES.includes(attachment.contentType)
-      ? () => <RichCardAttachment content={attachment.content} />
-      : attachment.contentType === 'application/vnd.microsoft.card.adaptive'
-      ? () => <AdaptiveCardAttachment content={attachment.content} />
+    return content && RICH_CARD_CONTENT_TYPES.includes(contentType)
+      ? () => <RichCardAttachment content={content} />
+      : content && contentType === 'application/vnd.microsoft.card.adaptive'
+      ? () => <AdaptiveCardAttachment content={content} />
       : next({ activity, attachment });
   };
 }
