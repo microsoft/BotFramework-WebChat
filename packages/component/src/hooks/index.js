@@ -6,6 +6,7 @@ import useByteFormatter from './useByteFormatter';
 import useConnectivityStatus from './useConnectivityStatus';
 import useCreateActivityRenderer from './useCreateActivityRenderer';
 import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
+import useCreateAttachmentForScreenReaderRenderer from './useCreateAttachmentForScreenReaderRenderer';
 import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
@@ -80,6 +81,7 @@ export {
   useConnectivityStatus,
   useCreateActivityRenderer,
   useCreateActivityStatusRenderer,
+  useCreateAttachmentForScreenReaderRenderer,
   useCreateAvatarRenderer,
   useDateFormatter,
   useDebouncedNotifications,
