@@ -64,7 +64,7 @@ const AdaptiveCardAttachment = ({ content }) => {
     return inputs;
   }, [card]);
 
-  const cardLabel = localize('ATTACHMENT_CARD');
+  const cardLabel = localize('ATTACHMENT_CARD', '', '', '');
 
   return (
     <div>

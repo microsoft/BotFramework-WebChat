@@ -25,7 +25,7 @@
           const sendMessage = useSendMessage();
 
           useEffect(() => {
-            connectivityStatus === 'connected' && sendMessage('audiocard');
+            connectivityStatus === 'connected' && sendMessage('videocard');
           }, [connectivityStatus, sendMessage]);
 
           return false;
@@ -46,7 +46,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
         await pageObjects.wait(
-          conditions.mediaBuffered(document.getElementsByTagName('audio')[0]),
+          conditions.mediaBuffered(document.getElementsByTagName('video')[0]),
           timeouts.fetchImage
         );
 

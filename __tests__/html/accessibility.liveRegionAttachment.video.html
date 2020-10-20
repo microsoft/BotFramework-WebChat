@@ -45,6 +45,10 @@
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageObjects.wait(
+          conditions.mediaBuffered(document.getElementsByTagName('video')[0]),
+          timeouts.fetchImage
+        );
 
         await host.snapshot();
         await host.done();

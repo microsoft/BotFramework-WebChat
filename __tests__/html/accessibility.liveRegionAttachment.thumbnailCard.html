@@ -25,7 +25,7 @@
           const sendMessage = useSendMessage();
 
           useEffect(() => {
-            connectivityStatus === 'connected' && sendMessage('card thumbnail');
+            connectivityStatus === 'connected' && sendMessage('thumbnailcard');
           }, [connectivityStatus, sendMessage]);
 
           return false;

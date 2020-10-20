@@ -4,6 +4,6 @@
 
 describe('accessibility requirement', () => {
   describe('attachments in live region', () => {
-    test('receipt card', () => runHTMLTest('accessibility.liveRegionAttachment.receiptCard.html', { height: 1280 }));
+    test('video card', () => runHTMLTest('accessibility.liveRegionAttachment.videoCard.html'));
   });
 });
