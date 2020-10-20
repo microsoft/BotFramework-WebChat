@@ -64,9 +64,10 @@ export default class AdaptiveCardBuilder {
     this.card.addItem(this.container);
   }
 
-  addColumnSet(sizes: number[], container: Container = this.container) {
+  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: CardAction) {
     const columnSet = new ColumnSet();
 
+    columnSet.selectAction = selectAction && addCardAction(selectAction);
     container.addItem(columnSet);
 
     return sizes.map(size => {
@@ -123,11 +124,12 @@ export default class AdaptiveCardBuilder {
     this.addButtons(content.buttons);
   }
 
-  addImage(url: string, container?: Container, selectAction?: CardAction) {
+  addImage(url: string, container?: Container, selectAction?: CardAction, altText?: string) {
     container = container || this.container;
 
     const image = new Image();
 
+    image.altText = altText;
     image.url = url;
     image.selectAction = selectAction && addCardAction(selectAction);
     image.size = Size.Stretch;

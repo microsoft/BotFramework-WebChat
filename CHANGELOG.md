@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#3489](https://github.com/microsoft/BotFramework-WebChat/issues/3489). Fix AT saying 'Bot undefined said', by [@corinagum](https://github.com/corinagum) in PR [#3524](https://github.com/microsoft/BotFramework-WebChat/pull/3524)
+-  Fixes [#3371](https://github.com/microsoft/BotFramework-WebChat/issues/3371). Add alt property for image in HeroCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
+-  Fixes [#3310](https://github.com/microsoft/BotFramework-WebChat/issues/3310). Add quantity, tap and text field to ReceiptCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 
 ### Changed
 
@@ -35,6 +37,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#3281](https://github.com/microsoft/BotFramework-WebChat/issues/3281). Added documentation on speech permissions for Cordova apps on Android, by [@corinagum](https://github.com/corinagum), in PR [#3508](https://github.com/microsoft/BotFramework-WebChat/pull/3508)
+
+### Samples
+
+-  Fixes [#3526](https://github.com/microsoft/BotFramework-WebChat/issues/3526). Add info on composition mode in sample 06.d, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 
 ## [4.10.1] - 2020-09-09
 

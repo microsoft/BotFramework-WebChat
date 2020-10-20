@@ -14,6 +14,7 @@
     "adaptivecards": "1.2.6",
     "botframework-directlinejs": "^0.13.0",
     "botframework-webchat": "0.0.0-0",
+    "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.2.6",
     "memoize-one": "5.1.1",
     "on-error-resume-next": "1.1.0",

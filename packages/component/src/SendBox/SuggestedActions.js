@@ -70,7 +70,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
         flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
         flipperSize: suggestedActionsCarouselFlipperSize
       }),
-    []
+    [
+      suggestedActionsCarouselFlipperBoxWidth,
+      suggestedActionsCarouselFlipperCursor,
+      suggestedActionsCarouselFlipperSize
+    ]
   );
 
   const suggestedActionsContainerText = localize(

@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 75] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
@@ -47,27 +47,31 @@ const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => 
       }
 
       items &&
-        items.map(({ image: { tap, url } = {}, price, subtitle, title }) => {
+        items.map(({ image: { alt, tap: imageTap, url } = {}, price, quantity, subtitle, tap, text, title }) => {
           let itemColumns;
 
           if (url) {
             const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
             itemColumns = columns;
-            builder.addImage(url, itemImageColumn, tap);
+            builder.addImage(url, itemImageColumn, imageTap, alt);
           } else {
-            itemColumns = builder.addColumnSet([75, 25]);
+            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
           }
 
           const [itemTitleColumn, itemPriceColumn] = itemColumns;
 
           builder.addTextBlock(
-            title,
+            quantity ? `${title} &times; ${quantity}` : title,
             { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
             itemTitleColumn
           );
           builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
           builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
+
+          if (text) {
+            builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+          }
         });
 
       if (!nullOrUndefined(vat)) {
@@ -129,11 +133,15 @@ ReceiptCardContent.propTypes = {
     items: PropTypes.arrayOf(
       PropTypes.shape({
         image: PropTypes.shape({
+          alt: PropTypes.string.isRequired,
           tap: PropTypes.any,
           url: PropTypes.string.isRequired
         }),
         price: PropTypes.string.isRequired,
+        quantity: PropTypes.string,
         subtitle: PropTypes.string,
+        tap: PropTypes.any,
+        text: PropTypes.string,
         title: PropTypes.string.isRequired
       })
     ),
