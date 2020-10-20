@@ -406,7 +406,7 @@ It should check the result from downstream middleware. If it is falsy, it should
 
 -  Affecting Adaptive Cards, legacy cards and suggested actions
    -  For `openUrl` card action, we are now allow-listing the URL scheme using the same allow list from the default Markdown + sanitize engine, which includes `data`, `http`, `https`, `ftp`, `mailto`, `sip`, and `tel`
-   -  To allow list a different set of URL schemes, please implement the card action middleware to override this behavior
+   -  To allow-list a different set of URL schemes, please implement the card action middleware to override this behavior
 
 ### Added
 
