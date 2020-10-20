@@ -61,6 +61,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useConnectivityStatus`](#useconnectivitystatus)
 -  [`useCreateActivityRenderer`](#usecreateactivityrenderer)
 -  [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
+-  [`useCreateAttachmentForScreenReaderRenderer`](#useCreateAttachmentForScreenReaderRenderer)
 -  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
 -  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
@@ -294,6 +295,23 @@ useCreateActivityStatusRenderer(): ({
 This function will return a function that, when called, will return a function to render the activity status for the specified activity. Activity status could be a timestamp or a retry prompt.
 
 When `hideTimestamp` is set to `true`, the activity status middleware should hide if it is rendering a timestamp for the activity. Although the timestamp is hidden, activity status should consider rendering accessible counterpart.
+
+## `useCreateAttachmentForScreenReaderRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateAttachmentForScreenReaderRenderer(): ({
+  activity: Activity,
+  attachment: Attachment
+}) =>
+  (
+    false |
+    () => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+This function will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
 
 ## `useCreateAvatarRenderer`
 
