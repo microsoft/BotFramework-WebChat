@@ -150,7 +150,7 @@ const StackedLayout = ({
         'webchat__stacked-layout--show-nub': showNub,
         'webchat__stacked-layout--top-callout': topAlignedCallout
       })}
-      role="group"
+      role="list"
     >
       <div className="webchat__stacked-layout__main">
         <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
@@ -162,6 +162,7 @@ const StackedLayout = ({
               // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
               /* eslint-disable-next-line react/forbid-dom-props */
               id={ariaLabelId}
+              role="listitem"
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
