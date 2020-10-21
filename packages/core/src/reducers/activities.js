@@ -105,10 +105,7 @@ export default function activities(state = DEFAULT_STATE, { meta, payload, type 
 
     case INCOMING_ACTIVITY:
       // TODO: [P4] Move "typing" into Constants.ActivityType
-      if (payload.activity.type !== 'typing') {
-        state = upsertActivityWithSort(state, payload.activity);
-      }
-
+      state = upsertActivityWithSort(state, payload.activity);
       break;
 
     default:
