@@ -107,9 +107,7 @@ Here is how how you can add Web Chat control to your website:
           }),
           userID: 'YOUR_USER_ID',
           username: 'Web Chat User',
-          locale: 'en-US',
-          botAvatarInitials: 'WC',
-          userAvatarInitials: 'WW'
+          locale: 'en-US'
         },
         document.getElementById('webchat')
       );
@@ -119,7 +117,7 @@ Here is how how you can add Web Chat control to your website:
 ```
 <!-- prettier-ignore-end -->
 
-> `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
+> `userID`, `username`, and `locale` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
 
 > Assigning `userID` as a static value is not recommended since this will cause all users to share state. Please see the [`API userID entry`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/API.md#userID) for more information.
 
