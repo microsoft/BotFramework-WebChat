@@ -15,7 +15,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <th></th>
       <th></th>
-      <th colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</th>
+      <th colspan="2">Chrome/Microsoft Edge<br />and Firefox<br />on desktop</th>
       <th colspan="2">Chrome<br />on Android</th>
       <th colspan="2">Safari<br />on macOS/iOS</th>
       <th colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></th>
@@ -241,7 +241,7 @@ Internet Explorer 11 does not meet the basic requirements for both speech recogn
 
 Safari is the only browser that supports WebRTC API on iOS.
 
-Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plugins or custom code to support WebRTC API.
+Chrome, Microsoft Edge and native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plugins or custom code to support WebRTC API.
 
 ### Text-to-speech requirements
 
