@@ -150,9 +150,9 @@ const StackedLayout = ({
         'webchat__stacked-layout--show-nub': showNub,
         'webchat__stacked-layout--top-callout': topAlignedCallout
       })}
-      role="list"
+      role="group"
     >
-      <div className="webchat__stacked-layout__main">
+      <div className="webchat__stacked-layout__main" role="list">
         <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
         <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
