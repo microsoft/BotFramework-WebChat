@@ -37,13 +37,9 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        const activityRole = document.querySelector('.webchat__stacked-layout__main').getAttribute('role');
-
-        expect(activityRole).toEqual('list');
-
         const messageRole = document.querySelector('.webchat__stacked-layout__message-row').getAttribute('role');
 
-        expect(messageRole).toEqual('listitem');
+        expect(messageRole).toEqual('group');
 
         await host.done();
       })().catch(async err => {
