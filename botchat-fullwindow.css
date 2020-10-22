@@ -1,0 +1,9 @@
+@media (max-width: 470px) {
+  .wc-card {
+    border: 1px solid transparent;
+    width: 287px; } }
+
+@media (max-width: 400px) {
+  .wc-card {
+    border: 1px solid transparent;
+    width: 270px; } }

@@ -1,0 +1,1 @@
+{"version":3,"file":"lib.js","sourceRoot":"","sources":["../../src/CognitiveServices/lib.ts"],"names":[],"mappings":";;AAAA,yDAAuD;AAA9C,+CAAA,gBAAgB,CAAA;AACzB,qDAAuE;AAA9D,8CAAA,iBAAiB,CAAA;AAAE,4CAAA,eAAe,CAAA","sourcesContent":["export { SpeechRecognizer } from './SpeechRecognition';\nexport { SpeechSynthesizer, SynthesisGender } from './SpeechSynthesis';\n"]}
