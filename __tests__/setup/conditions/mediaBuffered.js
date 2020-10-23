@@ -10,7 +10,7 @@ export default function mediaBuffered(mediaElement) {
       );
     }, mediaElement);
 
-    // TODO: If the result is positive, audio finished buffering, we still need to wait for an unknown time to refresh the UI.
+    // TODO: [P3] #3557 If the result is positive, audio finished buffering, we still need to wait for an unknown time to refresh the UI.
     //       Will be great if we can remove this sleep.
     result && (await driver.sleep(2000));
 

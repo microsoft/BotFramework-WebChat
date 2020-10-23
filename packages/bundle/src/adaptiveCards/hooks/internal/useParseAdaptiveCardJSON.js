@@ -37,7 +37,7 @@ export default function useParseAdaptiveCardJSON() {
       const card = new AdaptiveCard();
       const errors = [];
 
-      // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
+      // TODO: [P3] #3487 Move from "onParseError" to "card.parse(json, errors)"
       AdaptiveCard.onParseError = error => errors.push(error);
 
       card.parse(content);
