@@ -311,7 +311,7 @@ useCreateAttachmentForScreenReaderRenderer(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
+This hook will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
 
 ## `useCreateAvatarRenderer`
 
