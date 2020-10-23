@@ -7,7 +7,7 @@
     {
       "type": "edge",
       "request": "launch",
-      "name": "Launch Edge",
+      "name": "Launch Microsoft Edge",
       "url": "http://localhost:5000/samples/",
       "webRoot": "${workspaceFolder}",
       "sourceMapPathOverrides": {

@@ -107,9 +107,7 @@ Here is how how you can add Web Chat control to your website:
           }),
           userID: 'YOUR_USER_ID',
           username: 'Web Chat User',
-          locale: 'en-US',
-          botAvatarInitials: 'WC',
-          userAvatarInitials: 'WW'
+          locale: 'en-US'
         },
         document.getElementById('webchat')
       );
@@ -119,7 +117,7 @@ Here is how how you can add Web Chat control to your website:
 ```
 <!-- prettier-ignore-end -->
 
-> `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
+> `userID`, `username`, and `locale` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
 
 > Assigning `userID` as a static value is not recommended since this will cause all users to share state. Please see the [`API userID entry`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/API.md#userID) for more information.
 
@@ -218,13 +216,13 @@ View the [API documentation](https://github.com/microsoft/BotFramework-WebChat/t
 
 ## Browser compatibility
 
-Web Chat supports the latest 2 versions of modern browsers like Chrome, Edge, and FireFox.
+Web Chat supports the latest 2 versions of modern browsers like Chrome, Microsoft Edge, and FireFox.
 If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle).
 
 Please note, however:
 
 -  Web Chat does not support Internet Explorer older than version 11
--  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
+-  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Microsoft Edge.
 -  Web Chat has no plan to support samples for IE11 (ES5).
    -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 

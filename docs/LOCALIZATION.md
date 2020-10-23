@@ -10,10 +10,10 @@ To add a new language, please update the following files:
    -  `GLOBALIZE_LANGUAGE` is the language code used for referencing Unicode CLDR
       -  To see the supported list of Unicode CLDR, look under `/packages/component/node_modules/cldr-data/main/`.
    -  (Optional) `TEXT_TO_SPEECH` is used to indicate the language code for speech.
-      -  Some locales have different oral languages, but share same written language with other locales. For example, the written language in both Hong Kong and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
+      -  Some locales have different oral languages, but share same written language with other locales. For example, the written language in both Hong Kong SAR and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
       -  The language code used in Web Chat only indicates the written language.
       -  Thus, when performing text-to-speech, the language code will be remapped to the oral language.
-      -  For example, the written language in Hong Kong is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
+      -  For example, the written language in Hong Kong SAR is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
    -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language is supported by Cognitive Services Speech Services.
       -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate that the language is supported by Cognitive Services Speech-to-Text Service.
       -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate that the language is supported by Cognitive Services Text-to-Speech Service. If the service supports neural voices, set it to `"neural"`; otherwise, `true`
