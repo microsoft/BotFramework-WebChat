@@ -64,7 +64,7 @@ export function renderFullScreenTemplate(props: AppProps) {
     
     const logoImg = document.createElement('img')
     console.log('render fullscreen', props.theme)
-    logoImg.src = props.theme && props.theme.template && props.theme.template.logoUrl || "https://feedyou.blob.core.windows.net/webchat/feedyou_logo_red.png"
+    logoImg.src = props.theme && props.theme.template && props.theme.template.logoUrl || "https://cdn.feedyou.ai/webchat/webchat/feedyou_logo_red.png"
     logoImg.alt = "Logo"
     logo.appendChild(logoImg)
     

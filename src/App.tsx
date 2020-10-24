@@ -363,7 +363,7 @@ const KnobTheme = (theme: Theme) => `
     border-radius: 40px;
     height: 57px;
 
-    background-image: url(https://feedbothospodarskako1866.blob.core.windows.net/public/message-icon.png);
+    background-image: url(https://cdn.feedyou.ai/webchat/message-icon.png);
     background-size: 50px 50px;
     background-position: 12px 12px;
     background-repeat: no-repeat;
