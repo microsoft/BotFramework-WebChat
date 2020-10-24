@@ -21,7 +21,7 @@ global.runHTMLTest = async (
 
   const preferences = new logging.Preferences();
 
-  preferences.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
+  preferences.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
   chromeOptions.setLoggingPrefs(preferences);
 
   const driver = global.docker

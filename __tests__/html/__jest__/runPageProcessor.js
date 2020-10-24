@@ -24,17 +24,17 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
   const webChatTestLoaded = await driver.executeScript(() => !!window.WebChatTest);
 
   if (!webChatLoaded) {
-    const browserConsoleErrors = await getBrowserConsoleLogs(driver);
-
-    browserConsoleErrors.length && console.log(browserConsoleErrors);
+    try {
+      console.log('Browser console logs', await getBrowserConsoleLogs(driver));
+    } catch (err) {}
 
     throw new Error('"webchat.js" did not load on the page, or the page was not found.');
   }
 
   if (!webChatTestLoaded) {
-    const browserConsoleErrors = await getBrowserConsoleLogs(driver);
-
-    browserConsoleErrors.length && console.log(browserConsoleErrors);
+    try {
+      console.log('Browser console logs', await getBrowserConsoleLogs(driver));
+    } catch (err) {}
 
     throw new Error('"testharness.js" did not load on the page.');
   }
