@@ -1,4 +1,4 @@
-import { Builder } from 'selenium-webdriver';
+import { Builder, logging } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/chrome';
 import { URL } from 'url';
 import fetch from 'node-fetch';
@@ -18,6 +18,11 @@ global.runHTMLTest = async (
     height: height * zoom,
     width: width * zoom
   });
+
+  const preferences = new logging.Preferences();
+
+  preferences.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
+  chromeOptions.setLoggingPrefs(preferences);
 
   const driver = global.docker
     ? builder

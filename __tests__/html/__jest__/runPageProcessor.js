@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { Key } from 'selenium-webdriver';
+import { Key, logging } from 'selenium-webdriver';
 import { promisify } from 'util';
 import { tmpdir } from 'os';
 import createDeferred from 'p-defer';
@@ -15,15 +15,27 @@ const customImageSnapshotOptions = {
 
 const writeFile = promisify(fs.writeFile);
 
+async function getBrowserConsoleLogs(driver) {
+  return await driver.manage().logs().get(logging.Type.BROWSER);
+}
+
 export default async function runPageProcessor(driver, { ignoreConsoleError = false, ignorePageError = false } = {}) {
   const webChatLoaded = await driver.executeScript(() => !!window.WebChat);
   const webChatTestLoaded = await driver.executeScript(() => !!window.WebChatTest);
 
   if (!webChatLoaded) {
+    const browserConsoleErrors = await getBrowserConsoleLogs(driver);
+
+    browserConsoleErrors.length && console.log(browserConsoleErrors);
+
     throw new Error('"webchat.js" did not load on the page, or the page was not found.');
   }
 
   if (!webChatTestLoaded) {
+    const browserConsoleErrors = await getBrowserConsoleLogs(driver);
+
+    browserConsoleErrors.length && console.log(browserConsoleErrors);
+
     throw new Error('"testharness.js" did not load on the page.');
   }
 
@@ -64,17 +76,9 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
             .reduce((actions, key) => actions.sendKeys(Key[key] || key), driver.actions())
             .perform();
         } else if (job.type === 'send tab') {
-          await driver
-            .actions()
-            .sendKeys(Key.TAB)
-            .perform();
+          await driver.actions().sendKeys(Key.TAB).perform();
         } else if (job.type === 'send shift tab') {
-          await driver
-            .actions()
-            .keyDown(Key.SHIFT)
-            .sendKeys(Key.TAB)
-            .keyUp(Key.SHIFT)
-            .perform();
+          await driver.actions().keyDown(Key.SHIFT).sendKeys(Key.TAB).keyUp(Key.SHIFT).perform();
         } else if (job.type === 'send access key') {
           await driver
             .actions()
