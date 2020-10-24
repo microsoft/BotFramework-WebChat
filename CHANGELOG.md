@@ -24,10 +24,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#3489](https://github.com/microsoft/BotFramework-WebChat/issues/3489). Fix AT saying 'Bot undefined said', by [@corinagum](https://github.com/corinagum) in PR [#3524](https://github.com/microsoft/BotFramework-WebChat/pull/3524)
--  Fixes [#3371](https://github.com/microsoft/BotFramework-WebChat/issues/3371). Add alt property for image in HeroCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
+-  Fixes [#3489](https://github.com/microsoft/BotFramework-WebChat/issues/3489). [Accessibility]: Fix AT saying 'Bot undefined said', by [@corinagum](https://github.com/corinagum) in PR [#3524](https://github.com/microsoft/BotFramework-WebChat/pull/3524)
+-  Fixes [#3371](https://github.com/microsoft/BotFramework-WebChat/issues/3371). [Accessibility]: Add alt property for image in HeroCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 -  Fixes [#3310](https://github.com/microsoft/BotFramework-WebChat/issues/3310). Add quantity, tap and text field to ReceiptCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 -  Fixes [#3514](https://github.com/microsoft/BotFramework-WebChat/issues/3514). Fix PoliCheck language errors, by [@corinagum](https://github.com/corinagum) in PR [#3545](https://github.com/microsoft/BotFramework-WebChat/pull/3545)
+-  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). [Accessibility]: Ensure `aria-roledescription` is only used on elements with implicit/explicit role based off of [WAI ARIA role attributes](https://www.w3.org/WAI/PF/aria/roles), by [@corinagum](https://github.com/corinagum) in PR [#3551](https://github.com/microsoft/BotFramework-WebChat/pull/3551)
 -  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Activities should not be delayed due to missing activity of type "typing", by [@compulim](https://github.com/compulim) in PR [#3554](https://github.com/microsoft/BotFramework-WebChat/pull/3554)
 
 ### Changed
