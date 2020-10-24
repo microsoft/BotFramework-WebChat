@@ -50,7 +50,7 @@ global.setupWebDriver = async options => {
               document.body.style.zoom = options.zoom;
             }
 
-            main2(options).then(
+            main(options).then(
               () => callback(),
               err => {
                 console.error(err);
