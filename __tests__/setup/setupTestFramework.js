@@ -1,4 +1,4 @@
-import { Builder } from 'selenium-webdriver';
+import { Builder, logging } from 'selenium-webdriver';
 import { createServer } from 'http';
 import { join } from 'path';
 import { promisify } from 'util';
@@ -19,6 +19,10 @@ let serverPromise;
 const DEFAULT_OPTIONS = {
   pingBotOnLoad: true
 };
+
+async function getBrowserConsoleLogs(driver) {
+  return await driver.manage().logs().get(logging.Type.BROWSER);
+}
 
 global.setupWebDriver = async options => {
   options = { ...DEFAULT_OPTIONS, ...options };
@@ -67,6 +71,10 @@ global.setupWebDriver = async options => {
 
         return { driver, pageObjects };
       } catch (err) {
+        try {
+          console.log('Browser console logs at exception', await getBrowserConsoleLogs(driver));
+        } catch (err) {}
+
         await driver.quit();
 
         throw err;
