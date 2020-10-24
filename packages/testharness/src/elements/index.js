@@ -10,6 +10,7 @@ import transcript from './transcript';
 import transcriptList from './transcriptList';
 import transcriptScrollable from './transcriptScrollable';
 import typeFocusSink from './typeFocusSink';
+import typingIndicator from './typingIndicator';
 
 export {
   activities,
@@ -23,5 +24,6 @@ export {
   transcript,
   transcriptList,
   transcriptScrollable,
-  typeFocusSink
+  typeFocusSink,
+  typingIndicator
 };

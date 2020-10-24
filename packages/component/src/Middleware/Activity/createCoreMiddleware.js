@@ -12,7 +12,7 @@ export default function createCoreMiddleware() {
     const { type } = activity;
 
     // Filter out activities that should not be visible
-    if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
+    if (type === 'conversationUpdate' || type === 'event' || type === 'invoke' || type === 'typing') {
       return false;
     } else if (type === 'message') {
       const { attachments = [], channelData, text } = activity;
