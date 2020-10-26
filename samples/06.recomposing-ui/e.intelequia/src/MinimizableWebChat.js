@@ -32,13 +32,31 @@ const MinimizableWebChat = () => {
     []
   );
 
-  const styleSet = useMemo(
-    () =>
-      createStyleSet({
-        backgroundColor: 'Transparent'
-      }),
-    []
-  );
+  const styleSet = {
+    backgroundColor: '#FFFFFF', //parameter
+    bubbleBackground: 'rgba(241, 241, 244, 1)', //parameter
+    bubbleFromUserBackground: '#8A8A8A', //pparameter
+
+    //Bot Nub
+    showNub: true,
+    bubbleNubOffset: -8,
+    bubbleNubSize: 10,
+    bubbleBorderRadius: 10,
+    bubbleTextColor: '#575a5e', //parameter
+
+    avatarSize: 32,
+    botAvatarInitials: 'BF',
+    botAvatarImage: 'https://turismobot.intelequia.com/images/goio-square-icon-32.png', //parameter
+
+
+    //User Nub
+    bubbleFromUserNubOffset: -8,
+    bubbleFromUserNubSize: 10,
+    bubbleFromUserBorderRadius:10,
+    bubbleFromUserTextColor: '#ffffff', //parameter
+    hideUploadButton: true,
+  };
+
 
   const [loaded, setLoaded] = useState(false);
   const [minimized, setMinimized] = useState(true);
@@ -101,8 +119,8 @@ const MinimizableWebChat = () => {
             className="react-web-chat"
             onFetchToken={handleFetchToken}
             store={store}
-            styleSet={styleSet}
-            token={token}
+            styleOptions={styleSet}
+            token={token} 
           />
         </div>
       )}

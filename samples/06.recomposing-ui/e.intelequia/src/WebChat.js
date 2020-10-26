@@ -3,23 +3,16 @@ import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-web
 
 import './WebChat.css';
 
-const WebChat = ({ className, onFetchToken, store, token }) => {
+const WebChat = ({ className, onFetchToken, store, token, styleOptions }) => {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
-  const styleSet = useMemo(
-    () =>
-      createStyleSet({
-        backgroundColor: 'Transparent'
-      }),
-    []
-  );
 
   useEffect(() => {
     onFetchToken();
   }, [onFetchToken]);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} />
+    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
