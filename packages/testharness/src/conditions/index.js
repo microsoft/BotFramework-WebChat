@@ -2,6 +2,8 @@ import actionDispatched from './actionDispatched';
 import allImagesLoaded from './allImagesLoaded';
 import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import connectivityStatusShown from './connectivityStatusShown';
+import mediaBuffered from './mediaBuffered';
+import mediaBufferStabilized from './mediaBufferStabilized';
 import minNumActivitiesShown from './minNumActivitiesShown';
 import negationOf from './negationOf';
 import newMessageButtonShown from './newMessageButtonShown';
@@ -20,6 +22,8 @@ export {
   allImagesLoaded,
   allOutgoingActivitiesSent,
   connectivityStatusShown,
+  mediaBuffered,
+  mediaBufferStabilized,
   minNumActivitiesShown,
   negationOf,
   newMessageButtonShown,

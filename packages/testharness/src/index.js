@@ -41,6 +41,7 @@ import recognizeRiffWaveArrayBuffer from './speech/speechSynthesis/recognizeRiff
 import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
+import stringToArrayBuffer from './utils/stringToArrayBuffer';
 import subscribeConsole, { getHistory as getConsoleHistory, shiftDeprecationHistory } from './utils/subscribeConsole';
 
 function waitForFinishKey() {
@@ -180,6 +181,7 @@ export {
   shareObservable,
   shiftDeprecationHistory,
   sleep,
+  stringToArrayBuffer,
   timeouts,
   token,
   updateIn

@@ -32,6 +32,8 @@ import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
+    display: 'flex',
+    flexDirection: 'column',
     overflow: 'hidden',
     // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
     // Stacking context help isolating elements that use "z-index" from global pollution.
@@ -71,7 +73,9 @@ function validateAllActivitiesTagged(activities, bins) {
 
 const BasicTranscript2 = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
+  const [
+    { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
+  ] = useStyleOptions();
   const [activities] = useActivities();
   const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
@@ -338,7 +342,9 @@ const BasicTranscript2 = ({ className }) => {
         role="log"
       >
         {renderingElements.map(({ activity, liveRegionKey }) => (
-          <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+          <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+            {() => <ScreenReaderActivity activity={activity} />}
+          </Fade>
         ))}
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
@@ -385,6 +391,7 @@ BasicTranscript2.propTypes = {
 
 const InternalScreenReaderTranscript = ({ renderingElements }) => {
   const localize = useLocalizer();
+  const [internalLiveRegionFadeAfter] = useStyleOptions();
 
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
@@ -397,7 +404,9 @@ const InternalScreenReaderTranscript = ({ renderingElements }) => {
       role="log"
     >
       {renderingElements.map(({ activity, liveRegionKey }) => (
-        <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+        <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+          {() => <ScreenReaderActivity activity={activity} />}
+        </Fade>
       ))}
     </section>
   );
