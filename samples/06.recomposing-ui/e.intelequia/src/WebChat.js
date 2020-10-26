@@ -3,7 +3,7 @@ import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-web
 
 import './WebChat.css';
 
-const WebChat = ({ className, onFetchToken, store, token }) => {
+const WebChat = ({ className, onFetchToken, store, token, webSpeechPonyfillFactory }) => {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
   const styleSet = useMemo(
@@ -19,7 +19,7 @@ const WebChat = ({ className, onFetchToken, store, token }) => {
   }, [onFetchToken]);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} />
+    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
