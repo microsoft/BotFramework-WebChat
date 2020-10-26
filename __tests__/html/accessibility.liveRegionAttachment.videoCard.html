@@ -48,7 +48,7 @@
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
         await pageObjects.wait(
           conditions.mediaBuffered(document.getElementsByTagName('video')[0]),
-          timeouts.fetchImage
+          timeouts.fetchMedia
         );
 
         await host.snapshot();

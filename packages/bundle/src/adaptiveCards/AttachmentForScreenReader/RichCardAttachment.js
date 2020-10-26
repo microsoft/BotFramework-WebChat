@@ -16,8 +16,8 @@ const RichCardAttachment = ({ content = {} }) => {
   const cardLabel = localize('ATTACHMENT_CARD', title || '', subtitle || '', text || '');
 
   return (
-    <div>
-      <p>{cardLabel}</p>
+    <article>
+      <div role="region">{cardLabel}</div>
       {!!image && !!image.alt && <img alt={image.alt} />}
       {!!images && !!images.length && images.map(({ alt }, index) => <img alt={alt} key={index} />)}
       {!!facts && !!facts.length && (
@@ -59,14 +59,16 @@ const RichCardAttachment = ({ content = {} }) => {
           {totalLabel} {total}
         </p>
       )}
-      {!!buttons &&
-        !!buttons.length &&
-        buttons.map(({ title }, index) => (
-          <button key={index} tabIndex={-1} type="button">
-            {title}
-          </button>
-        ))}
-    </div>
+      {!!buttons && !!buttons.length && (
+        <div>
+          {buttons.map(({ title }, index) => (
+            <button key={index} tabIndex={-1} type="button">
+              {title}
+            </button>
+          ))}
+        </div>
+      )}
+    </article>
   );
 };
 

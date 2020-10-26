@@ -1,6 +1,7 @@
 .webchat__screen-reader-activity {
   color: initial !important;
   height: initial !important;
+  opacity: initial !important;
   overflow: initial !important;
   position: initial !important;
   top: initial !important;
