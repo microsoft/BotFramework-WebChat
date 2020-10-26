@@ -2,16 +2,18 @@
 
 This sample shows how to customize the activity grouping behavior.
 
+![Sample UI](ui-1.png)
+
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/j.activity-grouping)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/j.activity-grouping)
 
 # How to run
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/j.activity-grouping` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/j.activity-grouping` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
@@ -34,44 +36,44 @@ This sample will customize the activity grouping behavior, avatar UI, and bubble
 ```css
 html,
 body {
-  height: 100%;
+   height: 100%;
 }
 
 body {
-  background-color: #fafafa;
-  margin: 0;
+   background-color: #fafafa;
+   margin: 0;
 }
 
 #webchat {
-  height: 100%;
-  margin: 0;
-  transition-duration: 0.5s;
-  transition-property: margin;
+   height: 100%;
+   margin: 0;
+   transition-duration: 0.5s;
+   transition-property: margin;
 }
 
 .webchat__chat {
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin: auto;
-  max-width: 360px;
-  min-width: 360px;
-  transition-duration: 0.5s;
-  transition-property: max-width, min-width, width;
+   background-color: white;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+   margin: auto;
+   max-width: 360px;
+   min-width: 360px;
+   transition-duration: 0.5s;
+   transition-property: max-width, min-width, width;
 }
 
 @media (min-width: 720px) {
-  #webchat {
-    margin: 0 10px;
-  }
+   #webchat {
+      margin: 0 10px;
+   }
 
-  .webchat__chat {
-    max-width: 480px;
-    min-width: 480px;
-    width: 480px;
-  }
+   .webchat__chat {
+      max-width: 480px;
+      min-width: 480px;
+      width: 480px;
+   }
 }
 ```
 
@@ -79,15 +81,18 @@ body {
 
 The style options in the sample are set to the following:
 
-- Bot side avatar initial is set to "Bot"
-- User side avatar initial is set to "You"
-- For both side
-   - Bubble background will be `#F4F4F4`
-   - Bubble border will be 2 pixels wide of color `#F4F4F4`
-   - Bubble radius will be 4 pixels
-   - Bubble nub will be 10 pixels in size and aligned to top
-- Timestamps will be grouped if they are within 3 seconds
-- Avatar will be shown in every timestamp group
+-  Bot side avatar initial is set to "Bot"
+-  User side avatar initial is set to "You"
+-  For both side
+   -  Bubble background will be `#F4F4F4`
+   -  Bubble border will be 2 pixels wide of color `#F4F4F4`
+   -  Bubble radius will be 4 pixels
+   -  Bubble nub will be 10 pixels in size and aligned to top
+-  Timestamps will be grouped if they are within 3 seconds
+   -  By default, timestamps are always grouped regardless of their intervals
+-  Avatar will be shown in every timestamp/status group, this is default
+   -  Set it to `"sender"` to show avatar in every sender group
+   -  Set it to `true` to show avatar on every activity
 
 ```diff
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -117,7 +122,7 @@ The style options in the sample are set to the following:
 +       bubbleFromUserNubSize: 10,
 +
 +       groupTimestamp: 3000,
-+       showAvatarInGroup: 'timestamp'
++       showAvatarInGroup: 'status'
 +     }
     },
     document.getElementById('webchat')

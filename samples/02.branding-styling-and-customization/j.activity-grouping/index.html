@@ -68,7 +68,6 @@
       (async function () {
         // Importing from UMD bundle.
         const {
-          React: { useMemo },
           WebChat: { createDirectLine, renderWebChat }
         } = window;
 
@@ -103,7 +102,7 @@
               bubbleFromUserNubSize: 10,
 
               groupTimestamp: 3000,
-              showAvatarInGroup: 'timestamp'
+              showAvatarInGroup: 'status'
             }
           },
           document.getElementById('webchat')
