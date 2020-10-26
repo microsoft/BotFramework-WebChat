@@ -45,8 +45,7 @@
   min-width: 400px;
   position: fixed;
   width: 30%;
-  min-height: 590px;
-  max-height: 590px;
+  height: 95%;
 }
 
 .minimizable-web-chat > .chat-box.hide {

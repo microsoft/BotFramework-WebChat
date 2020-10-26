@@ -1,9 +1,7 @@
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useState } from 'react';
-import { createStore, createStyleSet } from 'botframework-webchat';
-
+import { createStore, createStyleSet, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
 import WebChat from './WebChat';
-
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
 
@@ -96,6 +94,18 @@ const MinimizableWebChat = () => {
   //       When minimized, we still want to maintain that connection while the UI is gone.
   //       This is related to https://github.com/microsoft/BotFramework-WebChat/issues/2750.
 
+  const handleRequestSpeechToken = useCallback(async () => {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+    const { token } = await res.json();
+
+    return token;
+  });
+
+  const webSpeechPonyfillFactory = useMemo(() => createCognitiveServicesSpeechServicesPonyfillFactory({
+    authorizationToken: handleRequestSpeechToken(),
+    region: 'westus2' // TODO Parameter
+  }), []);
+
   return (
     <div className="minimizable-web-chat">
       {minimized && (
@@ -115,13 +125,14 @@ const MinimizableWebChat = () => {
               <span className="ms-Icon ms-Icon--ChromeMinimize" />
             </button>
           </header>
-          <WebChat
+          { <WebChat
             className="react-web-chat"
             onFetchToken={handleFetchToken}
             store={store}
             styleOptions={styleSet}
-            token={token} 
-          />
+            token={token}
+            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+          />}
         </div>
       )}
     </div>
