@@ -434,7 +434,6 @@ const Composer = ({
     );
 
     // The new function returned is for validating the result of attachmentForScreenReaderMiddleware.
-    // TODO: [PXX] Add tests
     return (...args) => {
       const renderAttachmentForScreenReader = patchedAttachmentForScreenReaderRenderer(...args);
 
