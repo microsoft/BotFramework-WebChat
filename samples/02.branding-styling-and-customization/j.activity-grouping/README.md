@@ -19,7 +19,7 @@ This sample shows how to customize the activity grouping behavior.
 
 1. Type `echo Hello, World!` to the bot
 1. Type `proactive` to the bot
-1. Resizing the browser window
+1. Resize the browser window
 
 # Code
 
@@ -81,18 +81,18 @@ body {
 
 The style options in the sample are set to the following:
 
--  Bot side avatar initial is set to "Bot"
--  User side avatar initial is set to "You"
--  For both side
-   -  Bubble background will be `#F4F4F4`
-   -  Bubble border will be 2 pixels wide of color `#F4F4F4`
-   -  Bubble radius will be 4 pixels
-   -  Bubble nub will be 10 pixels in size and aligned to top
--  Timestamps will be grouped if they are within 3 seconds
+-  Bot avatar initials are set to "Bot"
+-  User avatar initials are set to "You"
+-  For both sides:
+   -  Bubble background is `#F4F4F4`
+   -  Bubble border is 2 pixels wide of color `#F4F4F4`
+   -  Bubble radius is 4 pixels
+   -  Bubble nub is 10 pixels in size and aligned to top
+-  Timestamps within 3 seconds are grouped
    -  By default, timestamps are always grouped regardless of their intervals
--  Avatar will be shown in every timestamp/status group, this is default
-   -  Set it to `"sender"` to show avatar in every sender group
-   -  Set it to `true` to show avatar on every activity
+-  The avatar is shown in every timestamp/status group, by default
+   -  `"sender"` shows the avatar in every sender group
+   -  `true` shows the avatar on every activity
 
 ```diff
   const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
