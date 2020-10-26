@@ -1,7 +1,7 @@
 // We will check buffered duration for 5 times of each 300ms interval.
 // If all 3 checks return the same buffered length, we will consider the buffering has stabilized.
-const BUFFERED_CHECK_INTERVAL = 300;
-const NUM_BUFFERED_CHECK = 5;
+const BUFFERED_CHECK_INTERVAL = 500;
+const NUM_BUFFERED_CHECK = 8;
 const WAIT_FOR_ANIMATION = 2000;
 
 function sleep(duration) {
