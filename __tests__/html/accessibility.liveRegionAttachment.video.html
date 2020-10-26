@@ -47,7 +47,11 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        document.getElementsByTagName('video')[0].removeAttribute('controls');
+        const videoElement = document.getElementsByTagName('video')[0];
+
+        await pageObjects.wait(conditions.mediaBufferStabilized(videoElement), timeouts.fetchMedia);
+
+        videoElement.removeAttribute('controls');
 
         await host.snapshot();
         await host.done();
