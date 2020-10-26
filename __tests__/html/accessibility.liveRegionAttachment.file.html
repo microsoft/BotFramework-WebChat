@@ -41,6 +41,7 @@
           <Composer
             directLine={window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() })}
             store={createStore()}
+            styleOptions={{ internalLiveRegionFadeAfter: 60000 }}
           >
             <BasicWebChat />
             <SendOnConnect />

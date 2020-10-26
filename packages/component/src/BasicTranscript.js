@@ -73,7 +73,9 @@ function validateAllActivitiesTagged(activities, bins) {
 
 const BasicTranscript2 = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
+  const [
+    { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
+  ] = useStyleOptions();
   const [activities] = useActivities();
   const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
@@ -340,7 +342,9 @@ const BasicTranscript2 = ({ className }) => {
         role="log"
       >
         {renderingElements.map(({ activity, liveRegionKey }) => (
-          <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+          <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+            {() => <ScreenReaderActivity activity={activity} />}
+          </Fade>
         ))}
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
@@ -387,6 +391,7 @@ BasicTranscript2.propTypes = {
 
 const InternalScreenReaderTranscript = ({ renderingElements }) => {
   const localize = useLocalizer();
+  const [internalLiveRegionFadeAfter] = useStyleOptions();
 
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
@@ -399,7 +404,9 @@ const InternalScreenReaderTranscript = ({ renderingElements }) => {
       role="log"
     >
       {renderingElements.map(({ activity, liveRegionKey }) => (
-        <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+        <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+          {() => <ScreenReaderActivity activity={activity} />}
+        </Fade>
       ))}
     </section>
   );
