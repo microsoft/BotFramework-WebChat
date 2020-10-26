@@ -1,6 +1,6 @@
 import mapMap from './mapMap';
 
-test('multiple a map by 10', () => {
+test('multiply a map by 10', () => {
   const map = { ten: 1, twenty: 2 };
   const actual = mapMap(map, value => value * 10);
 

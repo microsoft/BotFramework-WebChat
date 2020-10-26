@@ -389,7 +389,7 @@ useDictateAbortable(): [boolean]
 ```
 <!-- prettier-ignore-end -->
 
-When called, this hook will return `true` if current dictation is abortable, otherwise, `false`.
+When called, this hook will return `true` if the current dictation is abortable, otherwise, `false`.
 
 ## `useDictateInterims`
 
