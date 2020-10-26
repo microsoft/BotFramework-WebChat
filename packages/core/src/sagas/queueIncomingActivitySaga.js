@@ -57,7 +57,20 @@ function* queueIncomingActivity({ userID }) {
     // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
     if (replyToId && initialActivities.length) {
       // Either the activity replied to is in the transcript or after timeout.
-      yield race([waitForActivityId(replyToId, initialActivities), call(sleep, REPLY_TIMEOUT)]);
+      const result = yield race({
+        _: waitForActivityId(replyToId, initialActivities),
+        timeout: call(sleep, REPLY_TIMEOUT)
+      });
+
+      if ('timeout' in result) {
+        console.warn(
+          `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${activity.id}" is replying to.`,
+          {
+            activity,
+            replyToId
+          }
+        );
+      }
     }
 
     yield put(incomingActivity(activity));

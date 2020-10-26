@@ -316,7 +316,14 @@ function App() {
       <div className="button-bar">
         {/* TODO: (#3515) enable search */}
         {/* eslint-disable-next-line no-console */}
-        <SearchBox placeholder="Search" onSearch={newValue => console.log('value is ' + newValue)} />
+        <Label>
+          Search Web Chat props
+          <SearchBox
+            aria-label="Search Web Chat properties"
+            placeholder="Search"
+            onSearch={newValue => console.log('value is ' + newValue)}
+          />
+        </Label>
         <fieldset>
           <legend>Connectivity</legend>
           <button onClick={handleStartConversationWithOfficialMockBot} type="button">

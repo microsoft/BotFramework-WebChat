@@ -11,4 +11,5 @@ ENTRYPOINT ["npx", "--no-install", "serve", "-p", "80", "/web"]
 
 ADD __tests__/setup/web/ /web
 ADD packages/bundle/dist /web
+RUN echo {}>/web/package.json
 WORKDIR /web

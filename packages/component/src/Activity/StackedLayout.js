@@ -162,6 +162,7 @@ const StackedLayout = ({
               // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
               /* eslint-disable-next-line react/forbid-dom-props */
               id={ariaLabelId}
+              role="group"
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
