@@ -61,8 +61,8 @@ const RichCardAttachment = ({ content = {} }) => {
       )}
       {!!buttons &&
         !!buttons.length &&
-        buttons.map(({ title, value }) => (
-          <button key={value} tabIndex={-1} type="button">
+        buttons.map(({ title }, index) => (
+          <button key={index} tabIndex={-1} type="button">
             {title}
           </button>
         ))}
