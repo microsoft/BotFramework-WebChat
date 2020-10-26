@@ -16,6 +16,7 @@ const ROOT_STYLE = {
   '&.webchat__screen-reader-activity': {
     color: 'transparent',
     height: 1,
+    opacity: 0,
     overflow: 'hidden',
     position: 'absolute',
     top: 0,
