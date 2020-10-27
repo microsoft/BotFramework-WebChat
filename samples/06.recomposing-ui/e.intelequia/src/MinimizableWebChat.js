@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useState } from 'react';
-import { createStore, createStyleSet, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
+import { createStore, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
 import WebChat from './WebChat';
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
@@ -53,8 +53,20 @@ const MinimizableWebChat = () => {
     bubbleFromUserBorderRadius:10,
     bubbleFromUserTextColor: '#ffffff', //parameter
     hideUploadButton: true,
-  };
 
+    //buttons
+    suggestedActionBackground: 'White', //parameter
+    suggestedActionBorderRadius: 5,
+    suggestedActionBorderColor: '#cccccc',
+    suggestedActionTextColor: '#ed823c',
+
+    // transcriptOverlayButtonBackground: 'White',
+    // transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
+    // transcriptOverlayButtonBackgroundOnHover: '#ed823c',
+    // transcriptOverlayButtonColor: '#ed823c',
+    // transcriptOverlayButtonColorOnFocus: undefined, // defaults to transcriptOverlayButtonColor
+    // transcriptOverlayButtonColorOnHover: 'White' // defaults to transcriptOverlayButtonColor
+  };
 
   const [loaded, setLoaded] = useState(false);
   const [minimized, setMinimized] = useState(true);

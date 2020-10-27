@@ -1,13 +1,31 @@
 import React, { useEffect, useMemo } from 'react';
-import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
+import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 
 import './WebChat.css';
 
 const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory }) => {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
-
   useEffect(() => {
+    const $style = document.createElement("style");
+    document.head.appendChild($style);
+    const buttonCss = `.ac-pushButton {
+      color: ${styleOptions.suggestedActionTextColor} !important;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+  }
+  .ac-pushButton:hover {
+    color: ${styleOptions.suggestedActionBackground} !important;
+    background-color: ${styleOptions.suggestedActionTextColor} !important;
+    border-color: ${styleOptions.suggestedActionTextColor};
+  }
+  .webchat__suggested-action__button:hover {
+    background-color: ${styleOptions.suggestedActionTextColor} !important;
+    color: ${styleOptions.suggestedActionBackground} !important;
+    border-color: ${styleOptions.suggestedActionTextColor} !important;
+  }`
+    $style.innerHTML = buttonCss;
+
     onFetchToken();
   }, [onFetchToken]);
 
