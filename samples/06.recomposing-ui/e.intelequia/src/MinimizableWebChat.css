@@ -96,3 +96,24 @@
 .main{
   border-radius: 0 0 7px 7px;
 }
+
+@media (max-width:960px) {
+  .minimizable-web-chat > .chat-box.left, .chat-box.right {
+    left: 0px;
+    right: 0px;
+  }
+
+  .minimizable-web-chat > .chat-box {
+    min-width: 100%;
+    height: 100%;
+    bottom: 0px;    
+  }
+
+  .minimizable-web-chat > .chat-box > header {
+    border-radius: 0;
+  }
+
+  .switch{
+    visibility: hidden;
+  }
+}
