@@ -1,16 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import textFormatToContentType from './Utils/textFormatToContentType';
-import useAvatarForBot from './hooks/useAvatarForBot';
-import useCreateAttachmentForScreenReaderRenderer from './hooks/useCreateAttachmentForScreenReaderRenderer';
-import useDateFormatter from './hooks/useDateFormatter';
-import useLocalizer from './hooks/useLocalizer';
 import useStripMarkdown from './hooks/internal/useStripMarkdown';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__screen-reader-activity': {

@@ -1,20 +1,19 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
-import useDirection from '../hooks/useDirection';
-import useDisabled from '../hooks/useDisabled';
 import useFocus from '../hooks/useFocus';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import usePerformCardAction from '../hooks/usePerformCardAction';
 import useScrollToEnd from '../hooks/useScrollToEnd';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useSuggestedActions from '../hooks/useSuggestedActions';
-import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
+
+const { useDirection, useDisabled, usePerformCardAction, useSuggestedActions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {

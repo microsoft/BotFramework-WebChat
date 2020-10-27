@@ -1,34 +1,28 @@
 /* eslint no-console: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import ScreenReaderText from './ScreenReaderText';
-import useLocalizer from './hooks/useLocalizer';
 import useStyleSet from './hooks/useStyleSet';
-import useTrackException from './hooks/useTrackException';
 
-const ErrorBox = ({ children, error, message }) => {
+const { useLocalizer } = hooks;
+
+const ErrorBox = ({ error, type }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
-  const trackException = useTrackException();
-
-  useEffect(() => {
-    const errorObject = error || new Error(message);
-
-    trackException(errorObject, false);
-
-    console.group(`botframework-webchat: ${message}`);
-    console.error(errorObject);
-    console.groupEnd();
-  }, [error, message, trackException]);
 
   return (
     <React.Fragment>
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
       <div className={errorBoxStyleSet}>
-        <div>{message}</div>
-        <div>{children}</div>
+        <div>{type}</div>
+        {/* The callstack between production and development are different, thus, we should hide it for visual regression test */}
+        <details>
+          <summary>{error.message}</summary>
+          <pre>{error.stack}</pre>
+        </details>
       </div>
     </React.Fragment>
   );
@@ -37,13 +31,13 @@ const ErrorBox = ({ children, error, message }) => {
 ErrorBox.defaultProps = {
   children: undefined,
   error: undefined,
-  message: ''
+  type: ''
 };
 
 ErrorBox.propTypes = {
   children: PropTypes.any,
-  error: PropTypes.instanceOf(Error),
-  message: PropTypes.string
+  error: PropTypes.instanceOf(Error).isRequired,
+  type: PropTypes.string
 };
 
 export default ErrorBox;

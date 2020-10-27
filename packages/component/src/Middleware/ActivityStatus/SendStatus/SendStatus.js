@@ -1,4 +1,5 @@
 import { Constants } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -6,9 +7,9 @@ import connectToWebChat from '../../../connectToWebChat';
 import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';
-import useLocalizer from '../../../hooks/useLocalizer';
-import usePostActivity from '../../../hooks/usePostActivity';
 import useStyleSet from '../../../hooks/useStyleSet';
+
+const { useLocalizer, usePostActivity } = hooks;
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }

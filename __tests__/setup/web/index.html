@@ -25,7 +25,7 @@
 
         window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
           push(
-            'onError',
+            'error',
             JSON.stringify({
               colno,
               error,

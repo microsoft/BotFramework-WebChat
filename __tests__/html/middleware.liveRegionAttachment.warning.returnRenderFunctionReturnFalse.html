@@ -21,9 +21,7 @@
         const RenderAttachmentForScreenReader = () => {
           const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
 
-          createAttachmentForScreenReaderRenderer({ activity: {}, attachment: {} })();
-
-          return false;
+          return createAttachmentForScreenReaderRenderer({ activity: {}, attachment: {} })();
         };
 
         const attachmentForScreenReaderMiddleware = () => next => (...args) => {
