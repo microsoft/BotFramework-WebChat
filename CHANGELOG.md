@@ -415,6 +415,7 @@ It should check the result from downstream middleware. If it is falsy, it should
 ### Samples
 
 -  Resolves [#3218](https://github.com/microsoft/BotFramework-WebChat/issues/3218) and [#2811](https://github.com/microsoft/BotFramework-WebChat/issues/2811). Adds documentation on reconnecting to a conversation in minimizable sample, by [@corinagum](https://github.com/corinagum), in PR [#3239](https://github.com/microsoft/BotFramework-WebChat/pull/3239)
+-  Resolves [#2939](https://github.com/microsoft/BotFramework-WebChat/issues/2939). Sample for activity grouping, by [@compulim](https://github.com/compulim), in PR [#3415](https://github.com/microsoft/BotFramework-WebChat/pull/3415)
 
 ### [4.9.1] - 2020-06-09
 
