@@ -1,8 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import CroppedImage from '../Utils/CroppedImage';
-import useStyleOptions from '../hooks/useStyleOptions';
+
+const { useStyleOptions } = hooks;
 
 const ImageContent = ({ alt, src }) => {
   const [{ bubbleImageHeight }] = useStyleOptions();

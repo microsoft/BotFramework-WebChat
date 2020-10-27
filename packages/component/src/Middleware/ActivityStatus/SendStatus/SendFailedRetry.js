@@ -1,8 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import InlineMarkdown from '../../../Utils/InlineMarkdown';
-import useLocalizer from '../../../hooks/useLocalizer';
+
+const { useLocalizer } = hooks;
 
 const MARKDOWN_REFERENCES = ['RETRY'];
 

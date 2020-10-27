@@ -22,6 +22,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+### Added
+
+-  Resolves [#3316](https://github.com/microsoft/BotFramework-WebChat/issues/3316). Refactored platform-neutral APIs into the new `api` package, to be reused on React Native component, in PR [#3543](https://github.com/microsoft/BotFramework-WebChat/pull/3543) by [@compulim](https://github.com/compulim)
+   -  The new layering is `core` -> `api` -> `component` (HTML-only) -> `bundle`
+   -  Includes composition mode, platform-neutral React hooks, and localization resources
+   -  Most hooks are available in the new `api` package. Some hooks are only available on the existing `component` package, due to their platform dependency or coupling with visual components. For example, Web Worker, 2D canvas, `useMicrophoneButton*` are not available on the `api` package
+   -  Most implementations of middleware are only available in `component` package due to their coupling with visual components or platform features. Some implementations, (e.g. card action middleware and activity grouping middleware) are available on `api` package. For example:
+      -  Carousel layout and stacked layout is only available on `component` package due to their coupling with their respective visual components
+      -  For card action middleware, `imBack`, `messageBack` and `postBack` actions are available on `api` package, but `call`, `openUrl` and other platform-dependent actions are only available on `component` package
+   -  `activityMiddleware`, `attachmentMiddleware`, etc, now support arrays for multiple middleware
+
 ### Fixed
 
 -  Fixes [#3489](https://github.com/microsoft/BotFramework-WebChat/issues/3489). [Accessibility]: Fix AT saying 'Bot undefined said', by [@corinagum](https://github.com/corinagum) in PR [#3524](https://github.com/microsoft/BotFramework-WebChat/pull/3524)

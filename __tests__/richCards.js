@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';

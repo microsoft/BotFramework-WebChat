@@ -1,10 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../../ScreenReaderText';
 
-import useDateFormatter from '../../hooks/useDateFormatter';
-import useLocalizer from '../../hooks/useLocalizer';
+const { useDateFormatter, useLocalizer } = hooks;
 
 const AbsoluteTime = ({ hide, value }) => {
   const localize = useLocalizer();

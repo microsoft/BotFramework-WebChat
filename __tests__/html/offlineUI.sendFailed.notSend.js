@@ -4,5 +4,5 @@
 
 describe('offline UI', () => {
   test('should display "Send failed. Retry" when activity is not able to send', () =>
-    runHTMLTest('offlineUI.sendFailed.notSend.html'));
+    runHTMLTest('offlineUI.sendFailed.notSend.html', { ignoreConsoleError: true }));
 });

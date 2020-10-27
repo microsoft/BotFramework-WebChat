@@ -1,22 +1,28 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
 import { Constants } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
-import useActivities from './hooks/useActivities';
-import useDictateInterims from './hooks/useDictateInterims';
-import useDictateState from './hooks/useDictateState';
-import useDisabled from './hooks/useDisabled';
-import useEmitTypingIndicator from './hooks/useEmitTypingIndicator';
-import useLanguage from './hooks/useLanguage';
-import useSendBoxValue from './hooks/useSendBoxValue';
-import useSendTypingIndicator from './hooks/useSendTypingIndicator';
-import useSetDictateState from './hooks/internal/useSetDictateState';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
-import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
-import useStopDictate from './hooks/useStopDictate';
-import useSubmitSendBox from './hooks/useSubmitSendBox';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+// TODO: [P1] #3350 No /lib/, we need to move setDictateState from bf-wc-core (Redux) to React Context.
+import useSetDictateState from 'botframework-webchat-api/lib/hooks/internal/useSetDictateState';
+
+const {
+  useActivities,
+  useDictateInterims,
+  useDictateState,
+  useDisabled,
+  useEmitTypingIndicator,
+  useLanguage,
+  useSendBoxValue,
+  useSendTypingIndicator,
+  useShouldSpeakIncomingActivity,
+  useStopDictate,
+  useSubmitSendBox
+} = hooks;
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }

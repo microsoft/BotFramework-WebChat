@@ -1,21 +1,20 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { Constants } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Constants } from 'botframework-webchat-core';
-
 import connectToWebChat from '../connectToWebChat';
-import useDictateInterims from '../hooks/useDictateInterims';
-import useDictateState from '../hooks/useDictateState';
-import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
 } = Constants;
+
+const { useDictateInterims, useDictateState, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   alignItems: 'center',

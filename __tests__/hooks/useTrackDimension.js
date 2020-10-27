@@ -48,6 +48,7 @@ describe('useTrackDimension', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "hello": "aloha",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
@@ -62,6 +63,7 @@ describe('useTrackDimension', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -85,6 +87,7 @@ describe('useTrackDimension', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -108,6 +111,7 @@ describe('useTrackDimension', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",

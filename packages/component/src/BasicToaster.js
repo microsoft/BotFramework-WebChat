@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4, 5] }] */
 /* eslint react/forbid-dom-props: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -8,11 +9,10 @@ import CollapseIcon from './Toast/CollapseIcon';
 import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import useDebouncedNotifications from './hooks/useDebouncedNotifications';
-import useLocalizer from './hooks/useLocalizer';
-import useRenderToast from './hooks/useRenderToast';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',

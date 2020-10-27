@@ -1,11 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useAvatarForBot from '../hooks/useAvatarForBot';
-import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useAvatarForBot, useAvatarForUser } = hooks;
 
 const ROOT_STYLE = {
   alignItems: 'center',
