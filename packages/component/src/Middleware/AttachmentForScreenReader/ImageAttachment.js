@@ -1,6 +1,7 @@
+import { hooks } from 'botframework-webchat-api';
 import React from 'react';
 
-import useLocalizer from '../../hooks/useLocalizer';
+const { useLocalizer } = hooks;
 
 const ImageAttachment = () => {
   const localize = useLocalizer();

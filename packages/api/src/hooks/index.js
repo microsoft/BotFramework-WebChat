@@ -7,7 +7,6 @@ import useConnectivityStatus from './useConnectivityStatus';
 import useCreateActivityRenderer from './useCreateActivityRenderer';
 import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 import useCreateAttachmentForScreenReaderRenderer from './useCreateAttachmentForScreenReaderRenderer';
-import useCreateAttachmentRenderer from './useCreateAttachmentRenderer';
 import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
@@ -71,7 +70,6 @@ export {
   useCreateActivityRenderer,
   useCreateActivityStatusRenderer,
   useCreateAttachmentForScreenReaderRenderer,
-  useCreateAttachmentRenderer,
   useCreateAvatarRenderer,
   useDateFormatter,
   useDebouncedNotifications,

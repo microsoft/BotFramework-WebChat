@@ -1,7 +1,8 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useLocalizer from '../../hooks/useLocalizer';
+const { useLocalizer } = hooks;
 
 const FileAttachment = ({ attachment: { name = '' } = {} }) => {
   const localize = useLocalizer();

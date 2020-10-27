@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
@@ -15,6 +17,7 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
+import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
@@ -203,6 +206,7 @@ ComposerCore.propTypes = {
 const Composer = ({
   activityMiddleware,
   activityStatusMiddleware,
+  attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
   avatarMiddleware,
   cardActionMiddleware,
@@ -226,6 +230,14 @@ const Composer = ({
   const patchedActivityStatusMiddleware = useMemo(
     () => [...singleToArray(activityStatusMiddleware), ...createDefaultActivityStatusMiddleware()],
     [activityStatusMiddleware]
+  );
+
+  const patchedAttachmentForScreenReaderMiddleware = useMemo(
+    () => [
+      ...singleToArray(attachmentForScreenReaderMiddleware),
+      ...createDefaultAttachmentForScreenReaderMiddleware()
+    ],
+    [attachmentForScreenReaderMiddleware]
   );
 
   const patchedAttachmentMiddleware = useMemo(
@@ -257,6 +269,7 @@ const Composer = ({
       <APIComposer
         activityMiddleware={patchedActivityMiddleware}
         activityStatusMiddleware={patchedActivityStatusMiddleware}
+        attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
         attachmentMiddleware={patchedAttachmentMiddleware}
         avatarMiddleware={patchedAvatarMiddleware}
         cardActionMiddleware={patchedCardActionMiddleware}
@@ -293,6 +306,7 @@ Composer.defaultProps = {
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
   activityStatusRenderer: undefined,
+  attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
   attachmentRenderer: undefined,
   avatarMiddleware: undefined,
@@ -315,6 +329,7 @@ Composer.propTypes = {
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityStatusRenderer: PropTypes.func,
+  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentRenderer: PropTypes.func,
   avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),

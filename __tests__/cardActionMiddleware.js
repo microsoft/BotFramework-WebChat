@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import { By, logging } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
@@ -98,7 +98,7 @@ test('card action "signin" when directLine.getSessionId is falsy', async () => {
     props: {
       cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
         if (cardAction.type === 'signin') {
-          getSignInUrl().then(url => {
+          Promise.resolve(getSignInUrl()).then(url => {
             dispatch({
               type: 'WEB_CHAT/SEND_MESSAGE',
               payload: {
@@ -138,6 +138,6 @@ test('card action "signin" when directLine.getSessionId is falsy', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   expect(await pageObjects.getConsoleErrors()).toEqual([]);
   expect(await pageObjects.getConsoleWarnings()).toEqual([
-    'botframework-webchat: No-magic-code OAuth flow is not supported on this Direct Line adapter.'
+    'botframework-webchat: OAuth is not supported on this Direct Line adapter.'
   ]);
 });

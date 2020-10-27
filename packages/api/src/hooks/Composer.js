@@ -149,6 +149,7 @@ const Composer = ({
   activityStatusMiddleware,
   activityStatusRenderer,
   attachmentMiddleware,
+  attachmentForScreenReaderMiddleware,
   attachmentRenderer,
   avatarMiddleware,
   avatarRenderer,
@@ -280,13 +281,18 @@ const Composer = ({
 
     return (
       activityRenderer ||
-      applyMiddlewareForRenderer('activity', ...singleToArray(activityMiddleware), () => () => ({ activity }) => {
-        if (activity) {
-          throw new Error(`No renderer for activity of type "${activity.type}"`);
-        } else {
-          throw new Error('No activity to render');
+      applyMiddlewareForRenderer(
+        'activity',
+        { strict: false },
+        ...singleToArray(activityMiddleware),
+        () => () => ({ activity }) => {
+          if (activity) {
+            throw new Error(`No renderer for activity of type "${activity.type}"`);
+          } else {
+            throw new Error('No activity to render');
+          }
         }
-      })({})
+      )({})
     );
   }, [activityMiddleware, activityRenderer]);
 
@@ -298,53 +304,31 @@ const Composer = ({
 
     return (
       activityStatusRenderer ||
-      applyMiddlewareForRenderer('activity status', ...singleToArray(activityStatusMiddleware), () => () => () =>
-        false
+      applyMiddlewareForRenderer(
+        'activity status',
+        { strict: false },
+        ...singleToArray(activityStatusMiddleware),
+        () => () => () => false
       )({})
     );
   }, [activityStatusMiddleware, activityStatusRenderer]);
 
-  // const patchedAttachmentRenderer = useMemo(() => {
-  //   if (attachmentRenderer) {
-  //     console.warn(
-  //       'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2022-06-15, please use "attachmentMiddleware" instead.'
-  //     );
-
-  //     return attachmentRenderer;
-  //   }
-
-  //   const renderer = applyMiddlewareForRenderer(
-  //     'attachment',
-  //     ...singleToArray(attachmentMiddleware),
-  //     () => () => ({ attachment }) => () => {
-  //       if (attachment) {
-  //         throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-  //       } else {
-  //         throw new Error('No attachment to render');
-  //       }
-  //     }
-  //   )({});
-
-  //   let showDeprecationNotes = true;
-
-  //   return (...args) => {
-  //     const result = renderer(...args);
-
-  //     if (isValidElement(result)) {
-  //       if (showDeprecationNotes) {
-  //         console.warn(
-  //           'botframework-webchat: Please upgrade the attachment middleware with a new signature. For details, please see HOOKS.md#usecreateattachmentrenderer.'
-  //         );
-
-  //         showDeprecationNotes = false;
-  //       }
-
-  //       return () => result;
-  //     }
-
-  //     return result;
-  //   };
-  // }, [attachmentMiddleware, attachmentRenderer]);
+  const patchedAttachmentForScreenReaderRenderer = useMemo(
+    () =>
+      applyMiddlewareForRenderer(
+        'attachment for screen reader',
+        { strict: true },
+        ...singleToArray(attachmentForScreenReaderMiddleware),
+        () => () => ({ attachment }) => () => {
+          if (attachment) {
+            throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+          } else {
+            throw new Error('No attachment to render');
+          }
+        }
+      )({}),
+    [attachmentForScreenReaderMiddleware]
+  );
 
   const patchedAttachmentRenderer = useMemo(() => {
     if (attachmentRenderer) {
@@ -373,7 +357,9 @@ const Composer = ({
 
     return (
       avatarRenderer ||
-      applyMiddlewareForRenderer('avatar', ...singleToArray(avatarMiddleware), () => () => () => false)({})
+      applyMiddlewareForRenderer('avatar', { strict: false }, ...singleToArray(avatarMiddleware), () => () => () =>
+        false
+      )({})
     );
   }, [avatarMiddleware, avatarRenderer]);
 
@@ -385,13 +371,18 @@ const Composer = ({
 
     return (
       toastRenderer ||
-      applyMiddlewareForRenderer('toast', ...singleToArray(toastMiddleware), () => () => ({ notification }) => {
-        if (notification) {
-          throw new Error(`No renderer for notification of type "${notification.contentType}"`);
-        } else {
-          throw new Error('No notification to render');
+      applyMiddlewareForRenderer(
+        'toast',
+        { strict: false },
+        ...singleToArray(toastMiddleware),
+        () => () => ({ notification }) => {
+          if (notification) {
+            throw new Error(`No renderer for notification of type "${notification.contentType}"`);
+          } else {
+            throw new Error('No notification to render');
+          }
         }
-      })({})
+      )({})
     );
   }, [toastMiddleware, toastRenderer]);
 
@@ -403,8 +394,11 @@ const Composer = ({
 
     return (
       typingIndicatorRenderer ||
-      applyMiddlewareForRenderer('typing indicator', ...singleToArray(typingIndicatorMiddleware), () => () => () =>
-        false
+      applyMiddlewareForRenderer(
+        'typing indicator',
+        { strict: false },
+        ...singleToArray(typingIndicatorMiddleware),
+        () => () => () => false
       )({})
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
@@ -427,6 +421,7 @@ const Composer = ({
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
+      attachmentForScreenReaderRenderer: patchedAttachmentForScreenReaderRenderer,
       attachmentRenderer: patchedAttachmentRenderer,
       avatarRenderer: patchedAvatarRenderer,
       dir: patchedDir,
@@ -463,6 +458,7 @@ const Composer = ({
       onTelemetry,
       patchedActivityRenderer,
       patchedActivityStatusRenderer,
+      patchedAttachmentForScreenReaderRenderer,
       patchedAttachmentRenderer,
       patchedAvatarRenderer,
       patchedDir,
@@ -540,6 +536,7 @@ Composer.defaultProps = {
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
   activityStatusRenderer: undefined,
+  attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
   attachmentRenderer: undefined,
   avatarMiddleware: undefined,
@@ -574,6 +571,7 @@ Composer.propTypes = {
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityStatusRenderer: PropTypes.func,
+  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentRenderer: PropTypes.func,
   avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),

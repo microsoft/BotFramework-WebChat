@@ -11,10 +11,10 @@ export default function applyMiddleware(type, ...middleware) {
     });
 }
 
-export function forRenderer(type, ...middleware) {
+export function forRenderer(type, { strict = false } = {}, ...middleware) {
   return (...setupArgs) => {
     const runMiddleware = concatMiddleware(...middleware)(...setupArgs)(() => (
-      <ErrorBox error={new Error(`reached terminator of ${type}`)} message={`reached terminator of ${type}`} />
+      <ErrorBox error={new Error(`reached terminator of ${type}`)} type={type} />
     ));
 
     // The createRendererArgs is "what to render", for example, activity.
@@ -28,14 +28,30 @@ export function forRenderer(type, ...middleware) {
         if (!render) {
           return false;
         } else if (isValidElement(render)) {
+          if (strict) {
+            console.error(`botframework-webchat: ${type} should only return either false or a render function.`);
+
+            return false;
+          }
+
           return <UserlandBoundary type={`render of ${type}`}>{render}</UserlandBoundary>;
         } else {
           return (...renderTimeArgs) => (
-            <UserlandBoundary type={`render of ${type}`}>{() => render(...renderTimeArgs)}</UserlandBoundary>
+            <UserlandBoundary type={`render of ${type}`}>
+              {() => {
+                const element = render(...renderTimeArgs);
+
+                if (strict && !isValidElement(element)) {
+                  console.error(`botframework-webchat: ${type} should return React element only.`);
+                }
+
+                return element;
+              }}
+            </UserlandBoundary>
           );
         }
       } catch (err) {
-        return <ErrorBox error={err} message={`initialization of ${type}`} />;
+        return <ErrorBox error={err} type={type} />;
       }
     };
   };
