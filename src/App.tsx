@@ -23,7 +23,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
     };
 
     // FEEDYOU fetch DL token from bot when no token or secret found
-    if (props.bot && props.bot.id && !props.botConnection && (!props.directLine || (!props.directLine.secret && !props.directLine.token))) {
+    const remoteConfig = props.bot && props.bot.id && !props.botConnection && (!props.directLine || (!props.directLine.secret && !props.directLine.token))
+    if (remoteConfig) {
         // TODO test IE11 https://github.com/matthew-andrews/isomorphic-fetch
         try {
             const response = await fetch(`https://${props.bot.id}.azurewebsites.net/webchat/config`, {
@@ -70,7 +71,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         const theme = {mainColor: '#D83838', ...props.theme}
         const themeStyle = document.createElement('style');
         themeStyle.type = 'text/css';
-        themeStyle.appendChild(document.createTextNode(getStyleForTheme(theme)));
+        themeStyle.appendChild(document.createTextNode(getStyleForTheme(theme, remoteConfig)));
         document.head.appendChild(themeStyle);
     }
 
@@ -117,16 +118,18 @@ export function MakeId() {
     return text;
 }
 
-function getStyleForTheme(theme: Theme): string {
+function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
     switch (theme && theme.template && theme.template.type) {
       case 'expandable-bar':
-        return ExpandableTheme(theme)      
+        return ExpandableBarTheme(theme)      
       case 'full-screen':
         return FullScreenTheme(theme)  
       case 'expandable-knob':
-      default:
-        return KnobTheme(theme)
+        return ExpandableKnobTheme(theme)
     }
+
+    // backward compatibility - knob is new default for remote config, old default is bar
+    return remoteConfig ? ExpandableKnobTheme(theme) : ExpandableBarTheme(theme) 
 }
 
 const FullScreenTheme = (theme: Theme) =>`
@@ -340,7 +343,7 @@ const FullScreenTheme = (theme: Theme) =>`
 `
 
 
-const KnobTheme = (theme: Theme) => `
+const ExpandableKnobTheme = (theme: Theme) => `
   body .feedbot-wrapper {
     bottom: calc(10px + 1vw);
     right: calc(10px + 1vw);
@@ -378,10 +381,10 @@ const KnobTheme = (theme: Theme) => `
     height: 565px;
   }
 
-  ${ExpandableTheme(theme)}
+  ${ExpandableBarTheme(theme)}
 `
 
-const ExpandableTheme = (theme: Theme) => `
+const ExpandableBarTheme = (theme: Theme) => `
   .feedbot-header {
       z-index: 10;
       color: white;
