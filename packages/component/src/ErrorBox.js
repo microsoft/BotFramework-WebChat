@@ -18,7 +18,11 @@ const ErrorBox = ({ error, type }) => {
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
       <div className={errorBoxStyleSet}>
         <div>{type}</div>
-        <pre>{error.stack}</pre>
+        {/* The callstack between production and development are different, thus, we should hide it for visual regression test */}
+        <details>
+          <summary>{error.message}</summary>
+          <pre>{error.stack}</pre>
+        </details>
       </div>
     </React.Fragment>
   );
