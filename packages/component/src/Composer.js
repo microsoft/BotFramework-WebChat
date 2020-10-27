@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
 import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
