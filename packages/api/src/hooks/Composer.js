@@ -321,7 +321,7 @@ const Composer = ({
         ...singleToArray(attachmentForScreenReaderMiddleware),
         () => () => ({ attachment }) => () => {
           if (attachment) {
-            throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+            throw new Error(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
           } else {
             throw new Error('No attachment to render');
           }

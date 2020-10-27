@@ -39,13 +39,17 @@ export function forRenderer(type, { strict = false } = {}, ...middleware) {
           return (...renderTimeArgs) => (
             <UserlandBoundary type={`render of ${type}`}>
               {() => {
-                const element = render(...renderTimeArgs);
+                try {
+                  const element = render(...renderTimeArgs);
 
-                if (strict && !isValidElement(element)) {
-                  console.error(`botframework-webchat: ${type} should return React element only.`);
+                  if (strict && !isValidElement(element)) {
+                    console.error(`botframework-webchat: ${type} should return React element only.`);
+                  }
+
+                  return element;
+                } catch (err) {
+                  return <ErrorBox error={err} type={type} />;
                 }
-
-                return element;
               }}
             </UserlandBoundary>
           );
