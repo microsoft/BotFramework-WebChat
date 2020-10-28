@@ -5,7 +5,7 @@ import WebChat from './WebChat';
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
 
-const MinimizableWebChat = () => {
+const MinimizableWebChat = (jsonUrl) => {
   const store = useMemo(
     () =>
       createStore({}, ({ dispatch }) => next => action => {
@@ -52,13 +52,29 @@ const MinimizableWebChat = () => {
     bubbleFromUserNubSize: 10,
     bubbleFromUserBorderRadius:10,
     bubbleFromUserTextColor: '#ffffff', //parameter
-    hideUploadButton: true,
 
     //buttons
     suggestedActionBackground: 'White', //parameter
     suggestedActionBorderRadius: 5,
     suggestedActionBorderColor: '#cccccc',
-    suggestedActionTextColor: '#ed823c',
+    suggestedActionTextColor: '#ed823c', //parameter
+
+    //SendBox
+    hideUploadButton: true,
+    sendBoxBackground: 'White',
+    sendBoxButtonColor: undefined, // defaults to subtle
+    sendBoxButtonColorOnDisabled: '#CCC',
+    sendBoxButtonColorOnFocus: '#333',
+    sendBoxButtonColorOnHover: '#333',
+    sendBoxDisabledTextColor: undefined, // defaults to subtle
+    sendBoxHeight: 50,
+    sendBoxMaxHeight: 200,
+    sendBoxTextColor: 'Black',
+    sendBoxBorderBottom: 'solid 5px #E6E6E6',
+    sendBoxBorderTop: 'solid 5px #E6E6E6',
+    sendBoxPlaceholderColor: undefined, // defaults to subtle
+    sendBoxTextWrap: true,
+
 
     // transcriptOverlayButtonBackground: 'White',
     // transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
