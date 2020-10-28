@@ -38,7 +38,7 @@ export default function useRenderActivity(renderAttachment) {
 
       if (!activity) {
         throw new Error(
-          'botframework-webchat: First argument passed to the callback of useRenderActivity() must contains "activity" property.'
+          'botframework-webchat: First argument passed to the callback of useRenderActivity() must contain an "activity" property.'
         );
       }
 

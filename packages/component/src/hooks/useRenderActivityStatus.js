@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 
-// In the old days, the useRenderActivity() will be called like this:
+// Previously, useRenderActivity() was called like this:
 //
 // const element = useRenderActivityStatus({ activity, nextVisibleActivity });
 
-// In the new days, the useCreateActivityRenderer() is a 3-pass function:
+// Now, the useCreateActivityRenderer() is a 3-pass function:
 //
 // const createActivityStatusRenderer = useCreateActivityStatusRenderer();
 // const renderActivityStatus = createActivityStatusRenderer({ activity, hideTimestamp });
