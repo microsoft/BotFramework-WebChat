@@ -44,9 +44,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3514](https://github.com/microsoft/BotFramework-WebChat/issues/3514). Fix PoliCheck language errors, by [@corinagum](https://github.com/corinagum) in PR [#3545](https://github.com/microsoft/BotFramework-WebChat/pull/3545)
 -  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). [Accessibility]: Ensure `aria-roledescription` is only used on elements with implicit/explicit role based off of [WAI ARIA role attributes](https://www.w3.org/WAI/PF/aria/roles), by [@corinagum](https://github.com/corinagum) in PR [#3551](https://github.com/microsoft/BotFramework-WebChat/pull/3551)
 -  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Activities should not be delayed due to missing activity of type "typing", by [@compulim](https://github.com/compulim) in PR [#3554](https://github.com/microsoft/BotFramework-WebChat/pull/3554)
--  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#3563](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
--  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#3563](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
--  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3563](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
+-  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
 
 ### Changed
 
