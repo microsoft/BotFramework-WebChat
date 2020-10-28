@@ -137,7 +137,7 @@ useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
+This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
 
 If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 
@@ -153,7 +153,7 @@ useActivities(): [Activity[]]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a list of activities.
+This hook will return a list of activities.
 
 ## `useAdaptiveCardsHostConfig`
 
@@ -190,7 +190,7 @@ useAvatarForBot(): [{
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the image and initials of the bot. Both image and initials are optional and can be falsy.
+This hook will return the image and initials of the bot. Both image and initials are optional and can be falsy.
 
 To set the avatar for the bot, change the props passed to Web Chat via style options.
 
@@ -205,7 +205,7 @@ useAvatarForUser(): [{
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the image and initials of the user. Both image and initials are optional and can be falsy.
+This hook will return the image and initials of the user. Both image and initials are optional and can be falsy.
 
 To set the avatar for the user, change the props passed to Web Chat via style options.
 
@@ -219,7 +219,7 @@ useByteFormatter() => (bytes: number) => string
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+This hook will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
 
 ## `useConnectivityStatus`
 
@@ -229,7 +229,7 @@ useConnectivityStatus(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the Direct Line connectivity status:
+This hook will return the Direct Line connectivity status:
 
 -  `connected`: Connected
 -  `connectingslow`: Connecting is incomplete and more than 15 seconds have passed
@@ -259,7 +259,7 @@ useCreateActivityRenderer(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will return a function to render the specified activity.
+This hook will return a function that, when called, will return a function to render the specified activity.
 
 If a render function is returned, calling the function must return visualization of the activity. The visualization may vary based on the activity status, avatar, and bubble nub (a.k.a. callout).
 
@@ -291,7 +291,7 @@ useCreateActivityStatusRenderer(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will return a function to render the activity status for the specified activity. Activity status could be a timestamp or a retry prompt.
+This hook will return a function that, when called, will return a function to render the activity status for the specified activity. Activity status could be a timestamp or a retry prompt.
 
 When `hideTimestamp` is set to `true`, the activity status middleware should hide if it is rendering a timestamp for the activity. Although the timestamp is hidden, activity status should consider rendering accessible counterpart.
 
@@ -309,7 +309,7 @@ useCreateAvatarRenderer(): ({
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will return a function to render the avatar for the specified activity.
+This hook will return a function that, when called, will return a function to render the avatar for the specified activity.
 
 ## `useDateFormatter`
 
@@ -321,7 +321,7 @@ useDateFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
+This hook will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
 
 ## `useDebouncedNotification`
 
@@ -352,7 +352,7 @@ useDictateInterims(): [string[][]]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return active interims processed from a dictation event.
+This hook will return active interims processed from a dictation event.
 
 The first array represents separate sentences while the second array represents potential ambiguities or alternatives for the same sentence.
 
@@ -364,7 +364,7 @@ useDictateState(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return one of the following dictation states:
+This hook will return one of the following dictation states:
 
 -  `IDLE`: Recognition engine is idle; not recognizing
 -  `WILL_START`: Will start recognition after synthesis completed
@@ -384,7 +384,7 @@ useDirection(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return one of two language directions:
+This hook will return one of two language directions:
 
 -  `ltr` or otherwise: Web Chat UI will display as left-to-right
 -  `rtl`: Web Chat UI will display as right-to-left
@@ -401,7 +401,7 @@ useDisabled(): [boolean]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return whether the UI should be disabled or not. All interactable UI components should honor this value.
+This hook will return whether the UI should be disabled or not. All interactable UI components should honor this value.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -433,7 +433,7 @@ useFocus(): (where?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard') => void
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will return a function that can be called to set the focus to various parts of Web Chat.
+When called, This hook will return a function that can be called to set the focus to various parts of Web Chat.
 
 Please use this function with cautions. When changing focus programmatically, user may lose focus on what they were working on. Also, this may affect accessibility.
 
@@ -463,7 +463,7 @@ useGetSendTimeoutForActivity(): ({ activity: Activity }) => number
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
+When called, This hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useGrammars`
 
@@ -473,7 +473,7 @@ useGrammars(): [string[]]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return grammars for speech-to-text. Grammars is a list of words provided by the implementer for the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same or similar pronunciations, e.g. Bellevue vs. Bellview vs. Bellvue.
+This hook will return grammars for speech-to-text. Grammars is a list of words provided by the implementer for the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same or similar pronunciations, e.g. Bellevue vs. Bellview vs. Bellvue.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -485,7 +485,7 @@ useGroupTimestamp(): [number]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the interval for grouping similar activities with a single timestamp. The interval is represented in milliseconds.
+This hook will return the interval for grouping similar activities with a single timestamp. The interval is represented in milliseconds.
 
 For example, if this value is `5000`, successive activities within 5 seconds will share the timestamp of the first message.
 
@@ -501,7 +501,7 @@ useLanguage(options?: LanguageOptions): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the language of the UI. All UI components should honor this value.
+This hook will return the language of the UI. All UI components should honor this value.
 
 If no options are passed, the return value will be the written language. This value should be the same as `props.locale` passed to `<ReactWebChat>` or `<Composer>`.
 
@@ -519,7 +519,7 @@ useLastTypingAt(): [{
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a map of the last typing time of all participants. The time is based on the client clock.
+This hook will return a map of the last typing time of all participants. The time is based on the client clock.
 
 This property is computed on every incoming activity.
 
@@ -533,7 +533,7 @@ useLocalize(identifier: string) => string
 
 > This function is deprecated. Developers should migrate to [`useLocalizer`](#uselocalizer).
 
-This function will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
+This hook will return a localized string represented by the identifier. It honors the language settings from the `useLanguage` hook.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -691,7 +691,7 @@ useReferenceGrammarId(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
+When called, This hook will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
 
 This value is not controllable and is passed to Web Chat from the Direct Line channel.
 
@@ -705,7 +705,7 @@ useRelativeTimeFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
+This hook will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in relative time, e.g. "2 minutes ago". It honors the language settings from the `useLanguage` hook.
 
 ## `useRenderActivity`
 
@@ -794,7 +794,7 @@ useRenderMarkdownAsHTML(): (markdown: string): string
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will render Markdown into an HTML string. For example,
+This hook will return a function that, when called, will render Markdown into an HTML string. For example,
 
 <!-- prettier-ignore-start -->
 ```js
@@ -878,7 +878,7 @@ useScrollToEnd(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that, when called, will smoothly scroll the transcript view to the end.
+This hook will return a function that, when called, will smoothly scroll the transcript view to the end.
 
 ## `useSendBoxValue`
 
@@ -888,7 +888,7 @@ useSendBoxValue(): [string, (value: string) => void]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the current value of the send box and the setter function to change the value.
+This hook will return the current value of the send box and the setter function to change the value.
 
 ## `useSendEvent`
 
@@ -957,7 +957,7 @@ useSendTimeoutForActivity(activity: Activity) => number
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
+When called, This hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useSendTypingIndicator`
 
@@ -967,7 +967,7 @@ useSendTypingIndicator(): [boolean]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return whether the typing indicator will be sent to the bot when the send box value is being modified.
+This hook will return whether the typing indicator will be sent to the bot when the send box value is being modified.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1000,7 +1000,7 @@ useShouldSpeakIncomingActivity(): [boolean, (value: boolean) => void]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a boolean and a function.
+This hook will return a boolean and a function.
 
 1. boolean: whether the next incoming activity will be queued for text-to-speech
 1. function: a setter function to control the behavior
@@ -1035,7 +1035,7 @@ useStyleOptions(): [StyleOptions]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the style options. UI components should honor the styling preferences.
+This hook will return the style options. UI components should honor the styling preferences.
 
 The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
 
@@ -1049,7 +1049,7 @@ useStyleSet(): [StyleSet]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the style set.
+This hook will return the style set.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1071,7 +1071,7 @@ useSuggestedActions(): [CardAction[], (CardAction[]) => void]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return an array and a setter function.
+This hook will return an array and a setter function.
 
 1. array: a list of suggested actions that should be shown to the user
 1. function: a setter function to clear suggested actions. The setter function can only be used to clear suggested actions, and it will accept empty array or falsy value only.
@@ -1086,7 +1086,7 @@ useTimeoutForSend(): [number]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the interval of time paused before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problems, activities that fail to send may eventually be successfully delivered to the bot.
+This hook will return the interval of time paused before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problems, activities that fail to send may eventually be successfully delivered to the bot.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1098,7 +1098,7 @@ useUserID(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the user ID.
+This hook will return the user ID.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1110,7 +1110,7 @@ useUsername(): [string]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the username.
+This hook will return the username.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1122,7 +1122,7 @@ useVoiceSelector(activity: Activity): (voices: SpeechSynthesisVoice[]) => Speech
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a function that can be called to select the voice for a specific activity.
+This hook will return a function that can be called to select the voice for a specific activity.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1139,7 +1139,7 @@ useWebSpeechPonyfill(): [{
 ```
 <!-- prettier-ignore-end -->
 
-This function will return the ponyfill for the Web Speech API.
+This hook will return the ponyfill for the Web Speech API.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
 
@@ -1172,7 +1172,7 @@ useMicrophoneButtonDisabled(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This function will return whether the microphone button is disabled. This is different from `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
+This hook will return whether the microphone button is disabled. This is different from `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
 
 This value can be partly controllable through Web Chat props.
 
@@ -1190,7 +1190,7 @@ useSendBoxSpeechInterimsVisible(): [boolean]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return whether the send box should show speech interims.
+This hook will return whether the send box should show speech interims.
 
 ## `TextBox`
 
@@ -1219,7 +1219,7 @@ useTextBoxValue(): [string, (value: string) => void]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return a string and a function.
+This hook will return a string and a function.
 
 1. string: the text box value
 1. function: the setter function to set the text box value.
@@ -1240,7 +1240,7 @@ useTypingIndicatorVisible(): [boolean]
 ```
 <!-- prettier-ignore-end -->
 
-This function will return whether the typing indicator should be visible or not. This function is time-sensitive, meaning that the value will change as time passes.
+This hook will return whether the typing indicator should be visible or not. This function is time-sensitive, meaning that the value will change as time passes.
 
 This function derives the visibility of the typing indicator via values from the [`useActiveTyping`](#useactivetyping) hook. Active typing from user is ignored.
 
