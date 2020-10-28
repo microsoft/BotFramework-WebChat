@@ -45,118 +45,13 @@ import defaultStyleOptions from './defaultStyleOptions';
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
-function parseBorder(border) {
-  const dummyElement = document.createElement('div');
-
-  dummyElement.setAttribute('style', `border: ${border}`);
-
-  const {
-    style: { borderColor: color, borderStyle: style, borderWidth: width }
-  } = dummyElement;
-
-  return {
-    color,
-    style,
-    width
-  };
-}
-
-const PIXEL_UNIT_PATTERN = /^\d+px$/u;
-
 export default function createStyleSet(options) {
   options = { ...defaultStyleOptions, ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
 
   // TODO: [P4] Deprecate this code after bump to v5
-  const {
-    bubbleBorder,
-    bubbleFromUserBorder,
-    bubbleFromUserNubOffset,
-    bubbleNubOffset,
-    suggestedActionBorder,
-    suggestedActionDisabledBorder
-  } = options;
-
-  if (bubbleBorder) {
-    console.warn(
-      'botframework-webchat: "styleSet.bubbleBorder" is deprecated and will be removed on or after 2020-07-17. Please use "bubbleBorderColor", "bubbleBorderStyle", and, "bubbleBorderWidth.'
-    );
-
-    const { color, style, width } = parseBorder(bubbleBorder);
-
-    if (color && color !== 'initial') {
-      options.bubbleBorderColor = color;
-    }
-
-    if (style && style !== 'initial') {
-      options.bubbleBorderStyle = style;
-    }
-
-    if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleBorderWidth = parseInt(width, 10);
-    }
-  }
-
-  if (bubbleFromUserBorder) {
-    console.warn(
-      'botframework-webchat: "styleSet.bubbleFromUserBorder" is deprecated and will be removed on or after 2020-07-17. Please use "bubbleFromUserBorderColor", "bubbleFromUserBorderStyle", and, "bubbleFromUserBorderWidth".'
-    );
-
-    const { color, style, width } = parseBorder(bubbleFromUserBorder);
-
-    if (color && color !== 'initial') {
-      options.bubbleFromUserBorderColor = color;
-    }
-
-    if (style && style !== 'initial') {
-      options.bubbleFromUserBorderStyle = style;
-    }
-
-    if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleFromUserBorderWidth = parseInt(width, 10);
-    }
-  }
-
-  if (suggestedActionBorder) {
-    console.warn(
-      'botframework-webchat: "styleSet.suggestedActionBorder" is deprecated and will be removed on or after 2020-09-11. Please use "suggestedActionBorderColor", "suggestedActionBorderStyle", and, "suggestedActionBorderWidth".'
-    );
-
-    const { color, style, width } = parseBorder(suggestedActionBorder);
-
-    if (color && color !== 'initial') {
-      options.suggestedActionBorderColor = color;
-    }
-
-    if (style && style !== 'initial') {
-      options.suggestedActionBorderStyle = style;
-    }
-
-    if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.suggestedActionBorderWidth = parseInt(width, 10);
-    }
-  }
-
-  if (suggestedActionDisabledBorder) {
-    console.warn(
-      'botframework-webcaht: "styleSet.suggestedActionDisabledBorder" is deprecated and will be removed on or after 2020-09-11. Please use "suggestedActionDisabledBorderColor", "suggestedActionDisabledBorderStyle", and, "suggestedActionDisabledBorderWidth".'
-    );
-
-    const { color, style, width } = parseBorder(suggestedActionDisabledBorder);
-
-    if (color && color !== 'initial') {
-      options.suggestedActionDisabledBorderColor = color;
-    }
-
-    if (style && style !== 'initial') {
-      options.suggestedActionDisabledBorderStyle = style;
-    }
-
-    if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.suggestedActionDisabledBorderWidth = parseInt(width, 10);
-    }
-  }
+  const { bubbleFromUserNubOffset, bubbleNubOffset } = options;
 
   if (bubbleFromUserNubOffset === 'top') {
     options.bubbleFromUserNubOffset = 0;
