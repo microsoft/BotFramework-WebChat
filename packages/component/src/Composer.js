@@ -411,7 +411,7 @@ const Composer = ({
   const patchedActivityRenderer = useMemo(() => {
     activityRenderer &&
       console.warn(
-        'Web Chat: "activityRenderer" is deprecated and will be removed on 2020-06-15, please use "activityMiddleware" instead.'
+        'Web Chat: "activityRenderer" is deprecated and will be removed on 2020-06-15; please use "activityMiddleware" instead.'
       );
 
     return activityRenderer || createActivityRenderer(activityMiddleware);
@@ -420,7 +420,7 @@ const Composer = ({
   const patchedActivityStatusRenderer = useMemo(() => {
     activityStatusRenderer &&
       console.warn(
-        'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2020-06-15, please use "activityStatusMiddleware" instead.'
+        'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15; please use "activityStatusMiddleware" instead.'
       );
 
     return activityStatusRenderer || createActivityStatusRenderer(activityStatusMiddleware);
@@ -429,7 +429,7 @@ const Composer = ({
   const patchedAttachmentRenderer = useMemo(() => {
     attachmentRenderer &&
       console.warn(
-        'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2020-06-15, please use "attachmentMiddleware" instead.'
+        'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2022-06-15; please use "attachmentMiddleware" instead.'
       );
 
     return attachmentRenderer || createAttachmentRenderer(attachmentMiddleware);
@@ -438,7 +438,7 @@ const Composer = ({
   const patchedAvatarRenderer = useMemo(() => {
     avatarRenderer &&
       console.warn(
-        'Web Chat: "avatarRenderer" is deprecated and will be removed on 2020-06-15, please use "avatarMiddleware" instead.'
+        'Web Chat: "avatarRenderer" is deprecated and will be removed on 2022-06-15; please use "avatarMiddleware" instead.'
       );
 
     return avatarRenderer || createAvatarRenderer(avatarMiddleware);
@@ -447,7 +447,7 @@ const Composer = ({
   const patchedToastRenderer = useMemo(() => {
     toastRenderer &&
       console.warn(
-        'Web Chat: "toastRenderer" is deprecated and will be removed on 2020-06-15, please use "toastMiddleware" instead.'
+        'Web Chat: "toastRenderer" is deprecated and will be removed on 2022-06-15; please use "toastMiddleware" instead.'
       );
 
     return toastRenderer || createToastRenderer(toastMiddleware);
@@ -456,7 +456,7 @@ const Composer = ({
   const patchedTypingIndicatorRenderer = useMemo(() => {
     typingIndicatorRenderer &&
       console.warn(
-        'Web Chat: "typingIndicatorRenderer" is deprecated and will be removed on 2020-06-15, please use "typingIndicatorMiddleware" instead.'
+        'Web Chat: "typingIndicatorRenderer" is deprecated and will be removed on 2022-06-15; please use "typingIndicatorMiddleware" instead.'
       );
 
     return typingIndicatorRenderer || createTypingIndicatorRenderer(typingIndicatorMiddleware);

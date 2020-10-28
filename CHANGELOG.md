@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3371](https://github.com/microsoft/BotFramework-WebChat/issues/3371). Add alt property for image in HeroCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 -  Fixes [#3310](https://github.com/microsoft/BotFramework-WebChat/issues/3310). Add quantity, tap and text field to ReceiptCards, by [@corinagum](https://github.com/corinagum) in PR [#3541](https://github.com/microsoft/BotFramework-WebChat/pull/3541)
 -  Fixes [#3514](https://github.com/microsoft/BotFramework-WebChat/issues/3514). Fix PoliCheck language errors, by [@corinagum](https://github.com/corinagum) in PR [#3545](https://github.com/microsoft/BotFramework-WebChat/pull/3545)
+-  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
+-  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3563](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
+-  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/3563)
 
 ### Changed
 
