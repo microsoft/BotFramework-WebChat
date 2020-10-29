@@ -53,7 +53,19 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
             // TODO configurable template system based on config
             const config = body.config
             if (config && config.template) {
-                props.theme = {...props.theme, template: {...props.theme.template, ...config.template}, mainColor: config.mainColor || props.theme.mainColor}
+                props.theme = {...props.theme, template: {...(props.theme ? props.theme.template : {}), ...config.template}, mainColor: config.mainColor || props.theme.mainColor}
+
+                if (config.showInput === 'auto') {
+                  props.disableInputWhenNotNeeded = true
+                }
+
+                if (config.template.headerText) {
+                  props.header = {...(props.header || {}), text: config.template.headerText}
+                }
+
+                if (config.template.collapsedHeaderText) {
+                  props.header = {...(props.header || {text: 'Chatbot'}), textWhenCollapsed: config.template.collapsedHeaderText}
+                }
             }
 
         } catch (err) {
@@ -436,9 +448,9 @@ const ExpandableBarTheme = (theme: Theme) => `
     bottom: 0px;
     z-index: 10000;
 
-    -webkit-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
-    -moz-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
-    box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.25);
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
+    box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
   }
 
   .feedbot-wrapper.collapsed > .feedbot {
@@ -604,15 +616,21 @@ const BaseTheme = (theme: Theme) => `
         fill: #f5f5f5;
     }
 
-    @media (max-width: 450px) {
-        .feedbot-wrapper .wc-card {
-            border: 1px solid #d2dde5;
-            width: 198px !important; 
-        }
-        .feedbot-wrapper .wc-adaptive-card {
-            width: 214px !important;
-        }
+    .feedbot-wrapper .wc-card {
+      border: 1px solid #d2dde5;
+      max-width: 100%;
     }
+    
+    .feedbot-wrapper .wc-adaptive-card {
+      max-width: 100%;
+    }
+
+    @media (max-width: 450px) {
+      .feedbot-wrapper .wc-card {
+        border: 1px solid #d2dde5;
+        width: 198px; }
+      .feedbot-wrapper .wc-adaptive-card {
+        width: 214px; } }
 
     .wc-message-from.wc-message-from-bot {
         visibility: hidden;
