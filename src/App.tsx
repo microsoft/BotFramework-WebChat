@@ -376,7 +376,8 @@ const ExpandableKnobTheme = (theme: Theme) => `
 
   body .feedbot-wrapper.collapsed .feedbot-header {
     border-radius: 40px;
-    height: 57px;
+    height: 100%;
+    padding: 0px;
 
     background-image: url(https://cdn.feedyou.ai/webchat/message-icon.png);
     background-size: 50px 50px;
