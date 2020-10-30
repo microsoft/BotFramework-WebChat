@@ -4,6 +4,13 @@ import { createStore, createCognitiveServicesSpeechServicesPonyfillFactory } fro
 import WebChat from './WebChat';
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
+import {setCookie, getCookie, checkCookie} from './CookiesUtils'
+
+//create your forceUpdate hook
+function useForceUpdate(){
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue(value => ++value); // update the state to force render
+}
 
 const MinimizableWebChat = (jsonUrl) => {
   const store = useMemo(
@@ -43,8 +50,8 @@ const MinimizableWebChat = (jsonUrl) => {
     bubbleTextColor: '#575a5e', //parameter
 
     avatarSize: 32,
-    botAvatarInitials: 'BF',
-    botAvatarImage: 'https://turismobot.intelequia.com/images/goio-square-icon-32.png', //parameter
+    botAvatarInitials: 'BT',
+    // botAvatarImage: 'https://turismobot.intelequia.com/images/goio-square-icon-32.png', //parameter
 
 
     //User Nub
@@ -75,7 +82,6 @@ const MinimizableWebChat = (jsonUrl) => {
     sendBoxPlaceholderColor: undefined, // defaults to subtle
     sendBoxTextWrap: true,
 
-
     // transcriptOverlayButtonBackground: 'White',
     // transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
     // transcriptOverlayButtonBackgroundOnHover: '#ed823c',
@@ -89,9 +95,13 @@ const MinimizableWebChat = (jsonUrl) => {
   const [newMessage, setNewMessage] = useState(false);
   const [side, setSide] = useState('right');
   const [token, setToken] = useState();
-
+  const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000});;
+  
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
+
+  // call your hook here
+  const forceUpdate = useForceUpdate();
 
   const handleFetchToken = useCallback(async () => {
     if (!token) {
@@ -102,10 +112,18 @@ const MinimizableWebChat = (jsonUrl) => {
     }
   }, [setToken, token]);
 
+  const setFirstTimeCookie = () => {
+    var cookie = getCookie('firstTimeVisit');
+    if(cookie != false)
+      setCookie('firstTimeVisit', false, { path: '/', maxAge: 2592000});
+      forceUpdate();
+  }
+
   const handleMaximizeButtonClick = useCallback(async () => {
     setLoaded(true);
     setMinimized(false);
     setNewMessage(false);
+    setFirstTimeCookie()
   }, [setMinimized, setNewMessage]);
 
   const handleMinimizeButtonClick = useCallback(() => {
@@ -122,6 +140,11 @@ const MinimizableWebChat = (jsonUrl) => {
   //       When minimized, we still want to maintain that connection while the UI is gone.
   //       This is related to https://github.com/microsoft/BotFramework-WebChat/issues/2750.
 
+  const handleMessageClick = useCallback(async () => {
+    setFirstTimeCookie()
+    setSide(side)
+  }, [setSide, side]);
+
   const handleRequestSpeechToken = useCallback(async () => {
     const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
     const { token } = await res.json();
@@ -136,6 +159,18 @@ const MinimizableWebChat = (jsonUrl) => {
 
   return (
     <div className="minimizable-web-chat">
+      {getCookie('firstTimeVisit') == 'true' && (
+      <div className="chat-button-message close-button-no-animate">
+        <div className="chat-button-message-arrow"></div>
+        <a className="chat-button-message-close" onClick={handleMessageClick}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38000 0 42000 2048">
+                                <path d="M1115 1024 L1658 1567 Q1677 1586 1677 1612.5 Q1677 1639 1658 1658 Q1639 1676 1612 1676 Q1587 1676 1567 1658 L1024 1115 L481 1658 Q462 1676 436 1676 Q410 1676 390 1658 Q371 1639 371 1612.5 Q371 1586 390 1567 L934 1024 L390 481 Q371 462 371 435.5 Q371 409 390 390 Q410 372 436 372 Q462 372 481 390 L1024 934 L1567 390 Q1587 372 1612 372 Q1639 372 1658 390 Q1677 409 1677 435.5 Q1677 462 1658 481 L1115 1024 Z ">
+                                </path>
+                            </svg>
+                        </a>
+          <a onClick={handleMaximizeButtonClick}><span>Hi, I'm your virtual assistant and I'm here to help you on knowing more about bot framework</span></a>
+      </div>
+      )}
       {minimized && (
         <button className="maximize" onClick={handleMaximizeButtonClick}>
           <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />

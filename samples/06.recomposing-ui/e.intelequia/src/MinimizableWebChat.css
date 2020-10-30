@@ -71,8 +71,7 @@
 
 @media (min-width: 960px) and (min-height: 600px) {
   .minimizable-web-chat > .chat-box > header {
-      height: 80px;
-      background-image: url("https://turismobot.intelequia.com/css/header-small.png");
+      height: 40px;
       background-repeat: no-repeat;
       background-position: center;
   }
@@ -128,4 +127,39 @@
   .switch{
     visibility: hidden;
   }
+}
+
+.chat-button-message {
+  padding: 10px;
+  position: fixed;
+  bottom: 115px;
+  right: 10px;
+  z-index: 10000;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  max-width: 300px;
+  background-color: #fff;
+  font-family: "Segoe UI",sans-serif;
+  font-size: 15px;
+}
+
+.chat-button-message-close {
+  position: absolute;
+  width: 100%;
+}
+
+.close-button-no-animate {
+  display: block;
+}
+
+.chat-button-message-arrow {
+  position: absolute;
+  bottom: -10px;
+  right: 30px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fff;
 }

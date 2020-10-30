@@ -9,11 +9,13 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
   useEffect(() => {
     const $style = document.createElement("style");
     document.head.appendChild($style);
+    
+    //Colours for adaptiveCards + button hover
     const buttonCss = `.ac-pushButton {
       color: ${styleOptions.suggestedActionTextColor} !important;
       border: 1px solid #cccccc;
       border-radius: 5px;
-  }
+    }
   .ac-pushButton:hover {
     color: ${styleOptions.suggestedActionBackground} !important;
     background-color: ${styleOptions.suggestedActionTextColor} !important;
