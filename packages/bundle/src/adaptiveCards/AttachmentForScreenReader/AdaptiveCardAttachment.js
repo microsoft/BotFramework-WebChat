@@ -99,6 +99,7 @@ const AdaptiveCardAttachment = ({ content }) => {
   return (
     <article>
       <div role="region">{cardLabel}</div>
+      {card.speak && <div>{card.speak}</div>}
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
