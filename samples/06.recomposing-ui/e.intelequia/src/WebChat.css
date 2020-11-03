@@ -1,5 +1,6 @@
 .web-chat {
   overflow: hidden;
+  border-radius: 0px 0px 7px 7px;
 }
 
 .connect-spinner {
@@ -14,4 +15,7 @@
 
 .connect-spinner > .content > .icon {
   font-size: 64px;
+}
+.ms-Icon--Robot{
+  color:  rgba(255, 255, 255, .4);
 }

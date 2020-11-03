@@ -2,17 +2,19 @@ import classNames from 'classnames';
 import React, { useCallback, useMemo, useState } from 'react';
 import { createStore, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
 import WebChat from './WebChat';
+import Header from './Header'
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
-import {setCookie, getCookie, checkCookie} from './CookiesUtils'
+import { setCookie, getCookie, checkCookie } from './CookiesUtils'
 
 //create your forceUpdate hook
-function useForceUpdate(){
+function useForceUpdate() {
   const [value, setValue] = useState(0); // integer state
   return () => setValue(value => ++value); // update the state to force render
 }
 
-const MinimizableWebChat = (jsonUrl) => {
+const MinimizableWebChat = (parameters) => {
+  const options = parameters.parameters.parameters;
   const store = useMemo(
     () =>
       createStore({}, ({ dispatch }) => next => action => {
@@ -37,38 +39,28 @@ const MinimizableWebChat = (jsonUrl) => {
     []
   );
 
-  const styleSet = {
-    backgroundColor: '#FFFFFF', //parameter
-    bubbleBackground: 'rgba(241, 241, 244, 1)', //parameter
-    bubbleFromUserBackground: '#8A8A8A', //pparameter
+  var styleSet = {
+    fontSizeSmall: '80%',
+    primaryFont: "'Segoe UI', sans-serif",
 
     //Bot Nub
     showNub: true,
     bubbleNubOffset: -8,
     bubbleNubSize: 10,
     bubbleBorderRadius: 10,
-    bubbleTextColor: '#575a5e', //parameter
-
     avatarSize: 32,
-    botAvatarInitials: 'BT',
-    // botAvatarImage: 'https://turismobot.intelequia.com/images/goio-square-icon-32.png', //parameter
-
 
     //User Nub
     bubbleFromUserNubOffset: -8,
     bubbleFromUserNubSize: 10,
-    bubbleFromUserBorderRadius:10,
-    bubbleFromUserTextColor: '#ffffff', //parameter
+    bubbleFromUserBorderRadius: 10,
 
-    //buttons
-    suggestedActionBackground: 'White', //parameter
+    // //buttons
     suggestedActionBorderRadius: 5,
-    suggestedActionBorderColor: '#cccccc',
-    suggestedActionTextColor: '#ed823c', //parameter
 
     //SendBox
     hideUploadButton: true,
-    sendBoxBackground: 'White',
+    sendBoxBackground: '#F1F1F4',
     sendBoxButtonColor: undefined, // defaults to subtle
     sendBoxButtonColorOnDisabled: '#CCC',
     sendBoxButtonColorOnFocus: '#333',
@@ -77,26 +69,28 @@ const MinimizableWebChat = (jsonUrl) => {
     sendBoxHeight: 50,
     sendBoxMaxHeight: 200,
     sendBoxTextColor: 'Black',
-    sendBoxBorderBottom: 'solid 5px #E6E6E6',
-    sendBoxBorderTop: 'solid 5px #E6E6E6',
+    sendBoxBorderBottom: 'solid 10px white',
+    sendBoxBorderTop: 'solid 10px white',
+    sendBoxBorderLeft: 'solid 10px white',
+    sendBoxBorderRight: 'solid 10px white',
     sendBoxPlaceholderColor: undefined, // defaults to subtle
-    sendBoxTextWrap: true,
+    sendBoxTextWrap: false,
 
-    // transcriptOverlayButtonBackground: 'White',
-    // transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
-    // transcriptOverlayButtonBackgroundOnHover: '#ed823c',
-    // transcriptOverlayButtonColor: '#ed823c',
-    // transcriptOverlayButtonColorOnFocus: undefined, // defaults to transcriptOverlayButtonColor
-    // transcriptOverlayButtonColorOnHover: 'White' // defaults to transcriptOverlayButtonColor
+
+    transcriptOverlayButtonBackground: '#d2dde5',
+    transcriptOverlayButtonBackgroundOnHover: '#ef501f',
+    transcriptOverlayButtonColor: '#ed823c',
+    transcriptOverlayButtonColorOnHover: 'White' //parameter
   };
+  styleSet = { ...styleSet, ...options.style };
 
   const [loaded, setLoaded] = useState(false);
   const [minimized, setMinimized] = useState(true);
   const [newMessage, setNewMessage] = useState(false);
   const [side, setSide] = useState('right');
   const [token, setToken] = useState();
-  const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000});;
-  
+  const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
+
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
 
@@ -105,7 +99,7 @@ const MinimizableWebChat = (jsonUrl) => {
 
   const handleFetchToken = useCallback(async () => {
     if (!token) {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch(options.directlineTokenUrl, { method: 'GET' });
       const { token } = await res.json();
 
       setToken(token);
@@ -114,9 +108,9 @@ const MinimizableWebChat = (jsonUrl) => {
 
   const setFirstTimeCookie = () => {
     var cookie = getCookie('firstTimeVisit');
-    if(cookie != false)
-      setCookie('firstTimeVisit', false, { path: '/', maxAge: 2592000});
-      forceUpdate();
+    if (cookie != false)
+      setCookie('firstTimeVisit', false, { path: '/', maxAge: 2592000 });
+    forceUpdate();
   }
 
   const handleMaximizeButtonClick = useCallback(async () => {
@@ -160,16 +154,16 @@ const MinimizableWebChat = (jsonUrl) => {
   return (
     <div className="minimizable-web-chat">
       {getCookie('firstTimeVisit') == 'true' && (
-      <div className="chat-button-message close-button-no-animate">
-        <div className="chat-button-message-arrow"></div>
-        <a className="chat-button-message-close" onClick={handleMessageClick}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38000 0 42000 2048">
-                                <path d="M1115 1024 L1658 1567 Q1677 1586 1677 1612.5 Q1677 1639 1658 1658 Q1639 1676 1612 1676 Q1587 1676 1567 1658 L1024 1115 L481 1658 Q462 1676 436 1676 Q410 1676 390 1658 Q371 1639 371 1612.5 Q371 1586 390 1567 L934 1024 L390 481 Q371 462 371 435.5 Q371 409 390 390 Q410 372 436 372 Q462 372 481 390 L1024 934 L1567 390 Q1587 372 1612 372 Q1639 372 1658 390 Q1677 409 1677 435.5 Q1677 462 1658 481 L1115 1024 Z ">
-                                </path>
-                            </svg>
-                        </a>
-          <a onClick={handleMaximizeButtonClick}><span>Hi, I'm your virtual assistant and I'm here to help you on knowing more about bot framework</span></a>
-      </div>
+        <div className="chat-button-message close-button-no-animate">
+          <div className="chat-button-message-arrow"></div>
+          <a className="chat-button-message-close" onClick={handleMessageClick}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38000 0 42000 2048">
+              <path d="M1115 1024 L1658 1567 Q1677 1586 1677 1612.5 Q1677 1639 1658 1658 Q1639 1676 1612 1676 Q1587 1676 1567 1658 L1024 1115 L481 1658 Q462 1676 436 1676 Q410 1676 390 1658 Q371 1639 371 1612.5 Q371 1586 390 1567 L934 1024 L390 481 Q371 462 371 435.5 Q371 409 390 390 Q410 372 436 372 Q462 372 481 390 L1024 934 L1567 390 Q1587 372 1612 372 Q1639 372 1658 390 Q1677 409 1677 435.5 Q1677 462 1658 481 L1115 1024 Z ">
+              </path>
+            </svg>
+          </a>
+      <a onClick={handleMaximizeButtonClick}><span>{parameters.parameters.parameters.chatIconMessage}</span></a>
+        </div>
       )}
       {minimized && (
         <button className="maximize" onClick={handleMaximizeButtonClick}>
@@ -179,15 +173,7 @@ const MinimizableWebChat = (jsonUrl) => {
       )}
       {loaded && (
         <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide' : '')}>
-          <header>
-            <div className="filler" />
-            <button className="switch" onClick={handleSwitchButtonClick}>
-              <span className="ms-Icon ms-Icon--Switch" />
-            </button>
-            <button className="minimize" onClick={handleMinimizeButtonClick}>
-              <span className="ms-Icon ms-Icon--ChromeMinimize" />
-            </button>
-          </header>
+          <Header handleMinimizeButtonClick={handleMinimizeButtonClick} handleSwitchButtonClick={handleSwitchButtonClick} headerOptions={options.header} />
           { <WebChat
             className="react-web-chat"
             onFetchToken={handleFetchToken}

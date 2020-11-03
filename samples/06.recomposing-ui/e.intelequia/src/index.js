@@ -4,11 +4,42 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// ReactDOM.render(<App  />, document.getElementById('root'));
+// const parameters = {
+//     style: {
+//       backgroundColor: '#FFFFFF', //window background color
+
+//       bubbleBackground: 'rgba(241, 241, 244, 1)', //bot bubble background color
+//       bubbleTextColor: '#575a5e', //bot bubble text color
+//       botAvatarImage: '',
+
+//       bubbleFromUserBackground: '#8A8A8A', //user bubble background color
+//       bubbleFromUserTextColor: '#ffffff', //user bubble text color
+
+//       suggestedActionBackground: 'White', //button background color
+//       suggestedActionBorderColor: '#cccccc', //button border color
+//       suggestedActionTextColor: '#ed823c', //button text color
+
+//       //overlaybutton to move through carousel or suggested actions
+//       transcriptOverlayButtonBackground: '#d2dde5', //overlaybutton
+//       transcriptOverlayButtonBackgroundOnHover: '#ef501f',
+//       transcriptOverlayButtonColor: '#ed823c',
+//       transcriptOverlayButtonColorOnHover: 'White' //parameter
+//     },
+//     header:{
+//         backgroundColor: '#ef501f',
+//         color:'#ef501f',
+//         imageUrl: '',
+//         height: '50px'
+//     },
+//     directlineTokenUrl: '',
+//     speechTokenUrl: ''
+// }
+
+// ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));
 
 
-const renderApp = (element) => {
-    ReactDOM.render(<App />, document.getElementById(element));
+const renderApp = (element, parameters) => {
+    ReactDOM.render(<App parameters={parameters} />, document.getElementById(element));
 };
 
 window['Intelequia'] = {

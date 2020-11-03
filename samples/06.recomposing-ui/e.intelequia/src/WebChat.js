@@ -15,6 +15,7 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
       color: ${styleOptions.suggestedActionTextColor} !important;
       border: 1px solid #cccccc;
       border-radius: 5px;
+      font: 400 13.3333px Segoe UI;
     }
   .ac-pushButton:hover {
     color: ${styleOptions.suggestedActionBackground} !important;
@@ -25,6 +26,15 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     background-color: ${styleOptions.suggestedActionTextColor} !important;
     color: ${styleOptions.suggestedActionBackground} !important;
     border-color: ${styleOptions.suggestedActionTextColor} !important;
+  }
+  .ac-actionSet{
+    font-family: "Segoe UI", sans-serif !important;
+  }
+  .ac-textBlock {
+    color:${styleOptions.bubbleTextColor} !important;
+  }
+  button {
+    transition: color .2s ease, background-color .2s ease;
   }`
     $style.innerHTML = buttonCss;
 
