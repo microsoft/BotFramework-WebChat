@@ -2,6 +2,7 @@
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
+import { MicAudioSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource';
 
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
@@ -70,6 +71,30 @@ export default async function create({
     } else {
       audioConfig = AudioConfig.fromDefaultMicrophoneInput();
     }
+
+    // HACK: In Speech SDK 1.12.0-1.13.1, it dropped support of macOS/iOS Safari.
+    //       This code is adopted from microsoft-cognitiveservices-speech-sdk/src/common.browser/MicAudioSource.ts.
+    //       We will not need this code when using Speech SDK 1.14.0 or up.
+    // TODO: [P1] #3575 Remove the following lines when bumping to Speech SDK 1.14.0 or higher
+    const { privSource: source } = audioConfig;
+
+    source.createAudioContext = () => {
+      if (!!source.privContext) {
+        return;
+      }
+
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+      if (typeof AudioContext === 'undefined') {
+        throw new Error('Browser does not support Web Audio API (AudioContext/webkitAudioContext is not available).');
+      }
+
+      if (navigator.mediaDevices.getSupportedConstraints().sampleRate) {
+        source.privContext = new AudioContext({ sampleRate: MicAudioSource.AUDIOFORMAT.samplesPerSec });
+      } else {
+        source.privContext = new AudioContext();
+      }
+    };
   }
 
   if (speechRecognitionEndpointId) {
@@ -180,9 +205,9 @@ export default async function create({
       if (dialogServiceConnector.privIsDisposed) {
         clearInterval(interval);
       }
-      
+
       const refreshedDirectLineToken = await refreshDirectLineToken(directLineToken);
-      
+
       if (!refreshedDirectLineToken) {
         return console.warn(
           'botframework-directlinespeech-sdk: Renew token failed because call to refresh token Direct Line API did not return a new token.'
@@ -190,8 +215,8 @@ export default async function create({
       }
 
       config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
-      
-      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken)
+
+      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
       dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
