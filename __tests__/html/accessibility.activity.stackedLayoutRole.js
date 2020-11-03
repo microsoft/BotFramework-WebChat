@@ -3,6 +3,6 @@
  */
 
 describe('accessibility requirement', () => {
-  test('Activity container should have role="list", and message container role="listitem"', () =>
+  test('Activity container should have role="group", and message container role="group"', () =>
     runHTMLTest('accessibility.activity.stackedLayoutRole'));
 });
