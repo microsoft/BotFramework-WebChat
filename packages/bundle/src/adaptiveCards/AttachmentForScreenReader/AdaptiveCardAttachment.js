@@ -26,7 +26,7 @@ function walkAllItems(node, fn) {
 }
 
 const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue } }) => {
-  const labelId = useUniqueId();
+  const labelId = useUniqueId('webchat__id');
   const defaultChoice = choices.find(({ value }) => defaultValue === value || (!defaultValue && !value));
 
   return (
@@ -55,6 +55,7 @@ AdaptiveCardChoiceSetInput.propTypes = {
 };
 
 const AdaptiveCardAttachment = ({ content }) => {
+  const labelId = useUniqueId('webchat__id');
   const localize = useLocalizer();
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
   const [
@@ -94,12 +95,11 @@ const AdaptiveCardAttachment = ({ content }) => {
     return inputs;
   }, [card]);
 
-  const cardLabel = localize('ATTACHMENT_CARD', '', '', '');
+  const cardLabel = localize('ATTACHMENT_CARD', card.speak || '', '', '');
 
   return (
-    <article>
-      <div role="region">{cardLabel}</div>
-      {card.speak && <div>{card.speak}</div>}
+    <article aria-labelledby={labelId}>
+      <div id={labelId}>{cardLabel}</div>
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
