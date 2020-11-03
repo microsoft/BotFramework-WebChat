@@ -11,6 +11,8 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
+const node_env = process.env.node_env || process.env.NODE_ENV;
+
 function addClass(element, className) {
   const classNames = new Set(element.className.split(' '));
 
