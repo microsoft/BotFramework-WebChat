@@ -189,6 +189,7 @@ const StackedLayout = ({
               /* attachments do not have an ID, it is always indexed by number */
               /* eslint-disable-next-line react/no-array-index-key */
               key={index}
+              role="group"
             >
               <ScreenReaderText text={attachedAlt} />
               <Bubble
