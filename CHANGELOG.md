@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3514](https://github.com/microsoft/BotFramework-WebChat/issues/3514). Fix PoliCheck language errors, by [@corinagum](https://github.com/corinagum) in PR [#3545](https://github.com/microsoft/BotFramework-WebChat/pull/3545)
 -  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). [Accessibility]: Ensure `aria-roledescription` is only used on elements with implicit/explicit role based off of [WAI ARIA role attributes](https://www.w3.org/WAI/PF/aria/roles), by [@corinagum](https://github.com/corinagum) in PR [#3551](https://github.com/microsoft/BotFramework-WebChat/pull/3551)
 -  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Activities should not be delayed due to missing activity of type "typing", by [@compulim](https://github.com/compulim) in PR [#3554](https://github.com/microsoft/BotFramework-WebChat/pull/3554)
--  Fixed [#3574](https://github.com/microsoft/BotFramework-WebChat/issues/3574). Workaround Cognitive Services Speech SDK 1.13.1 for removed supported of macOS/iOS, by [@compulim](https://github.com/compulim) in PR [#3576](https://github.com/microsoft/BotFramework-WebChat/pull/3576)
+-  Fixes [#3574](https://github.com/microsoft/BotFramework-WebChat/issues/3574). Creates workaround for Cognitive Services Speech SDK 1.13.1 regarding removed support of macOS/iOS, by [@compulim](https://github.com/compulim) in PR [#3576](https://github.com/microsoft/BotFramework-WebChat/pull/3576)
 
 ### Changed
 
