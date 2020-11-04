@@ -3,6 +3,10 @@
   border-radius: 0px 0px 7px 7px;
 }
 
+.webchat__carousel-layout__attachments .webchat__bubble {
+  min-height: 100%;
+}
+
 .connect-spinner {
   display: flex;
   margin: auto;
