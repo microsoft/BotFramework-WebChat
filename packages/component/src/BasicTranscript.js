@@ -500,6 +500,7 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
       <ul
         aria-roledescription={transcriptRoleDescription}
         className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+        role="log"
       >
         {React.Children.map(children, (child, index) => (
           <React.Fragment>
