@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
@@ -28,6 +29,7 @@ export default function createCoreMiddleware() {
         ) {
           return false;
         }
+        // eslint-disable-next-line no-dupe-else-if
       } else if (type === 'typing' && activity.from.role === 'user') {
         // Do not show typing by oneself
         return false;
@@ -45,7 +47,7 @@ export default function createCoreMiddleware() {
           return function renderCarouselLayout(renderAttachment, props) {
             typeof props === 'undefined' &&
               console.warn(
-                'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passthrough all arguments.'
+                'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
               );
 
             return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
@@ -56,7 +58,7 @@ export default function createCoreMiddleware() {
         return function renderStackedLayout(renderAttachment, props) {
           typeof props === 'undefined' &&
             console.warn(
-              'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passthrough all arguments.'
+              'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
             );
 
           return <StackedLayout activity={activity} renderAttachment={renderAttachment} {...props} />;

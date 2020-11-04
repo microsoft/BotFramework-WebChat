@@ -96,10 +96,10 @@ const BasicTranscript = ({ className }) => {
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
-  // Gets renderer for every activities.
-  // Some activities that are not visible, will return a falsy renderer.
+  // Gets renderer for every activity.
+  // Activities that are not visible will return a falsy renderer.
 
-  // Converting from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
+  // Converted from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
   // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
   const createActivityRendererWithLiteralArgs = useCallback(
     (activity, nextVisibleActivity) => createActivityRenderer({ activity, nextVisibleActivity }),
@@ -111,7 +111,7 @@ const BasicTranscript = ({ className }) => {
     createActivityRendererWithLiteralArgs,
     createActivityRendererWithLiteralArgsMemoized => {
       // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
-      // In next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return memoized result instead.
+      // In the next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return the memoized result instead.
       // This is an improvement to React useMemo(), because it only allows 1 memoization.
       // useMemoize() allows any number of memoization.
 
@@ -282,13 +282,13 @@ const BasicTranscript = ({ className }) => {
             },
 
             // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-            // If set, it will hide if timestamp is being shown, but it will continue to show
+            // If true, it will hide the timestamp, but it will continue to show the
             // retry prompt. And show the screen reader version of the timestamp.
             hideTimestamp:
               hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
             key,
 
-            // When "liveRegionKey" change, it was show up in the live region momentarily.
+            // When "liveRegionKey" changes, it will show up in the live region momentarily.
             liveRegionKey: key + '|' + (messageBackDisplayText || text),
             renderActivity,
             renderActivityStatus,
@@ -337,7 +337,7 @@ const BasicTranscript = ({ className }) => {
       dir={direction}
       ref={rootElementRef}
     >
-      {/* This <section> is for live region only. Contents are made invisible through CSS. */}
+      {/* This <section> is for live region only. Content is made invisible through CSS. */}
       <section
         aria-atomic={false}
         aria-live="polite"
@@ -500,7 +500,7 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
       <ul
         aria-roledescription={transcriptRoleDescription}
         className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-        role="log"
+        role="list"
       >
         {React.Children.map(children, (child, index) => (
           <React.Fragment>
