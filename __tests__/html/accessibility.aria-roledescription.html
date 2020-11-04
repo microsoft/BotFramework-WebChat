@@ -39,7 +39,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        const invalidElements = [].find.call(
+        const invalidElements = [].filter.call(
           document.querySelectorAll('[aria-roledescription]'),
           element => !element.getAttribute('role')
         );
@@ -48,8 +48,6 @@
           console.error('Elements with "aria-roledescription" attribute but not "role" attribute', { invalidElements });
 
         expect(invalidElements).toHaveProperty('length', 0);
-
-        expect(valid).toBe(true);
 
         await host.done();
       })().catch(async err => {
