@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { createStore, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
 import WebChat from './WebChat';
 import Header from './Header'
+import MaximizeButton from './MaximizeButton'
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
 import { setCookie, getCookie, checkCookie } from './CookiesUtils'
@@ -22,9 +23,9 @@ const MinimizableWebChat = (parameters) => {
           dispatch({
             type: 'WEB_CHAT/SEND_EVENT',
             payload: {
-              name: 'webchat/join',
+              name: 'StartConversation',
               value: {
-                language: window.navigator.language
+                locale: window.navigator.language
               }
             }
           });
@@ -162,17 +163,18 @@ const MinimizableWebChat = (parameters) => {
               </path>
             </svg>
           </a>
-      <a onClick={handleMaximizeButtonClick}><span>{parameters.parameters.parameters.chatIconMessage}</span></a>
+      <a onClick={handleMaximizeButtonClick}><span>{options.chatIconMessage}</span></a>
         </div>
       )}
-      {minimized && (
-        <button className="maximize" onClick={handleMaximizeButtonClick}>
-          <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
-          {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
-        </button>
-      )}
-      {loaded && (
-        <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide' : '')}>
+      
+        <MaximizeButton maximizeOptions={options.maximize} handleMaximizeButtonClick={handleMaximizeButtonClick} token={token} newMessage={newMessage} minimized={minimized}/>
+        {
+        // <button className="maximize" onClick={handleMaximizeButtonClick}>
+        //   <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
+        //   {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
+        // </button>
+      }
+        <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide open-chat-no-animate' : 'open-chat-animate')}>
           <Header handleMinimizeButtonClick={handleMinimizeButtonClick} handleSwitchButtonClick={handleSwitchButtonClick} headerOptions={options.header} />
           { <WebChat
             className="react-web-chat"
@@ -183,7 +185,6 @@ const MinimizableWebChat = (parameters) => {
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
           />}
         </div>
-      )}
     </div>
   );
 };

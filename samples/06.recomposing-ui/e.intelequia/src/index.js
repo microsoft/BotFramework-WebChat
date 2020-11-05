@@ -31,7 +31,11 @@ import * as serviceWorker from './serviceWorker';
 //         imageUrl: '',
 //         height: '50px'
 //     },
-//     directlineTokenUrl: '',
+//     maximize:{
+//         backgroundColor: '#EE8239',
+//         imageUrl: ''
+//     },
+//     directlineTokenUrl: 'https://webchat-mockbot.azurewebsites.net/directline/token',
 //     speechTokenUrl: ''
 // }
 
