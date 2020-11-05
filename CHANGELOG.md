@@ -55,7 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`node-fetch@2.6.1`](https://npmjs.com/package/node-fetch)
       -  [`prettier@2.1.2`](https://npmjs.com/package/prettier)
       -  [`source-map-loader@1.1.2`](https://npmjs.com/package/source-map-loader)
-      -  [`terser-webpack-plugin@5.0.3`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`terser-webpack-plugin@4.2.3`](https://npmjs.com/package/terser-webpack-plugin)
       -  [`typescript@4.0.5`](https://npmjs.com/package/typescript)
       -  [`webpack-cli@4.2.0`](https://npmjs.com/package/webpack-cli)
       -  [`webpack-stats-plugin@1.0.2`](https://npmjs.com/package/webpack-stats-plugin)
