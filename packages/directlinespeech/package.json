@@ -47,7 +47,7 @@
     "serve": "^11.3.2",
     "simple-update-in": "^2.2.0",
     "source-map-loader": "^1.1.2",
-    "webpack": "^5.4.0",
+    "webpack": "^4.44.2",
     "webpack-cli": "^4.2.0",
     "webpack-stats-plugin": "^1.0.2"
   },
