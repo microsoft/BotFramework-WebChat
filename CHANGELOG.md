@@ -67,7 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`react-redux@7.2.2`](https://npmjs.com/package/react-redux)
       -  [`redux@4.0.5`](https://npmjs.com/package/redux)
       -  [`sanitize-html@2.1.2`](https://npmjs.com/package/sanitize-html)
-      -  [`whatwg-fetch@3.4.`](https://npmjs.com/package/whatwg-fetch)
+      -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
 
 ## [4.11.0] - 2020-11-04
 
