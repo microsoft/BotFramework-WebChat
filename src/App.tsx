@@ -8,6 +8,7 @@ import * as konsole from './Konsole';
 export type Theme = {
     mainColor: string
     template: any,
+    customCss?: string
 }
 
 export type AppProps = ChatProps & {theme?: Theme, header?: {textWhenCollapsed?: string, text: string}, autoExpandTimeout?: number};
@@ -59,6 +60,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
                   props.disableInputWhenNotNeeded = true
                 }
 
+                if (config.customCss) {
+                  props.theme.customCss = config.customCss
+                }
+
                 if (config.template.headerText) {
                   props.header = {...(props.header || {}), text: config.template.headerText}
                 }
@@ -70,6 +75,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
 
         } catch (err) {
             console.error('Token response error', err)
+            return
         }
     }
 
@@ -379,7 +385,7 @@ const ExpandableKnobTheme = (theme: Theme) => `
     height: 100%;
     padding: 0px;
 
-    background-image: url(https://cdn.feedyou.ai/webchat/message-icon.png);
+    background-image: url(${theme.template.iconUrl || 'https://cdn.feedyou.ai/webchat/message-icon.png'});
     background-size: 50px 50px;
     background-position: 12px 12px;
     background-repeat: no-repeat;
@@ -464,6 +470,10 @@ const ExpandableBarTheme = (theme: Theme) => `
 
   .feedbot-wrapper.collapsed .feedbot-header {
       padding-top: 10px;
+  }
+
+  .feedbot-wrapper .wc-adaptive-card, .feedbot-wrapper .wc-card {
+    max-width: 337px !important;
   }
 
   ${BaseTheme(theme)}
@@ -659,4 +669,6 @@ const BaseTheme = (theme: Theme) => `
     .feedbot-wrapper .wc-carousel {
         margin-top: 10px;
     }
+
+    ${theme.customCss || ''}
   `
