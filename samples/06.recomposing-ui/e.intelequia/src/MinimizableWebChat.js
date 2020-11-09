@@ -33,6 +33,13 @@ const MinimizableWebChat = (parameters) => {
           if (action.payload.activity.from.role === 'bot') {
             setNewMessage(true);
           }
+          if (action.payload.activity.type === 'event') {
+            switch(action.payload.activity.name){
+              case 'Minimize':
+                setMinimized(true);
+                setNewMessage(false);
+            }
+          }
         }
 
         return next(action);
@@ -174,9 +181,11 @@ const MinimizableWebChat = (parameters) => {
         //   {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
         // </button>
       }
+      {loaded && (
         <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide open-chat-no-animate' : 'open-chat-animate')}>
           <Header handleMinimizeButtonClick={handleMinimizeButtonClick} handleSwitchButtonClick={handleSwitchButtonClick} headerOptions={options.header} />
-          { <WebChat
+
+          {<WebChat
             className="react-web-chat"
             onFetchToken={handleFetchToken}
             store={store}
@@ -185,6 +194,7 @@ const MinimizableWebChat = (parameters) => {
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
           />}
         </div>
+      )}
     </div>
   );
 };

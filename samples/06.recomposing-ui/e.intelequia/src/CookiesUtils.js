@@ -13,12 +13,11 @@ export const getCookie = (name) => {
 
 
 export const checkCookie = (name, defaultValue, options) => {
-    console.log('he entrado')
     const cookies = new Cookies();
     var cookieValue = cookies.get(name);
-    console.log(cookieValue);
     if (cookieValue == undefined) {
         cookies.set(name, defaultValue, options);
+        cookieValue = cookies.get(name);
     }
-    
+    return cookieValue;    
 };

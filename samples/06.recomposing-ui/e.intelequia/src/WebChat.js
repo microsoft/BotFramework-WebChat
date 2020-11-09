@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
-
+import getUser from './Strings'
 import './WebChat.css';
 
 const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory }) => {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
+  const userId = getUser(window.navigator.language);
 
   useEffect(() => {
     const $style = document.createElement("style");
@@ -35,14 +36,21 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
   }
   button {
     transition: color .2s ease, background-color .2s ease;
-  }`
+  }
+  a {
+    color: ${styleOptions.suggestedActionTextColor};
+    text-decoration: none;
+  }
+  `
     $style.innerHTML = buttonCss;
-
     onFetchToken();
   }, [onFetchToken]);
 
+  
+
+  
   return token ? (
-      <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
+      <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)} username={String(userId)} styleOptions={styleOptions} webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
