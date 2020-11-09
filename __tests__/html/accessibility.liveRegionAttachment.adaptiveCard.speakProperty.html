@@ -25,7 +25,7 @@
           const sendMessage = useSendMessage();
 
           useEffect(() => {
-            connectivityStatus === 'connected' && sendMessage('card unknown');
+            connectivityStatus === 'connected' && sendMessage('card breakfast');
           }, [connectivityStatus, sendMessage]);
 
           return false;
@@ -45,6 +45,7 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
         await host.snapshot();
         await host.done();
