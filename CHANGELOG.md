@@ -22,6 +22,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594)
+   -  Development dependencies
+      -  [`@babel/cli@7.12.1`](https://npmjs.com/package/@babel/cli)
+      -  [`@babel/core@7.12.3`](https://npmjs.com/package/@babel/core)
+      -  [`@babel/plugin-proposal-class-properties@7.12.1`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+      -  [`@babel/plugin-proposal-object-rest-spread@7.12.1`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+      -  [`@babel/plugin-transform-runtime@7.12.1`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+      -  [`@babel/preset-env@7.12.1`](https://npmjs.com/package/@babel/preset-env)
+      -  [`@babel/preset-react@7.12.5`](https://npmjs.com/package/@babel/preset-react)
+      -  [`@babel/preset-typescript@7.12.1`](https://npmjs.com/package/@babel/preset-typescript)
+      -  [`@babel/runtime@7.12.5`](https://npmjs.com/package/@babel/runtime)
+      -  [`@types/node@14.14.6`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@16.9.55`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@4.6.1`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@4.6.1`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`babel-jest@26.6.3`](https://npmjs.com/package/babel-jest)
+      -  [`eslint-plugin-prettier@3.1.4`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint-plugin-react-hooks@4.2.0`](https://npmjs.com/package/eslint-plugin-react-hooks)
+      -  [`eslint-plugin-react@7.21.5`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint@7.12.1`](https://npmjs.com/package/eslint)
+      -  [`husky@4.3.0`](https://npmjs.com/package/husky)
+      -  [`jest-image-snapshot@4.2.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest-junit@12.0.0`](https://npmjs.com/package/jest-junit)
+      -  [`jest-trx-results-processor@2.2.0`](https://npmjs.com/package/jest-trx-results-processor)
+      -  [`jest@26.6.3`](https://npmjs.com/package/jest)
+      -  [`lint-staged@10.5.1`](https://npmjs.com/package/lint-staged)
+      -  [`lolex@6.0.0`](https://npmjs.com/package/lolex)
+      -  [`node-dev@6.2.0`](https://npmjs.com/package/node-dev)
+      -  [`node-fetch@2.6.1`](https://npmjs.com/package/node-fetch)
+      -  [`prettier@2.1.2`](https://npmjs.com/package/prettier)
+      -  [`source-map-loader@1.1.2`](https://npmjs.com/package/source-map-loader)
+      -  [`terser-webpack-plugin@4.2.3`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`typescript@4.0.5`](https://npmjs.com/package/typescript)
+      -  [`webpack-cli@4.2.0`](https://npmjs.com/package/webpack-cli)
+      -  [`webpack-stats-plugin@1.0.2`](https://npmjs.com/package/webpack-stats-plugin)
+      -  [`webpack@4.44.2`](https://npmjs.com/package/webpack)
+   -  Production dependencies
+      -  [`@babel/runtime@7.12.5`](https://npmjs.com/package/@babel/runtime)
+      -  [`globalize@1.6.0`](https://npmjs.com/package/globalize)
+      -  [`markdown-it@12.0.2`](https://npmjs.com/package/markdown-it)
+      -  [`react-redux@7.2.2`](https://npmjs.com/package/react-redux)
+      -  [`redux@4.0.5`](https://npmjs.com/package/redux)
+      -  [`sanitize-html@2.1.2`](https://npmjs.com/package/sanitize-html)
+      -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
+
 ## [4.11.0] - 2020-11-04
 
 ### Added
