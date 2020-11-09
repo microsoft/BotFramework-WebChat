@@ -69,6 +69,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`sanitize-html@2.1.2`](https://npmjs.com/package/sanitize-html)
       -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
 
+## Unreleased
+
+### Changed
+-  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+
 ## [4.11.0] - 2020-11-04
 
 ### Added
