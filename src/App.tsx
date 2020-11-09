@@ -457,7 +457,7 @@ const ExpandableBarTheme = (theme: Theme) => `
 
     -webkit-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
     -moz-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
-    box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
+    box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.5);
   }
 
   .feedbot-wrapper.collapsed > .feedbot {
