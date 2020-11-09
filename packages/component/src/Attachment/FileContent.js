@@ -1,14 +1,14 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
-import useByteFormatter from '../hooks/useByteFormatter';
-import useDirection from '../hooks/useDirection';
-import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useByteFormatter, useDirection, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',

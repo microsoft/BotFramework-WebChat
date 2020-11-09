@@ -43,6 +43,7 @@ describe('useTrackException', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -68,6 +69,7 @@ describe('useTrackException', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",

@@ -1,8 +1,9 @@
 /*eslint require-unicode-regexp: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import useStyleOptions from '../useStyleOptions';
+const { useStyleOptions } = hooks;
 
 export default function useReplaceEmoticon() {
   const [{ emojiSet }] = useStyleOptions();

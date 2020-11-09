@@ -1,3 +1,4 @@
+import { hooks } from 'botframework-webchat-api';
 import {
   Composer as FilmComposer,
   createBasicStyleSet as createBasicStyleSetForReactFilm,
@@ -12,11 +13,11 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
-import useDirection from '../hooks/useDirection';
-import useLocalizer from '../hooks/useLocalizer';
 import useNonce from '../hooks/internal/useNonce';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useDirection, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__carousel-layout': {

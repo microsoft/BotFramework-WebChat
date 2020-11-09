@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -15,23 +16,28 @@ import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
-import useActivities from './hooks/useActivities';
-import useCreateActivityRenderer from './hooks/useCreateActivityRenderer';
-import useCreateActivityStatusRenderer from './hooks/useCreateActivityStatusRenderer';
-import useCreateAvatarRenderer from './hooks/useCreateAvatarRenderer';
-import useDirection from './hooks/useDirection';
 import useFocus from './hooks/useFocus';
-import useGroupActivities from './hooks/useGroupActivities';
-import useLocalizer from './hooks/useLocalizer';
 import useMemoize from './hooks/internal/useMemoize';
-import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
 import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+
+const {
+  useActivities,
+  useCreateActivityRenderer,
+  useCreateActivityStatusRenderer,
+  useCreateAvatarRenderer,
+  useDirection,
+  useGroupActivities,
+  useLocalizer,
+  useStyleOptions
+} = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
+    display: 'flex',
+    flexDirection: 'column',
     overflow: 'hidden',
     // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
     // Stacking context help isolating elements that use "z-index" from global pollution.
@@ -69,9 +75,11 @@ function validateAllActivitiesTagged(activities, bins) {
   return activities.every(activity => bins.some(bin => bin.includes(activity)));
 }
 
-const BasicTranscript2 = ({ className }) => {
+const BasicTranscript = ({ className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
+  const [
+    { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
+  ] = useStyleOptions();
   const [activities] = useActivities();
   const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
@@ -88,10 +96,10 @@ const BasicTranscript2 = ({ className }) => {
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
-  // Gets renderer for every activities.
-  // Some activities that are not visible, will return a falsy renderer.
+  // Gets renderer for every activity.
+  // Activities that are not visible will return a falsy renderer.
 
-  // Converting from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
+  // Converted from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
   // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
   const createActivityRendererWithLiteralArgs = useCallback(
     (activity, nextVisibleActivity) => createActivityRenderer({ activity, nextVisibleActivity }),
@@ -103,7 +111,7 @@ const BasicTranscript2 = ({ className }) => {
     createActivityRendererWithLiteralArgs,
     createActivityRendererWithLiteralArgsMemoized => {
       // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
-      // In next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return memoized result instead.
+      // In the next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return the memoized result instead.
       // This is an improvement to React useMemo(), because it only allows 1 memoization.
       // useMemoize() allows any number of memoization.
 
@@ -274,13 +282,13 @@ const BasicTranscript2 = ({ className }) => {
             },
 
             // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-            // If set, it will hide if timestamp is being shown, but it will continue to show
+            // If true, it will hide the timestamp, but it will continue to show the
             // retry prompt. And show the screen reader version of the timestamp.
             hideTimestamp:
               hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
             key,
 
-            // When "liveRegionKey" change, it was show up in the live region momentarily.
+            // When "liveRegionKey" changes, it will show up in the live region momentarily.
             liveRegionKey: key + '|' + (messageBackDisplayText || text),
             renderActivity,
             renderActivityStatus,
@@ -329,7 +337,7 @@ const BasicTranscript2 = ({ className }) => {
       dir={direction}
       ref={rootElementRef}
     >
-      {/* This <section> is for live region only. Contents are made invisible through CSS. */}
+      {/* This <section> is for live region only. Content is made invisible through CSS. */}
       <section
         aria-atomic={false}
         aria-live="polite"
@@ -338,7 +346,9 @@ const BasicTranscript2 = ({ className }) => {
         role="log"
       >
         {renderingElements.map(({ activity, liveRegionKey }) => (
-          <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+          <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+            {() => <ScreenReaderActivity activity={activity} />}
+          </Fade>
         ))}
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
@@ -375,16 +385,17 @@ const BasicTranscript2 = ({ className }) => {
   );
 };
 
-BasicTranscript2.defaultProps = {
+BasicTranscript.defaultProps = {
   className: ''
 };
 
-BasicTranscript2.propTypes = {
+BasicTranscript.propTypes = {
   className: PropTypes.string
 };
 
 const InternalScreenReaderTranscript = ({ renderingElements }) => {
   const localize = useLocalizer();
+  const [internalLiveRegionFadeAfter] = useStyleOptions();
 
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
@@ -397,7 +408,9 @@ const InternalScreenReaderTranscript = ({ renderingElements }) => {
       role="log"
     >
       {renderingElements.map(({ activity, liveRegionKey }) => (
-        <Fade key={liveRegionKey}>{() => <ScreenReaderActivity activity={activity} />}</Fade>
+        <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+          {() => <ScreenReaderActivity activity={activity} />}
+        </Fade>
       ))}
     </section>
   );
@@ -487,6 +500,7 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
       <ul
         aria-roledescription={transcriptRoleDescription}
         className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+        role="list"
       >
         {React.Children.map(children, (child, index) => (
           <React.Fragment>
@@ -513,4 +527,4 @@ InternalTranscriptScrollable.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
-export default BasicTranscript2;
+export default BasicTranscript;

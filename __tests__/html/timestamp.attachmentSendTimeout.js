@@ -3,5 +3,6 @@
  */
 
 describe('timestamp', () => {
-  test('send timeout for attachment should be different', () => runHTMLTest('timestamp.attachmentSendTimeout.html'));
+  test('send timeout for attachment should be different', () =>
+    runHTMLTest('timestamp.attachmentSendTimeout.html', { ignoreConsoleError: true }));
 });

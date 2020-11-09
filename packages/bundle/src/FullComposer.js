@@ -1,9 +1,8 @@
+import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
-import { Components } from 'botframework-webchat-component';
-
 import useComposerProps from './useComposerProps';
 
 const { Composer } = Components;

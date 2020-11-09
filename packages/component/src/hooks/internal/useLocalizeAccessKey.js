@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
+import { hooks } from 'botframework-webchat-api';
 
-import useLocalizer from './../useLocalizer';
 import useNavigatorPlatform from './useNavigatorPlatform';
+
+const { useLocalizer } = hooks;
 
 export default function useLocalizeAccessKey() {
   const [{ apple }] = useNavigatorPlatform();

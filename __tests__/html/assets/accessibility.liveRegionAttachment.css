@@ -1,0 +1,14 @@
+.webchat__screen-reader-activity {
+  color: initial !important;
+  height: initial !important;
+  opacity: initial !important;
+  overflow: initial !important;
+  position: initial !important;
+  top: initial !important;
+  white-space: initial !important;
+  width: initial !important;
+}
+
+.webchat__screen-reader-activity .webchat__screen-reader-activity__timestamp {
+  display: none;
+}

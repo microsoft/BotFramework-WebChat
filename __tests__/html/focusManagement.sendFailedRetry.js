@@ -3,5 +3,6 @@
  */
 
 describe('focus management', () => {
-  test('click on retry button should focus on main', () => runHTMLTest('focusManagement.sendFailedRetry.html'));
+  test('click on retry button should focus on main', () =>
+    runHTMLTest('focusManagement.sendFailedRetry.html', { ignoreConsoleError: true }));
 });

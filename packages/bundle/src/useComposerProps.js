@@ -1,14 +1,27 @@
 import { useMemo } from 'react';
 
 import { concatMiddleware, defaultStyleOptions } from 'botframework-webchat-component';
+import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
 import defaultRenderMarkdown from './renderMarkdown';
 
-export default function useComposerProps({ attachmentMiddleware, renderMarkdown, styleOptions, styleSet }) {
+export default function useComposerProps({
+  attachmentForScreenReaderMiddleware,
+  attachmentMiddleware,
+  renderMarkdown,
+  styleOptions,
+  styleSet
+}) {
   const patchedAttachmentMiddleware = useMemo(
     () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
     [attachmentMiddleware]
+  );
+
+  const patchedAttachmentForScreenReaderMiddleware = useMemo(
+    () =>
+      concatMiddleware(attachmentForScreenReaderMiddleware, createAdaptiveCardsAttachmentForScreenReaderMiddleware()),
+    [attachmentForScreenReaderMiddleware]
   );
 
   const patchedStyleOptions = useMemo(() => ({ ...defaultStyleOptions, ...styleOptions }), [styleOptions]);
@@ -27,6 +40,7 @@ export default function useComposerProps({ attachmentMiddleware, renderMarkdown,
 
   return {
     attachmentMiddleware: patchedAttachmentMiddleware,
+    attachmentForScreenReaderMiddleware: patchedAttachmentForScreenReaderMiddleware,
     extraStyleSet,
     renderMarkdown: patchedRenderMarkdown
   };

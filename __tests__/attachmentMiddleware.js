@@ -37,10 +37,12 @@ test('file upload should show thumbnail and file name', async () => {
             attachments: patchedAttachments
           });
 
-          return React.createElement(React.Fragment, {}, [
+          return React.createElement(
+            React.Fragment,
+            {},
             next({ activity, attachment }),
             next({ activity: patchedActivity, attachment: patchedAttachment })
-          ]);
+          );
         }
 
         return next({ activity, attachment });

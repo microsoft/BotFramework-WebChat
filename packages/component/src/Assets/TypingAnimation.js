@@ -1,11 +1,13 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useDirection from '../hooks/useDirection';
-import useLocalizer from '../hooks/useLocalizer';
+
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useDirection, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__typingIndicator.webchat__typingIndicator--rtl': { transform: 'scale(-1, 1)' }

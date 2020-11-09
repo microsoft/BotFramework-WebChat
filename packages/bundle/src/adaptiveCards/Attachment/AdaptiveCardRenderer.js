@@ -11,6 +11,8 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
+const node_env = process.env.node_env || process.env.NODE_ENV;
+
 function addClass(element, className) {
   const classNames = new Set(element.className.split(' '));
 
@@ -449,12 +451,11 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   }, [actionsPerformed, actionPerformedClassName, lastRender]);
 
   return errors.length ? (
-    <ErrorBox message={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')}>
-      {errors.map(({ error, message }, index) => (
-        /* eslint-disable-next-line react/no-array-index-key */
-        <pre key={index}>{JSON.stringify({ error, message }, null, 2)}</pre>
-      ))}
-    </ErrorBox>
+    node_env === 'development' ? (
+      <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
+    ) : (
+      false
+    )
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
