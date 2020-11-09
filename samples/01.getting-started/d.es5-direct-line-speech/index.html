@@ -4,7 +4,7 @@
     <title>Web Chat: Full-featured bundle with ES5 polyfills and Direct Line Speech channel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
-      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <script
@@ -36,15 +36,15 @@
       // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
       // This code is modified to run in a browser that does not have async and Promise support
-      const fetchCredentials = function() {
+      const fetchCredentials = function () {
         return window
           .fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
             method: 'POST'
           })
-          .then(function(res) {
+          .then(function (res) {
             return res.json();
           })
-          .then(function(json) {
+          .then(function (json) {
             return {
               authorizationToken: json.token,
               region: json.region
@@ -52,7 +52,7 @@
           });
       };
 
-      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function(adapters) {
+      window.WebChat.createDirectLineSpeechAdapters({ fetchCredentials: fetchCredentials }).then(function (adapters) {
         window.WebChat.renderWebChat(Object.assign({}, adapters), document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
