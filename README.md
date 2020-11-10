@@ -14,10 +14,6 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 <hr />
 
-# Join the Web Chat team
-
-Bot Framework Web Chat is hiring! We are looking for a senior software engineer to join the team. Please see the [Microsoft job listing](https://careers.microsoft.com/us/en/job/867519/Senior-Software-Engineer) if you are interested in applying.
-
 # Version notes
 
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
