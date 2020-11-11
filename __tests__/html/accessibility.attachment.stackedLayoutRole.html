@@ -39,7 +39,7 @@
 
         const attachmentRole = document.querySelector('.webchat__carousel-filmstrip__attachment').getAttribute('role');
 
-        expect(attachmentRole).toEqual('group');
+        expect(attachmentRole).toBeTruthy();
 
         await host.done();
       })().catch(async err => {
