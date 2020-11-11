@@ -196,9 +196,14 @@ const CarouselFilmStrip = ({
         <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
         <div className="webchat__carousel-filmstrip__content">
           {!!activityDisplayText && (
-            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-            /* eslint-disable-next-line react/forbid-dom-props */
-            <div aria-roledescription="message" className="webchat__carousel-filmstrip__message" id={ariaLabelId}>
+            <div
+              aria-roledescription="message"
+              className="webchat__carousel-filmstrip__message"
+              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+              /* eslint-disable-next-line react/forbid-dom-props */
+              id={ariaLabelId}
+              role="group"
+            >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className="webchat__carousel-filmstrip__bubble"
@@ -227,10 +232,10 @@ const CarouselFilmStrip = ({
                   <li
                     aria-roledescription="attachment"
                     className="webchat__carousel-filmstrip__attachment react-film__filmstrip__item"
-                    /* Attachments do not have an ID, it is always indexed by number */
+                    /* Attachments do not have an ID; it is always indexed by number */
                     /* eslint-disable-next-line react/no-array-index-key */
                     key={index}
-                    role="group"
+                    role="listitem"
                   >
                     <ScreenReaderText text={attachedAlt} />
                     {/* eslint-disable-next-line react/no-array-index-key */}
