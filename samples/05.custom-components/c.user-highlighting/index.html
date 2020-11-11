@@ -59,12 +59,14 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
-        const activityMiddleware = () => next => card => {
-          return children => (
+        const activityMiddleware = () => next => (...setupArgs) => {
+          const [card] = setupArgs;
+
+          return (...renderArgs) => (
             <div
               className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}
             >
-              {next(card)(children)}
+              {next(card)(...renderArgs)}
             </div>
           );
         };
