@@ -77,7 +77,7 @@ Here is the finished `index.html`:
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine({ token }),
-            sendBoxMiddleware: function (props) {
+            sendBoxMiddleware: () => next => (...args) => {
               return window.React.createElement(
                 'div',
                 { className: 'main' },
