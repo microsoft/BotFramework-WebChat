@@ -7,7 +7,7 @@ import React from 'react';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './BasicSendBox';
+import createSendBoxRenderer from './Middleware/createSendBoxRenderer';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
@@ -73,10 +73,7 @@ const BasicWebChat = ({ className, ...props }) => {
         {!options.hideToaster && <BasicToaster className={toasterClassName} />}
         <BasicTranscript className={transcriptClassName} />
         <BasicConnectivityStatus className={connectivityStatusClassName} />
-        {!options.hideSendBox &&
-          ((props.sendBoxMiddleware !== undefined && props.sendBoxMiddleware({ sendBoxClassName })) || (
-            <BasicSendBox className={sendBoxClassName} />
-          ))}
+        {!options.hideSendBox && createSendBoxRenderer(props.sendBoxMiddleware)({ sendBoxClassName })}
       </TypeFocusSinkBox>
     </AccessKeySinkSurface>
   );
