@@ -809,13 +809,3 @@
             @include link-and-svg-arrow($c01, 0.6);
         }
     }
-
-    /* FEEDYOU moved from fullwindow.scss */
-    @media (max-width: 450px) {
-      @include card-size($card_narrow);
-    }
-    
-    @media (min-width: 768px) {
-      @include card-size($card_wide);
-    }
-    
