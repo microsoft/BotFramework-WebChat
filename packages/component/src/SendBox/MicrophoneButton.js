@@ -2,6 +2,7 @@
 /* eslint react/forbid-dom-props: "off" */
 
 import { Constants } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
@@ -11,19 +12,22 @@ import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 import useDictateAbortable from '../hooks/useDictateAbortable';
-import useDictateInterims from '../hooks/useDictateInterims';
-import useDictateState from '../hooks/useDictateState';
-import useDisabled from '../hooks/useDisabled';
-import useLocalizer from '../hooks/useLocalizer';
-import useSendBoxValue from '../hooks/useSendBoxValue';
-import useShouldSpeakIncomingActivity from '../hooks/useShouldSpeakIncomingActivity';
-import useStartDictate from '../hooks/useStartDictate';
-import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 
 const { DictateState } = Constants;
+
+const {
+  useDictateInterims,
+  useDictateState,
+  useDisabled,
+  useLocalizer,
+  useSendBoxValue,
+  useShouldSpeakIncomingActivity,
+  useStartDictate,
+  useStopDictate
+} = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',

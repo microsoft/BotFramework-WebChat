@@ -1,12 +1,13 @@
 /* eslint react/prop-types: "off"*/
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
 import TypingAnimation from '../../Assets/TypingAnimation';
-import useDirection from '../../hooks/useDirection';
-import useLocalizer from '../../hooks/useLocalizer';
 import useStyleSet from '../../hooks/useStyleSet';
+
+const { useDirection, useLocalizer } = hooks;
 
 const DotIndicator = () => {
   const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
@@ -22,5 +23,5 @@ const DotIndicator = () => {
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware() {
-  return () => () => ({ visible }) => visible && <DotIndicator />;
+  return [() => () => ({ visible }) => visible && <DotIndicator />];
 }

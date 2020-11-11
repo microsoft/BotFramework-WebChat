@@ -13,7 +13,18 @@ HeroCardAttachment.defaultProps = {
 HeroCardAttachment.propTypes = {
   attachment: PropTypes.shape({
     content: PropTypes.shape({
-      tap: PropTypes.any
+      buttons: PropTypes.any,
+      images: PropTypes.arrayOf(
+        PropTypes.shape({
+          alt: PropTypes.string,
+          tap: PropTypes.any,
+          url: PropTypes.string.isRequired
+        })
+      ),
+      subtitle: PropTypes.string,
+      tap: PropTypes.any,
+      text: PropTypes.string,
+      title: PropTypes.string
     }).isRequired
   }).isRequired,
   disabled: PropTypes.bool

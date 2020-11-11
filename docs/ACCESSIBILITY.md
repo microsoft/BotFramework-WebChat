@@ -82,12 +82,12 @@ By default, HTML is static. Thus, the default `disabled` implementation works on
 
 On a dynamic web page, when `disabled` is being applied to a focusing element (`document.activeElement`), the focus change varies between browsers:
 
-| Browser                | Element referenced by `document.activeElement`  | Element styled by `:focus` pseudo-class            | Element to focus after pressing <kbd>TAB</kbd>                    |
-| ---------------------- | ----------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
-| Chrome/Edge (Chromium) | Become `document.body`                          | No elements are styled                             | Next tabbable sibling or descendants of them (depth-first search) |
-| Edge (Legacy)          | Become `document.body`                          | No elements are styled unless `<body>` is tabbable | First tabbable descendants of `<body>`                            |
-| Firefox/Safari         | Kept on the disabled element                    | Styles kept on the disabled element                | Next tabbable sibling or descendants of them (depth-first search) |
-| Internet Explorer 11   | Become parent container of the disabled element | Parent container of the disabled element           | First tabbable descendants of parent container                    |
+| Browser                          | Element referenced by `document.activeElement`  | Element styled by `:focus` pseudo-class            | Element to focus after pressing <kbd>TAB</kbd>                    |
+| -------------------------------- | ----------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
+| Chrome/Microsoft Edge (Chromium) | Become `document.body`                          | No elements are styled                             | Next tabbable sibling or descendants of them (depth-first search) |
+| Microsoft Edge (Legacy)          | Become `document.body`                          | No elements are styled unless `<body>` is tabbable | First tabbable descendants of `<body>`                            |
+| Firefox/Safari                   | Kept on the disabled element                    | Styles kept on the disabled element                | Next tabbable sibling or descendants of them (depth-first search) |
+| Internet Explorer 11             | Become parent container of the disabled element | Parent container of the disabled element           | First tabbable descendants of parent container                    |
 
 > On macOS Safari, <kbd>OPTION</kbd> + <kbd>TAB</kbd> is used to move focus between tabbable elements.
 

@@ -61,9 +61,12 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useConnectivityStatus`](#useconnectivitystatus)
 -  [`useCreateActivityRenderer`](#usecreateactivityrenderer)
 -  [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
+-  [`useCreateAttachmentForScreenReaderRenderer`](#useCreateAttachmentForScreenReaderRenderer)
+-  [`useCreateAttachmentRenderer`](#usecreateattachmentrenderer)
 -  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
 -  [`useDateFormatter`](#useDateFormatter)
 -  [`useDebouncedNotification`](#usedebouncednotification)
+-  [`useDictateAbortable`](#usedictateabortable)
 -  [`useDictateInterims`](#usedictateinterims)
 -  [`useDictateState`](#usedictatestate)
 -  [`useDirection`](#useDirection)
@@ -295,6 +298,40 @@ This function will return a function that, when called, will return a function t
 
 When `hideTimestamp` is set to `true`, the activity status middleware should hide if it is rendering a timestamp for the activity. Although the timestamp is hidden, activity status should consider rendering accessible counterpart.
 
+## `useCreateAttachmentForScreenReaderRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateAttachmentForScreenReaderRenderer(): ({
+  activity: Activity,
+  attachment: Attachment
+}) =>
+  (
+    false |
+    () => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a function that, when called with activity and attachment, will either return a function to render the attachment used by screen reader, or `false` if the attachment should not be rendered.
+
+## `useCreateAttachmentRenderer`
+
+<!-- prettier-ignore-start -->
+```js
+useCreateAttachmentRenderer(): ({
+  activity: Activity,
+  attachment: Attachment
+}) =>
+  (
+    false |
+    () => React.Element
+  )
+```
+<!-- prettier-ignore-end -->
+
+([PXX] TBD)
+
 ## `useCreateAvatarRenderer`
 
 <!-- prettier-ignore-start -->
@@ -343,6 +380,16 @@ When called, this hook will return a debounced array of notifications.
 Due to debouncing, notifications retrieved using this hook may not be current. At the time of convergence, this hook will trigger another render.
 
 For the debounce behavior, please read our [article regarding notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md).
+
+## `useDictateAbortable`
+
+<!-- prettier-ignore-start -->
+```js
+useDictateAbortable(): [boolean]
+```
+<!-- prettier-ignore-end -->
+
+When called, this hook will return `true` if the current dictation is abortable, otherwise, `false`.
 
 ## `useDictateInterims`
 
@@ -505,7 +552,7 @@ This function will return the language of the UI. All UI components should honor
 
 If no options are passed, the return value will be the written language. This value should be the same as `props.locale` passed to `<ReactWebChat>` or `<Composer>`.
 
-If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
+If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong SAR and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
 To modify this value, change the value in the `locale` prop passed to Web Chat.
 

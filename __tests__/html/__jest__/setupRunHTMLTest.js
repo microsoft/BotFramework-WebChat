@@ -1,4 +1,4 @@
-import { Builder } from 'selenium-webdriver';
+import { Builder, logging } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/chrome';
 import { URL } from 'url';
 import fetch from 'node-fetch';
@@ -19,23 +19,24 @@ global.runHTMLTest = async (
     width: width * zoom
   });
 
+  const preferences = new logging.Preferences();
+
+  preferences.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
+  chromeOptions.setLoggingPrefs(preferences);
+
   const driver = global.docker
     ? builder
         .forBrowser('chrome')
         .usingServer('http://localhost:4444/wd/hub')
         .setChromeOptions(chromeOptions.headless())
         .build()
-    : builder
-        .forBrowser('chrome')
-        .usingServer('http://localhost:9515')
-        .setChromeOptions(chromeOptions)
-        .build();
+    : builder.forBrowser('chrome').usingServer('http://localhost:9515').setChromeOptions(chromeOptions).build();
 
   const session = await Promise.race([
     driver.getSession(),
     timeout(
       15000,
-      'Timed out while waiting for a Web Driver session. Probably there are more test runners running simultaneously than Web Driver sessions. Or some Web Driver sessions are hung.'
+      'Timed out while waiting for a Web Driver session. There are probably more test runners running simultaneously than Web Driver sessions, or some Web Driver sessions are not responding.'
     )
   ]);
 

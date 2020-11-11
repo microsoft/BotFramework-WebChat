@@ -1,12 +1,11 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
-import useStyleOptions from '../hooks/useStyleOptions';
-import useTrackEvent from '../hooks/useTrackEvent';
-import useTrackTiming from '../hooks/useTrackTiming';
-import useWebChatUIContext from './internal/useWebChatUIContext';
+import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
+
+const { useSendFiles: useAPISendFiles, useStyleOptions, useTrackTiming } = hooks;
 
 function canMakeThumbnail({ name }) {
   return /\.(gif|jpe?g|png)$/iu.test(name);
@@ -21,7 +20,7 @@ async function makeThumbnail(file, width, height, contentType, quality) {
 }
 
 export default function useSendFiles() {
-  const { sendFiles } = useWebChatUIContext();
+  const sendFiles = useAPISendFiles();
   const [
     {
       enableUploadThumbnail,
@@ -31,7 +30,6 @@ export default function useSendFiles() {
       uploadThumbnailWidth
     }
   ] = useStyleOptions();
-  const trackEvent = useTrackEvent();
   const trackTiming = useTrackTiming();
 
   return useCallback(
@@ -46,7 +44,7 @@ export default function useSendFiles() {
           [].map.call(files, async file => {
             let thumbnail;
 
-            if (enableUploadThumbnail && canMakeThumbnail(file)) {
+            if (downscaleImageToDataURL && enableUploadThumbnail && canMakeThumbnail(file)) {
               thumbnail = await trackTiming(
                 'sendFiles:makeThumbnail',
                 makeThumbnail(
@@ -69,17 +67,11 @@ export default function useSendFiles() {
         );
 
         sendFiles(attachments);
-
-        trackEvent('sendFiles', {
-          numFiles: files.length,
-          sumSizeInKB: Math.round(files.reduce((total, { size }) => total + size, 0) / 1024)
-        });
       }
     },
     [
       enableUploadThumbnail,
       sendFiles,
-      trackEvent,
       trackTiming,
       uploadThumbnailContentType,
       uploadThumbnailHeight,

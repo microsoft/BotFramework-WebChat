@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 30] */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -9,13 +10,12 @@ import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useAvatarForBot from '../hooks/useAvatarForBot';
-import useAvatarForUser from '../hooks/useAvatarForUser';
-import useLocalizer from '../hooks/useLocalizer';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
 import useUniqueId from '../hooks/internal/useUniqueId';
+
+const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__stacked-layout': {
@@ -162,6 +162,7 @@ const StackedLayout = ({
               // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
               /* eslint-disable-next-line react/forbid-dom-props */
               id={ariaLabelId}
+              role="group"
             >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
@@ -188,6 +189,7 @@ const StackedLayout = ({
               /* attachments do not have an ID, it is always indexed by number */
               /* eslint-disable-next-line react/no-array-index-key */
               key={index}
+              role="group"
             >
               <ScreenReaderText text={attachedAlt} />
               <Bubble

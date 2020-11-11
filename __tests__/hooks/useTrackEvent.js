@@ -43,6 +43,7 @@ describe('useTrackEvent', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -66,6 +67,7 @@ describe('useTrackEvent', () => {
           "data": null,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -89,6 +91,7 @@ describe('useTrackEvent', () => {
           "data": 123,
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -112,6 +115,7 @@ describe('useTrackEvent', () => {
           "data": "aloha",
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",
@@ -138,6 +142,7 @@ describe('useTrackEvent', () => {
           },
           "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
+            "capability:renderer": "html",
             "prop:locale": "en-US",
             "prop:speechRecognition": "false",
             "prop:speechSynthesis": "false",

@@ -1,8 +1,9 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useDirection from '../../hooks/useDirection';
+const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 

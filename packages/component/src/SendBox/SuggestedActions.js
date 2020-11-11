@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -8,15 +9,14 @@ import React, { useMemo } from 'react';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
-import useDirection from '../hooks/useDirection';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import useLocalizer from '../hooks/useLocalizer';
 import useNonce from '../hooks/internal/useNonce';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
+
+const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions .webchat__suggested-actions__stack': {
@@ -70,7 +70,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
         flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
         flipperSize: suggestedActionsCarouselFlipperSize
       }),
-    []
+    [
+      suggestedActionsCarouselFlipperBoxWidth,
+      suggestedActionsCarouselFlipperCursor,
+      suggestedActionsCarouselFlipperSize
+    ]
   );
 
   const suggestedActionsContainerText = localize(

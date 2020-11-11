@@ -1,14 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
-import useDirection from '../hooks/useDirection';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+const { useDirection, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__bubble': {

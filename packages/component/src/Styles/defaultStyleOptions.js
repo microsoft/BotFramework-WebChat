@@ -54,7 +54,7 @@ const DEFAULT_OPTIONS = {
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinHeight: 40,
-  bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
+  bubbleMinWidth: 250, // min screen width = 300px, Microsoft Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleNubOffset: 0, // Either a positive/negative number, or "bottom"
   bubbleNubSize: undefined, // Or a number. 0 means a sharp corner.
   bubbleTextColor: 'Black',
@@ -196,7 +196,10 @@ const DEFAULT_OPTIONS = {
   toastWarnColor: '#3B3A39',
 
   // Emoji
-  emojiSet: true // true || false || { ':)' : '😊'}
+  emojiSet: true, // true || false || { ':)' : '😊'}
+
+  // Internal
+  internalLiveRegionFadeAfter: 1000
 };
 
 export default DEFAULT_OPTIONS;

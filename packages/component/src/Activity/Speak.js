@@ -1,12 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
-import useMarkActivityAsSpoken from '../hooks/useMarkActivityAsSpoken';
-import useStyleOptions from '../hooks/useStyleOptions';
-import useVoiceSelector from '../hooks/useVoiceSelector';
+
+const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text

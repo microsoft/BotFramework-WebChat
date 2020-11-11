@@ -10,8 +10,8 @@ const dirOptions = [
 ];
 
 const groupTimestampOptions = [
-  { key: true, text: 'Show timestamp (default)' },
-  { key: false, text: "Don't show timestamp" },
+  { key: 'true', text: 'Show timestamp (default)' },
+  { key: 'false', text: "Don't show timestamp" },
   { key: 0, text: "Don't group" },
   { key: 1000, text: '1 second' },
   { key: 2000, text: '2 seconds' },
@@ -90,7 +90,7 @@ const sendTimeoutOptions = [
 ];
 
 const speechOptions = [
-  { key: 'off', text: 'Disabled (default)' },
+  { key: false, text: 'Disabled (default)' },
   { key: 'speechservices', text: 'Speech services' },
   { key: 'webspeech', text: 'Web speech' }
 ];

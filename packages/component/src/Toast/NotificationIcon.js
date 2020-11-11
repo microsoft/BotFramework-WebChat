@@ -1,9 +1,11 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import CheckMarkIcon from './CheckMarkIcon';
 import ExclamationMarkIcon from './ExclamationMarkIcon';
-import useLocalizer from '../hooks/useLocalizer';
+
+const { useLocalizer } = hooks;
 
 const NotificationIcon = ({ className, level }) => {
   const localize = useLocalizer();
