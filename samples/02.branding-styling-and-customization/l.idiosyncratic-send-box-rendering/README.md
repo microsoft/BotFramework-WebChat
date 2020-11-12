@@ -4,7 +4,7 @@ Pass down a renderer to Web Chat to render the send box.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/j.enable-emoji)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/l.idiosyncratic-send-box-rendering)
 
 # How to run locally
 
