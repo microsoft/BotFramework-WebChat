@@ -4,7 +4,7 @@
     <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
-      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <script
@@ -38,10 +38,10 @@
       // This code is modified to run in browser without async and Promise support
       window
         .fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
-        .then(function(res) {
+        .then(function (res) {
           return res.json();
         })
-        .then(function(json) {
+        .then(function (json) {
           const token = json.token;
 
           window.WebChat.renderWebChat(

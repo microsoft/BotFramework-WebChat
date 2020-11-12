@@ -39,7 +39,7 @@
 
         const messageRole = document.querySelector('.webchat__stacked-layout__message-row').getAttribute('role');
 
-        expect(messageRole).toEqual('group');
+        expect(messageRole).toBeTruthy();
 
         await host.done();
       })().catch(async err => {

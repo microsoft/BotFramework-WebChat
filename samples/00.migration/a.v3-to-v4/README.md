@@ -69,7 +69,7 @@ We'll start by using our old v3 `index.html` as our starting point.
 ```
 <!-- prettier-ignore-end -->
 
-> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
 Our first change is to update the CDN the webpage uses from v3 to v4.
 
