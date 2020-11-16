@@ -35,8 +35,15 @@ import * as serviceWorker from './serviceWorker';
 //         backgroundColor: '#EE8239',
 //         imageUrl: ''
 //     },
-//     directlineTokenUrl: 'https://webchat-mockbot.azurewebsites.net/directline/token',
-//     speechTokenUrl: ''
+//     directlineTokenUrl: 'https://f0ca0250d364.ngrok.io/api/directline/generateToken/',
+//     directlineReconnectTokenUrl: 'https://f0ca0250d364.ngrok.io/api/directline/reconnect/',
+//     speechTokenUrl: 'https://webchat-mockbot.azurewebsites.net/speechservices/token', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
+//     speechCredentials: {
+//         region: undefined,
+//         subscriptionKey: undefined
+//     },
+//     chatIconMessage: 'hola',
+//     language: 'en'
 // }
 
 // ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));
