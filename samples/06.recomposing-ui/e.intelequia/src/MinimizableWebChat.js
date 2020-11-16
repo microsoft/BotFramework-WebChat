@@ -25,7 +25,7 @@ const MinimizableWebChat = (parameters) => {
             payload: {
               name: 'StartConversation',
               value: {
-                locale: window.navigator.language
+                locale: options.language
               }
             }
           });
@@ -34,7 +34,7 @@ const MinimizableWebChat = (parameters) => {
             setNewMessage(true);
           }
           if (action.payload.activity.type === 'event') {
-            switch(action.payload.activity.name){
+            switch (action.payload.activity.name) {
               case 'Minimize':
                 setMinimized(true);
                 setNewMessage(false);
@@ -97,6 +97,8 @@ const MinimizableWebChat = (parameters) => {
   const [newMessage, setNewMessage] = useState(false);
   const [side, setSide] = useState('right');
   const [token, setToken] = useState();
+  const [conversationId, setConversationId] = useState();
+  const [watermark, setWatermark] = useState();
   const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
 
   // To learn about reconnecting to a conversation, see the following documentation:
@@ -104,15 +106,37 @@ const MinimizableWebChat = (parameters) => {
 
   // call your hook here
   const forceUpdate = useForceUpdate();
+  // let localStorageConversationId = localStorage.getItem('conversationId');
+  // setConversationId(localStorageConversationId);
+
+  // let localStorageWatermark = localStorage.getItem('watermark') ?? '';
+  // setWatermark(localStorageWatermark);
 
   const handleFetchToken = useCallback(async () => {
     if (!token) {
-      const res = await fetch(options.directlineTokenUrl, { method: 'GET' });
-      const { token } = await res.json();
 
-      setToken(token);
+      let localStorageConversationId = localStorage.getItem('conversationId');
+      setConversationId(localStorageConversationId);
+
+      let localStorageWatermark = localStorage.getItem('watermark') ?? '';
+      setWatermark(localStorageWatermark);
+
+      let url = '';
+      if (localStorageConversationId) {
+        url = options.directlineReconnectTokenUrl + localStorageConversationId + '?watermark=' + localStorageWatermark;
+      }
+      else {
+        url = options.directlineTokenUrl;
+      }
+      const res = await fetch(url,
+        {
+          method: 'GET'
+        });
+      const kk = await res.json();
+      debugger;
+      setToken(kk.token);
     }
-  }, [setToken, token]);
+  }, [setToken, token, conversationId, setConversationId]);
 
   const setFirstTimeCookie = () => {
     var cookie = getCookie('firstTimeVisit');
@@ -148,16 +172,14 @@ const MinimizableWebChat = (parameters) => {
   }, [setSide, side]);
 
   const handleRequestSpeechToken = useCallback(async () => {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+    const res = await fetch(options.speechTokenUrl, { method: 'POST' });
     const { token } = await res.json();
-
     return token;
   });
 
-  const webSpeechPonyfillFactory = useMemo(() => createCognitiveServicesSpeechServicesPonyfillFactory({
-    authorizationToken: handleRequestSpeechToken(),
-    region: 'westus2' // TODO Parameter
-  }), []);
+  const webSpeechPonyfillFactory = useMemo(() => {
+      return createCognitiveServicesSpeechServicesPonyfillFactory(options.speechCredentials);
+  }, []);
 
   return (
     <div className="minimizable-web-chat">
@@ -170,17 +192,14 @@ const MinimizableWebChat = (parameters) => {
               </path>
             </svg>
           </a>
-      <a onClick={handleMaximizeButtonClick}><span>{options.chatIconMessage}</span></a>
+          <a onClick={handleMaximizeButtonClick}><span>{options.chatIconMessage}</span></a>
         </div>
       )}
-      
-        <MaximizeButton maximizeOptions={options.maximize} handleMaximizeButtonClick={handleMaximizeButtonClick} token={token} newMessage={newMessage} minimized={minimized}/>
-        {
-        // <button className="maximize" onClick={handleMaximizeButtonClick}>
-        //   <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
-        //   {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
-        // </button>
-      }
+
+      <MaximizeButton maximizeOptions={options.maximize}
+        handleMaximizeButtonClick={handleMaximizeButtonClick}
+        token={token} newMessage={newMessage} minimized={minimized} />
+
       {loaded && (
         <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide open-chat-no-animate' : 'open-chat-animate')}>
           <Header handleMinimizeButtonClick={handleMinimizeButtonClick} handleSwitchButtonClick={handleSwitchButtonClick} headerOptions={options.header} />

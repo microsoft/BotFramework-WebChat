@@ -4,13 +4,11 @@ import getUser from './Strings'
 import './WebChat.css';
 
 const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory }) => {
-  const directLine = useMemo(() => createDirectLine({ token }), [token]);
-  const userId = getUser(window.navigator.language);
 
   useEffect(() => {
     const $style = document.createElement("style");
     document.head.appendChild($style);
-    
+
     //Colours for adaptiveCards + button hover
     const buttonCss = `.ac-pushButton {
       color: ${styleOptions.suggestedActionTextColor} !important;
@@ -46,9 +44,22 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     onFetchToken();
   }, [onFetchToken]);
 
-  
+  let conversationId = localStorage.getItem('conversationId');
+  let watermark = localStorage.getItem('watermark') ?? '';
+  let directLine = undefined;
 
-  
+    directLine = useMemo(() => createDirectLine({ token, conversationId, watermark }), [token, conversationId, watermark]);
+    if (token && !conversationId && directLine.conversationId)
+    {
+      localStorage.setItem('conversationId', directLine.conversationId);
+    }
+    if (token && watermark != directLine.watermark){      
+      localStorage.setItem('watermark', directLine.watermark);
+    }
+
+  const userId = getUser(window.navigator.language);
+
+
   return token ? (
       <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
        username={String(userId)} styleOptions={styleOptions}
@@ -61,15 +72,15 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
       }
      } webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
   ) : (
-    <div className={`${className || ''} connect-spinner`}>
-      <div className="content">
-        <div className="icon">
-          <span className="ms-Icon ms-Icon--Robot" />
+      <div className={`${className || ''} connect-spinner`}>
+        <div className="content">
+          <div className="icon">
+            <span className="ms-Icon ms-Icon--Robot" />
+          </div>
+          <p>Please wait while we are connecting.</p>
         </div>
-        <p>Please wait while we are connecting.</p>
       </div>
-    </div>
-  );
+    );
 };
 
 export default WebChat;
