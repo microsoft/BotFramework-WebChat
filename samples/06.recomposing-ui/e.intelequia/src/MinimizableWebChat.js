@@ -180,7 +180,7 @@ const MinimizableWebChat = (parameters) => {
   const webSpeechPonyfillFactory = useMemo(() => {
       return createCognitiveServicesSpeechServicesPonyfillFactory(options.speechCredentials);
   }, []);
-
+  
   return (
     <div className="minimizable-web-chat">
       {getCookie('firstTimeVisit') == 'true' && (options.chatIconMessage !== undefined || options.chatIconMessage !== '' ) && (
