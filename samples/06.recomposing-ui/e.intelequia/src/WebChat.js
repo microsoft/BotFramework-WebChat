@@ -50,7 +50,16 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
 
   
   return token ? (
-      <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)} username={String(userId)} styleOptions={styleOptions} webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
+      <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
+       username={String(userId)} styleOptions={styleOptions}
+       selectVoice={ (voices, activity) => {
+        if (activity.locale === 'es') {
+          return voices.find(({ name }) => /HelenaRUS/iu.test(name));
+        } else {
+          return voices.find(({ name }) => /HazelRUS/iu.test(name));
+        }
+      }
+     } webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">

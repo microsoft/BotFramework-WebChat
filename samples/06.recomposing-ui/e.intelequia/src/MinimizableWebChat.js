@@ -161,7 +161,7 @@ const MinimizableWebChat = (parameters) => {
 
   return (
     <div className="minimizable-web-chat">
-      {getCookie('firstTimeVisit') == 'true' && (
+      {getCookie('firstTimeVisit') == 'true' && (options.chatIconMessage !== undefined || options.chatIconMessage !== '' ) && (
         <div className="chat-button-message close-button-no-animate">
           <div className="chat-button-message-arrow"></div>
           <a className="chat-button-message-close" onClick={handleMessageClick}>
