@@ -438,7 +438,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.fbPixelEventsSubscription.unsubscribe();
         this.gaEventsSubscription.unsubscribe();
         this.gtmEventsSubscription.unsubscribe();
-        this.handoffSubscription.unsubscribe();
+        // this.handoffSubscription.unsubscribe();
         this.webchatCollapseSubscribtion.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
