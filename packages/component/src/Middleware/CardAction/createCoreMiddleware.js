@@ -1,3 +1,5 @@
+import { ie11 } from '../../Utils/detectBrowser';
+
 // This code is adopted from sanitize-html/naughtyScheme.
 // sanitize-html is a dependency of Web Chat but the naughtScheme function is neither exposed nor reusable.
 // https://github.com/apostrophecms/sanitize-html/blob/master/src/index.js#L526
@@ -45,7 +47,13 @@ export default function createDefaultCardActionMiddleware() {
         case 'playVideo':
         case 'showImage':
           if (ALLOWED_SCHEMES.includes(getScheme(value))) {
-            window.open(value, '_blank', 'noopener noreferrer');
+            if (ie11) {
+              const newWindow = window.open();
+              newWindow.opener = null;
+              newWindow.location = value;
+            } else {
+              window.open(value, '_blank', 'noopener noreferrer');
+            }
           } else {
             console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
           }
