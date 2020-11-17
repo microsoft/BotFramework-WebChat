@@ -8,8 +8,8 @@
     "4": {
       "redirects": [
         ["feature:nextpatch", "4.9.2"],
-        ["feature:nextminor", "4.9"],
-        ["*", "4.6"]
+        ["feature:nextminor", "4.9.2"],
+        ["*", "4.9.2"]
       ]
     },
     "4.1": {
