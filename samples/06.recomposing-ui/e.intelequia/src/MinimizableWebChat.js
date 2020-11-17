@@ -100,6 +100,7 @@ const MinimizableWebChat = (parameters) => {
   const [conversationId, setConversationId] = useState();
   const [watermark, setWatermark] = useState();
   const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
+  const [credentials, setCredentials] = useState();
 
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
@@ -173,12 +174,17 @@ const MinimizableWebChat = (parameters) => {
 
   const handleRequestSpeechToken = useCallback(async () => {
     const res = await fetch(options.speechTokenUrl, { method: 'POST' });
-    const { token } = await res.json();
-    return token;
+    const {authorizationToken} = await res.json();
+    return authorizationToken;
   });
 
+
   const webSpeechPonyfillFactory = useMemo(() => {
-      return createCognitiveServicesSpeechServicesPonyfillFactory(options.speechCredentials);
+      return createCognitiveServicesSpeechServicesPonyfillFactory(
+        {
+          authorizationToken: handleRequestSpeechToken(),
+          region: 'northeurope' // TODO Parameter
+        });
   }, []);
   
   return (
