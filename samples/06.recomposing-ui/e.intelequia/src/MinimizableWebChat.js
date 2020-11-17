@@ -100,6 +100,7 @@ const MinimizableWebChat = (parameters) => {
   const [conversationId, setConversationId] = useState();
   const [watermark, setWatermark] = useState();
   const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
+  const [credentials, setCredentials] = useState();
 
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
@@ -165,14 +166,37 @@ const MinimizableWebChat = (parameters) => {
     setSide(side)
   }, [setSide, side]);
 
-  const handleRequestSpeechToken = useCallback(async () => {
-    const res = await fetch(options.speechTokenUrl, { method: 'POST' });
-    const { token } = await res.json();
-    return token;
-  });
+  function handleRequestSpeechToken() {
+    let expireAfter = 0;
+    let lastPromise;
+
+    return () => {
+      const now = Date.now();
+
+      if (now > expireAfter) {
+        expireAfter = now + 300000;
+        lastPromise = fetch(options.speechTokenUrl, {
+          method: 'POST'
+        }).then(
+          res => res.json(),
+          err => {
+            expireAfter = 0;
+
+            return Promise.reject(err);
+          }
+        );
+      }
+      return lastPromise;
+    };
+  }
+
+  const fetchSpeechServicesCredentials = handleRequestSpeechToken();
 
   const webSpeechPonyfillFactory = useMemo(() => {
-      return createCognitiveServicesSpeechServicesPonyfillFactory(options.speechCredentials);
+      return createCognitiveServicesSpeechServicesPonyfillFactory(
+        {
+          credentials: fetchSpeechServicesCredentials
+        });
   }, []);
   
   return (
