@@ -106,11 +106,6 @@ const MinimizableWebChat = (parameters) => {
 
   // call your hook here
   const forceUpdate = useForceUpdate();
-  // let localStorageConversationId = localStorage.getItem('conversationId');
-  // setConversationId(localStorageConversationId);
-
-  // let localStorageWatermark = localStorage.getItem('watermark') ?? '';
-  // setWatermark(localStorageWatermark);
 
   const handleFetchToken = useCallback(async () => {
     if (!token) {
@@ -133,7 +128,6 @@ const MinimizableWebChat = (parameters) => {
           method: 'GET'
         });
       const kk = await res.json();
-      debugger;
       setToken(kk.token);
     }
   }, [setToken, token, conversationId, setConversationId]);
