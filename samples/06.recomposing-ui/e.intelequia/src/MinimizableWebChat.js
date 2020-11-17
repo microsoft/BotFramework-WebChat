@@ -172,18 +172,36 @@ const MinimizableWebChat = (parameters) => {
     setSide(side)
   }, [setSide, side]);
 
-  const handleRequestSpeechToken = useCallback(async () => {
-    const res = await fetch(options.speechTokenUrl, { method: 'POST' });
-    const {authorizationToken} = await res.json();
-    return authorizationToken;
-  });
+  function handleRequestSpeechToken() {
+    let expireAfter = 0;
+    let lastPromise;
 
+    return () => {
+      const now = Date.now();
+
+      if (now > expireAfter) {
+        expireAfter = now + 300000;
+        lastPromise = fetch(options.speechTokenUrl, {
+          method: 'POST'
+        }).then(
+          res => res.json(),
+          err => {
+            expireAfter = 0;
+
+            return Promise.reject(err);
+          }
+        );
+      }
+      return lastPromise;
+    };
+  }
+
+  const fetchSpeechServicesCredentials = handleRequestSpeechToken();
 
   const webSpeechPonyfillFactory = useMemo(() => {
       return createCognitiveServicesSpeechServicesPonyfillFactory(
         {
-          authorizationToken: handleRequestSpeechToken(),
-          region: 'northeurope' // TODO Parameter
+          credentials: fetchSpeechServicesCredentials
         });
   }, []);
   
