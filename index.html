@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat samples</title>
+    <script crossorigin="anonymous" src="https://unpkg.com/core-js@2/client/core.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/markdown-it/dist/markdown-it.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/whatwg-fetch"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <script>
+      'use strict';
+
+      fetch('README.md')
+        .then(function(res) {
+          return res.text();
+        })
+        .then(function(markdown) {
+          const element = document.createElement('div');
+
+          element.innerHTML = window.markdownit().render(markdown);
+          document.body.appendChild(element);
+        });
+    </script>
+  </body>
+</html>

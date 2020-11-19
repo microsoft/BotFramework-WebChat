@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Collect telemetry using Google Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_IDD"></script>
+    <script>
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { conversationID, token, userID } = await res.json();
+        const { content: webChatUIVersion } =
+          document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};
+
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'GA_MEASUREMENT_IDD', {
+          custom_map: {
+            dimension1: 'version',
+            dimension2: 'prop:locale'
+          },
+
+          event_category: 'Web Chat UI',
+          user_id: userID,
+          version: webChatUIVersion
+        });
+
+        const handleTelemetry = event => {
+          const { data, dimensions, duration, error, fatal, name, type } = event;
+
+          console.group(`onTelemetry ("${type}")`);
+          console.log({ name, data, dimensions, duration, error });
+          console.groupEnd();
+
+          if (type === 'event') {
+            const googleAnalyticsData =
+              typeof data === 'number' || typeof data === 'string' || typeof data === 'undefined' ? { '': data } : data;
+
+            for (const [key, value] of Object.entries(googleAnalyticsData)) {
+              const eventName = key ? `${name}:${key}` : name;
+
+              if (typeof value === 'number') {
+                gtag('event', eventName, {
+                  ...dimensions,
+                  value
+                });
+              } else {
+                gtag('event', eventName, {
+                  ...dimensions,
+                  event_label: value
+                });
+              }
+            }
+          } else if (type === 'exception') {
+            gtag('event', 'exception', {
+              ...dimensions,
+              description: error,
+              fatal
+            });
+          } else if (type === 'timingend') {
+            gtag('event', 'timing_complete', {
+              ...dimensions,
+              name,
+              value: duration
+            });
+          }
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            onTelemetry: handleTelemetry
+          },
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

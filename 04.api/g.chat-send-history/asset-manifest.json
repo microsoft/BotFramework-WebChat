@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/BotFramework-WebChat/04.api/g.chat-send-history/static/css/main.c0c51a48.chunk.css",
+    "main.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.9ee6a1cd.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.9ee6a1cd.chunk.js.map",
+    "runtime-main.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/runtime-main.da3a9627.js",
+    "runtime-main.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/runtime-main.da3a9627.js.map",
+    "static/js/2.1342be3b.chunk.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.1342be3b.chunk.js",
+    "static/js/2.1342be3b.chunk.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.1342be3b.chunk.js.map",
+    "index.html": "/BotFramework-WebChat/04.api/g.chat-send-history/index.html",
+    "precache-manifest.2437933449292103392a127fb71e005d.js": "/BotFramework-WebChat/04.api/g.chat-send-history/precache-manifest.2437933449292103392a127fb71e005d.js",
+    "service-worker.js": "/BotFramework-WebChat/04.api/g.chat-send-history/service-worker.js",
+    "static/css/main.c0c51a48.chunk.css.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/css/main.c0c51a48.chunk.css.map",
+    "static/js/2.1342be3b.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.1342be3b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.da3a9627.js",
+    "static/js/2.1342be3b.chunk.js",
+    "static/css/main.c0c51a48.chunk.css",
+    "static/js/main.9ee6a1cd.chunk.js"
+  ]
+}

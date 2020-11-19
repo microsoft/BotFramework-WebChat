@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Customizable avatar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      #app {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      #app > :not(.app__commandBar) {
+        flex: 1;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .app__commandBar {
+        background-color: #ffc;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        margin: 10px;
+        overflow: hidden;
+        padding: 2px;
+        position: relative;
+      }
+
+      .app__commandBar .app__commandBar__header {
+        background-color: #090;
+        border-radius: 0 0 0 4px;
+        color: White;
+        font-size: 11px;
+        padding: 0px 4px 2px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .app__commandBar .app__commandBar__label,
+      .app__commandBar .app__commandBar__footnote {
+        align-items: center;
+        display: flex;
+        padding: 4px;
+      }
+
+      .app__commandBar .app__commandBar__footnote {
+        background-color: rgba(255, 255, 255, 0.7);
+        border-top: solid 1px rgba(0, 0, 0, 0.1);
+        margin: 2px -2px -2px;
+        padding: 4px 8px 8px;
+      }
+
+      .app__commandBar .app__commandBar__checkBox,
+      .app__commandBar .app__commandBar__select {
+        font-size: inherit;
+        margin-right: 0.4em;
+      }
+
+      .app__commandBar .app__commandBar__select {
+        margin-left: 0.4em;
+      }
+
+      .app__avatarWithOnlineStatus {
+        position: relative;
+      }
+
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status {
+        background-color: White;
+        border-radius: 50%;
+        border: solid 2px White;
+        bottom: -2px;
+        height: 10px;
+        position: absolute;
+        transition: background-color 200ms;
+        width: 10px;
+      }
+
+      .app__avatarWithOnlineStatus:not(.app__avatarWithOnlineStatus--rtl) .app__avatarWithOnlineStatus__status {
+        right: -2px;
+      }
+
+      .app__avatarWithOnlineStatus.app__avatarWithOnlineStatus--rtl .app__avatarWithOnlineStatus__status {
+        left: -2px;
+      }
+
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--online {
+        background-color: #090;
+      }
+
+      .app__avatarWithOnlineStatus .app__avatarWithOnlineStatus__status.app__avatarWithOnlineStatus__status--busy {
+        background-color: Red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" role="main"></div>
+    <script type="text/babel" data-presets="es2015,react,stage-3">
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // Your client code must provide either a secret or a token to talk to your bot.
+        // Tokens are more secure. To learn about the differences between secrets and tokens
+        // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        const { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } = window.React;
+        const {
+          ReactWebChat,
+          hooks: { useDirection }
+        } = window.WebChat;
+
+        const AppContext = createContext();
+
+        const App = () => {
+          const [botRoundBubble, setBotRoundBubble] = useState(false);
+          const [botShowBubbleNub, setBotShowBubbleNub] = useState(false);
+          const [botShowDefaultAvatar, setBotShowDefaultAvatar] = useState(true);
+          const [onlineStatus, setOnlineStatus] = useState('online');
+          const [rightToLeft, setRightToLeft] = useState(false);
+          const [showOnlineStatus, setShowOnlineStatus] = useState(true);
+          const [userRoundBubble, setUserRoundBubble] = useState(false);
+          const [userShowBubbleNub, setUserShowBubbleNub] = useState(false);
+          const [userShowDefaultAvatar, setUserShowDefaultAvatar] = useState(true);
+          const [botDefaultAvatarType, setBotDefaultAvatarType] = useState('image');
+          const [userDefaultAvatarType, setUserDefaultAvatarType] = useState('image');
+          const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
+
+          const handleBotDefaultAvatarTypeChange = useCallback(
+            ({ target: { value } }) => setBotDefaultAvatarType(value),
+            [setBotDefaultAvatarType]
+          );
+
+          const handleBotRoundBubbleChange = useCallback(({ target: { checked } }) => setBotRoundBubble(checked), [
+            setBotRoundBubble
+          ]);
+
+          const handleBotShowBubbleNubChange = useCallback(({ target: { checked } }) => setBotShowBubbleNub(checked), [
+            setBotShowBubbleNub
+          ]);
+
+          const handleBotShowDefaultAvatarChange = useCallback(
+            ({ target: { checked } }) => setBotShowDefaultAvatar(checked),
+            [setBotShowDefaultAvatar]
+          );
+
+          const handleUserDefaultAvatarTypeChange = useCallback(
+            ({ target: { value } }) => setUserDefaultAvatarType(value),
+            [setUserDefaultAvatarType]
+          );
+
+          const handleUserRoundBubbleChange = useCallback(({ target: { checked } }) => setUserRoundBubble(checked), [
+            setUserRoundBubble
+          ]);
+
+          const handleUserShowBubbleNubChange = useCallback(
+            ({ target: { checked } }) => setUserShowBubbleNub(checked),
+            [setUserShowBubbleNub]
+          );
+
+          const handleUserShowDefaultAvatarChange = useCallback(
+            ({ target: { checked } }) => setUserShowDefaultAvatar(checked),
+            [setUserShowDefaultAvatar]
+          );
+
+          const handleRightToLeftChange = useCallback(({ target: { checked } }) => setRightToLeft(checked), [
+            setRightToLeft
+          ]);
+
+          const handleShowOnlineStatusChange = useCallback(({ target: { checked } }) => setShowOnlineStatus(checked), [
+            setShowOnlineStatus
+          ]);
+
+          const handleOnlineStatusChange = useCallback(({ target: { value } }) => setOnlineStatus(value), [
+            setOnlineStatus
+          ]);
+
+          const styleOptions = useMemo(
+            () => ({
+              ...(botRoundBubble ? { bubbleBorderRadius: 20, bubbleNubOffset: 5 } : {}),
+              ...(botShowBubbleNub ? { bubbleNubSize: 10 } : {}),
+              ...(botShowDefaultAvatar
+                ? {
+                    botAvatarBackgroundColor: '#77F',
+                    botAvatarInitials: 'BF',
+                    ...(botDefaultAvatarType === 'image'
+                      ? {
+                          botAvatarImage:
+                            'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0'
+                        }
+                      : {})
+                  }
+                : {}),
+              ...(userRoundBubble ? { bubbleFromUserBorderRadius: 20, bubbleFromUserNubOffset: 5 } : {}),
+              ...(userShowBubbleNub ? { bubbleFromUserNubSize: 10 } : {}),
+              ...(userShowDefaultAvatar
+                ? {
+                    userAvatarBackgroundColor: '#F77',
+                    userAvatarInitials: 'WC',
+                    ...(userDefaultAvatarType === 'image'
+                      ? {
+                          userAvatarImage: 'https://github.com/compulim.png?size=64'
+                        }
+                      : {})
+                  }
+                : {})
+            }),
+            [
+              botDefaultAvatarType,
+              botRoundBubble,
+              botShowBubbleNub,
+              botShowDefaultAvatar,
+              userDefaultAvatarType,
+              userRoundBubble,
+              userShowBubbleNub,
+              userShowDefaultAvatar
+            ]
+          );
+
+          const context = useMemo(
+            () => ({
+              onlineStatus,
+              showOnlineStatus
+            }),
+            [onlineStatus, showOnlineStatus]
+          );
+
+          return (
+            <React.Fragment>
+              <AppContext.Provider value={context}>
+                <div className="app__commandBar">
+                  <header className="app__commandBar__header">Options</header>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botRoundBubble}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotRoundBubbleChange}
+                      type="checkbox"
+                    />
+                    Bot: Round bubble
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botShowBubbleNub}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotShowBubbleNubChange}
+                      type="checkbox"
+                    />
+                    Bot: Show bubble nub
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={botShowDefaultAvatar}
+                      className="app__commandBar__checkBox"
+                      onChange={handleBotShowDefaultAvatarChange}
+                      type="checkbox"
+                    />
+                    Bot: Show default avatar
+                    <select
+                      className="app__commandBar__select"
+                      disabled={!botShowDefaultAvatar}
+                      onChange={handleBotDefaultAvatarTypeChange}
+                      value={botDefaultAvatarType}
+                    >
+                      <option value="image">Image and initials</option>
+                      <option value="initials">Initials only</option>
+                    </select>
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userRoundBubble}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserRoundBubbleChange}
+                      type="checkbox"
+                    />
+                    User: Round bubble
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userShowBubbleNub}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserShowBubbleNubChange}
+                      type="checkbox"
+                    />
+                    User: Show bubble nub
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={userShowDefaultAvatar}
+                      className="app__commandBar__checkBox"
+                      onChange={handleUserShowDefaultAvatarChange}
+                      type="checkbox"
+                    />
+                    User: Show default avatar
+                    <select
+                      className="app__commandBar__select"
+                      disabled={!userShowDefaultAvatar}
+                      onChange={handleUserDefaultAvatarTypeChange}
+                      value={userDefaultAvatarType}
+                    >
+                      <option value="image">Image and initials</option>
+                      <option value="initials">Initials only</option>
+                    </select>
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={rightToLeft}
+                      className="app__commandBar__checkBox"
+                      onChange={handleRightToLeftChange}
+                      type="checkbox"
+                    />
+                    Locale: Egyptian Arabic
+                  </label>
+                  <label className="app__commandBar__label">
+                    <input
+                      checked={showOnlineStatus}
+                      className="app__commandBar__checkBox"
+                      onChange={handleShowOnlineStatusChange}
+                      type="checkbox"
+                    />
+                    Show status:
+                    <select
+                      disabled={!showOnlineStatus}
+                      className="app__commandBar__select"
+                      onChange={handleOnlineStatusChange}
+                      value={onlineStatus}
+                    >
+                      <option value="online">Online</option>
+                      <option value="busy">Busy</option>
+                    </select>
+                  </label>
+                  <footer className="app__commandBar__footnote">
+                    Note: Type "1" for no avatar, "2" for a customized avatar, "3" for an avatar overlay. For normal
+                    avatar, type anything else.
+                  </footer>
+                </div>
+                <ReactWebChat
+                  avatarMiddleware={avatarMiddleware}
+                  directLine={directLine}
+                  locale={rightToLeft ? 'ar-EG' : undefined}
+                  styleOptions={styleOptions}
+                />
+              </AppContext.Provider>
+            </React.Fragment>
+          );
+        };
+
+        const PortraitAvatar = ({ fromUser }) => {
+          const style = useMemo(() => ({ borderRadius: 4 }), []);
+
+          return <img src={fromUser ? 'user.jpg' : 'bot.jpg'} style={style} />;
+        };
+
+        const AvatarWithOnlineStatus = ({ children }) => {
+          const [direction] = useDirection();
+          const { onlineStatus, showOnlineStatus } = useContext(AppContext);
+
+          return (
+            <div
+              className={`app__avatarWithOnlineStatus${direction === 'rtl' ? ' app__avatarWithOnlineStatus--rtl' : ''}`}
+            >
+              {children}
+              {showOnlineStatus && (
+                <div
+                  className={`app__avatarWithOnlineStatus__status app__avatarWithOnlineStatus__status--${onlineStatus}`}
+                />
+              )}
+            </div>
+          );
+        };
+
+        const avatarMiddleware = () => next => ({ activity, fromUser, ...otherArgs }) => {
+          const { text = '' } = activity;
+
+          if (~text.indexOf('1')) {
+            return false;
+          } else if (~text.indexOf('2')) {
+            return <PortraitAvatar fromUser={fromUser} />;
+          }
+
+          const renderNext = next({ activity, fromUser, ...otherArgs });
+
+          return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
+        };
+
+        ReactDOM.render(<App />, document.getElementById('app'));
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

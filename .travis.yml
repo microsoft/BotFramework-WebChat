@@ -1,0 +1,22 @@
+sudo: required
+
+language: node_js
+
+node_js:
+- "12"
+
+services:
+- docker
+
+before_install:
+- npm ci
+
+install:
+- npm run bootstrap
+- npm run eslint
+- npm run build
+
+script:
+- docker-compose up --build --detach
+- npm test -- --ci --coverage true --maxWorkers=4 --no-watch
+- docker-compose down --rmi all

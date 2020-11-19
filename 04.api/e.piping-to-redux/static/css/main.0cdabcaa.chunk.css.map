@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,UAAa,WAAc,CAC3B,KAAO,QAAU,CAOjB,WAJE,YAAa,CACb,WAOF,CAEA,WACE,QACF","file":"main.0cdabcaa.chunk.css","sourcesContent":["html, body { height: 100%; }\nbody { margin: 0 }\n\n#root {\n  display: flex;\n  height: 100%;\n}\n\n#app {\n  display: flex;\n  flex: 1;\n  height: 100%;\n}\n\n.chat {\n  flex: 1;\n}\n"]}

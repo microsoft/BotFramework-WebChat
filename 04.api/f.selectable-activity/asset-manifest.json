@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/BotFramework-WebChat/04.api/f.selectable-activity/static/css/main.c0c51a48.chunk.css",
+    "main.js": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/main.06cd9e63.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/main.06cd9e63.chunk.js.map",
+    "runtime-main.js": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/runtime-main.c715c911.js",
+    "runtime-main.js.map": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/runtime-main.c715c911.js.map",
+    "static/js/2.c628d010.chunk.js": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/2.c628d010.chunk.js",
+    "static/js/2.c628d010.chunk.js.map": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/2.c628d010.chunk.js.map",
+    "index.html": "/BotFramework-WebChat/04.api/f.selectable-activity/index.html",
+    "precache-manifest.cb5ec358e2a9db2997d48525ef675dad.js": "/BotFramework-WebChat/04.api/f.selectable-activity/precache-manifest.cb5ec358e2a9db2997d48525ef675dad.js",
+    "service-worker.js": "/BotFramework-WebChat/04.api/f.selectable-activity/service-worker.js",
+    "static/css/main.c0c51a48.chunk.css.map": "/BotFramework-WebChat/04.api/f.selectable-activity/static/css/main.c0c51a48.chunk.css.map",
+    "static/js/2.c628d010.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/f.selectable-activity/static/js/2.c628d010.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c715c911.js",
+    "static/js/2.c628d010.chunk.js",
+    "static/css/main.c0c51a48.chunk.css",
+    "static/js/main.06cd9e63.chunk.js"
+  ]
+}

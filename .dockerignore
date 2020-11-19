@@ -1,0 +1,6 @@
+/**/*
+!/__tests__
+/__tests__/__image_snapshots__
+!/packages/bundle/dist
+!/packages/playground/build
+!/packages/testharness/dist

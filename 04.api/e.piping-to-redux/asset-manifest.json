@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/css/main.0cdabcaa.chunk.css",
+    "main.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.5550a283.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.5550a283.chunk.js.map",
+    "runtime-main.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/runtime-main.7ba3460c.js",
+    "runtime-main.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/runtime-main.7ba3460c.js.map",
+    "static/js/2.73a2dff0.chunk.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.73a2dff0.chunk.js",
+    "static/js/2.73a2dff0.chunk.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.73a2dff0.chunk.js.map",
+    "index.html": "/BotFramework-WebChat/04.api/e.piping-to-redux/index.html",
+    "precache-manifest.6737c39c7a6c2bdab8cdbfca70ed5a25.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/precache-manifest.6737c39c7a6c2bdab8cdbfca70ed5a25.js",
+    "service-worker.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/service-worker.js",
+    "static/css/main.0cdabcaa.chunk.css.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/css/main.0cdabcaa.chunk.css.map",
+    "static/js/2.73a2dff0.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.73a2dff0.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7ba3460c.js",
+    "static/js/2.73a2dff0.chunk.js",
+    "static/css/main.0cdabcaa.chunk.css",
+    "static/js/main.5550a283.chunk.js"
+  ]
+}
