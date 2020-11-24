@@ -1,5 +1,5 @@
 import React from 'react';
-const MaximizeButton = ({maximizeOptions, handleMaximizeButtonClick, token, newMessage,minimized}) => {
+const MaximizeButton = ({maximizeOptions, handleMaximizeButtonClick, newMessage, minimized}) => {
 
     const maximizeStyle = {
         backgroundColor: maximizeOptions.backgroundColor,

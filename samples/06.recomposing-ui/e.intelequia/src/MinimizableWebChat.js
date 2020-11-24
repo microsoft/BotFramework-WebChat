@@ -6,7 +6,7 @@ import Header from './Header'
 import MaximizeButton from './MaximizeButton'
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
-import { setCookie, getCookie, checkCookie } from './CookiesUtils'
+import { setCookie, getCookie, checkCookie } from './CookiesUtils';
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -38,6 +38,8 @@ const MinimizableWebChat = (parameters) => {
               case 'Minimize':
                 setMinimized(true);
                 setNewMessage(false);
+              case 'ChangeLanguage':
+                setLanguage(action.payload.activity.value)
             }
           }
         }
@@ -101,6 +103,7 @@ const MinimizableWebChat = (parameters) => {
   const [watermark, setWatermark] = useState();
   const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
   const [credentials, setCredentials] = useState();
+  const [language, setLanguage] = useState();
 
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
@@ -216,7 +219,7 @@ const MinimizableWebChat = (parameters) => {
 
       <MaximizeButton maximizeOptions={options.maximize}
         handleMaximizeButtonClick={handleMaximizeButtonClick}
-        token={token} newMessage={newMessage} minimized={minimized} />
+        newMessage={newMessage} minimized={minimized} />
 
       {loaded && (
         <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide open-chat-no-animate' : 'open-chat-animate')}>
@@ -229,6 +232,7 @@ const MinimizableWebChat = (parameters) => {
             styleOptions={styleSet}
             token={token}
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            language = {language}
           />}
         </div>
       )}

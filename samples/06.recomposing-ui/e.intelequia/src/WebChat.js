@@ -3,7 +3,7 @@ import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 import getUser from './Strings'
 import './WebChat.css';
 
-const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory }) => {
+const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory, language }) => {
 
   useEffect(() => {
     const $style = document.createElement("style");
@@ -48,29 +48,31 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
   let watermark = localStorage.getItem('watermark') ?? '';
   let directLine = undefined;
 
-    directLine = useMemo(() => createDirectLine({ token, conversationId, watermark }), [token, conversationId, watermark]);
-    if (token && !conversationId && directLine.conversationId)
-    {
-      localStorage.setItem('conversationId', directLine.conversationId);
-    }
-    if (token && watermark != directLine.watermark){      
-      localStorage.setItem('watermark', directLine.watermark);
-    }
+  directLine = useMemo(() => createDirectLine({ token, conversationId, watermark }), [token, conversationId, watermark]);
+  if (token && !conversationId && directLine.conversationId) {
+    localStorage.setItem('conversationId', directLine.conversationId);
+  }
+  if (token && watermark != directLine.watermark) {
+    localStorage.setItem('watermark', directLine.watermark);
+  }
 
   const userId = getUser(window.navigator.language);
 
+  // const webSpeechPonyfill = useMemo(() => {
+  //   const ponyfill = webSpeechPonyfillFactory && webSpeechPonyfillFactory({ language });
+  //   const { speechSynthesis, SpeechSynthesisUtterance } = ponyfill || {};
+
+  //   return {
+  //     ...ponyfill,
+  //     speechSynthesis: speechSynthesis,
+  //     SpeechSynthesisUtterance: SpeechSynthesisUtterance
+  //   };
+  // }, [language, webSpeechPonyfillFactory]);
+
 
   return token ? (
-      <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
-       username={String(userId)} styleOptions={styleOptions}
-       selectVoice={ (voices, activity) => {
-        if (activity.locale === 'es') {
-          return voices.find(({ name }) => /HelenaRUS/iu.test(name));
-        } else {
-          return voices.find(({ name }) => /HazelRUS/iu.test(name));
-        }
-      }
-     } webSpeechPonyfillFactory={webSpeechPonyfillFactory} />
+    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
+      username={String(userId)} styleOptions={styleOptions} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale= { language ? language : directLine.locale}/>
   ) : (
       <div className={`${className || ''} connect-spinner`}>
         <div className="content">
