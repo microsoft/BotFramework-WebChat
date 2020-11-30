@@ -60,6 +60,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
                   props.disableInputWhenNotNeeded = true
                 }
 
+                if (config.template.autoExpandTimeout > 0) {
+                  props.autoExpandTimeout = config.template.autoExpandTimeout
+                }
+
                 if (config.customCss) {
                   props.theme.customCss = config.customCss
                 }
