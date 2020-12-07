@@ -22,7 +22,7 @@ const ThumbnailCardContent = ({ actionPerformedClassName, content, disabled }) =
       const { richCardWrapTitle } = styleOptions;
 
       if (images && images.length) {
-        const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
+        const [firstColumn, lastColumn] = builder.addColumnSet(['75', '25']);
         const [{ alt, tap, url }] = images;
 
         builder.addTextBlock(

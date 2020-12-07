@@ -64,7 +64,7 @@ export default class AdaptiveCardBuilder {
     this.card.addItem(this.container);
   }
 
-  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: CardAction) {
+  addColumnSet(sizes: string[], container: Container = this.container, selectAction?: CardAction) {
     const columnSet = new ColumnSet();
 
     columnSet.selectAction = selectAction && addCardAction(selectAction);
