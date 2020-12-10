@@ -8,6 +8,7 @@ import {
   OpenUrlAction,
   Size,
   SizeAndUnit,
+  SizeUnit,
   SubmitAction,
   TextBlock,
   TextColor,
@@ -64,7 +65,7 @@ export default class AdaptiveCardBuilder {
     this.card.addItem(this.container);
   }
 
-  addColumnSet(sizes: string[], container: Container = this.container, selectAction?: CardAction) {
+  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: CardAction) {
     const columnSet = new ColumnSet();
 
     columnSet.selectAction = selectAction && addCardAction(selectAction);
@@ -73,7 +74,7 @@ export default class AdaptiveCardBuilder {
     return sizes.map(size => {
       const column = new Column();
 
-      column.width = SizeAndUnit.parse(size);
+      column.width = new SizeAndUnit(size, SizeUnit.Weight);
 
       columnSet.addColumn(column);
 

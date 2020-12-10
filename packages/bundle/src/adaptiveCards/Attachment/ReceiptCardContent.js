@@ -34,7 +34,7 @@ const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => 
       builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
 
       if (facts) {
-        const [firstFactColumn, lastFactColumn] = builder.addColumnSet(['75', '25']);
+        const [firstFactColumn, lastFactColumn] = builder.addColumnSet([75, 25]);
 
         facts.map(({ key, value }) => {
           builder.addTextBlock(key, { size: TextSize.Medium }, firstFactColumn);
@@ -51,12 +51,12 @@ const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => 
           let itemColumns;
 
           if (url) {
-            const [itemImageColumn, ...columns] = builder.addColumnSet(['15', '75', '10']);
+            const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
             itemColumns = columns;
             builder.addImage(url, itemImageColumn, imageTap, alt);
           } else {
-            itemColumns = builder.addColumnSet(['75', '25'], undefined, tap && tap);
+            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
           }
 
           const [itemTitleColumn, itemPriceColumn] = itemColumns;
@@ -75,21 +75,21 @@ const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => 
         });
 
       if (!nullOrUndefined(vat)) {
-        const vatCol = builder.addColumnSet(['75', '25']);
+        const vatCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
         builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
       }
 
       if (!nullOrUndefined(tax)) {
-        const taxCol = builder.addColumnSet(['75', '25']);
+        const taxCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
         builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
       }
 
       if (!nullOrUndefined(total)) {
-        const totalCol = builder.addColumnSet(['75', '25']);
+        const totalCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
         builder.addTextBlock(
