@@ -22,11 +22,7 @@ export default function createSuggestedActionStyle({
 }) {
   return {
     '&.webchat__suggested-action': {
-      paddingBottom: paddingRegular / 2,
-      paddingLeft: paddingRegular / 2,
-      paddingRight: paddingRegular / 2,
-      paddingTop: paddingRegular / 2,
-      position: 'relative',
+      maxWidth: '100%',
 
       '& .webchat__suggested-action__button': {
         alignItems: 'center',
@@ -35,8 +31,11 @@ export default function createSuggestedActionStyle({
         fontSize: 'inherit',
         height: suggestedActionHeight,
         justifyContent: 'center',
+        maxWidth: '100%',
         paddingLeft: paddingWide,
         paddingRight: paddingWide,
+        whiteSpace: 'nowrap',
+        width: '100%',
 
         '&:disabled, &[aria-disabled="true"]': {
           background: suggestedActionDisabledBackground || suggestedActionBackground,
@@ -56,18 +55,18 @@ export default function createSuggestedActionStyle({
       },
 
       '& .webchat__suggested-action__image': {
-        height: suggestedActionImageHeight,
-
-        '&:not(.webchat__suggested-action__image--rtl)': {
-          paddingRight: paddingRegular
-        },
-
-        '&.webchat__suggested-action__image--rtl': {
-          paddingLeft: paddingRegular
-        }
+        height: suggestedActionImageHeight
       },
 
-      '& .webchat__suggested-action__button-text': {
+      '&:not(.webchat__suggested-action--rtl) .webchat__suggested-action__image + .webchat__suggested-action__text': {
+        paddingLeft: paddingRegular
+      },
+
+      '&.webchat__suggested-action--rtl .webchat__suggested-action__image + .webchat__suggested-action__text': {
+        paddingRight: paddingRegular
+      },
+
+      '& .webchat__suggested-action__text': {
         overflow: 'hidden',
         textOverflow: 'ellipsis'
       }
