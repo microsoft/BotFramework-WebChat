@@ -26,7 +26,7 @@ export default function useParseAdaptiveCardJSON() {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
 
-  const { AdaptiveCard } = adaptiveCardsPackage;
+  const { AdaptiveCard, SerializationContext } = adaptiveCardsPackage;
 
   return useCallback(
     (content, { ignoreErrors = false } = {}) => {
@@ -36,15 +36,15 @@ export default function useParseAdaptiveCardJSON() {
 
       const card = new AdaptiveCard();
       const errors = [];
+      const serializationContext = new SerializationContext();
 
-      // TODO: [P3] #3487 Move from "onParseError" to "card.parse(json, errors)"
-      AdaptiveCard.onParseError = error => errors.push(error);
+      card.parse(content, serializationContext);
 
-      card.parse(content);
+      const { eventCount } = serializationContext;
 
-      updateRTLInline(card, direction === 'rtl', adaptiveCardsPackage);
-
-      AdaptiveCard.onParseError = null;
+      for (let i = 0; i < eventCount; i++) {
+        errors.push(serializationContext.getEventAt(i));
+      }
 
       if (!ignoreErrors && errors.length) {
         console.error('botframework-webchat: Failed to parse Adaptive Card', { errors });
@@ -52,8 +52,10 @@ export default function useParseAdaptiveCardJSON() {
         throw new Error('botframework-webchat: Failed to parse Adaptive Card');
       }
 
+      updateRTLInline(card, direction === 'rtl', adaptiveCardsPackage);
+
       return card;
     },
-    [AdaptiveCard, adaptiveCardsPackage, direction]
+    [AdaptiveCard, adaptiveCardsPackage, direction, SerializationContext]
   );
 }

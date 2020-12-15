@@ -253,7 +253,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
       if (!adaptiveCardRoot) {
         return console.warn(
-          'botframework-webchat: No Adaptive Card root container can be found, probably on an unsupported Adaptive Card version.'
+          'botframework-webchat: No Adaptive Card root container can be found; the card is probably on an unsupported Adaptive Card version.'
         );
       }
 
@@ -365,12 +365,10 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
     GlobalSettings.setTabIndexAtCardRoot = !!tapAction;
 
-    const { failures } = adaptiveCard.validateProperties();
+    const { validationEvents } = adaptiveCard.validateProperties();
 
-    if (failures.length) {
-      return setErrors(
-        failures.reduce((items, { errors }) => [...items, ...errors.map(({ message }) => new Error(message))], [])
-      );
+    if (validationEvents.length) {
+      return setErrors(validationEvents.reduce((items, { message }) => [...items, new Error(message)], []));
     }
 
     let element;
