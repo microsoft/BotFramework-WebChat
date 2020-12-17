@@ -24,7 +24,8 @@ There are 2 steps to prepare your environment: [install tools](#installing-tools
 
 Please install the follow in your development environment:
 
--  [Node.js and NPM](https://nodejs.org/) of LTS or latest version
+-  [Node.js](https://nodejs.org/) of LTS or latest version
+-  [NPM] minimum required version v7.0.0-rc.3
 -  [Docker](https://docs.docker.com/get-docker/)
 
 These are development environments we tested:
@@ -103,6 +104,8 @@ For environment stability, Web Chat uses Docker for hosting the test environment
 
 There are 2 ways to run the test suite, either one-off or continuously:
 
+> To run Web Driver test, locally, download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to project root. Then set environment variable `WEBCHAT_TEST_ENV=chrome-local` before running Jest.
+
 -  For one-off testing, `node_modules/.bin/jest`
 -  For continuous testing, `npm test`
    -  To speed up continuous testing, you can install [watchman](https://facebook.github.io/watchman/)
@@ -114,7 +117,6 @@ If your development box has less than 4 cores, you will need to reduce the numbe
 
 Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can run simultaneously.
 
-> To run Web Driver test, locally, download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to project root. Then set environment variable `WEBCHAT_TEST_ENV=chrome-local` before running Jest.
 
 ### Troubleshooting the test suite
 
