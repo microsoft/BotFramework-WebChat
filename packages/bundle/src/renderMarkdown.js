@@ -34,6 +34,7 @@ const SANITIZE_HTML_OPTIONS = {
     'ol',
     'p',
     'pre',
+    's',
     'span',
     'strike',
     'strong',
