@@ -129,8 +129,8 @@
 
       const STYLE_OPTIONS_PRESETS = {
         carousel: { suggestedActionLayout: 'carousel' },
-        inline: { suggestedActionLayout: 'inline' },
-        'inline-maxheight': { suggestedActionLayout: 'inline', suggestedActionsInlineMaxHeight: 120 },
+        flow: { suggestedActionLayout: 'flow' },
+        'flow-maxheight': { suggestedActionLayout: 'flow', suggestedActionsFlowMaxHeight: 120 },
         stacked: { suggestedActionLayout: 'stacked' },
         'stacked-maxheight': { suggestedActionLayout: 'stacked', suggestedActionsStackedHeight: 120 }
       };
@@ -170,12 +170,12 @@
                   label="Carousel"
                   value="carousel"
                 />
-                <RadioRow checked={preset === 'inline'} onChange={handlePresetChange} label="Inline" value="inline" />
+                <RadioRow checked={preset === 'flow'} onChange={handlePresetChange} label="Flow" value="flow" />
                 <RadioRow
-                  checked={preset === 'inline-maxheight'}
+                  checked={preset === 'flow-maxheight'}
                   onChange={handlePresetChange}
-                  label="Inline with maxHeight"
-                  value="inline-maxheight"
+                  label="Flow with maxHeight"
+                  value="flow-maxheight"
                 />
                 <RadioRow
                   checked={preset === 'stacked'}

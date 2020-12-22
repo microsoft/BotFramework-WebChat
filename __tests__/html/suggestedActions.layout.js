@@ -9,8 +9,8 @@ describe('suggested actions', () => {
   ])('in %s', (_, dir) => {
     describe.each([
       ['carousel layout', 'carousel'],
-      ['inline layout', 'inline'],
-      ['inline layout with maxHeight', 'inline-maxheight'],
+      ['flow layout', 'flow'],
+      ['flow layout with maxHeight', 'flow-maxheight'],
       ['stacked layout', 'stacked'],
       ['stacked layout with height', 'stacked-maxheight']
     ])('using %s', (_, preset) => {

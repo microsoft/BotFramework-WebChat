@@ -20,7 +20,7 @@ const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions': {
-    '&.webchat__suggested-actions--inline-layout': {
+    '&.webchat__suggested-actions--flow-layout': {
       display: 'flex',
       flexWrap: 'wrap'
     },
@@ -127,7 +127,7 @@ SuggestedActionCarouselContainer.propTypes = {
   screenReaderText: PropTypes.string.isRequired
 };
 
-const SuggestedActionInlineContainer = ({ children, className, screenReaderText }) => {
+const SuggestedActionFlowContainer = ({ children, className, screenReaderText }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -138,7 +138,7 @@ const SuggestedActionInlineContainer = ({ children, className, screenReaderText 
       aria-live="polite"
       className={classNames(
         'webchat__suggested-actions',
-        'webchat__suggested-actions--inline-layout',
+        'webchat__suggested-actions--flow-layout',
         rootClassName,
         suggestedActionsStyleSet + '',
         (className || '') + ''
@@ -153,12 +153,12 @@ const SuggestedActionInlineContainer = ({ children, className, screenReaderText 
   );
 };
 
-SuggestedActionInlineContainer.defaultProps = {
+SuggestedActionFlowContainer.defaultProps = {
   children: undefined,
   className: undefined
 };
 
-SuggestedActionInlineContainer.propTypes = {
+SuggestedActionFlowContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   screenReaderText: PropTypes.string.isRequired
@@ -231,11 +231,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     />
   ));
 
-  if (suggestedActionLayout === 'inline') {
+  if (suggestedActionLayout === 'flow') {
     return (
-      <SuggestedActionInlineContainer className={className} screenReaderText={screenReaderText}>
+      <SuggestedActionFlowContainer className={className} screenReaderText={screenReaderText}>
         {children}
-      </SuggestedActionInlineContainer>
+      </SuggestedActionFlowContainer>
     );
   } else if (suggestedActionLayout === 'stacked') {
     return (

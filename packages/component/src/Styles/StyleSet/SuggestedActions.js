@@ -3,7 +3,7 @@
 
 export default function createSuggestedActionsStyle({
   paddingRegular,
-  suggestedActionsInlineMaxHeight,
+  suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
   suggestedActionsStackedOverflow,
   transcriptOverlayButtonBackground,
@@ -70,8 +70,8 @@ export default function createSuggestedActionsStyle({
         }
       },
 
-      '&.webchat__suggested-actions--inline-layout': {
-        maxHeight: suggestedActionsInlineMaxHeight,
+      '&.webchat__suggested-actions--flow-layout': {
+        maxHeight: suggestedActionsFlowMaxHeight,
         overflowY: 'auto',
         paddingBottom: paddingRegular / 2,
         paddingLeft: paddingRegular / 2,

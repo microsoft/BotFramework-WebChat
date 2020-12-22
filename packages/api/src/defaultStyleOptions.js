@@ -112,7 +112,7 @@ const DEFAULT_OPTIONS = {
   suggestedActionDisabledTextColor: undefined, // defaults to subtle
   suggestedActionHeight: 40,
   suggestedActionImageHeight: 20,
-  suggestedActionLayout: 'carousel', // Either "carousel", "inline", or "stacked"
+  suggestedActionLayout: 'carousel', // Either "carousel", "flow", or "stacked"
   suggestedActionTextColor: null,
 
   // Suggested actions carousel layout
@@ -120,8 +120,8 @@ const DEFAULT_OPTIONS = {
   suggestedActionsCarouselFlipperBoxWidth: 40, // Flipper bounding box size
   suggestedActionsCarouselFlipperSize: 20, // Flipper visible size
 
-  // Suggested actions inline layout
-  suggestedActionsInlineMaxHeight: undefined, // Defaults to "auto".
+  // Suggested actions flow layout
+  suggestedActionsFlowMaxHeight: undefined, // Defaults to "auto".
 
   // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
