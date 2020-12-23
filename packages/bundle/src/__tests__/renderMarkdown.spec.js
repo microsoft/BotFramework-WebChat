@@ -63,4 +63,9 @@ describe('renderMarkdown', () => {
       '<p><a href="tel:505-503-4455" target="_blank" rel="noopener noreferrer">(505)503-4455</a></p>\n'
     );
   });
+
+  it('should render strikethrough text correctly', () => {
+    const options = { markdownRespectCRLF: true };
+    expect(renderMarkdown(`~~strike text~~`, options)).toBe('<p><s>strike text</s></p>\n');
+  });
 });
