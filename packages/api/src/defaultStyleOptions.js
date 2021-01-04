@@ -200,7 +200,13 @@ const DEFAULT_OPTIONS = {
   toastWarnColor: '#3B3A39',
 
   // Emoji
-  emojiSet: true // true || false || { ':)' : '😊'}
+  emojiSet: true, // true || false || { ':)' : '😊'}
+
+  // Auto-scroll behavior
+  autoScrollSnapOnActivity: false, // true to pause scroll after 1 activity is received, specifying a number will pause after X number of activities
+  autoScrollSnapOnActivityOffset: 0, // Specify number of pixels to overscroll or underscroll after pause
+  autoScrollSnapOnPage: false, // true to pause scroll after activities filled the page, specifying a number (0 to 1) will pause after % of page is filled
+  autoScrollSnapOnPageoffset: 0 // Specify number of pixels to overscroll or underscroll after pause
 };
 
 export default DEFAULT_OPTIONS;
