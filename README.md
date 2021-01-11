@@ -238,6 +238,10 @@ View the [notification documentation](https://github.com/microsoft/BotFramework-
 
 View the [telemetry documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md) for implementing in Web Chat.
 
+## Technical Support Guide
+
+View the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TECHNICAL_SUPPORT_GUIDE.md) to get guidance and help on troubleshooting in the Web Chat repo for more information before filing a new issue.
+
 ## Speech
 
 Web Chat supports a wide-range of speech engines for a natural chat experience with a bot. This section outlines the different engines that are supported:

@@ -187,7 +187,7 @@
     },
     "4.10.1": {
       "assets": [
-        ["https://cdn.botframework.com/botframework-webchat/4.10.1/webchat-es5.js", "sha384-ZT32ehV2SkikXkWvH8cO0OsMgQoYg+zd09eBP5oJrcrL3FJWqPSB1IGifTBYKccw"]
+        ["https://cdn.botframework.com/botframework-webchat/4.10.1/webchat-es5.js", "sha384-FT3pdxVxoyBtfEc83Xt1uxb8vm/KVuyBicVG6gM41mgXeGw/S3Q2/CThAtFXhxcN"]
       ],
       "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2022-11-05.",
       "private": true,

@@ -17,13 +17,9 @@ const { useDirection, useDisabled, usePerformCardAction, useSuggestedActions } =
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {
-    display: 'flex',
-    flexDirection: 'column',
-    whiteSpace: 'initial',
-
     '& .webchat__suggested-action__button': {
       display: 'flex',
-      overflow: 'hidden'
+      overflow: 'hidden' // Prevent image from leaking
     }
   }
 };
@@ -44,6 +40,7 @@ const connectSuggestedAction = (...selectors) =>
 const SuggestedAction = ({
   'aria-hidden': ariaHidden,
   buttonText,
+  className,
   displayText,
   image,
   imageAlt,
@@ -81,7 +78,13 @@ const SuggestedAction = ({
   return (
     <div
       aria-hidden={ariaHidden}
-      className={classNames('webchat__suggested-action', rootClassName, suggestedActionStyleSet + '')}
+      className={classNames(
+        'webchat__suggested-action',
+        { 'webchat__suggested-action--rtl': direction === 'rtl' },
+        rootClassName,
+        suggestedActionStyleSet + '',
+        (className || '') + ''
+      )}
     >
       <AccessibleButton
         {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}
@@ -101,7 +104,7 @@ const SuggestedAction = ({
             src={image}
           />
         )}
-        <nobr className="webchat__suggested-action__button-text">{buttonText}</nobr>
+        <span className="webchat__suggested-action__text">{buttonText}</span>
       </AccessibleButton>
     </div>
   );
@@ -109,6 +112,7 @@ const SuggestedAction = ({
 
 SuggestedAction.defaultProps = {
   'aria-hidden': false,
+  className: '',
   displayText: '',
   image: '',
   imageAlt: undefined,
@@ -120,6 +124,7 @@ SuggestedAction.defaultProps = {
 SuggestedAction.propTypes = {
   'aria-hidden': PropTypes.bool,
   buttonText: PropTypes.string.isRequired,
+  className: PropTypes.string,
   displayText: PropTypes.string,
   image: PropTypes.string,
   imageAlt: PropTypes.string,
