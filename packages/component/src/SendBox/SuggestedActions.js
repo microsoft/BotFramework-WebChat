@@ -19,9 +19,16 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
-  '&.webchat__suggested-actions .webchat__suggested-actions__stack': {
-    display: 'flex',
-    flexDirection: 'column'
+  '&.webchat__suggested-actions': {
+    '&.webchat__suggested-actions--flow-layout': {
+      display: 'flex',
+      flexWrap: 'wrap'
+    },
+
+    '&.webchat__suggested-actions--stack-layout .webchat__suggested-actions__stack': {
+      display: 'flex',
+      flexDirection: 'column'
+    }
   }
 };
 
@@ -46,23 +53,20 @@ const connectSuggestedActions = (...selectors) =>
     ...selectors
   );
 
-const SuggestedActions = ({ className, suggestedActions = [] }) => {
+const SuggestedActionCarouselContainer = ({ children, className, screenReaderText }) => {
   const [
     {
-      suggestedActionLayout,
       suggestedActionsCarouselFlipperBoxWidth,
       suggestedActionsCarouselFlipperCursor,
       suggestedActionsCarouselFlipperSize
     }
   ] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
-  const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
   const [nonce] = useNonce();
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
-  const localize = useLocalizer();
-  const localizeAccessKey = useLocalizeAccessKey();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
   const filmStyleSet = useMemo(
     () =>
       createBasicStyleSetForReactFilm({
@@ -77,7 +81,133 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     ]
   );
 
-  const suggestedActionsContainerText = localize(
+  return (
+    // TODO: The content of suggested actions should be the labelled by the activity.
+    //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
+    <div
+      aria-labelledby={ariaLabelId}
+      aria-live="polite"
+      className={classNames(
+        'webchat__suggested-actions',
+        'webchat__suggested-actions--carousel-layout',
+        { 'webchat__suggested-actions--rtl': direction === 'rtl' },
+        rootClassName,
+        suggestedActionsStyleSet + '',
+        (className || '') + ''
+      )}
+      role="status"
+    >
+      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
+      {!!children && !!React.Children.count(children) && (
+        <BasicFilm
+          autoCenter={false}
+          className="webchat__suggested-actions__carousel"
+          dir={direction}
+          flipperBlurFocusOnClick={true}
+          nonce={nonce}
+          showDots={false}
+          showScrollBar={false}
+          styleSet={filmStyleSet}
+        >
+          {children}
+        </BasicFilm>
+      )}
+    </div>
+  );
+};
+
+SuggestedActionCarouselContainer.defaultProps = {
+  children: undefined,
+  className: undefined
+};
+
+SuggestedActionCarouselContainer.propTypes = {
+  children: PropTypes.any,
+  className: PropTypes.string,
+  screenReaderText: PropTypes.string.isRequired
+};
+
+const SuggestedActionFlowContainer = ({ children, className, screenReaderText }) => {
+  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const ariaLabelId = useUniqueId('webchat__suggested-actions');
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  return (
+    <div
+      aria-labelledby={ariaLabelId}
+      aria-live="polite"
+      className={classNames(
+        'webchat__suggested-actions',
+        'webchat__suggested-actions--flow-layout',
+        rootClassName,
+        suggestedActionsStyleSet + '',
+        (className || '') + ''
+      )}
+      role="status"
+    >
+      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
+      {React.Children.map(children, child => (
+        <div className="webchat__suggested-actions__item">{child}</div>
+      ))}
+    </div>
+  );
+};
+
+SuggestedActionFlowContainer.defaultProps = {
+  children: undefined,
+  className: undefined
+};
+
+SuggestedActionFlowContainer.propTypes = {
+  children: PropTypes.any,
+  className: PropTypes.string,
+  screenReaderText: PropTypes.string.isRequired
+};
+
+const SuggestedActionStackedContainer = ({ children, className, screenReaderText }) => {
+  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const ariaLabelId = useUniqueId('webchat__suggested-actions');
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  return (
+    <div
+      aria-labelledby={ariaLabelId}
+      aria-live="polite"
+      className={classNames(
+        'webchat__suggested-actions',
+        'webchat__suggested-actions--stacked-layout',
+        rootClassName,
+        suggestedActionsStyleSet + '',
+        (className || '') + ''
+      )}
+      role="status"
+    >
+      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
+      {!!children && !!React.Children.count(children) && (
+        <div className="webchat__suggested-actions__stack">{children}</div>
+      )}
+    </div>
+  );
+};
+
+SuggestedActionStackedContainer.defaultProps = {
+  children: undefined,
+  className: undefined
+};
+
+SuggestedActionStackedContainer.propTypes = {
+  children: PropTypes.any,
+  className: PropTypes.string,
+  screenReaderText: PropTypes.string.isRequired
+};
+
+const SuggestedActions = ({ className, suggestedActions = [] }) => {
+  const [{ suggestedActionLayout }] = useStyleOptions();
+  const [accessKey] = useSuggestedActionsAccessKey();
+  const localize = useLocalizer();
+  const localizeAccessKey = useLocalizeAccessKey();
+
+  const screenReaderText = localize(
     'SUGGESTED_ACTIONS_ALT',
     suggestedActions.length
       ? accessKey
@@ -86,18 +216,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 
-  if (!suggestedActions.length) {
-    return (
-      <div aria-labelledby={ariaLabelId} aria-live="polite" role="status">
-        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
-      </div>
-    );
-  }
-
   const children = suggestedActions.map(({ displayText, image, imageAltText, text, title, type, value }, index) => (
     <SuggestedAction
       ariaHidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
+      className="webchat__suggested-actions__button"
       displayText={displayText}
       image={image}
       imageAlt={imageAltText}
@@ -108,53 +231,24 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
     />
   ));
 
-  if (suggestedActionLayout === 'stacked') {
+  if (suggestedActionLayout === 'flow') {
     return (
-      <div
-        aria-labelledby={ariaLabelId}
-        aria-live="polite"
-        className={classNames(
-          'webchat__suggested-actions',
-          rootClassName,
-          suggestedActionsStyleSet + '',
-          (className || '') + ''
-        )}
-        role="status"
-      >
-        <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
-        <div className="webchat__suggested-actions__stack">{children}</div>
-      </div>
+      <SuggestedActionFlowContainer className={className} screenReaderText={screenReaderText}>
+        {children}
+      </SuggestedActionFlowContainer>
+    );
+  } else if (suggestedActionLayout === 'stacked') {
+    return (
+      <SuggestedActionStackedContainer className={className} screenReaderText={screenReaderText}>
+        {children}
+      </SuggestedActionStackedContainer>
     );
   }
 
   return (
-    // TODO: The content of suggested actions should be the labelled by the activity.
-    //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
-    <div
-      aria-labelledby={ariaLabelId}
-      aria-live="polite"
-      className={classNames(
-        'webchat__suggested-actions',
-        rootClassName,
-        suggestedActionsStyleSet + '',
-        (className || '') + ''
-      )}
-      role="status"
-    >
-      <ScreenReaderText id={ariaLabelId} text={suggestedActionsContainerText} />
-      <BasicFilm
-        autoCenter={false}
-        className="webchat__suggested-actions__carousel"
-        dir={direction}
-        flipperBlurFocusOnClick={true}
-        nonce={nonce}
-        showDots={false}
-        showScrollBar={false}
-        styleSet={filmStyleSet}
-      >
-        {children}
-      </BasicFilm>
-    </div>
+    <SuggestedActionCarouselContainer className={className} screenReaderText={screenReaderText}>
+      {children}
+    </SuggestedActionCarouselContainer>
   );
 };
 
