@@ -11,6 +11,7 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
+import useContainerRole from './hooks/useContainerRole';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
@@ -40,6 +41,7 @@ const TRANSCRIPT_STYLE = {
 const BasicWebChat = ({ className }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
+  const containerRole = useContainerRole();
   const styleToEmotionObject = useStyleToEmotionObject();
 
   const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
@@ -51,7 +53,7 @@ const BasicWebChat = ({ className }) => {
   return (
     <AccessKeySinkSurface
       className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')}
-      role="complementary"
+      role={containerRole}
     >
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />

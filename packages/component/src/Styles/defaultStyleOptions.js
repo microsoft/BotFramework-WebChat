@@ -26,6 +26,9 @@ const DEFAULT_OPTIONS = {
   monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
   primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
 
+  // Accessibility
+  containerRole: 'complementary', // Suggest 'complementary' or 'region' (https://w3.org/TR/wai-aria/#landmark_roles)
+
   // Avatar
   avatarBorderRadius: '50%',
   avatarSize: 40,
