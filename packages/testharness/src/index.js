@@ -28,6 +28,7 @@ import createDirectLineWithTranscript from './utils/createDirectLineWithTranscri
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
+import createWebSpeechMock from './utils/createWebSpeechMock';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import fetchSpeechServicesCredentials from './token/fetchSpeechServicesCredentials';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
@@ -104,9 +105,7 @@ if (!webDriverMode) {
           break;
 
         case 'send access key':
-          log(
-            `WebChatTest: Please press this key sequence: ALT-SHIFT-${job.payload.key}.`
-          );
+          log(`WebChatTest: Please press this key sequence: ALT-SHIFT-${job.payload.key}.`);
           await waitForFinishKey();
           break;
 
@@ -161,6 +160,7 @@ export {
   createQueuedArrayBufferAudioSource,
   createRunHookActivityMiddleware,
   createStore,
+  createWebSpeechMock,
   elements,
   EventIterator,
   expect,

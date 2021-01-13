@@ -1,4 +1,5 @@
 export default function createSendBoxTextBoxStyle({
+  paddingRegular,
   primaryFont,
   sendBoxBackground,
   sendBoxDisabledTextColor,
@@ -32,6 +33,11 @@ export default function createSendBoxTextBoxStyle({
         '&::placeholder': {
           color: sendBoxPlaceholderColor || subtle
         }
+      },
+
+      '& .webchat__send-box-text-box__text-area': {
+        marginBottom: paddingRegular,
+        marginTop: paddingRegular
       },
 
       '& .webchat__send-box-text-box__glass': {

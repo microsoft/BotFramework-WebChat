@@ -13,16 +13,19 @@ import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 const { useDisabled, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
-  overflow: 'hidden',
-  position: 'relative',
+  '&.webchat__upload-button': {
+    display: 'flex',
+    overflow: 'hidden',
+    position: 'relative',
 
-  '& > input': {
-    height: 0,
-    width: 0,
-    opacity: 0,
-    position: 'absolute',
-    left: 0,
-    top: 0
+    '& .webchat__upload-button--file-input': {
+      height: 0,
+      width: 0,
+      opacity: 0,
+      position: 'absolute',
+      left: 0,
+      top: 0
+    }
   }
 };
 
@@ -85,7 +88,7 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-const UploadButton = () => {
+const UploadButton = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const inputRef = useRef();
@@ -112,10 +115,11 @@ const UploadButton = () => {
   );
 
   return (
-    <div className={classNames(rootClassName, uploadButtonStyleSet + '')}>
+    <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
       <input
         aria-disabled={disabled}
         aria-hidden="true"
+        className="webchat__upload-button--file-input"
         multiple={true}
         onChange={disabled ? undefined : handleFileChange}
         onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
