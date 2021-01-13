@@ -73,6 +73,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2745](https://github.com/microsoft/BotFramework-WebChat/issues/2745). Added new `inline` layout to suggested actions, by [@compulim](https://github.com/compulim) in PR [#3641](https://github.com/microsoft/BotFramework-WebChat/pull/3641)
+-  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
 
 ### Fixed
 
