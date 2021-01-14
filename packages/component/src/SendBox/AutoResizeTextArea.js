@@ -59,8 +59,8 @@ const AutoResizeTextArea = forwardRef(
 
 AutoResizeTextArea.defaultProps = {
   'aria-label': undefined,
-  className: undefined,
   'data-id': undefined,
+  className: undefined,
   disabled: undefined,
   enterkeyhint: undefined,
   inputMode: undefined,

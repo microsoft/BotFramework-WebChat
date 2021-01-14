@@ -1,5 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 
 import AttachmentIcon from './Assets/AttachmentIcon';
@@ -134,6 +135,14 @@ const UploadButton = ({ className }) => {
       </IconButton>
     </div>
   );
+};
+
+UploadButton.defaultProps = {
+  className: undefined
+};
+
+UploadButton.propTypes = {
+  className: PropTypes.string
 };
 
 export default UploadButton;
