@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
+import { setCookie, getCookie, checkCookie } from './CookiesUtils'
 import getUser from './Strings'
 import './WebChat.css';
 
@@ -44,16 +45,25 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     onFetchToken();
   }, [onFetchToken]);
 
-  let conversationId = localStorage.getItem('conversationId');
-  let watermark = localStorage.getItem('watermark') ?? '';
+
+
+  // let conversationId = localStorage.getItem('conversationId');
+  let conversationId = getCookie("bci")
+  // let watermark = localStorage.getItem('watermark') ?? '';
+  let watermark = getCookie("watermark")
   let directLine = undefined;
+
+  var date = new Date();
+  date.setDate(date.getDate() + 14);
 
   directLine = useMemo(() => createDirectLine({ token, conversationId, watermark }), [token, conversationId, watermark]);
   if (token && !conversationId && directLine.conversationId) {
-    localStorage.setItem('conversationId', directLine.conversationId);
+    setCookie('bci', directLine.conversationId, { path: '/', expires: date});
+    // localStorage.setItem('conversationId', directLine.conversationId);
   }
   if (token && watermark != directLine.watermark) {
-    localStorage.setItem('watermark', directLine.watermark);
+    setCookie('watermark', directLine.watermark, { path: '/', expires: date});
+    // localStorage.setItem('watermark', directLine.watermark);
   }
 
   const userId = getUser(window.navigator.language);

@@ -114,10 +114,12 @@ const MinimizableWebChat = (parameters) => {
   const handleFetchToken = useCallback(async () => {
     if (!token) {
 
-      let localStorageConversationId = localStorage.getItem('conversationId');
+      // let localStorageConversationId = localStorage.getItem('conversationId');
+      let localStorageConversationId =  getCookie("bci")
       setConversationId(localStorageConversationId);
 
-      let localStorageWatermark = localStorage.getItem('watermark') ?? '';
+      // let localStorageWatermark = localStorage.getItem('watermark') ?? '';
+      let localStorageWatermark =  getCookie("watermark")
       setWatermark(localStorageWatermark);
 
       let url = '';
