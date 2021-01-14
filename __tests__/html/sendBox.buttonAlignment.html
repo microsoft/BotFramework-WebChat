@@ -8,6 +8,15 @@
         height: 100%;
       }
 
+      .webchat__send-box-text-box__input,
+      .webchat__send-box-text-box__text-area {
+        background-color: rgba(0, 0, 255, 0.6) !important;
+        outline-color: rgba(0, 0, 0, 0.4) !important;
+        outline-offset: 2px !important;
+        outline-style: dotted !important;
+        outline-width: 2px !important;
+      }
+
       .button-bar {
         background-color: antiquewhite;
         border: #ccc;
@@ -123,6 +132,8 @@
 
           const styleOptions = useMemo(
             () => ({
+              sendBoxBackground: 'yellow',
+              sendBoxTextColor: 'white',
               sendBoxButtonAlignment,
               sendBoxTextWrap
             }),

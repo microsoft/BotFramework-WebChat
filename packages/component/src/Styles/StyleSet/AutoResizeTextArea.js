@@ -5,12 +5,15 @@ export default function AutoResizeTextArea({ primaryFont }) {
       position: 'relative',
 
       '& .webchat__auto-resize-textarea__doppelganger': {
+        opacity: 0,
         whiteSpace: 'pre-wrap'
       },
 
       '& .webchat__auto-resize-textarea__textarea': {
         appearance: 'none' /* We should tell the user agent we are revamping the style */,
+        backgroundColor: 'transparent',
         border: 0,
+        color: 'inherit',
         fontFamily: 'inherit',
         fontSize: 'inherit',
         height: '100%',

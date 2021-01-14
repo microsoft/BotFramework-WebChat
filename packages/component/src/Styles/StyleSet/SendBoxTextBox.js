@@ -11,16 +11,20 @@ export default function createSendBoxTextBoxStyle({
     '&.webchat__send-box-text-box': {
       alignItems: 'center',
       fontFamily: primaryFont,
+      padding: paddingRegular,
       position: 'relative',
 
       '& .webchat__send-box-text-box__input': {
-        backgroundColor: sendBoxBackground,
         border: 0,
         fontFamily: 'inherit',
         fontSize: 'inherit',
         height: '100%',
         outline: 0,
-        padding: 0,
+        padding: 0
+      },
+
+      '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area': {
+        backgroundColor: sendBoxBackground,
 
         '&:not(:disabled):not([aria-disabled="true"])': {
           color: sendBoxTextColor
@@ -33,11 +37,6 @@ export default function createSendBoxTextBoxStyle({
         '&::placeholder': {
           color: sendBoxPlaceholderColor || subtle
         }
-      },
-
-      '& .webchat__send-box-text-box__text-area': {
-        marginBottom: paddingRegular,
-        marginTop: paddingRegular
       },
 
       '& .webchat__send-box-text-box__glass': {
