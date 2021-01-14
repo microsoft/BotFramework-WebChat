@@ -1,10 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
+
+const { useStyleOptions } = hooks;
 
 const IconButton = ({ alt, children, className, disabled, onClick }) => {
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
