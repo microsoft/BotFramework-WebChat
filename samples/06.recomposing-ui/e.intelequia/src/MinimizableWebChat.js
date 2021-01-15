@@ -115,11 +115,11 @@ const MinimizableWebChat = (parameters) => {
     if (!token) {
 
       // let localStorageConversationId = localStorage.getItem('conversationId');
-      let localStorageConversationId =  getCookie("bci")
+      let localStorageConversationId = getCookie("bci")
       setConversationId(localStorageConversationId);
 
       // let localStorageWatermark = localStorage.getItem('watermark') ?? '';
-      let localStorageWatermark =  getCookie("watermark")
+      let localStorageWatermark = getCookie("watermark")
       setWatermark(localStorageWatermark);
 
       let url = '';
@@ -198,15 +198,18 @@ const MinimizableWebChat = (parameters) => {
   const fetchSpeechServicesCredentials = handleRequestSpeechToken();
 
   const webSpeechPonyfillFactory = useMemo(() => {
+    if (typeof options.speechTokenUrl != 'undefined' && options.speechTokenUrl != '')
       return createCognitiveServicesSpeechServicesPonyfillFactory(
         {
           credentials: fetchSpeechServicesCredentials
         });
+    else
+       return null;
   }, []);
-  
+
   return (
     <div className="minimizable-web-chat">
-      {getCookie('firstTimeVisit') == 'true' && (options.chatIconMessage !== undefined || options.chatIconMessage !== '' ) && (
+      {getCookie('firstTimeVisit') == 'true' && (options.chatIconMessage !== undefined || options.chatIconMessage !== '') && (
         <div className="chat-button-message close-button-no-animate">
           <div className="chat-button-message-arrow"></div>
           <a className="chat-button-message-close" onClick={handleMessageClick}>
@@ -234,7 +237,7 @@ const MinimizableWebChat = (parameters) => {
             styleOptions={styleSet}
             token={token}
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-            language = {language}
+            language={language}
           />}
         </div>
       )}
