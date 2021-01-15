@@ -57,5 +57,5 @@ export default function useAcknowledgedActivity() {
     const lastAcknowledgedActivity = activities[lastAcknowledgedActivityIndex];
 
     return [lastAcknowledgedActivity];
-  }, [activities, lastStickyActivityID, stickyChangedToSticky]);
+  }, [activities, lastStickyActivityID]);
 }

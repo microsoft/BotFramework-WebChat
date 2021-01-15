@@ -25,7 +25,7 @@ function updateRelativeTimestamp(now, activity) {
   };
 }
 
-export default function createDirectLineWithTranscript(activitiesOrFilename, { echo = true } = {}) {
+export default function createDirectLineWithTranscript(activitiesOrFilename) {
   const now = Date.now();
   const patchActivity = updateRelativeTimestamp.bind(null, now);
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
@@ -63,14 +63,12 @@ export default function createDirectLineWithTranscript(activitiesOrFilename, { e
     postActivity: activity => {
       const id = Math.random().toString(36).substr(2, 5);
 
-      if (echo) {
-        activityDeferredObservable.next(
-          patchActivity({
-            ...activity,
-            id
-          })
-        );
-      }
+      activityDeferredObservable.next(
+        patchActivity({
+          ...activity,
+          id
+        })
+      );
 
       return Observable.from([id]);
     }
