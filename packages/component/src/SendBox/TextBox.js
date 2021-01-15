@@ -139,7 +139,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const [, setSendBox] = useSendBoxValue();
-  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
@@ -298,7 +298,6 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
       className={classNames(
         'webchat__send-box-text-box',
         rootClassName,
-        sendBoxTextAreaStyleSet + '',
         sendBoxTextBoxStyleSet + '',
         (className || '') + ''
       )}
