@@ -128,10 +128,11 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 1 });
 
+        addDummyActivitiesToDirectLine(10);
+
         await new Promise(requestAnimationFrame);
 
-        addDummyActivitiesToDirectLine(
-        addDummyActivitiesToDirectLine(1010);
+        addDummyActivitiesToDirectLine(10);
 
         await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
 
