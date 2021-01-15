@@ -51,15 +51,15 @@ Next, create the `activityMiddleware` which will be passed into the bot. We will
 <!-- prettier-ignore-start -->
 ```js
 const activityMiddleware = () => next => (...setupArgs) => {
-   const [card] = setupArgs;
-
-   return (...renderArgs) => (
-     <div
-       className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}
-     >
-       {next(card)(...renderArgs)}
-     </div>
-   );
+  const render = next(...setupArgs);
+  
+  if(render) {
+    return  (...renderArgs) => {
+      const element = render(...renderArgs);
+      const [card] = setupArgs;
+      return element && <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>{element}</div>;
+      };
+    }
 };
 ```
 <!-- prettier-ignore-end -->
