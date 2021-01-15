@@ -81,7 +81,7 @@
     "webpack-stats-plugin": "^1.0.2"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }

@@ -105,6 +105,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  Carousel layout and stacked layout is only available on `component` package due to their coupling with their respective visual components
       -  For card action middleware, `imBack`, `messageBack` and `postBack` actions are available on `api` package, but `call`, `openUrl` and other platform-dependent actions are only available on `component` package
    -  `activityMiddleware`, `attachmentMiddleware`, etc, now support arrays for multiple middleware
+-  Resolves [#3535](https://github.com/microsoft/BotFramework-WebChat/issues/3535). Add Technical Support Guide for guidance on troubleshooting information and navigating the Web Chat repository, by [@corinagum](https://github.com/corinagum), in PR [#3645](https://github.com/microsoft/BotFramework-WebChat/pull/3645)
 
 ### Fixed
 
