@@ -22,6 +22,7 @@ const AutoResizeTextArea = forwardRef(
       placeholder,
       readOnly,
       rows,
+      textAreaClassName,
       value
     },
     ref
@@ -36,7 +37,7 @@ const AutoResizeTextArea = forwardRef(
         </div>
         <AccessibleTextArea
           aria-label={ariaLabel}
-          className="webchat__auto-resize-textarea__textarea"
+          className={classNames('webchat__auto-resize-textarea__textarea', textAreaClassName)}
           data-id={dataId}
           disabled={disabled}
           enterkeyhint={enterkeyhint}
@@ -72,6 +73,7 @@ AutoResizeTextArea.defaultProps = {
   placeholder: undefined,
   readOnly: undefined,
   rows: undefined,
+  textAreaClassName: undefined,
   value: ''
 };
 
@@ -90,6 +92,7 @@ AutoResizeTextArea.propTypes = {
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
   rows: PropTypes.string,
+  textAreaClassName: PropTypes.string,
   value: PropTypes.string
 };
 

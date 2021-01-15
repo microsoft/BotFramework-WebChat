@@ -5,8 +5,12 @@ export default function AutoResizeTextArea({ primaryFont }) {
       position: 'relative',
 
       '& .webchat__auto-resize-textarea__doppelganger': {
-        opacity: 0,
-        whiteSpace: 'pre-wrap'
+        color: 'transparent',
+        height: '100%',
+        overflowY: 'auto',
+        width: 'inherit',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word'
       },
 
       '& .webchat__auto-resize-textarea__textarea': {
@@ -20,12 +24,12 @@ export default function AutoResizeTextArea({ primaryFont }) {
         left: 0,
         margin: 0,
         outline: 0,
-        overflow: 'hidden' /* For hiding the scroll bar in IE11 */,
         padding: 0,
         position: 'absolute',
         resize: 'none' /* Hiding the textarea resizing handle (on lower-right hand corner) */,
         top: 0,
-        width: '100%'
+        width: '100%',
+        wordBreak: 'break-word'
       }
     }
   };

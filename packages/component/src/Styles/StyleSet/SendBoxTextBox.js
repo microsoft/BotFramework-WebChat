@@ -3,6 +3,7 @@ export default function createSendBoxTextBoxStyle({
   primaryFont,
   sendBoxBackground,
   sendBoxDisabledTextColor,
+  sendBoxMaxHeight,
   sendBoxPlaceholderColor,
   sendBoxTextColor,
   subtle
@@ -23,7 +24,7 @@ export default function createSendBoxTextBoxStyle({
         padding: 0
       },
 
-      '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area': {
+      '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__html-text-area': {
         backgroundColor: sendBoxBackground,
 
         '&:not(:disabled):not([aria-disabled="true"])': {
@@ -37,6 +38,10 @@ export default function createSendBoxTextBoxStyle({
         '&::placeholder': {
           color: sendBoxPlaceholderColor || subtle
         }
+      },
+
+      '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area': {
+        maxHeight: sendBoxMaxHeight
       },
 
       '& .webchat__send-box-text-box__glass': {

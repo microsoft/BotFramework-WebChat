@@ -340,6 +340,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
           readOnly={disabled}
           ref={inputRefCallback}
           rows="1"
+          textAreaClassName="webchat__send-box-text-box__html-text-area"
           value={textBoxValue}
         />
       )}
