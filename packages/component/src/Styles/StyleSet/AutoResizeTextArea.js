@@ -8,6 +8,7 @@ export default function AutoResizeTextArea({ primaryFont }) {
         color: 'transparent',
         height: '100%',
         overflowY: 'auto',
+        userSelect: 'none',
         width: 'inherit',
         whiteSpace: 'pre-wrap',
         wordBreak: 'break-word'
@@ -24,6 +25,7 @@ export default function AutoResizeTextArea({ primaryFont }) {
         left: 0,
         margin: 0,
         outline: 0,
+        overflowY: 'auto',
         padding: 0,
         position: 'absolute',
         resize: 'none' /* Hiding the textarea resizing handle (on lower-right hand corner) */,
