@@ -10,18 +10,18 @@ const { useActivities } = hooks;
 
 // Acknowledged means either:
 // 1. The user sent a message
-//    - We don't need a condition here. When Web Chat send the message, it will scroll to bottom, and it will trigger condition 2 below.
+//    - We don't need a condition here. When Web Chat sends the user's message, it will scroll to bottom, and it will trigger condition 2 below.
 // 2. At the bottom of the transcript, scrolled from a non-bottom scroll position
-//    - If the transcript is already at the bottom, the user need to scroll up and then go back down
-//    - What happen if we are relaxing "scrolled from a non-bottom scroll position":
+//    - If the transcript is already at the bottom, the user needs to scroll up and then go back down
+//    - What happens if we are relaxing "scrolled from a non-bottom scroll position":
 //      1. The condition will become solely "at the bottom of the transcript"
 //      2. Auto-scroll will always scroll the transcript to the bottom
 //      3. Web Chat will always acknowledge all activities as it is at the bottom
 //      4. Acknowledge flag become useless
 
-// Note: When Web Chat is loaded, there are no activities acknowledged, we need to assume all arriving activities are acknowledged until end-user sent their first activity.
+// Note: When Web Chat is loaded, there are no activities acknowledged. We need to assume all arriving activities are acknowledged until end-user sends their first activity.
 //       Activities loaded initially could be from conversation history. Without assuming acknowledgement, Web Chat will not scroll initially (as everything is not acknowledged).
-//       Better, the chat adapter should let Web Chat know if the activity is loaded from history or not.
+//       It would be better if the chat adapter should let Web Chat know if the activity is loaded from history or not.
 
 // TODO: [P2] Move the "conversation history acknowledgement" logic mentioned above to polyfill of chat adapters.
 //       1. Chat adapter should send "acknowledged" as part of "channelData"
@@ -49,7 +49,7 @@ export default function useAcknowledgedActivity() {
 
     const lastEgressActivityIndex = findLastIndex(activities, ({ from: { role } = {} }) => role === 'user');
 
-    // As described above, if no activities were acknowledged thru egress activity, we will assume everything is acknowledged.
+    // As described above, if no activities were acknowledged through egress activity, we will assume everything is acknowledged.
     const lastAcknowledgedActivityIndex = !~lastEgressActivityIndex
       ? activities.length - 1
       : Math.max(lastStickyActivityIndex, lastEgressActivityIndex);
