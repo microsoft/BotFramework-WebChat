@@ -203,9 +203,9 @@ const DEFAULT_OPTIONS = {
   emojiSet: true, // true || false || { ':)' : '😊'}
 
   // Auto-scroll behavior
-  autoScrollSnapOnActivity: false, // true to pause scroll after 1 activity is received, specifying a number will pause after X number of activities
+  autoScrollSnapOnActivity: false, // true will pause scroll after 1 activity is received. Specifying a number will pause after X number of activities
   autoScrollSnapOnActivityOffset: 0, // Specify number of pixels to overscroll or underscroll after pause
-  autoScrollSnapOnPage: false, // true to pause scroll after activities filled the page, specifying a number (0 to 1) will pause after % of page is filled
+  autoScrollSnapOnPage: false, // true will pause scroll after activities filled the page. Specifying a number (0 to 1) will pause after % of page is filled
   autoScrollSnapOnPageoffset: 0 // Specify number of pixels to overscroll or underscroll after pause
 };
 
