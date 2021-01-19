@@ -95,6 +95,15 @@
   outline: 0;
 }
 
+.brandmessage {
+  bottom: 0;
+  color: #767676;
+  font-size: 10px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  position:absolute;
+}
+
 .minimizable-web-chat > .chat-box > header > button:focus:not(:active),
 .minimizable-web-chat > .chat-box > header > button:hover:not(:active) {
   color: rgba(255, 255, 255, .6);
@@ -110,6 +119,7 @@
 
 .main{
   border-radius: 15px;
+  margin-bottom: 10px;
 }
 
 @media (max-width:960px) , ( max-height: 600px){

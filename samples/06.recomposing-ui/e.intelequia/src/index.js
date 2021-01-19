@@ -35,9 +35,10 @@ import * as serviceWorker from './serviceWorker';
 //         backgroundColor: '#EE8239',
 //         imageUrl: ''
 //     },
-//     directlineTokenUrl: 'https://fcbb76a83b7f.ngrok.io/api/directline/generateToken/',
-//     directlineReconnectTokenUrl: 'https://fcbb76a83b7f.ngrok.io/api/directline/reconnect/',
-//     speechTokenUrl: 'https://fcbb76a83b7f.ngrok.io/api/directline/speech/generatetoken', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
+//     brandMessage: 'Powered by Hotelequia',
+//     directlineTokenUrl: 'https://76f6962b057d.ngrok.io/api/directline/generateToken/',
+//     directlineReconnectTokenUrl: 'https://76f6962b057d.ngrok.io/api/directline/reconnect/',
+//     speechTokenUrl: 'https://76f6962b057d.ngrok.io/api/directline/speech/generatetoken', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
 //     speechCredentials: {
 //         region: undefined,
 //         subscriptionKey: undefined

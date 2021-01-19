@@ -100,7 +100,6 @@ const MinimizableWebChat = (parameters) => {
   const [side, setSide] = useState('right');
   const [token, setToken] = useState();
   const [conversationId, setConversationId] = useState();
-  const [watermark, setWatermark] = useState();
   const firstTimeVisit = checkCookie('firstTimeVisit', true, { path: '/', maxAge: 2592000 });;
   const [credentials, setCredentials] = useState();
   const [language, setLanguage] = useState();
@@ -114,17 +113,12 @@ const MinimizableWebChat = (parameters) => {
   const handleFetchToken = useCallback(async () => {
     if (!token) {
 
-      // let localStorageConversationId = localStorage.getItem('conversationId');
       let localStorageConversationId = getCookie("bci")
       setConversationId(localStorageConversationId);
 
-      // let localStorageWatermark = localStorage.getItem('watermark') ?? '';
-      let localStorageWatermark = getCookie("watermark")
-      setWatermark(localStorageWatermark);
-
       let url = '';
       if (localStorageConversationId) {
-        url = options.directlineReconnectTokenUrl + localStorageConversationId + '?watermark=' + localStorageWatermark;
+        url = options.directlineReconnectTokenUrl + localStorageConversationId;
       }
       else {
         url = options.directlineTokenUrl;
@@ -239,6 +233,7 @@ const MinimizableWebChat = (parameters) => {
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
             language={language}
           />}
+          {(options.brandMessage != undefined && options.brandMessage != '') && <div className="brandmessage">{options.brandMessage}</div>}
         </div>
       )}
     </div>

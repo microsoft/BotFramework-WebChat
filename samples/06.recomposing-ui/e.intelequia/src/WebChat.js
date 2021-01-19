@@ -45,40 +45,19 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     onFetchToken();
   }, [onFetchToken]);
 
-
-
-  // let conversationId = localStorage.getItem('conversationId');
   let conversationId = getCookie("bci")
-  // let watermark = localStorage.getItem('watermark') ?? '';
-  let watermark = getCookie("watermark")
   let directLine = undefined;
 
   var date = new Date();
-  date.setDate(date.getDate() + 14);
+  date.setDate(date.getDate() + 2);
 
-  directLine = useMemo(() => createDirectLine({ token, conversationId, watermark }), [token, conversationId, watermark]);
+  directLine = useMemo(() =>createDirectLine({ token }), [token]);
+  
   if (token && !conversationId && directLine.conversationId) {
     setCookie('bci', directLine.conversationId, { path: '/', expires: date});
-    // localStorage.setItem('conversationId', directLine.conversationId);
-  }
-  if (token && watermark != directLine.watermark) {
-    setCookie('watermark', directLine.watermark, { path: '/', expires: date});
-    // localStorage.setItem('watermark', directLine.watermark);
   }
 
   const userId = getUser(window.navigator.language);
-
-  // const webSpeechPonyfill = useMemo(() => {
-  //   const ponyfill = webSpeechPonyfillFactory && webSpeechPonyfillFactory({ language });
-  //   const { speechSynthesis, SpeechSynthesisUtterance } = ponyfill || {};
-
-  //   return {
-  //     ...ponyfill,
-  //     speechSynthesis: speechSynthesis,
-  //     SpeechSynthesisUtterance: SpeechSynthesisUtterance
-  //   };
-  // }, [language, webSpeechPonyfillFactory]);
-
 
   return token ? (
     <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
