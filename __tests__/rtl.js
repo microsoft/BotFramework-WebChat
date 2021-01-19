@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
+import mediaBuffered from './setup/conditions/mediaBuffered.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -137,7 +138,14 @@ describe('rtl UI', () => {
       }
     });
 
-    await sendMessageAndMatchSnapshot(driver, pageObjects, 'audiocard');
+    await pageObjects.sendMessageViaSendBox('audiocard', { waitForSend: true });
+
+    const audioElement = await driver.findElement(By.css('audio'));
+
+    await driver.wait(mediaBuffered(audioElement));
+    await pageObjects.playMediaToCompletion(audioElement);
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should show suggested actions with images', async () => {
