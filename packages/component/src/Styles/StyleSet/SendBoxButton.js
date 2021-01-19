@@ -8,9 +8,12 @@ export default function createSendBoxButtonStyle({
 }) {
   return {
     '&.webchat__icon-button': {
+      alignItems: 'center',
       backgroundColor: 'Transparent',
       border: 0,
+      display: 'flex',
       height: '100%',
+      justifyContent: 'center',
       outline: 0,
       padding: 0,
 
