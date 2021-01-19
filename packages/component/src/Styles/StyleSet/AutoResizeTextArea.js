@@ -28,7 +28,7 @@ export default function AutoResizeTextArea({ primaryFont }) {
         overflowY: 'auto',
         padding: 0,
         position: 'absolute',
-        resize: 'none' /* Hiding the textarea resizing handle (on lower-right hand corner) */,
+        resize: 'none' /* Hides the textarea resizing handle (on lower-right hand corner) */,
         top: 0,
         width: '100%',
         wordBreak: 'break-word'
