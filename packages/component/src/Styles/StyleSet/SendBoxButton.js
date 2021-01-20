@@ -12,7 +12,6 @@ export default function createSendBoxButtonStyle({
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',
-      height: '100%',
       justifyContent: 'center',
       outline: 0,
       padding: 0,
