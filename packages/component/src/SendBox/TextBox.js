@@ -5,7 +5,7 @@ import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
-import AccessibleTextArea from '../Utils/AccessibleTextArea';
+import AutoResizeTextArea from './AutoResizeTextArea';
 import connectToWebChat from '../connectToWebChat';
 import useFocus from '../hooks/useFocus';
 import useReplaceEmoticon from '../hooks/internal/useReplaceEmoticon';
@@ -19,7 +19,7 @@ const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
     display: 'flex',
 
-    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area-box': {
+    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area': {
       flex: 1
     }
   }
@@ -139,7 +139,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
 const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const [, setSendBox] = useSendBoxValue();
-  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
@@ -298,7 +298,6 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
       className={classNames(
         'webchat__send-box-text-box',
         rootClassName,
-        sendBoxTextAreaStyleSet + '',
         sendBoxTextBoxStyleSet + '',
         (className || '') + ''
       )}
@@ -324,27 +323,25 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
           value={textBoxValue}
         />
       ) : (
-        <div className="webchat__send-box-text-box__text-area-box">
-          <AccessibleTextArea
-            aria-label={sendBoxString}
-            className="webchat__send-box-text-box__text-area"
-            data-id="webchat-sendbox-input"
-            disabled={disabled}
-            enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
-            inputMode="text"
-            onChange={disabled ? undefined : handleChange}
-            onFocus={disabled ? undefined : handleFocus}
-            onKeyDown={disabled ? undefined : handleKeyDown}
-            onKeyPress={disabled ? undefined : handleKeyPress}
-            onSelect={disabled ? undefined : handleSelect}
-            placeholder={typeYourMessageString}
-            readOnly={disabled}
-            ref={inputRefCallback}
-            rows="1"
-            value={textBoxValue}
-          />
-          <div className="webchat__send-box-text-box__text-area-doppelganger">{textBoxValue + '\n'}</div>
-        </div>
+        <AutoResizeTextArea
+          aria-label={sendBoxString}
+          className="webchat__send-box-text-box__text-area"
+          data-id="webchat-sendbox-input"
+          disabled={disabled}
+          enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
+          inputMode="text"
+          onChange={disabled ? undefined : handleChange}
+          onFocus={disabled ? undefined : handleFocus}
+          onKeyDown={disabled ? undefined : handleKeyDown}
+          onKeyPress={disabled ? undefined : handleKeyPress}
+          onSelect={disabled ? undefined : handleSelect}
+          placeholder={typeYourMessageString}
+          readOnly={disabled}
+          ref={inputRefCallback}
+          rows="1"
+          textAreaClassName="webchat__send-box-text-box__html-text-area"
+          value={textBoxValue}
+        />
       )}
       {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>

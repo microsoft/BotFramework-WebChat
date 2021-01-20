@@ -73,6 +73,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#2745](https://github.com/microsoft/BotFramework-WebChat/issues/2745). Added new `inline` layout to suggested actions, by [@compulim](https://github.com/compulim) in PR [#3641](https://github.com/microsoft/BotFramework-WebChat/pull/3641)
+-  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
 
 ### Fixed
 
@@ -82,6 +83,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). Fix some carousels improperly using aria-roledescription, by [@corinagum](https://github.com/corinagum) in PR [#3599](https://github.com/microsoft/BotFramework-WebChat/pull/3599)
 -  Fixes [#3483](https://github.com/microsoft/BotFramework-WebChat/issues/3483). IE11 anchors fixed to open securely without 'noreferrer' or 'noopener', by [@corinagum](https://github.com/corinagum) in PR [#3607](https://github.com/microsoft/BotFramework-WebChat/pull/3607)
 -  Fixes [#3565](https://github.com/microsoft/BotFramework-WebChat/issues/3565). Allow strikethrough `<s>` on sanitize markdown, by [@corinagum](https://github.com/corinagum) in PR [#3646](https://github.com/microsoft/BotFramework-WebChat/pull/3646)
+-  Fixes [#3672](https://github.com/microsoft/BotFramework-WebChat/issues/3672). Center the icon of send box buttons vertically and horizontally, by [@compulim](https://github.com/compulim) in PR [#3673](https://github.com/microsoft/BotFramework-WebChat/pull/3673)
 
 ### Samples
 

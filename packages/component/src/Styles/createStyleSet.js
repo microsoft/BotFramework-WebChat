@@ -3,6 +3,7 @@ import createActivitiesStyle from './StyleSet/Activities';
 import createActivityStyle from './StyleSet/Activity';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
+import createAutoResizeTextAreaStyle from './StyleSet/AutoResizeTextArea';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
@@ -19,7 +20,6 @@ import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
-import createSendBoxTextAreaStyle from './StyleSet/SendBoxTextArea';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
@@ -103,6 +103,7 @@ export default function createStyleSet(options) {
     activity: createActivityStyle(options),
     audioAttachment: createAudioAttachmentStyle(options),
     audioContent: createAudioContentStyle(options),
+    autoResizeTextArea: createAutoResizeTextAreaStyle(options),
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
@@ -120,7 +121,6 @@ export default function createStyleSet(options) {
     scrollToEndButton: createScrollToEndButtonStyle(options),
     sendBox: createSendBoxStyle(options),
     sendBoxButton: createSendBoxButtonStyle(options),
-    sendBoxTextArea: createSendBoxTextAreaStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     sendStatus: createSendStatusStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),

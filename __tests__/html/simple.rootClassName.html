@@ -5,7 +5,7 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .app__webchat {
-        background-color: palegoldenrod;
+        background-color: paleturquoise !important;
       }
     </style>
   </head>
@@ -14,7 +14,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         window.WebChat.renderWebChat(
           {
             className: 'app__webchat',
