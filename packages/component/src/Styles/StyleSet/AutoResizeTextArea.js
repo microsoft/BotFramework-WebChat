@@ -15,7 +15,7 @@ export default function AutoResizeTextArea({ primaryFont }) {
       },
 
       '& .webchat__auto-resize-textarea__textarea': {
-        appearance: 'none' /* We should tell the user agent we are revamping the style */,
+        appearance: 'none' /* Prevent browser styling */,
         backgroundColor: 'transparent',
         border: 0,
         color: 'inherit',
