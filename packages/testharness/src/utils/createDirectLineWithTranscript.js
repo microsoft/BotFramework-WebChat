@@ -1,3 +1,5 @@
+import Observable from 'core-js/features/observable';
+
 import createDeferredObservable from './createDeferredObservable';
 import loadTranscriptAsset from './loadTranscriptAsset';
 import shareObservable from './shareObservable';
@@ -31,7 +33,7 @@ export default function createDirectLineWithTranscript(activitiesOrFilename) {
   });
 
   const activityDeferredObservable = createDeferredObservable(() => {
-    (async function() {
+    (async function () {
       connectionStatusDeferredObservable.next(1);
       connectionStatusDeferredObservable.next(2);
 
@@ -58,6 +60,17 @@ export default function createDirectLineWithTranscript(activitiesOrFilename) {
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
     connectionStatusDeferredObservable,
     end: () => {},
-    postActivity: () => {}
+    postActivity: activity => {
+      const id = Math.random().toString(36).substr(2, 5);
+
+      activityDeferredObservable.next(
+        patchActivity({
+          ...activity,
+          id
+        })
+      );
+
+      return Observable.from([id]);
+    }
   };
 }
