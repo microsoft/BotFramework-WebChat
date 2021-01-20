@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Set `autoScrollSnapOnPage` to `true` to pause auto-scroll when a page is filled, or a number between `0` and `1` to pause after % of page is filled
    -  Set `autoScrollSnapOnActivityOffset` and `autoScrollSnapOnPageOffset` to a number (in pixels) to overscroll/underscroll after the pause
 -  Supports multiple transcripts in a single composition, by [@compulim](https://github.com/compulim) in PR [#3653](https://github.com/microsoft/BotFramework-WebChat/pull/3653)
+-  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
 
 ### Fixed
 

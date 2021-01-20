@@ -93,6 +93,7 @@ const DEFAULT_OPTIONS = {
   sendBoxBorderTop: 'solid 1px #E6E6E6',
   sendBoxPlaceholderColor: undefined, // defaults to subtle
   sendBoxTextWrap: false,
+  sendBoxButtonAlignment: 'stretch', // "top", "bottom", or "stretch"
 
   // Visually show spoken text
   showSpokenText: false,

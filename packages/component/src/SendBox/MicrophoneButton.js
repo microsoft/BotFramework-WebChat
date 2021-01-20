@@ -31,7 +31,6 @@ const {
 
 const ROOT_STYLE = {
   display: 'flex',
-  height: '100%',
 
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
 
