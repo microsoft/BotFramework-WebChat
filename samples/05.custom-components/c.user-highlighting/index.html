@@ -60,15 +60,17 @@
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
         const activityMiddleware = () => next => (...setupArgs) => {
-          const [card] = setupArgs;
+          const render = next(...setupArgs);
+          
+          if(render) {
+            return  (...renderArgs) => {
+            const element = render(...renderArgs);
+            const [card] = setupArgs;
 
-          return (...renderArgs) => (
-            <div
-              className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}
-            >
-              {next(card)(...renderArgs)}
-            </div>
-          );
+            return element && <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>{element}</div>;
+            };
+          }
+          
         };
 
         window.ReactDOM.render(
