@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 
-import { useScrollToEnd as useScrollToBottomScrollToEnd } from 'react-scroll-to-bottom';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useScrollToEnd() {
-  const scrollToEnd = useScrollToBottomScrollToEnd();
+  const { scrollToEndCallbacksRef } = useWebChatUIContext();
 
-  return useCallback(() => scrollToEnd({ behavior: 'smooth' }), [scrollToEnd]);
+  return useCallback(() => scrollToEndCallbacksRef.current.forEach(callback => callback({ behavior: 'smooth' })), [
+    scrollToEndCallbacksRef
+  ]);
 }

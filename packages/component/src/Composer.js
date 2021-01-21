@@ -1,6 +1,5 @@
 import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
-import { Composer as ScrollToBottomComposer } from 'react-scroll-to-bottom';
 import createEmotion from 'create-emotion';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
@@ -79,9 +78,9 @@ const ComposerCore = ({
   const [styleOptions] = useStyleOptions();
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const sendBoxFocusRef = useRef();
-  const transcriptActivityElementsRef = useRef([]);
   const transcriptFocusRef = useRef();
-  const transcriptRootElementRef = useRef();
+  const scrollToCallbacksRef = useRef([]);
+  const scrollToEndCallbacksRef = useRef([]);
 
   const dictationOnError = useCallback(err => {
     console.error(err);
@@ -134,52 +133,77 @@ const ComposerCore = ({
     };
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
+  const scrollPositionObserversRef = useRef([]);
+  const [numScrollPositionObservers, setNumScrollPositionObservers] = useState(0);
+
+  const dispatchScrollPosition = useCallback(
+    event => scrollPositionObserversRef.current.forEach(observer => observer(event)),
+    [scrollPositionObserversRef]
+  );
+
+  const observeScrollPosition = useCallback(
+    observer => {
+      scrollPositionObserversRef.current = [...scrollPositionObserversRef.current, observer];
+      setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
+
+      return () => {
+        scrollPositionObserversRef.current = scrollPositionObserversRef.current.filter(target => target !== observer);
+        setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
+      };
+    },
+    [scrollPositionObserversRef, setNumScrollPositionObservers]
+  );
+
   const context = useMemo(
     () => ({
       ...focusContext,
       dictateAbortable,
+      dispatchScrollPosition,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
+      numScrollPositionObservers,
+      observeScrollPosition,
       renderMarkdown,
+      scrollToCallbacksRef,
+      scrollToEndCallbacksRef,
       sendBoxFocusRef,
       setDictateAbortable,
       styleSet: patchedStyleSet,
       styleToEmotionObject,
       suggestedActionsAccessKey,
-      transcriptActivityElementsRef,
       transcriptFocusRef,
-      transcriptRootElementRef,
       webSpeechPonyfill
     }),
     [
       dictateAbortable,
+      dispatchScrollPosition,
       focusContext,
       internalMarkdownIt,
       internalRenderMarkdownInline,
       nonce,
+      numScrollPositionObservers,
+      observeScrollPosition,
       patchedStyleSet,
       renderMarkdown,
+      scrollToCallbacksRef,
+      scrollToEndCallbacksRef,
       sendBoxFocusRef,
       setDictateAbortable,
       styleToEmotionObject,
       suggestedActionsAccessKey,
-      transcriptActivityElementsRef,
       transcriptFocusRef,
-      transcriptRootElementRef,
       webSpeechPonyfill
     ]
   );
 
   return (
-    <React.Fragment>
-      <SayComposer ponyfill={webSpeechPonyfill}>
-        <WebChatUIContext.Provider value={context}>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </WebChatUIContext.Provider>
-      </SayComposer>
-    </React.Fragment>
+    <SayComposer ponyfill={webSpeechPonyfill}>
+      <WebChatUIContext.Provider value={context}>
+        {children}
+        <Dictation onError={dictationOnError} />
+      </WebChatUIContext.Provider>
+    </SayComposer>
   );
 };
 
@@ -279,19 +303,17 @@ const Composer = ({
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
         {...composerProps}
       >
-        <ScrollToBottomComposer nonce={nonce}>
-          <ComposerCore
-            extraStyleSet={extraStyleSet}
-            nonce={nonce}
-            renderMarkdown={renderMarkdown}
-            styleSet={styleSet}
-            suggestedActionsAccessKey={suggestedActionsAccessKey}
-            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-          >
-            {children}
-            {onTelemetry && <UITracker />}
-          </ComposerCore>
-        </ScrollToBottomComposer>
+        <ComposerCore
+          extraStyleSet={extraStyleSet}
+          nonce={nonce}
+          renderMarkdown={renderMarkdown}
+          styleSet={styleSet}
+          suggestedActionsAccessKey={suggestedActionsAccessKey}
+          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+        >
+          {children}
+          {onTelemetry && <UITracker />}
+        </ComposerCore>
       </APIComposer>
     </React.Fragment>
   );

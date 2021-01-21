@@ -9,7 +9,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const { conditions, createStore, expect, host, pageObjects, timeouts, token, updateIn } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         function createDirectLineForTest(options) {
           const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -60,7 +60,7 @@
 
         await pageObjects.waitWithTick(
           {
-            message: 'turn into "Send failed. Retry.',
+            message: 'turn into "Send failed. Retry."',
             fn: () =>
               document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText ===
               'Send failed. Retry.'
