@@ -16,6 +16,7 @@ function useForceUpdate() {
 
 const MinimizableWebChat = (parameters) => {
   const options = parameters.parameters.parameters;
+  
   const store = useMemo(
     () =>
       createStore({}, ({ dispatch }) => next => action => {
@@ -128,9 +129,10 @@ const MinimizableWebChat = (parameters) => {
           method: 'GET'
         });
       const kk = await res.json();
+      setLanguage(options.language);
       setToken(kk.token);
     }
-  }, [setToken, token, conversationId, setConversationId]);
+  }, [setToken, token, conversationId, setConversationId,language, setLanguage]);
 
   const setFirstTimeCookie = () => {
     var cookie = getCookie('firstTimeVisit');

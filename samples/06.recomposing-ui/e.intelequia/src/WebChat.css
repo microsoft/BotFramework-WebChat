@@ -3,8 +3,9 @@
   border-radius: 0px 0px 7px 7px;
 }
 
-.webchat__carousel-layout__attachments .webchat__bubble {
+.webchat__carousel-layout .webchat__bubble {
   min-height: 100%;
+  min-width: 238px;
 }
 
 .connect-spinner {
