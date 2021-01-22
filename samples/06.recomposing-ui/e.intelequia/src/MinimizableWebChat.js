@@ -132,7 +132,7 @@ const MinimizableWebChat = (parameters) => {
       setLanguage(options.language);
       setToken(kk.token);
     }
-  }, [setToken, token, conversationId, setConversationId,language, setLanguage]);
+  }, [setToken, token, setConversationId, setLanguage]);
 
   const setFirstTimeCookie = () => {
     var cookie = getCookie('firstTimeVisit');

@@ -60,8 +60,8 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
   const userId = getUser(window.navigator.language);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} userID={String(userId)}
-      username={String(userId)} styleOptions={styleOptions} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale= { language ? language : directLine.locale}/>
+    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} userID={String(userId)}
+     username={String(userId)} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale={ language ? language : directLine.locale}/>
   ) : (
       <div className={`${className || ''} connect-spinner`}>
         <div className="content">
