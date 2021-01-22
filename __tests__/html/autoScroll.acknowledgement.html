@@ -160,6 +160,28 @@
         expect(scrollable.scrollTop).toBe(0);
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 1 });
 
+        await pageObjects.clickNewMessageButton();
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 9, unacknowledged: 3 });
+
+        expect(scrollable.scrollTop).toBe(
+          document.querySelectorAll('.webchat__basic-transcript__activity')[9].offsetTop
+        );
+
+        // Scroll to bottom
+        scrollable.scrollTop = scrollable.scrollHeight;
+
+        // Wait for scroll-to-bottom to detect it is at the bottom.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 12, unacknowledged: 0 });
+
         await host.done();
       })().catch(async err => {
         console.error(err);
