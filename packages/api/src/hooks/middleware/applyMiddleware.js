@@ -35,25 +35,24 @@ export function forRenderer(type, { strict = false } = {}, ...middleware) {
           }
 
           return <UserlandBoundary type={`render of ${type}`}>{render}</UserlandBoundary>;
-        } else {
-          return (...renderTimeArgs) => (
-            <UserlandBoundary type={`render of ${type}`}>
-              {() => {
-                try {
-                  const element = render(...renderTimeArgs);
-
-                  if (strict && !isValidElement(element)) {
-                    console.error(`botframework-webchat: ${type} should return React element only.`);
-                  }
-
-                  return element;
-                } catch (err) {
-                  return <ErrorBox error={err} type={type} />;
-                }
-              }}
-            </UserlandBoundary>
-          );
         }
+        return (...renderTimeArgs) => (
+          <UserlandBoundary type={`render of ${type}`}>
+            {() => {
+              try {
+                const element = render(...renderTimeArgs);
+
+                if (strict && !isValidElement(element)) {
+                  console.error(`botframework-webchat: ${type} should return React element only.`);
+                }
+
+                return element;
+              } catch (err) {
+                return <ErrorBox error={err} type={type} />;
+              }
+            }}
+          </UserlandBoundary>
+        );
       } catch (err) {
         return <ErrorBox error={err} type={type} />;
       }
