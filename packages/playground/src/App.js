@@ -24,6 +24,7 @@ function App() {
   const stackTokens = { childrenGap: 0 };
 
   // TODO: Add action buttons in tooltip later
+  // wordBreak styleOption is in regards to css feature word-break: 'break-all' (as an example) within the activity bubble
   const wordBreakTooltipProps = {
     onRenderContent: () => (
       <ol style={{ margin: 10, padding: 10 }}>
