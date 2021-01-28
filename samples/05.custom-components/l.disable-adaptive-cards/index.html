@@ -197,14 +197,7 @@
         const App = () => {
           const directLine = useMemo(() => window.WebChat.createDirectLine({ token }), []);
 
-          return (
-            <ReactWebChat
-              attachmentMiddleware={attachmentMiddleware}
-              directLine={directLine}
-              disabled={disabled}
-              store={store}
-            />
-          );
+          return <ReactWebChat attachmentMiddleware={attachmentMiddleware} directLine={directLine} store={store} />;
         };
 
         window.ReactDOM.render(<App />, document.getElementById('webchat'));
