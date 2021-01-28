@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script> -->
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      body {
+        background-color: #eee;
+      }
+
+      .button-bar {
+        background-color: antiquewhite;
+        border: #ccc;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        right: 10px;
+        margin: 10px;
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        /* width: calc(100% - 40px); */
+      }
+
+      #app {
+        height: 100%;
+      }
+
+      .webchat {
+        width: 100%;
+        height: 100%;
+        margin: auto;
+      }
+
+      .webchat.webchat--portrait {
+        height: 720px;
+        width: 480px;
+      }
+
+      .webchat.webchat--landscape {
+        width: 720px;
+        height: 480px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { Fragment, useCallback, useState },
+        ReactDOM: { render },
+        WebChat: { ReactWebChat },
+        WebChatTest: {
+          classNames,
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          elements,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      function createActivity(numLines) {
+        return {
+          from: { id: 'bot', role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text: new Array(numLines)
+            .fill()
+            .map((_, index) => `Line ${index + 1}`)
+            .join('\n\n'),
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        };
+      }
+
+      const directLine = createDirectLineWithTranscript([createActivity(15)]);
+
+      (async function () {
+        const store = createStore();
+
+        const App = ({ overrideOrientation }) => {
+          const [orientation, setOrientation] = useState('landscape');
+
+          const handlePortraitClick = useCallback(() => setOrientation('portrait'), [setOrientation]);
+          const handleLandscapeClick = useCallback(() => setOrientation('landscape'), [setOrientation]);
+          const handleAddMessageClick = useCallback(
+            () => directLine.activityDeferredObservable.next(createActivity(1)),
+            []
+          );
+
+          const finalOrientation = overrideOrientation || orientation;
+
+          return (
+            <Fragment>
+              <div
+                className={classNames('webchat', {
+                  'webchat--landscape': finalOrientation === 'landscape',
+                  'webchat--portrait': finalOrientation === 'portrait'
+                })}
+              >
+                <ReactWebChat directLine={directLine} store={store} />
+                <div className="button-bar">
+                  <button onClick={handlePortraitClick} type="button">
+                    Portrait
+                  </button>
+                  <br />
+                  <button onClick={handleLandscapeClick} type="button">
+                    Landscape
+                  </button>
+                  <br />
+                  <button onClick={handleAddMessageClick} type="button">
+                    Add a message
+                  </button>
+                </div>
+              </div>
+            </Fragment>
+          );
+        };
+
+        function renderApp(overrideProps = {}) {
+          render(<App {...overrideProps} />, document.getElementById('app'));
+        }
+
+        renderApp();
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+
+        await pageObjects.scrollToTop();
+
+        renderApp({ overrideOrientation: 'portrait' });
+
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+
+        directLine.activityDeferredObservable.next(createActivity(1));
+
+        // We need to wait for the scroll-to-bottom button to show up.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        await pageObjects.wait(() => !elements.newMessageButton(), timeouts.ui);
+
+        // As a control experiment, we need to show the scroll-to-bottom button.
+        directLine.activityDeferredObservable.next(createActivity(5));
+
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.scrollToTop();
+
+        // We need to wait for the scroll detector to register we are at the top.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        directLine.activityDeferredObservable.next(createActivity(1));
+
+        await pageObjects.wait(() => elements.newMessageButton(), timeouts.ui);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
