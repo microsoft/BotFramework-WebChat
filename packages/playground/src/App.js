@@ -69,7 +69,7 @@ function App() {
   const [messageActivityWordBreak, setMessageActivityWordBreak] = useState('break-word');
 
   // 'middlewareDisableObsoleteAC': Middleware that renders inputs disabled on an Adaptive Card that is no longer the latest activity.
-  const [middlewareDisableObsoleteAC, setMiddlewareDisableObsoleteAC] = useState(
+  const [disableObsoleteAC, setDisableObsoleteAC] = useState(
     () => window.sessionStorage.getItem('PLAYGROUND_MIDDLEWARE_DISABLE_OBSOLETE_AC') === 'true'
   );
 
@@ -123,7 +123,7 @@ function App() {
     const { activity, attachment } = card;
     const { activities } = store.getState();
 
-    if (middlewareDisableObsoleteAC) {
+    if (disableObsoleteAC) {
       const messages = activities.filter(activity => activity.type === 'message');
       const mostRecent = messages.pop() === activity;
 
@@ -202,10 +202,10 @@ function App() {
 
   const handleDisableObsoleteACMiddlewareChange = useCallback(
     (e, checked) => {
-      setMiddlewareDisableObsoleteAC(checked);
+      setDisableObsoleteAC(checked);
       window.sessionStorage.setItem('PLAYGROUND_MIDDLEWARE_DISABLE_OBSOLETE_AC', checked.toString());
     },
-    [setMiddlewareDisableObsoleteAC]
+    [setDisableObsoleteAC]
   );
 
   /// END MIDDLEWARE
@@ -447,7 +447,7 @@ function App() {
                 <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
               </TooltipHost>
               <Toggle
-                checked={middlewareDisableObsoleteAC}
+                checked={disableObsoleteAC}
                 label="Disable obsolete Adaptive Cards"
                 onChange={handleDisableObsoleteACMiddlewareChange}
                 onText="On"

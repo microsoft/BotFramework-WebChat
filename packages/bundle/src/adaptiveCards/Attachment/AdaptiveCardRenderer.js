@@ -131,7 +131,7 @@ function disableElementWithUndo(element) {
 }
 
 function disableInputElementsWithUndo(element, observeSubtree = true) {
-  const undoStack = [].map.call(element.querySelectorAll('a, button, input, select, textarea'), element =>
+  const undoStack = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
     disableElementWithUndo(element)
   );
 
