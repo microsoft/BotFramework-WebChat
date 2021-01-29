@@ -92,10 +92,11 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
                 const { value } = cardAction;
 
                 if (directLine.getSessionId) {
-                  // TODO: [P3] We should change this one to async/await.
-                  //       This is the first place in this project to use async.
-                  //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
-
+                  /**
+                   * @todo TODO: [P3] We should change this one to async/await.
+                   *       This is the first place in this project to use async.
+                   *       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
+                   */
                   return observableToPromise(directLine.getSessionId()).then(
                     sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
                   );
@@ -211,7 +212,9 @@ const Composer = ({
     );
 
     return () => {
-      // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+      /**
+       * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+       */
       dispatch(disconnect());
     };
   }, [dispatch, directLine, userID, username]);
@@ -319,12 +322,17 @@ const Composer = ({
         'attachment for screen reader',
         { strict: true },
         ...singleToArray(attachmentForScreenReaderMiddleware),
-        () => () => ({ attachment }) => () => {
+        () => () => ({ attachment }) => {
           if (attachment) {
-            throw new Error(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
-          } else {
-            throw new Error('No attachment to render');
+            console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
+            return false;
           }
+          return () => {
+            /**
+             * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix
+             */
+            throw new Error('No attachment to render');
+          };
         }
       )({}),
     [attachmentForScreenReaderMiddleware]
@@ -403,17 +411,18 @@ const Composer = ({
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
-  // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
-  // - User ID changed, causing all send* functions to be updated
-  // - send
-
-  // TODO: [P3] We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
-  // 1. Turns text into UPPERCASE
-  // 2. Filter out profanity
-
-  // TODO: [P4] Revisit all members of context
-  //       This context should consist of members that are not in the Redux store
-  //       i.e. members that are not interested in other types of UIs
+  /**
+   *
+   * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
+   * - User ID changed, causing all send* functions to be updated
+   * - send
+   * @todo TODO: [P3] We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
+   * 1. Turns text into UPPERCASE
+   * 2. Filter out profanity
+   * @todo TODO: [P4] Revisit all members of context
+   *       This context should consist of members that are not in the Redux store
+   *       i.e. members that are not interested in other types of UIs
+   */
   const context = useMemo(
     () => ({
       ...cardActionContext,
@@ -526,11 +535,12 @@ ComposeWithStore.propTypes = {
 
 export default ComposeWithStore;
 
-// TODO: [P3] We should consider moving some data from Redux store to props
+/**
+// @todo TODO: [P3] We should consider moving some data from Redux store to props
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
 //       we should clean up the responsibility between Context and Redux store
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
-
+ */
 Composer.defaultProps = {
   activityMiddleware: undefined,
   activityRenderer: undefined,
