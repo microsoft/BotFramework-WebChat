@@ -1,5 +1,6 @@
-import { imageSnapshotOptions, timeouts } from './constants.json';
+import { logging } from 'selenium-webdriver';
 
+import { imageSnapshotOptions, timeouts } from './constants.json';
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
@@ -151,4 +152,18 @@ test('broken card of invalid version', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('unknown card', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card unknown', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+  const browserConsoleErrors = await driver.manage().logs().get(logging.Type.BROWSER);
+
+  expect(browserConsoleErrors[0].level.name_).toEqual('WARNING');
+  expect(browserConsoleErrors[0].message).toContain('No renderer for attachment for screen reader of type');
 });

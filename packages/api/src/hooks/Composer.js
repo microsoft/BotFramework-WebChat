@@ -412,7 +412,6 @@ const Composer = ({
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
   /**
-   *
    * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
    * - User ID changed, causing all send* functions to be updated
    * - send
@@ -536,10 +535,10 @@ ComposeWithStore.propTypes = {
 export default ComposeWithStore;
 
 /**
-// @todo TODO: [P3] We should consider moving some data from Redux store to props
-//       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
-//       we should clean up the responsibility between Context and Redux store
-//       We should decide which data is needed for React but not in other environment such as CLI/VSCode
+ * @todo TODO: [P3] We should consider moving some data from Redux store to props
+ *       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
+ *       we should clean up the responsibility between Context and Redux store
+ *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
 Composer.defaultProps = {
   activityMiddleware: undefined,
