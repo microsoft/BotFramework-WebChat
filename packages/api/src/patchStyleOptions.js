@@ -22,6 +22,7 @@ function parseBorder(border) {
 
 const PIXEL_UNIT_PATTERN = /^\d+px$/u;
 
+// eslint-disable-next-line complexity
 export default function patchStyleOptions(
   options,
   { groupTimestamp: groupTimestampFromProps, sendTimeout: sendTimeoutFromProps }

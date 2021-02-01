@@ -79,7 +79,7 @@ export default async function create({
     const { privSource: source } = audioConfig;
 
     source.createAudioContext = () => {
-      if (!!source.privContext) {
+      if (!source.privContext) {
         return;
       }
 

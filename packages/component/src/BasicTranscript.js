@@ -704,9 +704,8 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
         }
 
         return values.reduce((minValue, value) => Math.min(minValue, value), Infinity);
-      } else {
-        return Infinity;
       }
+      return Infinity;
     },
     [
       activityElementsRef,
