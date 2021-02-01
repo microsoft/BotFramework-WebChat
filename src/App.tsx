@@ -605,6 +605,10 @@ const BaseTheme = (theme: Theme) => `
         border-radius: 5px;
         background-color: ${theme.mainColor} !important;
         border-color: ${theme.mainColor} !important;
+
+        flex: auto;
+        text-overflow: initial;
+        white-space: initial;
     }
 
     .feedbot-wrapper .wc-app .wc-card button:active {
