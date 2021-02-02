@@ -42,6 +42,8 @@ export default function useAcknowledgedActivity() {
     if (stickyChangedToSticky) {
       lastStickyActivityIDRef.current = getActivityUniqueId(activities[activities.length - 1] || {});
     }
+
+    return lastStickyActivityIDRef.current;
   }, [activities, lastStickyActivityIDRef, stickyChangedToSticky]);
 
   return useMemo(() => {

@@ -635,18 +635,17 @@ InternalTranscriptScrollable.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired
 };
 
-const BasicTranscript = ({ className }) => {
+const SetScroller = ({ activityElementsRef, scrollerRef }) => {
   const [
     { autoScrollSnapOnActivity, autoScrollSnapOnActivityOffset, autoScrollSnapOnPage, autoScrollSnapOnPageOffset }
   ] = useStyleOptions();
   const [lastAcknowledgedActivity] = useAcknowledgedActivity();
-  const activityElementsRef = useRef([]);
 
   const lastAcknowledgedActivityRef = useRef(lastAcknowledgedActivity);
 
   lastAcknowledgedActivityRef.current = lastAcknowledgedActivity;
 
-  const scroller = useCallback(
+  scrollerRef.current = useCallback(
     ({ offsetHeight, scrollTop }) => {
       const patchedAutoScrollSnapOnActivity =
         typeof autoScrollSnapOnActivity === 'number'
@@ -719,8 +718,18 @@ const BasicTranscript = ({ className }) => {
     ]
   );
 
+  return false;
+};
+
+const BasicTranscript = ({ className }) => {
+  const activityElementsRef = useRef([]);
+  const scrollerRef = useRef(() => Infinity);
+
+  const scroller = useCallback((...args) => scrollerRef.current(...args), [scrollerRef]);
+
   return (
     <ReactScrollToBottomComposer scroller={scroller}>
+      <SetScroller activityElementsRef={activityElementsRef} scrollerRef={scrollerRef} />
       <InternalTranscript activityElementsRef={activityElementsRef} className={className} />
     </ReactScrollToBottomComposer>
   );

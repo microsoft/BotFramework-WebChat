@@ -84,6 +84,12 @@ function addEventListenerOnceWithUndo(element, name, handler) {
   return detach;
 }
 
+function addEventListenerWithUndo(element, name, handler) {
+  element.addEventListener(name, handler);
+
+  return () => element.removeEventListener(name, handler);
+}
+
 function disableElementWithUndo(element) {
   const undoStack = [];
   const isActive = element === document.activeElement;
@@ -91,12 +97,6 @@ function disableElementWithUndo(element) {
 
   /* eslint-disable-next-line default-case */
   switch (tag) {
-    // Should we not disable <a>? Will some of the <a> are styled as button?
-    case 'a':
-      undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
-
-      break;
-
     case 'button':
     case 'input':
     case 'select':
@@ -114,7 +114,7 @@ function disableElementWithUndo(element) {
       }
 
       if (tag === 'input' || tag === 'textarea') {
-        undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
+        undoStack.push(addEventListenerWithUndo(element, 'click', disabledHandler));
         undoStack.push(setAttributeWithUndo(element, 'readonly', 'readonly'));
       } else if (tag === 'select') {
         undoStack.push(
@@ -131,7 +131,7 @@ function disableElementWithUndo(element) {
 }
 
 function disableInputElementsWithUndo(element, observeSubtree = true) {
-  const undoStack = [].map.call(element.querySelectorAll('a, button, input, select, textarea'), element =>
+  const undoStack = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
     disableElementWithUndo(element)
   );
 
