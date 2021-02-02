@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Set `autoScrollSnapOnActivityOffset` and `autoScrollSnapOnPageOffset` to a number (in pixels) to overscroll/underscroll after the pause
 -  Supports multiple transcripts in a single composition, by [@compulim](https://github.com/compulim) in PR [#3653](https://github.com/microsoft/BotFramework-WebChat/pull/3653)
 -  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
--  Resolves [#3666](https://github.com/microsoft/BotFramework-WebChat/issues/3666). Added support of sovereign clouds when using Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Resolves [#3666](https://github.com/microsoft/BotFramework-WebChat/issues/3666). Added support of sovereign clouds when using Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Please refer to [`DIRECT_LINE_SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md#directlinespeechcredentials) for instructions
 
 ### Fixed
@@ -43,13 +43,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3483](https://github.com/microsoft/BotFramework-WebChat/issues/3483). IE11 anchors fixed to open securely without 'noreferrer' or 'noopener', by [@corinagum](https://github.com/corinagum) in PR [#3607](https://github.com/microsoft/BotFramework-WebChat/pull/3607)
 -  Fixes [#3565](https://github.com/microsoft/BotFramework-WebChat/issues/3565). Allow strikethrough `<s>` on sanitize markdown, by [@corinagum](https://github.com/corinagum) in PR [#3646](https://github.com/microsoft/BotFramework-WebChat/pull/3646)
 -  Fixes [#3672](https://github.com/microsoft/BotFramework-WebChat/issues/3672). Center the icon of send box buttons vertically and horizontally, by [@compulim](https://github.com/compulim) in PR [#3673](https://github.com/microsoft/BotFramework-WebChat/pull/3673)
--  Fixes [#3411](https://github.com/microsoft/BotFramework-WebChat/issues/3411). With Direct Line Speech, clicking on microphone button during speech recognition should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#3411](https://github.com/microsoft/BotFramework-WebChat/issues/3411). With Direct Line Speech, clicking on microphone button during speech recognition should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Although it no locker lock up microphone, clicking on the microphone button has no effect because Direct Line Speech does not support aborting speech recognition
--  Fixes [#3421](https://github.com/microsoft/BotFramework-WebChat/issues/3421). With Direct Line Speech, after not able to recognize any speech, it should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#3421](https://github.com/microsoft/BotFramework-WebChat/issues/3421). With Direct Line Speech, after not able to recognize any speech, it should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594) and PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Development dependencies
       -  [`@babel/cli@7.12.1`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.12.3`](https://npmjs.com/package/@babel/core)
