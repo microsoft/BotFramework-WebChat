@@ -29,8 +29,15 @@
       } = window.WebChatTest;
 
       (async function () {
-        const queryParams = window.WebChatTest.parseURLParams(location.hash);
-        let { sa: speechAuthorizationToken, sr: speechRegion, ss: speechSubscriptionKey, t: channelType } = queryParams;
+        const queryParams = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+        const channelType = queryParams.get('t');
+        const directLineSpeechHostname = queryParams.get('dlsh');
+        const speechAuthorizationToken = queryParams.get('sa');
+        const speechRegion = queryParams.get('sr');
+        const speechSubscriptionKey = queryParams.get('ss');
+        const speechRecognitionHostname = queryParams.get('srh');
+        const speechSynthesisHostname = queryParams.get('ssh');
 
         if (!channelType) {
           console.warn(
@@ -40,8 +47,13 @@
           channelType = 'dl';
         } else if (channelType !== 'dl' && channelType !== 'dlspeech') {
           throw new Error('Invalid channel type specified, must be either "dl" or "dlspeech".');
-        } else if (speechSubscriptionKey && !speechRegion) {
-          throw new Error('Speech region must be specified when speech subscription key is specified.');
+        } else if (
+          speechSubscriptionKey &&
+          !speechRegion &&
+          ((channelType === 'dl' && (!speechRecognitionHostname || !speechSynthesisHostname)) ||
+            (channelType === 'dlspeech' && !directLineSpeechHostname))
+        ) {
+          throw new Error('Speech region or hostname must be specified when speech subscription key is specified.');
         }
 
         if (!speechAuthorizationToken && !speechSubscriptionKey) {
@@ -58,7 +70,10 @@
 
         const speechCredentials = {
           authorizationToken: speechAuthorizationToken,
+          directLineSpeechHostname,
           region: speechRegion,
+          speechRecognitionHostname,
+          speechSynthesisHostname,
           subscriptionKey: speechSubscriptionKey
         };
 
@@ -175,7 +190,6 @@
           throw detailedError;
         }
 
-        await host.snapshot();
         await host.done();
       })().catch(async err => {
         console.error(err);

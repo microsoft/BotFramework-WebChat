@@ -2,7 +2,6 @@
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 
-import cognitiveServicesAsyncFunctionToESAsyncFunction from './cognitiveServicesAsyncFunctionToESAsyncFunction';
 import createMultiBufferingPlayer from './createMultiBufferingPlayer';
 
 // Safari requires an audio buffer with a sample rate of 22050 Hz.
@@ -118,23 +117,34 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
     const { format } = stream;
     const abortPromise = abortToReject(signal);
     const array = new Uint8Array(DEFAULT_BUFFER_SIZE);
-    const streamRead = cognitiveServicesAsyncFunctionToESAsyncFunction(stream.read.bind(stream));
 
     const read = () =>
       Promise.race([
         // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
         // eslint-disable-next-line no-empty-function
         abortPromise.catch(() => {}),
-        streamRead(array.buffer).then(numBytes =>
-          numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined
-        )
+        stream
+          .read(array.buffer)
+          .then(numBytes => (numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined))
       ]);
 
     if (signal.aborted) {
       throw new Error('aborted');
     }
 
-    let newSamplesPerSec = format.samplesPerSec;
+    let { samplesPerSec } = format;
+
+    // TODO: [P0] #3692 Remove the following if-condition block when the underlying bugs are resolved.
+    //       There is a bug in Speech SDK 1.15.0 that it returns 24kHz instead of 16kHz.
+    //       Even we explicitly specify the output audio format to 16kHz, there is another bug that ignored it.
+    //       In short, DLSpeech service currently always stream in RIFF WAV format, instead of MP3.
+    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/313
+    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/314
+    if (format.requestAudioFormatString === 'audio-24khz-48kbitrate-mono-mp3') {
+      samplesPerSec = 16000;
+    }
+
+    let newSamplesPerSec = samplesPerSec;
     let sampleRateMultiplier = 1;
 
     // Safari requires a minimum sample rate of 22100 Hz.
@@ -143,7 +153,7 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
     // For security, data will only be upsampled up to 96000 Hz.
     while (newSamplesPerSec < MIN_SAMPLE_RATE && newSamplesPerSec < 96000) {
       sampleRateMultiplier++;
-      newSamplesPerSec = format.samplesPerSec * sampleRateMultiplier;
+      newSamplesPerSec = samplesPerSec * sampleRateMultiplier;
     }
 
     // The third parameter is the sample size in bytes.

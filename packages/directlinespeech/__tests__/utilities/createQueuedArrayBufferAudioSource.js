@@ -10,13 +10,13 @@ import {
   AudioStreamNodeDetachedEvent
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/AudioSourceEvents';
 
+import { ChunkedArrayBufferStream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/ChunkedArrayBufferStream';
 import { createNoDashGuid } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Guid';
 import { Events } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Events';
 import { EventSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/EventSource';
-import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
-import { Stream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Stream';
-
 const CHUNK_SIZE = 4096;
+
+// This is copied from MicAudioSource, but instead of retrieving from MediaStream, we dump the ArrayBuffer directly.
 
 class QueuedArrayBufferAudioSource {
   constructor(audioFormat, audioSourceId = createNoDashGuid()) {
@@ -35,10 +35,10 @@ class QueuedArrayBufferAudioSource {
     this.attach = this.attach.bind(this);
     this.detach = this.detach.bind(this);
     this.id = this.id.bind(this);
+    this.listen = this.listen.bind(this);
     this.push = this.push.bind(this);
     this.turnOff = this.turnOff.bind(this);
     this.turnOn = this.turnOn.bind(this);
-    this.upload = this.upload.bind(this);
   }
 
   push(arrayBuffer) {
@@ -51,7 +51,7 @@ class QueuedArrayBufferAudioSource {
 
       this.onEvent(new AudioSourceErrorEvent(errorMsg, ''));
 
-      return PromiseHelper.fromError(errorMsg);
+      return Promise.reject(errorMsg);
     }
 
     this._queue.push(arrayBuffer);
@@ -61,32 +61,33 @@ class QueuedArrayBufferAudioSource {
     this.onEvent(new AudioSourceInitializingEvent(this._id)); // no stream id
     this.onEvent(new AudioSourceReadyEvent(this._id));
 
-    return PromiseHelper.fromResult(true);
+    return true;
   }
 
   id() {
     return this._id;
   }
 
-  // Returns an IAudioSourceNode asynchronously.
-  // Reference at node_modules/microsoft-cognitiveservices-speech-sdk/distrib/es2015/src/common/IAudioSource.d.ts
-  attach(audioNodeId) {
+  async attach(audioNodeId) {
     this.onEvent(new AudioStreamNodeAttachingEvent(this._id, audioNodeId));
 
-    return this.upload(audioNodeId).onSuccessContinueWith(stream => {
-      this.onEvent(new AudioStreamNodeAttachedEvent(this._id, audioNodeId));
+    const stream = await this.listen(audioNodeId);
 
-      return {
-        detach: () => {
-          delete this._streams[audioNodeId];
+    this.onEvent(new AudioStreamNodeAttachedEvent(this._id, audioNodeId));
 
-          this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
-          this.turnOff();
-        },
-        id: () => audioNodeId,
-        read: stream.read.bind(stream)
-      };
-    });
+    return {
+      detach: () => {
+        stream.readEnded();
+
+        delete this._streams[audioNodeId];
+
+        this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
+
+        return this.turnOff();
+      },
+      id: () => audioNodeId,
+      read: () => stream.read()
+    };
   }
 
   detach(audioNodeId) {
@@ -104,37 +105,34 @@ class QueuedArrayBufferAudioSource {
 
     this.onEvent(new AudioSourceOffEvent(this._id)); // no stream now
 
-    return PromiseHelper.fromResult(true);
+    return true;
   }
 
-  // Creates a new Stream with bytes from the first queued ArrayBuffer.
-  upload(audioNodeId) {
-    return this.turnOn().onSuccessContinueWith(() => {
-      const stream = new Stream(audioNodeId);
+  async listen(audioNodeId) {
+    await this.turnOn();
 
-      this._streams[audioNodeId] = stream;
+    const stream = new ChunkedArrayBufferStream(this.format.avgBytesPerSec / 10, audioNodeId);
 
-      const arrayBuffer = this._queue.shift();
+    this._streams[audioNodeId] = stream;
 
-      const { byteLength } = arrayBuffer;
+    const arrayBuffer = this._queue.shift();
+    const { byteLength } = arrayBuffer;
 
-      for (let i = 0; i < byteLength; i += CHUNK_SIZE) {
-        stream.writeStreamChunk({
-          buffer: arrayBuffer.slice(i, Math.min(i + CHUNK_SIZE, byteLength)),
-          isEnd: false,
-          timeReceived: Date.now()
-        });
-      }
+    for (let i = 0; i < byteLength; i += CHUNK_SIZE) {
+      stream.writeStreamChunk({
+        buffer: arrayBuffer.slice(i, Math.min(i + CHUNK_SIZE, byteLength)),
+        isEnd: false,
+        timeReceived: Date.now()
+      });
+    }
 
-      // Stream will only close the internal stream writer.
-      stream.close();
+    stream.close();
 
-      return stream;
-    });
+    return stream;
   }
 
   get format() {
-    return PromiseHelper.fromResult(this._audioFormat);
+    return this._audioFormat;
   }
 
   get events() {
@@ -142,7 +140,7 @@ class QueuedArrayBufferAudioSource {
   }
 
   get deviceInfo() {
-    return PromiseHelper.fromResult({
+    return {
       bitspersample: this._audioFormat.bitsPerSample,
       channelcount: this._audioFormat.channels,
       connectivity: 'Unknown',
@@ -150,7 +148,7 @@ class QueuedArrayBufferAudioSource {
       model: 'File',
       samplerate: this._audioFormat.samplesPerSec,
       type: 'File'
-    });
+    };
   }
 }
 

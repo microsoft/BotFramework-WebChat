@@ -368,11 +368,13 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
         <code>fetchCredentials</code>
       </td>
       <td>
-        <pre>async () => ({<br />&nbsp;&nbsp;authorizationToken: string,<br />&nbsp;&nbsp;region: string<br />}) ||<br /><br />async () => ({<br />&nbsp;&nbsp;region: string,<br />&nbsp;&nbsp;subscriptionKey: string<br />})</pre>
+        <code>
+          <a href="#directlinespeechcredentials">DirectLineSpeechCredentials</a>
+        </code>
       </td>
       <td>(Required)</td>
       <td>
-        An asynchornous function to fetch credentials, including region and either authorization token or subscription key.
+        An asynchronous function to fetch credentials, including either hostname or region, and either authorization token or subscription key.
       </td>
     </tr>
     <tr>
@@ -399,6 +401,28 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
     </tr>
   </tbody>
 </table>
+
+### `DirectLineSpeechCredentials`
+
+```js
+type DirectLineSpeechCredentials = {
+  authorizationToken: string,
+  region: string
+} || {
+  authorizationToken: string,
+  directLineSpeechHostname: string
+} || {
+  region: string,
+  subscriptionKey: string
+} || {
+  directLineSpeechHostname: string,
+  subscriptionKey: string
+}
+```
+
+For public clouds, we recommend using the `region` option, such as `"westus2"`.
+
+For sovereign clouds, you should specify the hostname in FQDN through `directLineSpeechHostname` option, such as `"virginia.convai.speech.azure.us"`.
 
 ## Known issues
 
