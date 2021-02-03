@@ -48,7 +48,7 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
 
-        // This test is to verify that all elements with aria-labelledby, should have a corresponding element with the same ID.
+        // This test is to verify that all elements with aria-labelledby have a corresponding element with the same ID.
 
         const labelledBys = [].map.call(document.querySelectorAll('[aria-labelledby]'), element => ({
           element,
