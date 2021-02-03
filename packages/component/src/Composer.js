@@ -80,6 +80,7 @@ const ComposerCore = ({
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const sendBoxFocusRef = useRef();
   const transcriptFocusRef = useRef();
+  const scrollRelativeCallbacksRef = useRef([]);
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
 
@@ -166,6 +167,7 @@ const ComposerCore = ({
       numScrollPositionObservers,
       observeScrollPosition,
       renderMarkdown,
+      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       sendBoxFocusRef,
@@ -187,6 +189,7 @@ const ComposerCore = ({
       observeScrollPosition,
       patchedStyleSet,
       renderMarkdown,
+      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       sendBoxFocusRef,

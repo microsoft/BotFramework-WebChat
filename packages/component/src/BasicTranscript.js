@@ -28,6 +28,7 @@ import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useFocus from './hooks/useFocus';
 import useMemoize from './hooks/internal/useMemoize';
+import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
@@ -43,6 +44,8 @@ const {
   useLocalizer,
   useStyleOptions
 } = hooks;
+
+const SCROLL_RELATIVE_DELTA_IN_PIXEL = 40;
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
@@ -382,8 +385,31 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [activityElementsRef, rootElementRef, scrollToBottomScrollTo]
   );
 
+  const scrollRelative = useCallback(
+    direction => {
+      const { current: rootElement } = rootElementRef;
+
+      if (!rootElement) {
+        return;
+      }
+
+      const scrollable = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+
+      scrollTo(
+        {
+          scrollTop:
+            scrollable.scrollTop +
+            (direction === 'down' ? SCROLL_RELATIVE_DELTA_IN_PIXEL : -SCROLL_RELATIVE_DELTA_IN_PIXEL)
+        },
+        { behavior: 'smooth' }
+      );
+    },
+    [rootElementRef, scrollTo]
+  );
+
   useRegisterScrollTo(scrollTo);
   useRegisterScrollToEnd(scrollToBottomScrollToEnd);
+  useRegisterScrollRelative(scrollRelative);
 
   const dispatchScrollPosition = useDispatchScrollPosition();
   const patchedDispatchScrollPosition = useMemo(() => {
