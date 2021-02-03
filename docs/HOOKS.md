@@ -97,8 +97,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
 -  [`useRenderToast`](#userendertoast)
 -  [`useRenderTypingIndicator`](#userendertypingindicator)
+-  [`useScrollDown`](#usescrolldown)
 -  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
+-  [`useScrollUp`](#usescrollup)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
 -  [`useSendFiles`](#usesendfiles)
@@ -896,6 +898,16 @@ This function is for rendering typing indicator for all participants of the conv
 -  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
 -  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
 
+## `useScrollDown`
+
+<!-- prettier-ignore-start -->
+```js
+useScrollDown(): () => void
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a function that, when called, will scroll down on the transcript.
+
 ## `useScrollTo`
 
 <!-- prettier-ignore-start -->
@@ -926,6 +938,16 @@ useScrollToEnd(): () => void
 <!-- prettier-ignore-end -->
 
 This hook will return a function that, when called, will smoothly scroll the transcript view to the end.
+
+## `useScrollUp`
+
+<!-- prettier-ignore-start -->
+```js
+useScrollUp(): () => void
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a function that, when called, will scroll up on the transcript.
 
 ## `useSendBoxValue`
 
