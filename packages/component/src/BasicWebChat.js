@@ -90,6 +90,7 @@ const BasicWebChat = ({ className }) => {
       if (tagName === 'INPUT') {
         const { list, type, value } = target;
 
+        // These are buttons, up/down arrow keys are not handled by the user agent.
         if (
           type === 'button' ||
           type === 'checkbox' ||
@@ -99,7 +100,6 @@ const BasicWebChat = ({ className }) => {
           type === 'reset' ||
           type === 'submit'
         ) {
-          // These are buttons, up/down arrow keys are not handled by the user agent.
           allowArrowKeys = true;
         } else if (
           type === 'email' ||
