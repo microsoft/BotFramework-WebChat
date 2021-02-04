@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import lolex from 'lolex';
+import Observable from 'core-js/features/observable';
 import updateIn from 'simple-update-in';
 
 import { EventIterator } from './external/event-iterator';
@@ -174,6 +175,7 @@ export {
   jobs,
   loadTranscriptAsset,
   MockAudioContext,
+  Observable,
   pageObjects,
   parseURLParams,
   pcmWaveArrayBufferToRiffWaveArrayBuffer,
