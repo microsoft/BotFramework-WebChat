@@ -187,6 +187,14 @@ To make the live region more consistent across browsers and easier to control, w
       -  0-100 ms: Chrome and TalkBack on Android may miss some of the activities
       -  The development team settled on using one second after some experimentation
 
+### Technical Limitation
+
+-  Activity Time Stamp Announcement : Related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
+   -  Problem definition : Even when user override the 'grouptimestap' props and set it to true or to some interval, AT still announce every activity with it's associated Time stamp.
+   -  Explanation of current behavior : Once activity is marked as sent it is written to DOM as well as it's Timestamp, only when the next activity arrive the timestamp grouping logic is executed. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
+   -  Given above limitation even if we removed the timestamp element from DOM after group timestamp logic is executed this will not change the screen reader behavior.
+   -  As per Accessibility team review/recommendation : There is no hiding or loss of information in this case - so will keep the current behavior as is.
+
 ## Do and don't
 
 ### Do
