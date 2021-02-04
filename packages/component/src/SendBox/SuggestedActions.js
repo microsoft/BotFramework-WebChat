@@ -70,6 +70,7 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
   const filmStyleSet = useMemo(
     () =>
       createBasicStyleSetForReactFilm({
+        autoHide: false,
         cursor: suggestedActionsCarouselFlipperCursor,
         flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
         flipperSize: suggestedActionsCarouselFlipperSize
