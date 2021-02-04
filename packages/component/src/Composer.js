@@ -78,11 +78,14 @@ const ComposerCore = ({
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
-  const sendBoxFocusRef = useRef();
-  const transcriptFocusRef = useRef();
-  const scrollRelativeCallbacksRef = useRef([]);
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
+  const sendBoxFocusRef = useRef();
+  const transcriptFocusRef = useRef();
+
+  // Instead of having a `scrollUpCallbacksRef` and `scrollDownCallbacksRef`, they are combined into a single `scrollRelativeCallbacksRef`.
+  // The first argument tells whether it should go "up" or "down".
+  const scrollRelativeCallbacksRef = useRef([]);
 
   const dictationOnError = useCallback(err => {
     console.error(err);
