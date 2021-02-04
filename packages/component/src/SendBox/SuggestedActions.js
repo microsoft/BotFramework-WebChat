@@ -227,6 +227,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       imageAlt={imageAltText}
       key={index}
       text={text}
+      textClassName="webchat__suggested-actions__button-text"
       type={type}
       value={value}
     />
