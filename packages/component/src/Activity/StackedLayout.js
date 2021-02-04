@@ -138,7 +138,7 @@ const StackedLayout = ({
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
+      aria-labelledby={activityDisplayText ? ariaLabelId : undefined}
       aria-roledescription="activity"
       className={classNames('webchat__stacked-layout', rootClassName, stackedLayoutStyleSet + '', {
         'webchat__stacked-layout--extra-trailing': extraTrailing,
