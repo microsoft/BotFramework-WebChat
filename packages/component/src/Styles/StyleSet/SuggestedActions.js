@@ -135,6 +135,13 @@ export default function createSuggestedActionsStyle({
           paddingRight: paddingRegular / 2,
           paddingTop: paddingRegular / 2
         }
+      },
+
+      '&.webchat__suggested-actions--flow-layout, &.webchat__suggested-actions--stacked-layout': {
+        '& .webchat__suggested-actions__button-text': {
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }
       }
     }
   };
