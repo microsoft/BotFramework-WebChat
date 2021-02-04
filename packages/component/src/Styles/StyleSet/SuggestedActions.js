@@ -82,11 +82,11 @@ export default function createSuggestedActionsStyle({
 
         '&.webchat__suggested-actions--rtl': {
           '& .react-film__filmstrip__item:first-child': {
-            paddingRight: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            paddingRight: paddingRegular / 2
           },
 
           '& .react-film__filmstrip__item:last-child': {
-            paddingLeft: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            paddingLeft: paddingRegular / 2
           },
 
           '& .react-film__flipper + .react-film__filmstrip': {
