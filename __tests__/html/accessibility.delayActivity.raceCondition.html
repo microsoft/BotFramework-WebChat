@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        lolex,
+        WebChatTest: {
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          host,
+          Observable,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      const clock = (window.clock = lolex.install());
+
+      // This test is to make sure we don't regress issue #3431, a race condition:
+
+      // - After created a conversation
+      // - User send an activity (or Web Chat programmatically sending out an activity)
+      // - At the same time, the bot also send another activity, with reply to ID of a bogus activity
+
+      // The timeout occurs if the user's message was send before the bot message was received.
+
+      // Originally, we allow the bot's activity to show up even they point to a bogus activity, if that message was the very first activity in the transcript.
+
+      // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
+
+      (async function () {
+        const directLine = createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            return new Observable(({ complete, next }) => {
+              const id = '00001';
+
+              directLine.activityDeferredObservable.next({
+                channelData: activity.channelData,
+                from: {
+                  id: 'user',
+                  role: 'user'
+                },
+                id,
+                text: 'Aloha, bot!',
+                timestamp: new Date(Date.now() + 1).toISOString(),
+                type: 'message'
+              });
+
+              next(id);
+              complete();
+            });
+          }
+        });
+
+        const store = createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({
+              payload: {
+                text: 'Aloha, bot!'
+              },
+              type: 'WEB_CHAT/SEND_MESSAGE'
+            });
+          }
+
+          return next(action);
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        directLine.activityDeferredObservable.next({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: '00000',
+          replyToId: 'ABCDE',
+          text: 'Hello, John!',
+          timestamp: new Date(Date.now() + 0).toISOString(),
+          type: 'message'
+        });
+
+        // The bot's activity 00000 will show up immediately because it is the very first bot activity and should not send to "Reply-to-ID" queue.
+        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
