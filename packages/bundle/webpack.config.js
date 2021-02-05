@@ -38,11 +38,23 @@ let config = {
   ],
   resolve: {
     alias: {
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig': resolve(__dirname, 'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig.js'),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig.js'
+      ),
       // TODO: [P1] #3575 Remove the following line when bumping to Speech SDK 1.14.0 or higher
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource': resolve(__dirname, 'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource.js'),
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(__dirname, 'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'),
-      'microsoft-cognitiveservices-speech-sdk': resolve(__dirname, 'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
+      ),
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
     },

@@ -82,6 +82,7 @@ const ScreenReaderActivity = ({ activity }) => {
       {!!attachmentForScreenReaderRenderers.length && (
         <ul>
           {attachmentForScreenReaderRenderers.map((render, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <li key={index}>{render()}</li>
           ))}
         </ul>

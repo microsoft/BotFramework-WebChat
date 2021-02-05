@@ -117,7 +117,6 @@ If your development box has less than 4 cores, you will need to reduce the numbe
 
 Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can run simultaneously.
 
-
 ### Troubleshooting the test suite
 
 We run test suite on every commit and requires 100% test pass. If the test suite did not complete successfully, they are likely:
