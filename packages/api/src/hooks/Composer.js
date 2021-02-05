@@ -327,6 +327,7 @@ const Composer = ({
             console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
             return false;
           }
+
           return () => {
             /**
              * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix

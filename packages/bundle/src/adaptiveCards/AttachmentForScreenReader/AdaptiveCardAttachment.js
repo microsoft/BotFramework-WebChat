@@ -97,6 +97,7 @@ const AdaptiveCardAttachment = ({ content }) => {
 
     return inputs;
   }, [
+    card,
     ChoiceSetInput,
     DateInput,
     NumberInput,
@@ -105,8 +106,7 @@ const AdaptiveCardAttachment = ({ content }) => {
     SubmitAction,
     TextInput,
     TimeInput,
-    ToggleInput,
-    card
+    ToggleInput
   ]);
 
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || '', '', '');

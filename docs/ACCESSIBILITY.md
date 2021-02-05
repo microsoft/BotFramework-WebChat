@@ -224,7 +224,7 @@ Web Chat render components are accompanied by a screen reader renderer to maximi
 The Web Chat team **DOES NOT** recommend disabling warning messages regarding screen readers and accessibility. However, if the developer decides to suppress these messages, it can be done by adding the following code to `attachmentForScreenReaderMiddleware` in the `Composer` props.
 
 ```js
-const attachmentForScreenReaderMiddleware = () => next => (...args) => {
+const attachmentForScreenReaderMiddleware = () => next => () => {
    return false;
 };
 ```
