@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3672](https://github.com/microsoft/BotFramework-WebChat/issues/3672). Center the icon of send box buttons vertically and horizontally, by [@compulim](https://github.com/compulim) in PR [#3673](https://github.com/microsoft/BotFramework-WebChat/pull/3673)
 -  Fixes [#3683](https://github.com/microsoft/BotFramework-WebChat/issues/3683). Activities should be acknowledged when user scrolls to bottom, by [@compulim](https://github.com/compulim) in PR [#3684](https://github.com/microsoft/BotFramework-WebChat/pull/3684)
 -  Fixes [#3676](https://github.com/microsoft/BotFramework-WebChat/issues/3676). Activities without text should not generate bogus `aria-labelledby`, by [@compulim](https://github.com/compulim) in PR [#3697](https://github.com/microsoft/BotFramework-WebChat/pull/3697)
+-  Fixes [#3625](https://github.com/microsoft/BotFramework-WebChat/issues/3625). Update 'no screen reader for custom activity middleware' warning and add screen reader renderer documentation to `ACCESSIBILITY.md`, by [@corinagum](https://github.com/corinagum) in PR [#3689](https://github.com/microsoft/BotFramework-WebChat/pull/3689)
 
 ### Changed
 
@@ -96,8 +97,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  Fixes [#3473](https://github.com/microsoft/BotFramework-WebChat/issues/3473). Fix samples using activityMiddleware (from 4.10.0 breaking changes), by [@corinagum](https://github.com/corinagum) in PR [#3601](https://github.com/microsoft/BotFramework-WebChat/pull/3601)
--  Fixes [#3434](https://github.com/microsoft/BotFramework-WebChat/issues/3434). Dispatched event, postBack, or messageBack + activityMiddleware causes fatal error, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3671](https://github.com/microsoft/BotFramework-WebChat/pull/3671)
 -  Fixes [#3582](https://github.com/microsoft/BotFramework-WebChat/issues/3582). Fix Disable Adaptive Cards sample, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
+-  Fixes [#3434](https://github.com/microsoft/BotFramework-WebChat/issues/3434). Dispatched event, postBack, or messageBack + activityMiddleware causes fatal error, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3671](https://github.com/microsoft/BotFramework-WebChat/pull/3671)
 -  Fixes [#3215](https://github.com/microsoft/BotFramework-WebChat/issues/3215). Fix SSO samples `window.opener.postMessage`, by [@corinagum](https://github.com/corinagum) in PR [#3696](https://github.com/microsoft/BotFramework-WebChat/pull/3696)
 
 ## [4.11.0] - 2020-11-04

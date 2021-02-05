@@ -61,9 +61,12 @@ export default function createDefaultCardActionMiddleware() {
           break;
 
         case 'signin': {
-          // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
-          //       This is to eliminate the delay between window.open() and location.href call
+          /**
+           * @todo TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
+           *       This is to eliminate the delay between window.open() and location.href call
+           */
 
+          // eslint-disable-next-line wrap-iife
           (async function () {
             const popup = window.open();
             const url = await getSignInUrl();

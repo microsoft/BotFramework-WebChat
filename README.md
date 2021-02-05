@@ -19,8 +19,8 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
 
 ## API refactor into new package in Web Chat 4.11.0
-The Web Chat API has been refactored into a separate package. To learn more, check out the [API refactor summary](https://github.com/microsoft/BotFramework-WebChat/pull/3543).
 
+The Web Chat API has been refactored into a separate package. To learn more, check out the [API refactor summary](https://github.com/microsoft/BotFramework-WebChat/pull/3543).
 
 ## Direct Line Speech support in Web Chat 4.7.0
 
