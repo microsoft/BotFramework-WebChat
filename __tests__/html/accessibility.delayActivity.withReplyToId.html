@@ -30,7 +30,7 @@
         // Wait for "Connecting..." message to dismiss
         clock.tick(600);
 
-        // TODO: [P1] #3707 This line should be removed when the SDK removed the bogus replyToId.
+        // TODO: [P1] #3707 This line should be removed when the SDK removes the bogus replyToId.
         directLine.botSendMessage({ replyToId: 'bogus', type: 'event' });
 
         await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
