@@ -1,3 +1,4 @@
+/* eslint-disable no-global-assign */
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
 let createPonyfill;

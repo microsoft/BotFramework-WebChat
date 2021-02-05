@@ -79,6 +79,7 @@ export default async function create({
     const { privSource: source } = audioConfig;
 
     source.createAudioContext = () => {
+      // eslint-disable-next-line no-extra-boolean-cast
       if (!!source.privContext) {
         return;
       }

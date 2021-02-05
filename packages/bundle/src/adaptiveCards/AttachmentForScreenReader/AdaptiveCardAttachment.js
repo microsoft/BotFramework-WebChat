@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/forbid-dom-props */
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
@@ -50,8 +52,9 @@ AdaptiveCardChoiceSetInput.propTypes = {
         value: PropTypes.any
       })
     ),
+    defaultValue: PropTypes.any,
     value: PropTypes.any
-  })
+  }).isRequired
 };
 
 const AdaptiveCardAttachment = ({ content }) => {
@@ -93,7 +96,18 @@ const AdaptiveCardAttachment = ({ content }) => {
     });
 
     return inputs;
-  }, [card]);
+  }, [
+    card,
+    ChoiceSetInput,
+    DateInput,
+    NumberInput,
+    OpenUrlAction,
+    ShowCardAction,
+    SubmitAction,
+    TextInput,
+    TimeInput,
+    ToggleInput
+  ]);
 
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || '', '', '');
 

@@ -6,8 +6,10 @@ function prettierMarkdown(filenames) {
   return filenames.map(filename => `prettier --write ${filename} --tab-width 3 --single-quote true`);
 }
 
+// eslint-disable-next-line no-undef
 module.exports = {
-  '{__tests__,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
+  '{__tests__,docs,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
   '**/*.md': prettierMarkdown,
-  'packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}': prettierCode
+  'packages/{api,bundle,component,core,directlinespeech,playground}/src/**/*.{js,jsx,ts,tsx}': prettierCode,
+  '*.{js,jsx,ts,tsx}': 'npm run eslint'
 };

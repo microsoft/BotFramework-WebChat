@@ -12,5 +12,5 @@ export default function useRegisterScrollTo(callback) {
     scrollToEndCallbacks.push(callback);
 
     return () => removeInline(scrollToEndCallbacks, callback);
-  }, [scrollToEndCallbacksRef]);
+  }, [callback, scrollToEndCallbacksRef]);
 }
