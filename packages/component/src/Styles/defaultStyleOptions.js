@@ -215,7 +215,10 @@ const DEFAULT_OPTIONS = {
 
   transcriptVisualKeyboardIndicatorColor: 'Black',
   transcriptVisualKeyboardIndicatorStyle: 'solid',
-  transcriptVisualKeyboardIndicatorWidth: 2
+  transcriptVisualKeyboardIndicatorWidth: 2,
+  //AdaptiveCard push button
+  cardPushButtonBackGroundColor: '#0063B1',
+  cardPushButtonTextColor: 'white'
 };
 
 export default DEFAULT_OPTIONS;
