@@ -200,7 +200,11 @@ const DEFAULT_OPTIONS = {
   emojiSet: true, // true || false || { ':)' : '😊'}
 
   // Internal
-  internalLiveRegionFadeAfter: 1000
+  internalLiveRegionFadeAfter: 1000,
+
+  //AdaptiveCard push button
+  cardPushButtonBackGroundColor: '#0063B1',
+  cardPushButtonTextColor: 'white'
 };
 
 export default DEFAULT_OPTIONS;

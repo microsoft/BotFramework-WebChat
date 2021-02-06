@@ -49,6 +49,22 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
+/**
+ *
+ * @param {* The current active element} element
+ * @param {* The name of attribute to be added to the element properties} qualifiedName
+ * @param {* the target value to set for the attribute} nextValue
+ */
+function setAttribute(element, qualifiedName, nextValue) {
+  const value = element.getAttribute(qualifiedName);
+
+  if (value !== nextValue) {
+    element.setAttribute(qualifiedName, nextValue);
+
+    return () => element.setAttribute(qualifiedName, value);
+  }
+}
+
 function setAttributeWithUndo(element, qualifiedName, nextValue) {
   const value = element.getAttribute(qualifiedName);
 
@@ -433,6 +449,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   }, [adaptiveCard]);
 
   useEffect(() => {
+    setAttribute(adaptiveCardElementRef.current, 'aria-pressed', 'true') &&
+      setAttribute(adaptiveCardElementRef.current, 'role', 'button');
+
     // Add developers to highlight actions when they have been clicked.
     if (!actionPerformedClassName) {
       return;
