@@ -609,7 +609,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       if (handled) {
         event.preventDefault();
 
-        // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
+        // If a custom HTML control wants to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
         event.stopPropagation();
       }
     },

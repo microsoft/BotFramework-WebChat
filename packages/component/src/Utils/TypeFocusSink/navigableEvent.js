@@ -14,9 +14,9 @@ export default function navigableEvent(event) {
   // Generally, we allow up/down arrow keys on all elements captured here, except those handled by the user agent.
   // For example, if it is on <select>, we will ignore up/down arrow keys. Also true for textbox with autocomplete.
 
-  // For some elements, user agent don't handle arrow keys when ALT key is hold, so we can still handle ALT + UP/DOWN keys.
-  // For example, user agent ignore ALT + UP/DOWN on <input type="text"> with content.
-  // Counter-example, user agent continue to handle ALT + UP/DOWN on <input type="number">.
+  // For some elements, user agent doesn't handle arrow keys when ALT key is held, so we can still handle ALT + UP/DOWN keys.
+  // For example, user agent ignores ALT + UP/DOWN on <input type="text"> with content.
+  // Counter-example: user agent continues to handle ALT + UP/DOWN on <input type="number">.
   if (tagName === 'INPUT') {
     const { list, type, value } = target;
 
@@ -40,20 +40,20 @@ export default function navigableEvent(event) {
       type === 'url'
     ) {
       if (autocomplete || list) {
-        // "autocomplete" and "list" are combobox. Up/down arrow keys could be handled by the user agent.
+        // "autocomplete" and "list" are comboboxes. Up/down arrow keys may be handled by the user agent.
         return true;
       } else if (altKey || !value) {
-        // If it has content, user agent will handle up/down arrow and it works like HOME/END keys.
-        // "altKey" can be used, user agent ignore ALT + UP/DOWN.
+        // If the input has content, user agent will handle up/down arrow and it work similar to HOME/END keys.
+        // "altKey" can be used; user agent ignores ALT + UP/DOWN.
         return true;
       }
     }
   } else if (tagName === 'SELECT') {
-    // User agent handle up/down arrow keys for dropdown list.
+    // User agent handles up/down arrow keys for dropdown list.
     return false;
   } else if (tagName === 'TEXTAREA') {
     if (!autocomplete && (altKey || !target.value)) {
-      // User agent handle up/down arrow keys for multiline text box if it has content or is auto-complete.
+      // User agent handles up/down arrow keys for multiline text box if it has content or is auto-complete.
       return true;
     }
   } else if (target.getAttribute('contenteditable') === 'true') {
