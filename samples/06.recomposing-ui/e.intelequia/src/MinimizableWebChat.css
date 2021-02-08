@@ -13,7 +13,7 @@
   width: 64px;
   background-repeat: no-repeat;
   background-position: center;
-  z-index: 10000;
+  z-index: 9999;
 }
 
 .minimizable-web-chat > button.maximize > .red-dot {
@@ -49,7 +49,7 @@
   position: fixed;
   width: 100%;
   height: 100%;
-  z-index: 10000;
+  z-index: 9999;
 }
 
 .minimizable-web-chat > .chat-box.hide {
@@ -151,7 +151,7 @@
   position: fixed;
   bottom: 115px;
   right: 10px;
-  z-index: 10000;
+  z-index: 9999;
   cursor: pointer;
   border-radius: 8px;
   box-shadow: 0 6px 20px rgba(0,0,0,.2);

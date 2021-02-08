@@ -4,7 +4,7 @@ import { setCookie, getCookie, checkCookie } from './CookiesUtils'
 import getUser from './Strings'
 import './WebChat.css';
 
-const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory, language }) => {
+const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory, language, selectVoice }) => {
 
   useEffect(() => {
     const $style = document.createElement("style");
@@ -61,7 +61,7 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
 
   return token ? (
     <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} userID={String(userId)}
-     username={String(userId)} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale={ language ? language : directLine.locale}/>
+     username={String(userId)} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale={ language ? language : directLine.locale} selectVoice={selectVoice} />
   ) : (
       <div className={`${className || ''} connect-spinner`}>
         <div className="content">

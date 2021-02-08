@@ -234,6 +234,7 @@ const MinimizableWebChat = (parameters) => {
             token={token}
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
             language={language}
+            selectVoice={options.selectVoice}
           />}
           {(options.brandMessage != undefined && options.brandMessage != '') && <div className="brandmessage">{options.brandMessage}</div>}
         </div>
