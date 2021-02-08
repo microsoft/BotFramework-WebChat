@@ -297,6 +297,14 @@ const TextBox = ({ className }) => {
         let handled = true;
 
         switch (event.key) {
+          case 'End':
+            scrollDown({ displacement: Infinity });
+            break;
+
+          case 'Home':
+            scrollUp({ displacement: Infinity });
+            break;
+
           case 'PageDown':
             scrollDown();
             break;

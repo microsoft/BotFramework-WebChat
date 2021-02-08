@@ -424,7 +424,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   );
 
   const scrollRelative = useCallback(
-    direction => {
+    (direction, { displacement } = {}) => {
       const { current: rootElement } = rootElementRef;
 
       if (!rootElement) {
@@ -432,10 +432,17 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       }
 
       const scrollable = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+      let nextScrollTop;
+
+      if (typeof displacement === 'number') {
+        nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * displacement;
+      } else {
+        nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * scrollable.offsetHeight;
+      }
 
       scrollTo(
         {
-          scrollTop: scrollable.scrollTop + (direction === 'down' ? 1 : -1) * scrollable.offsetHeight
+          scrollTop: Math.max(0, Math.min(scrollable.scrollHeight - scrollable.offsetHeight, nextScrollTop))
         },
         { behavior: 'smooth' }
       );

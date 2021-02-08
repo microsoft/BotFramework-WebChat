@@ -5,5 +5,5 @@ import useScrollRelative from './internal/useScrollRelative';
 export default function useScrollUp() {
   const scrollRelative = useScrollRelative();
 
-  return useCallback(() => scrollRelative('up'), [scrollRelative]);
+  return useCallback((...args) => scrollRelative('up', ...args), [scrollRelative]);
 }
