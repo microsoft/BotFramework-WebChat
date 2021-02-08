@@ -99,6 +99,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const [activities] = useActivities();
   const [direction] = useDirection();
   const [activeActivityKey, setActiveActivityKey] = useState();
+  const focus = useFocus();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootElementRef = useRef();
   const terminatorRef = useRef();
@@ -111,6 +112,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const localize = useLocalizer();
 
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
+  const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   // Gets renderer for every activity.
@@ -538,7 +540,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [activeActivityKey, renderingElements, rootElementRef, setActiveActivityKey]
   );
 
-  const handleArrowKeyDownCapture = useCallback(
+  const handleTranscriptKeyDown = useCallback(
     event => {
       const { target } = event;
 
@@ -559,9 +561,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           activateRelativeActivity(fromEndOfTranscriptIndicator ? 0 : -1);
           break;
 
+        case 'End':
+          activateRelativeActivity(Infinity);
+          break;
+
         case 'Enter':
           if (fromEndOfTranscriptIndicator) {
-            scrollToBottomScrollToEnd();
+            scrollToBottomScrollToEnd({ behavior: 'smooth' });
           } else {
             const activeEntry = renderingElements.find(({ key }) => key === activeActivityKey);
 
@@ -581,6 +587,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           break;
 
+        case 'Escape':
+          focus('sendBoxWithoutKeyboard');
+          break;
+
+        case 'Home':
+          activateRelativeActivity(-Infinity);
+          break;
+
         default:
           handled = false;
           break;
@@ -590,10 +604,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.preventDefault();
 
         // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
-        event.stopPropagation();
+        // event.stopPropagation();
       }
     },
-    [activeActivityKey, activityElementsRef, activateRelativeActivity, terminatorRef, renderingElements]
+    [activeActivityKey, activityElementsRef, activateRelativeActivity, focus, terminatorRef, renderingElements]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
@@ -619,16 +633,17 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       )}
       dir={direction}
       onFocus={handleFocus}
-      onKeyDownCapture={handleArrowKeyDownCapture}
+      onKeyDown={handleTranscriptKeyDown}
       ref={rootElementRef}
       // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
       // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
       // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
       tabIndex={0}
     >
-      {/* XXXXXXX: Localize this */}
-      <ScreenReaderText id={labelId} text="Transcript, press arrow keys to navigate." />
-      <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
+      <ScreenReaderText id={labelId} text={transcriptAriaLabel} />
+      {!!renderingElements.length && (
+        <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
+      )}
       {/* This <section> is for live region only. Content is made invisible through CSS. */}
       <section
         aria-atomic={false}
@@ -706,16 +721,20 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           }
         )}
       </InternalTranscriptScrollable>
-      <FocusRedirector
-        className="webchat__basic-transcript__sentinel"
-        onFocus={setBottommostActiveActivityKeyIfNeeded}
-        redirectRef={rootElementRef}
-      />
-      <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
-        <div className="webchat__basic-transcript__terminator-body">
-          <div className="webchat__basic-transcript__terminator-text">End of transcript</div>
-        </div>
-      </div>
+      {!!renderingElements.length && (
+        <React.Fragment>
+          <FocusRedirector
+            className="webchat__basic-transcript__sentinel"
+            onFocus={setBottommostActiveActivityKeyIfNeeded}
+            redirectRef={rootElementRef}
+          />
+          <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
+            <div className="webchat__basic-transcript__terminator-body">
+              <div className="webchat__basic-transcript__terminator-text">End of transcript</div>
+            </div>
+          </div>
+        </React.Fragment>
+      )}
       <div className="webchat__basic-transcript__focus-indicator" />
     </div>
   );

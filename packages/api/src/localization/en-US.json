@@ -110,5 +110,7 @@
   "_TRANSCRIPT_ARIA_ROLE_ALT.comment": "This is for screen reader for the aria-roledescription of the transcript container.",
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
   "TYPING_INDICATOR_ALT": "Showing typing indicator",
-  "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message."
+  "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message.",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcript, press arrow keys to navigate.",
+  "_TRANSCRIPT_ARIA_LABEL_ALT.comment": "This is for screen reader for the label that will be narrated when the transcript is focused."
 }
