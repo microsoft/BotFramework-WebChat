@@ -906,7 +906,7 @@ useScrollDown(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called, will scroll down on the transcript.
+This hook will return a function that, when called, will scroll elements down the transcript. This is an important feature for AT accessibility.
 
 ## `useScrollTo`
 
@@ -947,7 +947,7 @@ useScrollUp(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called, will scroll up on the transcript.
+This hook will return a function that, when called, will scroll elements up the transcript. This is an important feature for AT accessibility.
 
 ## `useSendBoxValue`
 

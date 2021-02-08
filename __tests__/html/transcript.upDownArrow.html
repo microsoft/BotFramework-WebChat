@@ -201,7 +201,7 @@
         await pageObjects.typeInSendBox('Hello, World');
         await expectScroll(elements.sendBoxTextBox(), { key: 'ArrowUp' }, false);
 
-        // Even the send box has content, it should scroll when pressing up arrow key on transcript.
+        // Even the send box has content, it should scroll when pressing up arrow key when focus is on transcript.
         await expectScroll(elements.transcriptScrollable(), { key: 'ArrowUp' }, true);
 
         for (let element of document.querySelectorAll('.elements-should-scroll article > *')) {
