@@ -12,16 +12,19 @@ import {
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import random from 'math-random';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import firstTabbableDescendant from './Utils/firstTabbableDescendant';
+import FocusRedirector from './Utils/FocusRedirector';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
 import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
+import ScreenReaderText from './ScreenReaderText';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
@@ -33,6 +36,8 @@ import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useUniqueId from './hooks/internal/useUniqueId';
+import tabbableElements from './Utils/tabbableElements';
 
 const {
   useActivities,
@@ -44,8 +49,6 @@ const {
   useLocalizer,
   useStyleOptions
 } = hooks;
-
-const SCROLL_RELATIVE_DELTA_IN_PIXEL = 40;
 
 const ROOT_STYLE = {
   '&.webchat__basic-transcript': {
@@ -89,14 +92,16 @@ function validateAllActivitiesTagged(activities, bins) {
 }
 
 const InternalTranscript = ({ activityElementsRef, className }) => {
-  const [{ activity: activityStyleSet }] = useStyleSet();
+  const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
   const [
     { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
   ] = useStyleOptions();
   const [activities] = useActivities();
   const [direction] = useDirection();
+  const [activeActivityKey, setActiveActivityKey] = useState();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootElementRef = useRef();
+  const terminatorRef = useRef();
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
@@ -293,6 +298,23 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               }
             },
 
+            // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the activated activity.
+            // We should do the same for mouse, that is why we have the click handler here.
+            // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
+            handleClickCapture: () => setActiveActivityKey(getActivityUniqueId(activity)),
+            handleKeyDown: event => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                setActiveActivityKey(getActivityUniqueId(activity));
+
+                const { current } = rootElementRef;
+
+                current && current.focus();
+              }
+            },
+
             // "hideTimestamp" is a render-time parameter for renderActivityStatus().
             // If true, it will hide the timestamp, but it will continue to show the
             // retry prompt. And show the screen reader version of the timestamp.
@@ -318,17 +340,26 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     const { current: activityElements } = activityElementsRef;
 
     // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
-
-    activityElementsRef.current = renderingElements.map(({ activity, activity: { id }, key }) => {
+    activityElementsRef.current = renderingElements.map(({ activity, activity: { id }, elementId, key }) => {
       const existingEntry = activityElements.find(entry => entry.key === key);
 
       return {
         activity,
         activityID: id,
         element: existingEntry && existingEntry.element,
+        elementId,
         key
       };
     });
+
+    // There must be one "active" (a.k.a. aria-activedescendant) designated. We default it to the last one.
+    if (!renderingElements.find(({ active }) => active)) {
+      const lastElement = renderingElements[renderingElements.length - 1];
+
+      if (lastElement) {
+        lastElement.active = true;
+      }
+    }
 
     return renderingElements;
   }, [
@@ -397,9 +428,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
       scrollTo(
         {
-          scrollTop:
-            scrollable.scrollTop +
-            (direction === 'down' ? SCROLL_RELATIVE_DELTA_IN_PIXEL : -SCROLL_RELATIVE_DELTA_IN_PIXEL)
+          scrollTop: scrollable.scrollTop + (direction === 'down' ? 1 : -1) * scrollable.offsetHeight
         },
         { behavior: 'smooth' }
       );
@@ -456,12 +485,150 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   const indexOfLastInteractedActivity = activities.indexOf(lastInteractedActivity);
 
+  // Create a new ID for aria-activedescendant every time the active descendant change.
+  // In our design, the transcript will only have 1 active activity and it has an ID. Other inactive activities will not have ID assigned.
+  // This help with performance.
+  // But browser usually do noop if the value of aria-activedescendant doesn't change.
+  // That means, if we assign the same ID to another element, browser will do noop.
+  // We need to generate a new ID so the browser see there is a change in aria-activedescendant value and perform accordingly.
+  const activeDescendantElementId = useMemo(
+    () => activeActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
+    [activeActivityKey]
+  );
+
+  const scrollActiveDescendantIntoView = useCallback(() => {
+    const activeDescendant = activeDescendantElementId && document.getElementById(activeDescendantElementId);
+
+    activeDescendant && activeDescendant.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [activeDescendantElementId]);
+
+  const handleFocus = useCallback(
+    event => {
+      const { currentTarget, target } = event;
+
+      // When focus is placed on the transcript, scroll active descendant into the view.
+      currentTarget === target && scrollActiveDescendantIntoView();
+    },
+    [scrollActiveDescendantIntoView]
+  );
+
+  // After new aria-activedescendant is assigned, we will need to scroll it into view.
+  // User agent will scroll automatically for focusing element, but not for aria-activedescendant.
+  // We need to do the scrolling manually.
+  useEffect(() => scrollActiveDescendantIntoView(), [scrollActiveDescendantIntoView]);
+
+  // If any activities has changed, reset the active descendant.
+  useEffect(() => setActiveActivityKey(undefined), [activities, setActiveActivityKey]);
+
+  const activateRelativeActivity = useCallback(
+    delta => {
+      if (isNaN(delta) || !renderingElements.length) {
+        return setActiveActivityKey(undefined);
+      }
+
+      const index = renderingElements.findIndex(({ key }) => key === activeActivityKey);
+      const nextIndex = ~index
+        ? Math.max(0, Math.min(renderingElements.length - 1, index + delta))
+        : renderingElements.length - 1;
+      const nextActiveActivity = renderingElements[nextIndex];
+
+      setActiveActivityKey(nextActiveActivity.key);
+      rootElementRef.current && rootElementRef.current.focus();
+    },
+    [activeActivityKey, renderingElements, rootElementRef, setActiveActivityKey]
+  );
+
+  const handleArrowKeyDownCapture = useCallback(
+    event => {
+      const { target } = event;
+
+      const fromEndOfTranscriptIndicator = target === terminatorRef.current;
+
+      if (!fromEndOfTranscriptIndicator && target !== rootElementRef.current) {
+        return;
+      }
+
+      let handled = true;
+
+      switch (event.key) {
+        case 'ArrowDown':
+          activateRelativeActivity(fromEndOfTranscriptIndicator ? 0 : 1);
+          break;
+
+        case 'ArrowUp':
+          activateRelativeActivity(fromEndOfTranscriptIndicator ? 0 : -1);
+          break;
+
+        case 'Enter':
+          if (fromEndOfTranscriptIndicator) {
+            scrollToBottomScrollToEnd();
+          } else {
+            const activeEntry = renderingElements.find(({ key }) => key === activeActivityKey);
+
+            if (activeEntry) {
+              const { element: activeElement } =
+                activityElementsRef.current.find(({ activity }) => activity === activeEntry.activity) || {};
+
+              if (activeElement) {
+                const [firstTabbableElement] = tabbableElements(activeElement).filter(
+                  ({ className }) => className !== 'webchat__basic-transcript__sentinel'
+                );
+
+                firstTabbableElement && firstTabbableElement.focus();
+              }
+            }
+          }
+
+          break;
+
+        default:
+          handled = false;
+          break;
+      }
+
+      if (handled) {
+        event.preventDefault();
+
+        // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
+        event.stopPropagation();
+      }
+    },
+    [activeActivityKey, activityElementsRef, activateRelativeActivity, terminatorRef, renderingElements]
+  );
+
+  const labelId = useUniqueId('webchat__basic-transcript__label');
+
+  // If SHIFT-TAB from "End of transcript" indicator, if activeActivityKey is not set (or no longer exists), set it the the bottommost activity.
+  const setBottommostActiveActivityKeyIfNeeded = useCallback(() => {
+    if (!~renderingElements.findIndex(({ key }) => key === activeActivityKey)) {
+      const { key: lastActivityKey } = renderingElements[renderingElements.length - 1] || {};
+
+      setActiveActivityKey(lastActivityKey);
+    }
+  }, [activeActivityKey, renderingElements, setActiveActivityKey]);
+
   return (
     <div
-      className={classNames('webchat__basic-transcript', rootClassName, (className || '') + '')}
+      aria-activedescendant={activeActivityKey ? activeDescendantElementId : undefined}
+      aria-labelledby={labelId}
+      className={classNames(
+        'webchat__basic-transcript',
+        basicTranscriptStyleSet + '',
+        rootClassName,
+        (className || '') + ''
+      )}
       dir={direction}
+      onFocus={handleFocus}
+      onKeyDownCapture={handleArrowKeyDownCapture}
       ref={rootElementRef}
+      // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
+      // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
+      // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
+      tabIndex={0}
     >
+      {/* XXXXXXX: Localize this */}
+      <ScreenReaderText id={labelId} text="Transcript, press arrow keys to navigate." />
+      <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
       {/* This <section> is for live region only. Content is made invisible through CSS. */}
       <section
         aria-atomic={false}
@@ -483,6 +650,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               key,
+              handleClickCapture,
+              handleKeyDown,
               hideTimestamp,
               renderActivity,
               renderActivityStatus,
@@ -492,28 +661,62 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               showCallout
             },
             index
-          ) => (
-            <li
-              aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
-              className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity', {
-                'webchat__basic-transcript__activity--from-bot': role !== 'user',
-                'webchat__basic-transcript__activity--from-user': role === 'user',
-                'webchat__basic-transcript__activity--acknowledged': index <= indexOfLastInteractedActivity
-              })}
-              key={key}
-              ref={callbackRef}
-            >
-              {renderActivity({
-                hideTimestamp,
-                renderActivityStatus,
-                renderAvatar,
-                showCallout
-              })}
-              {shouldSpeak && <SpeakActivity activity={activity} />}
-            </li>
-          )
+          ) => {
+            const activeDescendant = activeActivityKey === key;
+
+            return (
+              <li
+                aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
+                className={classNames('webchat__basic-transcript__activity', {
+                  'webchat__basic-transcript__activity--acknowledged': index <= indexOfLastInteractedActivity,
+                  'webchat__basic-transcript__activity--from-bot': role !== 'user',
+                  'webchat__basic-transcript__activity--from-user': role === 'user'
+                })}
+                id={activeDescendant ? activeDescendantElementId : undefined}
+                key={key}
+                onClickCapture={handleClickCapture}
+                onKeyDown={handleKeyDown}
+                ref={callbackRef}
+              >
+                <FocusRedirector
+                  className="webchat__basic-transcript__sentinel"
+                  onFocus={handleClickCapture}
+                  redirectRef={rootElementRef}
+                />
+                {renderActivity({
+                  hideTimestamp,
+                  renderActivityStatus,
+                  renderAvatar,
+                  showCallout
+                })}
+                {shouldSpeak && <SpeakActivity activity={activity} />}
+                <FocusRedirector
+                  className="webchat__basic-transcript__sentinel"
+                  onFocus={handleClickCapture}
+                  redirectRef={rootElementRef}
+                />
+                <div
+                  className={classNames('webchat__basic-transcript__activity-indicator', {
+                    'webchat__basic-transcript__activity-indicator--active': activeDescendant,
+                    'webchat__basic-transcript__activity-indicator--first': !index
+                  })}
+                />
+              </li>
+            );
+          }
         )}
       </InternalTranscriptScrollable>
+      <FocusRedirector
+        className="webchat__basic-transcript__sentinel"
+        onFocus={setBottommostActiveActivityKeyIfNeeded}
+        redirectRef={rootElementRef}
+      />
+      <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
+        <div className="webchat__basic-transcript__terminator-body">
+          <div className="webchat__basic-transcript__terminator-text">End of transcript</div>
+        </div>
+      </div>
+      <div className="webchat__basic-transcript__focus-indicator" />
     </div>
   );
 };
@@ -660,7 +863,7 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
 
 InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element).isRequired
+  children: PropTypes.any.isRequired
 };
 
 const SetScroller = ({ activityElementsRef, scrollerRef }) => {

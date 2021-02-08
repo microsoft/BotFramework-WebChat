@@ -11,6 +11,7 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
+import navigableEvent from './Utils/TypeFocusSink/navigableEvent';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 import useScrollDown from './hooks/useScrollDown';
 import useScrollUp from './hooks/useScrollUp';
@@ -69,87 +70,36 @@ const BasicWebChat = ({ className }) => {
 
   const handleKeyDownCapture = useCallback(
     event => {
-      const { altKey, ctrlKey, key, metaKey, shiftKey, target } = event;
+      const { ctrlKey, metaKey, shiftKey } = event;
 
       if (ctrlKey || metaKey || shiftKey) {
         return;
       }
 
-      let allowArrowKeys;
-      const { tagName } = target;
+      let allowNavigation = navigableEvent(event);
 
-      const autocompleteAttribute = target.getAttribute('autocomplete');
-      const autocomplete = autocompleteAttribute && autocompleteAttribute !== 'off';
+      if (allowNavigation) {
+        let handled = true;
 
-      // Generally, we allow up/down arrow keys on all elements captured here, except those handled by the user agent.
-      // For example, if it is on <select>, we will ignore up/down arrow keys. Also true for textbox with autocomplete.
+        switch (event.key) {
+          case 'PageDown':
+            scrollDown();
+            break;
 
-      // For some elements, user agent don't handle arrow keys when ALT key is hold, so we can still handle ALT + UP/DOWN keys.
-      // For example, user agent ignore ALT + UP/DOWN on <input type="text"> with content.
-      // Counter-example, user agent continue to handle ALT + UP/DOWN on <input type="number">.
-      if (tagName === 'INPUT') {
-        const { list, type, value } = target;
+          case 'PageUp':
+            scrollUp();
+            break;
 
-        // These are buttons, up/down arrow keys are not handled by the user agent.
-        if (
-          type === 'button' ||
-          type === 'checkbox' ||
-          type === 'file' ||
-          type === 'image' ||
-          type === 'radio' ||
-          type === 'reset' ||
-          type === 'submit'
-        ) {
-          allowArrowKeys = true;
-        } else if (
-          type === 'email' ||
-          type === 'password' ||
-          type === 'search' ||
-          type === 'tel' ||
-          type === 'text' ||
-          type === 'url'
-        ) {
-          if (autocomplete || list) {
-            // "autocomplete" and "list" are combobox. Up/down arrow keys could be handled by the user agent.
-            allowArrowKeys = false;
-          } else if (altKey || !value) {
-            // If it has content, user agent will handle up/down arrow and it works like HOME/END keys.
-            // "altKey" can be used, user agent ignore ALT + UP/DOWN.
-            allowArrowKeys = true;
-          }
+          default:
+            handled = false;
+            break;
         }
-      } else if (tagName === 'SELECT') {
-        // User agent handle up/down arrow keys for dropdown list.
-        allowArrowKeys = false;
-      } else if (tagName === 'TEXTAREA') {
-        if (!autocomplete && (altKey || !target.value)) {
-          // User agent handle up/down arrow keys for multiline text box if it has content or is auto-complete.
-          allowArrowKeys = true;
-        }
-      } else if (target.getAttribute('contenteditable') === 'true') {
-        if (altKey || !target.innerHTML) {
-          // "contenteditable" element works like <textarea> minus "autocomplete".
-          allowArrowKeys = true;
-        }
-      } else {
-        allowArrowKeys = true;
-      }
 
-      if (allowArrowKeys) {
-        if (key === 'ArrowDown') {
+        if (handled) {
           event.preventDefault();
 
           // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
           event.stopPropagation();
-
-          scrollDown();
-        } else if (key === 'ArrowUp') {
-          event.preventDefault();
-
-          // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
-          event.stopPropagation();
-
-          scrollUp();
         }
       }
     },

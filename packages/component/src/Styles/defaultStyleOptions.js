@@ -11,6 +11,7 @@ const PADDING_REGULAR = 10;
 const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
+  activeActivityOutlineColor: DEFAULT_SUBTLE,
   backgroundColor: 'White',
   cardEmphasisBackgroundColor: '#F0F0F0',
   paddingRegular: PADDING_REGULAR,
@@ -200,7 +201,11 @@ const DEFAULT_OPTIONS = {
   emojiSet: true, // true || false || { ':)' : '😊'}
 
   // Internal
-  internalLiveRegionFadeAfter: 1000
+  internalLiveRegionFadeAfter: 1000,
+
+  transcriptTerminatorBackgroundColor: '#595959',
+  transcriptTerminatorColor: 'White',
+  transcriptTerminatorFontSize: 12
 };
 
 export default DEFAULT_OPTIONS;

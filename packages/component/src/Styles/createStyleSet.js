@@ -1,10 +1,10 @@
 /* eslint-disable complexity */
 import createActivitiesStyle from './StyleSet/Activities';
-import createActivityStyle from './StyleSet/Activity';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
 import createAutoResizeTextAreaStyle from './StyleSet/AutoResizeTextArea';
 import createAvatarStyle from './StyleSet/Avatar';
+import createBasicTranscriptStyle from './StyleSet/BasicTranscript';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
@@ -100,11 +100,11 @@ export default function createStyleSet(options) {
 
   return {
     activities: createActivitiesStyle(options),
-    activity: createActivityStyle(options),
     audioAttachment: createAudioAttachmentStyle(options),
     audioContent: createAudioContentStyle(options),
     autoResizeTextArea: createAutoResizeTextAreaStyle(options),
     avatar: createAvatarStyle(options),
+    basicTranscript: createBasicTranscriptStyle(options),
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
     carouselFlipper: createCarouselFlipper(options),
