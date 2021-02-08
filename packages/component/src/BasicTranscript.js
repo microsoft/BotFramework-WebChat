@@ -116,8 +116,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const localize = useLocalizer();
 
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
-  const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  // TODO: [P0] We are currently using the TRANSCRIPT_ARIA_ROLE_ALT instead, because the translation of TRANSCRIPT_ARIA_LABEL_ALT may not arrive on time.
+  // const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
+  const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   // Gets renderer for every activity.
   // Activities that are not visible will return a falsy renderer.
