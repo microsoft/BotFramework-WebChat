@@ -1,3 +1,6 @@
+// Navigable event means the end-user is focusing on an inputtable element, but it is okay to capture the arrow keys.
+// For example, if the end-user is on <button>, we can capture the arrow keys.
+// We can also capture arrow keys when the user is on a <textarea> without contents.
 export default function navigableEvent(event) {
   const {
     altKey,

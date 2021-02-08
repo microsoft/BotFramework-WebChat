@@ -20,6 +20,7 @@ import Fade from './Utils/Fade';
 import firstTabbableDescendant from './Utils/firstTabbableDescendant';
 import FocusRedirector from './Utils/FocusRedirector';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
+import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import removeInline from './Utils/removeInline';
@@ -27,6 +28,7 @@ import ScreenReaderActivity from './ScreenReaderActivity';
 import ScreenReaderText from './ScreenReaderText';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import tabbableElements from './Utils/tabbableElements';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useFocus from './hooks/useFocus';
@@ -37,7 +39,7 @@ import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
-import tabbableElements from './Utils/tabbableElements';
+import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 
 const {
   useActivities,
@@ -45,6 +47,7 @@ const {
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useDirection,
+  useDisabled,
   useGroupActivities,
   useLocalizer,
   useStyleOptions
@@ -98,6 +101,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   ] = useStyleOptions();
   const [activities] = useActivities();
   const [direction] = useDirection();
+  const [disabled] = useDisabled();
   const [activeActivityKey, setActiveActivityKey] = useState();
   const focus = useFocus();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -303,7 +307,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the activated activity.
             // We should do the same for mouse, that is why we have the click handler here.
             // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-            handleClickCapture: () => setActiveActivityKey(getActivityUniqueId(activity)),
+            handleFocus: () => setActiveActivityKey(getActivityUniqueId(activity)),
             handleKeyDown: event => {
               if (event.key === 'Escape') {
                 event.preventDefault();
@@ -504,7 +508,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     activeDescendant && activeDescendant.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }, [activeDescendantElementId]);
 
-  const handleFocus = useCallback(
+  const handleTranscriptFocus = useCallback(
     event => {
       const { currentTarget, target } = event;
 
@@ -545,8 +549,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       const { target } = event;
 
       const fromEndOfTranscriptIndicator = target === terminatorRef.current;
+      const fromTranscript = target === event.currentTarget;
 
-      if (!fromEndOfTranscriptIndicator && target !== rootElementRef.current) {
+      if (!fromEndOfTranscriptIndicator && !fromTranscript) {
         return;
       }
 
@@ -566,9 +571,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           break;
 
         case 'Enter':
-          if (fromEndOfTranscriptIndicator) {
-            scrollToBottomScrollToEnd({ behavior: 'smooth' });
-          } else {
+          if (!fromEndOfTranscriptIndicator) {
             const activeEntry = renderingElements.find(({ key }) => key === activeActivityKey);
 
             if (activeEntry) {
@@ -604,7 +607,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.preventDefault();
 
         // If a custom HTML control want to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
-        // event.stopPropagation();
+        event.stopPropagation();
       }
     },
     [activeActivityKey, activityElementsRef, activateRelativeActivity, focus, terminatorRef, renderingElements]
@@ -621,6 +624,33 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     }
   }, [activeActivityKey, renderingElements, setActiveActivityKey]);
 
+  const handleTranscriptKeyDownCapture = useCallback(
+    event => {
+      const { altKey, ctrlKey, key, metaKey, target } = event;
+
+      if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
+        // Ignore if one of the utility key (except SHIFT) is pressed
+        // E.g. CTRL-C on a link in one of the message should not jump to chat box
+        // E.g. "A" or "Backspace" should jump to chat box
+        return;
+      }
+
+      // Send keystrokes to send box if we are focusing on the transcript or terminator.
+      if (target === event.currentTarget || target === terminatorRef.current) {
+        event.stopPropagation();
+
+        focus('sendBox');
+      }
+    },
+    [disabled, focus]
+  );
+
+  const focusTranscriptCallback = useCallback(() => rootElementRef.current && rootElementRef.current.focus(), [
+    rootElementRef
+  ]);
+
+  useRegisterFocusTranscript(focusTranscriptCallback);
+
   return (
     <div
       aria-activedescendant={activeActivityKey ? activeDescendantElementId : undefined}
@@ -632,8 +662,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         (className || '') + ''
       )}
       dir={direction}
-      onFocus={handleFocus}
+      onFocus={handleTranscriptFocus}
       onKeyDown={handleTranscriptKeyDown}
+      onKeyDownCapture={handleTranscriptKeyDownCapture}
       ref={rootElementRef}
       // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
       // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
@@ -665,7 +696,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               key,
-              handleClickCapture,
+              handleFocus,
               handleKeyDown,
               hideTimestamp,
               renderActivity,
@@ -689,13 +720,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 })}
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
-                onClickCapture={handleClickCapture}
+                onClickCapture={handleFocus}
                 onKeyDown={handleKeyDown}
                 ref={callbackRef}
               >
                 <FocusRedirector
                   className="webchat__basic-transcript__sentinel"
-                  onFocus={handleClickCapture}
+                  onFocus={handleFocus}
                   redirectRef={rootElementRef}
                 />
                 {renderActivity({
@@ -707,7 +738,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 {shouldSpeak && <SpeakActivity activity={activity} />}
                 <FocusRedirector
                   className="webchat__basic-transcript__sentinel"
-                  onFocus={handleClickCapture}
+                  onFocus={handleFocus}
                   redirectRef={rootElementRef}
                 />
                 <div

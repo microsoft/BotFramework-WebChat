@@ -9,7 +9,7 @@ export default function tabbableElements(element) {
     const tabIndexAttribute = element.attributes.getNamedItem('tabindex');
 
     if (tabIndexAttribute && tabIndexAttribute.specified) {
-      const value = parseInt(tabIndexAttribute.value);
+      const value = parseInt(tabIndexAttribute.value, 10);
 
       return value >= 0 || (isNaN(value) && element.nodeName.toLowerCase() === 'input');
     }

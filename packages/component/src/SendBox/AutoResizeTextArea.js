@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { forwardRef } from 'react';
 
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
+import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 import useStyleSet from '../hooks/useStyleSet';
 
 const AutoResizeTextArea = forwardRef(
@@ -12,11 +13,12 @@ const AutoResizeTextArea = forwardRef(
       className,
       'data-id': dataId,
       disabled,
-      enterkeyhint,
+      enterKeyHint,
       inputMode,
       onChange,
       onFocus,
       onKeyDown,
+      onKeyDownCapture,
       onKeyPress,
       onSelect,
       placeholder,
@@ -29,6 +31,8 @@ const AutoResizeTextArea = forwardRef(
   ) => {
     const [{ autoResizeTextArea: autoResizeTextAreaStyleSet }] = useStyleSet();
 
+    useEnterKeyHint(ref, enterKeyHint);
+
     return (
       <div className={classNames('webchat__auto-resize-textarea', autoResizeTextAreaStyleSet + '', className)}>
         {/* We need to add a space here, so blank lines will be counted in the doppelganger. */}
@@ -40,11 +44,11 @@ const AutoResizeTextArea = forwardRef(
           className={classNames('webchat__auto-resize-textarea__textarea', textAreaClassName)}
           data-id={dataId}
           disabled={disabled}
-          enterkeyhint={enterkeyhint}
           inputMode={inputMode}
           onChange={onChange}
           onFocus={onFocus}
           onKeyDown={onKeyDown}
+          onKeyDownCapture={onKeyDownCapture}
           onKeyPress={onKeyPress}
           onSelect={onSelect}
           placeholder={placeholder}
@@ -63,11 +67,12 @@ AutoResizeTextArea.defaultProps = {
   'data-id': undefined,
   className: undefined,
   disabled: undefined,
-  enterkeyhint: undefined,
+  enterKeyHint: undefined,
   inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
   onKeyDown: undefined,
+  onKeyDownCapture: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
   placeholder: undefined,
@@ -82,11 +87,12 @@ AutoResizeTextArea.propTypes = {
   className: PropTypes.string,
   'data-id': PropTypes.string,
   disabled: PropTypes.bool,
-  enterkeyhint: PropTypes.string,
+  enterKeyHint: PropTypes.string,
   inputMode: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyDownCapture: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
   placeholder: PropTypes.string,
