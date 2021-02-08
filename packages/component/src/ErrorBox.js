@@ -29,13 +29,10 @@ const ErrorBox = ({ error, type }) => {
 };
 
 ErrorBox.defaultProps = {
-  children: undefined,
-  error: undefined,
   type: ''
 };
 
 ErrorBox.propTypes = {
-  children: PropTypes.any,
   error: PropTypes.instanceOf(Error).isRequired,
   type: PropTypes.string
 };

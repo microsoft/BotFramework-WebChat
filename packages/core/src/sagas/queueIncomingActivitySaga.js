@@ -37,7 +37,13 @@ function* waitForActivityId(replyToId, initialActivities) {
       break;
     }
 
-    yield take(INCOMING_ACTIVITY);
+    const {
+      payload: { activity }
+    } = yield take(INCOMING_ACTIVITY);
+
+    if (activity.id === replyToId) {
+      break;
+    }
 
     activities = yield select(activitiesSelector);
   }
@@ -48,14 +54,15 @@ function* queueIncomingActivity({ userID }) {
     { payload: { activity } },
     initialActivities
   ) {
-    // This is for accessibility issue.
+    // This is for resolving an accessibility issue.
     // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then release this one.
     const { replyToId } = activity;
+    const initialBotActivities = initialActivities.filter(({ from: { role } }) => role === 'bot');
 
-    // To speed up the first activity render time, we do not delay the first activity.
+    // To speed up the first activity render time, we do not delay the first activity from the bot.
     // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
     // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
-    if (replyToId && initialActivities.length) {
+    if (replyToId && initialBotActivities.length) {
       // Either the activity replied to is in the transcript or after timeout.
       const result = yield race({
         _: waitForActivityId(replyToId, initialActivities),

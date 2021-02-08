@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-dom-props */
+/* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hooks } from 'botframework-webchat-component';

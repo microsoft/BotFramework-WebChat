@@ -11,6 +11,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
+// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 function addClass(element, className) {
