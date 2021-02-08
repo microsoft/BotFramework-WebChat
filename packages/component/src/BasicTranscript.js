@@ -116,6 +116,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const localize = useLocalizer();
 
   const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
+  const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   // TODO: [P0] We are currently using the TRANSCRIPT_ARIA_ROLE_ALT instead, because the translation of TRANSCRIPT_ARIA_LABEL_ALT may not arrive on time.
@@ -764,7 +765,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           />
           <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
             <div className="webchat__basic-transcript__terminator-body">
-              <div className="webchat__basic-transcript__terminator-text">End of transcript</div>
+              <div className="webchat__basic-transcript__terminator-text">{terminatorText}</div>
             </div>
           </div>
         </React.Fragment>

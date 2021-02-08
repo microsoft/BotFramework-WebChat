@@ -1,6 +1,5 @@
 {
   "_comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
-
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "_ACCESS_KEY_ALT.comment": "This is for screen reader for aria-keyshortcuts property.",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
@@ -112,5 +111,6 @@
   "TYPING_INDICATOR_ALT": "Showing typing indicator",
   "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message.",
   "TRANSCRIPT_ARIA_LABEL_ALT": "Transcript, press arrow keys to navigate.",
-  "_TRANSCRIPT_ARIA_LABEL_ALT.comment": "This is for screen reader for the label that will be narrated when the transcript is focused."
+  "_TRANSCRIPT_ARIA_LABEL_ALT.comment": "This is for screen reader for the label that will be narrated when the transcript is focused.",
+  "TRANSCRIPT_TERMINATOR_TEXT": "End of transcript"
 }
