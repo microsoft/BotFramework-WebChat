@@ -38,10 +38,10 @@ export default function createBasicTranscriptStyleSet({
 
       '&:focus .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator': {
         height: '100%',
-        outlineColor: 'black',
-        outlineOffset: -2,
-        outlineStyle: 'solid',
-        outlineWidth: 2,
+        borderColor: 'black',
+        borderStyle: 'solid',
+        borderWidth: 2,
+        boxSizing: 'border-box',
         pointerEvents: 'none',
         position: 'absolute',
         top: 0,
