@@ -445,7 +445,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [rootElementRef, scrollTo]
   );
 
-  // Since there could be multiple instances of <BasicTranscript> inside the <Composer>, when the developer call `scrollXXX`, we need to call it on all instances.
+  // Since there could be multiple instances of <BasicTranscript> inside the <Composer>, when the developer calls `scrollXXX`, we need to call it on all instances.
   // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
   useRegisterScrollTo(scrollTo);
   useRegisterScrollToEnd(scrollToBottomScrollToEnd);
