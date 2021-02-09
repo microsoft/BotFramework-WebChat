@@ -2,17 +2,19 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: Enhancement, Pending, customer-reported, Bot Services
+labels: feature-request, customer-reported, Bot Services
 assignees: ''
 ---
+
+# Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
 
 <!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->
 
 ## Feature Request
 
-### Use the ['Enhancement' query](https://github.com/microsoft/botframework-Webchat/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aenhancement) to search for the most popular feature requests.
+### Use the ['feature-request' query](https://github.com/microsoft/BotFramework-WebChat/labels/feature-request) to search for existing feature requests.
 
-### The [Sample tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
+### The [Samples tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
 
 **Is your feature request related to a problem? Please describe.**
 
@@ -30,4 +32,4 @@ assignees: ''
 
 <!-- Add any other context or screenshots about the feature request here. -->
 
-[Enhancement]
+[feature-request]

@@ -13,7 +13,7 @@
     "build:webpack": "concurrently --names \"dev,prod\" \"npm run build:webpack:development\" \"npm run build:webpack:production\"",
     "build:webpack:development": "cross-env node_env=development webpack-cli",
     "build:webpack:production": "cross-env node_env=production webpack-cli",
-    "eslint": "eslint src/**/*.js",
+    "eslint": "eslint src/**/*.js --fix",
     "prestart": "npm run build:babel",
     "start": "npm run start:babel && concurrently --kill-others --names \"babel,serve,webpack\" \"npm run start:babel:watch\" \"npm run start:serve\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel --",
@@ -61,10 +61,10 @@
     "event-target-shim": "5.0.1",
     "event-target-shim-es5": "1.2.0",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.13.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
     "p-defer": "3.0.0",
     "p-defer-es5": "1.2.1",
-    "web-speech-cognitive-services": "7.0.2-master.6004e4b"
+    "web-speech-cognitive-services": "7.1.0"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -3,7 +3,6 @@
  */
 
 import hasResolved from 'has-resolved';
-import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
 
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 
@@ -72,9 +71,9 @@ function createStreamFromChunks(format, chunks) {
       if (chunk) {
         new Uint8Array(destination).set(new Uint8Array(chunk));
 
-        return PromiseHelper.fromResult(chunk.byteLength);
+        return Promise.resolve(chunk.byteLength);
       } else {
-        return PromiseHelper.fromResult(0);
+        return Promise.resolve(0);
       }
     }
   };
@@ -174,9 +173,7 @@ test('should stop when abort is called after all buffer queued', async () => {
 test('should stop when abort is called before first buffer is queued', async () => {
   const audioContext = createMockAudioContext();
   const abortController = new AbortController();
-  const read = jest.fn(() => ({
-    on() {}
-  }));
+  const read = jest.fn(() => new Promise(() => {}));
 
   const playPromise = playCognitiveServicesStream(
     audioContext,

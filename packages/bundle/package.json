@@ -21,7 +21,7 @@
     "build:babel": "babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
     "build:typescript": "tsc --project src/tsconfig.json",
     "build:webpack": "webpack-cli",
-    "eslint": "eslint src/**/*.js src/**/*.ts",
+    "eslint": "eslint src/**/*.js src/**/*.ts --fix",
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,tsc,webpack\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.12.5",
-    "adaptivecards": "1.2.6",
+    "adaptivecards": "2.5.0",
     "botframework-directlinejs": "0.13.1",
     "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
@@ -43,11 +43,11 @@
     "markdown-it-for-inline": "0.1.1",
     "math-random": "2.0.1",
     "memoize-one": "5.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.13.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.5",
     "url-search-params-polyfill": "8.1.0",
-    "web-speech-cognitive-services": "7.0.2-master.6004e4b",
+    "web-speech-cognitive-services": "7.1.0",
     "whatwg-fetch": "3.4.1"
   },
   "devDependencies": {
@@ -81,7 +81,7 @@
     "webpack-stats-plugin": "^1.0.2"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }

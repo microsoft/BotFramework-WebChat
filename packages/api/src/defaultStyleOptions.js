@@ -93,6 +93,7 @@ const DEFAULT_OPTIONS = {
   sendBoxBorderTop: 'solid 1px #E6E6E6',
   sendBoxPlaceholderColor: undefined, // defaults to subtle
   sendBoxTextWrap: false,
+  sendBoxButtonAlignment: 'stretch', // "stretch", "top" or "bottom"
 
   // Visually show spoken text
   showSpokenText: false,
@@ -112,13 +113,16 @@ const DEFAULT_OPTIONS = {
   suggestedActionDisabledTextColor: undefined, // defaults to subtle
   suggestedActionHeight: 40,
   suggestedActionImageHeight: 20,
-  suggestedActionLayout: 'carousel', // either 'carousel' or 'stacked'
+  suggestedActionLayout: 'carousel', // Either "carousel", "flow", or "stacked"
   suggestedActionTextColor: null,
 
   // Suggested actions carousel layout
   suggestedActionsCarouselFlipperCursor: null, // Cursor when mouse over on flipper
   suggestedActionsCarouselFlipperBoxWidth: 40, // Flipper bounding box size
   suggestedActionsCarouselFlipperSize: 20, // Flipper visible size
+
+  // Suggested actions flow layout
+  suggestedActionsFlowMaxHeight: undefined, // Defaults to "auto".
 
   // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
@@ -197,7 +201,13 @@ const DEFAULT_OPTIONS = {
   toastWarnColor: '#3B3A39',
 
   // Emoji
-  emojiSet: true // true || false || { ':)' : '😊'}
+  emojiSet: true, // true || false || { ':)' : '😊'}
+
+  // Auto-scroll behavior
+  autoScrollSnapOnActivity: false, // true will pause scroll after 1 activity is received. Specifying a number will pause after X number of activities
+  autoScrollSnapOnActivityOffset: 0, // Specify number of pixels to overscroll or underscroll after pause
+  autoScrollSnapOnPage: false, // true will pause scroll after activities filled the page. Specifying a number (0 to 1) will pause after % of page is filled
+  autoScrollSnapOnPageoffset: 0 // Specify number of pixels to overscroll or underscroll after pause
 };
 
 export default DEFAULT_OPTIONS;

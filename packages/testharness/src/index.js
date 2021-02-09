@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import createDeferred from 'p-defer-es5';
 import expect from 'expect';
 import lolex from 'lolex';
+import Observable from 'core-js/features/observable';
 import updateIn from 'simple-update-in';
 
 import { EventIterator } from './external/event-iterator';
@@ -28,6 +29,7 @@ import createDirectLineWithTranscript from './utils/createDirectLineWithTranscri
 import createQueuedArrayBufferAudioSource from './speech/speechRecognition/createQueuedArrayBufferAudioSource';
 import createRunHookActivityMiddleware from './utils/createRunHookActivityMiddleware';
 import createStore, { getActionHistory } from './utils/createStore';
+import createWebSpeechMock from './utils/createWebSpeechMock';
 import fetchSpeechData from './speech/speechRecognition/fetchSpeechData';
 import fetchSpeechServicesCredentials from './token/fetchSpeechServicesCredentials';
 import float32ArraysToPcmWaveArrayBuffer from './speech/float32ArraysToPcmWaveArrayBuffer';
@@ -104,9 +106,7 @@ if (!webDriverMode) {
           break;
 
         case 'send access key':
-          log(
-            `WebChatTest: Please press this key sequence: ALT-SHIFT-${job.payload.key}.`
-          );
+          log(`WebChatTest: Please press this key sequence: ALT-SHIFT-${job.payload.key}.`);
           await waitForFinishKey();
           break;
 
@@ -161,6 +161,7 @@ export {
   createQueuedArrayBufferAudioSource,
   createRunHookActivityMiddleware,
   createStore,
+  createWebSpeechMock,
   elements,
   EventIterator,
   expect,
@@ -174,6 +175,7 @@ export {
   jobs,
   loadTranscriptAsset,
   MockAudioContext,
+  Observable,
   pageObjects,
   parseURLParams,
   pcmWaveArrayBufferToRiffWaveArrayBuffer,

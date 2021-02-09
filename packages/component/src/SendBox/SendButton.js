@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -19,7 +20,7 @@ const connectSendButton = (...selectors) =>
     ...selectors
   );
 
-const SendButton = () => {
+const SendButton = ({ className }) => {
   const [disabled] = useDisabled();
   const focus = useFocus();
   const localize = useLocalizer();
@@ -33,10 +34,23 @@ const SendButton = () => {
   }, [focus, scrollToEnd, submitSendBox]);
 
   return (
-    <IconButton alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')} disabled={disabled} onClick={handleClick}>
+    <IconButton
+      alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
+      className={className}
+      disabled={disabled}
+      onClick={handleClick}
+    >
       <SendIcon />
     </IconButton>
   );
+};
+
+SendButton.defaultProps = {
+  className: undefined
+};
+
+SendButton.propTypes = {
+  className: PropTypes.string
 };
 
 export default SendButton;

@@ -1,7 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
 
 import { hooks } from 'botframework-webchat-api';
-import { Panel as ScrollToBottomPanel, useAnimatingToEnd, useSticky } from 'react-scroll-to-bottom';
+import {
+  Composer as ReactScrollToBottomComposer,
+  Panel as ReactScrollToBottomPanel,
+  useAnimatingToEnd,
+  useObserveScrollPosition,
+  useScrollTo,
+  useScrollToEnd,
+  useSticky
+} from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
@@ -16,12 +24,14 @@ import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
+import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useFocus from './hooks/useFocus';
 import useMemoize from './hooks/internal/useMemoize';
+import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
+import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
-import useTranscriptActivityElementsRef from './hooks/internal/useTranscriptActivityElementsRef';
-import useTranscriptRootElementRef from './hooks/internal/useTranscriptRootElementRef';
 
 const {
   useActivities,
@@ -75,16 +85,15 @@ function validateAllActivitiesTagged(activities, bins) {
   return activities.every(activity => bins.some(bin => bin.includes(activity)));
 }
 
-const BasicTranscript = ({ className }) => {
+const InternalTranscript = ({ activityElementsRef, className }) => {
   const [{ activity: activityStyleSet }] = useStyleSet();
   const [
     { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
   ] = useStyleOptions();
   const [activities] = useActivities();
-  const [activityElementsRef] = useTranscriptActivityElementsRef();
   const [direction] = useDirection();
-  const [rootElementRef] = useTranscriptRootElementRef();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const rootElementRef = useRef();
 
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
@@ -293,6 +302,7 @@ const BasicTranscript = ({ className }) => {
             renderActivity,
             renderActivityStatus,
             renderAvatar,
+            role,
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
             shouldSpeak: activity.channelData && activity.channelData.speak,
@@ -306,10 +316,11 @@ const BasicTranscript = ({ className }) => {
 
     // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
 
-    activityElementsRef.current = renderingElements.map(({ activity: { id }, key }) => {
+    activityElementsRef.current = renderingElements.map(({ activity, activity: { id }, key }) => {
       const existingEntry = activityElements.find(entry => entry.key === key);
 
       return {
+        activity,
         activityID: id,
         element: existingEntry && existingEntry.element,
         key
@@ -330,6 +341,92 @@ const BasicTranscript = ({ className }) => {
   ]);
 
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
+
+  const scrollToBottomScrollTo = useScrollTo();
+  const scrollToBottomScrollToEnd = useScrollToEnd();
+
+  const scrollTo = useCallback(
+    (position, { behavior = 'auto' } = {}) => {
+      if (!position) {
+        throw new Error(
+          'botframework-webchat: First argument passed to "useScrollTo" must be a ScrollPosition object.'
+        );
+      }
+
+      const { activityID, scrollTop } = position;
+
+      if (typeof scrollTop !== 'undefined') {
+        scrollToBottomScrollTo(scrollTop, { behavior });
+      } else if (typeof activityID !== 'undefined') {
+        const { current: rootElement } = rootElementRef;
+        const { element: activityElement } =
+          activityElementsRef.current.find(entry => entry.activityID === activityID) || {};
+
+        const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+
+        if (scrollableElement && activityElement) {
+          const [{ height: activityElementHeight, y: activityElementY }] = activityElement.getClientRects();
+          const [{ height: scrollableHeight }] = scrollableElement.getClientRects();
+
+          const activityElementOffsetTop = activityElementY + scrollableElement.scrollTop;
+
+          const scrollTop = Math.min(
+            activityElementOffsetTop,
+            activityElementOffsetTop - scrollableHeight + activityElementHeight
+          );
+
+          scrollToBottomScrollTo(scrollTop, { behavior });
+        }
+      }
+    },
+    [activityElementsRef, rootElementRef, scrollToBottomScrollTo]
+  );
+
+  useRegisterScrollTo(scrollTo);
+  useRegisterScrollToEnd(scrollToBottomScrollToEnd);
+
+  const dispatchScrollPosition = useDispatchScrollPosition();
+  const patchedDispatchScrollPosition = useMemo(() => {
+    if (!dispatchScrollPosition) {
+      return;
+    }
+
+    return ({ scrollTop }) => {
+      const { current: rootElement } = rootElementRef;
+
+      if (!rootElement) {
+        return;
+      }
+
+      const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+
+      const [{ height: offsetHeight } = {}] = scrollableElement.getClientRects();
+
+      // Find the activity just above scroll view bottom.
+      // If the scroll view is already on top, get the first activity.
+      const entry = scrollableElement.scrollTop
+        ? [...activityElementsRef.current].reverse().find(({ element }) => {
+            if (!element) {
+              return false;
+            }
+
+            const [{ y } = {}] = element.getClientRects();
+
+            return y < offsetHeight;
+          })
+        : activityElementsRef.current[0];
+
+      const { activityID } = entry || {};
+
+      dispatchScrollPosition({ ...(activityID ? { activityID } : {}), scrollTop });
+    };
+  }, [activityElementsRef, dispatchScrollPosition, rootElementRef]);
+
+  useObserveScrollPosition(patchedDispatchScrollPosition);
+
+  const [lastInteractedActivity] = useAcknowledgedActivity();
+
+  const indexOfLastInteractedActivity = activities.indexOf(lastInteractedActivity);
 
   return (
     <div
@@ -353,20 +450,28 @@ const BasicTranscript = ({ className }) => {
       </section>
       <InternalTranscriptScrollable activities={renderingActivities}>
         {renderingElements.map(
-          ({
-            activity,
-            callbackRef,
-            key,
-            hideTimestamp,
-            renderActivity,
-            renderActivityStatus,
-            renderAvatar,
-            shouldSpeak,
-            showCallout
-          }) => (
+          (
+            {
+              activity,
+              callbackRef,
+              key,
+              hideTimestamp,
+              renderActivity,
+              renderActivityStatus,
+              renderAvatar,
+              role,
+              shouldSpeak,
+              showCallout
+            },
+            index
+          ) => (
             <li
               aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
-              className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity')}
+              className={classNames(activityStyleSet + '', 'webchat__basic-transcript__activity', {
+                'webchat__basic-transcript__activity--from-bot': role !== 'user',
+                'webchat__basic-transcript__activity--from-user': role === 'user',
+                'webchat__basic-transcript__activity--acknowledged': index <= indexOfLastInteractedActivity
+              })}
               key={key}
               ref={callbackRef}
             >
@@ -385,11 +490,14 @@ const BasicTranscript = ({ className }) => {
   );
 };
 
-BasicTranscript.defaultProps = {
+InternalTranscript.defaultProps = {
   className: ''
 };
 
-BasicTranscript.propTypes = {
+InternalTranscript.propTypes = {
+  activityElementsRef: PropTypes.shape({
+    current: PropTypes.array.isRequired
+  }).isRequired,
   className: PropTypes.string
 };
 
@@ -495,7 +603,7 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
   }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
 
   return (
-    <ScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+    <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
       <div aria-hidden={true} className="webchat__basic-transcript__filler" />
       <ul
         aria-roledescription={transcriptRoleDescription}
@@ -518,13 +626,121 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
         ))}
       </ul>
       <BasicTypingIndicator />
-    </ScrollToBottomPanel>
+    </ReactScrollToBottomPanel>
   );
 };
 
 InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
   children: PropTypes.arrayOf(PropTypes.element).isRequired
+};
+
+const SetScroller = ({ activityElementsRef, scrollerRef }) => {
+  const [
+    { autoScrollSnapOnActivity, autoScrollSnapOnActivityOffset, autoScrollSnapOnPage, autoScrollSnapOnPageOffset }
+  ] = useStyleOptions();
+  const [lastAcknowledgedActivity] = useAcknowledgedActivity();
+
+  const lastAcknowledgedActivityRef = useRef(lastAcknowledgedActivity);
+
+  lastAcknowledgedActivityRef.current = lastAcknowledgedActivity;
+
+  scrollerRef.current = useCallback(
+    ({ offsetHeight, scrollTop }) => {
+      const patchedAutoScrollSnapOnActivity =
+        typeof autoScrollSnapOnActivity === 'number'
+          ? Math.max(0, autoScrollSnapOnActivity)
+          : autoScrollSnapOnActivity
+          ? 1
+          : 0;
+      const patchedAutoScrollSnapOnPage =
+        typeof autoScrollSnapOnPage === 'number'
+          ? Math.max(0, Math.min(1, autoScrollSnapOnPage))
+          : autoScrollSnapOnPage
+          ? 1
+          : 0;
+      const patchedAutoScrollSnapOnActivityOffset =
+        typeof autoScrollSnapOnActivityOffset === 'number' ? autoScrollSnapOnActivityOffset : 0;
+      const patchedAutoScrollSnapOnPageOffset =
+        typeof autoScrollSnapOnPageOffset === 'number' ? autoScrollSnapOnPageOffset : 0;
+
+      if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
+        const { current: lastAcknowledgedActivity } = lastAcknowledgedActivityRef;
+
+        const values = [];
+
+        if (patchedAutoScrollSnapOnActivity) {
+          const { element: nthUnacknowledgedActivityElement } =
+            activityElementsRef.current[
+              activityElementsRef.current.findIndex(({ activity }) => activity === lastAcknowledgedActivity) +
+                patchedAutoScrollSnapOnActivity
+            ] || {};
+
+          if (nthUnacknowledgedActivityElement) {
+            values.push(
+              nthUnacknowledgedActivityElement.offsetTop +
+                nthUnacknowledgedActivityElement.offsetHeight -
+                offsetHeight -
+                scrollTop +
+                patchedAutoScrollSnapOnActivityOffset
+            );
+          }
+        }
+
+        if (patchedAutoScrollSnapOnPage) {
+          const { element: firstUnacknowledgedActivityElement } =
+            activityElementsRef.current[
+              activityElementsRef.current.findIndex(({ activity }) => activity === lastAcknowledgedActivity) + 1
+            ] || {};
+
+          if (firstUnacknowledgedActivityElement) {
+            values.push(
+              firstUnacknowledgedActivityElement.offsetTop -
+                scrollTop -
+                offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
+                patchedAutoScrollSnapOnPageOffset
+            );
+          }
+        }
+
+        return values.reduce((minValue, value) => Math.min(minValue, value), Infinity);
+      }
+
+      return Infinity;
+    },
+    [
+      activityElementsRef,
+      autoScrollSnapOnActivity,
+      autoScrollSnapOnActivityOffset,
+      autoScrollSnapOnPage,
+      autoScrollSnapOnPageOffset,
+      lastAcknowledgedActivityRef
+    ]
+  );
+
+  return false;
+};
+
+const BasicTranscript = ({ className }) => {
+  const activityElementsRef = useRef([]);
+  const scrollerRef = useRef(() => Infinity);
+
+  const scroller = useCallback((...args) => scrollerRef.current(...args), [scrollerRef]);
+
+  return (
+    <ReactScrollToBottomComposer scroller={scroller}>
+      <SetScroller activityElementsRef={activityElementsRef} scrollerRef={scrollerRef} />
+      <InternalTranscript activityElementsRef={activityElementsRef} className={className} />
+    </ReactScrollToBottomComposer>
+  );
+};
+
+BasicTranscript.defaultProps = {
+  className: ''
+};
+
+BasicTranscript.propTypes = {
+  className: PropTypes.string
 };
 
 export default BasicTranscript;

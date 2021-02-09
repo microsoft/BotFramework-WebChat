@@ -22,9 +22,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolves [#2745](https://github.com/microsoft/BotFramework-WebChat/issues/2745). Added new `inline` layout to suggested actions, by [@compulim](https://github.com/compulim) in PR [#3641](https://github.com/microsoft/BotFramework-WebChat/pull/3641)
+-  Added new style options to customize auto-scroll, by [@compulim](https://github.com/compulim) in PR [#3653](https://github.com/microsoft/BotFramework-WebChat/pull/3653)
+   -  Set `autoScrollSnapOnActivity` to `true` to pause auto-scroll after more than one activity is shown, or a number to pause after X number of activities
+   -  Set `autoScrollSnapOnPage` to `true` to pause auto-scroll when a page is filled, or a number between `0` and `1` to pause after % of page is filled
+   -  Set `autoScrollSnapOnActivityOffset` and `autoScrollSnapOnPageOffset` to a number (in pixels) to overscroll/underscroll after the pause
+-  Supports multiple transcripts in a single composition, by [@compulim](https://github.com/compulim) in PR [#3653](https://github.com/microsoft/BotFramework-WebChat/pull/3653)
+-  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
+-  Resolves [#3666](https://github.com/microsoft/BotFramework-WebChat/issues/3666). Added support of sovereign clouds when using Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
+   -  Please refer to [`DIRECT_LINE_SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md#directlinespeechcredentials) for instructions
+
+### Fixed
+
+-  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
+-  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). Fix some carousels improperly using aria-roledescription, by [@corinagum](https://github.com/corinagum) in PR [#3599](https://github.com/microsoft/BotFramework-WebChat/pull/3599)
+-  Fixes [#3483](https://github.com/microsoft/BotFramework-WebChat/issues/3483). IE11 anchors fixed to open securely without 'noreferrer' or 'noopener', by [@corinagum](https://github.com/corinagum) in PR [#3607](https://github.com/microsoft/BotFramework-WebChat/pull/3607)
+-  Fixes [#3565](https://github.com/microsoft/BotFramework-WebChat/issues/3565). Allow strikethrough `<s>` on sanitize markdown, by [@corinagum](https://github.com/corinagum) in PR [#3646](https://github.com/microsoft/BotFramework-WebChat/pull/3646)
+-  Fixes [#3672](https://github.com/microsoft/BotFramework-WebChat/issues/3672). Center the icon of send box buttons vertically and horizontally, by [@compulim](https://github.com/compulim) in PR [#3673](https://github.com/microsoft/BotFramework-WebChat/pull/3673)
+-  Fixes [#3683](https://github.com/microsoft/BotFramework-WebChat/issues/3683). Activities should be acknowledged when user scrolls to bottom, by [@compulim](https://github.com/compulim) in PR [#3684](https://github.com/microsoft/BotFramework-WebChat/pull/3684)
+-  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Race condition between the first bot activity and first user activity should not cause the first bot activity to be delayed, by [@compulim](https://github.com/compulim) in PR [#3705](https://github.com/microsoft/BotFramework-WebChat/pull/3705)
+-  Fixes [#3676](https://github.com/microsoft/BotFramework-WebChat/issues/3676). Activities without text should not generate bogus `aria-labelledby`, by [@compulim](https://github.com/compulim) in PR [#3697](https://github.com/microsoft/BotFramework-WebChat/pull/3697)
+-  Fixes [#3625](https://github.com/microsoft/BotFramework-WebChat/issues/3625). Update 'no screen reader for custom activity middleware' warning and add screen reader renderer documentation to `ACCESSIBILITY.md`, by [@corinagum](https://github.com/corinagum) in PR [#3689](https://github.com/microsoft/BotFramework-WebChat/pull/3689)
+-  Fixes [#3612](https://github.com/microsoft/BotFramework-WebChat/issues/3612). Carousel flippers in suggested actions are given extra padding, by [@compulim](https://github.com/compulim) and [@Quirinevwm](https://github.com/Quirinevwm) in PR [#3704](https://github.com/microsoft/BotFramework-WebChat/pull/3704)
+-  Fixes [#3411](https://github.com/microsoft/BotFramework-WebChat/issues/3411). With Direct Line Speech, clicking on microphone button during speech recognition should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
+   -  Although it no locker lock up microphone, clicking on the microphone button has no effect because Direct Line Speech does not support aborting speech recognition
+-  Fixes [#3421](https://github.com/microsoft/BotFramework-WebChat/issues/3421). With Direct Line Speech, after not able to recognize any speech, it should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
+-  Fixes [#3616](https://github.com/microsoft/BotFramework-WebChat/issues/3616). [Accessibility documentation] Update activity timestamp grouping to match visual UI, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3708](https://github.com/microsoft/BotFramework-WebChat/pull/3708)
+
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594) and PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Development dependencies
       -  [`@babel/cli@7.12.1`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.12.3`](https://npmjs.com/package/@babel/core)
@@ -64,17 +95,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/runtime@7.12.5`](https://npmjs.com/package/@babel/runtime)
       -  [`globalize@1.6.0`](https://npmjs.com/package/globalize)
       -  [`markdown-it@12.0.2`](https://npmjs.com/package/markdown-it)
+      -  [`microsoft-cognitiveservices-speech-sdk@1.15.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)
       -  [`react-redux@7.2.2`](https://npmjs.com/package/react-redux)
       -  [`redux@4.0.5`](https://npmjs.com/package/redux)
       -  [`sanitize-html@2.1.2`](https://npmjs.com/package/sanitize-html)
+      -  [`web-speech-cognitive-services@7.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
       -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
+-  [#3392](https://github.com/microsoft/BotFramework-WebChat/issues/3392) Bumped Adaptive Cards to the 2.5.0, by [@corinagum](https://github.com/corinagum) in PR [#3630](https://github.com/microsoft/BotFramework-WebChat/pull/3630)
+-  Fixes [#3618](https://github.com/microsoft/BotFramework-WebChat/issues/3618). Fix AC anchors being disabled when AC is obsolete, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
 
-### Fixed
+### Samples
 
--  Fixes [#3278](https://github.com/microsoft/BotFramework-WebChat/issues/3278). Update `HOOKS.md` verbiage, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
--  Fixes [#3534](https://github.com/microsoft/BotFramework-WebChat/issues/3534). Remove 2020 deprecations, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
--  Fixes [#3561](https://github.com/microsoft/BotFramework-WebChat/issues/3561). Remove MyGet mentions from samples, by [@corinagum](https://github.com/corinagum) in PR [#3564](https://github.com/microsoft/BotFramework-WebChat/pull/3564)
--  Fixes [#3537](https://github.com/microsoft/BotFramework-WebChat/issues/3537). Fix some carousels improperly using aria-roledescription, by [@corinagum](https://github.com/corinagum) in PR [#3599](https://github.com/microsoft/BotFramework-WebChat/pull/3599)
+-  Fixes [#3473](https://github.com/microsoft/BotFramework-WebChat/issues/3473). Fix samples using activityMiddleware (from 4.10.0 breaking changes), by [@corinagum](https://github.com/corinagum) in PR [#3601](https://github.com/microsoft/BotFramework-WebChat/pull/3601)
+-  Fixes [#3582](https://github.com/microsoft/BotFramework-WebChat/issues/3582). Fix Disable Adaptive Cards sample, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
+-  Fixes [#3434](https://github.com/microsoft/BotFramework-WebChat/issues/3434). Dispatched event, postBack, or messageBack + activityMiddleware causes fatal error, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3671](https://github.com/microsoft/BotFramework-WebChat/pull/3671)
+-  Fixes [#3215](https://github.com/microsoft/BotFramework-WebChat/issues/3215). Fix SSO samples `window.opener.postMessage`, by [@corinagum](https://github.com/corinagum) in PR [#3696](https://github.com/microsoft/BotFramework-WebChat/pull/3696)
 
 ## [4.11.0] - 2020-11-04
 
@@ -89,6 +124,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  Carousel layout and stacked layout is only available on `component` package due to their coupling with their respective visual components
       -  For card action middleware, `imBack`, `messageBack` and `postBack` actions are available on `api` package, but `call`, `openUrl` and other platform-dependent actions are only available on `component` package
    -  `activityMiddleware`, `attachmentMiddleware`, etc, now support arrays for multiple middleware
+-  Resolves [#3535](https://github.com/microsoft/BotFramework-WebChat/issues/3535). Add Technical Support Guide for guidance on troubleshooting information and navigating the Web Chat repository, by [@corinagum](https://github.com/corinagum), in PR [#3645](https://github.com/microsoft/BotFramework-WebChat/pull/3645)
 
 ### Fixed
 

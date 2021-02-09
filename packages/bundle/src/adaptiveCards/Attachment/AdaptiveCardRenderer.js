@@ -11,6 +11,7 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
+// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 function addClass(element, className) {
@@ -84,6 +85,12 @@ function addEventListenerOnceWithUndo(element, name, handler) {
   return detach;
 }
 
+function addEventListenerWithUndo(element, name, handler) {
+  element.addEventListener(name, handler);
+
+  return () => element.removeEventListener(name, handler);
+}
+
 function disableElementWithUndo(element) {
   const undoStack = [];
   const isActive = element === document.activeElement;
@@ -91,12 +98,6 @@ function disableElementWithUndo(element) {
 
   /* eslint-disable-next-line default-case */
   switch (tag) {
-    // Should we not disable <a>? Will some of the <a> are styled as button?
-    case 'a':
-      undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
-
-      break;
-
     case 'button':
     case 'input':
     case 'select':
@@ -114,7 +115,7 @@ function disableElementWithUndo(element) {
       }
 
       if (tag === 'input' || tag === 'textarea') {
-        undoStack.push(addEventListenerOnceWithUndo(element, 'click', disabledHandler));
+        undoStack.push(addEventListenerWithUndo(element, 'click', disabledHandler));
         undoStack.push(setAttributeWithUndo(element, 'readonly', 'readonly'));
       } else if (tag === 'select') {
         undoStack.push(
@@ -131,7 +132,7 @@ function disableElementWithUndo(element) {
 }
 
 function disableInputElementsWithUndo(element, observeSubtree = true) {
-  const undoStack = [].map.call(element.querySelectorAll('a, button, input, select, textarea'), element =>
+  const undoStack = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
     disableElementWithUndo(element)
   );
 
@@ -253,7 +254,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
       if (!adaptiveCardRoot) {
         return console.warn(
-          'botframework-webchat: No Adaptive Card root container can be found, probably on an unsupported Adaptive Card version.'
+          'botframework-webchat: No Adaptive Card root container can be found; the card is probably on an unsupported Adaptive Card version.'
         );
       }
 
@@ -365,12 +366,10 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
     GlobalSettings.setTabIndexAtCardRoot = !!tapAction;
 
-    const { failures } = adaptiveCard.validateProperties();
+    const { validationEvents } = adaptiveCard.validateProperties();
 
-    if (failures.length) {
-      return setErrors(
-        failures.reduce((items, { errors }) => [...items, ...errors.map(({ message }) => new Error(message))], [])
-      );
+    if (validationEvents.length) {
+      return setErrors(validationEvents.reduce((items, { message }) => [...items, new Error(message)], []));
     }
 
     let element;

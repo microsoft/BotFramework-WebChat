@@ -159,11 +159,12 @@ Next let's build the `activityMiddleware` that will filter which activities are 
 
 <!-- prettier-ignore-start -->
 ```js
-const activityMiddleware = () => next => card => {
+const activityMiddleware = () => next => (...setupArgs) => {
+  const [card] = setupArgs
   if (card.activity.from.role === 'bot') {
-    return children => (
+    return (...renderArgs) => (
       <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
-        {next(card)(children)}
+        {next(card)(...renderArgs)}
       </BotActivityDecorator>
     );
   } else {
@@ -290,16 +291,16 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const activityMiddleware = () => next => card => {
+        const activityMiddleware = () => next => (...setupArgs) => {
+          const [card] = setupArgs
           if (card.activity.from.role === 'bot') {
-            return children => (
-              <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
-                {next(card)(children)}
+            return (...renderArgs) => (
+              <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
+                {next(card)(...renderArgs)}
               </BotActivityDecorator>
             );
           }
-
-          return next(card);
+          return next(...setupArgs)
         };
 
         window.ReactDOM.render(

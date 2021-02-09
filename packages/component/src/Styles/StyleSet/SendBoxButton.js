@@ -8,14 +8,20 @@ export default function createSendBoxButtonStyle({
 }) {
   return {
     '&.webchat__icon-button': {
+      alignItems: 'center',
       backgroundColor: 'Transparent',
       border: 0,
-      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
       outline: 0,
       padding: 0,
 
       // We use the sendBoxHeight, so the button looks square
       width: sendBoxHeight,
+
+      '&:not(.webchat__icon-button--stretch)': {
+        height: sendBoxHeight
+      },
 
       '&:not(:disabled):not([aria-disabled="true"])': {
         '&:focus svg': {

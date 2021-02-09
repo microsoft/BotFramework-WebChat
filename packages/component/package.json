@@ -20,7 +20,7 @@
     "build": "npm run build:typescript && npm run build:babel",
     "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
     "build:typescript": "tsc --project src/tsconfig.json",
-    "eslint": "eslint src/**/*.js src/**/*.ts",
+    "eslint": "eslint src/**/*.js src/**/*.ts --fix",
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
@@ -62,7 +62,7 @@
     "react-film": "3.0.0",
     "react-redux": "7.2.2",
     "react-say": "2.0.2-master.ee7cd76",
-    "react-scroll-to-bottom": "4.0.0",
+    "react-scroll-to-bottom": "4.1.0",
     "redux": "4.0.5",
     "remark": "10.0.1",
     "sanitize-html": "1.27.5",
@@ -70,7 +70,7 @@
     "strip-markdown": "3.0.4"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }

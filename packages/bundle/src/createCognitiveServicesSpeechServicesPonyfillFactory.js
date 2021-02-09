@@ -69,6 +69,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     //             We will not need this code when using Speech SDK 1.14.0 or up.
     // TODO: [P1] #3575 Remove the following lines when bumping to Speech SDK 1.14.0 or higher
     source.createAudioContext = () => {
+      // eslint-disable-next-line no-extra-boolean-cast
       if (!!source.privContext) {
         return;
       }

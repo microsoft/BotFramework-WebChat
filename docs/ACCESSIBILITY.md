@@ -187,7 +187,15 @@ To make the live region more consistent across browsers and easier to control, w
       -  0-100 ms: Chrome and TalkBack on Android may miss some of the activities
       -  The development team settled on using one second after some experimentation
 
-## Do and don't
+### Technical Limitation
+
+-  Activity Time Stamp Announcement : Related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
+   -  Problem definition : Even when a user overrides the 'grouptimestamp' props and sets it to true or to some interval, AT still announces every activity with it's associated Time stamp.
+   -  Explanation of current behavior : Once activity is marked as sent, it is written to DOM as well as it's Timestamp; the timestamp grouping logic is executed only when the next activity arrives. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
+   -  Given above limitation even if we removed the timestamp element from DOM after group timestamp logic is executed this will not change the screen reader behavior.
+   -  As per Accessibility team review/recommendation : There is no hiding or loss of information in this case - so will keep the current behavior as is.
+
+## Do's and don't
 
 ### Do
 
@@ -211,6 +219,22 @@ To make the live region more consistent across browsers and easier to control, w
    -  It is okay to disable all buttons, as long as the answer will be read by the screen reader
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
 -  Don't move focus when an activity arrives (or asynchronously)
-   -  Screen reader reading will be interrupted when focus change
+   -  Screen reader reading will be interrupted when focus changes
    -  Only change focus synchronous to user gesture
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
+
+# Screen reader renderer for custom activities and attachments
+
+Web Chat render components are accompanied by a screen reader renderer to maximize accessibility. In the case of custom components, the bot/Web Chat developer will need to implement a screen reader renderer for the equivalent custom visual component.
+
+![image: Console warning: "No renderer for attachment for screen reader of type "application/mnd.microsoft.card.adaptive"](https://user-images.githubusercontent.com/14900841/106323546-6f47ed80-622c-11eb-96d7-de6f72818525.png)
+
+The Web Chat team **DOES NOT** recommend disabling warning messages regarding screen readers and accessibility. However, if the developer decides to suppress these messages, it can be done by adding the following code to `attachmentForScreenReaderMiddleware` in the `Composer` props.
+
+```js
+const attachmentForScreenReaderMiddleware = () => next => () => {
+   return false;
+};
+```
+
+This will prevent the screen reader renderer warning from appearing in the browser console.

@@ -35,7 +35,7 @@ You may have noticed that Web Chat provides two different ways to change the app
 We provide these options to override for several reasons:
 
 -  These are commonly re-styled DOM elements that bot creators want modify in order to provide a specific brand experience
--  Although we support the modification of styling, we want it to be obvious to the user that **we do not guarantee our DOM will always stay the same**, which is why Web Chat uses CSS-in-JS (`glamor`), which generates the class names for Web Chat
+-  Although we support the modification of styling, we want it to be obvious to the user that **we do not guarantee our DOM will always stay the same**, which is why Web Chat uses CSS-in-JS (`emotion`), which generates the class names for Web Chat
 -  We encourage our users to use CSS selectors, such as `& > button > div > ul > li:nth-child`, as opposed to accessing the element by it's class name (e.g. `& > .css-1a2b3c4`) because of the high likelihood that the project will have future class and DOM changes. CSS selectors provide high specificity without the need of using `!important`, and provides implicit information of what element is being styled
 -  `styleSetOptions` is our way of preserving your modifications (without breaking changes!) but allowing the repo to continue to facilitate natural DOM changes that come with an actively updated project
 

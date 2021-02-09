@@ -27,7 +27,7 @@ test('getter should return default Adaptive Cards package if not set in props', 
   const { pageObjects } = await setupWebDriver();
 
   const [adaptiveCardsPackage] = await pageObjects.runHook('useAdaptiveCardsPackage', [], results =>
-    results[0].AdaptiveCard.currentVersion.toString()
+    new results[0].Version().major.toString()
   );
 
   expect(adaptiveCardsPackage).toMatchInlineSnapshot(`"1"`);
