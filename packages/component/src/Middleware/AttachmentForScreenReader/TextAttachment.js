@@ -3,15 +3,20 @@ import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import FileAttachment from './FileAttachment';
 import useUniqueId from '../../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
-const TextAttachment = ({ attachment: { content = '' } = {} }) => {
+const TextAttachment = (activity, attachment, { attachment: { content = '' } = {} }) => {
   const labelId = useUniqueId('webchat__id');
   const localize = useLocalizer();
 
   const label = localize('ATTACHMENT_TEXT', content);
+
+  if (!attachment.content) {
+    return <FileAttachment activity={activity} attachment={attachment} />;
+  }
 
   return (
     <article aria-labelledby={labelId}>

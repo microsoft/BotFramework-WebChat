@@ -20,8 +20,8 @@ export default function createCoreMiddleware() {
           attachment: { contentType, contentUrl, thumbnailUrl } = {}
         }
       ] = args;
-
-      return role === 'user' && !/^audio|image|video\//u.test(contentType) && !attachment.content && !thumbnailUrl ? (
+      // && !attachment.content
+      return role === 'user' && !/text\//u.test(contentType) && !thumbnailUrl ? (
         <FileAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />
