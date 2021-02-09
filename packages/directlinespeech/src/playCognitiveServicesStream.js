@@ -135,9 +135,9 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
     let { samplesPerSec } = format;
 
     // TODO: [P0] #3692 Remove the following if-condition block when the underlying bugs are resolved.
-    //       There is a bug in Speech SDK 1.15.0 that it returns 24kHz instead of 16kHz.
-    //       Even we explicitly specify the output audio format to 16kHz, there is another bug that ignored it.
-    //       In short, DLSpeech service currently always stream in RIFF WAV format, instead of MP3.
+    //       There is a bug in Speech SDK 1.15.0 that returns 24kHz instead of 16kHz.
+    //       Even if we explicitly specify the output audio format to 16kHz, there is another bug that ignored it.
+    //       In short, DLSpeech service currently always streams in RIFF WAV format, instead of MP3.
     //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/313
     //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/314
     if (format.requestAudioFormatString === 'audio-24khz-48kbitrate-mono-mp3') {

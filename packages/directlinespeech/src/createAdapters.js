@@ -62,7 +62,7 @@ export default async function create({
 
   if ((directLineSpeechHostname && region) || (!directLineSpeechHostname && !region)) {
     throw new Error(
-      '"fetchCredentials" must return either "directLineSpeechHostname" or "region" and it must not be empty string.'
+      '"fetchCredentials" must return either "directLineSpeechHostname" or "region" and it must not be an empty string.'
     );
   }
 
