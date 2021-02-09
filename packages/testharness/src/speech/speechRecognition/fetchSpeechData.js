@@ -31,7 +31,7 @@ export default async function({
   } else if (authorizationToken && subscriptionKey) {
     throw new Error('Only "authorizationToken" or "subscriptionKey" should be set.');
   } else if ((region && speechSynthesisHostname) || (!region && !speechSynthesisHostname)) {
-    throw new Error('Only "region" or "speechSynthesisHostnamename" should be set.');
+    throw new Error('Only "region" or "speechSynthesisHostname" should be set.');
   }
 
   const ssml = isSSML(text) ? text : buildSSML({ lang, pitch, rate, text, voice, volume });

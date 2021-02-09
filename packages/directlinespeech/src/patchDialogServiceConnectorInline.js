@@ -38,7 +38,8 @@ export default function patchDialogServiceConnectorInline(dialogServiceConnector
     }
   );
 
-  // TODO: startContinuousRecognitionAsync is not working yet, use listenOnceAsync instead.
+  // TODO: [P1] #2664 startContinuousRecognitionAsync is not working yet in Speech SDK 1.15.0.
+  //       We need to polyfill to use listenOnceAsync instead, and disable stopContinuousRecognitionAsync.
   dialogServiceConnector.startContinuousRecognitionAsync = (resolve, reject) => {
     dialogServiceConnector.listenOnceAsync(
       () => {
