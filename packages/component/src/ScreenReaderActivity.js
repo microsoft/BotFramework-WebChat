@@ -32,7 +32,7 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-const ScreenReaderActivity = ({ activity }) => {
+const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const formatDate = useDateFormatter();
@@ -53,9 +53,11 @@ const ScreenReaderActivity = ({ activity }) => {
   const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
   const displayText = messageBackDisplayText || text;
 
-  const attachmentForScreenReaderRenderers = attachments
-    .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
-    .filter(render => render);
+  const attachmentForScreenReaderRenderers = renderAttachments
+    ? attachments
+        .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
+        .filter(render => render)
+    : [];
 
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
@@ -73,6 +75,7 @@ const ScreenReaderActivity = ({ activity }) => {
       aria-atomic={true}
       aria-roledescription="message"
       className={classNames('webchat__screen-reader-activity', rootClassName)}
+      id={id}
       role="region"
     >
       <p>
@@ -89,12 +92,21 @@ const ScreenReaderActivity = ({ activity }) => {
       )}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
+      {children}
     </article>
   );
 };
 
+ScreenReaderActivity.defaultProps = {
+  children: undefined,
+  renderAttachments: true
+};
+
 ScreenReaderActivity.propTypes = {
-  activity: PropTypes.any.isRequired
+  activity: PropTypes.any.isRequired,
+  children: PropTypes.any,
+  id: PropTypes.any.isRequired,
+  renderAttachments: PropTypes.bool
 };
 
 export default ScreenReaderActivity;

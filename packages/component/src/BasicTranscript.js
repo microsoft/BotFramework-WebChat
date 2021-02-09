@@ -99,26 +99,26 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const [
     { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
   ] = useStyleOptions();
+  const [activeActivityKey, setActiveActivityKey] = useState();
   const [activities] = useActivities();
   const [direction] = useDirection();
   const [disabled] = useDisabled();
-  const [activeActivityKey, setActiveActivityKey] = useState();
+  const createActivityRenderer = useCreateActivityRenderer();
+  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
+  const createAvatarRenderer = useCreateAvatarRenderer();
   const focus = useFocus();
+  const groupActivities = useGroupActivities();
+  const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootElementRef = useRef();
   const terminatorRef = useRef();
 
-  const createActivityRenderer = useCreateActivityRenderer();
-  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const createAvatarRenderer = useCreateAvatarRenderer();
-  const groupActivities = useGroupActivities();
-  const hideAllTimestamps = groupTimestamp === false;
-  const localize = useLocalizer();
-
-  const activityAriaLabel = localize('ACTIVITY_ARIA_LABEL_ALT');
+  const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT');
   const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
   const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  const hideAllTimestamps = groupTimestamp === false;
 
   // Gets renderer for every activity.
   // Activities that are not visible will return a falsy renderer.
@@ -353,6 +353,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       return {
         activity,
         activityID: id,
+        ariaLabelID: existingEntry
+          ? existingEntry.ariaLabelID
+          : `webchat__basic-transcript__activity-label-${random().toString(36).substr(2, 5)}`,
         element: existingEntry && existingEntry.element,
         elementId,
         key
@@ -716,11 +719,16 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             },
             index
           ) => {
+            const { ariaLabelID, element } =
+              activityElementsRef.current.find(entry => entry.activity === activity) || {};
             const activeDescendant = activeActivityKey === key;
+            const interactive = !!(element
+              ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
+              : 0);
 
             return (
               <li
-                aria-label={activityAriaLabel} // This will be read when pressing CAPSLOCK + arrow with screen reader
+                aria-labelledby={ariaLabelID}
                 className={classNames('webchat__basic-transcript__activity', {
                   'webchat__basic-transcript__activity--acknowledged': index <= indexOfLastInteractedActivity,
                   'webchat__basic-transcript__activity--from-bot': role !== 'user',
@@ -732,17 +740,22 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 onKeyDown={handleKeyDown}
                 ref={callbackRef}
               >
+                <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
+                  {!!interactive && <p>{activityInteractiveAlt}</p>}
+                </ScreenReaderActivity>
                 <FocusRedirector
                   className="webchat__basic-transcript__sentinel"
                   onFocus={handleFocus}
                   redirectRef={rootElementRef}
                 />
-                {renderActivity({
-                  hideTimestamp,
-                  renderActivityStatus,
-                  renderAvatar,
-                  showCallout
-                })}
+                <div className="webchat__basic-transcript__activity-box">
+                  {renderActivity({
+                    hideTimestamp,
+                    renderActivityStatus,
+                    renderAvatar,
+                    showCallout
+                  })}
+                </div>
                 {shouldSpeak && <SpeakActivity activity={activity} />}
                 <FocusRedirector
                   className="webchat__basic-transcript__sentinel"
