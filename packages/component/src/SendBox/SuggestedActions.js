@@ -70,6 +70,7 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
   const filmStyleSet = useMemo(
     () =>
       createBasicStyleSetForReactFilm({
+        autoHide: false,
         cursor: suggestedActionsCarouselFlipperCursor,
         flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
         flipperSize: suggestedActionsCarouselFlipperSize
@@ -226,6 +227,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       imageAlt={imageAltText}
       key={index}
       text={text}
+      textClassName="webchat__suggested-actions__button-text"
       type={type}
       value={value}
     />

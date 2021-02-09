@@ -45,6 +45,7 @@ const SuggestedAction = ({
   image,
   imageAlt,
   text,
+  textClassName,
   type,
   value
 }) => {
@@ -104,7 +105,7 @@ const SuggestedAction = ({
             src={image}
           />
         )}
-        <span className="webchat__suggested-action__text">{buttonText}</span>
+        <span className={classNames('webchat__suggested-action__text', (textClassName || '') + '')}>{buttonText}</span>
       </AccessibleButton>
     </div>
   );
@@ -117,6 +118,7 @@ SuggestedAction.defaultProps = {
   image: '',
   imageAlt: undefined,
   text: '',
+  textClassName: '',
   type: '',
   value: undefined
 };
@@ -129,6 +131,7 @@ SuggestedAction.propTypes = {
   image: PropTypes.string,
   imageAlt: PropTypes.string,
   text: PropTypes.string,
+  textClassName: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.any
 };
