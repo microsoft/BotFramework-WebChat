@@ -3,6 +3,7 @@
 
 export default function createSuggestedActionsStyle({
   paddingRegular,
+  suggestedActionsCarouselFlipperSize,
   suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
   suggestedActionsStackedOverflow,
@@ -60,13 +61,43 @@ export default function createSuggestedActionsStyle({
         },
 
         '&:not(.webchat__suggested-actions--rtl)': {
-          '& .react-film__filmstrip__item:first-child': { paddingLeft: paddingRegular / 2 },
-          '& .react-film__filmstrip__item:last-child': { paddingRight: paddingRegular / 2 }
+          '& .react-film__filmstrip__item:first-child': {
+            paddingLeft: paddingRegular / 2
+          },
+
+          '& .react-film__filmstrip__item:last-child': {
+            paddingRight: paddingRegular / 2
+          },
+
+          '& .react-film__flipper + .react-film__filmstrip': {
+            '& .react-film__filmstrip__item:first-child': {
+              paddingLeft: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            },
+
+            '& .react-film__filmstrip__item:last-child': {
+              paddingRight: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            }
+          }
         },
 
         '&.webchat__suggested-actions--rtl': {
-          '& .react-film__filmstrip__item:first-child': { paddingRight: paddingRegular / 2 },
-          '& .react-film__filmstrip__item:last-child': { paddingLeft: paddingRegular / 2 }
+          '& .react-film__filmstrip__item:first-child': {
+            paddingRight: paddingRegular / 2
+          },
+
+          '& .react-film__filmstrip__item:last-child': {
+            paddingLeft: paddingRegular / 2
+          },
+
+          '& .react-film__flipper + .react-film__filmstrip': {
+            '& .react-film__filmstrip__item:first-child': {
+              paddingRight: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            },
+
+            '& .react-film__filmstrip__item:last-child': {
+              paddingLeft: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            }
+          }
         }
       },
 
@@ -103,6 +134,13 @@ export default function createSuggestedActionsStyle({
           paddingLeft: paddingRegular / 2,
           paddingRight: paddingRegular / 2,
           paddingTop: paddingRegular / 2
+        }
+      },
+
+      '&.webchat__suggested-actions--flow-layout, &.webchat__suggested-actions--stacked-layout': {
+        '& .webchat__suggested-actions__button-text': {
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
         }
       }
     }
