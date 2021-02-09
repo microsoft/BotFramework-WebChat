@@ -15,10 +15,17 @@ const {
 
 describe.each([
   ['authorization token with Direct Line protocol', { useAuthorizationToken: true }],
+  ['authorization token with Direct Line protocol using hostname', { useAuthorizationToken: true, useHostname: true }],
   ['subscription key with Direct Line protocol', {}],
+  ['subscription key with Direct Line protocol using hostname', { useHostname: true }],
   ['authorization token with Direct Line Speech protocol', { useAuthorizationToken: true, useDirectLineSpeech: true }],
-  ['subscription key with Direct Line Speech protocol', { useDirectLineSpeech: true }]
-])('speech recognition using %s', (_, { useAuthorizationToken, useDirectLineSpeech }) => {
+  [
+    'authorization token with Direct Line Speech protocol using hostname',
+    { useAuthorizationToken: true, useDirectLineSpeech: true, useHostname: true }
+  ],
+  ['subscription key with Direct Line Speech protocol', { useDirectLineSpeech: true }],
+  ['subscription key with Direct Line Speech protocol using hostname', { useDirectLineSpeech: true, useHostname: true }]
+])('speech recognition using %s', (_, { useAuthorizationToken, useDirectLineSpeech, useHostname }) => {
   test('should recognize "Hello, World!".', async () => {
     let queryParams;
 
@@ -29,18 +36,31 @@ describe.each([
             region: DIRECT_LINE_SPEECH_REGION,
             subscriptionKey: DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY
           }),
-          sr: DIRECT_LINE_SPEECH_REGION,
           t: 'dlspeech'
         };
+
+        if (useHostname) {
+          queryParams.dlsh = `${DIRECT_LINE_SPEECH_REGION}.convai.speech.microsoft.com`;
+          queryParams.srh = `${DIRECT_LINE_SPEECH_REGION}.stt.speech.microsoft.com`;
+          queryParams.ssh = `${DIRECT_LINE_SPEECH_REGION}.tts.speech.microsoft.com`;
+        } else {
+          queryParams.sr = DIRECT_LINE_SPEECH_REGION;
+        }
       } else if (!useDirectLineSpeech && COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
         queryParams = {
           sa: await fetchSpeechServicesAuthorizationToken({
             region: COGNITIVE_SERVICES_REGION,
             subscriptionKey: COGNITIVE_SERVICES_SUBSCRIPTION_KEY
           }),
-          sr: COGNITIVE_SERVICES_REGION,
           t: 'dl'
         };
+
+        if (useHostname) {
+          queryParams.srh = `${COGNITIVE_SERVICES_REGION}.stt.speech.microsoft.com`;
+          queryParams.ssh = `${COGNITIVE_SERVICES_REGION}.tts.speech.microsoft.com`;
+        } else {
+          queryParams.sr = COGNITIVE_SERVICES_REGION;
+        }
       } else {
         if (useDirectLineSpeech) {
           console.warn(
@@ -65,16 +85,34 @@ describe.each([
 
         const { region, token: authorizationToken } = await res.json();
 
-        queryParams = { sa: authorizationToken, sr: region, t: useDirectLineSpeech ? 'dlspeech' : 'dl' };
+        queryParams = { sa: authorizationToken, t: useDirectLineSpeech ? 'dlspeech' : 'dl' };
+
+        if (useHostname) {
+          if (useDirectLineSpeech) {
+            queryParams.dlsh = `${region}.convai.speech.microsoft.com`;
+          }
+
+          queryParams.srh = `${region}.stt.speech.microsoft.com`;
+          queryParams.ssh = `${region}.tts.speech.microsoft.com`;
+        } else {
+          queryParams.sr = region;
+        }
       }
     } else {
       if (useDirectLineSpeech) {
         if (DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
           queryParams = {
-            sr: DIRECT_LINE_SPEECH_REGION,
             ss: DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY,
             t: 'dlspeech'
           };
+
+          if (useHostname) {
+            queryParams.dlsh = `${DIRECT_LINE_SPEECH_REGION}.convai.speech.microsoft.com`;
+            queryParams.srh = `${DIRECT_LINE_SPEECH_REGION}.stt.speech.microsoft.com`;
+            queryParams.ssh = `${DIRECT_LINE_SPEECH_REGION}.tts.speech.microsoft.com`;
+          } else {
+            queryParams.sr = DIRECT_LINE_SPEECH_REGION;
+          }
         } else {
           return console.warn(
             'No environment variable "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" is set, skipping this test.'
@@ -83,10 +121,16 @@ describe.each([
       } else {
         if (COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
           queryParams = {
-            sr: COGNITIVE_SERVICES_REGION,
             ss: COGNITIVE_SERVICES_SUBSCRIPTION_KEY,
             t: 'dl'
           };
+
+          if (useHostname) {
+            queryParams.srh = `${COGNITIVE_SERVICES_REGION}.stt.speech.microsoft.com`;
+            queryParams.ssh = `${COGNITIVE_SERVICES_REGION}.tts.speech.microsoft.com`;
+          } else {
+            queryParams.sr = COGNITIVE_SERVICES_REGION;
+          }
         } else {
           return console.warn(
             'No environment variable "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" is set, skipping this test.'

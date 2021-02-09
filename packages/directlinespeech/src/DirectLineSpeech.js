@@ -7,9 +7,7 @@ import shareObservable from './shareObservable';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
 
 function randomActivityId() {
-  return random()
-    .toString(36)
-    .substr(2);
+  return random().toString(36).substr(2);
 }
 
 export default class DirectLineSpeech {
@@ -24,7 +22,17 @@ export default class DirectLineSpeech {
 
         connectionStatusObserver.next(0);
         connectionStatusObserver.next(1);
-        connectionStatusObserver.next(2);
+
+        dialogServiceConnector.connect(
+          () => {
+            connectionStatusObserver.next(2);
+          },
+          error => {
+            connectionStatusObserver.next(4);
+
+            console.warn('botframework-directlinespeech-sdk: Failed to connect', { error });
+          }
+        );
       })
     );
 

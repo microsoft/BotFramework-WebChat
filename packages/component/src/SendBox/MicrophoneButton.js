@@ -162,10 +162,21 @@ const MicrophoneButton = ({ className }) => {
   return (
     <div
       aria-controls="webchatSendBoxMicrophoneButton"
-      className={classNames(microphoneButtonStyleSet + '', rootClassName, (className || '') + '', { dictating })}
+      className={classNames(
+        'webchat__microphone-button',
+        { 'webchat__microphone-button--dictating': dictating },
+        microphoneButtonStyleSet + '',
+        rootClassName,
+        (className || '') + ''
+      )}
     >
-      <IconButton alt={localize('TEXT_INPUT_SPEAK_BUTTON_ALT')} disabled={disabled} onClick={click}>
-        <MicrophoneIcon />
+      <IconButton
+        alt={localize('TEXT_INPUT_SPEAK_BUTTON_ALT')}
+        className="webchat__microphone-button__button"
+        disabled={disabled}
+        onClick={click}
+      >
+        <MicrophoneIcon className="webchat__microphone-button__icon" />
       </IconButton>
       <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
         {localize(dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT')}

@@ -46,7 +46,7 @@
     "expect": "^25.5.0",
     "lolex": "6.0.0",
     "math-random": "^2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.13.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
     "p-defer": "^3.0.0",
     "p-defer-es5": "^1.2.1",
     "simple-update-in": "^2.2.0"

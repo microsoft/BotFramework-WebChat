@@ -2,7 +2,6 @@
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
 import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
-import { MicAudioSource } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource';
 
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
@@ -35,9 +34,13 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, directLineToken, region, subscriptionKey } = await resolveFunctionOrReturnValue(
-    fetchCredentials
-  );
+  const {
+    authorizationToken,
+    directLineToken,
+    directLineSpeechHostname,
+    region,
+    subscriptionKey
+  } = await resolveFunctionOrReturnValue(fetchCredentials);
 
   if (
     (!authorizationToken && !subscriptionKey) ||
@@ -57,8 +60,26 @@ export default async function create({
     );
   }
 
-  if (!region || typeof region !== 'string') {
-    throw new Error('"fetchCredentials" must return "region" as a non-empty string.');
+  if ((directLineSpeechHostname && region) || (!directLineSpeechHostname && !region)) {
+    throw new Error(
+      '"fetchCredentials" must return either "directLineSpeechHostname" or "region" and it must not be an empty string.'
+    );
+  }
+
+  if (directLineSpeechHostname) {
+    if (typeof directLineSpeechHostname !== 'string') {
+      throw new Error('"fetchCredentials" must return "directLineSpeechHostname" as a string.');
+    }
+
+    if (enableInternalHTTPSupport) {
+      throw new Error(
+        '"fetchCredentials" must not return "directLineSpeechHostname" if "enableInternalHTTPSupport" is set.'
+      );
+    }
+  } else {
+    if (typeof region !== 'string') {
+      throw new Error('"fetchCredentials" must return "region" as a string.');
+    }
   }
 
   if (audioConfig && audioInputDeviceId) {
@@ -71,31 +92,6 @@ export default async function create({
     } else {
       audioConfig = AudioConfig.fromDefaultMicrophoneInput();
     }
-
-    // WORKAROUND: In Speech SDK 1.12.0-1.13.1, it dropped support of macOS/iOS Safari.
-    //             This code is adopted from microsoft-cognitiveservices-speech-sdk/src/common.browser/MicAudioSource.ts.
-    //             We will not need this code when using Speech SDK 1.14.0 or up.
-    // TODO: [P1] #3575 Remove the following lines when bumping to Speech SDK 1.14.0 or higher
-    const { privSource: source } = audioConfig;
-
-    source.createAudioContext = () => {
-      // eslint-disable-next-line no-extra-boolean-cast
-      if (!!source.privContext) {
-        return;
-      }
-
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-
-      if (typeof AudioContext === 'undefined') {
-        throw new Error('Browser does not support Web Audio API (AudioContext/webkitAudioContext is not available).');
-      }
-
-      if (navigator.mediaDevices.getSupportedConstraints().sampleRate) {
-        source.privContext = new AudioContext({ sampleRate: MicAudioSource.AUDIOFORMAT.samplesPerSec });
-      } else {
-        source.privContext = new AudioContext();
-      }
-    };
   }
 
   if (speechRecognitionEndpointId) {
@@ -130,20 +126,35 @@ export default async function create({
 
   let config;
 
-  if (authorizationToken) {
-    config = BotFrameworkConfig.fromAuthorizationToken(authorizationToken, region);
+  if (directLineSpeechHostname) {
+    if (authorizationToken) {
+      config = BotFrameworkConfig.fromHost(new URL(`wss://${directLineSpeechHostname}`));
+
+      config.setProperty(PropertyId.SpeechServiceAuthorization_Token, authorizationToken);
+    } else {
+      config = BotFrameworkConfig.fromHost(new URL(`wss://${directLineSpeechHostname}`), subscriptionKey);
+    }
+
+    // TODO: [P1] #3693 In Speech SDK 1.15.0, there is a bug that wrongly construct the endpoint.
+    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/315
+    //       Remove the following line after the bug is resolved.
+    config.setProperty(PropertyId.SpeechServiceConnection_Host, `wss://${directLineSpeechHostname}`);
   } else {
-    config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
-  }
+    if (authorizationToken) {
+      config = BotFrameworkConfig.fromAuthorizationToken(authorizationToken, region);
+    } else {
+      config = BotFrameworkConfig.fromSubscription(subscriptionKey, region);
+    }
 
-  // If internal HTTP support is enabled, switch the endpoint to Direct Line on Direct Line Speech service.
-  if (enableInternalHTTPSupport) {
-    config.setProperty(
-      PropertyId.SpeechServiceConnection_Endpoint,
-      `wss://${encodeURI(region)}.convai.speech.microsoft.com/directline/api/v1`
-    );
+    // If internal HTTP support is enabled, switch the endpoint to Direct Line on Direct Line Speech service.
+    if (enableInternalHTTPSupport) {
+      config.setProperty(
+        PropertyId.SpeechServiceConnection_Endpoint,
+        `wss://${encodeURI(region)}.convai.speech.microsoft.com/directline/api/v1`
+      );
 
-    config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
+      config.setProperty(PropertyId.Conversation_Agent_Connection_Id, directLineToken);
+    }
   }
 
   // Supported options can be found in DialogConnectorFactory.js.
@@ -167,8 +178,6 @@ export default async function create({
 
   const dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
 
-  dialogServiceConnector.connect();
-
   // Renew token per interval.
   if (authorizationToken) {
     const interval = setInterval(async () => {
@@ -179,7 +188,11 @@ export default async function create({
         clearInterval(interval);
       }
 
-      const { authorizationToken, region: nextRegion } = await resolveFunctionOrReturnValue(fetchCredentials);
+      const {
+        authorizationToken,
+        directLineSpeechHostname: nextDirectLineSpeechHostname,
+        region: nextRegion
+      } = await resolveFunctionOrReturnValue(fetchCredentials);
 
       if (!authorizationToken) {
         return console.warn(
@@ -187,10 +200,18 @@ export default async function create({
         );
       }
 
-      if (region !== nextRegion) {
-        return console.warn(
-          'botframework-directlinespeech-sdk: Region change is not supported for renewed token. Authorization token is not renewed.'
-        );
+      if (directLineSpeechHostname) {
+        if (directLineSpeechHostname !== nextDirectLineSpeechHostname) {
+          return console.warn(
+            'botframework-directlinespeech-sdk: "directLineSpeechHostname" change is not supported for renewed token. Authorization token is not renewed.'
+          );
+        }
+      } else {
+        if (region !== nextRegion) {
+          return console.warn(
+            'botframework-directlinespeech-sdk: Region change is not supported for renewed token. Authorization token is not renewed.'
+          );
+        }
       }
 
       dialogServiceConnector.authorizationToken = authorizationToken; // eslint-disable-line require-atomic-updates
@@ -215,9 +236,9 @@ export default async function create({
         );
       }
 
-      config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      config.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
 
-      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
       dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
