@@ -39,7 +39,7 @@ test('should refresh Direct Line token', async () => {
   jest.useFakeTimers('modern');
 
   const { directLine } = await createTestHarness({ enableInternalHTTPSupport: true });
-  const initialToken = directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_ApplicationId);
+  const initialToken = directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_Agent_Connection_Id);
 
   // Wait until 2 seconds in real-time clock, to make sure the token renewed is different (JWT has a per-second timestamp).
   await sleep(2000);
@@ -51,6 +51,6 @@ test('should refresh Direct Line token', async () => {
   await waitUntil(
     () =>
       initialToken !==
-      directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_ApplicationId, 5000)
+      directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_Agent_Connection_Id, 5000)
   );
 });

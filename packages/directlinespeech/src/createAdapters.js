@@ -34,9 +34,13 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const { authorizationToken, directLineToken, directLineSpeechHostname, region, subscriptionKey } = await resolveFunctionOrReturnValue(
-    fetchCredentials
-  );
+  const {
+    authorizationToken,
+    directLineToken,
+    directLineSpeechHostname,
+    region,
+    subscriptionKey
+  } = await resolveFunctionOrReturnValue(fetchCredentials);
 
   if (
     (!authorizationToken && !subscriptionKey) ||
@@ -57,7 +61,9 @@ export default async function create({
   }
 
   if ((directLineSpeechHostname && region) || (!directLineSpeechHostname && !region)) {
-    throw new Error('"fetchCredentials" must return either "directLineSpeechHostname" or "region" and it must not be empty string.');
+    throw new Error(
+      '"fetchCredentials" must return either "directLineSpeechHostname" or "region" and it must not be empty string.'
+    );
   }
 
   if (directLineSpeechHostname) {
@@ -66,7 +72,9 @@ export default async function create({
     }
 
     if (enableInternalHTTPSupport) {
-      throw new Error('"fetchCredentials" must not return "directLineSpeechHostname" if "enableInternalHTTPSupport" is set.');
+      throw new Error(
+        '"fetchCredentials" must not return "directLineSpeechHostname" if "enableInternalHTTPSupport" is set.'
+      );
     }
   } else {
     if (typeof region !== 'string') {
@@ -145,7 +153,7 @@ export default async function create({
         `wss://${encodeURI(region)}.convai.speech.microsoft.com/directline/api/v1`
       );
 
-      config.setProperty(PropertyId.Conversation_ApplicationId, directLineToken);
+      config.setProperty(PropertyId.Conversation_Agent_Connection_Id, directLineToken);
     }
   }
 
@@ -170,8 +178,6 @@ export default async function create({
 
   const dialogServiceConnector = patchDialogServiceConnectorInline(new DialogServiceConnector(config, audioConfig));
 
-  dialogServiceConnector.connect();
-
   // Renew token per interval.
   if (authorizationToken) {
     const interval = setInterval(async () => {
@@ -182,9 +188,11 @@ export default async function create({
         clearInterval(interval);
       }
 
-      const { authorizationToken, directLineSpeechHostname: nextDirectLineSpeechHostname, region: nextRegion } = await resolveFunctionOrReturnValue(
-        fetchCredentials
-      );
+      const {
+        authorizationToken,
+        directLineSpeechHostname: nextDirectLineSpeechHostname,
+        region: nextRegion
+      } = await resolveFunctionOrReturnValue(fetchCredentials);
 
       if (!authorizationToken) {
         return console.warn(
@@ -228,9 +236,9 @@ export default async function create({
         );
       }
 
-      config.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      config.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
 
-      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_ApplicationId, refreshedDirectLineToken);
+      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
       dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }
