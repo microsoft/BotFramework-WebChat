@@ -9,13 +9,14 @@ describe('suggested actions', () => {
   ])('in %s', (_, dir) => {
     describe.each([
       ['carousel layout', 'carousel'],
+      ['carousel layout with fewer items', 'carousel', { fewer: 1 }],
       ['flow layout', 'flow'],
       ['flow layout with maxHeight', 'flow-maxheight'],
       ['stacked layout', 'stacked'],
       ['stacked layout with height', 'stacked-maxheight']
-    ])('using %s', (_, preset) => {
+    ])('using %s', (_, preset, extraSearchParams) => {
       test('should be correct', async () => {
-        const hashParams = new URLSearchParams({ preset });
+        const hashParams = new URLSearchParams({ ...extraSearchParams, preset });
 
         dir && hashParams.set('dir', dir);
 
