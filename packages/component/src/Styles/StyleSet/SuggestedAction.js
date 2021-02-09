@@ -64,11 +64,6 @@ export default function createSuggestedActionStyle({
 
       '&.webchat__suggested-action--rtl .webchat__suggested-action__image + .webchat__suggested-action__text': {
         paddingRight: paddingRegular
-      },
-
-      '& .webchat__suggested-action__text': {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
       }
     }
   };

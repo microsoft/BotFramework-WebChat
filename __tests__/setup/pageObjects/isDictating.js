@@ -6,5 +6,5 @@ export default async function isDictating(driver) {
   );
   const microphoneButtonClassName = await microphoneButtonContainer.getAttribute('class');
 
-  return microphoneButtonClassName.split(' ').includes('dictating');
+  return microphoneButtonClassName.split(' ').includes('webchat__microphone-button--dictating');
 }

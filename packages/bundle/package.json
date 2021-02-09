@@ -43,11 +43,11 @@
     "markdown-it-for-inline": "0.1.1",
     "math-random": "2.0.1",
     "memoize-one": "5.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.13.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.5",
     "url-search-params-polyfill": "8.1.0",
-    "web-speech-cognitive-services": "7.0.2-master.6004e4b",
+    "web-speech-cognitive-services": "7.1.0",
     "whatwg-fetch": "3.4.1"
   },
   "devDependencies": {
