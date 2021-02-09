@@ -350,7 +350,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             if (typeof event.detail === 'string') {
                 dialogId = event.detail
                 eventName = 'beginIntroDialog' 
-            } else if (typeof event.detail === 'object' && event.detail.id === 'string') {
+            } else if (typeof event.detail === 'object' && typeof event.detail.id === 'string') {
                 dialogId = event.detail.id
                 userData = event.detail.userData || {}
                 mode = event.detail.mode || ''
