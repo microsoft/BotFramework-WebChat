@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3565](https://github.com/microsoft/BotFramework-WebChat/issues/3565). Allow strikethrough `<s>` on sanitize markdown, by [@corinagum](https://github.com/corinagum) in PR [#3646](https://github.com/microsoft/BotFramework-WebChat/pull/3646)
 -  Fixes [#3672](https://github.com/microsoft/BotFramework-WebChat/issues/3672). Center the icon of send box buttons vertically and horizontally, by [@compulim](https://github.com/compulim) in PR [#3673](https://github.com/microsoft/BotFramework-WebChat/pull/3673)
 -  Fixes [#3683](https://github.com/microsoft/BotFramework-WebChat/issues/3683). Activities should be acknowledged when user scrolls to bottom, by [@compulim](https://github.com/compulim) in PR [#3684](https://github.com/microsoft/BotFramework-WebChat/pull/3684)
+-  Fixes [#3431](https://github.com/microsoft/BotFramework-WebChat/issues/3431). Race condition between the first bot activity and first user activity, which should not cause the first bot activity to be delayed, by [@compulim](https://github.com/compulim) in PR [#3705](https://github.com/microsoft/BotFramework-WebChat/pull/3705)
+-  Fixes [#3676](https://github.com/microsoft/BotFramework-WebChat/issues/3676). Activities without text should not generate bogus `aria-labelledby`, by [@compulim](https://github.com/compulim) in PR [#3697](https://github.com/microsoft/BotFramework-WebChat/pull/3697)
+-  Fixes [#3625](https://github.com/microsoft/BotFramework-WebChat/issues/3625). Update 'no screen reader for custom activity middleware' warning and add screen reader renderer documentation to `ACCESSIBILITY.md`, by [@corinagum](https://github.com/corinagum) in PR [#3689](https://github.com/microsoft/BotFramework-WebChat/pull/3689)
 -  Fixes [#3411](https://github.com/microsoft/BotFramework-WebChat/issues/3411). With Direct Line Speech, clicking on microphone button during speech recognition should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Although it no locker lock up microphone, clicking on the microphone button has no effect because Direct Line Speech does not support aborting speech recognition
 -  Fixes [#3421](https://github.com/microsoft/BotFramework-WebChat/issues/3421). With Direct Line Speech, after not able to recognize any speech, it should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
@@ -97,13 +100,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`web-speech-cognitive-services@7.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
       -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
 -  [#3392](https://github.com/microsoft/BotFramework-WebChat/issues/3392) Bumped Adaptive Cards to the 2.5.0, by [@corinagum](https://github.com/corinagum) in PR [#3630](https://github.com/microsoft/BotFramework-WebChat/pull/3630)
--  Fixes [#3618](https://github.com/microsoft/BotFramework-WebChat/issues/3618). Fix AC anchors being disabled when AC is obsolete, by [@corinagum](https://github.com/johndoe) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
+-  Fixes [#3618](https://github.com/microsoft/BotFramework-WebChat/issues/3618). Fix AC anchors being disabled when AC is obsolete, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
 
 ### Samples
 
 -  Fixes [#3473](https://github.com/microsoft/BotFramework-WebChat/issues/3473). Fix samples using activityMiddleware (from 4.10.0 breaking changes), by [@corinagum](https://github.com/corinagum) in PR [#3601](https://github.com/microsoft/BotFramework-WebChat/pull/3601)
--  Fixes [#3434](https://github.com/microsoft/BotFramework-WebChat/issues/3434). Dispatched event, postBack, or messageBack + activityMiddleware causes fatal error, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3671](https://github.com/microsoft/BotFramework-WebChat/pull/3671)
 -  Fixes [#3582](https://github.com/microsoft/BotFramework-WebChat/issues/3582). Fix Disable Adaptive Cards sample, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
+-  Fixes [#3434](https://github.com/microsoft/BotFramework-WebChat/issues/3434). Dispatched event, postBack, or messageBack + activityMiddleware causes fatal error, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3671](https://github.com/microsoft/BotFramework-WebChat/pull/3671)
+-  Fixes [#3215](https://github.com/microsoft/BotFramework-WebChat/issues/3215). Fix SSO samples `window.opener.postMessage`, by [@corinagum](https://github.com/corinagum) in PR [#3696](https://github.com/microsoft/BotFramework-WebChat/pull/3696)
 
 ## [4.11.0] - 2020-11-04
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createElement, useEffect } from 'react';
 import PropTypes from 'prop-types';
 

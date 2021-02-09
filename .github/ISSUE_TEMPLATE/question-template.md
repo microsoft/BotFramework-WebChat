@@ -20,5 +20,4 @@ This repo focuses on the development of Web Chat, a client/channel for Bot Frame
 | Bot Framework Questions     | Ask implementation questions related to the BotFramework SDK | https://stackoverflow.com/questions/tagged/botframework |
 | Bot Builder                 | A comprehensive list of Bot Framework SDKs and tools         | https://github.com/microsoft/BotBuilder                 |
 
-
 [Question]

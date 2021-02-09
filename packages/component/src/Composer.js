@@ -30,6 +30,7 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
 
+// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const emotionPool = {};
