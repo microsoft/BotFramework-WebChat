@@ -8,7 +8,7 @@ import useUniqueId from '../../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
-const TextAttachment = (activity, attachment, { attachment: { content = '' } = {} }) => {
+const TextAttachment = ({ activity, attachment, attachment: { content = '' } = {} }) => {
   const labelId = useUniqueId('webchat__id');
   const localize = useLocalizer();
 
@@ -26,6 +26,7 @@ const TextAttachment = (activity, attachment, { attachment: { content = '' } = {
 };
 
 TextAttachment.propTypes = {
+  activity: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.string.isRequired
   }).isRequired
