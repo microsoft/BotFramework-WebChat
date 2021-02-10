@@ -175,9 +175,9 @@ export default function* () {
       username
     };
 
-    if (directLine.setUserId) {
-      directLine.setUserId(meta.userID);
-    }
+    // Send user ID to DirectLineJS if it was specified from props of <API.Composer>.
+    // However, DirectLineJS may still prefer the user ID from token if it is burnt into the token.
+    directLine.setUserId && directLine.setUserId(meta.userID);
 
     // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
     // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.
