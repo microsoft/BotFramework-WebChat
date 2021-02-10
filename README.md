@@ -226,6 +226,10 @@ Please note, however:
 -  Web Chat has no plan to support samples for IE11 (ES5).
    -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
+## Accessibility
+
+View the [accessibility documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACCESSIBILITY.md).
+
 ## Localization
 
 View the [localization documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md) for implementing in Web Chat.
