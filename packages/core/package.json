@@ -35,7 +35,7 @@
     "@types/node": "^14.14.6",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "botframework-directlinejs": "0.13.0",
+    "botframework-directlinejs": "0.14.0",
     "concurrently": "^5.3.0",
     "eslint": "^7.12.1",
     "eslint-plugin-node": "^11.1.0",
