@@ -1,3 +1,6 @@
+/* eslint no-magic-numbers: "off" */
+/* eslint no-undef: "off" */
+
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
@@ -28,7 +31,7 @@ describe('upload a picture', () => {
           });
         }
       },
-      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
     });
 
@@ -132,7 +135,7 @@ describe('upload a picture', () => {
           uploadThumbnailWidth: 120
         }
       },
-      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
     });
 
@@ -154,7 +157,7 @@ describe('upload a picture', () => {
           uploadThumbnailQuality: 0.1
         }
       },
-      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
     });
 
@@ -176,7 +179,7 @@ describe('upload a picture', () => {
           enableUploadThumbnail: false
         }
       },
-      // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+      // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
     });
 
@@ -194,7 +197,7 @@ describe('upload a picture', () => {
   describe('without Web Worker', () => {
     test('', async () => {
       const { driver, pageObjects } = await setupWebDriver({
-        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
         useProductionBot: true
       });
 
@@ -221,7 +224,7 @@ describe('upload a picture', () => {
             uploadThumbnailWidth: 120
           }
         },
-        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
         useProductionBot: true
       });
 
@@ -246,7 +249,7 @@ describe('upload a picture', () => {
             uploadThumbnailQuality: 0.1
           }
         },
-        // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+        // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
         useProductionBot: true
       });
 
@@ -268,13 +271,30 @@ describe('upload a picture', () => {
 
 test('upload a ZIP file', async () => {
   const { driver, pageObjects } = await setupWebDriver({
-    // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
     useProductionBot: true
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
   await pageObjects.sendFile('empty.zip');
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('upload a .txt (plain) file', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
+    useProductionBot: true
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.sendFile('empty.txt');
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
