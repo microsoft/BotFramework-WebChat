@@ -12,6 +12,7 @@ import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 const DIRECT_LINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
 const TOKEN_RENEWAL_INTERVAL = 120000;
 
+// eslint-disable-next-line complexity
 export default async function create({
   audioConfig,
   audioContext,
@@ -238,7 +239,10 @@ export default async function create({
 
       config.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
 
-      dialogServiceConnector.properties.setProperty(PropertyId.Conversation_Agent_Connection_Id, refreshedDirectLineToken);
+      dialogServiceConnector.properties.setProperty(
+        PropertyId.Conversation_Agent_Connection_Id,
+        refreshedDirectLineToken
+      );
       dialogServiceConnector.connect();
     }, DIRECT_LINE_TOKEN_RENEWAL_INTERVAL);
   }

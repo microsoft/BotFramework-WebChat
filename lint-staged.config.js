@@ -8,7 +8,7 @@ function prettierMarkdown(filenames) {
 
 // eslint-disable-next-line no-undef
 module.exports = {
-  '{__tests__,docs,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
+  '{docs,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
   '**/*.md': prettierMarkdown,
   'packages/{api,bundle,component,core,directlinespeech,playground}/src/**/*.{js,jsx,ts,tsx}': prettierCode,
   '*.{js,jsx,ts,tsx}': 'npm run eslint'

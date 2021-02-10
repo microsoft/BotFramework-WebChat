@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 8, 16, 32, 128, 1000, 32768, 96000, 2147483648] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 8, 16, 32, 128, 1000, 16000, 32768, 96000, 2147483648] }] */
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 

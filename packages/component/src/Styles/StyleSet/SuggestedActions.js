@@ -1,5 +1,5 @@
 /* eslint no-empty-pattern: "off" */
-/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [1.5, 2] }] */
 
 export default function createSuggestedActionsStyle({
   paddingRegular,
