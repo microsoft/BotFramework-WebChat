@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactTestUtils: { Simulate },
+        TestAsset: { generateTranscript },
+        WebChatTest: {
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          elements,
+          expect,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function () {
+        window.WebChat.renderWebChat(
+          {
+            directLine: createDirectLineWithTranscript(generateTranscript()),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+
+        elements.sendBoxTextBox().focus();
+
+        // Should show a focus indicator around the transcript and the terminator. This is our starting point.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.snapshot();
+
+        // Press up on the terminator should activate the last activity.
+        await host.sendKeys('ARROW_UP');
+        await host.snapshot();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
