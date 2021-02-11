@@ -99,13 +99,14 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
 
 ScreenReaderActivity.defaultProps = {
   children: undefined,
+  id: undefined,
   renderAttachments: true
 };
 
 ScreenReaderActivity.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
-  id: PropTypes.any.isRequired,
+  id: PropTypes.string,
   renderAttachments: PropTypes.bool
 };
 
