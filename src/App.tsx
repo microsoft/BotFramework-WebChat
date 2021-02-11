@@ -36,10 +36,11 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
                 },
                 body: JSON.stringify({
                     user: props.user,
+                    channel: props.channel
                 })
             })
             const body = await response.json()
-            console.log('Token response', body)
+            konsole.log('Token response', body)
 
             props.botConnection = new DirectLine({...(props.directLine || {}), token: body.token});
             delete props.directLine
