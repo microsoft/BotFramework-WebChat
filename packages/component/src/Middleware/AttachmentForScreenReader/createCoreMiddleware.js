@@ -17,7 +17,9 @@ export default function createCoreMiddleware() {
         }
       ] = args;
 
-      return role === 'user' && !/^text\//u.test(contentType) && !thumbnailUrl
+      const isText = /^text\//u.test(contentType);
+
+      return (isText ? !attachment.content : role === 'user' && !thumbnailUrl)
         ? () => <FileAttachment attachment={attachment} />
         : /^audio\//u.test(contentType)
         ? () => <AudioAttachment />
@@ -27,7 +29,7 @@ export default function createCoreMiddleware() {
         ? () => <VideoAttachment />
         : contentUrl || contentType === 'application/octet-stream'
         ? () => <FileAttachment attachment={attachment} />
-        : /^text\//u.test(contentType)
+        : isText
         ? () => <TextAttachment attachment={attachment} />
         : next(...args);
     }
