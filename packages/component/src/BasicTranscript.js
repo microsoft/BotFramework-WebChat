@@ -308,7 +308,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the activated activity.
             // We should do the same for mouse, that is why we have the click handler here.
             // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-            handleFocus: () => setActiveActivityKey(getActivityUniqueId(activity)),
+            handleFocus: event => {
+              setActiveActivityKey(getActivityUniqueId(activity));
+
+              // IE11 need to manually focus on the transcript.
+              const { current: rootElement } = rootElementRef;
+
+              rootElement && rootElement.focus();
+            },
             handleKeyDown: event => {
               if (event.key === 'Escape') {
                 event.preventDefault();
@@ -381,6 +388,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     createActivityStatusRenderer,
     createAvatarRenderer,
     hideAllTimestamps,
+    rootElementRef,
     showAvatarInGroup
   ]);
 
@@ -516,8 +524,26 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const scrollActiveDescendantIntoView = useCallback(() => {
     const activeDescendant = activeDescendantElementId && document.getElementById(activeDescendantElementId);
 
-    activeDescendant && activeDescendant.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  }, [activeDescendantElementId]);
+    if (activeDescendant) {
+      // Checks if scrollIntoView support options or not.
+      // - https://github.com/Modernizr/Modernizr/issues/1568#issuecomment-419457972
+      // - https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
+      if ('scrollBehavior' in document.documentElement.style) {
+        activeDescendant.scrollIntoView({ block: 'nearest' });
+      } else {
+        // This is for browser that does not support options passed to scrollIntoView(), possibly IE11.
+        const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
+        const scrollTopAtTopSide = activeDescendant.offsetTop;
+        const scrollTopAtBottomSide = activeDescendant.offsetTop + activeDescendant.offsetHeight;
+
+        if (scrollTopAtTopSide < scrollableElement.scrollTop) {
+          scrollableElement.scrollTop = scrollTopAtTopSide;
+        } else if (scrollTopAtBottomSide > scrollableElement.scrollTop + scrollableElement.offsetHeight) {
+          scrollableElement.scrollTop = scrollTopAtBottomSide - scrollableElement.offsetHeight;
+        }
+      }
+    }
+  }, [activeDescendantElementId, rootElementRef]);
 
   const handleTranscriptFocus = useCallback(
     event => {
