@@ -89,17 +89,17 @@
 
         renderer.click();
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
 
         card.focus();
         await host.sendKeys('\n');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(7), timeouts.directLine);
 
         card.focus();
         await host.sendKeys(' ');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(8), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(9), timeouts.directLine);
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
         await host.snapshot();
