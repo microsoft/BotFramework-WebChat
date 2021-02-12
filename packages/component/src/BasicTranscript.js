@@ -40,6 +40,7 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
+import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 const {
   useActivities,
@@ -293,6 +294,15 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             showCallout = true;
           }
 
+          const activateActivity = () => {
+            setActiveActivityKey(getActivityUniqueId(activity));
+
+            // IE11 need to manually focus on the transcript.
+            const { current: rootElement } = rootElementRef;
+
+            rootElement && rootElement.focus();
+          };
+
           renderingElements.push({
             activity,
 
@@ -308,14 +318,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the activated activity.
             // We should do the same for mouse, that is why we have the click handler here.
             // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-            handleFocus: event => {
-              setActiveActivityKey(getActivityUniqueId(activity));
+            handleClickCapture: ({ target }) => {
+              const tabIndex = getTabIndex(target);
 
-              // IE11 need to manually focus on the transcript.
-              const { current: rootElement } = rootElementRef;
-
-              rootElement && rootElement.focus();
+              if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
+                activateActivity();
+              }
             },
+            handleFocus: activateActivity,
             handleKeyDown: event => {
               if (event.key === 'Escape') {
                 event.preventDefault();
@@ -733,6 +743,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               key,
+              handleClickCapture,
               handleFocus,
               handleKeyDown,
               hideTimestamp,
@@ -762,7 +773,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 })}
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
-                onClickCapture={handleFocus}
+                onClickCapture={handleClickCapture}
                 onKeyDown={handleKeyDown}
                 ref={callbackRef}
               >
