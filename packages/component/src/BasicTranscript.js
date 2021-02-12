@@ -17,7 +17,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
-import firstTabbableDescendant from './Utils/firstTabbableDescendant';
 import FocusRedirector from './Utils/FocusRedirector';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
@@ -698,6 +697,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   useRegisterFocusTranscript(focusTranscriptCallback);
 
+  const handleActivateActivity = useCallback(
+    key => {
+      setActiveActivityKey(key);
+      rootElementRef.current && rootElementRef.current.focus();
+    },
+    [setActiveActivityKey]
+  );
+
   return (
     <div
       aria-activedescendant={activeActivityKey ? activeDescendantElementId : undefined}
@@ -719,9 +726,6 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       tabIndex={0}
     >
       <ScreenReaderText id={labelId} text={transcriptAriaLabel} />
-      {!!renderingElements.length && (
-        <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
-      )}
       {/* This <section> is for live region only. Content is made invisible through CSS. */}
       <section
         aria-atomic={false}
@@ -736,7 +740,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           </Fade>
         ))}
       </section>
-      <InternalTranscriptScrollable activities={renderingActivities}>
+      <InternalTranscriptScrollable
+        activities={renderingActivities}
+        onActivate={handleActivateActivity}
+        terminatorRef={terminatorRef}
+      >
         {renderingElements.map(
           (
             {
@@ -873,12 +881,11 @@ InternalScreenReaderTranscript.propTypes = {
 };
 
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable = ({ activities, children }) => {
+const InternalTranscriptScrollable = ({ activities, children, onActivate, terminatorRef }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [animatingToEnd] = useAnimatingToEnd();
   const [sticky] = useSticky();
-  const focus = useFocus();
   const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1] || {}); // Activity ID of the last visible activity in the list.
   const localize = useLocalizer();
   const scrollToEndButtonRef = useRef();
@@ -889,27 +896,21 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
   const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
 
   const handleScrollToEndButtonClick = useCallback(() => {
-    const { current } = scrollToEndButtonRef;
+    // After the "New message" button is clicked, activate the first unread activity.
+    const index = activities.findIndex(({ id }) => id === lastReadActivityIdRef.current);
 
-    // After clicking on the "New messages" button, we should focus on the first interactive unread element.
-    // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
-    if (current) {
-      const nextSiblings = nextSiblingAll(current);
+    if (~index) {
+      const firstUnreadActivity = activities[index + 1];
 
-      const firstUnreadTabbable = nextSiblings.reduce(
-        (result, unreadActivityElement) =>
-          result ||
-          firstTabbableDescendant(
-            unreadActivityElement,
-            // Since we add focus redirector to every activity, these sentinels should be ignored for interactivity.
-            ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
-          ),
-        0
-      );
-
-      firstUnreadTabbable ? firstUnreadTabbable.focus() : focus('sendBoxWithoutKeyboard');
+      if (firstUnreadActivity) {
+        return onActivate(getActivityUniqueId(firstUnreadActivity));
+      }
     }
-  }, [focus, scrollToEndButtonRef]);
+
+    const { current } = terminatorRef;
+
+    current && current.focus();
+  }, [activities, lastReadActivityIdRef, terminatorRef]);
 
   if (sticky) {
     // If it is sticky, the user is at the bottom of the transcript, everything is read.
@@ -949,26 +950,19 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
 
   return (
     <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+      {renderSeparatorAfterIndex !== -1 && (
+        <ScrollToEndButton onClick={handleScrollToEndButtonClick} ref={scrollToEndButtonRef} />
+      )}
+      {!!React.Children.count(children) && (
+        <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
+      )}
       <div aria-hidden={true} className="webchat__basic-transcript__filler" />
       <ul
         aria-roledescription={transcriptRoleDescription}
         className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
         role="list"
       >
-        {React.Children.map(children, (child, index) => (
-          <React.Fragment>
-            {child}
-            {/* We insert the "New messages" button here for tab ordering. Users should be able to TAB into the button. */}
-            {index === renderSeparatorAfterIndex && (
-              <ScrollToEndButton
-                aria-valuemax={activities.length}
-                aria-valuenow={index + 1}
-                onClick={handleScrollToEndButtonClick}
-                ref={scrollToEndButtonRef}
-              />
-            )}
-          </React.Fragment>
-        ))}
+        {children}
       </ul>
       <BasicTypingIndicator />
     </ReactScrollToBottomPanel>

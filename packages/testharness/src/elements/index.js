@@ -10,6 +10,7 @@ import toasts from './toasts';
 import transcript from './transcript';
 import transcriptList from './transcriptList';
 import transcriptScrollable from './transcriptScrollable';
+import transcriptTerminator from './transcriptTerminator';
 import typeFocusSink from './typeFocusSink';
 import typingIndicator from './typingIndicator';
 
@@ -26,6 +27,7 @@ export {
   transcript,
   transcriptList,
   transcriptScrollable,
+  transcriptTerminator,
   typeFocusSink,
   typingIndicator
 };
