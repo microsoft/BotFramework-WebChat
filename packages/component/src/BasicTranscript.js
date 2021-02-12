@@ -617,7 +617,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
               if (activeElement) {
                 const [firstTabbableElement] = tabbableElements(activeElement).filter(
-                  ({ className }) => className !== 'webchat__basic-transcript__sentinel'
+                  ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
                 );
 
                 firstTabbableElement && firstTabbableElement.focus();
@@ -770,7 +770,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                   {!!interactive && <p>{activityInteractiveAlt}</p>}
                 </ScreenReaderActivity>
                 <FocusRedirector
-                  className="webchat__basic-transcript__sentinel"
+                  className="webchat__basic-transcript__activity-sentinel"
                   onFocus={handleFocus}
                   redirectRef={rootElementRef}
                 />
@@ -784,7 +784,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 </div>
                 {shouldSpeak && <SpeakActivity activity={activity} />}
                 <FocusRedirector
-                  className="webchat__basic-transcript__sentinel"
+                  className="webchat__basic-transcript__activity-sentinel"
                   onFocus={handleFocus}
                   redirectRef={rootElementRef}
                 />

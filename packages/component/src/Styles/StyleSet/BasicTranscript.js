@@ -18,21 +18,13 @@ export default function createBasicTranscriptStyleSet({
           borderStyle: 'dashed',
           borderWidth: 1,
           boxSizing: 'border-box',
+          height: `calc(100% - ${paddingRegular}px)`,
           left: 0,
           margin: paddingRegular / 2,
           pointerEvents: 'none',
           position: 'absolute',
-          width: `calc(100% - ${paddingRegular}px)`,
-
-          '&.webchat__basic-transcript__activity-indicator--first': {
-            height: `calc(100% - ${paddingRegular}px)`,
-            top: 0
-          },
-
-          '&:not(.webchat__basic-transcript__activity-indicator--first)': {
-            height: '100%',
-            top: -paddingRegular
-          }
+          top: 0,
+          width: `calc(100% - ${paddingRegular}px)`
         }
       },
 
@@ -50,11 +42,21 @@ export default function createBasicTranscriptStyleSet({
 
       '& .webchat__basic-transcript__activity': {
         paddingBottom: paddingRegular,
+        paddingTop: paddingRegular,
         position: 'relative',
 
-        '&:first-child': {
-          paddingTop: paddingRegular
+        '&:not(:first-child)': {
+          marginTop: -paddingRegular
         }
+      },
+
+      '& .webchat__basic-transcript__activity-sentinel': {
+        height: '100%',
+        left: 0,
+        pointerEvents: 'none',
+        position: 'absolute',
+        top: 0,
+        width: '100%'
       },
 
       '& .webchat__basic-transcript__terminator': {
