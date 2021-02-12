@@ -1,2 +1,4 @@
-globals:
-  runHTMLTest: readonly
+ignorePatterns:
+- "**/*.js"
+- "!/html/__jest__/*.js"
+- "!/setup/*.js"
