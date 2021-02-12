@@ -60,6 +60,19 @@
         await host.sendKeys('END');
         await host.snapshot();
 
+        // Should allow active activity to be out of view when scrolled.
+        await host.sendTab();
+        await host.sendTab();
+        await host.sendTab();
+        await host.sendKeys('PAGE_UP');
+        await host.snapshot();
+
+        // Should scroll active activity in view when focused.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);
