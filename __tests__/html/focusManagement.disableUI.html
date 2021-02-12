@@ -36,8 +36,10 @@
 
         await host.snapshot();
 
+        // Focusing on the transcript, then press ENTER on the hero card. It should not change focus away from transcript because the card is disabled.
         await host.sendShiftTab();
         await host.sendShiftTab();
+        await host.sendKeys('ENTER');
 
         expect(document.activeElement === elements.transcript()).toBe(true);
 
