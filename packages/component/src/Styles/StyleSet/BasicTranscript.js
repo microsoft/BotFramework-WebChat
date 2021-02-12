@@ -41,13 +41,16 @@ export default function createBasicTranscriptStyleSet({
       },
 
       '& .webchat__basic-transcript__activity': {
-        paddingBottom: paddingRegular,
         paddingTop: paddingRegular,
         position: 'relative',
 
         '&:not(:first-child)': {
           marginTop: -paddingRegular
         }
+      },
+
+      '& .webchat__basic-transcript__activity-box:not(:empty)': {
+        paddingBottom: paddingRegular
       },
 
       '& .webchat__basic-transcript__activity-sentinel': {
