@@ -3,6 +3,12 @@
   <head>
     <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      *:focus {
+        background-color: yellow !important;
+        color: Black !important;
+      }
+    </style>
   </head>
   <body>
     <div id="webchat"></div>
@@ -23,7 +29,7 @@
         Components: { HeroCardContent }
       } = window.WebChat;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
 
@@ -41,7 +47,10 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
 
-        await pageObjects.scrollToTop();
+        elements.transcript().focus();
+
+        // Select the first activity, this should scroll to the top of the transcript.
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
 
         // Wait for 200ms for scroll-to-bottom component to detect unstickiness.
         await new Promise(resolve => setTimeout(resolve, 200));
@@ -57,15 +66,12 @@
         await pageObjects.wait(conditions.newMessageButtonShown(), timeouts.ui);
         await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
 
-        const { children: listItems } = elements.transcriptList();
+        await host.sendTab();
 
-        expect(listItems).toHaveProperty('length', 5);
-
-        const newMessageButton = elements.newMessageButton();
-
-        expect(listItems[2]).toBe(newMessageButton);
-
+        // After pressing TAB from transcript, it should focus on the "New messages" button.
+        expect(document.activeElement === elements.newMessageButton()).toBe(true);
         await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);
