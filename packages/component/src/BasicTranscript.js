@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 5, 36] }] */
 
 import { hooks } from 'botframework-webchat-api';
 import {
@@ -47,7 +47,6 @@ const {
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useDirection,
-  useDisabled,
   useGroupActivities,
   useLocalizer,
   useStyleOptions
@@ -80,16 +79,6 @@ const ROOT_STYLE = {
   }
 };
 
-function nextSiblingAll(element) {
-  const {
-    parentNode: { children }
-  } = element;
-
-  const elementIndex = [].indexOf.call(children, element);
-
-  return [].slice.call(children, elementIndex + 1);
-}
-
 function validateAllActivitiesTagged(activities, bins) {
   return activities.every(activity => bins.some(bin => bin.includes(activity)));
 }
@@ -102,7 +91,6 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const [activeActivityKey, setActiveActivityKey] = useState();
   const [activities] = useActivities();
   const [direction] = useDirection();
-  const [disabled] = useDisabled();
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useCreateAvatarRenderer();
@@ -688,7 +676,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         focus('sendBox');
       }
     },
-    [disabled, focus]
+    [focus]
   );
 
   const focusTranscriptCallback = useCallback(() => rootElementRef.current && rootElementRef.current.focus(), [
@@ -779,6 +767,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                   'webchat__basic-transcript__activity--from-bot': role !== 'user',
                   'webchat__basic-transcript__activity--from-user': role === 'user'
                 })}
+                // Set "id" for valid for accessibility.
+                /* eslint-disable-next-line react/forbid-dom-props */
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
                 onClickCapture={handleClickCapture}
@@ -910,7 +900,7 @@ const InternalTranscriptScrollable = ({ activities, children, onActivate, termin
     const { current } = terminatorRef;
 
     current && current.focus();
-  }, [activities, lastReadActivityIdRef, terminatorRef]);
+  }, [activities, lastReadActivityIdRef, onActivate, terminatorRef]);
 
   if (sticky) {
     // If it is sticky, the user is at the bottom of the transcript, everything is read.
@@ -949,29 +939,33 @@ const InternalTranscriptScrollable = ({ activities, children, onActivate, termin
   }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
 
   return (
-    <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+    <React.Fragment>
       {renderSeparatorAfterIndex !== -1 && (
         <ScrollToEndButton onClick={handleScrollToEndButtonClick} ref={scrollToEndButtonRef} />
       )}
       {!!React.Children.count(children) && (
         <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
       )}
-      <div aria-hidden={true} className="webchat__basic-transcript__filler" />
-      <ul
-        aria-roledescription={transcriptRoleDescription}
-        className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-        role="list"
-      >
-        {children}
-      </ul>
-      <BasicTypingIndicator />
-    </ReactScrollToBottomPanel>
+      <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+        <div aria-hidden={true} className="webchat__basic-transcript__filler" />
+        <ul
+          aria-roledescription={transcriptRoleDescription}
+          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+          role="list"
+        >
+          {children}
+        </ul>
+        <BasicTypingIndicator />
+      </ReactScrollToBottomPanel>
+    </React.Fragment>
   );
 };
 
 InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
-  children: PropTypes.any.isRequired
+  children: PropTypes.any.isRequired,
+  onActivate: PropTypes.func.isRequired,
+  terminatorRef: PropTypes.any.isRequired
 };
 
 const SetScroller = ({ activityElementsRef, scrollerRef }) => {
