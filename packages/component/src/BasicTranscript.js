@@ -891,13 +891,19 @@ const InternalTranscriptScrollable = ({ activities, children }) => {
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current } = scrollToEndButtonRef;
 
-    // After clicking on the "New messages" button, we should focus on the first unread element.
+    // After clicking on the "New messages" button, we should focus on the first interactive unread element.
     // This is for resolving the bug https://github.com/microsoft/BotFramework-WebChat/issues/3135.
     if (current) {
       const nextSiblings = nextSiblingAll(current);
 
       const firstUnreadTabbable = nextSiblings.reduce(
-        (result, unreadActivityElement) => result || firstTabbableDescendant(unreadActivityElement),
+        (result, unreadActivityElement) =>
+          result ||
+          firstTabbableDescendant(
+            unreadActivityElement,
+            // Since we add focus redirector to every activity, these sentinels should be ignored for interactivity.
+            ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
+          ),
         0
       );
 
