@@ -20,6 +20,7 @@ import Fade from './Utils/Fade';
 import firstTabbableDescendant from './Utils/firstTabbableDescendant';
 import FocusRedirector from './Utils/FocusRedirector';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
+import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
@@ -33,14 +34,13 @@ import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useFocus from './hooks/useFocus';
 import useMemoize from './hooks/internal/useMemoize';
+import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
-import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
-import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 const {
   useActivities,
