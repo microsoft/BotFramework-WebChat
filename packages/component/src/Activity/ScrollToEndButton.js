@@ -3,71 +3,47 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback } from 'react';
 
-import { safari } from '../Utils/detectBrowser';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useDirection, useLocalizer } = hooks;
 
-const ScrollToEndButton = forwardRef(
-  (
-    { 'aria-valuemax': ariaValueMax, 'aria-valuemin': ariaValueMin, 'aria-valuenow': ariaValueNow, className, onClick },
-    ref
-  ) => {
-    const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
-    const [direction] = useDirection();
-    const localize = useLocalizer();
-    const scrollToEnd = useScrollToEnd();
+const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
+  const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
+  const [direction] = useDirection();
+  const localize = useLocalizer();
+  const scrollToEnd = useScrollToEnd();
 
-    const handleClick = useCallback(
-      event => {
-        onClick && onClick(event);
-        scrollToEnd();
-      },
-      [onClick, scrollToEnd]
-    );
+  const handleClick = useCallback(
+    event => {
+      onClick && onClick(event);
+      scrollToEnd();
+    },
+    [onClick, scrollToEnd]
+  );
 
-    const handleKeyPress = useCallback(
-      event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
+  const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
-          onClick && onClick(event);
-          scrollToEnd();
-        }
-      },
-      [onClick, scrollToEnd]
-    );
-
-    const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
-
-    return (
-      <li
-        aria-label={newMessageText}
-        aria-valuemax={ariaValueMax}
-        aria-valuemin={ariaValueMin}
-        aria-valuenow={ariaValueNow}
-        className={classNames(
-          'webchat__scrollToEndButton',
-          scrollToEndButtonStyleSet + '',
-          className + '',
-          direction === 'rtl' ? 'webchat__overlay--rtl' : ''
-        )}
-        onClick={handleClick}
-        onKeyPress={handleKeyPress}
-        ref={ref}
-        // iOS VoiceOver does not support role="separator" and treat it as role="presentation", which become invisible to VoiceOver.
-        role={safari ? undefined : 'separator'}
-        tabIndex={0}
-      >
-        {newMessageText}
-      </li>
-    );
-  }
-);
+  return (
+    <button
+      aria-label={newMessageText}
+      className={classNames(
+        'webchat__scrollToEndButton',
+        scrollToEndButtonStyleSet + '',
+        className + '',
+        direction === 'rtl' ? 'webchat__overlay--rtl' : ''
+      )}
+      onClick={handleClick}
+      ref={ref}
+      tabIndex={0}
+      type="button"
+    >
+      {newMessageText}
+    </button>
+  );
+});
 
 ScrollToEndButton.defaultProps = {
-  'aria-valuemin': 0,
   className: '',
   onClick: undefined
 };
@@ -75,9 +51,6 @@ ScrollToEndButton.defaultProps = {
 ScrollToEndButton.displayName = 'ScrollToEndButton';
 
 ScrollToEndButton.propTypes = {
-  'aria-valuemax': PropTypes.number.isRequired,
-  'aria-valuemin': PropTypes.number,
-  'aria-valuenow': PropTypes.number.isRequired,
   className: PropTypes.string,
   onClick: PropTypes.func
 };

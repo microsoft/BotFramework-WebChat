@@ -35,32 +35,6 @@ const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const emotionPool = {};
 
-function createFocusContext({ sendBoxFocusRef, transcriptFocusRef }) {
-  return {
-    focus: where => {
-      const ref = where === 'sendBox' || where === 'sendBoxWithoutKeyboard' ? sendBoxFocusRef : transcriptFocusRef;
-      const { current } = ref || {};
-
-      if (current) {
-        if (where === 'sendBoxWithoutKeyboard') {
-          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
-          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
-          const readOnly = current.getAttribute('readonly');
-
-          current.setAttribute('readonly', 'readonly');
-
-          setTimeout(() => {
-            current.focus();
-            readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-          }, 0);
-        } else {
-          current.focus();
-        }
-      }
-    }
-  };
-}
-
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
@@ -77,20 +51,19 @@ const ComposerCore = ({
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
+  const focusSendBoxCallbacksRef = useRef([]);
+  const focusTranscriptCallbacksRef = useRef([]);
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
-  const sendBoxFocusRef = useRef();
-  const transcriptFocusRef = useRef();
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
+
+  // Instead of having a `scrollUpCallbacksRef` and `scrollDownCallbacksRef`, they are combined into a single `scrollRelativeCallbacksRef`.
+  // The first argument tells whether it should go "up" or "down".
+  const scrollRelativeCallbacksRef = useRef([]);
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
-
-  const focusContext = useMemo(() => createFocusContext({ sendBoxFocusRef, transcriptFocusRef }), [
-    sendBoxFocusRef,
-    transcriptFocusRef
-  ]);
 
   const internalRenderMarkdownInline = useMemo(
     () => markdown => {
@@ -157,29 +130,30 @@ const ComposerCore = ({
 
   const context = useMemo(
     () => ({
-      ...focusContext,
       dictateAbortable,
       dispatchScrollPosition,
+      focusSendBoxCallbacksRef,
+      focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
       numScrollPositionObservers,
       observeScrollPosition,
       renderMarkdown,
+      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
-      sendBoxFocusRef,
       setDictateAbortable,
       styleSet: patchedStyleSet,
       styleToEmotionObject,
       suggestedActionsAccessKey,
-      transcriptFocusRef,
       webSpeechPonyfill
     }),
     [
       dictateAbortable,
       dispatchScrollPosition,
-      focusContext,
+      focusSendBoxCallbacksRef,
+      focusTranscriptCallbacksRef,
       internalMarkdownIt,
       internalRenderMarkdownInline,
       nonce,
@@ -187,13 +161,12 @@ const ComposerCore = ({
       observeScrollPosition,
       patchedStyleSet,
       renderMarkdown,
+      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
-      sendBoxFocusRef,
       setDictateAbortable,
       styleToEmotionObject,
       suggestedActionsAccessKey,
-      transcriptFocusRef,
       webSpeechPonyfill
     ]
   );
