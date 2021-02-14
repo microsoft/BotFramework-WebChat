@@ -23,6 +23,18 @@ of new full-width/kern/smush alternatives, but default output is NOT changed.
 Font modified May 20, 2012 by patorjk to add the 0xCA0 character
 -->
 
+# Introduction
+
+We are always working to improve the accessibility of our product.
+
+You can view accessibility bugs and improvements that have already been filed using the [accessibility label](https://github.com/microsoft/BotFramework-WebChat/issues?q=is%3Aissue+is%3Aopen+label%3A%22Area%3A+Accessibility%22).
+
+The Web Chat team has a comprehensive accessibility test suite, performs thorough manual testing, and also uses [Microsoft FastPass](https://accessibilityinsights.io/docs/en/web/getstarted/fastpass/) to test new features and bug fixes.
+
+To learn more about Assistive Technologies we test and support, please view the [technical support guide](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/TECHNICAL_SUPPORT_GUIDE.md#accessibility)
+
+We welcome your feedback and will continue to improve the product in this area, as accessibility is one of our top priorities.
+
 # Focus management
 
 ## Definitions

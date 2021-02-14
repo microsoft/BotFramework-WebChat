@@ -3,5 +3,5 @@
  */
 
 describe('"Adaptive card', () => {
-  test('card agenda should fail', () => runHTMLTest('cardAction.adaptiveCard.cardAgenda.html'));
+  test('card agenda with schema 1.3 should pass', () => runHTMLTest('cardAction.adaptiveCard.cardAgenda.html'));
 });
