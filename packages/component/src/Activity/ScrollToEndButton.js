@@ -49,7 +49,7 @@ const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
       onClick={handleClick}
       onKeyPress={handleKeyPress}
       ref={ref}
-      // iOS VoiceOver does not support role="separator" and treat it as role="presentation", which become invisible to VoiceOver.
+      // iOS VoiceOver does not support role="separator" and treats it as role="presentation", which becomes invisible to VoiceOver.
       role={safari ? undefined : 'separator'}
       tabIndex={0}
     >

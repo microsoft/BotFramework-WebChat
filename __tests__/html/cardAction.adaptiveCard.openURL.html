@@ -82,7 +82,7 @@
 
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
 
-        // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
+        // When using runHookActivityMiddleware, an additional hidden activity will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
         await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
 
         const calls = [];
