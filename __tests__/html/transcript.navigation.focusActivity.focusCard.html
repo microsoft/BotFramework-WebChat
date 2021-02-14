@@ -38,17 +38,17 @@
 
         elements.sendBoxTextBox().focus();
 
-        // Should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
+        // Should show a visual keyboard indicator around the transcript and the last activity. This is our starting point.
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.snapshot();
 
-        // Should show an active indicator around the second last activity.
+        // Should show an visual keyboard indicator around the second last activity.
         await host.sendKeys('ARROW_UP');
         await host.snapshot();
 
-        // Should show an active indicator around the card.
+        // Should show an visual keyboard indicator around the card.
         await host.sendKeys('ARROW_UP');
         await host.snapshot();
 
@@ -69,7 +69,7 @@
         await host.sendTab();
         await host.snapshot();
 
-        // Should focus back to the transcript, showing a focusing indicator around the transcript, and an active indicator around the last activity.
+        // Should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         await host.sendTab();
         await host.snapshot();
 
@@ -77,7 +77,7 @@
         await host.sendKeys('ENTER');
         await host.snapshot();
 
-        // Should focus back to the transcript, showing a focusing indicator around the transcript, and an active indicator around the last activity.
+        // Should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         await host.sendShiftTab();
         await host.snapshot();
 

@@ -43,7 +43,7 @@
         await host.sendShiftTab();
         await host.snapshot();
 
-        // Press up on the terminator should activate the last activity.
+        // Press up on the terminator should focus the bottommost activity.
         await host.sendKeys('ARROW_UP');
         await host.snapshot();
 

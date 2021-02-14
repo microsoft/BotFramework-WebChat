@@ -3,6 +3,6 @@
  */
 
 describe('transcript navigation', () => {
-  test('should activate the last activity when press up arrow key on the terminator', () =>
+  test('should focus the last activity when press up arrow key on the terminator', () =>
     runHTMLTest('transcript.navigation.upArrowOnTerminator'));
 });

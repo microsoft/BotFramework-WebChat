@@ -3,5 +3,5 @@
  */
 
 describe('transcript navigation', () => {
-  test('should save last active activity', () => runHTMLTest('transcript.navigation.saveLastActive'));
+  test('should save last focused activity', () => runHTMLTest('transcript.navigation.focusActivity.saveFocus'));
 });

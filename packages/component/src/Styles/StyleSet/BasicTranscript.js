@@ -19,7 +19,7 @@ export default function createBasicTranscriptStyleSet({
       '&:focus': {
         outline: 0,
 
-        '& .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--active': {
+        '& .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--focus': {
           borderColor: transcriptActivityVisualKeyboardIndicatorColor,
           borderStyle: transcriptActivityVisualKeyboardIndicatorStyle,
           borderWidth: transcriptActivityVisualKeyboardIndicatorWidth,

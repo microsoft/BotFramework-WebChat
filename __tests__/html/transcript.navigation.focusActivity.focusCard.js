@@ -3,5 +3,6 @@
  */
 
 describe('transcript navigation', () => {
-  test('should activate activity by click', () => runHTMLTest('transcript.navigation.activateByClick'));
+  test('should focus activity and focus on card', () =>
+    runHTMLTest('transcript.navigation.focusActivity.focusCard'));
 });

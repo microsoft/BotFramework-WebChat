@@ -3,5 +3,5 @@
  */
 
 describe('transcript navigation', () => {
-  test('should scroll focused activity into view', () => runHTMLTest('transcript.navigation.scrollIntoView'));
+  test('should show visual keyboard indicators', () => runHTMLTest('transcript.navigation.visualKeyboardIndicator'));
 });

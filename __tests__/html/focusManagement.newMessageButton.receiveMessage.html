@@ -48,7 +48,7 @@
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        // After clicking on "New messages" button, it should focus on the transcript and activate the next unread activity.
+        // After clicking on "New messages" button, it should focus on the transcript and the next unread activity.
         expect(document.activeElement === elements.transcript()).toBe(true);
         await host.snapshot();
 

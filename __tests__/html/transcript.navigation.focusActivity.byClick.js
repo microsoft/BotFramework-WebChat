@@ -3,5 +3,5 @@
  */
 
 describe('transcript navigation', () => {
-  test('should show visual indicators', () => runHTMLTest('transcript.navigation.visualIndicator'));
+  test('should focus activity by click', () => runHTMLTest('transcript.navigation.focusActivity.byClick'));
 });
