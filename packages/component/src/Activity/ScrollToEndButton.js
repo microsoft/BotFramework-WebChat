@@ -22,18 +22,6 @@ const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
     [onClick, scrollToEnd]
   );
 
-  const handleKeyPress = useCallback(
-    event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-
-        onClick && onClick(event);
-        scrollToEnd();
-      }
-    },
-    [onClick, scrollToEnd]
-  );
-
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
   return (
@@ -46,7 +34,6 @@ const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
         direction === 'rtl' ? 'webchat__overlay--rtl' : ''
       )}
       onClick={handleClick}
-      onKeyPress={handleKeyPress}
       ref={ref}
       tabIndex={0}
       type="button"
