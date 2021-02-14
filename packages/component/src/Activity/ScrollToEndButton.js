@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback } from 'react';
 
-import { safari } from '../Utils/detectBrowser';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -38,7 +37,7 @@ const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
   const newMessageText = localize('TRANSCRIPT_NEW_MESSAGES');
 
   return (
-    <div
+    <button
       aria-label={newMessageText}
       className={classNames(
         'webchat__scrollToEndButton',
@@ -49,12 +48,11 @@ const ScrollToEndButton = forwardRef(({ className, onClick }, ref) => {
       onClick={handleClick}
       onKeyPress={handleKeyPress}
       ref={ref}
-      // iOS VoiceOver does not support role="separator" and treats it as role="presentation", which becomes invisible to VoiceOver.
-      role={safari ? undefined : 'separator'}
       tabIndex={0}
+      type="button"
     >
       {newMessageText}
-    </div>
+    </button>
   );
 });
 
