@@ -1,12 +1,9 @@
 {
   "_comment": "[CI-LOCKED] The content of this file is locked. Contributions are welcome, but change validation may be delayed.",
-
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "_ACCESS_KEY_ALT.comment": "This is for screen reader for aria-keyshortcuts property.",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
   "_ACCESS_KEY_FOR_MAC_ALT.comment": "This is for screen reader for aria-keyshortcuts property on a Mac.",
-  "ACTIVITY_ARIA_LABEL_ALT": "activity",
-  "_ACTIVITY_ARIA_LABEL_ALT.comment": "This is for screen reader for aria-label for each activity.",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 said:",
   "_ACTIVITY_BOT_SAID_ALT.comment": "This is for screen reader only. $1 is the initials for the bot (e.g. \"JD\").",
   "ACTIVITY_YOU_SAID_ALT": "You said:",
@@ -14,6 +11,8 @@
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot attached:",
   "_ACTIVITY_BOT_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the bot.",
   "ACTIVITY_ERROR_BOX_TITLE": "Error message",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Press ENTER to interact.",
+  "_ACTIVITY_INTERACTIVE_LABEL_ALT.comment": "This is for screen reader. When the user is navigating on the transcript, it give hints if the current activity have interactive contents.",
   "ACTIVITY_YOU_ATTACHED_ALT": "You attached:",
   "_ACTIVITY_YOU_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the user.",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 attachment.",
@@ -106,9 +105,12 @@
   "TOAST_DISMISS_BUTTON": "Dismiss",
   "TOAST_TITLE_ALT": "Notification",
   "_TOAST_TITLE_ALT.comment": "This is for screen reader. The label for individiual notification.",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcript, press arrow keys to navigate.",
+  "_TRANSCRIPT_ARIA_LABEL_ALT.comment": "This is for screen reader for the label that will be narrated when the transcript is focused.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcript",
   "_TRANSCRIPT_ARIA_ROLE_ALT.comment": "This is for screen reader for the aria-roledescription of the transcript container.",
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
+  "TRANSCRIPT_TERMINATOR_TEXT": "End of transcript",
   "TYPING_INDICATOR_ALT": "Showing typing indicator",
   "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message."
 }

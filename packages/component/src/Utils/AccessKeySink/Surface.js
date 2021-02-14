@@ -50,7 +50,7 @@ Surface.defaultProps = {
 };
 
 Surface.propTypes = {
-  children: PropTypes.element
+  children: PropTypes.any
 };
 
 export default Surface;

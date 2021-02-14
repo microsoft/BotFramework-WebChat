@@ -25,7 +25,7 @@
         token
       } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
 
@@ -42,7 +42,9 @@
         await pageObjects.typeInSendBox('Hello');
         await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()('main'));
         await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        // When using runHookActivityMiddleware, an additional hidden activity will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
+        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
 
         await host.snapshot();
         await host.done();

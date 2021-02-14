@@ -1,15 +1,18 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
-import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AutoResizeTextArea from './AutoResizeTextArea';
 import connectToWebChat from '../connectToWebChat';
+import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
 import useFocus from '../hooks/useFocus';
+import useRegisterFocusSendBox from '../hooks/internal/useRegisterFocusSendBox';
 import useReplaceEmoticon from '../hooks/internal/useReplaceEmoticon';
+import useScrollDown from '../hooks/useScrollDown';
 import useScrollToEnd from '../hooks/useScrollToEnd';
+import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
@@ -137,7 +140,7 @@ function useTextBoxValue() {
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
-const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
+const TextBox = ({ className }) => {
   const [, setSendBox] = useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ sendBoxTextWrap }] = useStyleOptions();
@@ -148,21 +151,10 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
   const placeCheckpointOnChangeRef = useRef(false);
   const prevInputStateRef = useRef();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const scrollDown = useScrollDown();
+  const scrollUp = useScrollUp();
   const submitTextBox = useTextBoxSubmit();
   const undoStackRef = useRef([]);
-
-  const inputRefCallback = useCallback(
-    element => {
-      if (typeof forwardedRef === 'function') {
-        forwardedRef(element);
-      } else if (forwardedRef) {
-        forwardedRef.current = element;
-      }
-
-      inputElementRef.current = element;
-    },
-    [forwardedRef, inputElementRef]
-  );
 
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
@@ -292,6 +284,79 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
     [submitTextBox, undoStackRef]
   );
 
+  const handleKeyDownCapture = useCallback(
+    event => {
+      const { ctrlKey, metaKey, shiftKey } = event;
+
+      if (ctrlKey || metaKey || shiftKey) {
+        return;
+      }
+
+      // Navigable event means the end-user is focusing on an inputtable element, but it is okay to capture the arrow keys.
+      if (navigableEvent(event)) {
+        let handled = true;
+
+        switch (event.key) {
+          case 'End':
+            scrollDown({ displacement: Infinity });
+            break;
+
+          case 'Home':
+            scrollUp({ displacement: Infinity });
+            break;
+
+          case 'PageDown':
+            scrollDown();
+            break;
+
+          case 'PageUp':
+            scrollUp();
+            break;
+
+          default:
+            handled = false;
+            break;
+        }
+
+        if (handled) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }
+    },
+    [scrollDown, scrollUp]
+  );
+
+  const focusCallback = useCallback(
+    ({ noKeyboard } = {}) => {
+      const { current } = inputElementRef;
+
+      if (current) {
+        if (noKeyboard) {
+          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
+          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
+          const readOnly = current.getAttribute('readonly');
+
+          current.setAttribute('readonly', 'readonly');
+
+          setTimeout(() => {
+            const { current } = inputElementRef;
+
+            if (current) {
+              current.focus();
+              readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+            }
+          }, 0);
+        } else {
+          current.focus();
+        }
+      }
+    },
+    [inputElementRef]
+  );
+
+  useRegisterFocusSendBox(focusCallback);
+
   return (
     <form
       aria-disabled={disabled}
@@ -309,16 +374,17 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
           disabled={disabled}
-          enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
+          enterKeyHint="send"
           inputMode="text"
           onChange={disabled ? undefined : handleChange}
           onFocus={disabled ? undefined : handleFocus}
           onKeyDown={disabled ? undefined : handleKeyDown}
+          onKeyDownCapture={disabled ? undefined : handleKeyDownCapture}
           onKeyPress={disabled ? undefined : handleKeyPress}
           onSelect={disabled ? undefined : handleSelect}
           placeholder={typeYourMessageString}
           readOnly={disabled}
-          ref={inputRefCallback}
+          ref={inputElementRef}
           type="text"
           value={textBoxValue}
         />
@@ -328,16 +394,17 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
           className="webchat__send-box-text-box__text-area"
           data-id="webchat-sendbox-input"
           disabled={disabled}
-          enterkeyhint="send" // The version of React we are using does not support "enterKeyHint" yet
+          enterKeyHint="send"
           inputMode="text"
           onChange={disabled ? undefined : handleChange}
           onFocus={disabled ? undefined : handleFocus}
           onKeyDown={disabled ? undefined : handleKeyDown}
+          onKeyDownCapture={disabled ? undefined : handleKeyDownCapture}
           onKeyPress={disabled ? undefined : handleKeyPress}
           onSelect={disabled ? undefined : handleSelect}
           placeholder={typeYourMessageString}
           readOnly={disabled}
-          ref={inputRefCallback}
+          ref={inputElementRef}
           rows="1"
           textAreaClassName="webchat__send-box-text-box__html-text-area"
           value={textBoxValue}
@@ -346,23 +413,7 @@ const TextBoxCore = forwardRef(({ className }, forwardedRef) => {
       {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
-});
-
-TextBoxCore.defaultProps = {
-  className: ''
 };
-
-TextBoxCore.propTypes = {
-  className: PropTypes.string
-};
-
-const TextBox = ({ className }) => (
-  // For DOM node referenced by sendFocusRef, we are using a hack to focus on it.
-  // By flipping readOnly attribute while setting focus, we can focus on text box without popping the virtual keyboard on mobile device.
-  <TypeFocusSinkContext.Consumer>
-    {({ sendFocusRef }) => <TextBoxCore className={className} ref={sendFocusRef} />}
-  </TypeFocusSinkContext.Consumer>
-);
 
 TextBox.defaultProps = {
   className: ''

@@ -1,6 +1,7 @@
 import clickMicrophoneButton from './clickMicrophoneButton';
 import clickNewMessageButton from './clickNewMessageButton';
 import clickNthSuggestedAction from './clickNthSuggestedAction';
+import clickSendButton from './clickSendButton';
 import clickToasterHeader from './clickToasterHeader';
 import dismissToast from './dismissToast';
 import getActivities from './getActivities';
@@ -19,6 +20,7 @@ export {
   clickMicrophoneButton,
   clickNewMessageButton,
   clickNthSuggestedAction,
+  clickSendButton,
   clickToasterHeader,
   dismissToast,
   getActivities,

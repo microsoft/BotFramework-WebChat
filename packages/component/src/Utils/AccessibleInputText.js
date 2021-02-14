@@ -3,6 +3,8 @@
 import PropTypes from 'prop-types';
 import React, { forwardRef, useRef } from 'react';
 
+import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
+
 // Differences between <input type="text"> and <AccessibleInputText>:
 // - Disable behavior
 //   - When the widget is disabled
@@ -22,10 +24,26 @@ import React, { forwardRef, useRef } from 'react';
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleInputText = forwardRef(
-  ({ disabled, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
+  (
+    {
+      disabled,
+      enterKeyHint,
+      onChange,
+      onFocus,
+      onKeyDown,
+      onKeyDownCapture,
+      onKeyPress,
+      onSelect,
+      tabIndex,
+      ...props
+    },
+    forwardedRef
+  ) => {
     const targetRef = useRef();
 
     const ref = forwardedRef || targetRef;
+
+    useEnterKeyHint(ref, enterKeyHint);
 
     return (
       <input
@@ -33,6 +51,7 @@ const AccessibleInputText = forwardRef(
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
+        onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
         onKeyPress={disabled ? undefined : onKeyPress}
         onSelect={disabled ? undefined : onSelect}
         readOnly={disabled}
@@ -47,9 +66,11 @@ const AccessibleInputText = forwardRef(
 
 AccessibleInputText.defaultProps = {
   disabled: undefined,
+  enterKeyHint: undefined,
   onChange: undefined,
   onFocus: undefined,
   onKeyDown: undefined,
+  onKeyDownCapture: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
   tabIndex: undefined
@@ -59,9 +80,11 @@ AccessibleInputText.displayName = 'AccessibleInputText';
 
 AccessibleInputText.propTypes = {
   disabled: PropTypes.bool,
+  enterKeyHint: PropTypes.string,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyDownCapture: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
   tabIndex: PropTypes.number,

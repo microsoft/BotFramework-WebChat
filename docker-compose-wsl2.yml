@@ -30,6 +30,7 @@ services:
       dockerfile: Dockerfile-testharness
     ports:
     - "5080:80"
+    stop_grace_period: 0s
 
   webchat2:
     build:
@@ -37,3 +38,4 @@ services:
       dockerfile: Dockerfile-testharness2
     ports:
     - "5081:80"
+    stop_grace_period: 0s

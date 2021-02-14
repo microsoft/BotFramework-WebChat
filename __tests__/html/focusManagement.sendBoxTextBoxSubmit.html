@@ -8,19 +8,9 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createRunHookActivityMiddleware,
-        createStore,
-        elements,
-        expect,
-        host,
-        pageObjects,
-        timeouts,
-        token
-      } = window.WebChatTest;
+      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
 

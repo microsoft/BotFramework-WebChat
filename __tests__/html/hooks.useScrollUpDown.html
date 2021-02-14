@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useScrollDown, useScrollUp }
+        },
+        WebChatTest: {
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          elements,
+          expect,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function () {
+        const res = await fetch('assets/transcripts/markdown-message.json');
+
+        if (!res.ok) {
+          throw new Error(`Server returned ${res.status} while fetching transcript`);
+        }
+
+        const directLine = createDirectLineWithTranscript(await res.json());
+        const store = createStore();
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const renderWithFunction = fn =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+              </Composer>,
+              document.getElementById('webchat')
+            )
+          );
+
+        await renderWithFunction();
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+
+        const scrollable = elements.transcriptScrollable();
+        const scrollTopAtBottommost = scrollable.scrollHeight - scrollable.offsetHeight;
+
+        expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
+
+        // Call useScrollUp() should scroll the transcript view up
+        await renderWithFunction(() => useScrollUp()());
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        expect(scrollable.scrollTop).toBeLessThan(scrollTopAtBottommost);
+
+        // Call useScrollDown() should scroll the transcript view down, back at the bottommost position
+        await renderWithFunction(() => useScrollDown()());
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
