@@ -32,6 +32,9 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
+// When "renderAttachments" is false, we will not render the content of attachments.
+// That means, it will only render "2 attachments", instead of "image attachment".
+// This is used in the visual transcript, where we render "Press ENTER to interact."
 const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
@@ -75,6 +78,8 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
       aria-atomic={true}
       aria-roledescription="message"
       className={classNames('webchat__screen-reader-activity', rootClassName)}
+      // "id" attribute is used by `aria-labelledby`.
+      // eslint-disable-next-line react/forbid-dom-props
       id={id}
       role="region"
     >
