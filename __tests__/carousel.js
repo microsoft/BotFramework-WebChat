@@ -28,7 +28,6 @@ describe('carousel without avatar initials', () => {
     await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
-    await rightFlipper.click();
 
     // Wait for carousel animation to finish
     await driver.sleep(timeouts.ui);
@@ -49,7 +48,6 @@ describe('carousel without avatar initials', () => {
 
     const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
 
-    await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
@@ -128,7 +126,6 @@ describe('carousel with avatar initials', () => {
     await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
-    await rightFlipper.click();
 
     // Wait for carousel animation to finish
     await driver.sleep(timeouts.ui);
@@ -149,7 +146,6 @@ describe('carousel with avatar initials', () => {
 
     const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
 
-    await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
     await rightFlipper.click();
