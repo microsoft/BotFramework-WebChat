@@ -203,9 +203,19 @@ const DEFAULT_OPTIONS = {
   // Internal
   internalLiveRegionFadeAfter: 1000,
 
+  // Transcript
   transcriptTerminatorBackgroundColor: '#595959',
+  transcriptTerminatorBorderRadius: 5,
   transcriptTerminatorColor: 'White',
-  transcriptTerminatorFontSize: 12
+  transcriptTerminatorFontSize: 12,
+
+  transcriptActivityVisualKeyboardIndicatorColor: DEFAULT_SUBTLE,
+  transcriptActivityVisualKeyboardIndicatorStyle: 'dashed',
+  transcriptActivityVisualKeyboardIndicatorWidth: 1,
+
+  transcriptVisualKeyboardIndicatorColor: 'Black',
+  transcriptVisualKeyboardIndicatorStyle: 'solid',
+  transcriptVisualKeyboardIndicatorWidth: 2
 };
 
 export default DEFAULT_OPTIONS;

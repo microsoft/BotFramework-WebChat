@@ -1,12 +1,18 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 export default function createBasicTranscriptStyleSet({
-  activeActivityOutlineColor,
   paddingRegular,
   primaryFont,
+  transcriptActivityVisualKeyboardIndicatorColor,
+  transcriptActivityVisualKeyboardIndicatorStyle,
+  transcriptActivityVisualKeyboardIndicatorWidth,
   transcriptTerminatorBackgroundColor,
+  transcriptTerminatorBorderRadius,
   transcriptTerminatorColor,
-  transcriptTerminatorFontSize
+  transcriptTerminatorFontSize,
+  transcriptVisualKeyboardIndicatorColor,
+  transcriptVisualKeyboardIndicatorStyle,
+  transcriptVisualKeyboardIndicatorWidth
 }) {
   return {
     '&.webchat__basic-transcript': {
@@ -14,9 +20,9 @@ export default function createBasicTranscriptStyleSet({
         outline: 0,
 
         '& .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--active': {
-          borderColor: activeActivityOutlineColor,
-          borderStyle: 'dashed',
-          borderWidth: 1,
+          borderColor: transcriptActivityVisualKeyboardIndicatorColor,
+          borderStyle: transcriptActivityVisualKeyboardIndicatorStyle,
+          borderWidth: transcriptActivityVisualKeyboardIndicatorWidth,
           boxSizing: 'border-box',
           height: `calc(100% - ${paddingRegular}px)`,
           left: 0,
@@ -30,9 +36,9 @@ export default function createBasicTranscriptStyleSet({
 
       '&:focus .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator': {
         height: '100%',
-        borderColor: 'black',
-        borderStyle: 'solid',
-        borderWidth: 2,
+        borderColor: transcriptVisualKeyboardIndicatorColor,
+        borderStyle: transcriptVisualKeyboardIndicatorStyle,
+        borderWidth: transcriptVisualKeyboardIndicatorWidth,
         boxSizing: 'border-box',
         pointerEvents: 'none',
         position: 'absolute',
@@ -84,7 +90,7 @@ export default function createBasicTranscriptStyleSet({
 
       '& .webchat__basic-transcript__terminator-text': {
         backgroundColor: transcriptTerminatorBackgroundColor,
-        borderRadius: 5,
+        borderRadius: transcriptTerminatorBorderRadius,
         color: transcriptTerminatorColor,
         fontFamily: primaryFont,
         fontSize: transcriptTerminatorFontSize,
