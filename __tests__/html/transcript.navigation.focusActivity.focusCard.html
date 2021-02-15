@@ -10,7 +10,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactTestUtils: { Simulate },
-        TestAsset: { generateTranscript },
+        TestAsset: { generateTranscript, waitForFocusedActivityInView },
         WebChatTest: {
           conditions,
           createDirectLineWithTranscript,
@@ -46,12 +46,12 @@
 
         // Should show an visual keyboard indicator around the second last activity.
         await host.sendKeys('ARROW_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await waitForFocusedActivityInView();
         await host.snapshot();
 
         // Should show an visual keyboard indicator around the card.
         await host.sendKeys('ARROW_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await waitForFocusedActivityInView();
         await host.snapshot();
 
         // Should focus the first input box in the Adaptive Card.
@@ -60,7 +60,7 @@
 
         // Should focus on the second input box in the Adaptive Card and not scrolling the view by pressing up arrow key.
         await host.sendKeys('ARROW_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await waitForFocusedActivityInView();
         await host.sendTab();
         await host.snapshot();
 
