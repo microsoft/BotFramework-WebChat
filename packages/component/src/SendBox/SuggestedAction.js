@@ -19,7 +19,7 @@ const ROOT_STYLE = {
   '&.webchat__suggested-action': {
     '& .webchat__suggested-action__button': {
       display: 'flex',
-      overflow: 'hidden' // Prevent image from leaking
+      objectFit: 'contain'
     }
   }
 };

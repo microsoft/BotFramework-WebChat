@@ -18,6 +18,8 @@ export default function createSuggestedActionStyle({
   suggestedActionDisabledBorderWidth,
   suggestedActionDisabledTextColor,
   suggestedActionHeight,
+  suggestedActionsStackedLayoutButtonTextWrap,
+  suggestedActionsStackedLayoutButtonMaxHeight,
   subtle
 }) {
   return {
@@ -29,7 +31,11 @@ export default function createSuggestedActionStyle({
         borderRadius: suggestedActionBorderRadius,
         fontFamily: primaryFont,
         fontSize: 'inherit',
-        height: suggestedActionHeight,
+        height: suggestedActionsStackedLayoutButtonTextWrap ? 'auto' : suggestedActionHeight,
+        maxHeight: suggestedActionsStackedLayoutButtonTextWrap
+          ? suggestedActionsStackedLayoutButtonMaxHeight
+          : undefined,
+        minHeight: suggestedActionsStackedLayoutButtonTextWrap ? suggestedActionHeight : undefined,
         justifyContent: 'center',
         maxWidth: '100%',
         paddingLeft: paddingWide,

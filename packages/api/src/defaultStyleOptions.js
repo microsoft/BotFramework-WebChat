@@ -106,7 +106,6 @@ const DEFAULT_OPTIONS = {
   suggestedActionBorderStyle: 'solid',
   suggestedActionBorderWidth: 2,
   suggestedActionDisabledBackground: undefined, // defaults to suggestedActionBackground
-  suggestedActionDisabledBorder: null,
   suggestedActionDisabledBorderColor: '#E6E6E6',
   suggestedActionDisabledBorderStyle: 'solid',
   suggestedActionDisabledBorderWidth: 2,
@@ -127,6 +126,8 @@ const DEFAULT_OPTIONS = {
   // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
   suggestedActionsStackedOverflow: undefined, // defaults to 'auto',
+  suggestedActionsStackedLayoutButtonMaxHeight: undefined, // defaults to suggestedActionHeight
+  suggestedActionsStackedLayoutButtonTextWrap: false, // if set to true, buttons with long text will wrap in STACKED mode ONLY
 
   // Timestamp
   groupTimestamp: true,
