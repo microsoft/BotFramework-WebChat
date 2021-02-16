@@ -1,5 +1,5 @@
 export default function ({
-  cardPushButtonBackGroundColor,
+  cardPushButtonBackgroundColor,
   cardPushButtonTextColor,
   accent,
   paddingRegular,
