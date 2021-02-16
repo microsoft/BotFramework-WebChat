@@ -27,10 +27,11 @@
         await pageObjects.sendMessageViaSendBox('herocard');
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
-        await pageObjects.scrollToTop();
 
         // Waiting for scroll-to-end panel to detect unsticky.
         await new Promise(resolve => setTimeout(resolve, 500));
+
+        await pageObjects.scrollToTop();
 
         await host.snapshot();
 

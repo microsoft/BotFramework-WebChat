@@ -10,7 +10,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactTestUtils: { Simulate },
-        TestAsset: { generateTranscript },
+        TestAsset: { generateTranscript, waitForFocusedActivityInView },
         WebChatTest: {
           conditions,
           createDirectLineWithTranscript,
@@ -45,6 +45,7 @@
 
         // Press up on the terminator should focus the bottommost activity.
         await host.sendKeys('ARROW_UP');
+        await waitForFocusedActivityInView();
         await host.snapshot();
 
         await host.done();
