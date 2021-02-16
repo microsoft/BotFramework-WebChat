@@ -191,8 +191,30 @@ function generateTranscript() {
   });
 }
 
+async function waitForFocusedActivityInView() {
+  await pageObjects.wait(() => {
+    const { offsetHeight: activityHeight, offsetTop: activityTop } = elements.focusedActivity();
+    const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = elements.transcriptScrollable();
+
+    const offsetBottom = activityHeight + activityTop;
+    const scrollBottom = scrollableHeight + scrollableTop;
+
+    return (
+      (activityTop >= scrollableTop &&
+        activityTop <= scrollBottom &&
+        offsetBottom >= scrollableTop &&
+        offsetBottom <= scrollBottom) ||
+      (scrollableTop >= activityTop &&
+        scrollableTop <= offsetBottom &&
+        scrollBottom >= activityTop &&
+        scrollBottom <= offsetBottom)
+    );
+  }, timeouts.ui);
+}
+
 window.TestAsset = {
   createInputCardActivity,
   expectScroll,
-  generateTranscript
+  generateTranscript,
+  waitForFocusedActivityInView
 };

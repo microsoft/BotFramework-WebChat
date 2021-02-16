@@ -44,6 +44,7 @@
         );
 
         await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
 
         await host.snapshot();
         await host.done();
