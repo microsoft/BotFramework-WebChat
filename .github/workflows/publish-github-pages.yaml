@@ -2,10 +2,12 @@ name: Publish GitHub Pages
 
 on:
   push:
+    # branches:
+    #   - main
+    #   - master
     paths:
       - .github/workflows/publish-github-pages.yaml
-  schedule:
-    - cron: 00 03 * * *
+      - samples/**
 
 jobs:
   build:
