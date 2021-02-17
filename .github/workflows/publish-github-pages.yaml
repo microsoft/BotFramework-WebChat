@@ -2,9 +2,9 @@ name: Publish GitHub Pages
 
 on:
   push:
-    # branches:
-    #   - main
-    #   - master
+    branches:
+      - main
+      - master
     paths:
       - .github/workflows/publish-github-pages.yaml
       - samples/**
