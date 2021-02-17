@@ -49,6 +49,9 @@ jobs:
           rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/ \
             --exclude g.hybrid-react-npm
 
+          mkdir gh-pages/01.getting-started/g.hybrid-react-npm
+          rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/01.getting-started/g.hybrid-react-npm/
+
           mkdir gh-pages/02.branding-styling-and-customization
           rsync -av --progress samples/02.branding-styling-and-customization/ gh-pages/02.branding-styling-and-customization/
 
@@ -62,23 +65,6 @@ jobs:
             --exclude g.chat-send-history \
             --exclude h.clear-after-idle
 
-          mkdir gh-pages/05.custom-components
-          rsync -av --progress samples/05.custom-components/ gh-pages/05.custom-components/
-
-          mkdir gh-pages/06.recomposing-ui
-          rsync -av --progress samples/06.recomposing-ui/ gh-pages/06.recomposing-ui/ \
-            --exclude a.minimizable-web-chat \
-            --exclude b.speech-ui \
-            --exclude c.smart-display \
-            --exclude d.plain-ui
-
-          mkdir gh-pages/01.getting-started
-
-          mkdir gh-pages/01.getting-started/g.hybrid-react-npm
-          rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/01.getting-started/g.hybrid-react-npm/
-
-          mkdir gh-pages/04.api
-
           mkdir gh-pages/04.api/e.piping-to-redux
           rsync -av --progress samples/04.api/e.piping-to-redux/build/ gh-pages/04.api/e.piping-to-redux/
 
@@ -91,7 +77,15 @@ jobs:
           mkdir gh-pages/04.api/h.clear-after-idle
           rsync -av --progress samples/04.api/h.clear-after-idle/build/ gh-pages/04.api/h.clear-after-idle/
 
+          mkdir gh-pages/05.custom-components
+          rsync -av --progress samples/05.custom-components/ gh-pages/05.custom-components/
+
           mkdir gh-pages/06.recomposing-ui
+          rsync -av --progress samples/06.recomposing-ui/ gh-pages/06.recomposing-ui/ \
+            --exclude a.minimizable-web-chat \
+            --exclude b.speech-ui \
+            --exclude c.smart-display \
+            --exclude d.plain-ui
 
           mkdir gh-pages/06.recomposing-ui/a.minimizable-web-chat
           rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/build/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
@@ -119,3 +113,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: gh-pages
+          path: ./public
+
+      - name: Publish GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
