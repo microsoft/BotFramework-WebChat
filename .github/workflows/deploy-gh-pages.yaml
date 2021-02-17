@@ -1,4 +1,4 @@
-name: Daily release
+name: Deploy GitHub Pages
 
 on:
   push:
