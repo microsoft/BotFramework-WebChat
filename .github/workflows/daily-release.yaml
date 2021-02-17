@@ -80,7 +80,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: tarball
+          name: tarballs
 
       - id: compute_hash
         name: Compute build metadata
