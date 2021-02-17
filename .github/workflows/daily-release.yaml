@@ -111,7 +111,7 @@ jobs:
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
 
       - name: Create release
-        id: create-release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -149,7 +149,47 @@ jobs:
           draft: false
           prerelease: true
 
-      - name: Upload release assets
+      - name: Upload tarballs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.json *.tgz --repo ${{ github.repository }}
+        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.tgz --repo ${{ github.repository }}
+
+      - name: Upload stats.json
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./stats.json
+          asset_name: stats.json
+          asset_content_type: application/json
+
+      - name: Upload webchat.js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./webchat.js
+          asset_name: webchat.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-es5.js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./webchat-es5.js
+          asset_name: webchat-es5.js
+          asset_content_type: text/javascript
+
+      - name: Upload webchat-minimal.js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./webchat-minimal.js
+          asset_name: webchat-minimal.js
+          asset_content_type: text/javascript
