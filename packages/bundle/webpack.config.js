@@ -1,3 +1,7 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+/* global __dirname, module, process */
+
 const { join } = require('path');
 const { resolve } = require('path');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
@@ -42,11 +46,6 @@ let config = {
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig.js'
       ),
-      // TODO: [P1] #3575 Remove the following line when bumping to Speech SDK 1.14.0 or higher
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource': resolve(
-        __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource.js'
-      ),
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
@@ -57,18 +56,7 @@ let config = {
       ),
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
-    },
-
-    // Since Webpack is configured not to transpile, we cannot use package.json/module field to load a module.
-    // The default Webpack module resolution order is: "module", then "browser", then "main".
-    //
-    // De facto entrypoint definitions:
-    // - "module": ES.next: transpilation is required for this entrypoint. It should yield code with smallest footprint.
-    // - "main": Plain old Node.js or browser: should be ES5 compatible. It may be configured to work only on either Node.js or browser.
-    // - "browser": Plain old browsers (ES5, which is supported by IE9). This entrypoint will not work on Node.js.
-    //
-    // If both "main" and "browser" are present, "main" will be for Node.js and "browser" will be for browsers.
-    mainFields: ['browser', 'main']
+    }
   }
 };
 
@@ -97,7 +85,7 @@ if (node_env !== 'production' && node_env !== 'test') {
             join(__dirname, '../core/lib'),
             join(__dirname, '../directlinespeech/lib')
           ],
-          test: /\.js$/,
+          test: /\.js$/iu,
           use: ['source-map-loader']
         }
       ]
