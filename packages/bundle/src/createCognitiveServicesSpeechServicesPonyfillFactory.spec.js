@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
@@ -39,7 +40,6 @@ test('providing reference grammar ID', () => {
 
   ponyfillFactory({ referenceGrammarID: 'a1b2c3d' });
 
-  // eslint-disable-next-line prefer-destructuring
   const { referenceGrammars } = createPonyfill.mock.calls[0][0];
 
   expect(referenceGrammars).toEqual(['luis/a1b2c3d-PRODUCTION']);
@@ -55,7 +55,6 @@ test('not providing reference grammar ID', () => {
 
   ponyfillFactory({});
 
-  // eslint-disable-next-line prefer-destructuring
   const { referenceGrammars } = createPonyfill.mock.calls[0][0];
 
   expect(referenceGrammars).toEqual([]);

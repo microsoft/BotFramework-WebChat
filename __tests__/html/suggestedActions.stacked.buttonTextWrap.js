@@ -17,10 +17,10 @@ describe('suggested actions stacked button text wrap,', () => {
     runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=40&tw=true&mh=45'));
   test('when true and max height is 80, change max height to fit text.', () =>
     runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=40&tw=true&mh=80'));
+  test('when true and max height is 100% and suggested action height is 60, change max height, height will be 60', () =>
+    runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=60&tw=true&mh=100%25'));
   test('when true and max height is 100%, change max height to fit text.', () =>
     runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=20&tw=true&mh=100%25'));
-  test('when true and max height is 100% and suggested action height is 80, change max height, height will be 80', () =>
-    runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=80&tw=true&mh=100%25'));
-  test('when true and max height is undefined, should default max height to 100%.', () =>
+  test('when true and max height is undefined, should default max height to 100%25', () =>
     runHTMLTest('suggestedActions.stacked.buttonTextWrap.html#sah=40&tw=true'));
 });

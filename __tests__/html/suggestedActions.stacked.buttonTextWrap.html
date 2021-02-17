@@ -32,7 +32,7 @@
         const styleOptions = {
           suggestedActionLayout: 'stacked',
           suggestedActionHeight: parseInt(suggestedActionHeight) || null,
-          suggestedActionsStackedLayoutButtonMaxHeight: parseInt(suggestedActionsStackedLayoutButtonMaxHeight) || undefined,
+          suggestedActionsStackedLayoutButtonMaxHeight: parseInt(suggestedActionsStackedLayoutButtonMaxHeight) || null,
           suggestedActionsStackedLayoutButtonTextWrap: suggestedActionsStackedLayoutButtonTextWrap === 'true' || null
         };
 
@@ -48,7 +48,8 @@
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
         await pageObjects.sendMessageViaSendBox('suggested-actions');
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
 
         await host.snapshot();
         await host.done();

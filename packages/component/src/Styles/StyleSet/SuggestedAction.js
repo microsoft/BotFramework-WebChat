@@ -18,16 +18,14 @@ export default function createSuggestedActionStyle({
   suggestedActionDisabledBorderWidth,
   suggestedActionDisabledTextColor,
   suggestedActionHeight,
-  suggestedActionsStackedLayoutButtonTextWrap,
   suggestedActionsStackedLayoutButtonMaxHeight,
   subtle
 }) {
   const patchedMinHeight =
-    suggestedActionsStackedLayoutButtonTextWrap && suggestedActionHeight < suggestedActionsStackedLayoutButtonMaxHeight
+    suggestedActionHeight < suggestedActionsStackedLayoutButtonMaxHeight
       ? suggestedActionHeight
-      : suggestedActionsStackedLayoutButtonMaxHeight < suggestedActionHeight
-      ? suggestedActionsStackedLayoutButtonMaxHeight
-      : undefined;
+      : suggestedActionsStackedLayoutButtonMaxHeight;
+
   return {
     '&.webchat__suggested-action': {
       maxWidth: '100%',
@@ -37,11 +35,7 @@ export default function createSuggestedActionStyle({
         borderRadius: suggestedActionBorderRadius,
         fontFamily: primaryFont,
         fontSize: 'inherit',
-        height: suggestedActionsStackedLayoutButtonTextWrap ? 'auto' : suggestedActionHeight,
-        maxHeight: suggestedActionsStackedLayoutButtonTextWrap
-          ? suggestedActionsStackedLayoutButtonMaxHeight
-          : undefined,
-        minHeight: patchedMinHeight,
+        height: suggestedActionHeight,
         justifyContent: 'center',
         maxWidth: '100%',
         paddingLeft: paddingWide,
@@ -68,6 +62,12 @@ export default function createSuggestedActionStyle({
 
       '& .webchat__suggested-action__image': {
         height: suggestedActionImageHeight
+      },
+
+      '& .webchat__suggested-action--wrapping': {
+        height: 'auto',
+        maxHeight: suggestedActionsStackedLayoutButtonMaxHeight || '100%',
+        minHeight: patchedMinHeight
       },
 
       '&:not(.webchat__suggested-action--rtl) .webchat__suggested-action__image + .webchat__suggested-action__text': {

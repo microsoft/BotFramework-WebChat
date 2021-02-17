@@ -124,7 +124,7 @@ const DEFAULT_OPTIONS = {
   // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
   suggestedActionsStackedOverflow: undefined, // defaults to 'auto',
-  suggestedActionsStackedLayoutButtonMaxHeight: undefined, // if undefined, height will equal suggestedActionHeight
+  suggestedActionsStackedLayoutButtonMaxHeight: undefined, // defaults to 100% if suggestedActionsStackedLayoutButtonTextWrap is true
   suggestedActionsStackedLayoutButtonTextWrap: false, // if set to true, buttons with long text will wrap in STACKED mode ONLY
 
   // Timestamp
