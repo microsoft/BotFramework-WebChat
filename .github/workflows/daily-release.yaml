@@ -10,8 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: production
 
     steps:
       - name: Checking out for ${{ github.ref }}
@@ -24,6 +22,8 @@ jobs:
 
       - run: npm run bootstrap
       - run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Run npm pack api
         run: |
@@ -65,30 +65,59 @@ jobs:
           name: bundle
           path: packages/bundle/dist/**/*
 
-      # - id: deploy
-      #   uses: azure/webapps-deploy@v2.1.2
-      #   with:
-      #     app-name: webchat-playground
-      #     slot-name: production
-      #     publish-profile: ${{ secrets.PLAYGROUND_PUBLISH_PROFILE }}
-      #     package: packages/playground/build.zip
-
-      # - name: Ping deployment
-      #   run: |
-      #     sleep 15
-      #     curl -s ${{ steps.deploy.outputs.webapp-url }}
-
       - id: compute-hash
         name: Compute build metadata
         run: |
+          echo "::set-output name=build-date::`date \"+%Y-%m-%d %R:%S\"`"
+          echo "::set-output name=package-version::`tar -xOzf packages/bundle/webchat-*.tgz package/package.json | jq -r '.version'`"
+          echo "::set-output name=release-tag-name::daily"
           echo "::set-output name=sha384-es5::`cat packages/bundle/dist/webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A`"
           echo "::set-output name=sha384-full::`cat packages/bundle/dist/webchat.js | openssl dgst -sha384 -binary | openssl base64 -A`"
           echo "::set-output name=sha384-minimal::`cat packages/bundle/dist/webchat-minimal.js | openssl dgst -sha384 -binary | openssl base64 -A`"
-          echo "::set-output name=package-version::`tar -xOzf packages/bundle/webchat-*.tgz package/package.json | jq -r '.version'`"
 
       - name: Display build metadata
         run: |
+          echo build-date=${{ steps.compute-hash.outputs.build-date }}
+          echo release-tag-name=${{ steps.compute-hash.outputs.release-tag-name }}
+          echo package-version=${{ steps.compute-hash.outputs.package-version }}
           echo sha384-es5=${{ steps.compute-hash.outputs.sha384-es5 }}
           echo sha384-full=${{ steps.compute-hash.outputs.sha384-full }}
           echo sha384-minimal=${{ steps.compute-hash.outputs.sha384-minimal }}
-          echo package-version=${{ steps.compute-hash.outputs.package-version }}
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{ steps.compute-hash.outputs.release-tag-name }}
+          release_name: Daily build $GITHUB_REF
+          body: |
+            This build will be updated daily. **Please do not use this build in production environment.**
+
+            | Build time | Run ID | Source version | Git ref | Package version |
+            | - | - | - | - | - |
+            | ${{ steps.compute-hash.outputs.build-date }} | [`$GITHUB_RUN_ID`](${{ $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID }}) | [$GITHUB_SHA]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA) | `$GITHUB_REF` | `${{ steps.compute-hash.outputs.package-version }}` |
+
+            ```html
+            <script
+              crossorigin="anonymous"
+              integrity="sha384-${{ steps.compute-hash.outputs.sha384-full }}"
+              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute-hash.outputs.release-tag-name }}/webchat.js"
+            ></script>
+
+            <script
+              crossorigin="anonymous"
+              integrity="sha384-${{ steps.compute-hash.outputs.sha384-es5 }}"
+              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute-hash.outputs.release-tag-name }}/webchat-es5.js"
+            ></script>
+
+            <script
+              crossorigin="anonymous"
+              integrity="sha384-${{ steps.compute-hash.outputs.sha384-minimal }}"
+              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute-hash.outputs.release-tag-name }}/webchat-minimal.js"
+            ></script>
+            ```
+
+            > Note: the SHA384 hash may change daily.
+          draft: false
+          prerelease: true
