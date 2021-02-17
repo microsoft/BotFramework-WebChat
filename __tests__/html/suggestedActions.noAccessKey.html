@@ -34,7 +34,7 @@
         WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
       } = window;
 
-      (async function() {
+      (async function () {
         const directLine = await createDirectLine({ token: await token.fetchDirectLineToken() });
         const store = createStore();
 
@@ -93,7 +93,7 @@
 
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
-        elements.typeFocusSink().focus();
+        elements.transcript().focus();
 
         await host.snapshot();
 

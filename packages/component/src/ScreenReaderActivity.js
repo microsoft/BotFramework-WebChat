@@ -32,7 +32,10 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-const ScreenReaderActivity = ({ activity }) => {
+// When "renderAttachments" is false, we will not render the content of attachments.
+// That means, it will only render "2 attachments", instead of "image attachment".
+// This is used in the visual transcript, where we render "Press ENTER to interact."
+const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const formatDate = useDateFormatter();
@@ -53,9 +56,11 @@ const ScreenReaderActivity = ({ activity }) => {
   const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
   const displayText = messageBackDisplayText || text;
 
-  const attachmentForScreenReaderRenderers = attachments
-    .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
-    .filter(render => render);
+  const attachmentForScreenReaderRenderers = renderAttachments
+    ? attachments
+        .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
+        .filter(render => render)
+    : [];
 
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
@@ -73,6 +78,9 @@ const ScreenReaderActivity = ({ activity }) => {
       aria-atomic={true}
       aria-roledescription="message"
       className={classNames('webchat__screen-reader-activity', rootClassName)}
+      // "id" attribute is used by `aria-labelledby`.
+      // eslint-disable-next-line react/forbid-dom-props
+      id={id}
       role="region"
     >
       <p>
@@ -89,12 +97,22 @@ const ScreenReaderActivity = ({ activity }) => {
       )}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
+      {children}
     </article>
   );
 };
 
+ScreenReaderActivity.defaultProps = {
+  children: undefined,
+  id: undefined,
+  renderAttachments: true
+};
+
 ScreenReaderActivity.propTypes = {
-  activity: PropTypes.any.isRequired
+  activity: PropTypes.any.isRequired,
+  children: PropTypes.any,
+  id: PropTypes.string,
+  renderAttachments: PropTypes.bool
 };
 
 export default ScreenReaderActivity;

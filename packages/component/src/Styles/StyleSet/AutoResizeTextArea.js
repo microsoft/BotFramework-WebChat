@@ -2,6 +2,7 @@ export default function AutoResizeTextArea({ primaryFont }) {
   return {
     '&.webchat__auto-resize-textarea': {
       fontFamily: primaryFont,
+      overflow: 'hidden',
       position: 'relative',
 
       '& .webchat__auto-resize-textarea__doppelganger': {

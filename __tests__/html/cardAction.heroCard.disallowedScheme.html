@@ -39,7 +39,7 @@
         return new Uint8Array(byteArray).buffer;
       }
 
-      (async function() {
+      (async function () {
         window.WebChat.renderWebChat(
           {
             activityMiddleware: createRunHookActivityMiddleware(),
@@ -73,7 +73,9 @@
         fileBlob.name = 'openurl-card.attachmentjson';
 
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        // When using runHookActivityMiddleware, an additional hidden activity will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
+        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
 
         const calls = [];
 

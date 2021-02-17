@@ -76,19 +76,6 @@ test('long URLs with keep-all', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('unknown activities do not render anything in the transcript', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('unknown activity', { waitForSend: true });
-
-  await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
 test('hero card with a long title and richCardWrapTitle set to true', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardWrapTitle: true } } });
 

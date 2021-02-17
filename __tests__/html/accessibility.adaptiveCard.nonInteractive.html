@@ -24,7 +24,7 @@
         Components: { AdaptiveCardContent }
       } = window.WebChat;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
         const baseProps = { directLine, store };
@@ -42,9 +42,7 @@
 
         await host.sendShiftTab();
 
-        const blurred = document.activeElement === document.body || !document.activeElement;
-
-        expect(blurred).toBe(true);
+        expect(document.activeElement === elements.transcript()).toBe(true);
 
         // There should be no yellow part on the screen as there are no focusing elements.
         await host.snapshot();

@@ -24,7 +24,7 @@
         Components: { AdaptiveCardContent }
       } = window.WebChat;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
         const baseProps = { directLine, store };
@@ -64,9 +64,7 @@
 
         await host.snapshot();
 
-        const isFocusingBody = document.activeElement === document.body;
-
-        expect(isFocusingBody).toBe(true);
+        expect(document.activeElement).toBe(elements.transcript());
 
         await host.done();
       })().catch(async err => {

@@ -34,6 +34,9 @@ test('show 2 notifications, expand, close one, and add new', async () => {
     }
   });
 
+  // Pause between actions for reliability.
+  await new Promise(resolve => setTimeout(resolve, 0));
+
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/SET_NOTIFICATION',
     payload: {

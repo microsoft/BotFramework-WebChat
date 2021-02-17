@@ -27,10 +27,11 @@
         await pageObjects.sendMessageViaSendBox('herocard');
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
-        await pageObjects.scrollToTop();
 
         // Waiting for scroll-to-end panel to detect unsticky.
         await new Promise(resolve => setTimeout(resolve, 500));
+
+        await pageObjects.scrollToTop();
 
         await host.snapshot();
 
@@ -48,10 +49,10 @@
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        // After clicking on "New messages" button for a text message, it should focus back on the send box text box.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
-
+        // After clicking on "New messages" button, it should focus on the transcript and the next unread activity.
+        expect(document.activeElement === elements.transcript()).toBe(true);
         await host.snapshot();
+
         await host.done();
       })().catch(async err => {
         console.error(err);

@@ -15,7 +15,7 @@
         WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
       } = window;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
         const baseProps = { directLine, store };
@@ -36,9 +36,12 @@
 
         await host.snapshot();
 
+        // Focusing on the transcript, then press ENTER on the hero card. It should not change focus away from transcript because the card is disabled.
         await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendKeys('ENTER');
 
-        expect(document.activeElement === document.body).toBe(true);
+        expect(document.activeElement === elements.transcript()).toBe(true);
 
         await host.snapshot();
 

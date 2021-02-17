@@ -16,7 +16,7 @@
           createDirectLine,
           hooks: { useConnectivityStatus, useSendMessage }
         },
-        WebChatTest: { conditions, createStore, host, pageObjects, timeouts, token }
+        WebChatTest: { conditions, createStore, elements, host, pageObjects, timeouts, token }
       } = window;
 
       (async function () {
@@ -47,6 +47,12 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        elements.sendBoxTextBox().focus();
+
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
 
         await host.snapshot();
         await host.done();
