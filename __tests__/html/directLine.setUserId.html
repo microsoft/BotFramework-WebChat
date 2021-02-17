@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChatTest: {
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          expect,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function () {
+        let userId;
+        const directLine = createDirectLineWithTranscript([]);
+
+        directLine.setUserId = nextUserId => {
+          userId = nextUserId;
+        };
+
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            store: createStore(),
+            userID: 'u-12345'
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        expect(userId).toBe('u-12345');
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
