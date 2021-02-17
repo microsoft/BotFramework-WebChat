@@ -36,6 +36,7 @@
 
         await pageObjects.sendMessageViaSendBox('receiptcard', { waitForSend: true });
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
         document.querySelector('img[tabindex="0"]').focus();

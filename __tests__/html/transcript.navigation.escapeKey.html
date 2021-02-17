@@ -16,7 +16,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactTestUtils: { Simulate },
-        TestAsset: { generateTranscript },
+        TestAsset: { generateTranscript, waitForFocusedActivityInView },
         WebChatTest: {
           conditions,
           createDirectLineWithTranscript,
@@ -49,6 +49,7 @@
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendKeys('ARROW_UP', 'ARROW_UP', 'ENTER');
+        await waitForFocusedActivityInView();
         await host.snapshot();
 
         // Press ESCAPE key should focus the activity.
