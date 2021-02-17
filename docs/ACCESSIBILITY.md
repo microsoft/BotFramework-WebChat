@@ -37,7 +37,7 @@ We welcome your feedback and will continue to improve the product in this area, 
 
 # Focus management
 
-We follow [WAI-ARIA guideline on focus management](https://www.w3.org/TR/wai-aria/#managingfocus).
+We follow [WAI-ARIA guidelines on focus management](https://www.w3.org/TR/wai-aria/#managingfocus).
 
 ## Definitions
 
@@ -58,69 +58,69 @@ We follow [WAI-ARIA guideline on focus management](https://www.w3.org/TR/wai-ari
 
 The user should be able to navigate across multiple activities in the transcript using navigation keys, such as <kbd>UP</kbd>, <kbd>DOWN</kbd>, <kbd>HOME</kbd> and <kbd>END</kbd> keys. The navigation keys are based on the [WAI-ARIA best practices for grid widget](https://www.w3.org/TR/wai-aria-practices-1.1/#grid).
 
-Optionally, when the user press <kbd>ESCAPE</kbd>, it should blur the focus on the transcript and send the focus to the send box.
+Optionally, when the user presses <kbd>ESCAPE</kbd> when focused on the transcript, focus will be blurred and sent to the send box.
 
-Although transcript can be navigated using navigational keys and keyboard visual indicator is placed around the activity and the transcript, the navigation is not considered a selection (such as `aria-selected="true"`).
+Although the transcript can be navigated using navigational keys and a keyboard visual indicator is placed around the activity and the transcript, the navigation is not considered a selection (such as `aria-selected="true"`).
 
 ### Focus redirector
 
-Focus redirector is an element to capture and redirect focus, enabling <kbd>TAB</kbd> to jump in a specific sequence that would otherwise, impossible to jump using tab sequence.
+Focus redirector is an element to capture and redirect focus, enabling <kbd>TAB</kbd> to jump in a specific sequence that would otherwise be impossible to jump using tab sequence in regards to the DOM.
 
-The element itself is a focusable and invisible. When focused, it will programmatically send the focus to a target element.
+The focus redirector element itself is focusable and invisible. When focused, it will programmatically send the focus to a target element.
 
-They are commonly used in modal dialog as focus trap, a mechanism to prevent focus to move outside of the dialog.
+They are commonly used in modal dialogs as focus trap, a mechanism to prevent focus from moving outside of the dialog.
 
-Note that, on focus, browser will scroll element into view. This behavior is not preventable (tested through `event.preventDefault()` on `focus` event listener in bubbling and capturing phase). Thus, when placing focus redirector inside a scrollable container, some considerations should be made about its size and position.
+Note that on focus, the browser will scroll the focused element into view. This behavior is not preventable (tested through `event.preventDefault()` on `focus` event listener in bubbling and capturing phase). Therefore, when placing focus redirector inside a scrollable container, some considerations should be made about its size and position.
 
 ### Hiding focusable elements in the transcript
 
-While focusing on the transcript, when the user press <kbd>TAB</kbd>, it should skip all focusables in the transcript and focus on the next tabbable element after the transcript.
+While focusing within the transcript and the user presses <kbd>TAB</kbd>, it should skip all focusables in the transcript and focus on the next tabbable element **after** the transcript.
 
-To avoid any DOM elements under a subtree to be focusable, HTML introduced a new [`inert` attribute](https://html.spec.whatwg.org/multipage/interaction.html#inert-subtrees). However, this attribute is not widely adopted. Although polyfill is available, it will possibly introduce performance penalty. Thus, we are not using `inert` attribute.
+To avoid any DOM elements under a subtree being focusable, HTML introduced a new [`inert` attribute](https://html.spec.whatwg.org/multipage/interaction.html#inert-subtrees). However, this attribute is not widely adopted. Although polyfill is available, using it may introduce a performance penalty. Thus, we are not using `inert` attribute at this time.
 
-As a workaround, we added a "terminator" indicator as the last focusable element of the transcript. When the user press <kbd>TAB</kbd> inside the transcript, the focus will land on this element before leaving the transcript. The element is being narrated as "End of transcript". The user would know that they are now at the end of the transcript, and they are expected to press <kbd>TAB</kbd> again to focus on the next tabbable element after the transcript.
+As a workaround, we added a "terminator" indicator as the last focusable element of the transcript. When the user presses <kbd>TAB</kbd> inside the transcript, the focus will land on this element before leaving the transcript. The element is being narrated as "End of transcript". The user will know that they are now at the end of the transcript, and they are expected to press <kbd>TAB</kbd> again to focus on the next tabbable element after the transcript.
 
 ### Focus on activity by tab sequence and click
 
-User can use both <kbd>TAB</kbd> and click to focus on the transcript and one of its activity.
+User can use both <kbd>TAB</kbd> and click to focus on the transcript and one of its activities.
 
 ### Implementation
 
-The keyboard navigation model is based on [WAI-ARIA best practices on managing focus in composites](https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant). This model allows two focii (main focus and `aria-activedescendant` focus) appears at the same time and is for composite widgets such as combobox, grid, and other complex widgets.
+The keyboard navigation model is based on [WAI-ARIA best practices on managing focus in composites](https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant). This model allows two focii (main focus and `aria-activedescendant` focus) to appear at the same time and is for composite widgets such as combobox, grid, and other complex widgets.
 
 The transcript itself is the main focus, which can be focused by <kbd>TAB</kbd> or click. The activity is focused by referencing through the `aria-activedescendant` attribute on the transcript.
 
 To focus on an activity:
 
--  The user focus on the transcript by pressing <kbd>TAB</kbd> or click
+-  The user focuses on the transcript by pressing <kbd>TAB</kbd> or click
 -  The default focused activity is the bottommost activity
 -  The user can press navigational keys to focus on other activities
 
-To focus on tabbable elements in an activity, such as buttons inside Adaptive Card:
+To focus on tabbable elements in an activity, such as buttons inside an Adaptive Card:
 
 -  The user should first focus on the transcript and the activity
--  The user press <kbd>ENTER</kbd> to "enter" the content
--  The first tabbable elements in the activity will be focused
--  After press <kbd>TAB</kbd> key on the very last tabbable element in the activity, it should send the focus back on the transcript and the current activity
-   -  Note: we are discussing if this behavior should be changed by focusing on the first tabbable element in any succeeding activities
+-  The user should then press <kbd>ENTER</kbd> to "enter"/focus on the content
+-  The first tabbable elements in the activity or attachment will be focused
+-  After pressing the <kbd>TAB</kbd> key on the very last tabbable element in the activity, it should send the focus back to the transcript and the current activity
+   -  Note: we are discussing if this behavior should be changed by focusing on the first tabbable element in any succeeding activities. Please feel free to leave your feedback on the PR for this documentation: [#3721](https://github.com/microsoft/BotFramework-WebChat/pull/3721)
 
 ## UX: Scrolling through the transcript using keyboard
 
-The user should be able to quickly scroll through the transcript using keyboard, in additional to mouse wheel or flick gesture.
+The user should be able to quickly scroll through the transcript using keyboard, in addition to mouse wheel or flick gesture.
 
 ### Navigational keys used by input fields
 
-Depends on the state of the send box, <kbd>PAGE UP</kbd>, <kbd>PAGE DOWN</kbd>, <kbd>HOME</kbd> and <kbd>END</kbd> may be captured by the browser. For example, if the send box is not empty, pressing <kbd>HOME</kbd> should move the caret before the first letter.
+Depending on the state of the send box, <kbd>PAGE UP</kbd>, <kbd>PAGE DOWN</kbd>, <kbd>HOME</kbd> and <kbd>END</kbd> may be captured by the browser. For example, if the send box is not empty, pressing <kbd>HOME</kbd> should move the caret to in front of the first letter.
 
 When the send box is not empty, the navigational keys must not be used for scrolling the transcript.
 
 ### Holding the navigational key
 
-When the user hold the <kbd>PAGE UP</kbd> and <kbd>PAGE DOWN</kbd> keys, the transcript should scroll repetitively using system's keyboard repeat rate and delay.
+When the user holds the <kbd>PAGE UP</kbd> and <kbd>PAGE DOWN</kbd> keys, the transcript should scroll repetitively using the system's keyboard repeat rate and delay.
 
 ### Implementation
 
-To scroll up and down, the user would focus on an empty send box, then press <kbd>PAGE UP</kbd> and <kbd>PAGE DOWN</kbd>. And optionally, <kbd>HOME</kbd> and <kbd>END</kbd> to scroll to the end of the transcript.
+To scroll up and down, the user should focus on the (empty) send box, then press <kbd>PAGE UP</kbd> and <kbd>PAGE DOWN</kbd>. Optionally, <kbd>HOME</kbd> and <kbd>END</kbd> may be used to scroll to the end of the transcript.
 
 ## UX: A series of decisions
 
@@ -197,7 +197,7 @@ If the new message does not contain any tabbable UI, it should move the focus to
 
 The "New messages" button should be positioned as the first item in the transcript. The transcript is a "composite" widget and is focusable. When the focus in on the transcript, pressing <kbd>TAB</kbd> should put the focus on the "New messages" button.
 
-When the "New messages" button is clicked, it should focus back to the transcript, and put the `aria-activedescendant` focus on the first new activity, showing a visual keyboard indicator around the activity.
+When the "New messages" button is clicked, focus should return to the transcript and put the `aria-activedescendant` focus on the first new activity, showing a visual keyboard indicator around the activity.
 
 ## UX: Message ordering
 
