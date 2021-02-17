@@ -1,4 +1,4 @@
-name: Daily build
+name: Daily release
 
 on:
   push:
