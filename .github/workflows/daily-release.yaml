@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
 
     steps:
       - name: Checking out for ${{ github.ref }}
@@ -75,3 +77,18 @@ jobs:
       #   run: |
       #     sleep 15
       #     curl -s ${{ steps.deploy.outputs.webapp-url }}
+
+      - id: compute-hash
+        name: Compute build metadata
+        run: |
+          echo "::set-output name=sha384-es5::`cat packages/bundle/dist/webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A`"
+          echo "::set-output name=sha384-full::`cat packages/bundle/dist/webchat.js | openssl dgst -sha384 -binary | openssl base64 -A`"
+          echo "::set-output name=sha384-minimal::`cat packages/bundle/dist/webchat-minimal.js | openssl dgst -sha384 -binary | openssl base64 -A`"
+          echo "::set-output name=package-version::`tar -xOzf packages/bundle/webchat-*.tgz package/package.json | jq -r '.version'`"
+
+      - name: Display build metadata
+        run: |
+          echo sha384-es5=${{ steps.compute-hash.outputs.sha384-es5 }}
+          echo sha384-full=${{ steps.compute-hash.outputs.sha384-full }}
+          echo sha384-minimal=${{ steps.compute-hash.outputs.sha384-minimal }}
+          echo package-version=${{ steps.compute-hash.outputs.package-version }}
