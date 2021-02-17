@@ -41,6 +41,11 @@ function rectifyUserID(directLine, userIDFromAction) {
   const { token } = directLine;
   const { user: userIDFromToken } = decode(token) || {};
 
+  const result = {
+    fromAction: userIDFromAction,
+    fromToken: userIDFromToken
+  };
+
   if (userIDFromToken) {
     if (userIDFromAction && userIDFromAction !== userIDFromToken) {
       console.warn(
@@ -48,24 +53,26 @@ function rectifyUserID(directLine, userIDFromAction) {
       );
     }
 
-    return userIDFromToken;
+    result.final = userIDFromToken;
   } else if (userIDFromAction) {
     if (typeof userIDFromAction !== 'string') {
       console.warn('Web Chat: user ID must be a string.');
 
-      return randomUserID();
+      result.final = randomUserID();
     } else if (/^dl_/u.test(userIDFromAction)) {
       console.warn(
         'Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.'
       );
 
-      return randomUserID();
+      result.final = randomUserID();
+    } else {
+      result.final = userIDFromAction;
     }
   } else {
-    return randomUserID();
+    result.final = randomUserID();
   }
 
-  return userIDFromAction;
+  return result;
 }
 
 // We could make this a Promise instead of saga (function generator) to make the code cleaner, if:
@@ -160,20 +167,27 @@ function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   });
 }
 
-export default function*() {
+export default function* () {
   for (;;) {
     const {
       payload: { directLine, userID: userIDFromAction, username }
     } = yield take(CONNECT);
 
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
-    let disconnectMeta;
+    const rectifiedUserID = rectifyUserID(directLine, userIDFromAction);
 
     // TODO: [P2] Checks if this attached subtask will get killed if the parent task is complete (peacefully), errored out, or cancelled.
     const meta = {
-      userID: rectifyUserID(directLine, userIDFromAction),
+      userID: rectifiedUserID.final,
       username
     };
+
+    // Send user ID to DirectLineJS if it was specified from props of <API.Composer>.
+    // However, DirectLineJS may still prefer the user ID from token if it is burnt into the token.
+    // To prevent DirectLineJS giving false warnings, we will only call setUserId() if it is different than the token.
+    directLine.setUserId && rectifiedUserID.fromToken !== meta.userID && directLine.setUserId(meta.userID);
+
+    let disconnectMeta;
 
     // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
     // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.

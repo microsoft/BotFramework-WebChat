@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3666](https://github.com/microsoft/BotFramework-WebChat/issues/3666). Added support of sovereign clouds when using Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
    -  Please refer to [`DIRECT_LINE_SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md#directlinespeechcredentials) for instructions
 -  Resolves [#2996](https://github.com/microsoft/BotFramework-WebChat/issues/2996). Added transcript navigation by keyboard navigation keys, by [@compulim](https://github.com/compulim) in PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703)
+-  Resolves [#3544](https://github.com/microsoft/BotFramework-WebChat/issues/3544). Send user ID from props to chat adapter, by [@timenick](https://github.com/timenick) in PR [#3544)(https://github.com/microsoft/BotFramework-WebChat/issues/3544).
 
 ### Fixed
 
@@ -54,10 +55,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Although it no locker lock up microphone, clicking on the microphone button has no effect because Direct Line Speech does not support aborting speech recognition
 -  Fixes [#3421](https://github.com/microsoft/BotFramework-WebChat/issues/3421). With Direct Line Speech, after not able to recognize any speech, it should no longer stop working, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
 -  Fixes [#3616](https://github.com/microsoft/BotFramework-WebChat/issues/3616). [Accessibility documentation] Update activity timestamp grouping to match visual UI, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3708](https://github.com/microsoft/BotFramework-WebChat/pull/3708)
+-  Fixes [#3718](https://github.com/microsoft/BotFramework-WebChat/issues/3718). Fixed `webpack.config.js` to use default settings of `['browser', 'module', 'main']` and resolved issues with `uuid` package in IE11, by [@compulim](https://github.com/compulim) in PR [#3726](https://github.com/microsoft/BotFramework-WebChat/pull/3726)
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594) and PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#3594](https://github.com/microsoft/BotFramework-WebChat/pull/3594), PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694), and PR [#3544](https://github.com/microsoft/BotFramework-WebChat/pull/3544)
    -  Development dependencies
       -  [`@babel/cli@7.12.1`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.12.3`](https://npmjs.com/package/@babel/core)
@@ -95,6 +97,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`webpack@4.44.2`](https://npmjs.com/package/webpack)
    -  Production dependencies
       -  [`@babel/runtime@7.12.5`](https://npmjs.com/package/@babel/runtime)
+      -  [`botframework-directlinejs@0.14.1`](https://npmjs.com/package/botframework-directlinejs)
       -  [`globalize@1.6.0`](https://npmjs.com/package/globalize)
       -  [`markdown-it@12.0.2`](https://npmjs.com/package/markdown-it)
       -  [`microsoft-cognitiveservices-speech-sdk@1.15.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)
