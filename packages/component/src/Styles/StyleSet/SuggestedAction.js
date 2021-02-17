@@ -22,6 +22,12 @@ export default function createSuggestedActionStyle({
   suggestedActionsStackedLayoutButtonMaxHeight,
   subtle
 }) {
+  const patchedMinHeight =
+    suggestedActionsStackedLayoutButtonTextWrap && suggestedActionHeight < suggestedActionsStackedLayoutButtonMaxHeight
+      ? suggestedActionHeight
+      : suggestedActionsStackedLayoutButtonMaxHeight < suggestedActionHeight
+      ? suggestedActionsStackedLayoutButtonMaxHeight
+      : undefined;
   return {
     '&.webchat__suggested-action': {
       maxWidth: '100%',
@@ -35,7 +41,7 @@ export default function createSuggestedActionStyle({
         maxHeight: suggestedActionsStackedLayoutButtonTextWrap
           ? suggestedActionsStackedLayoutButtonMaxHeight
           : undefined,
-        minHeight: suggestedActionsStackedLayoutButtonTextWrap ? suggestedActionHeight : undefined,
+        minHeight: patchedMinHeight,
         justifyContent: 'center',
         maxWidth: '100%',
         paddingLeft: paddingWide,
