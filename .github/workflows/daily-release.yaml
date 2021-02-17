@@ -15,6 +15,8 @@ jobs:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
 
+      - run: npx version-from-git --no-git-tag-version
+
       - run: npm ci --no-production
 
       - name: Propagate versions
