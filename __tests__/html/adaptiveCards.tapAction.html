@@ -40,7 +40,7 @@
         return new Uint8Array(byteArray).buffer;
       }
 
-      (async function() {
+      (async function () {
         window.WebChat.renderWebChat(
           {
             activityMiddleware: createRunHookActivityMiddleware(),
@@ -78,7 +78,9 @@
         fileBlob.name = 'hello-card.attachmentjson';
 
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+
+        // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
+        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
 
         const renderer = document.querySelector('.webchat__adaptive-card-renderer');
         const card = renderer.querySelector('.ac-adaptiveCard[tabindex="0"]');
@@ -87,17 +89,17 @@
 
         renderer.click();
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
 
         card.focus();
         await host.sendKeys('\n');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(7), timeouts.directLine);
 
         card.focus();
         await host.sendKeys(' ');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(8), timeouts.directLine);
+        await pageObjects.wait(conditions.minNumActivitiesShown(9), timeouts.directLine);
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
         await host.snapshot();

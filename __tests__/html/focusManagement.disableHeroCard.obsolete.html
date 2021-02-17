@@ -15,7 +15,7 @@
         WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
       } = window;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
 
@@ -68,20 +68,19 @@
         // After clicking on the hero card button, it should keep the focus on the now disabled button.
         expect(document.activeElement).toBe(firstButton);
 
-        // Press TAB should focus on the first button of the next hero card.
+        // Press TAB should focus on the transcript.
         await host.sendTab();
 
         await host.snapshot();
 
-        // Press SHIFT-TAB cannot put the focus back to the disabled button, instead, it will focus back to the <body>.
-        await host.sendShiftTab();
-
-        expect(document.activeElement === document.body).toBe(true);
-
-        await host.snapshot();
-
-        await host.sendTab();
+        // Press SHIFT-TAB cannot put the focus back to the disabled button, instead, it will keep the focus on transcript.
         await host.sendKeys('ENTER');
+
+        expect(document.activeElement).toBe(elements.transcript());
+
+        await host.snapshot();
+
+        await host.sendKeys('ARROW_DOWN', 'ARROW_DOWN', 'ENTER', 'ENTER');
 
         await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrolling);

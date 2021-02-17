@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 36] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 4, 36] }] */
 
 import Observable from 'core-js/features/observable';
 import random from 'math-random';

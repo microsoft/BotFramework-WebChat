@@ -10,7 +10,7 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
-      (async function() {
+      (async function () {
         const store = createStore();
         const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
 
@@ -45,12 +45,11 @@
 
         await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
-        // Make sure TAB on the last button will jump to the "New messages" button.
+        // Make sure TAB on the last button will jump to the transcript, then the "New messages" button.
+        await host.sendTab();
         await host.sendTab();
 
-        const newMessageButton = elements.newMessageButton();
-
-        expect(document.activeElement === newMessageButton).toBe(true);
+        expect(document.activeElement === elements.newMessageButton()).toBe(true);
 
         await host.snapshot();
 
@@ -59,17 +58,8 @@
 
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        // After clicking on "New messages" button for a hero card with buttons, it should focus back on the hero card.
-        const heroCardElement = elements.activities()[3];
-
-        expect(heroCardElement.contains(document.activeElement)).toBe(true);
-
-        await host.snapshot();
-
-        await host.sendShiftTab();
-
-        // Since the "New messages" button is gone, press SHIFT-TAB should go to the last button of first card.
-        expect(document.activeElement === lastButtonOnFirstCard).toBe(true);
+        // After clicking on "New messages" button for a hero card with buttons, it should focus on the transcript terminator.
+        expect(document.activeElement === elements.transcript()).toBe(true);
 
         await host.snapshot();
 

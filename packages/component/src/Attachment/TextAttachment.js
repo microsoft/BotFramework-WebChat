@@ -3,12 +3,13 @@ import React from 'react';
 
 import TextContent from './TextContent';
 
-const TextAttachment = ({ attachment: { content, contentType } = {} }) =>
-  !!content && <TextContent contentType={contentType} text={content} />;
+const TextAttachment = ({ attachment: { content = '', contentType } = {} }) => (
+  <TextContent contentType={contentType} text={content} />
+);
 
 TextAttachment.propTypes = {
   attachment: PropTypes.shape({
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string,
     contentType: PropTypes.string.isRequired
   }).isRequired
 };

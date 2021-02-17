@@ -16,6 +16,7 @@ export default function createScrollToEndButtonStyle({
       outline: 'initial'
     },
 
+    appearance: 'none',
     backgroundColor: transcriptOverlayButtonBackground,
     borderRadius: paddingRegular,
     borderWidth: 0,
