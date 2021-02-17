@@ -123,7 +123,7 @@ jobs:
 
             | Build time | Run ID | Source version | Git ref | Package version |
             | - | - | - | - | - |
-            | ${{ steps.compute_hash.outputs.release_date }} | [`${{ github.run_id }}`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [${{ steps.compute_hash.outputs.git_short_sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) | `${{ github.ref }}` | `${{ steps.compute_hash.outputs.package_version }}` |
+            | ${{ steps.compute_hash.outputs.release_date }}Z | [`${{ github.run_id }}`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [`${{ steps.compute_hash.outputs.git_short_sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) | `${{ github.ref }}` | `${{ steps.compute_hash.outputs.package_version }}` |
 
             ```html
             <script
@@ -152,4 +152,4 @@ jobs:
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.tgz --repo ${{ github.repository }}
+        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.json *.tgz --repo ${{ github.repository }}
