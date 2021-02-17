@@ -103,6 +103,9 @@ jobs:
           echo sha384_full=${{ steps.compute_hash.outputs.sha384_full }}
           echo sha384_minimal=${{ steps.compute_hash.outputs.sha384_minimal }}
 
+      - name: Delete existing release
+        run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --yes
+
       - name: Create release
         id: create-release
         uses: actions/create-release@v1
@@ -144,36 +147,3 @@ jobs:
 
       - name: Upload release assets
         run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.tgz
-
-      # - name: Upload webchat.js
-      #   id: upload-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     asset_content_type: text/javascript
-      #     asset_name: webchat.js
-      #     asset_path: ./webchat.js
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-
-      # - name: Upload webchat-es5.js
-      #   id: upload-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     asset_content_type: text/javascript
-      #     asset_name: webchat-es5.js
-      #     asset_path: ./webchat-es5.js
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-
-      # - name: Upload webchat-minimal.js
-      #   id: upload-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     asset_content_type: text/javascript
-      #     asset_name: webchat-minimal.js
-      #     asset_path: ./webchat-minimal.js
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
