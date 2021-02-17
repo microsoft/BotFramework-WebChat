@@ -104,6 +104,8 @@ jobs:
           echo sha384_minimal=${{ steps.compute_hash.outputs.sha384_minimal }}
 
       - name: Delete existing release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --yes
 
       - name: Create release
@@ -146,4 +148,6 @@ jobs:
           prerelease: true
 
       - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.tgz
