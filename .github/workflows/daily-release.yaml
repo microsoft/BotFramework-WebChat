@@ -59,10 +59,10 @@ jobs:
           npm pack
           cp *.tgz ../../artifacts/tarballs
 
-      - name: Upload bundle
+      - name: Upload bundles
         uses: actions/upload-artifact@v2
         with:
-          name: bundle
+          name: bundles
           path: packages/bundle/dist/**/*
 
       - name: Upload tarballs
@@ -78,7 +78,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: bundle
+          name: bundles
 
       - uses: actions/download-artifact@v2
         with:
