@@ -106,7 +106,7 @@ jobs:
       - name: Delete existing release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --yes
+        run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
 
       - name: Create release
         id: create-release
@@ -150,4 +150,4 @@ jobs:
       - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.tgz
+        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.tgz --repo ${{ github.repository }}
