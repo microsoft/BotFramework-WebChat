@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - .github/workflows/daily-release.yaml
-  schedule:
-    - cron: 00 03 * * *
+  # schedule:
+  #   - cron: 00 03 * * *
 
 jobs:
   build:
@@ -87,16 +87,16 @@ jobs:
       - name: Create release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.compute-hash.outputs.release-tag-name }}
-          release_name: Daily build $GITHUB_REF
+          release_name: Daily build ${{ github.ref }}
           body: |
             This build will be updated daily. **Please do not use this build in production environment.**
 
             | Build time | Run ID | Source version | Git ref | Package version |
             | - | - | - | - | - |
-            | ${{ steps.compute-hash.outputs.build-date }} | [`$GITHUB_RUN_ID`](${{ $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID }}) | [$GITHUB_SHA]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA) | `$GITHUB_REF` | `${{ steps.compute-hash.outputs.package-version }}` |
+            | ${{ steps.compute-hash.outputs.build-date }} | [`${{ github.run_id }}`](${{ env.GITHUB_SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [${{ github.sha }}](${{ env.GITHUB_SERVER_URL }}/${{ github.repository }}/commit/${{ github.sha }}) | `${{ github.ref }}` | `${{ steps.compute-hash.outputs.package-version }}` |
 
             ```html
             <script
