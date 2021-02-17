@@ -91,8 +91,7 @@ const SuggestedAction = ({
       <AccessibleButton
         {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}
         className={classNames('webchat__suggested-action__button', {
-          'webchat__suggested-action--wrapping':
-            suggestedActionsStackedLayoutButtonTextWrap && suggestedActionsStackedLayoutButtonTextWrap
+          'webchat__suggested-action--wrapping': suggestedActionsStackedLayoutButtonTextWrap
         })}
         disabled={disabled}
         onClick={handleClick}
