@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/css/main.61227f19.chunk.css",
+    "main.js": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/main.5c6b6d64.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/main.5c6b6d64.chunk.js.map",
+    "runtime-main.js": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/runtime-main.1ad23559.js",
+    "runtime-main.js.map": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/runtime-main.1ad23559.js.map",
+    "static/js/2.48621507.chunk.js": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/2.48621507.chunk.js",
+    "static/js/2.48621507.chunk.js.map": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/2.48621507.chunk.js.map",
+    "index.html": "/BotFramework-WebChat/04.api/h.clear-after-idle/index.html",
+    "precache-manifest.ac629411c18f1139fba325242fc1fc7c.js": "/BotFramework-WebChat/04.api/h.clear-after-idle/precache-manifest.ac629411c18f1139fba325242fc1fc7c.js",
+    "service-worker.js": "/BotFramework-WebChat/04.api/h.clear-after-idle/service-worker.js",
+    "static/css/main.61227f19.chunk.css.map": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/css/main.61227f19.chunk.css.map",
+    "static/js/2.48621507.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/h.clear-after-idle/static/js/2.48621507.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1ad23559.js",
+    "static/js/2.48621507.chunk.js",
+    "static/css/main.61227f19.chunk.css",
+    "static/js/main.5c6b6d64.chunk.js"
+  ]
+}
