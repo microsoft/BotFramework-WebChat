@@ -107,7 +107,6 @@ const DEFAULT_OPTIONS = {
   suggestedActionBorderStyle: 'solid',
   suggestedActionBorderWidth: 2,
   suggestedActionDisabledBackground: undefined, // defaults to suggestedActionBackground
-  suggestedActionDisabledBorder: null,
   suggestedActionDisabledBorderColor: '#E6E6E6',
   suggestedActionDisabledBorderStyle: 'solid',
   suggestedActionDisabledBorderWidth: 2,
@@ -125,6 +124,8 @@ const DEFAULT_OPTIONS = {
   // Suggested actions stacked layout
   suggestedActionsStackedHeight: undefined, // sets the container's max height. defaults to 'auto'
   suggestedActionsStackedOverflow: undefined, // defaults to 'auto',
+  suggestedActionsStackedLayoutButtonMaxHeight: undefined, // defaults to 100% if suggestedActionsStackedLayoutButtonTextWrap is true
+  suggestedActionsStackedLayoutButtonTextWrap: false, // if set to true, buttons with long text will wrap in STACKED mode ONLY
 
   // Timestamp
   groupTimestamp: true,
@@ -171,9 +172,6 @@ const DEFAULT_OPTIONS = {
   uploadThumbnailQuality: 0.6,
   uploadThumbnailWidth: 720,
 
-  // deprecated; will be removed on or after 2021-02-01
-  spinnerAnimationPaddingRight: undefined,
-
   // Toast UI
 
   // New debounce timeout value only affects new notifications.
@@ -215,7 +213,10 @@ const DEFAULT_OPTIONS = {
 
   transcriptVisualKeyboardIndicatorColor: 'Black',
   transcriptVisualKeyboardIndicatorStyle: 'solid',
-  transcriptVisualKeyboardIndicatorWidth: 2
+  transcriptVisualKeyboardIndicatorWidth: 2,
+  //AdaptiveCard push button
+  cardPushButtonBackgroundColor: '#0063B1',
+  cardPushButtonTextColor: 'white'
 };
 
 export default DEFAULT_OPTIONS;

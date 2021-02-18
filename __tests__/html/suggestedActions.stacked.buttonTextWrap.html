@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      #webchat {
+        width: 300px;
+      }
+
+      :focus {
+        background-color: initial !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { createDirectLine, renderWebChat } = window.WebChat;
+      const { conditions, createStore, host, pageObjects, parseURLParams, timeouts, token } = window.WebChatTest;
+
+      (async function () {
+        const store = createStore();
+        const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
+
+        const {
+          mh: suggestedActionsStackedLayoutButtonMaxHeight,
+          sah: suggestedActionHeight,
+          tw: suggestedActionsStackedLayoutButtonTextWrap
+        } = parseURLParams(window.location.hash);
+
+        const styleOptions = {
+          suggestedActionLayout: 'stacked',
+          suggestedActionHeight: parseInt(suggestedActionHeight) || null,
+          suggestedActionsStackedLayoutButtonMaxHeight: parseInt(suggestedActionsStackedLayoutButtonMaxHeight) || null,
+          suggestedActionsStackedLayoutButtonTextWrap: suggestedActionsStackedLayoutButtonTextWrap === 'true' || null
+        };
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.sendMessageViaSendBox('suggested-actions');
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+        await host.snapshot();
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

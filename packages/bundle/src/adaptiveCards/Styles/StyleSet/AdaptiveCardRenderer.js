@@ -1,4 +1,10 @@
-export default function ({ accent, paddingRegular, primaryFont }) {
+export default function ({
+  cardPushButtonBackgroundColor,
+  cardPushButtonTextColor,
+  accent,
+  paddingRegular,
+  primaryFont
+}) {
   return {
     '&.webchat__adaptive-card-renderer': {
       '& .ac-input, & .ac-inlineActionButton, & .ac-quickActionButton': {
@@ -52,6 +58,12 @@ export default function ({ accent, paddingRegular, primaryFont }) {
       '& .ac-pushButton[aria-disabled="true"]': {
         backgroundColor: '#F0F0F0',
         color: '#6D6D6D'
+      },
+
+      '& .ac-pushButton[aria-pressed="true"]': {
+        backgroundColor: cardPushButtonBackgroundColor,
+        borderColor: cardPushButtonBackgroundColor,
+        color: cardPushButtonTextColor
       },
 
       '& input[aria-disabled="true"]': {

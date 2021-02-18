@@ -141,6 +141,12 @@ export default function createSuggestedActionsStyle({
         '& .webchat__suggested-actions__button-text': {
           overflow: 'hidden',
           textOverflow: 'ellipsis'
+        },
+
+        '& .webchat__suggested-actions__button-text-stacked-text-wrap': {
+          alignItems: 'center',
+          display: 'flex',
+          whiteSpace: 'normal'
         }
       }
     }

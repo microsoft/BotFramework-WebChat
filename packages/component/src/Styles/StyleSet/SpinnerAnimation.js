@@ -10,8 +10,7 @@ export default function createSpinnerAnimationStyle({
   spinnerAnimationBackgroundImage,
   spinnerAnimationHeight,
   spinnerAnimationWidth,
-  spinnerAnimationPadding,
-  spinnerAnimationPaddingRight
+  spinnerAnimationPadding
 }) {
   defaultImageBlobURL ||
     (defaultImageBlobURL = URL.createObjectURL(
@@ -19,13 +18,6 @@ export default function createSpinnerAnimationStyle({
     ));
 
   const backgroundImage = spinnerAnimationBackgroundImage || `url('${defaultImageBlobURL}')`;
-
-  // since defaultStyleOptions has a predefined value for spinnerAnimationPadding by default, the console.warn will appear if both it and spinnerAnimationPaddingRight are set
-  if (spinnerAnimationPadding && spinnerAnimationPaddingRight) {
-    console.warn(
-      'botframework-webchat: "spinnerAnimationPaddingRight" is deprecated and will be removed on or after 2021-02-01. Please use "spinnerAnimationPadding" instead.'
-    );
-  }
 
   return {
     backgroundImage,
