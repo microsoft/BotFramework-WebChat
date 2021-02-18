@@ -62,7 +62,7 @@ export default function ({
 
       '& .ac-pushButton[aria-pressed="true"]': {
         backgroundColor: cardPushButtonBackgroundColor,
-        borderColor: cardPushButtonBackGroundColor,
+        borderColor: cardPushButtonBackgroundColor,
         color: cardPushButtonTextColor
       },
 
