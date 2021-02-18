@@ -18,6 +18,7 @@ export default function createSuggestedActionStyle({
   suggestedActionDisabledBorderWidth,
   suggestedActionDisabledTextColor,
   suggestedActionHeight,
+  suggestedActionsStackedLayoutButtonMaxHeight,
   subtle
 }) {
   return {
@@ -56,6 +57,12 @@ export default function createSuggestedActionStyle({
 
       '& .webchat__suggested-action__image': {
         height: suggestedActionImageHeight
+      },
+
+      '& .webchat__suggested-action--wrapping': {
+        height: 'auto',
+        maxHeight: suggestedActionsStackedLayoutButtonMaxHeight || '100%',
+        minHeight: Math.min(suggestedActionHeight, suggestedActionsStackedLayoutButtonMaxHeight)
       },
 
       '&:not(.webchat__suggested-action--rtl) .webchat__suggested-action__image + .webchat__suggested-action__text': {

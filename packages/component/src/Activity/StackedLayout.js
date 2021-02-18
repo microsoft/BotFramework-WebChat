@@ -53,7 +53,7 @@ const ROOT_STYLE = {
       display: 'flex',
       flexDirection: 'column',
 
-      // This "overflow: hidden" is to make sure text overflow we get clipped correctly.
+      // This "overflow: hidden" is to make sure text overflow will get clipped correctly.
       // Related to the test at basic.js "long URLs with keep-all".
       overflow: 'hidden'
     },
