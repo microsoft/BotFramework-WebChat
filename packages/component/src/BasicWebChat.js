@@ -11,7 +11,6 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import useContainerRole from './hooks/useContainerRole';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
@@ -38,10 +37,9 @@ const TRANSCRIPT_STYLE = {
   flex: 1
 };
 
-const BasicWebChat = ({ className }) => {
+const BasicWebChat = ({ className, role }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
-  const containerRole = useContainerRole();
   const styleToEmotionObject = useStyleToEmotionObject();
 
   const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
@@ -51,10 +49,7 @@ const BasicWebChat = ({ className }) => {
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
   return (
-    <AccessKeySinkSurface
-      className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')}
-      role={containerRole}
-    >
+    <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />
       <BasicConnectivityStatus className={connectivityStatusClassName} />
@@ -66,9 +61,11 @@ const BasicWebChat = ({ className }) => {
 export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
-  className: ''
+  className: '',
+  role: undefined
 };
 
 BasicWebChat.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  role: PropTypes.string
 };
