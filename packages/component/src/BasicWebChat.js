@@ -37,6 +37,9 @@ const TRANSCRIPT_STYLE = {
   flex: 1
 };
 
+// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
+const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
+
 const BasicWebChat = ({ className, role }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
@@ -47,6 +50,11 @@ const BasicWebChat = ({ className, role }) => {
   const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
   const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
+
+  // Fallback to "complementary" if specified is not a valid landmark role.
+  if (!ARIA_LANDMARK_ROLES.includes(role)) {
+    role = 'complementary';
+  }
 
   return (
     <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
@@ -62,10 +70,10 @@ export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
   className: '',
-  role: undefined
+  role: 'complementary'
 };
 
 BasicWebChat.propTypes = {
   className: PropTypes.string,
-  role: PropTypes.string
+  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES)
 };

@@ -12,32 +12,22 @@ import Composer from './Composer';
 // - They can run hooks outside of activity/attachment middleware
 //   - They will put <Composer> as very top of their page, and allow buttons on their existing page to send message to bot
 
-// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
-const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
-
-const ReactWebChat = ({ className, role, ...composerProps }) => {
-  // Fallback to "complementary" if specified is not a valid landmark role.
-  if (!ARIA_LANDMARK_ROLES.includes(role)) {
-    role = 'complementary';
-  }
-
-  return (
-    <Composer {...composerProps}>
-      <BasicWebChat className={className} role={role} />
-    </Composer>
-  );
-};
+const ReactWebChat = ({ className, role, ...composerProps }) => (
+  <Composer {...composerProps}>
+    <BasicWebChat className={className} role={role} />
+  </Composer>
+);
 
 export default ReactWebChat;
 
 ReactWebChat.defaultProps = {
   className: undefined,
-  role: 'complementary',
+  role: undefined,
   ...Composer.defaultProps
 };
 
 ReactWebChat.propTypes = {
   className: PropTypes.string,
-  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES),
+  role: PropTypes.string,
   ...Composer.propTypes
 };
