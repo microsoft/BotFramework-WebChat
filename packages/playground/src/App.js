@@ -1,6 +1,8 @@
 /* eslint-disable no-magic-numbers */
 
+// eslint-disable-next-line no-unused-vars
 import { Global } from '@emotion/core';
+// eslint-disable-next-line no-unused-vars
 import { Dropdown, IconButton, Label, SearchBox, Stack, TextField, Toggle, TooltipHost } from '@fluentui/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -11,6 +13,7 @@ import {
   sendTimeoutOptions
 } from './DropdownOptions';
 import { bubbleBorderOptions, showBubbleNubOptions } from './webchatStyleOptions';
+// eslint-disable-next-line no-unused-vars
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 import { createStoreWithDevTools } from 'botframework-webchat-core';
 import PlaygroundStyles from './css.js';
@@ -194,6 +197,11 @@ function App() {
     // eslint-disable-next-line
     console.log('Playground: Started conversation with locally running MockBot');
   }, [handleUseMockBot]);
+
+  // Feel free to change the text to whatever will help you dev faster
+  const handleCurrentCommandClick = useCallback(() => {
+    store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
+  });
 
   /// END CONNECTIVITY
 
@@ -393,6 +401,18 @@ function App() {
           <button onClick={handleHardResetClick} title="Resets store and props to default settings" type="button">
             Hard reset session
           </button>
+          <div>
+            <Label className="info-container">
+              <TooltipHost
+                calloutProps={{ gapSpace: 0 }}
+                content="Devs feel free to change this command for faster repro"
+                id="current command tooltip"
+              >
+                <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+              </TooltipHost>
+              <button onClick={handleCurrentCommandClick}>Current command</button>
+            </Label>
+          </div>
         </fieldset>
         <fieldset>
           <legend>Web Chat props</legend>
