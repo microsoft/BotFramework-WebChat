@@ -203,7 +203,7 @@ SuggestedActionStackedContainer.propTypes = {
 };
 
 const SuggestedActions = ({ className, suggestedActions = [] }) => {
-  const [{ suggestedActionLayout }] = useStyleOptions();
+  const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [accessKey] = useSuggestedActionsAccessKey();
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey();
@@ -227,7 +227,11 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
       imageAlt={imageAltText}
       key={index}
       text={text}
-      textClassName="webchat__suggested-actions__button-text"
+      textClassName={
+        suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
+          ? 'webchat__suggested-actions__button-text-stacked-text-wrap'
+          : 'webchat__suggested-actions__button-text'
+      }
       type={type}
       value={value}
     />

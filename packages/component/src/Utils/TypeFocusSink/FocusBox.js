@@ -10,10 +10,7 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const BaseFocusBox = (
-  { children, disabled, onKeyDownCapture, onKeyUpCapture, sendFocusRef: sendFocusRefProp, ...otherProps },
-  ref
-) => {
+const BaseFocusBox = ({ children, disabled, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
     sendFocusRefPersist,
