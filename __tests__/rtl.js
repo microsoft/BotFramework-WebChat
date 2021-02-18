@@ -113,7 +113,6 @@ describe('rtl UI', () => {
     await leftFlipper.click();
     await leftFlipper.click();
     await leftFlipper.click();
-    await leftFlipper.click();
 
     // Wait for carousel animation to finish
     await driver.sleep(timeouts.ui);
