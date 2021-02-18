@@ -37,7 +37,10 @@ const TRANSCRIPT_STYLE = {
   flex: 1
 };
 
-const BasicWebChat = ({ className }) => {
+// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
+const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
+
+const BasicWebChat = ({ className, role }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();
@@ -48,11 +51,13 @@ const BasicWebChat = ({ className }) => {
   const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
+  // Fallback to "complementary" if specified is not a valid landmark role.
+  if (!ARIA_LANDMARK_ROLES.includes(role)) {
+    role = 'complementary';
+  }
+
   return (
-    <AccessKeySinkSurface
-      className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')}
-      role="complementary"
-    >
+    <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />
       <BasicConnectivityStatus className={connectivityStatusClassName} />
@@ -64,9 +69,11 @@ const BasicWebChat = ({ className }) => {
 export default BasicWebChat;
 
 BasicWebChat.defaultProps = {
-  className: ''
+  className: '',
+  role: 'complementary'
 };
 
 BasicWebChat.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES)
 };
