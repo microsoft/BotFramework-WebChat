@@ -106,6 +106,8 @@ jobs:
           echo sha384_minimal=${{ steps.compute_hash.outputs.sha384_minimal }}
 
       - name: Delete existing release
+        # When this workflow is run in its first time, or 2+ are running side-by-side, the release may not exists. It is okay to ignore 404s.
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
