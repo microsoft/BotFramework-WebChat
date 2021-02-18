@@ -1,5 +1,5 @@
 const {
-  WebChatTest: { elements }
+  WebChatTest: { conditions, elements, timeouts }
 } = window;
 
 const INPUT_CARD = Symbol();
@@ -192,22 +192,24 @@ function generateTranscript() {
 }
 
 async function waitForFocusedActivityInView() {
+  await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
+
   await pageObjects.wait(() => {
     const { offsetHeight: activityHeight, offsetTop: activityTop } = elements.focusedActivity();
     const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = elements.transcriptScrollable();
 
-    const offsetBottom = activityHeight + activityTop;
-    const scrollBottom = scrollableHeight + scrollableTop;
+    const activityBottom = activityHeight + activityTop;
+    const scrollableBottom = scrollableHeight + scrollableTop;
 
     return (
       (activityTop >= scrollableTop &&
-        activityTop <= scrollBottom &&
-        offsetBottom >= scrollableTop &&
-        offsetBottom <= scrollBottom) ||
+        activityTop <= scrollableBottom &&
+        activityBottom >= scrollableTop &&
+        activityBottom <= scrollableBottom) ||
       (scrollableTop >= activityTop &&
-        scrollableTop <= offsetBottom &&
-        scrollBottom >= activityTop &&
-        scrollBottom <= offsetBottom)
+        scrollableTop <= activityBottom &&
+        scrollableBottom >= activityTop &&
+        scrollableBottom <= activityBottom)
     );
   }, timeouts.ui);
 }
