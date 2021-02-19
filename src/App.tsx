@@ -448,7 +448,7 @@ const ExpandableKnobTheme = (theme: Theme) => `
     height: 75px;
   }
 
-  body .feedbot-wrapper .feedbot-header {
+  body .feedbot-wrapper.collapsed .feedbot-header {
     border-radius: 40px;
     height: 100%;
     padding: 0px;
@@ -484,7 +484,15 @@ const Sidebar = (theme: Theme) => `
     left: -60px;
     top: 10px;
 
+    border-radius: 40px;
+    padding: 0px;
+
+    text-indent: 999%;
+    white-space: nowrap;
+    overflow: hidden;
+
     background-image: url('./times-solid.svg');
+    background-repeat: no-repeat;
     background-size: 20px;
     background-position: center center;    
 
