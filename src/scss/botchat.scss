@@ -594,12 +594,12 @@
         input[type=text],
         textarea {
             border: none;
-            height: calc(100% - 11px);
+            height: calc(100% - 15px);
             outline: none;
             padding: 0;
             resize: none;
             width: 100%;
-            padding-top: 11px;
+            padding-top: 15px;
             background-color: transparent;
             color: #424242;
             min-height: initial;

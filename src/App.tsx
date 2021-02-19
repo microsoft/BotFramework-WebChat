@@ -1,165 +1,206 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Chat, ChatProps } from './Chat';
-import { render, renderExpandableTemplate, renderFullScreenTemplate } from './AppService'
-import { DirectLine } from 'botframework-directlinejs';
-import * as konsole from './Konsole';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Chat, ChatProps } from "./Chat";
+import {
+  render,
+  renderExpandableTemplate,
+  renderFullScreenTemplate,
+} from "./AppService";
+import { DirectLine } from "botframework-directlinejs";
+import * as konsole from "./Konsole";
 
 export type Theme = {
-    mainColor: string
-    template: any,
-    customCss?: string
-}
+  mainColor: string;
+  template: any;
+  customCss?: string;
+};
 
-export type AppProps = ChatProps & {theme?: Theme, header?: {textWhenCollapsed?: string, text: string}, autoExpandTimeout?: number};
+export type AppProps = ChatProps & {
+  theme?: Theme;
+  header?: { textWhenCollapsed?: string; text: string };
+  autoExpandTimeout?: number;
+};
 
 export const App = async (props: AppProps, container?: HTMLElement) => {
-    konsole.log("BotChat.App props", props);
+  konsole.log("BotChat.App props", props);
 
-    // FEEDYOU generate user ID if not present in props, make sure its always string
-    props.user = {
-        name: "Uživatel",
-        ...props.user,
-        id: props.user && props.user.id ? "" + props.user.id : MakeId()
-    };
+  // FEEDYOU generate user ID if not present in props, make sure its always string
+  props.user = {
+    name: "Uživatel",
+    ...props.user,
+    id: props.user && props.user.id ? "" + props.user.id : MakeId(),
+  };
 
-    // FEEDYOU fetch DL token from bot when no token or secret found
-    const remoteConfig = props.bot && props.bot.id && !props.botConnection && (!props.directLine || (!props.directLine.secret && !props.directLine.token))
-    if (remoteConfig) {
-        // TODO test IE11 https://github.com/matthew-andrews/isomorphic-fetch
-        try {
-            const response = await fetch(`https://${props.bot.id}.azurewebsites.net/webchat/config`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json;charset=UTF-8'
-                },
-                body: JSON.stringify({
-                    user: props.user,
-                    channel: props.channel
-                })
-            })
-            const body = await response.json()
-            konsole.log('Token response', body)
-
-            props.botConnection = new DirectLine({...(props.directLine || {}), token: body.token});
-            delete props.directLine
-
-            if (body.testMode && window.location.hash !== '#feedbot-test-mode') {
-                document.getElementsByTagName('body')[0].classList.add('feedbot-disabled')
-                return
-            } else {
-                document.getElementsByTagName('body')[0].classList.add('feedbot-enabled')
-            }
-
-            // TODO configurable template system based on config
-            const config = body.config
-            if (config && config.template) {
-                props.theme = {...props.theme, template: {...config.template, ...(props.theme ? props.theme.template : {})}}
-
-                if (config.mainColor) {
-                  props.theme.mainColor = config.mainColor  
-                } 
-
-                if (config.showInput === 'auto') {
-                  props.disableInputWhenNotNeeded = true
-                }
-
-                if (config.template.autoExpandTimeout > 0) {
-                  props.autoExpandTimeout = config.template.autoExpandTimeout
-                }
-
-                if (config.customCss) {
-                  props.theme.customCss = config.customCss
-                }
-
-                if (config.template.headerText) {
-                  props.header = {...(props.header || {}), text: config.template.headerText}
-                }
-
-                if (config.template.collapsedHeaderText) {
-                  props.header = {...(props.header || {text: 'Chatbot'}), textWhenCollapsed: config.template.collapsedHeaderText}
-                }
-            }
-
-        } catch (err) {
-            console.error('Token response error', err)
-            return
+  // FEEDYOU fetch DL token from bot when no token or secret found
+  const remoteConfig =
+    props.bot &&
+    props.bot.id &&
+    !props.botConnection &&
+    (!props.directLine ||
+      (!props.directLine.secret && !props.directLine.token));
+  if (remoteConfig) {
+    // TODO test IE11 https://github.com/matthew-andrews/isomorphic-fetch
+    try {
+      const response = await fetch(
+        `https://${props.bot.id}.azurewebsites.net/webchat/config`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+          body: JSON.stringify({
+            user: props.user,
+          }),
         }
+      );
+      const body = await response.json();
+      console.log("Token response", body);
+
+      props.botConnection = new DirectLine({
+        ...(props.directLine || {}),
+        token: body.token,
+      });
+      delete props.directLine;
+
+      if (body.testMode && window.location.hash !== "#feedbot-test-mode") {
+        document
+          .getElementsByTagName("body")[0]
+          .classList.add("feedbot-disabled");
+        return;
+      } else {
+        document
+          .getElementsByTagName("body")[0]
+          .classList.add("feedbot-enabled");
+      }
+
+      // TODO configurable template system based on config
+      const config = body.config;
+      if (config && config.template) {
+        props.theme = {
+          ...props.theme,
+          template: {
+            ...config.template,
+            ...(props.theme ? props.theme.template : {}),
+          },
+        };
+
+        if (config.mainColor) {
+          props.theme.mainColor = config.mainColor;
+        }
+
+        if (config.showInput === "auto") {
+          props.disableInputWhenNotNeeded = true;
+        }
+
+        if (config.template.autoExpandTimeout > 0) {
+          props.autoExpandTimeout = config.template.autoExpandTimeout;
+        }
+
+        if (config.customCss) {
+          props.theme.customCss = config.customCss;
+        }
+
+        if (config.template.headerText) {
+          props.header = {
+            ...(props.header || {}),
+            text: config.template.headerText,
+          };
+        }
+
+        if (config.template.collapsedHeaderText) {
+          props.header = {
+            ...(props.header || { text: "Chatbot" }),
+            textWhenCollapsed: config.template.collapsedHeaderText,
+          };
+        }
+      }
+    } catch (err) {
+      console.error("Token response error", err);
+      return;
     }
+  }
 
-    // FEEDYOU props defaults
-    props.showUploadButton = props.hasOwnProperty('showUploadButton') ? props.showUploadButton : false;
-    props.resize = props.hasOwnProperty('resize') ? props.resize : 'detect';
-    props.locale = props.hasOwnProperty('locale') ? props.locale : 'cs-cz';
+  // FEEDYOU props defaults
+  props.showUploadButton = props.hasOwnProperty("showUploadButton")
+    ? props.showUploadButton
+    : false;
+  props.resize = props.hasOwnProperty("resize") ? props.resize : "detect";
+  props.locale = props.hasOwnProperty("locale") ? props.locale : "cs-cz";
 
-    // FEEDYOU configurable theming
-    if (props.theme || !container) {
-        const theme = {mainColor: '#D83838', ...props.theme}
-        const themeStyle = document.createElement('style');
-        themeStyle.type = 'text/css';
-        themeStyle.appendChild(document.createTextNode(getStyleForTheme(theme, remoteConfig)));
-        document.head.appendChild(themeStyle);
-    }
+  // FEEDYOU configurable theming
+  if (props.theme || !container) {
+    const theme = { mainColor: "#D83838", ...props.theme };
+    const themeStyle = document.createElement("style");
+    themeStyle.type = "text/css";
+    themeStyle.appendChild(
+      document.createTextNode(getStyleForTheme(theme, remoteConfig))
+    );
+    document.head.appendChild(themeStyle);
+  }
 
-    // FEEDYOU use twemoji to make emoji compatible
-    const script = document.createElement("script");
-    script.src = "https://twemoji.maxcdn.com/2/twemoji.min.js?11.2";
-    script.async = true;
-    document.body.appendChild(script);
+  // FEEDYOU use twemoji to make emoji compatible
+  const script = document.createElement("script");
+  script.src = "https://twemoji.maxcdn.com/2/twemoji.min.js?11.2";
+  script.async = true;
+  document.body.appendChild(script);
 
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.appendChild(document.createTextNode(`
+  const style = document.createElement("style");
+  style.type = "text/css";
+  style.appendChild(
+    document.createTextNode(`
         img.emoji {
             height: 1em;
             width: 1em;
             margin: 0 .05em 0 .1em;
             vertical-align: -0.1em;
         }
-    `));
-    document.head.appendChild(style);
+    `)
+  );
+  document.head.appendChild(style);
 
-    // FEEDYOU if no container provided, generate default one
-    if (!container) {
-        switch (props.theme && props.theme.template && props.theme.template.type) {
-            case 'full-screen':
-                renderFullScreenTemplate(props)
-                break;
-            default:
-                renderExpandableTemplate(props)
-        }
-    } else {
-        render(props, container) 
+  // FEEDYOU if no container provided, generate default one
+  if (!container) {
+    switch (props.theme && props.theme.template && props.theme.template.type) {
+      case "full-screen":
+        renderFullScreenTemplate(props);
+        break;
+      default:
+        renderExpandableTemplate(props);
     }
-}
-
+  } else {
+    render(props, container);
+  }
+};
 
 export function MakeId() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (var i = 0; i < 11; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+  for (var i = 0; i < 11; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    return text;
+  return text;
 }
 
 function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
-    switch (theme && theme.template && theme.template.type) {
-      case 'expandable-bar':
-        return ExpandableBarTheme(theme)      
-      case 'full-screen':
-        return FullScreenTheme(theme)  
-      case 'expandable-knob':
-        return ExpandableKnobTheme(theme)
-    }
+  switch (theme && theme.template && theme.template.type) {
+    case "expandable-bar":
+      return ExpandableBarTheme(theme);
+    case "full-screen":
+      return FullScreenTheme(theme);
+    case "expandable-knob":
+      return ExpandableKnobTheme(theme);
+    case "sidebar":
+      return Sidebar(theme);
+  }
 
-    // backward compatibility - knob is new default for remote config, old default is bar
-    return remoteConfig ? ExpandableKnobTheme(theme) : ExpandableBarTheme(theme) 
+  // backward compatibility - knob is new default for remote config, old default is bar
+  return remoteConfig ? ExpandableKnobTheme(theme) : ExpandableBarTheme(theme);
 }
 
-const FullScreenTheme = (theme: Theme) =>`
+const FullScreenTheme = (theme: Theme) => `
   body {
     font-family: Helvetica, Arial;
     padding: 30px;
@@ -301,7 +342,7 @@ const FullScreenTheme = (theme: Theme) =>`
   }
 
   .wc-console .wc-mic, .wc-console .wc-send {
-    top: 10px;
+    top: 10px !important;
   }
 
   .wc-console input[type=text], .wc-console textarea {
@@ -367,8 +408,7 @@ const FullScreenTheme = (theme: Theme) =>`
   }
 
   ${BaseTheme(theme)}
-`
-
+`;
 
 const ExpandableKnobTheme = (theme: Theme) => `
   body .feedbot-wrapper {
@@ -382,6 +422,25 @@ const ExpandableKnobTheme = (theme: Theme) => `
     border-top-right-radius: 15px;
   }
 
+  body .feedbot-wrapper .wc-chatview-panel {
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+
+  .wc-app .wc-console {
+    background-color: white;
+    border-width: 0px;
+    border-top: 1px solid #dbdee1;
+  } 
+
+  .wc-app .wc-console .wc-textbox {
+    left: 20px;
+  } 
+
+  .wc-app .wc-console .wc-send {
+    top: 4px;
+  }
+
   body .feedbot-wrapper.collapsed {
     border-radius: 40px;
     width: 75px;
@@ -389,12 +448,15 @@ const ExpandableKnobTheme = (theme: Theme) => `
     height: 75px;
   }
 
-  body .feedbot-wrapper.collapsed .feedbot-header {
+  body .feedbot-wrapper .feedbot-header {
     border-radius: 40px;
     height: 100%;
     padding: 0px;
 
-    background-image: url(${theme.template.iconUrl || 'https://cdn.feedyou.ai/webchat/message-icon.png'});
+    background-image: url(${
+      theme.template.iconUrl ||
+      "https://cdn.feedyou.ai/webchat/message-icon.png"
+    });
     background-size: 50px 50px;
     background-position: 12px 12px;
     background-repeat: no-repeat;
@@ -410,7 +472,86 @@ const ExpandableKnobTheme = (theme: Theme) => `
   }
 
   ${ExpandableBarTheme(theme)}
-`
+`;
+
+const Sidebar = (theme: Theme) => `
+  ${ExpandableKnobTheme(theme)}
+
+  body .feedbot-wrapper:not(.collapsed) .feedbot-header {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    left: -60px;
+    top: 10px;
+    background-image: url('./times-solid.svg');
+    background-size: 20px;
+    background-position: center center;
+  }
+
+  .feedbot-wrapper.collapsed .feedbot-header {
+    padding-top: 0;
+  }
+
+  body .feedbot-wrapper:not(.collapsed) {
+    height: 100vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+
+  body .feedbot-wrapper .wc-chatview-panel  {
+    border-radius: 0;
+  }
+
+  body .wc-app .wc-console {
+    /* TODO what about transparent background? */
+  } 
+
+  body .feedbot-wrapper.collapsed {
+    bottom: 30px;
+    right: 30px;
+  }
+
+  .feedbot-wrapper {
+    max-height: 100%;
+    background: linear-gradient(45deg, rgba(256,256,256, 0.2), rgba(256,256,256, 0.8));
+    backdrop-filter: blur(40px);
+  }
+
+  .wc-app .wc-message-groups {
+    background-color: transparent;
+  }
+
+  .wc-message-callout {
+    display: none;
+  }
+
+  .wc-message-content {
+    padding: 12px 14px;
+    line-height: 1.25em;
+  }
+
+  .wc-message-from-bot .wc-message-content {
+    border-radius: 0 16px 16px 16px;
+    padding: 14px;
+    background: linear-gradient(-45deg, rgba(245,245,245,0.5), rgba(245,245,245,0.9)) !important;
+  }
+
+  .wc-message-from-me .wc-message-content {
+    border-radius: 16px 0 16px 16px;
+    padding: 14px;
+  }
+  
+
+  .format-markdown + div {
+    margin-top: 0 !important;
+  }
+
+  .wc-app .wc-chatview-panel {
+    top: 0;
+}
+  
+`;
 
 const ExpandableBarTheme = (theme: Theme) => `
   .feedbot-header {
@@ -486,7 +627,7 @@ const ExpandableBarTheme = (theme: Theme) => `
   }
 
   ${BaseTheme(theme)}
-`
+`;
 
 const BaseTheme = (theme: Theme) => `
     body.feedbot-disabled div.feedbot {
@@ -623,9 +764,13 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .feedbot-wrapper .wc-app .wc-card {
-        background-color: #fff !important;
+        background-color: transparent;
         border-width: 0px;
         border-radius: 5px;
+    }
+
+    .feedbot-wrapper .wc-app .wc-carousel .wc-card {
+        background-color: #fff !important;
     }
   
     .feedbot-wrapper .wc-message-content {
@@ -680,8 +825,8 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .feedbot-wrapper .wc-carousel {
-        margin-top: 10px;
+        margin-top: 10px !important;
     }
 
-    ${theme.customCss || ''}
-  `
+    ${theme.customCss || ""}
+  `;
