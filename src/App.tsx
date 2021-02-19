@@ -491,7 +491,7 @@ const Sidebar = (theme: Theme) => `
     white-space: nowrap;
     overflow: hidden;
 
-    background-image: url('./times-solid.svg');
+    background-image: url('https://feedyou.blob.core.windows.net/webchat/times-solid.svg');
     background-repeat: no-repeat;
     background-size: 20px;
     background-position: center center;    
