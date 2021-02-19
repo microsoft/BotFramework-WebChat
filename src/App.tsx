@@ -496,9 +496,9 @@ const Sidebar = (theme: Theme) => `
     background-size: 20px;
     background-position: center center;    
 
-    backdrop-filter: blur(40px);
+    /*backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    background-color: rgba(256,256,256, 0.5) !important;
+    background-color: rgba(256,256,256, 0.5) !important;*/
   }
 
   .feedbot-wrapper.collapsed .feedbot-header {
