@@ -483,9 +483,14 @@ const Sidebar = (theme: Theme) => `
     position: absolute;
     left: -60px;
     top: 10px;
+
     background-image: url('./times-solid.svg');
     background-size: 20px;
-    background-position: center center;
+    background-position: center center;    
+
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background-color: rgba(256,256,256, 0.5) !important;
   }
 
   .feedbot-wrapper.collapsed .feedbot-header {
@@ -516,6 +521,7 @@ const Sidebar = (theme: Theme) => `
     max-height: 100%;
     background: linear-gradient(45deg, rgba(256,256,256, 0.2), rgba(256,256,256, 0.8));
     backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
   }
 
   .wc-app .wc-message-groups {
