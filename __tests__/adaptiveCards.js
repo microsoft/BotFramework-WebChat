@@ -167,3 +167,31 @@ test('unknown card', async () => {
   expect(browserConsoleErrors[0].level.name_).toEqual('WARNING');
   expect(browserConsoleErrors[0].message).toContain('No renderer for attachment for screen reader of type');
 });
+
+test('Inputs card with custom style options and submit action', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        cardPushButtonBackgroundColor: '#ee0606',
+        cardPushButtonTextColor:'#ee0606'
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  // Click "Submit" button should change the button color
+  await driver.executeScript(() => {
+    document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
+  });
+
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
