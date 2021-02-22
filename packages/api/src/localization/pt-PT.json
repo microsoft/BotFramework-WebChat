@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] O conteúdo deste ficheiro está bloqueado. São aceites contribuições, mas a validação das alterações pode registar atrasos.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Opção + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "atividade",
   "ACTIVITY_BOT_SAID_ALT": "O bot $1 disse:",
   "ACTIVITY_YOU_SAID_ALT": "Disse:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot anexado:",
   "ACTIVITY_ERROR_BOX_TITLE": "Mensagem de erro",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Prima ENTER para interagir.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Anexou:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 anexo.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 anexos.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Aviso",
   "TOAST_DISMISS_BUTTON": "Dispensar",
   "TOAST_TITLE_ALT": "Notificação",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcrição, prima as teclas de seta para navegar.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcrição",
   "TRANSCRIPT_NEW_MESSAGES": "Novas mensagens",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Fim da transcrição",
   "TYPING_INDICATOR_ALT": "A mostrar o indicador de escrita"
 }
