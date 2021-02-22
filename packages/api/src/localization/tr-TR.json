@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Bu dosyanın içeriği kilitli. Katılımcılar dosyayı kullanabilir ancak değişikliğin doğrulanması gecikebilir.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "etkinlik",
   "ACTIVITY_BOT_SAID_ALT": "$1 botu şöyle diyor:",
   "ACTIVITY_YOU_SAID_ALT": "Şöyle dediniz:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot eklendi:",
   "ACTIVITY_ERROR_BOX_TITLE": "Hata iletisi",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Etkileşimde bulunmak için ENTER tuşuna basın.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Şunu eklediniz:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 ek.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 ek.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Uyarı",
   "TOAST_DISMISS_BUTTON": "Kapat",
   "TOAST_TITLE_ALT": "Bildirim",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Döküm, gezinmek için yukarı ve aşağı ok tuşlarını kullanın.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "döküm",
   "TRANSCRIPT_NEW_MESSAGES": "Yeni iletiler",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Dökümün sonu",
   "TYPING_INDICATOR_ALT": "Yazma göstergesi gösteriliyor"
 }

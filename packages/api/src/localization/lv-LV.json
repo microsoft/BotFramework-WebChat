@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Šī faila saturs ir bloķēts. Ieguldījumi tiek gaidīti, taču izmaiņu validācija var tikt aizkavēta.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "darbība",
   "ACTIVITY_BOT_SAID_ALT": "Robots $1 teica:",
   "ACTIVITY_YOU_SAID_ALT": "Jūs teicāt:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Robots pievienots:",
   "ACTIVITY_ERROR_BOX_TITLE": "Kļūdas ziņojums",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Lai mijiedarbotos, nospiediet taustiņu ENTER.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Jūs pievienojāt:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 pielikums.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 pielikumi.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Brīdinājums",
   "TOAST_DISMISS_BUTTON": "Nerādīt",
   "TOAST_TITLE_ALT": "Paziņojums",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Noraksts, izmantojiet bulttaustiņus, lai naviģētu.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "noraksts",
   "TRANSCRIPT_NEW_MESSAGES": "Jauni ziņojumi",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Noraksta beigas",
   "TYPING_INDICATOR_ALT": "Rāda rakstīšanas indikatoru"
 }

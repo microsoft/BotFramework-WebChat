@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Садржај ове датотеке је закључан. Доприноси су добродошли, али потврда промене може бити одложена.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Опција + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "активност",
   "ACTIVITY_BOT_SAID_ALT": "Робот $1 је рекао:",
   "ACTIVITY_YOU_SAID_ALT": "Ви сте рекли:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Робот је приложио:",
   "ACTIVITY_ERROR_BOX_TITLE": "Порука о грешци",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Притисните тастер ENTER да бисте остварили интеракцију.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Приложили сте:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 прилог.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 прилога.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Упозорење",
   "TOAST_DISMISS_BUTTON": "Одбаци",
   "TOAST_TITLE_ALT": "Обавештење",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Преписка, користите тастере са стрелицом да бисте се кретали.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "преписка",
   "TRANSCRIPT_NEW_MESSAGES": "Нове поруке",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Крај преписке",
   "TYPING_INDICATOR_ALT": "Приказује се индикатор куцања"
 }

@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] 此檔案的內容已鎖定。歡迎提供意見，但變更驗證可能會有所延遲。",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "活動",
   "ACTIVITY_BOT_SAID_ALT": "機器人 $1 說:",
   "ACTIVITY_YOU_SAID_ALT": "您說:",
   "ACTIVITY_BOT_ATTACHED_ALT": "機器人附加了:",
   "ACTIVITY_ERROR_BOX_TITLE": "錯誤訊息",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "按 ENTER 鍵進行互動。",
   "ACTIVITY_YOU_ATTACHED_ALT": "您附加了:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 個附件。",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 個附件。",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "警告",
   "TOAST_DISMISS_BUTTON": "關閉",
   "TOAST_TITLE_ALT": "通知",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "文字記錄，按方向鍵進行瀏覽。",
   "TRANSCRIPT_ARIA_ROLE_ALT": "文字記錄",
   "TRANSCRIPT_NEW_MESSAGES": "新訊息",
+  "TRANSCRIPT_TERMINATOR_TEXT": "文字記錄結束",
   "TYPING_INDICATOR_ALT": "顯示輸入指示器"
 }
