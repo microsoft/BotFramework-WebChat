@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3718](https://github.com/microsoft/BotFramework-WebChat/issues/3718). Fixed `webpack.config.js` to use default settings of `['browser', 'module', 'main']` and resolved issues with `uuid` package in IE11, by [@compulim](https://github.com/compulim) in PR [#3726](https://github.com/microsoft/BotFramework-WebChat/pull/3726)
 -  Fixes [#3622](https://github.com/microsoft/BotFramework-WebChat/issues/3622). Apply pushed button style options and `aria-pressed` on Adaptive Cards selected buttons, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3710](https://github.com/microsoft/BotFramework-WebChat/pull/3710)
 -  Fixes [#3618](https://github.com/microsoft/BotFramework-WebChat/issues/3618). Fix Adaptive Cards anchors being disabled when Adaptive Cards is obsolete, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
+-  Fixes [#3747](https://github.com/microsoft/BotFramework-WebChat/issues/3747). Aria-pressed and aria-role is not properly set on AC submit buttons #3747, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3744](https://github.com/microsoft/BotFramework-WebChat/pull/3744)
 
 ### Changed
 
