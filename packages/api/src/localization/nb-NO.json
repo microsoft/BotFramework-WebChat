@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Innholdet i denne filen er låst. Bidrag er velkomne, men validering av endring kan bli forsinket.",
   "ACCESS_KEY_ALT": "Alt + Skift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Tilvalg + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "aktivitet",
   "ACTIVITY_BOT_SAID_ALT": "Roboten $1 sa:",
   "ACTIVITY_YOU_SAID_ALT": "Du sa:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Roboten la ved:",
   "ACTIVITY_ERROR_BOX_TITLE": "Feilmelding",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Trykk på ENTER for å samhandle.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Du la ved:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 vedlegg.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 vedlegg.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Advarsel!",
   "TOAST_DISMISS_BUTTON": "Forkast",
   "TOAST_TITLE_ALT": "Varsling",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Utskrift, trykk på piltastene for å navigere.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "avskrift",
   "TRANSCRIPT_NEW_MESSAGES": "Nye meldinger",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Slutt på utskrift",
   "TYPING_INDICATOR_ALT": "Viser skriveindikatoren"
 }

@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] 이 파일의 내용이 잠겼습니다. 기여를 환영하지만 변경 유효성 검사가 지연될 수 있습니다.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "활동",
   "ACTIVITY_BOT_SAID_ALT": "봇 $1의 말:",
   "ACTIVITY_YOU_SAID_ALT": "나의 말:",
   "ACTIVITY_BOT_ATTACHED_ALT": "봇이 첨부함:",
   "ACTIVITY_ERROR_BOX_TITLE": "오류 메시지",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "상호작용하려면 Enter 키를 누르세요.",
   "ACTIVITY_YOU_ATTACHED_ALT": "내가 첨부함:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "첨부 파일 1개.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "첨부 파일 $1개.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "경고",
   "TOAST_DISMISS_BUTTON": "해제",
   "TOAST_TITLE_ALT": "알림",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "대화록, 아래쪽 화살표 키를 사용하여 탐색합니다.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "대화록",
   "TRANSCRIPT_NEW_MESSAGES": "새 메시지",
+  "TRANSCRIPT_TERMINATOR_TEXT": "대화록의 끝",
   "TYPING_INDICATOR_ALT": "입력 표시기 표시"
 }

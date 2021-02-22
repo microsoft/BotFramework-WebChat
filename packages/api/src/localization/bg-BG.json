@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Съдържанието на този файл е заключено. Приносът е добре дошъл, но валидирането на промените може да се забави.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "дейност",
   "ACTIVITY_BOT_SAID_ALT": "Бот $1 каза:",
   "ACTIVITY_YOU_SAID_ALT": "Вие казахте:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Прикачен бот:",
   "ACTIVITY_ERROR_BOX_TITLE": "Съобщение за грешка",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Натиснете ENTER, за да взаимодействате.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Вие прикачихте:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 прикачен файл.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 прикачени файлове.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Предупреждение",
   "TOAST_DISMISS_BUTTON": "Отхвърляне",
   "TOAST_TITLE_ALT": "Известяване",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Препис, натиснете клавишите със стрелки, за да навигирате.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "препис",
   "TRANSCRIPT_NEW_MESSAGES": "Нови съобщения",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Край на преписа",
   "TYPING_INDICATOR_ALT": "Показване на индикатор за въвеждане"
 }

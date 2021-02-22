@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Šio failo turinys užrakintas. Galite prisidėti, tačiau gali užtrukti, kol keitimai bus patikrinti.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + parinktis + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "veikla",
   "ACTIVITY_BOT_SAID_ALT": "Robotas $1 pasakė:",
   "ACTIVITY_YOU_SAID_ALT": "Pasakėte:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Robotas pridėjo:",
   "ACTIVITY_ERROR_BOX_TITLE": "Klaidos pranešimas",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Paspauskite ENTER, norėdami sąveikauti.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Pridėjote:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 priedą.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 priedus.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Įspėjimas",
   "TOAST_DISMISS_BUTTON": "Išjungti",
   "TOAST_TITLE_ALT": "Pranešimas",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Nuorašas, naršykite naudodami rodyklių klavišus.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "nuorašas",
   "TRANSCRIPT_NEW_MESSAGES": "Nauji pranešimai",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Nuorašo pabaiga",
   "TYPING_INDICATOR_ALT": "Rodomas teksto įvedimo indikatorius"
 }
