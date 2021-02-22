@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Содержимое этого файла заблокировано. Вы можете вносить изменения, но их проверка может быть задержана.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "действие",
   "ACTIVITY_BOT_SAID_ALT": "Бот $1 сказал:",
   "ACTIVITY_YOU_SAID_ALT": "Вы сказали:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Прикреплено ботом:",
   "ACTIVITY_ERROR_BOX_TITLE": "Сообщение об ошибке",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Нажмите клавишу ВВОД, чтобы начать взаимодействие.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Прикреплено вами:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 вложение.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 вложений.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Предупреждение",
   "TOAST_DISMISS_BUTTON": "Закрыть",
   "TOAST_TITLE_ALT": "Уведомление",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Расшифровка, используйте клавиши со стрелками для перемещения.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "расшифровка",
   "TRANSCRIPT_NEW_MESSAGES": "Новые сообщения",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Конец расшифровки",
   "TYPING_INDICATOR_ALT": "Отображение индикатора ввода"
 }

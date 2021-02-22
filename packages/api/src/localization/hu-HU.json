@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] A fájl tartalma zárolva van. Szívesen fogadjuk a hozzájárulásokat, de a módosítások érvényesítése elhúzódhat.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "tevékenység",
   "ACTIVITY_BOT_SAID_ALT": "A(z) $1 robot azt mondta:",
   "ACTIVITY_YOU_SAID_ALT": "Ön azt mondta:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Robot által csatolva:",
   "ACTIVITY_ERROR_BOX_TITLE": "Hibaüzenet",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Az interakcióhoz nyomja meg az Entert.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Ön által csatolva:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 melléklet.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 melléklet.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Figyelmeztetés",
   "TOAST_DISMISS_BUTTON": "Elvetés",
   "TOAST_TITLE_ALT": "Értesítés",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Átirat, a navigáláshoz használja a nyílbillentyűket.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "átirat",
   "TRANSCRIPT_NEW_MESSAGES": "Új üzenetek",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Vége az átiratnak",
   "TYPING_INDICATOR_ALT": "Gépelésjelző megjelenítése"
 }

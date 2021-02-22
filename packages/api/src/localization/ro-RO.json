@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Conținutul acestui fișier este blocat. Contribuțiile sunt binevenite, dar validarea schimbării poate fi întârziată.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "activitate",
   "ACTIVITY_BOT_SAID_ALT": "Robotul $1 a spus:",
   "ACTIVITY_YOU_SAID_ALT": "Ați spus:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Robot atașat:",
   "ACTIVITY_ERROR_BOX_TITLE": "Mesaj de eroare",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Apăsați ENTER pentru a interacționa.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Ați atașat:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 atașare.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 atașări.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Avertisment",
   "TOAST_DISMISS_BUTTON": "Îndepărtare",
   "TOAST_TITLE_ALT": "Notificare",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcriere, apăsați tastele săgeți pentru a naviga.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcriere",
   "TRANSCRIPT_NEW_MESSAGES": "Mesaje noi",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Sfârșitul transcrierii",
   "TYPING_INDICATOR_ALT": "Se afișează indicatorul de tastare"
 }

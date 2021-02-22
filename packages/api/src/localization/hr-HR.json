@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Sadržaj ove datoteke blokiran je. Doprinosi su dobrodošli, ali provjera valjanosti promjena može biti odgođena.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + mogućnost + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "aktivnost",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 rekao je:",
   "ACTIVITY_YOU_SAID_ALT": "Vi ste rekli:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Priloženi bot:",
   "ACTIVITY_ERROR_BOX_TITLE": "Poruka o pogrešci",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Pritisnite ENTER za interakciju.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Priložili ste:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 privitak.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 privitka.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Upozorenje",
   "TOAST_DISMISS_BUTTON": "Odbaci",
   "TOAST_TITLE_ALT": "Obavijest",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transkript, pritisnite tipke sa strelicama za navigaciju.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transkript",
   "TRANSCRIPT_NEW_MESSAGES": "Nove poruke",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Kraj transkripta",
   "TYPING_INDICATOR_ALT": "Prikaz pokazatelja tipkanja"
 }

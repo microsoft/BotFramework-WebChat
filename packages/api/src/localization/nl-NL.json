@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] De inhoud van dit bestand is vergrendeld. Bijdragen zijn welkom, maar wijzigingen in de validatie zijn mogelijk vertraagd.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "activiteit",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 zei:",
   "ACTIVITY_YOU_SAID_ALT": "U zei:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot heeft bijgevoegd:",
   "ACTIVITY_ERROR_BOX_TITLE": "Foutbericht",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Druk op ENTER om te communiceren.",
   "ACTIVITY_YOU_ATTACHED_ALT": "U hebt bijgevoegd:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 bijlage.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 bijlagen.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Waarschuwing",
   "TOAST_DISMISS_BUTTON": "Negeren",
   "TOAST_TITLE_ALT": "Melding",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcriptie, druk op de pijltoetsen om te navigeren.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcriptie",
   "TRANSCRIPT_NEW_MESSAGES": "Nieuwe berichten",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Einde transcriptie",
   "TYPING_INDICATOR_ALT": "Indicator voor typen weergeven"
 }

@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] इस फ़ाइल की सामग्री लॉक है. योगदानकर्ताओं का स्वागत है, लेकिन परिवर्तन सत्यापन में देरी हो सकती है.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + विकल्प + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "गतिविधि",
   "ACTIVITY_BOT_SAID_ALT": "बॉट $1 ने कहा:",
   "ACTIVITY_YOU_SAID_ALT": "आपने कहा:",
   "ACTIVITY_BOT_ATTACHED_ALT": "बॉट संलग्न किया गया:",
   "ACTIVITY_ERROR_BOX_TITLE": "त्रुटि संदेश",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "इंटरैक्ट करने के लिए एंटर दबाएँ.",
   "ACTIVITY_YOU_ATTACHED_ALT": "आपने यह संलग्न किया है:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 अनुलग्नक.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 अनुलग्नक.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "चेतावनी",
   "TOAST_DISMISS_BUTTON": "खारिज करें",
   "TOAST_TITLE_ALT": "सूचना",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "ट्रांसक्रिप्ट करें, नेविगेट करने के लिए तीर कुंजियों का उपयोग करें.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "ट्रांसक्रिप्ट",
   "TRANSCRIPT_NEW_MESSAGES": "नए संदेश",
+  "TRANSCRIPT_TERMINATOR_TEXT": "ट्रांसक्रिप्ट का समापन",
   "TYPING_INDICATOR_ALT": "टाइप करने वाला संकेतक दिखा रहा है"
 }

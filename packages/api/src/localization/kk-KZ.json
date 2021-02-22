@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Бұл файлдың мазмұны құлыпталған. Жарналар қабылданады, бірақ өзгертулерді тексеру кейінге қалдырылуы мүмкін.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Опция + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "әрекет",
   "ACTIVITY_BOT_SAID_ALT": "$1 боттың айтуы бойынша:",
   "ACTIVITY_YOU_SAID_ALT": "Сіздің айтуы бойынша:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Бекітілген бот:",
   "ACTIVITY_ERROR_BOX_TITLE": "Қате туралы хабар",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Өзара әрекеттесу үшін ENTER пернесін басыңыз.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Сіз бекіттіңіз:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 тіркеме.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 тіркемелері.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Ескерту",
   "TOAST_DISMISS_BUTTON": "Жою",
   "TOAST_TITLE_ALT": "Хабарландыру",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Түсіндірме, шарлау үшін көрсеткі пернелерін басыңыз.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "транскрипт",
   "TRANSCRIPT_NEW_MESSAGES": "Жаңа хабарлар",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Түсіндірме соңы",
   "TYPING_INDICATOR_ALT": "Мәтін теру индикаторын көрсету"
 }
