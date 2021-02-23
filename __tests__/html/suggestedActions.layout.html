@@ -270,13 +270,18 @@
           // When maxHeight is set, take extra screenshots at the bottommost of the scrollable.
 
           const scrollable = document.querySelector(
-            '.webchat__suggested-actions--flow-layout, .webchat__suggested-actions__stack'
+            '.webchat__suggested-actions__flow-box, .webchat__suggested-actions__stack'
           );
 
           scrollable.scrollTop = scrollable.scrollHeight - scrollable.offsetHeight;
 
           await host.snapshot();
         }
+
+        Simulate.click(document.querySelector('.webchat__suggested-action__button'));
+
+        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
+        await host.snapshot();
 
         await host.done();
       })().catch(async err => {

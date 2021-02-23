@@ -20,7 +20,7 @@ const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions': {
-    '&.webchat__suggested-actions--flow-layout': {
+    '&.webchat__suggested-actions--flow-layout .webchat__suggested-actions__flow-box': {
       display: 'flex',
       flexWrap: 'wrap'
     },
@@ -147,9 +147,13 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
       role="status"
     >
       <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
-      {React.Children.map(children, child => (
-        <div className="webchat__suggested-actions__item">{child}</div>
-      ))}
+      {!!children && !!React.Children.count(children) && (
+        <div className="webchat__suggested-actions__flow-box">
+          {React.Children.map(children, child => (
+            <div className="webchat__suggested-actions__item">{child}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
