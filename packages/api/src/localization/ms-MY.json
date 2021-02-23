@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Kandungan fail ini telah dikunci. Sumbangan dialu-alukan, tetapi pengesahan perubahan mungkin ditunda.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "aktiviti",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 berkata:",
   "ACTIVITY_YOU_SAID_ALT": "Anda berkata:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot lampirkan:",
   "ACTIVITY_ERROR_BOX_TITLE": "Mesej ralat",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Tekan ENTER untuk berinteraksi.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Anda lampirkan:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 lampiran.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 lampiran.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Amaran",
   "TOAST_DISMISS_BUTTON": "Tolak",
   "TOAST_TITLE_ALT": "Pemberitahuan",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transkrip, tekan kekunci anak panah untuk menavigasi.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transkrip",
   "TRANSCRIPT_NEW_MESSAGES": "Mesej baharu",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Tamat transkrip",
   "TYPING_INDICATOR_ALT": "Menunjukkan penunjuk menaip"
 }

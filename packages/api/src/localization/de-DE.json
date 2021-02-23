@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Der Inhalt dieser Datei ist gesperrt. Beiträge sind willkommen, die Änderungsüberprüfung kann jedoch verzögert werden.",
   "ACCESS_KEY_ALT": "ALT + UMSCHALT + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "STRG + Wahltaste + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "Aktivität",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 sagte:",
   "ACTIVITY_YOU_SAID_ALT": "Sie sagten:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot angefügt:",
   "ACTIVITY_ERROR_BOX_TITLE": "Fehlermeldung",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Zum Interagieren EINGABETASTE drücken.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Sie haben angefügt:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 Anhang.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 Anhänge.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Warnung",
   "TOAST_DISMISS_BUTTON": "Schließen",
   "TOAST_TITLE_ALT": "Benachrichtigung",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Nach oben- oder Nach-unten-Tasten zum Navigieren im Transkript verwenden.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "Transkript",
   "TRANSCRIPT_NEW_MESSAGES": "Neue Nachrichten",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Transkriptende",
   "TYPING_INDICATOR_ALT": "Anzeigen des Eingabeindikators"
 }

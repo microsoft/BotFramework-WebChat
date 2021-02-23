@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Tämän tiedoston sisältö on lukittu. Osallistuminen on tervetullutta, mutta muutosten tarkistamisessa saattaa olla viivettä.",
   "ACCESS_KEY_ALT": "Alt + Vaihto + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Valinta + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "aktiviteetti",
   "ACTIVITY_BOT_SAID_ALT": "Botti $1 sanoi:",
   "ACTIVITY_YOU_SAID_ALT": "Sanoit:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Botti lisäsi liitteen:",
   "ACTIVITY_ERROR_BOX_TITLE": "Virhesanoma",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Käytä painamalla Enter-näppäintä.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Lisäsit liitteen:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 liite.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 liitettä.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Varoitus",
   "TOAST_DISMISS_BUTTON": "Hylkää",
   "TOAST_TITLE_ALT": "Ilmoitus",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transkriptio, siirry nuolinäppäimillä.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "kirjaus",
   "TRANSCRIPT_NEW_MESSAGES": "Uudet viestit",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Transkription loppu",
   "TYPING_INDICATOR_ALT": "Näytetään kirjoittamisen ilmaisin"
 }

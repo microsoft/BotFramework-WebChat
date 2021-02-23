@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] El contingut d'aquest fitxer està bloquejat. Les aportacions són benvingudes, però la validació dels canvis es pot retardar.",
   "ACCESS_KEY_ALT": "Alt + Maj + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Opció + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "activitat",
   "ACTIVITY_BOT_SAID_ALT": "El bot $1 ha dit:",
   "ACTIVITY_YOU_SAID_ALT": "Heu dit:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot adjuntat:",
   "ACTIVITY_ERROR_BOX_TITLE": "Missatge d'error",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Premeu la tecla RETORN per interactuar.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Heu adjuntat:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 fitxer adjunt.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 fitxers adjunts.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Advertiment",
   "TOAST_DISMISS_BUTTON": "Descarta",
   "TOAST_TITLE_ALT": "Notificació",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Transcripció, premeu les tecles amunt/avall per desplaçar-vos.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcripció",
   "TRANSCRIPT_NEW_MESSAGES": "Missatges nous",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Fi de la transcripció",
   "TYPING_INDICATOR_ALT": "S'està mostrant l'indicador d'escriptura"
 }
