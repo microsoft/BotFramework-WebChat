@@ -102,12 +102,14 @@ export default function createSuggestedActionsStyle({
       },
 
       '&.webchat__suggested-actions--flow-layout': {
-        maxHeight: suggestedActionsFlowMaxHeight,
-        overflowY: 'auto',
-        paddingBottom: paddingRegular / 2,
-        paddingLeft: paddingRegular / 2,
-        paddingRight: paddingRegular / 2,
-        paddingTop: paddingRegular / 2,
+        '& .webchat__suggested-actions__flow-box': {
+          maxHeight: suggestedActionsFlowMaxHeight,
+          overflowY: 'auto',
+          paddingBottom: paddingRegular / 2,
+          paddingLeft: paddingRegular / 2,
+          paddingRight: paddingRegular / 2,
+          paddingTop: paddingRegular / 2
+        },
 
         '& .webchat__suggested-actions__item': {
           maxWidth: '100%',
