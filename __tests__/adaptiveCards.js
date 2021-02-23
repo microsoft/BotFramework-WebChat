@@ -183,7 +183,6 @@ test('Inputs card with custom style options and submit action', async () => {
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
-  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   // Click "Submit" button should change the button color
   await driver.executeScript(() => {
