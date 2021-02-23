@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Innehållet i den här filen är låst. Bidrag välkomnas men verifieringen av ändrar kan fördröjas.",
   "ACCESS_KEY_ALT": "Alt + Skift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Alt + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "aktivitet",
   "ACTIVITY_BOT_SAID_ALT": "Roboten $1 sade:",
   "ACTIVITY_YOU_SAID_ALT": "Du sade:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Robot bifogad:",
   "ACTIVITY_ERROR_BOX_TITLE": "Felmeddelande",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Tryck på Retur för att interagera.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Du bifogade:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "En bilaga.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1-bilagor.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Varning",
   "TOAST_DISMISS_BUTTON": "Stäng",
   "TOAST_TITLE_ALT": "Avisering",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Avskrift, tryck på piltangenterna för att navigera.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "avskrift",
   "TRANSCRIPT_NEW_MESSAGES": "Nya meddelanden",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Slut på avskriften",
   "TYPING_INDICATOR_ALT": "Visar skrivindikatorn"
 }

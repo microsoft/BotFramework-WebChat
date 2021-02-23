@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] 此文件的内容已锁定。欢迎发布内容，但更改验证可能会延迟。",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "活动",
   "ACTIVITY_BOT_SAID_ALT": "机器人 $1 说:",
   "ACTIVITY_YOU_SAID_ALT": "您说:",
   "ACTIVITY_BOT_ATTACHED_ALT": "机器人附加了:",
   "ACTIVITY_ERROR_BOX_TITLE": "错误消息",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "按 Enter 键以进行交互。",
   "ACTIVITY_YOU_ATTACHED_ALT": "您附加了:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 个附件。",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 个附件。",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "警告",
   "TOAST_DISMISS_BUTTON": "取消",
   "TOAST_TITLE_ALT": "通知",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "记录，按箭头键导航。",
   "TRANSCRIPT_ARIA_ROLE_ALT": "脚本",
   "TRANSCRIPT_NEW_MESSAGES": "新消息",
+  "TRANSCRIPT_TERMINATOR_TEXT": "记录结束",
   "TYPING_INDICATOR_ALT": "显示键入指示器"
 }

@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] Vsebina te datoteke je zaklenjena. Prispevki so dobrodošli, vendar je preverjanje sprememb lahko zakasnjeno.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "dejavnost",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 je rekel:",
   "ACTIVITY_YOU_SAID_ALT": "Rekli ste:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot je priložil:",
   "ACTIVITY_ERROR_BOX_TITLE": "Sporočilo o napaki",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Pritisnite ENTER za interakcijo.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Priložili ste:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 priloga.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 priloge.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "Opozorilo",
   "TOAST_DISMISS_BUTTON": "Opusti",
   "TOAST_TITLE_ALT": "Obvestilo",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "Prepis – za pomikanje pritisnite puščične tipke.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "prepis",
   "TRANSCRIPT_NEW_MESSAGES": "Nova sporočila",
+  "TRANSCRIPT_TERMINATOR_TEXT": "Konec prepisa",
   "TYPING_INDICATOR_ALT": "Prikaz indikatorja tipkanja"
 }

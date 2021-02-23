@@ -2,11 +2,11 @@
   "_comment": "[CI-LOCKED] תוכן קובץ זה נעול. תרומות יתקבלו בברכה, אך אימות השינויים עשוי להתעכב.",
   "ACCESS_KEY_ALT": "Alt + Shift + $1",
   "ACCESS_KEY_FOR_MAC_ALT": "Ctrl + Option + $1",
-  "ACTIVITY_ARIA_LABEL_ALT": "פעילות",
   "ACTIVITY_BOT_SAID_ALT": "תוכנית ה- Bot‏ $1 אמרה:",
   "ACTIVITY_YOU_SAID_ALT": "אמרת:",
   "ACTIVITY_BOT_ATTACHED_ALT": "תוכנית Bot צירפה:",
   "ACTIVITY_ERROR_BOX_TITLE": "הודעת שגיאה",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "הקש Enter כדי לקיים אינטראקציה.",
   "ACTIVITY_YOU_ATTACHED_ALT": "צירפת:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "קובץ מצורף אחד.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 קבצים מצורפים.",
@@ -69,7 +69,9 @@
   "TOAST_ALT_WARN": "אזהרה",
   "TOAST_DISMISS_BUTTON": "בטל",
   "TOAST_TITLE_ALT": "הודעה",
+  "TRANSCRIPT_ARIA_LABEL_ALT": "תעתיק, הקש על מקשי החצים כדי לנווט.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "תעתיק",
   "TRANSCRIPT_NEW_MESSAGES": "הודעות חדשות",
+  "TRANSCRIPT_TERMINATOR_TEXT": "סוף התעתיק",
   "TYPING_INDICATOR_ALT": "מחוון שמציג הקלדה"
 }
