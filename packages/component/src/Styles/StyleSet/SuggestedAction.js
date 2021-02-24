@@ -23,6 +23,7 @@ export default function createSuggestedActionStyle({
 }) {
   return {
     '&.webchat__suggested-action': {
+      display: 'flex',
       maxWidth: '100%',
 
       '& .webchat__suggested-action__button': {
@@ -62,7 +63,10 @@ export default function createSuggestedActionStyle({
       '& .webchat__suggested-action--wrapping': {
         height: 'auto',
         maxHeight: suggestedActionsStackedLayoutButtonMaxHeight || '100%',
-        minHeight: Math.min(suggestedActionHeight, suggestedActionsStackedLayoutButtonMaxHeight)
+        minHeight:
+          typeof suggestedActionsStackedLayoutButtonMaxHeight === 'number'
+            ? Math.min(suggestedActionsStackedLayoutButtonMaxHeight, suggestedActionHeight)
+            : suggestedActionHeight
       },
 
       '&:not(.webchat__suggested-action--rtl) .webchat__suggested-action__image + .webchat__suggested-action__text': {
