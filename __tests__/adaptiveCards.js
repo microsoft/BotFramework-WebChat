@@ -126,6 +126,9 @@ test('disable card inputs', async () => {
     document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
   });
 
+  //@todo change to use scrollStabilizer after release
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.updateProps({ disabled: false });
@@ -134,6 +137,9 @@ test('disable card inputs', async () => {
   await driver.executeScript(() => {
     document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
   });
+
+  //@todo change to use scrollStabilizer after release
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
@@ -166,4 +172,33 @@ test('unknown card', async () => {
 
   expect(browserConsoleErrors[0].level.name_).toEqual('WARNING');
   expect(browserConsoleErrors[0].message).toContain('No renderer for attachment for screen reader of type');
+});
+
+test('Inputs card with custom style options and submit action', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        cardPushButtonBackgroundColor: '#ee0606',
+        cardPushButtonTextColor:'#ee0606'
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetchImage);
+
+  // Click "Submit" button should change the button color
+  await driver.executeScript(() => {
+    document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
+  });
+
+  //@todo change to use scrollStabilizer after release
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });

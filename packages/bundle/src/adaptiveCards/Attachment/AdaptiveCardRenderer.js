@@ -435,10 +435,12 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
 
   useEffect(() => {
     // Add aria-pressed and role attribute to the AC action button selected by the user.
-    if (adaptiveCardElementRef.current) {
-      setAttributeWithUndo(adaptiveCardElementRef.current, 'aria-pressed', 'true');
-      setAttributeWithUndo(adaptiveCardElementRef.current, 'role', 'button');
-    }
+    actionsPerformed.forEach(({ renderedElement }) => {
+      if (renderedElement && adaptiveCardElementRef.current.contains(renderedElement)) {
+        setAttributeWithUndo(renderedElement, 'aria-pressed', 'true');
+        setAttributeWithUndo(renderedElement, 'role', 'button');
+      }
+    });
 
     // Add developers to highlight actions when they have been clicked.
     if (!actionPerformedClassName) {
