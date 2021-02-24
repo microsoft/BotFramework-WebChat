@@ -265,7 +265,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           let showCallout;
 
-          // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
+          // Depending on the "showAvatarInGroup" setting, the avatar will render in different positions.
           if (showAvatarInGroup === 'sender') {
             if (topSideNub) {
               showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;

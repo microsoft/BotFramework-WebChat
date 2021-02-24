@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
 import createCustomEvent from '../utils/createCustomEvent';

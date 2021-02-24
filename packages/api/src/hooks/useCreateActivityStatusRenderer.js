@@ -1,7 +1,7 @@
 /* eslint react/prop-types: "off"*/
 
 import { Constants } from 'botframework-webchat-core';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';

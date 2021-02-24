@@ -1,4 +1,4 @@
-import React, { isValidElement } from 'react';
+import { isValidElement } from 'react';
 
 import concatMiddleware from './concatMiddleware';
 import ErrorBox from '../internal/ErrorBox';
