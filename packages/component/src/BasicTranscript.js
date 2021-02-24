@@ -31,6 +31,7 @@ import SpeakActivity from './Activity/Speak';
 import tabbableElements from './Utils/tabbableElements';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
+import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFocus';
 import useFocus from './hooks/useFocus';
 import useMemoize from './hooks/internal/useMemoize';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -302,6 +303,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               }
             },
 
+            // Calling this function will put the focus on the transcript and the activity.
+            focusActivity,
+
             // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
             // We should do the same for mouse, that is why we have the click handler here.
             // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
@@ -312,7 +316,12 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 focusActivity();
               }
             },
-            handleFocus: focusActivity,
+
+            // When a children of the activity got focus, we should notify the transcript to set the aria-activedescendant to this activity.
+            handleFocus: () => {
+              setFocusedActivityKey(getActivityUniqueId(activity));
+            },
+
             handleKeyDown: event => {
               if (event.key === 'Escape') {
                 event.preventDefault();
@@ -693,6 +702,29 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [setFocusedActivityKey]
   );
 
+  // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
+  const dispatchTranscriptFocus = useDispatchTranscriptFocus();
+  const focusedActivity = useMemo(() => {
+    const { activity } = renderingElements.find(({ key }) => key === focusedActivityKey) || {};
+
+    return activity;
+  }, [focusedActivityKey, renderingElements]);
+
+  useMemo(() => dispatchTranscriptFocus && dispatchTranscriptFocus({ activity: focusedActivity }), [
+    dispatchTranscriptFocus,
+    focusedActivity
+  ]);
+
+  // This is required by IE11.
+  // With an empty transcript, when the user clicks on the empty space (a.k.a. filler), IE11 says the focus is on the <div className="filler">,
+  // despite there are no "tabIndex" attributes set on the filler.
+  // We need to artificially send the focus back to the transcript.
+  const handleFocusFiller = useCallback(() => {
+    const { current } = rootElementRef;
+
+    current && current.focus();
+  }, [rootElementRef]);
+
   return (
     <div
       aria-activedescendant={focusedActivityKey ? activeDescendantElementId : undefined}
@@ -731,6 +763,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       <InternalTranscriptScrollable
         activities={renderingActivities}
         onFocusActivity={handleFocusActivity}
+        onFocusFiller={handleFocusFiller}
         terminatorRef={terminatorRef}
       >
         {renderingElements.map(
@@ -738,10 +771,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             {
               activity,
               callbackRef,
-              key,
+              focusActivity,
               handleClickCapture,
               handleFocus,
               handleKeyDown,
+              key,
               hideTimestamp,
               renderActivity,
               renderActivityStatus,
@@ -772,6 +806,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
                 onClickCapture={handleClickCapture}
+                onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
                 ref={callbackRef}
               >
@@ -780,7 +815,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 </ScreenReaderActivity>
                 <FocusRedirector
                   className="webchat__basic-transcript__activity-sentinel"
-                  onFocus={handleFocus}
+                  onFocus={focusActivity}
                   redirectRef={rootElementRef}
                 />
                 <div className="webchat__basic-transcript__activity-box">
@@ -794,7 +829,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 {shouldSpeak && <SpeakActivity activity={activity} />}
                 <FocusRedirector
                   className="webchat__basic-transcript__activity-sentinel"
-                  onFocus={handleFocus}
+                  onFocus={focusActivity}
                   redirectRef={rootElementRef}
                 />
                 <div
@@ -871,7 +906,7 @@ InternalScreenReaderTranscript.propTypes = {
 };
 
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, terminatorRef }) => {
+const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, onFocusFiller, terminatorRef }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [{ hideScrollToEndButton }] = useStyleOptions();
   const [animatingToEnd] = useAnimatingToEnd();
@@ -947,7 +982,7 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, t
         <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
       )}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
-        <div aria-hidden={true} className="webchat__basic-transcript__filler" />
+        <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         <ul
           aria-roledescription={transcriptRoleDescription}
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
@@ -965,6 +1000,7 @@ InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
   children: PropTypes.any.isRequired,
   onFocusActivity: PropTypes.func.isRequired,
+  onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
 };
 
