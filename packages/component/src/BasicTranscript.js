@@ -530,7 +530,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const scrollActiveDescendantIntoView = useCallback(() => {
     const activeDescendant = activeDescendantElementId && document.getElementById(activeDescendantElementId);
 
-    if (activeDescendant) {
+    // Don't scroll active descendant into view if the focus is already inside it.
+    // Otherwise, given the focus is on the send box, clicking on any <input> inside the Adaptive Cards may cause the view to move.
+    // This UX is not desirable because click should not cause scroll.
+    if (activeDescendant && !activeDescendant.contains(document.activeElement)) {
       // Checks if scrollIntoView support options or not.
       // - https://github.com/Modernizr/Modernizr/issues/1568#issuecomment-419457972
       // - https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
