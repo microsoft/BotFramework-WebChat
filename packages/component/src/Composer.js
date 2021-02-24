@@ -128,17 +128,41 @@ const ComposerCore = ({
     [scrollPositionObserversRef, setNumScrollPositionObservers]
   );
 
+  const transcriptFocusObserversRef = useRef([]);
+  const [numTranscriptFocusObservers, setNumTranscriptFocusObservers] = useState(0);
+
+  const dispatchTranscriptFocus = useCallback(
+    event => transcriptFocusObserversRef.current.forEach(observer => observer(event)),
+    [transcriptFocusObserversRef]
+  );
+
+  const observeTranscriptFocus = useCallback(
+    observer => {
+      transcriptFocusObserversRef.current = [...transcriptFocusObserversRef.current, observer];
+      setNumTranscriptFocusObservers(transcriptFocusObserversRef.current.length);
+
+      return () => {
+        transcriptFocusObserversRef.current = transcriptFocusObserversRef.current.filter(target => target !== observer);
+        setNumTranscriptFocusObservers(transcriptFocusObserversRef.current.length);
+      };
+    },
+    [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
+  );
+
   const context = useMemo(
     () => ({
       dictateAbortable,
       dispatchScrollPosition,
+      dispatchTranscriptFocus,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
       numScrollPositionObservers,
+      numTranscriptFocusObservers,
       observeScrollPosition,
+      observeTranscriptFocus,
       renderMarkdown,
       scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
@@ -152,13 +176,16 @@ const ComposerCore = ({
     [
       dictateAbortable,
       dispatchScrollPosition,
+      dispatchTranscriptFocus,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownIt,
       internalRenderMarkdownInline,
       nonce,
       numScrollPositionObservers,
+      numTranscriptFocusObservers,
       observeScrollPosition,
+      observeTranscriptFocus,
       patchedStyleSet,
       renderMarkdown,
       scrollRelativeCallbacksRef,
