@@ -1,6 +1,14 @@
+/* eslint no-await-in-loop: "off" */
+/* eslint no-magic-numbers: ["error", { "ignore": [50] }] */
+/* global Buffer */
+
 import AbortController from 'abort-controller';
 import createDeferred from 'p-defer';
+import fs from 'fs/promises';
+import kebabCase from 'lodash/kebabCase';
+import mkdirp from 'mkdirp';
 import Observable from 'core-js/features/observable';
+import path from 'path';
 
 import sleep from './sleep';
 
@@ -13,7 +21,7 @@ export default function createJobObservable(driver, { ignorePageError = false } 
       abortController.signal.addEventListener('abort', () => resolve(ABORT_SYMBOL))
     );
 
-    (async function() {
+    (async function () {
       for (;;) {
         const job = await Promise.race([driver.executeScript(() => window.WebChatTest.jobs.acquire()), abortPromise]);
 
@@ -43,9 +51,24 @@ export default function createJobObservable(driver, { ignorePageError = false } 
           observer.complete();
           break;
         } else if (job.type === 'error') {
-          observer.error(
-            new Error(`Unhandled exception from the test code on the page.\n\n${job.payload.error.stack}`)
+          const { currentTestName, testPath } = expect.getState();
+
+          const errorScreenshotFilename = path.join(
+            path.dirname(testPath),
+            '../__image_snapshots__/html/__diff_output__',
+            `${kebabCase(`${path.basename(testPath)}-${currentTestName}`)}-error.png`
           );
+
+          const screenshot = await driver.takeScreenshot();
+
+          mkdirp.sync(path.dirname(errorScreenshotFilename));
+
+          await fs.writeFile(errorScreenshotFilename, Buffer.from(screenshot, 'base64'));
+
+          observer.error(
+            new Error(`Unhandled exception from the test code on the page.\nSee diff for details: ${errorScreenshotFilename}\n\n${job.payload.error.stack}`)
+          );
+
           break;
         } else if (job.type === 'pageerror') {
           if (!ignorePageError) {
@@ -75,7 +98,7 @@ export default function createJobObservable(driver, { ignorePageError = false } 
           );
         }
       }
-    })();
+    }());
 
     return () => abortController.abort();
   });
