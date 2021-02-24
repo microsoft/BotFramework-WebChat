@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3544](https://github.com/microsoft/BotFramework-WebChat/issues/3544). Send user ID from props to chat adapter, by [@timenick](https://github.com/timenick) in PR [#3544)(https://github.com/microsoft/BotFramework-WebChat/issues/3544).
 -  Resolves [#3562](https://github.com/microsoft/BotFramework-WebChat/issues/3562). Add button word wrap to suggested actions stacked layout, by [@corinagum](https://github.com/corinagum), in PR [#3728](https://github.com/microsoft/BotFramework-WebChat/pull/3728)
 -  Resolves [#3658](https://github.com/microsoft/BotFramework-WebChat/issues/3658). Added new `containerRole` to default style options, by [@nfreear](https://github.com/nfreear) in PR [#3669](https://github.com/microsoft/BotFramework-WebChat/pull/3669)
+-  Resolves [#3754](https://github.com/microsoft/BotFramework-WebChat/issues/3754). Added new `useObserveTranscriptFocus` hook, by [@compulim](https://github.com/compulim) in PR [#3755](https://github.com/microsoft/BotFramework-WebChat/pull/3755)
 
 ### Fixed
 
