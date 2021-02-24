@@ -42,9 +42,9 @@
         const activityElements = elements.transcript().querySelectorAll('li');
         const activityToClick = activityElements[activityElements.length - 5];
 
-        // Simulate.click does not focus on the transcript, we need to manually set the focus.
+        // A real mouseDown would focus on the transcript, but Simulate.mouseDown does not focus on the transcript, we need to manually set the focus.
         elements.transcript().focus();
-        Simulate.click(activityToClick);
+        Simulate.mouseDown(activityToClick);
         await waitForFocusedActivityInView();
 
         await host.snapshot();

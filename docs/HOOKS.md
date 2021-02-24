@@ -86,6 +86,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 -  [`useNotification`](#usenotification)
 -  [`useObserveScrollPosition`](#useobservescrollposition)
+-  [`useObserveTranscriptFocus`](#useobservetranscriptfocus)
 -  [`usePerformCardAction`](#useperformcardaction)
 -  [`usePostActivity`](#usepostactivity)
 -  [`useReferenceGrammarID`](#usereferencegrammarid)
@@ -698,6 +699,30 @@ Since the observer function will be called rapidly, please keep the code in the 
 To stop observing scroll positions, pass a falsy value to the `observer` argument.
 
 > If there is more than one transcripts, scrolling any of them will trigger the observer function, and there is no clear distinction of which transcript is being scrolled.
+
+## `useObserveTranscriptFocus`
+
+<!-- prettier-ignore-start -->
+```js
+useObserveTranscriptFocus(observer: (TranscriptFocusObserver? | false), deps: any[]): void
+
+type TranscriptFocusObserver = (transcriptFocus: TranscriptFocus) => void;
+
+type TranscriptFocus {
+  activity: Activity;
+}
+```
+<!-- prettier-ignore-end -->
+
+This function accepts an observer function. When the focus inside transcript has changed, the observer function will be called with the latest `TranscriptFocus`.
+
+Initially, when the transcript is initialized, it will call the observer function with `activity` of `undefined`. It will also be called with `undefined` when the transcript has changed and the focus need to be reset.
+
+Since the observer function will be called rapidly, please keep the code in the function as lightweight as possible.
+
+To stop observing scroll positions, pass a falsy value to the `observer` argument.
+
+> If there is more than one transcripts, any of them will trigger the observer function, and there is no clear distinction of which transcript the focus has changed.
 
 ## `usePerformCardAction`
 

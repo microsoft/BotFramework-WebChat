@@ -48,8 +48,9 @@
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
-        await host.sendKeys('ARROW_UP', 'ARROW_UP', 'ENTER');
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
         await waitForFocusedActivityInView();
+        await host.sendKeys('ENTER');
         await host.snapshot();
 
         // Press ESCAPE key should focus the activity.

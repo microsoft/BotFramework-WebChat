@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactTestUtils: { Simulate },
+        TestAsset: { generateTranscript, waitForFocusedActivityInView },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useObserveTranscriptFocus }
+        },
+        WebChatTest: {
+          conditions,
+          createDirectLineWithTranscript,
+          createStore,
+          elements,
+          expect,
+          host,
+          pageObjects,
+          timeouts,
+          token
+        }
+      } = window;
+
+      (async function () {
+        const directLine = createDirectLineWithTranscript(generateTranscript());
+        const store = createStore();
+        const transcriptFocusActivityIDHistory = [];
+
+        const transcriptFocusObserver = event => {
+          transcriptFocusActivityIDHistory.push(event.activity && event.activity.id);
+        };
+
+        const ObserveTranscriptFocus = () => {
+          useObserveTranscriptFocus(transcriptFocusObserver);
+
+          return false;
+        };
+
+        ReactDOM.render(
+          <Composer directLine={directLine} store={store}>
+            <BasicWebChat />
+            <ObserveTranscriptFocus />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+        // After the transcript is loaded, it should send an event saying it is not focusing on any activities.
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined]);
+
+        elements.sendBoxTextBox().focus();
+
+        // Should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // Should focus on activity with ID 31.
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31']);
+
+        // Should focus on activity with ID 30.
+        await host.sendKeys('ARROW_UP');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30']);
+
+        // Should focus on activity with ID 29, which is an Adaptive Card.
+        await host.sendKeys('ARROW_UP');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
+
+        // After pressing ENTER to interact with Adaptive Card, it should not send another event because focused activity didn't change.
+        await host.sendKeys('ENTER');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
+
+        // After pressing ESCAPE to focus back to the transcript, it should not send another event because focused activity didn't change.
+        await host.sendKeys('ESCAPE');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
+
+        // After sending a message, since the transcript has changed, the focus will be reset.
+        // It should send an event that the focused activity become undefined.
+        await host.sendKeys('A', 'ENTER');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined]);
+
+        // After focusing on an activity programmatically, it should send an event.
+        document.querySelector('.ac-input').focus();
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29']);
+
+        // After pressing ESCAPE to focus back to the transcript, it should not send another event because focused activity didn't change.
+        await host.sendKeys('ESCAPE');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29']);
+
+        // Should foucs on first activity after pressing HOME.
+        await host.sendKeys('HOME');
+        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29', '0']);
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>
