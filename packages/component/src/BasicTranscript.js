@@ -306,17 +306,6 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // Calling this function will put the focus on the transcript and the activity.
             focusActivity,
 
-            // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
-            // We should do the same for mouse, that is why we have the click handler here.
-            // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-            handleClickCapture: ({ target }) => {
-              const tabIndex = getTabIndex(target);
-
-              if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
-                focusActivity();
-              }
-            },
-
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
             handleFocus: () => {
               setFocusedActivityKey(getActivityUniqueId(activity));
@@ -332,6 +321,17 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 const { current } = rootElementRef;
 
                 current && current.focus();
+              }
+            },
+
+            // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
+            // We should do the same for mouse, that is why we have the click handler here.
+            // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
+            handleMouseDownCapture: ({ target }) => {
+              const tabIndex = getTabIndex(target);
+
+              if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
+                focusActivity();
               }
             },
 
@@ -775,11 +775,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               focusActivity,
-              handleClickCapture,
               handleFocus,
               handleKeyDown,
-              key,
+              handleMouseDownCapture,
               hideTimestamp,
+              key,
               renderActivity,
               renderActivityStatus,
               renderAvatar,
@@ -808,9 +808,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 /* eslint-disable-next-line react/forbid-dom-props */
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
-                onClickCapture={handleClickCapture}
                 onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
+                onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
                 <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
