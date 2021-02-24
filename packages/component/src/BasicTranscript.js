@@ -317,7 +317,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               }
             },
 
-            // When a children of the activity got focus, we should notify the transcript to set the aria-activedescendant to this activity.
+            // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
             handleFocus: () => {
               setFocusedActivityKey(getActivityUniqueId(activity));
             },
@@ -716,8 +716,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   ]);
 
   // This is required by IE11.
-  // With an empty transcript, when the user clicks on the empty space (a.k.a. filler), IE11 says the focus is on the <div className="filler">,
-  // despite there are no "tabIndex" attributes set on the filler.
+  // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
+  // despite the fact there are no "tabIndex" attributes set on the filler.
   // We need to artificially send the focus back to the transcript.
   const handleFocusFiller = useCallback(() => {
     const { current } = rootElementRef;

@@ -714,7 +714,7 @@ type TranscriptFocus {
 ```
 <!-- prettier-ignore-end -->
 
-This function accept an observer function. When the focus inside transcript has changed, the observer function will be called with the latest `TranscriptFocus`.
+This function accepts an observer function. When the focus inside transcript has changed, the observer function will be called with the latest `TranscriptFocus`.
 
 Initially, when the transcript is initialized, it will call the observer function with `activity` of `undefined`. It will also be called with `undefined` when the transcript has changed and the focus need to be reset.
 
