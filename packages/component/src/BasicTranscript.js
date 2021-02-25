@@ -743,6 +743,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       onKeyDown={handleTranscriptKeyDown}
       onKeyDownCapture={handleTranscriptKeyDownCapture}
       ref={rootElementRef}
+      // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
+      // https://www.w3.org/TR/wai-aria/#aria-activedescendant
+      role="group"
       // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
       // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
       // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
