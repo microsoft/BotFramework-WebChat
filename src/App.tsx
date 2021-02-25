@@ -478,11 +478,11 @@ const Sidebar = (theme: Theme) => `
   ${ExpandableKnobTheme(theme)}
 
   body .feedbot-wrapper:not(.collapsed) .feedbot-header {
-    height: 50px;
-    width: 50px;
+    height: 35px;
+    width: 35px;
     position: absolute;
-    left: -60px;
-    top: 10px;
+    right: 10px;
+    top: 20px;
 
     border-radius: 40px;
     padding: 0px;
@@ -493,7 +493,7 @@ const Sidebar = (theme: Theme) => `
 
     background-image: url('https://feedyou.blob.core.windows.net/webchat/times-solid.svg');
     background-repeat: no-repeat;
-    background-size: 20px;
+    background-size: 15px;
     background-position: center center;    
 
     /*backdrop-filter: blur(40px);
@@ -517,8 +517,11 @@ const Sidebar = (theme: Theme) => `
   }
 
   body .wc-app .wc-console {
-    /* TODO what about transparent background? */
+    border-radius: 16px;
+    margin: 0 12px 10px;
+    border: 1px solid #dbdee1;
   } 
+
 
   body .feedbot-wrapper.collapsed {
     bottom: 30px;
