@@ -194,24 +194,30 @@ function generateTranscript() {
 async function waitForFocusedActivityInView() {
   await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
 
-  await pageObjects.wait(() => {
-    const { offsetHeight: activityHeight, offsetTop: activityTop } = elements.focusedActivity();
-    const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = elements.transcriptScrollable();
+  await pageObjects.wait(
+    {
+      message: 'focused activity scroll into view',
+      fn: () => {
+        const { offsetHeight: activityHeight, offsetTop: activityTop } = elements.focusedActivity();
+        const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = elements.transcriptScrollable();
 
-    const activityBottom = activityHeight + activityTop;
-    const scrollableBottom = scrollableHeight + scrollableTop;
+        const activityBottom = activityHeight + activityTop;
+        const scrollableBottom = scrollableHeight + scrollableTop;
 
-    return (
-      (activityTop >= scrollableTop &&
-        activityTop <= scrollableBottom &&
-        activityBottom >= scrollableTop &&
-        activityBottom <= scrollableBottom) ||
-      (scrollableTop >= activityTop &&
-        scrollableTop <= activityBottom &&
-        scrollableBottom >= activityTop &&
-        scrollableBottom <= activityBottom)
-    );
-  }, timeouts.ui);
+        return (
+          (activityTop >= scrollableTop &&
+            activityTop <= scrollableBottom &&
+            activityBottom >= scrollableTop &&
+            activityBottom <= scrollableBottom) ||
+          (scrollableTop >= activityTop &&
+            scrollableTop <= activityBottom &&
+            scrollableBottom >= activityTop &&
+            scrollableBottom <= activityBottom)
+        );
+      }
+    },
+    timeouts.ui
+  );
 }
 
 window.TestAsset = {
