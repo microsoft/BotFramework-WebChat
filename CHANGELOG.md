@@ -67,6 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3747](https://github.com/microsoft/BotFramework-WebChat/issues/3747). `aria-pressed` and `aria-role` is not properly set on Adaptive Cards submit buttons, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3744](https://github.com/microsoft/BotFramework-WebChat/pull/3744)
 -  Fixes [#3750](https://github.com/microsoft/BotFramework-WebChat/issues/3750). Debump Node.js engines requirements for some packages to `12.0.0`, by [@compulim](https://github.com/compulim) in PR [#3753](https://github.com/microsoft/BotFramework-WebChat/pull/3753)
 -  Fixes [#3760](https://github.com/microsoft/BotFramework-WebChat/issues/3760). Use `<ErrorBoundary>` to wrap around attachment renderer, by [@compulim](https://github.com/compulim) in PR [#3761](https://github.com/microsoft/BotFramework-WebChat/pull/3761)
+-  Fixes [#3764](https://github.com/microsoft/BotFramework-WebChat/issues/3764). Added `role="group"` to the focusable transcript to enable `aria-activedescendant`, by [@compulim](https://github.com/compulim) in PR [#3765](https://github.com/microsoft/BotFramework-WebChat/issues/3765)
 
 ### Changed
 
