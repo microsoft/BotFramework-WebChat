@@ -41,6 +41,15 @@
         document.querySelector('.ac-adaptiveCard input').focus();
         document.querySelector('.ac-adaptiveCard input').click();
 
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
+
+        // After focusing/clicking on any <input> inside the Adaptive Card, <BasicTranscript> should not call scrollIntoView().
+        // We should not move the scrollable if the user is already focusing in it.
+
+        const scrollable = elements.transcriptScrollable();
+
+        expect(scrollable.scrollTop).toBe(scrollable.scrollHeight - scrollable.offsetHeight);
+
         await host.done();
       })().catch(async err => {
         console.error(err);

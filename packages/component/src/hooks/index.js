@@ -2,6 +2,7 @@ import useDictateAbortable from './useDictateAbortable';
 import useFocus from './useFocus';
 import useFocusSendBox from './useFocusSendBox';
 import useObserveScrollPosition from './useObserveScrollPosition';
+import useObserveTranscriptFocus from './useObserveTranscriptFocus';
 import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollDown from './useScrollDown';
 import useScrollTo from './useScrollTo';
@@ -23,6 +24,7 @@ export {
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,
   useObserveScrollPosition,
+  useObserveTranscriptFocus,
   useRenderMarkdownAsHTML,
   useScrollDown,
   useScrollTo,
