@@ -3,6 +3,9 @@ extends:
 plugins:
 - prettier
 - react-hooks
+- '@typescript-eslint/eslint-plugin'
+parser:
+  '@typescript-eslint/parser'
 rules:
 # plugins
   prettier/prettier: error
