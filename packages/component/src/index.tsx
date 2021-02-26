@@ -33,7 +33,6 @@ import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddle
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 import { concatMiddleware, hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
@@ -44,6 +43,7 @@ const hooks = {
   ...componentHooks
 };
 
+// eslint-disable-next-line no-undef
 const version = process.env.npm_package_version;
 
 const Components = {
@@ -99,7 +99,6 @@ export {
   createCoreActivityStatusMiddleware,
   createCoreAttachmentMiddleware,
   createStyleSet,
-  defaultStyleOptions,
   getTabIndex,
   hooks,
   localize,
