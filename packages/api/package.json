@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "React DOM component of botframework-webchat",
   "main": "lib/index.js",
+  "typings": "types/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
