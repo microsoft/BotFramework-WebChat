@@ -47,7 +47,11 @@ import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import WebChatAPIContext from './internal/WebChatAPIContext';
 
-import applyMiddleware, { forRenderer as applyMiddlewareForRenderer } from './middleware/applyMiddleware';
+import applyMiddleware, {
+  forLegacyRenderer as applyMiddlewareForLegacyRenderer,
+  forRenderer as applyMiddlewareForRenderer
+} from './middleware/applyMiddleware';
+
 import patchStyleOptions from '../patchStyleOptions';
 import singleToArray from './utils/singleToArray';
 
@@ -349,13 +353,17 @@ const Composer = ({
     }
 
     // Attachment renderer
-    return applyMiddleware('attachment', ...singleToArray(attachmentMiddleware), () => () => ({ attachment }) => {
-      if (attachment) {
-        throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-      } else {
-        throw new Error('No attachment to render');
+    return applyMiddlewareForLegacyRenderer(
+      'attachment',
+      ...singleToArray(attachmentMiddleware),
+      () => () => ({ attachment }) => {
+        if (attachment) {
+          throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+        } else {
+          throw new Error('No attachment to render');
+        }
       }
-    })({});
+    )({});
   }, [attachmentMiddleware, attachmentRenderer]);
 
   const patchedAvatarRenderer = useMemo(() => {

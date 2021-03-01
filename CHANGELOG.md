@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3562](https://github.com/microsoft/BotFramework-WebChat/issues/3562). Add button word wrap to suggested actions stacked layout, by [@corinagum](https://github.com/corinagum), in PR [#3728](https://github.com/microsoft/BotFramework-WebChat/pull/3728) and [#3745](https://github.com/microsoft/BotFramework-WebChat/pull/3745)
 -  Resolves [#3658](https://github.com/microsoft/BotFramework-WebChat/issues/3658). Added new `containerRole` to default style options, by [@nfreear](https://github.com/nfreear) in PR [#3669](https://github.com/microsoft/BotFramework-WebChat/pull/3669)
 -  Resolves [#3754](https://github.com/microsoft/BotFramework-WebChat/issues/3754). Added new `useObserveTranscriptFocus` hook, by [@compulim](https://github.com/compulim) in PR [#3755](https://github.com/microsoft/BotFramework-WebChat/pull/3755)
+-  Translation for Yue, by [@compulim](https://github.com/compulim) in PR [#3749](https://github.com/microsoft/BotFramework-WebChat/pulls/3749)
 
 ### Fixed
 
@@ -65,6 +66,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3618](https://github.com/microsoft/BotFramework-WebChat/issues/3618). Fix Adaptive Cards anchors being disabled when Adaptive Cards is obsolete, by [@corinagum](https://github.com/corinagum) in PR [#3687](https://github.com/microsoft/BotFramework-WebChat/pull/3687)
 -  Fixes [#3747](https://github.com/microsoft/BotFramework-WebChat/issues/3747). `aria-pressed` and `aria-role` is not properly set on Adaptive Cards submit buttons, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3744](https://github.com/microsoft/BotFramework-WebChat/pull/3744)
 -  Fixes [#3750](https://github.com/microsoft/BotFramework-WebChat/issues/3750). Debump Node.js engines requirements for some packages to `12.0.0`, by [@compulim](https://github.com/compulim) in PR [#3753](https://github.com/microsoft/BotFramework-WebChat/pull/3753)
+-  Fixes [#3760](https://github.com/microsoft/BotFramework-WebChat/issues/3760). Use `<ErrorBoundary>` to wrap around attachment renderer, by [@compulim](https://github.com/compulim) in PR [#3761](https://github.com/microsoft/BotFramework-WebChat/pull/3761)
+-  Fixes [#3764](https://github.com/microsoft/BotFramework-WebChat/issues/3764). Added `role="group"` to the focusable transcript to enable `aria-activedescendant`, by [@compulim](https://github.com/compulim) in PR [#3765](https://github.com/microsoft/BotFramework-WebChat/issues/3765)
 
 ### Changed
 

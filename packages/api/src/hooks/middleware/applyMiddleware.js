@@ -10,6 +10,27 @@ export default function applyMiddleware(type, ...middleware) {
       throw new Error(`reached terminator of ${type}`);
     });
 }
+
+export function forLegacyRenderer(type, ...middleware) {
+  return (...setupArgs) => {
+    const fn = concatMiddleware(...middleware)(...setupArgs)(() => {
+      throw new Error(`reached terminator of ${type}`);
+    });
+
+    return (...args) => (
+      <UserlandBoundary type={`render of ${type}`}>
+        {() => {
+          try {
+            return fn(...args);
+          } catch (err) {
+            return <ErrorBox error={err} type={`render of ${type}`} />;
+          }
+        }}
+      </UserlandBoundary>
+    );
+  };
+}
+
 /**
  *
  * @param {string} type Required. String equivalent of type of container to be rendered.
@@ -40,6 +61,7 @@ export function forRenderer(type, { strict = false } = {}, ...middleware) {
 
           return <UserlandBoundary type={`render of ${type}`}>{render}</UserlandBoundary>;
         }
+
         return (...renderTimeArgs) => (
           <UserlandBoundary type={`render of ${type}`}>
             {() => {
@@ -52,13 +74,13 @@ export function forRenderer(type, { strict = false } = {}, ...middleware) {
 
                 return element;
               } catch (err) {
-                return <ErrorBox error={err} type={type} />;
+                return <ErrorBox error={err} type={`render of ${type}`} />;
               }
             }}
           </UserlandBoundary>
         );
       } catch (err) {
-        return <ErrorBox error={err} type={type} />;
+        return <ErrorBox error={err} type={`render of ${type}`} />;
       }
     };
   };
