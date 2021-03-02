@@ -76,18 +76,20 @@
         const BotActivityDecorator = ({ activityID, children }) => {
           const postActivity = usePostActivity();
 
-          const handleDownvoteButton = useCallback(() => {
+          const addMessageReaction = helpful => {
             postActivity({
               type: 'messageReaction',
-              reactionsAdded: [{ activityID, helpful: -1 }]
+              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
+              replyToId: activityID
             });
+          };
+
+          const handleDownVoteButton = useCallback(() => {
+            addMessageReaction(-1);
           }, [activityID, postActivity]);
 
-          const handleUpvoteButton = useCallback(() => {
-            postActivity({
-              type: 'messageReaction',
-              reactionsAdded: [{ activityID, helpful: 1 }]
-            });
+          const handleUpVoteButton = useCallback(() => {
+            addMessageReaction(1);
           }, [activityID, postActivity]);
 
           return (
