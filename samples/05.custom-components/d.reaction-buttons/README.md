@@ -124,20 +124,20 @@ The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPos
 +   const postActivity = usePostActivity();
 +
 +   const addMessageReaction = helpful => {
-            postActivity({
-              type: 'messageReaction',
-              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
-              replyToId: activityID
-            });
-          };
-
-    const handleDownVoteButton = useCallback(() => {
-      addMessageReaction(-1);
-    }, [activityID, postActivity]);
-
-    const handleUpVoteButton = useCallback(() => {
-      addMessageReaction(1);
-    }, [activityID, postActivity]);
++            postActivity({
++              type: 'messageReaction',
++              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
++              replyToId: activityID
++            });
++          };
++
++    const handleDownVoteButton = useCallback(() => {
++      addMessageReaction(-1);
++    }, [activityID, postActivity]);
++
++    const handleUpVoteButton = useCallback(() => {
++      addMessageReaction(1);
++    }, [activityID, postActivity]);
 
     return (
       <div className="botActivityDecorator">
