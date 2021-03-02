@@ -105,8 +105,8 @@ Then, apply the style sheet to our React component.
 
 Then, add business logic to the component:
 
--  When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
--  When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
+-  When the upVote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
+-  When the downVote button is clicked, send a post back activity with `helpful` of `-1`.
 
 The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostback` function.
 
@@ -123,19 +123,21 @@ The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPos
 + const BotActivityDecorator = ({ activityID, children }) => {
 +   const postActivity = usePostActivity();
 +
-+   const handleDownvoteButton = useCallback(() => {
-+     postActivity({
-+       type: 'messageReaction',
-+         reactionsAdded: [{ activityID, helpful: -1 }]
-+     });
-+   }, [activityID, postActivity]);
++   const addMessageReaction = helpful => {
++            postActivity({
++              type: 'messageReaction',
++              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
++              replyToId: activityID
++            });
++          };
 +
-+   const handleUpvoteButton = useCallback(() => {
-+     postActivity({
-+       type: 'messageReaction',
-+       reactionsAdded: [{ activityID, helpful: 1 }]
-+     });
-+   }, [activityID, postActivity]);
++    const handleDownVoteButton = useCallback(() => {
++      addMessageReaction(-1);
++    }, [activityID, postActivity]);
++
++    const handleUpVoteButton = useCallback(() => {
++      addMessageReaction(1);
++    }, [activityID, postActivity]);
 
     return (
       <div className="botActivityDecorator">
