@@ -1,4 +1,5 @@
-import { isValidElement } from 'react';
+/* eslint-disable no-use-before-define */
+import React, { isValidElement } from 'react';
 
 import concatMiddleware from './concatMiddleware';
 import ErrorBox from '../internal/ErrorBox';

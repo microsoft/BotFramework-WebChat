@@ -1,5 +1,6 @@
+/* eslint-disable no-use-before-define */
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
 import ErrorBox from '../internal/ErrorBox';

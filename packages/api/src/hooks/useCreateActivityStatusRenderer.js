@@ -1,7 +1,8 @@
+/* eslint-disable no-use-before-define */
 /* eslint react/prop-types: "off"*/
 
 import { Constants } from 'botframework-webchat-core';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';

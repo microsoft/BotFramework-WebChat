@@ -1,6 +1,7 @@
+/* eslint-disable no-use-before-define */
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
 import createCustomEvent from '../utils/createCustomEvent';
