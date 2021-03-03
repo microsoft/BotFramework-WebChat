@@ -11,6 +11,10 @@ export function renderExpandableTemplate(props: AppProps) {
   const wrapper = document.createElement("div");
   wrapper.className = "feedbot-wrapper collapsed";
 
+  const signature = document.createElement("div");
+  signature.classList.add("feedbot-signature");
+  signature.innerHTML = 'with ❤️ by <a class="signature-link" target="_blank" href="https://feedyou.ai/?utm_source=webchat&utm_medium=chatbot&utm_campaign=feedyou_2021"><img src="https://cdn.feedyou.ai/webchat/feedyou_logo_red.png" alt="logo" /></a>';
+
   const header = document.createElement("div");
   header.className = "feedbot-header";
   header.style.backgroundColor =
@@ -33,9 +37,12 @@ export function renderExpandableTemplate(props: AppProps) {
     localStorage &&
       (localStorage.feedbotClosed = wrapper.classList.contains("collapsed"));
   };
-  wrapper.appendChild(header);
 
+  wrapper.appendChild(header);
   wrapper.appendChild(container);
+  props.showSignature && wrapper.appendChild(signature);
+  
+
   document.body.appendChild(wrapper);
 
   if (
