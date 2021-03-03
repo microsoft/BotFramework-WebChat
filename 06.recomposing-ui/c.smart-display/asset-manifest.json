@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/css/main.d436591c.chunk.css",
-    "main.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/main.fbe2b0ee.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/main.fbe2b0ee.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/main.166ba6a8.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/main.166ba6a8.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/runtime-main.2021ab61.js",
     "runtime-main.js.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/runtime-main.2021ab61.js.map",
-    "static/js/2.90c7ab57.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.90c7ab57.chunk.js",
-    "static/js/2.90c7ab57.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.90c7ab57.chunk.js.map",
+    "static/js/2.e2361650.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.e2361650.chunk.js",
+    "static/js/2.e2361650.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.e2361650.chunk.js.map",
     "index.html": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/index.html",
-    "precache-manifest.0300ae25846bf5a47e42b4207014183b.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/precache-manifest.0300ae25846bf5a47e42b4207014183b.js",
+    "precache-manifest.909f5d51c482f5cf795db9c7ca8690b6.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/precache-manifest.909f5d51c482f5cf795db9c7ca8690b6.js",
     "service-worker.js": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/service-worker.js",
     "static/css/main.d436591c.chunk.css.map": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/css/main.d436591c.chunk.css.map",
-    "static/js/2.90c7ab57.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.90c7ab57.chunk.js.LICENSE.txt",
+    "static/js/2.e2361650.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/js/2.e2361650.chunk.js.LICENSE.txt",
     "static/media/index.css": "/BotFramework-WebChat/06.recomposing-ui/c.smart-display/static/media/img102.10fc115d.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.2021ab61.js",
-    "static/js/2.90c7ab57.chunk.js",
+    "static/js/2.e2361650.chunk.js",
     "static/css/main.d436591c.chunk.css",
-    "static/js/main.fbe2b0ee.chunk.js"
+    "static/js/main.166ba6a8.chunk.js"
   ]
 }

@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/main.8cbcc0c8.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/main.8cbcc0c8.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/main.451c1c1f.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/main.451c1c1f.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/runtime-main.0f2ac0dc.js",
     "runtime-main.js.map": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/runtime-main.0f2ac0dc.js.map",
-    "static/js/2.ca9e503a.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.ca9e503a.chunk.js",
-    "static/js/2.ca9e503a.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.ca9e503a.chunk.js.map",
+    "static/js/2.f09cdbe4.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.f09cdbe4.chunk.js",
+    "static/js/2.f09cdbe4.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.f09cdbe4.chunk.js.map",
     "index.html": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/index.html",
-    "precache-manifest.c89fe66d2bc8437001580754c0308e76.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/precache-manifest.c89fe66d2bc8437001580754c0308e76.js",
+    "precache-manifest.65d21e667af7cbab0d133701c49943c5.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/precache-manifest.65d21e667af7cbab0d133701c49943c5.js",
     "service-worker.js": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/service-worker.js",
-    "static/js/2.ca9e503a.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.ca9e503a.chunk.js.LICENSE.txt"
+    "static/js/2.f09cdbe4.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/static/js/2.f09cdbe4.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.0f2ac0dc.js",
-    "static/js/2.ca9e503a.chunk.js",
-    "static/js/main.8cbcc0c8.chunk.js"
+    "static/js/2.f09cdbe4.chunk.js",
+    "static/js/main.451c1c1f.chunk.js"
   ]
 }

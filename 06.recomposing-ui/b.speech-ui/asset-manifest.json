@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/css/main.ca8c3889.chunk.css",
-    "main.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/main.f8069617.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/main.f8069617.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/main.d4b9d81e.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/main.d4b9d81e.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/runtime-main.19ad7f33.js",
     "runtime-main.js.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/runtime-main.19ad7f33.js.map",
-    "static/js/2.1d5a8bf4.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.1d5a8bf4.chunk.js",
-    "static/js/2.1d5a8bf4.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.1d5a8bf4.chunk.js.map",
+    "static/js/2.5e2547a8.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.5e2547a8.chunk.js",
+    "static/js/2.5e2547a8.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.5e2547a8.chunk.js.map",
     "index.html": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/index.html",
-    "precache-manifest.acf2032a580b31d600d02fcd1fa88a22.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/precache-manifest.acf2032a580b31d600d02fcd1fa88a22.js",
+    "precache-manifest.fc476609d836e7aea4ecba58ec30f315.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/precache-manifest.fc476609d836e7aea4ecba58ec30f315.js",
     "service-worker.js": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/service-worker.js",
     "static/css/main.ca8c3889.chunk.css.map": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/css/main.ca8c3889.chunk.css.map",
-    "static/js/2.1d5a8bf4.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.1d5a8bf4.chunk.js.LICENSE.txt"
+    "static/js/2.5e2547a8.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/static/js/2.5e2547a8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.19ad7f33.js",
-    "static/js/2.1d5a8bf4.chunk.js",
+    "static/js/2.5e2547a8.chunk.js",
     "static/css/main.ca8c3889.chunk.css",
-    "static/js/main.f8069617.chunk.js"
+    "static/js/main.d4b9d81e.chunk.js"
   ]
 }

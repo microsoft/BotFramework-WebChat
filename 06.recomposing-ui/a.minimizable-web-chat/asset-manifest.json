@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/css/main.13626e63.chunk.css",
-    "main.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/main.9b915e10.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/main.9b915e10.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/main.73fa921a.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/main.73fa921a.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/runtime-main.3eb27430.js",
     "runtime-main.js.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/runtime-main.3eb27430.js.map",
-    "static/js/2.5186491b.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.5186491b.chunk.js",
-    "static/js/2.5186491b.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.5186491b.chunk.js.map",
+    "static/js/2.64cca380.chunk.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.64cca380.chunk.js",
+    "static/js/2.64cca380.chunk.js.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.64cca380.chunk.js.map",
     "index.html": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/index.html",
-    "precache-manifest.fd53b3f710bda03654451a24795bcba5.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/precache-manifest.fd53b3f710bda03654451a24795bcba5.js",
+    "precache-manifest.726cd7b6a098dfd3cddec78a253bfcf5.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/precache-manifest.726cd7b6a098dfd3cddec78a253bfcf5.js",
     "service-worker.js": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/service-worker.js",
     "static/css/main.13626e63.chunk.css.map": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/css/main.13626e63.chunk.css.map",
-    "static/js/2.5186491b.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.5186491b.chunk.js.LICENSE.txt",
+    "static/js/2.64cca380.chunk.js.LICENSE.txt": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/js/2.64cca380.chunk.js.LICENSE.txt",
     "static/media/WebPage.jpg": "/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/static/media/WebPage.d6d7485a.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.3eb27430.js",
-    "static/js/2.5186491b.chunk.js",
+    "static/js/2.64cca380.chunk.js",
     "static/css/main.13626e63.chunk.css",
-    "static/js/main.9b915e10.chunk.js"
+    "static/js/main.73fa921a.chunk.js"
   ]
 }

@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/css/main.81c4ed98.chunk.css",
-    "main.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/main.a04fccbe.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/main.a04fccbe.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/main.b49ba988.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/main.b49ba988.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/runtime-main.e34736fa.js",
     "runtime-main.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/runtime-main.e34736fa.js.map",
-    "static/js/2.7d187c07.chunk.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.7d187c07.chunk.js",
-    "static/js/2.7d187c07.chunk.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.7d187c07.chunk.js.map",
+    "static/js/2.ec3c7e3e.chunk.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js",
+    "static/js/2.ec3c7e3e.chunk.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js.map",
     "index.html": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/index.html",
-    "precache-manifest.6a42701af2ae850fe7edb5559a0240a7.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/precache-manifest.6a42701af2ae850fe7edb5559a0240a7.js",
+    "precache-manifest.34154810f0fdb9c2b0f1efbde714cf8f.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/precache-manifest.34154810f0fdb9c2b0f1efbde714cf8f.js",
     "service-worker.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/service-worker.js",
     "static/css/main.81c4ed98.chunk.css.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/css/main.81c4ed98.chunk.css.map",
-    "static/js/2.7d187c07.chunk.js.LICENSE": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.7d187c07.chunk.js.LICENSE"
+    "static/js/2.ec3c7e3e.chunk.js.LICENSE": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.e34736fa.js",
-    "static/js/2.7d187c07.chunk.js",
+    "static/js/2.ec3c7e3e.chunk.js",
     "static/css/main.81c4ed98.chunk.css",
-    "static/js/main.a04fccbe.chunk.js"
+    "static/js/main.b49ba988.chunk.js"
   ]
 }
