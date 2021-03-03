@@ -34,6 +34,7 @@
     "adaptivecards": "2.5.0",
     "botframework-directlinejs": "0.14.1",
     "botframework-directlinespeech-sdk": "0.0.0-0",
+    "botframework-webchat-api": "^0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.2.6",
