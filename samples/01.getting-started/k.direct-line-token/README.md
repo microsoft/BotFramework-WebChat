@@ -183,7 +183,7 @@ DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 
 ## What if I need a consistent user ID across sessions/devices?
 
-Instead of randomly generating user IDs, the backend API could leverage a user's existing identity from a true identity provider. The user would first sign in to the site before talking to the bot. That way, if the user signs in using the same identity on a different browser or device, the user ID will be the same. This also prevents user impersonation because we can verify the user's identity with the identity provider.
+Instead of randomly generating user IDs, the backend API could leverage a user's existing identity from a true identity provider. The user would first sign in to the site before talking to the bot. That way, if the user signed in using the same identity on a different browser or device, the user ID would be the same. This would also prevent user impersonation because we could verify the user's identity with the identity provider before issuing a Direct Line token.
 
 The flow could be:
 
