@@ -38,9 +38,8 @@ STATIC_FILES &&
     })
   );
 
-  server.listen(PORT, () => {
-    STATIC_FILES && console.log(`Will serve static content from ${STATIC_FILES}`);
-  
-    console.log(`Rest API server is listening to port ${PORT}`);
-  });
-  
+server.listen(PORT, () => {
+  STATIC_FILES && console.log(`Will serve static content from ${STATIC_FILES}`);
+
+  console.log(`Rest API server is listening to port ${PORT}`);
+});
