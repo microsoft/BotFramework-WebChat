@@ -56,6 +56,8 @@ export default class DirectLineSpeech {
               // Since DLSpeech service never ACK our outgoing activity, this activity must be from bot.
               role: 'bot'
             },
+            // Since DLSpeech never ACK our outgoing activity, the "replyToId" will rarely able to point to an existing activity.
+            replyToId: undefined,
             // Direct Line Speech server currently do not timestamp outgoing activities.
             // Thus, it will be easier to just re-timestamp every incoming/outgoing activities using local time.
             timestamp: new Date().toISOString()
