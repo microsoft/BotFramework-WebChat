@@ -660,7 +660,7 @@ const ExpandableBarTheme = (theme: Theme) => `
     position: fixed;
     right: 5%;
     bottom: 0px;
-    z-index: 10000;
+    z-index: 100000;
 
     -webkit-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
     -moz-box-shadow: 0px 0px 10px 0px rgba(167, 167, 167, 0.35);
