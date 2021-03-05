@@ -1,6 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { hooks as APIHooks } from 'botframework-webchat-api';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -9,9 +8,8 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
-const { useStyleOptions } = APIHooks;
 const { ErrorBox } = Components;
-const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd } = hooks;
+const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
 // eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
@@ -226,7 +224,7 @@ function saveInputValues(element) {
 }
 
 const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled: disabledFromProps, tapAction }) => {
-  const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleOptions();
+  const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [actionsPerformed, setActionsPerformed] = useState([]);
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();

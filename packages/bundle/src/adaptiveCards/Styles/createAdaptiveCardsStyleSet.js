@@ -1,5 +1,4 @@
-import { defaultStyleOptions } from 'botframework-webchat-component';
-
+import { defaultStyleOptions } from 'botframework-webchat-api';
 import createAdaptiveCardRendererStyle from './StyleSet/AdaptiveCardRenderer';
 import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
