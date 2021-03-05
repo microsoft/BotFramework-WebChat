@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-component';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useAdaptiveCardsPackage from '../useAdaptiveCardsPackage';
 
-const { useDirection } = hooks;
+const { useDirection, useStyleOptions } = hooks;
 
 function updateRTLInline(element, rtl, adaptiveCardsPackage) {
   if (element instanceof adaptiveCardsPackage.Container) {
@@ -25,8 +25,19 @@ function updateRTLInline(element, rtl, adaptiveCardsPackage) {
 export default function useParseAdaptiveCardJSON() {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
+  const [{ adaptiveCardsParserMaxVersion }] = useStyleOptions();
 
-  const { AdaptiveCard, SerializationContext } = adaptiveCardsPackage;
+  const { AdaptiveCard, SerializationContext, Version } = adaptiveCardsPackage;
+
+  const maxVersion = useMemo(() => {
+    const maxVersion = Version.parse(adaptiveCardsParserMaxVersion, new SerializationContext());
+
+    if (maxVersion && !maxVersion.isValid) {
+      return console.warn('botframework-webchat: "adaptiveCardsParserMaxVersion" specified is not a valid version.');
+    }
+
+    return maxVersion;
+  }, [adaptiveCardsParserMaxVersion]);
 
   return useCallback(
     (content, { ignoreErrors = false } = {}) => {
@@ -36,7 +47,7 @@ export default function useParseAdaptiveCardJSON() {
 
       const card = new AdaptiveCard();
       const errors = [];
-      const serializationContext = new SerializationContext();
+      const serializationContext = new SerializationContext(maxVersion);
 
       card.parse(content, serializationContext);
 
@@ -56,6 +67,6 @@ export default function useParseAdaptiveCardJSON() {
 
       return card;
     },
-    [AdaptiveCard, adaptiveCardsPackage, direction, SerializationContext]
+    [AdaptiveCard, adaptiveCardsPackage, direction, maxVersion, SerializationContext]
   );
 }
