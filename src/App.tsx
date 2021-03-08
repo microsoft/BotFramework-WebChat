@@ -63,8 +63,12 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         token: body.token,
       });
       delete props.directLine;
-
-      if (body.testMode && window.location.hash !== "#feedbot-test-mode") {
+      
+      // TODO configurable template system based on config
+      const config = body.config;
+      const alwaysVisible = config.visibility === 'always'
+      const neverVisible = config.visibility === 'never'
+      if (neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
         document
           .getElementsByTagName("body")[0]
           .classList.add("feedbot-disabled");
@@ -75,8 +79,6 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           .classList.add("feedbot-enabled");
       }
 
-      // TODO configurable template system based on config
-      const config = body.config;
       if (config && config.template) {
         props.theme = {
           ...props.theme,
