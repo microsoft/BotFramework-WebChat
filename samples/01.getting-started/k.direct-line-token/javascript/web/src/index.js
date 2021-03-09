@@ -34,7 +34,7 @@ STATIC_FILES &&
     '/**/*',
     restify.plugins.serveStatic({
       default: 'index.html',
-      directory: join(__dirname, '..', STATIC_FILES)
+      directory: join(__dirname, '..', '..', '..', STATIC_FILES)
     })
   );
 
