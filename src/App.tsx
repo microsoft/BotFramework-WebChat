@@ -18,6 +18,7 @@ export type Theme = {
 export type AppProps = ChatProps & {
   theme?: Theme;
   header?: { textWhenCollapsed?: string; text: string };
+  channel?: {index?: number, id?: string},
   autoExpandTimeout?: number;
   showSignature?: boolean
 };
@@ -52,6 +53,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           },
           body: JSON.stringify({
             user: props.user,
+            channel: props.channel
           }),
         }
       );
