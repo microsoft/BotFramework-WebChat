@@ -482,12 +482,6 @@ You can only specify speech recognition language at initialization time. You can
 
 [Proactive message](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0&tabs=csharp) is not supported when using Direct Line Speech.
 
-### Emulator is not supported
-
-> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2683) if this behavior is not desirable.
-
-Currently, Emulator only support Direct Line protocol. We are planning to add Direct Line Speech protocol to Emulator.
-
 ### Abort recognition is not supported
 
 > Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2664) if this behavior is not desirable.
