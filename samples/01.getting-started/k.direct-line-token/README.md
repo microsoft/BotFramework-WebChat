@@ -200,7 +200,7 @@ The resulting Direct Line token will be bound to the passed user ID.
 
 ## Calling the API and rendering Web Chat
 
-The UI calls the API and uses the resulting Direct Line token to render Web Chat:
+The client-side page calls the API and uses the resulting Direct Line token to render Web Chat:
 
 ```js
 // public/index.html
