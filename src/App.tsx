@@ -68,8 +68,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       
       // TODO configurable template system based on config
       const config = body.config;
-      const alwaysVisible = config.visibility === 'always'
-      const neverVisible = config.visibility === 'never'
+      const alwaysVisible = config && config.visibility === 'always'
+      const neverVisible = config && config.visibility === 'never'
       if (neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
         document
           .getElementsByTagName("body")[0]
