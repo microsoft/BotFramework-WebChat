@@ -24,20 +24,45 @@ This demo includes a bot that you will run locally, so before running the code, 
 
 To host this demo, you will need to clone the code and run locally.
 
+<details><summary>JavaScript</summary>
+
 1. Clone this repository
 1. Create two empty files for environment variables, `/bot/.env` and `/web/.env`
+
+</details>
+
+<details><summary>C#</summary>
+
+1. Clone this repository
+1. Open the two `appsettings.json` files at `/bot/appsettings.json` and `/web/appsettings.json`
+
+</details>
 
 ## Setup Azure Bot Services
 
 > We prefer to use [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0). Then save the resulting IDs/secrets into the appropriate local environment files, depending on your language:
+
+<details><summary>JavaScript</summary>
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
    -  `MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6`
 1. Save the Web Chat secret to `/web/.env`
    -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
+
+</details>
+
+<details><summary>C#</summary>
+
+1. Save the Microsoft App ID and password to `/bot/appsettings.json`
+   - `"MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd"`
+   - `"MicrosoftAppPassword": "a1b2c3d4e5f6"`
+1. Save the Web Chat secret to `/web/appsettings.json`
+   - `"DirectLineSecret": "a1b2c3.d4e5f6g7h8i9j0"`
+
+</details>
 
 During development, you will run your bot locally. Azure Bot Services will send activities to your bot thru a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
 
@@ -52,9 +77,22 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 ## Prepare and run the code
 
-1. Under each of `bot`, and `web` folder, run the following
-   1. `npm install`
-   1. `npm start`
+1. Under each of `bot`, and `web` folder, run the following commands, depending on your language:
+
+    <details><summary>JavaScript</summary>
+
+    1. `npm install`
+    1. `npm start`
+
+    </details>
+
+    <details><summary>C#</summary>
+
+    1. `dotnet build`
+    1. `dotnet run`
+
+    </details>
+
 1. Browse to http://localhost:5000/ to start the demo
 
 # Things to try out
@@ -76,6 +114,8 @@ The code is organized into two separate folders:
 
 In this sample, the user is anonymous, so the API randomly generates a user ID:
 
+<details><summary>JavaScript</summary>
+
 ```js
 // web/src/routes/directLine/token.js
 
@@ -85,11 +125,32 @@ async function generateRandomUserId() {
 }
 ```
 
+</details>
+
+<details><summary>C#</summary>
+
+```csharp
+// web/Controllers/DirectLineController.cs
+
+private static string GenerateRandomUserId()
+{
+    byte[] tokenData = new byte[16];
+    using var rng = new RNGCryptoServiceProvider();
+    rng.GetBytes(tokenData);
+
+    return $"dl_{BitConverter.ToString(tokenData).Replace("-", "").ToLower()}";
+}
+```
+
+</details>
+
 The user ID is prefixed with "dl_" as required by the [Direct Line token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token).
 
 ## Retrieving a user-specific Direct Line token
 
 The backend API calls the Direct Line API to retrieve a Direct Line token. Notice that we pass the user ID in the body of the request:
+
+<details><summary>JavaScript</summary>
 
 ```js
 // web/src/generateDirectLineToken.js
@@ -112,6 +173,29 @@ async function generateDirectLineToken(secret, userId) {
 };
 ```
 
+</details>
+
+<details><summary>C#</summary>
+
+```csharp
+// web/Controllers/DirectLineController.cs
+
+var tokenRequestBody = new { user = new { id = randomUserId } };
+var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate")
+{
+    Headers =
+    {
+        Authorization = new AuthenticationHeaderValue("Bearer", _directLineSecret),
+    },
+    Content = new StringContent(JsonSerializer.Serialize(tokenRequestBody), Encoding.UTF8, MediaTypeNames.Application.Json),
+};
+
+var httpClient = _httpClientFactory.CreateClient();
+var tokenResponse = await httpClient.SendAsync(tokenRequest);
+```
+
+</details>
+
 The resulting Direct Line token will be bound to the passed user ID.
 
 ## Calling the API and rendering Web Chat
@@ -119,7 +203,7 @@ The resulting Direct Line token will be bound to the passed user ID.
 The UI calls the API and uses the resulting Direct Line token to render Web Chat:
 
 ```js
-// web/public/index.html
+// public/index.html
 
 const { token } = await fetchJSON('/api/directline/token');
 
@@ -160,11 +244,13 @@ To avoid impersonation, the recommended approach is for the server to bind a use
 
 To keep things simple, this sample generates a random user ID on the server-side and binds it to the Direct Line token. While this mitigates impersonation concerns, the downside is that users will have a different ID every time they talk to the bot.
 
-## Content of the `.env` files
+## Content of the local environment files
 
-The `.env` file hold the environment variable critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend to keep them in [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/), for simplicity of this sample, we would keep them in `.env` files.
+The `.env` / `appsettings.json` files hold the environment variable critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend to keep them in [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/), for simplicity of this sample, we would keep them in local environment files.
 
-To ease the setup of this sample, here is the template of `.env` files.
+To ease the setup of this sample, here is the template of the local environment files for each language.
+
+<details><summary>JavaScript</summary>
 
 ### `/bot/.env`
 
@@ -178,6 +264,45 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 ```
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 ```
+
+</details>
+
+<details><summary>C#</summary>
+
+### `/bot/appsettings.json`
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd",
+  "MicrosoftAppPassword": "a1b2c3d4e5f6"
+}
+```
+
+### `/web/appsettings.json`
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "DirectLineSecret": "a1b2c3.d4e5f6g7h8i9j0"
+}
+```
+
+</details>
 
 # Frequently asked questions
 
