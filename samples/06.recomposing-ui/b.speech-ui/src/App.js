@@ -30,8 +30,10 @@ export default class App extends Component {
     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
     const { token } = await res.json();
     const webSpeechPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
-      authorizationToken: fetchSpeechServicesToken,
-      region: await fetchSpeechServicesRegion()
+      credentials: {
+        authorizationToken: await fetchSpeechServicesToken(),
+        region: await fetchSpeechServicesRegion()
+      }
     });
 
     this.setState(() => ({
