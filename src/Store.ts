@@ -37,6 +37,24 @@ export const sendFiles = (files: FileList, from: User, locale: string) => ({
         locale
     }} as ChatActions);
 
+export const sendScreenshot = (screen: string, from: User, locale: string) => {
+  return {
+    type: "Send_Message",
+    activity: {
+      type: "message",
+      attachments: [
+        {
+          contentType: "image/png" as MediaType,
+          contentUrl: screen,
+          name: "screenshot.png",
+        } as Media,
+      ],
+      from,
+      locale,
+    },
+  } as ChatActions;
+};
+    
 const attachmentsFromFiles = (files: FileList) => {
     const attachments: Media[] = [];
     for (let i = 0, numFiles = files.length; i < numFiles; i++) {

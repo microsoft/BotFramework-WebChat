@@ -34,10 +34,12 @@
   "license": "MIT",
   "dependencies": {
     "@types/google.analytics": "0.0.40",
+    "@types/html2canvas": "0.0.36",
     "adaptivecards": "1.0.0",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",
     "core-js": "2.4.1",
+    "html2canvas": "^1.0.0-rc.7",
     "isomorphic-fetch": "^3.0.0",
     "jspeech": "^0.1.1",
     "markdown-it": "8.3.1",

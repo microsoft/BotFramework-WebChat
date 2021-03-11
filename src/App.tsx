@@ -476,6 +476,26 @@ const ExpandableKnobTheme = (theme: Theme) => `
     height: 565px;
   }
 
+  ${window.location.hash === '#feedbot-feature-screenshot' ? `
+    .wc-upload-screenshot {
+      position: absolute !important;
+      left: 46px !important;
+      height: 40px !important;
+      background-color: transparent !important;
+      border: none !important;
+      color: #8a8a8a;
+      padding: 0;
+    }
+    .wc-upload-screenshot svg {
+      margin: 9px 6px !important;
+      width: 32px;
+      height: 22px;
+    }
+    .wc-console.has-upload-button .wc-textbox {
+      left: 96px !important;
+    }
+  ` : ''}
+
   .feedbot-wrapper.collapsed .feedbot-signature {
     display: none;
   }

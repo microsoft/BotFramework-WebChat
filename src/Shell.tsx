@@ -5,7 +5,9 @@ import { classList } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, sendMessage, sendFiles } from './Store';
+import { ChatActions, ListeningState, sendMessage, sendFiles, sendScreenshot } from './Store';
+
+import * as html2canvas from 'html2canvas'
 
 interface Props {
     inputText: string,
@@ -18,6 +20,7 @@ interface Props {
 
     sendMessage: (inputText: string) => void,
     sendFiles: (files: FileList) => void,
+    sendScreenshot: (screen: string) => void,
     stopListening: () => void,
     startListening: () => void
 }
@@ -97,6 +100,15 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         }
     }
 
+    private async takeScreenshot() {
+        const screen = await html2canvas(document.body).then((canvas) => {
+            const dataURI = canvas.toDataURL("image/png");
+            
+            return dataURI
+        })
+        this.props.sendScreenshot(screen);
+    }
+
     render() {
         const className = classList(
             'wc-console',
@@ -148,6 +160,10 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                             aria-label={ this.props.strings.uploadFile }
                             role="button"
                         />
+                }
+                {
+                    this.props.showUploadButton && window.location.hash === '#feedbot-feature-screenshot' &&
+                    <button className="wc-upload-screenshot" onClick={() => {this.takeScreenshot()}}><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="camera" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#8a8a8a" d="M512 144v288c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h88l12.3-32.9c7-18.7 24.9-31.1 44.9-31.1h125.5c20 0 37.9 12.4 44.9 31.1L376 96h88c26.5 0 48 21.5 48 48zM376 288c0-66.2-53.8-120-120-120s-120 53.8-120 120 53.8 120 120 120 120-53.8 120-120zm-32 0c0 48.5-39.5 88-88 88s-88-39.5-88-88 39.5-88 88-88 88 39.5 88 88z"></path></svg></button>
                 }
                 <div className="wc-textbox">
                     <textarea
@@ -214,7 +230,8 @@ export const Shell = connect(
         startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below
         sendMessage,
-        sendFiles
+        sendFiles,
+        sendScreenshot
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
@@ -227,6 +244,7 @@ export const Shell = connect(
         // helper functions
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
+        sendScreenshot: (screen: string) => dispatchProps.sendScreenshot(screen, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening()
     }), {
