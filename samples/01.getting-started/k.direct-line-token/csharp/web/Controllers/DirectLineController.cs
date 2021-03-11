@@ -1,27 +1,24 @@
 ﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TokenSampleApi.Models;
+using TokenSampleApi.Services;
 
 namespace TokenSampleApi.Controllers
 {
     [ApiController]
     public class DirectLineController : ControllerBase
     {
+        private readonly DirectLineService _directLineService;
+
         private readonly string _directLineSecret;
 
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public DirectLineController(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public DirectLineController(DirectLineService directLineService, IConfiguration configuration)
         {
+            _directLineService = directLineService;
             _directLineSecret = configuration["DirectLineSecret"];
-            _httpClientFactory = httpClientFactory;
         }
 
         // Endpoint for generating a Direct Line token bound to a random user ID
@@ -32,28 +29,17 @@ namespace TokenSampleApi.Controllers
             // Generate a random user ID to use for DirectLine token
             var randomUserId = GenerateRandomUserId();
 
-            // Provide user ID in the request body to bind the user ID to the token
-            var tokenRequestBody = new { user = new { id = randomUserId } };
-            var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate")
+            DirectLineTokenDetails directLineTokenDetails;
+            try
             {
-                Headers =
-                {
-                    Authorization = new AuthenticationHeaderValue("Bearer", _directLineSecret),
-                },
-                Content = new StringContent(JsonSerializer.Serialize(tokenRequestBody), Encoding.UTF8, MediaTypeNames.Application.Json),
-            };
-            
-            // Call Direct Line API to generate a Direct Line token
-            var httpClient = _httpClientFactory.CreateClient();
-            var tokenResponse = await httpClient.SendAsync(tokenRequest);
-
-            if (!tokenResponse.IsSuccessStatusCode)
-            {
-                return this.BadRequest();
+                directLineTokenDetails = await _directLineService.GetTokenAsync(_directLineSecret, randomUserId);
             }
-            
-            var tokenResponseString = await tokenResponse.Content.ReadAsStringAsync();
-            return this.Content(tokenResponseString, MediaTypeNames.Application.Json);
+            catch (InvalidOperationException invalidOpException)
+            {
+                return BadRequest(new { message = invalidOpException.Message });
+            }
+
+            return this.Ok(new { token = directLineTokenDetails.Token });
         }
 
         // Generates a random user ID

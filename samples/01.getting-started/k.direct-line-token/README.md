@@ -178,20 +178,38 @@ async function generateDirectLineToken(secret, userId) {
 <details><summary>C#</summary>
 
 ```csharp
-// web/Controllers/DirectLineController.cs
+// web/Services/DirectLineService.cs
 
-var tokenRequestBody = new { user = new { id = randomUserId } };
-var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate")
+httpClient.BaseAddress = new Uri("https://directline.botframework.com/");
+
+...
+
+public async Task<DirectLineTokenDetails> GetTokenAsync(string directLineSecret, string userId, CancellationToken cancellationToken = default)
 {
-    Headers =
+    var tokenRequestBody = new { user = new { id = userId } };
+    var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "v3/directline/tokens/generate")
     {
-        Authorization = new AuthenticationHeaderValue("Bearer", _directLineSecret),
-    },
-    Content = new StringContent(JsonSerializer.Serialize(tokenRequestBody), Encoding.UTF8, MediaTypeNames.Application.Json),
-};
+        Headers =
+        {
+            { "Authorization", $"Bearer {directLineSecret}" },
+        },
+        Content = new StringContent(JsonSerializer.Serialize(tokenRequestBody), Encoding.UTF8, MediaTypeNames.Application.Json),
+    };
 
-var httpClient = _httpClientFactory.CreateClient();
-var tokenResponse = await httpClient.SendAsync(tokenRequest);
+    var tokenResponseMessage = await _httpClient.SendAsync(tokenRequest, cancellationToken);
+
+    ...
+
+    using var responseContentStream = await tokenResponseMessage.Content.ReadAsStreamAsync();
+    var tokenResponse = await JsonSerializer.DeserializeAsync<DirectLineTokenApiResponse>(responseContentStream);
+
+    return new DirectLineTokenDetails
+    {
+        Token = tokenResponse.Token,
+        ConversationId = tokenResponse.ConversationId,
+        ExpiresIn = tokenResponse.ExpiresIn,
+    };
+}
 ```
 
 </details>
