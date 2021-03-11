@@ -1,7 +1,5 @@
 # Direct Line Token Sample
 
-![samples/01.k.direct-line-token](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/01.k.direct-line-token/badge.svg)
-
 # Description
 
 This sample demonstrates how to integrate Web Chat in a way that 1) does not expose your Direct Line secret to the browser, and 2) mitigates user impersonation by not allowing the client to set its own user ID.
