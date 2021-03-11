@@ -442,6 +442,10 @@ const ExpandableKnobTheme = (theme: Theme) => `
     left: 20px;
   } 
 
+  .wc-app .wc-console.has-upload-button .wc-textbox {
+    left: 48px;
+  }
+
   .wc-app .wc-console .wc-send {
     top: 4px;
   }
