@@ -12,8 +12,5 @@
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "files": [
-    "StyleOptions.ts",
-    "types.ts"
-  ]
+  "files": ["StyleOptions.ts", "types.ts"]
 }

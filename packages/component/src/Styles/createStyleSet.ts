@@ -1,4 +1,6 @@
 /* eslint-disable complexity */
+import { StyleOptions } from 'botframework-webchat-api';
+
 import createActivitiesStyle from './StyleSet/Activities';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
@@ -43,7 +45,7 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
-export default function createStyleSet(options) {
+export default function createStyleSet(options: StyleOptions) {
   options = { ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)

@@ -164,24 +164,6 @@ export default interface StyleOptions {
   messageActivityWordBreak?: 'normal' | 'break-all' | 'break-word' | 'keep-all';
 
   /**
-   * Cards styling
-   */
-  cardEmphasisBackgroundColor?: string;
-
-  /**
-   * Cards: Adaptive Card push button
-   */
-
-  cardPushButtonBackgroundColor?: string;
-  cardPushButtonTextColor?: string;
-
-  /**
-   * Cards: Rich Cards
-   * Enable title (and subtitle) wrapping
-   */
-  richCardWrapTitle?: boolean;
-
-  /**
    * Connectivity UI styling
    */
 

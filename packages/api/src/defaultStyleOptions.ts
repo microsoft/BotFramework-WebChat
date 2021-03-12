@@ -59,12 +59,6 @@ const DEFAULT_OPTIONS: StyleOptions = {
   bubbleTextColor: 'Black',
   messageActivityWordBreak: 'break-word',
 
-  // Cards
-  cardEmphasisBackgroundColor: '#F0F0F0',
-  cardPushButtonBackgroundColor: '#0063B1',
-  cardPushButtonTextColor: 'White',
-  richCardWrapTitle: false,
-
   // Connectivity UI
   connectivityIconPadding: PADDING_REGULAR * 1.2,
   connectivityMarginLeftRight: PADDING_REGULAR * 1.4,

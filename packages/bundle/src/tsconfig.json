@@ -5,11 +5,12 @@
     "declarationDir": "../types",
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "isolatedModules": true,
+    // "isolatedModules": true,
     "jsx": "react",
     "preserveWatchOutput": true,
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": true
-  }
+  },
+  "files": ["FullBundleStyleOptions.ts", "types.ts"]
 }

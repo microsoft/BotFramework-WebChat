@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
+import { StyleOptions } from '../StyleOptions';
 import createCustomEvent from '../utils/createCustomEvent';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
@@ -46,7 +47,7 @@ import mapMap from '../utils/mapMap';
 import observableToPromise from './utils/observableToPromise';
 import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-import WebChatAPIContext from './internal/WebChatAPIContext';
+import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -149,7 +150,40 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-const Composer = ({
+const Composer: React.FC<{
+  activityMiddleware: any;
+  activityRenderer: any;
+  activityStatusMiddleware: any;
+  activityStatusRenderer: any;
+  attachmentForScreenReaderMiddleware: any;
+  attachmentMiddleware: any;
+  attachmentRenderer: any;
+  avatarMiddleware: any;
+  avatarRenderer: any;
+  cardActionMiddleware: any;
+  dir: any;
+  directLine: any;
+  disabled: any;
+  downscaleImageToDataURL: any;
+  grammars: any;
+  groupActivitiesMiddleware: any;
+  groupTimestamp: any;
+  internalErrorBoxClass: any;
+  locale: any;
+  onTelemetry: any;
+  overrideLocalizedStrings: any;
+  renderMarkdown: any;
+  selectVoice: any;
+  sendTimeout: any;
+  sendTypingIndicator: any;
+  styleOptions: StyleOptions;
+  toastMiddleware: any;
+  toastRenderer: any;
+  typingIndicatorMiddleware: any;
+  typingIndicatorRenderer: any;
+  userID: any;
+  username: any;
+}> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
