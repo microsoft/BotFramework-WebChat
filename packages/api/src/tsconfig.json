@@ -5,14 +5,15 @@
     "declarationDir": "../types",
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "isolatedModules": true,
+    // "isolatedModules": true,
     "jsx": "react",
     "preserveWatchOutput": true,
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "exclude": [
-    "defaultStyleOptions.ts"
+  "files": [
+    "StyleOptions.ts",
+    "types.ts"
   ]
 }
