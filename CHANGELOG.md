@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.12.1] - 2021-03-11
+
+### Added
+
+-  Resolves [#3777](https://github.com/microsoft/BotFramework-WebChat/issues/3777). Added a new `adaptiveCardsParserMaxVersion` style options for selecting the maximum supported version when parsing an Adaptive Cards, by [@compulim](https://github.com/compulim) in PR [#3778](https://github.com/microsoft/BotFramework-WebChat/pull/3778)
+
 ### Fixed
 
 -  Fixes [#3773](https://github.com/microsoft/BotFramework-WebChat/issues/3773). Remove `replyToId` when using Direct Line Speech adapter, by [@compulim](https://github.com/compulim) in PR [#3776](https://github.com/microsoft/BotFramework-WebChat/pull/3776)
