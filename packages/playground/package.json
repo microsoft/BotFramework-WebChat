@@ -9,8 +9,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@emotion/core": "^10.0.35",
-    "@fluentui/react": "^7.137.3",
+    "@emotion/core": "^11.0.0",
+    "@fluentui/react": "^8.3.2",
     "adaptivecards": "1.2.6",
     "botframework-directlinejs": "^0.14.1",
     "botframework-webchat": "0.0.0-0",
