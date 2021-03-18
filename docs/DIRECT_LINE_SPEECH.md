@@ -399,6 +399,18 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
       <td>(A random ID)</td>
       <td>User ID for all outgoing activities.</td>
     </tr>
+    <tr>
+      <td>
+        <code>username</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>
+        <code>undefined</code>
+      </td>
+      <td>Username for all outgoing activities.</td>
+    </tr>
   </tbody>
 </table>
 
