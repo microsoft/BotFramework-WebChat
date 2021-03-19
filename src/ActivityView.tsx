@@ -5,25 +5,41 @@ import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
 import { IDoCardAction } from './Chat';
+import { Tile } from './Types';
 
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
     format: FormatState,
     size: SizeState,
+    tiles?: Tile[]
     onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
     if (!attachments || attachments.length === 0)
         return null;
-    return attachmentLayout === 'carousel' ?
-        <Carousel
+    if(attachmentLayout === 'carousel') {
+        return <Carousel
             attachments={ attachments }
             { ... otherProps }
         />
-    : 
-        <div className="wc-list">
+    }
+    if(props.tiles){
+        return <div className="wc-list tiles">
+            { attachments.map((attachment, index) =>
+                <AttachmentView
+                    key={ index }
+                    attachment={ attachment }
+                    tiles={props.tiles}
+                    format={ props.format }
+                    onCardAction={ props.onCardAction }
+                    onImageLoad={ props.onImageLoad }
+                />
+            ) }
+        </div>
+    }
+    return <div className="wc-list">
             { attachments.map((attachment, index) =>
                 <AttachmentView
                     key={ index }
@@ -69,6 +85,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             case 'message':
                 // FEEDYOU - show/disable imBack buttons only for the last activity
                 // TODO should be possible to enable/disable using <Chat> props
+                const tiles = activity.channelData ? activity.channelData.tiles : undefined
                 const attachments: Attachment[] = (activity.attachments || []).map((attachment: KnownMedia) => {
                     if (isLast || attachment.contentType !== 'application/vnd.microsoft.card.hero') {
                         return attachment
@@ -86,24 +103,24 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         return Object.keys(contentWithoutImbackButtons).length === 0 ? attachmentWithoutContent as Attachment : {...attachment, content: contentWithoutImbackButtons}
                     }
                 })
-
-                return (
-                    <div>
-                        <FormattedText
-                            text={ activity.text }
-                            format={ activity.textFormat }
-                            onImageLoad={ props.onImageLoad }
-                        />
-                        <Attachments
-                            attachments={ attachments }
-                            attachmentLayout={ activity.attachmentLayout }
-                            format={ props.format }
-                            onCardAction={ isLast ? props.onCardAction : () => {} }
-                            onImageLoad={ props.onImageLoad }
-                            size={ props.size }
-                        />
-                    </div>
-                );
+                    return (
+                        <div>
+                            <FormattedText
+                                text={ activity.text }
+                                format={ activity.textFormat }
+                                onImageLoad={ props.onImageLoad }
+                            />
+                            <Attachments
+                                attachments={ attachments }
+                                attachmentLayout={ activity.attachmentLayout }
+                                format={ props.format }
+                                onCardAction={ isLast ? props.onCardAction : () => {} }
+                                onImageLoad={ props.onImageLoad }
+                                size={ props.size }
+                                tiles={tiles}
+                            />
+                        </div>
+                    );
 
             case 'typing':
                 return <div className="wc-typing"/>;

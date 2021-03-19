@@ -809,3 +809,7 @@
             @include link-and-svg-arrow($c01, 0.6);
         }
     }
+
+    .ac-textBlock img.emoji {
+        width: auto !important;
+    }

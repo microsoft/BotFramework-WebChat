@@ -1,6 +1,8 @@
 import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
-import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
+import { AdaptiveCard, CardElement, Column, ColumnSet, ColumnWidth, Container, Image, OpenUrlAction, Size, SizeUnit, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
+import { SizeAndUnit } from 'adaptivecards/lib/utils';
+import { Tile } from './Types';
 
 export class AdaptiveCardBuilder {
     private container: Container;
@@ -19,7 +21,7 @@ export class AdaptiveCardBuilder {
         container.addItem(columnSet);
         const columns = sizes.map(size => {
             const column = new Column();
-            column.width = size;
+            column.width = new SizeAndUnit(size, SizeUnit.Pixel);
             columnSet.addColumn(column);
             return column;
         })
@@ -44,21 +46,30 @@ export class AdaptiveCardBuilder {
     }
 
 
-    addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
+    addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean, tiles?: Tile[]) {
         if (cardActions) {
+            if(tiles) {
+            cardActions.map((cardAction, index) => {
+                this.card.addAction(AdaptiveCardBuilder.addCardAction(cardAction, includesOAuthButtons, tiles[index]));
+            })
+        }else{
             cardActions.forEach(cardAction => {
                 this.card.addAction(AdaptiveCardBuilder.addCardAction(cardAction, includesOAuthButtons));
             });
         }
+        }
     }
 
-    private static addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
+    private static addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean, tile?: Tile) {
         if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
             const action = new SubmitAction();
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 
             action.data = botFrameworkCardAction;
             action.title = cardAction.title;
+            if(tile){
+                action.iconUrl = tile.image
+            }
 
             return action;
         } else if (cardAction.type === 'signin' && includesOAuthButtons) {
@@ -87,9 +98,9 @@ export class AdaptiveCardBuilder {
         this.addTextBlock(content.text, { wrap: true });
     }
 
-    addCommon(content: ICommonContent) {
+    addCommon(content: ICommonContent, tiles?: Tile[]) {
         this.addCommonHeaders(content);
-        this.addButtons(content.buttons);
+        this.addButtons(content.buttons, false, tiles);
     }
 
     addImage(url: string, container?: Container, selectAction?: CardAction) {

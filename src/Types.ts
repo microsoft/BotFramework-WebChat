@@ -1,10 +1,14 @@
-import { Activity } from 'botframework-directlinejs';
+import { Activity } from "botframework-directlinejs";
 
 export interface FormatOptions {
-    showHeader?: boolean // DEPRECATED: Use "title" instead
+  showHeader?: boolean; // DEPRECATED: Use "title" instead
 }
 
 export type ActivityOrID = {
-    activity?: Activity
-    id?: string
+  activity?: Activity;
+  id?: string;
+};
+
+export interface Tile {
+  image: string;
 }

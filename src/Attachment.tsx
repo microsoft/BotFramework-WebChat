@@ -6,6 +6,7 @@ import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { default as AdaptiveCardContainer } from './AdaptiveCardContainer';
 import * as konsole from './Konsole';
+import { Tile } from './Types';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
@@ -145,6 +146,7 @@ const mediaType = (url: string) =>
 export const AttachmentView = (props: {
     format: FormatState;
     attachment: Attachment,
+    tiles?: Tile[],
     onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
@@ -201,8 +203,10 @@ export const AttachmentView = (props: {
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url, null, img.tap));
+                
             }
-            heroCardBuilder.addCommon(attachment.content)
+            heroCardBuilder.addCommon(attachment.content, props.tiles)
+            
             return (
                 <AdaptiveCardContainer className="hero" nativeCard={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );

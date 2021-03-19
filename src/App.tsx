@@ -13,6 +13,7 @@ export type Theme = {
   mainColor: string;
   template: any;
   customCss?: string;
+  showSignature?: boolean
 };
 
 export type AppProps = ChatProps & {
@@ -20,7 +21,6 @@ export type AppProps = ChatProps & {
   header?: { textWhenCollapsed?: string; text: string };
   channel?: {index?: number, id?: string},
   autoExpandTimeout?: number;
-  showSignature?: boolean
 };
 
 export const App = async (props: AppProps, container?: HTMLElement) => {
@@ -536,7 +536,9 @@ const ExpandableKnobTheme = (theme: Theme) => `
     cursor: pointer;
   }
   .feedbot-signature a img {
-    height: 20px
+    height: 20px;
+    position: relative;
+    top: -1px;
   }
 
   ${ExpandableBarTheme(theme)}
@@ -582,6 +584,12 @@ const Sidebar = (theme: Theme) => `
 
   body .feedbot-wrapper .wc-chatview-panel  {
     border-radius: 0;
+    ${theme.showSignature ? 'bottom: 14px;' : ''}
+    top: 0;
+  }
+
+  .feedbot-wrapper .wc-suggested-actions {
+    ${theme.showSignature ? 'bottom: 68px;' : ''}
   }
 
   body .wc-app .wc-console {
@@ -631,9 +639,11 @@ const Sidebar = (theme: Theme) => `
     margin-top: 0 !important;
   }
 
-  .wc-app .wc-chatview-panel {
-    top: 0;
-}
+  .feedbot-wrapper .feedbot-signature {
+    bottom: 1px;
+    left: 0px;
+    justify-content: center;
+  }
   
 `;
 
@@ -875,17 +885,83 @@ const BaseTheme = (theme: Theme) => `
       border: 1px solid #d2dde5;
       max-width: 100%;
     }
+
+    .wc-list .ac-container {
+      outline: none !important;
+    }
     
     .feedbot-wrapper .wc-adaptive-card {
       max-width: 100%;
     }
 
+    .wc-list.tiles .ac-actionSet {
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .wc-list.tiles .ac-container {
+      padding-top: 0px;
+      margin-top: -5px;
+    }
+
+    .wc-list.tiles .ac-pushButton {
+      flex-basis: 44% !important;
+      min-height: 120px !important;
+      margin: 3% !important;
+      flex-direction: column !important;
+      transition: 0.3s;
+      position: relative;
+      padding: 16px;
+      top: 0;
+    }
+
+    .wc-list.tiles .ac-pushButton:hover {
+      top: -3px;
+      filter: brightness(90%);
+    }
+
+    .feedbot-wrapper .wc-app .wc-list.tiles .wc-card .ac-pushButton:active {
+      background-color: ${theme.mainColor}A0 !important;
+      color: white !important;
+    }
+
+    .wc-list.tiles .ac-pushButton img {
+      width: 36px !important;
+      height: 36px !important;
+      margin-right: 0px !important;
+      margin-bottom: 10px !important;
+    }
+
+    .wc-list.tiles .ac-pushButton div {
+      overflow: unset !important; 
+      text-overflow: unset !important; 
+      white-space: unset !important;
+    }
+
     @media (max-width: 450px) {
       .feedbot-wrapper .wc-card {
         border: 1px solid #d2dde5;
-        width: 198px; }
+        width: 198px; 
+      }
+      .feedbot-wrapper .wc-list.tiles .wc-card {
+        border: none;
+        width: 100%; 
+      }
+
+      .wc-list.tiles .ac-pushButton {
+        min-height: 95px !important;
+      }
+
+      .wc-list.tiles .ac-container {
+        padding: 0 !important;
+        margin-top: 0 !important;
+      }
+
       .feedbot-wrapper .wc-adaptive-card {
-        width: 214px; } }
+        width: 214px; 
+      } 
+    }
 
     .wc-message-from.wc-message-from-bot {
         visibility: hidden;

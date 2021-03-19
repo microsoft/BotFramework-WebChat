@@ -1,0 +1,29 @@
+patch-package
+--- a/node_modules/adaptivecards/lib/card-elements.js
++++ b/node_modules/adaptivecards/lib/card-elements.js
+@@ -1,4 +1,7 @@
+ "use strict";
++
++var twemoji = require('../../../built/lib').twemoji
++
+ var __extends = (this && this.__extends) || (function () {
+     var extendStatics = Object.setPrototypeOf ||
+         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+@@ -664,7 +667,7 @@ var TextBlock = /** @class */ (function (_super) {
+                 var formattedText = TextFormatters.formatText(this.lang, this.text);
+                 this._processedText = this.useMarkdown ? AdaptiveCard.processMarkdown(formattedText) : formattedText;
+             }
+-            element.innerHTML = this._processedText;
++            element.innerHTML = twemoji.parse(this._processedText);
+             if (element.firstElementChild instanceof HTMLElement) {
+                 var firstElementChild = element.firstElementChild;
+                 firstElementChild.style.marginTop = "0px";
+@@ -2291,7 +2294,7 @@ var Action = /** @class */ (function () {
+             titleElement.style.whiteSpace = "nowrap";
+         }
+         if (hasTitle) {
+-            titleElement.innerText = this.title;
++            titleElement.innerHTML = twemoji.parse(this.title);
+         }
+         if (Utils.isNullOrEmpty(this.iconUrl)) {
+             buttonElement.classList.add("noIcon");
