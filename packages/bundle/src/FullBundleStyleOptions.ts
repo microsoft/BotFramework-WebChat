@@ -1,21 +1,7 @@
-import { StyleOptions as MinimalStyleOptions } from 'botframework-webchat-api';
+import { StyleOptions } from 'botframework-webchat-api';
 
-export default interface FullBundleStyleOptions extends MinimalStyleOptions {
-  /**
-   * Cards styling
-   */
-  cardEmphasisBackgroundColor?: string;
+import AdaptiveCardStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
 
-  /**
-   * Cards: Adaptive Card push button
-   */
+type FullBundleStyleOptionsType = StyleOptions | AdaptiveCardStyleOptions;
 
-  cardPushButtonBackgroundColor?: string;
-  cardPushButtonTextColor?: string;
-
-  /**
-   * Cards: Rich Cards
-   * Enable title (and subtitle) wrapping
-   */
-  richCardWrapTitle?: boolean;
-}
+export default FullBundleStyleOptionsType;

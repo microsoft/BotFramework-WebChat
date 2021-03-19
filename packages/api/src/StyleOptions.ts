@@ -1,11 +1,9 @@
-export default interface StyleOptions {
+type StyleOptions = {
   /**
    * Basic styling
    */
 
-  /**
-   * Web Chat component accent color
-   */
+  /** Web Chat component accent color */
   accent?: string;
 
   /**
@@ -50,14 +48,14 @@ export default interface StyleOptions {
    */
   primaryFont?: string;
 
-  rootHeight: number | string;
+  rootHeight?: number | string;
 
-  rootWidth: number | string;
+  rootWidth?: number | string;
 
   /**
    * "z-index" for the root container of Web Chat. This will form a new stacking context so "z-index" used in children won't pollute.
    */
-  rootZIndex: number;
+  rootZIndex?: number;
 
   /**
    * Avatar styling
@@ -135,7 +133,7 @@ export default interface StyleOptions {
    * Nub offset 'bottom' will render nub at the bottom
    * A positive or negative number will shift nub offset up/down
    */
-  bubbleFromUserNubOffset?: number | 'bottom';
+  bubbleFromUserNubOffset?: number | 'bottom' | 'top';
 
   /**
    * Nub size 0 will render a sharp corner
@@ -152,7 +150,7 @@ export default interface StyleOptions {
    * Nub offset ''bottom' will render nub at the bottom
    * A positive or negative number will shift nub offset up/down
    */
-  bubbleNubOffset?: number | 'bottom';
+  bubbleNubOffset?: number | 'bottom' | 'top';
 
   /**
    * Nub size 0 will render a sharp corner
@@ -338,7 +336,7 @@ export default interface StyleOptions {
    * Suggested actions flow layout
    * Default value is 'auto',
    */
-  suggestedActionsFlowMaxHeight: undefined;
+  suggestedActionsFlowMaxHeight?: undefined;
 
   /**
    * Suggested actions stacked layout
@@ -468,4 +466,6 @@ export default interface StyleOptions {
    */
 
   videoHeight?: number | string;
-}
+};
+
+export default StyleOptions;

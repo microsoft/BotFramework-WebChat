@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
-import { StyleOptions } from '../StyleOptions';
 import createCustomEvent from '../utils/createCustomEvent';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import StyleOptions from '../StyleOptions';
 
 import {
   clearSuggestedActions,
