@@ -38,7 +38,7 @@ window.WebChat.renderWebChat(
 ```
 
 -  Web Chat will apply the maximum schema available according to the Adaptive Cards version (as of this patch, schema 1.3) by default.
--  An invalid version will revert to Web Chat's default.)
+-  An invalid version will revert to Web Chat's default.
 
 ## Visual focus changes to transcript in Web Chat 4.12.0
 
