@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // This is for the racing between sagaMiddleware and store
 /* eslint no-use-before-define: "off" */
 
-import { applyMiddleware, createStore as createReduxStore } from 'redux';
+import { applyMiddleware, createStore as createReduxStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
@@ -28,7 +29,7 @@ function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
   };
 }
 
-export default function createStore(initialState, ...middlewares) {
+export default function createStore(initialState, ...middlewares): Store {
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
   const store = createReduxStore(reducer, initialState || {}, enhancer);
 
@@ -37,7 +38,7 @@ export default function createStore(initialState, ...middlewares) {
   return store;
 }
 
-export function withDevTools(initialState, ...middlewares) {
+export function withDevTools(initialState, ...middlewares): Store {
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
   const store = createReduxStore(reducer, initialState || {}, composeWithDevTools(enhancer));
 
