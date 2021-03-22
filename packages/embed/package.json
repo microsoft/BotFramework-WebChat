@@ -43,7 +43,7 @@
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
     "restify": "^8.5.1",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-visualizer-plugin": "^0.1.11"
   },
