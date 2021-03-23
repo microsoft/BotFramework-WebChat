@@ -12,11 +12,11 @@
       "redirects": [
         [
           "feature:nextminor",
-          "4.11"
+          "4.12"
         ],
         [
           "*",
-          "4.10"
+          "4.11"
         ]
       ]
     },
@@ -306,7 +306,7 @@
       "redirects": [
         [
           "*",
-          "4.12.0"
+          "4.12.1"
         ]
       ]
     },
@@ -315,6 +315,17 @@
         [
           "https://cdn.botframework.com/botframework-webchat/4.12.0/webchat-es5.js",
           "sha384-Lo8JE8FwwWIxjxRK4348SVwbkib4+HJQfOf6amhb1Lem5aODsMLJAp9WaDrDlGDK"
+        ]
+      ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2023-06-10.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.12.1": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.12.1/webchat-es5.js",
+          "sha384-oULlu8I9OQaBG4dBh9N5p8D1PgBgkcEG7myGrn0FCfBiJ9osrx03fnrMH0BWmOIP"
         ]
       ],
       "private": true,
