@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/css/main.0cdabcaa.chunk.css",
-    "main.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.2fbbe183.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.2fbbe183.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.12b9cd9f.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/main.12b9cd9f.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/runtime-main.7ba3460c.js",
     "runtime-main.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/runtime-main.7ba3460c.js.map",
-    "static/js/2.dfe5ee05.chunk.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.dfe5ee05.chunk.js",
-    "static/js/2.dfe5ee05.chunk.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.dfe5ee05.chunk.js.map",
+    "static/js/2.6168de56.chunk.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.6168de56.chunk.js",
+    "static/js/2.6168de56.chunk.js.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.6168de56.chunk.js.map",
     "index.html": "/BotFramework-WebChat/04.api/e.piping-to-redux/index.html",
-    "precache-manifest.0ff0ca1de63cae43a42b28dc4814f5f5.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/precache-manifest.0ff0ca1de63cae43a42b28dc4814f5f5.js",
+    "precache-manifest.9067ba87360b68b2ea42c3c748283579.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/precache-manifest.9067ba87360b68b2ea42c3c748283579.js",
     "service-worker.js": "/BotFramework-WebChat/04.api/e.piping-to-redux/service-worker.js",
     "static/css/main.0cdabcaa.chunk.css.map": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/css/main.0cdabcaa.chunk.css.map",
-    "static/js/2.dfe5ee05.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.dfe5ee05.chunk.js.LICENSE.txt"
+    "static/js/2.6168de56.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/e.piping-to-redux/static/js/2.6168de56.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.7ba3460c.js",
-    "static/js/2.dfe5ee05.chunk.js",
+    "static/js/2.6168de56.chunk.js",
     "static/css/main.0cdabcaa.chunk.css",
-    "static/js/main.2fbbe183.chunk.js"
+    "static/js/main.12b9cd9f.chunk.js"
   ]
 }

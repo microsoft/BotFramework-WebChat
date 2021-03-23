@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/BotFramework-WebChat/04.api/g.chat-send-history/static/css/main.c0c51a48.chunk.css",
-    "main.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.204d18fa.chunk.js",
-    "main.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.204d18fa.chunk.js.map",
+    "main.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.ce072dbd.chunk.js",
+    "main.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/main.ce072dbd.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/runtime-main.da3a9627.js",
     "runtime-main.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/runtime-main.da3a9627.js.map",
-    "static/js/2.ddd1564d.chunk.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.ddd1564d.chunk.js",
-    "static/js/2.ddd1564d.chunk.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.ddd1564d.chunk.js.map",
+    "static/js/2.af9a1a53.chunk.js": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.af9a1a53.chunk.js",
+    "static/js/2.af9a1a53.chunk.js.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.af9a1a53.chunk.js.map",
     "index.html": "/BotFramework-WebChat/04.api/g.chat-send-history/index.html",
-    "precache-manifest.5ecc0545b552f36071178f535c317cf6.js": "/BotFramework-WebChat/04.api/g.chat-send-history/precache-manifest.5ecc0545b552f36071178f535c317cf6.js",
+    "precache-manifest.6b28dbf75e545ac55ddce20c4c4bdaad.js": "/BotFramework-WebChat/04.api/g.chat-send-history/precache-manifest.6b28dbf75e545ac55ddce20c4c4bdaad.js",
     "service-worker.js": "/BotFramework-WebChat/04.api/g.chat-send-history/service-worker.js",
     "static/css/main.c0c51a48.chunk.css.map": "/BotFramework-WebChat/04.api/g.chat-send-history/static/css/main.c0c51a48.chunk.css.map",
-    "static/js/2.ddd1564d.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.ddd1564d.chunk.js.LICENSE.txt"
+    "static/js/2.af9a1a53.chunk.js.LICENSE.txt": "/BotFramework-WebChat/04.api/g.chat-send-history/static/js/2.af9a1a53.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.da3a9627.js",
-    "static/js/2.ddd1564d.chunk.js",
+    "static/js/2.af9a1a53.chunk.js",
     "static/css/main.c0c51a48.chunk.css",
-    "static/js/main.204d18fa.chunk.js"
+    "static/js/main.ce072dbd.chunk.js"
   ]
 }

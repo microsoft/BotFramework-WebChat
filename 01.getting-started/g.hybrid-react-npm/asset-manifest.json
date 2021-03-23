@@ -5,17 +5,17 @@
     "main.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/main.b49ba988.chunk.js.map",
     "runtime-main.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/runtime-main.e34736fa.js",
     "runtime-main.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/runtime-main.e34736fa.js.map",
-    "static/js/2.ec3c7e3e.chunk.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js",
-    "static/js/2.ec3c7e3e.chunk.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js.map",
+    "static/js/2.a8dbf726.chunk.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.a8dbf726.chunk.js",
+    "static/js/2.a8dbf726.chunk.js.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.a8dbf726.chunk.js.map",
     "index.html": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/index.html",
-    "precache-manifest.34154810f0fdb9c2b0f1efbde714cf8f.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/precache-manifest.34154810f0fdb9c2b0f1efbde714cf8f.js",
+    "precache-manifest.6bfb43a81820647a1d8f96a9b18970c0.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/precache-manifest.6bfb43a81820647a1d8f96a9b18970c0.js",
     "service-worker.js": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/service-worker.js",
     "static/css/main.81c4ed98.chunk.css.map": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/css/main.81c4ed98.chunk.css.map",
-    "static/js/2.ec3c7e3e.chunk.js.LICENSE": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.ec3c7e3e.chunk.js.LICENSE"
+    "static/js/2.a8dbf726.chunk.js.LICENSE": "/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/static/js/2.a8dbf726.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.e34736fa.js",
-    "static/js/2.ec3c7e3e.chunk.js",
+    "static/js/2.a8dbf726.chunk.js",
     "static/css/main.81c4ed98.chunk.css",
     "static/js/main.b49ba988.chunk.js"
   ]
