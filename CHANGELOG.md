@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions and sample bumps, by [@corinagum](https://github.com/corinagum) in PR [#xxx](https://github.com/microsoft/BotFramework-WebChat/pull/xxx)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@corinagum](https://github.com/corinagum) in PR [#3805](https://github.com/microsoft/BotFramework-WebChat/pull/3805)
    -  Development dependencies
       -  [`@babel/cli@7.13.10`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.13.10`](https://npmjs.com/package/@babel/core)
