@@ -37,7 +37,7 @@ export default function useParseAdaptiveCardJSON() {
     }
 
     return maxVersion;
-  }, [adaptiveCardsParserMaxVersion]);
+  }, [adaptiveCardsParserMaxVersion, SerializationContext, Version]);
 
   return useCallback(
     (content, { ignoreErrors = false } = {}) => {
