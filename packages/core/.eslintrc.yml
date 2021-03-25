@@ -5,8 +5,17 @@ env:
 extends:
 - eslint:recommended
 - plugin:node/recommended-module
+- plugin:@typescript-eslint/recommended
+parser: "@typescript-eslint/parser"
 globals:
   React: readonly
+overrides:
+  - files: "*.js"
+    rules:
+      "@typescript-eslint/explicit-function-return-type": off
+      "@typescript-eslint/explicit-module-boundary-type": off
+      "@typescript-eslint/explicit-module-boundary-types": off
+      "@typescript-eslint/no-unused-vars": off
 parserOptions:
   ecmaFeatures:
     jsx: true

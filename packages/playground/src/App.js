@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
 // eslint-disable-next-line no-unused-vars
-import { Global } from '@emotion/core';
+import { Global } from '@emotion/react';
 // eslint-disable-next-line no-unused-vars
 import { Dropdown, IconButton, Label, SearchBox, Stack, TextField, Toggle, TooltipHost } from '@fluentui/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
