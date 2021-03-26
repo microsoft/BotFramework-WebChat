@@ -16,7 +16,29 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 # Version notes
 
-> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
+> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md
+
+### 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
+
+Web Chat 4.12.1 patch includes a new style property allowing developers to choose the max Adaptive Cards schema version. See [PR #3778](https://github.com/microsoft/BotFramework-WebChat/pull/3778) for code changes.
+
+To specify a different max version, you can adjust the style options, shown below:
+
+```js
+window.WebChat.renderWebChat(
+   {
+      directLine,
+      store,
+      styleOptions: {
+         adaptiveCardsParserMaxVersion: '1.2'
+      }
+   },
+   document.getElementById('webchat')
+);
+```
+
+-  Web Chat will apply the maximum schema available according to the Adaptive Cards version (as of this patch, schema 1.3) by default.
+-  An invalid version will revert to Web Chat's default.
 
 ## Visual focus changes to transcript in Web Chat 4.12.0
 
