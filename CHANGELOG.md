@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Resolves [#3087](https://github.com/microsoft/BotFramework-WebChat/issues/3087). External links in Markdown will now appended with an "open in new window" icon and text for accessibility, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Resolves [#3087](https://github.com/microsoft/BotFramework-WebChat/issues/3087). External links in Markdown will now appended with an "open in new window" icon and text for accessibility, by [@compulim](https://github.com/compulim) in PR [#3817](https://github.com/microsoft/BotFramework-WebChat/pull/3817)
 
 ### Changed
 
