@@ -57,7 +57,7 @@ const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAA
 // This is used for parsing Markdown for external links.
 const internalMarkdownIt = new MarkdownIt();
 
-export default function render(markdown, { markdownRespectCRLF }, { externalLinkAlt }) {
+export default function render(markdown, { markdownRespectCRLF }, { externalLinkAlt = '' } = {}) {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
@@ -75,13 +75,21 @@ export default function render(markdown, { markdownRespectCRLF }, { externalLink
 
       token.attrSet('rel', 'noopener noreferrer');
       token.attrSet('target', '_blank');
-      token.attrSet('title', externalLinkAlt);
 
-      const iconTokens = internalMarkdownIt.parseInline(`![${externalLinkAlt}](${TRANSPARENT_GIF})`)[0].children;
+      const linkOpenToken = tokens.find(({ type }) => type === 'link_open');
+      const [, href] = linkOpenToken.attrs.find(([name]) => name === 'href');
 
-      iconTokens[0].attrJoin('class', 'webchat__markdown__external-link-icon');
+      // Adds a new icon if the link is http: or https:.
+      // Don't add if it's a phone number, etc.
+      if (/^https?:/iu.test(href)) {
+        externalLinkAlt && token.attrSet('title', externalLinkAlt);
 
-      tokens.splice(index + 2, 0, ...iconTokens);
+        const iconTokens = internalMarkdownIt.parseInline(`![${externalLinkAlt}](${TRANSPARENT_GIF})`)[0].children;
+
+        iconTokens[0].attrJoin('class', 'webchat__markdown__external-link-icon');
+
+        tokens.splice(index + 2, 0, ...iconTokens);
+      }
     })
     .render(markdown);
 
