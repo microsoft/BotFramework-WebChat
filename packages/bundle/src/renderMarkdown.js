@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [1] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
@@ -8,7 +8,7 @@ import sanitizeHTML from 'sanitize-html';
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
     a: ['aria-label', 'href', 'name', 'rel', 'target', 'title'],
-    img: ['alt', 'src']
+    img: ['alt', 'class', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
   allowedTags: [
@@ -51,40 +51,47 @@ const SANITIZE_HTML_OPTIONS = {
   ]
 };
 
-const customMarkdownIt = new MarkdownIt({
-  breaks: false,
-  html: false,
-  linkify: true,
-  typographer: true,
-  xhtmlOut: true
-})
-  .use(markdownItAttrs)
-  .use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-    // TODO: [P4] This is copied from v3 and looks clunky
-    //       We should refactor this code
-    const targetAttrIndex = tokens[index].attrIndex('target');
+// Put a transparent pixel instead of the "open in new window" icon, so developers can easily modify the icon in CSS.
+const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-    if (~targetAttrIndex) {
-      tokens[index].attrs[targetAttrIndex][1] = '_blank';
-    } else {
-      tokens[index].attrPush(['target', '_blank']);
-    }
+// This is used for parsing Markdown for external links.
+const internalMarkdownIt = new MarkdownIt();
 
-    const relAttrIndex = tokens[index].attrIndex('rel');
-
-    if (~relAttrIndex) {
-      tokens[index].attrs[relAttrIndex][1] = 'noopener noreferrer';
-    } else {
-      tokens[index].attrPush(['rel', 'noopener noreferrer']);
-    }
-  });
-
-export default function render(markdown, { markdownRespectCRLF }) {
+export default function render(markdown, { markdownRespectCRLF }, { externalLinkAlt = '' } = {}) {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
 
-  const html = customMarkdownIt.render(markdown);
+  const html = new MarkdownIt({
+    breaks: false,
+    html: false,
+    linkify: true,
+    typographer: true,
+    xhtmlOut: true
+  })
+    .use(markdownItAttrs)
+    .use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
+      const token = tokens[index];
+
+      token.attrSet('rel', 'noopener noreferrer');
+      token.attrSet('target', '_blank');
+
+      const linkOpenToken = tokens.find(({ type }) => type === 'link_open');
+      const [, href] = linkOpenToken.attrs.find(([name]) => name === 'href');
+
+      // Adds a new icon if the link is http: or https:.
+      // Don't add if it's a phone number, etc.
+      if (/^https?:/iu.test(href)) {
+        externalLinkAlt && token.attrSet('title', externalLinkAlt);
+
+        const iconTokens = internalMarkdownIt.parseInline(`![${externalLinkAlt}](${TRANSPARENT_GIF})`)[0].children;
+
+        iconTokens[0].attrJoin('class', 'webchat__markdown__external-link-icon');
+
+        tokens.splice(index + 2, 0, ...iconTokens);
+      }
+    })
+    .render(markdown);
 
   return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
 }

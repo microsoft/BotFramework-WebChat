@@ -33,9 +33,8 @@ export default function useComposerProps({
   ]);
 
   const patchedRenderMarkdown = useMemo(
-    () =>
-      typeof renderMarkdown === 'undefined' ? text => defaultRenderMarkdown(text, patchedStyleOptions) : renderMarkdown,
-    [patchedStyleOptions, renderMarkdown]
+    () => (typeof renderMarkdown === 'undefined' ? (...args) => defaultRenderMarkdown(...args) : renderMarkdown),
+    [renderMarkdown]
   );
 
   return {
