@@ -41,7 +41,7 @@ test('renderMarkdown should add accessibility text for external links', async ()
   await expect(
     pageObjects.runHook('useRenderMarkdownAsHTML', [], fn => fn('Click [here](https://aka.ms/) to find out more.'))
   ).resolves.toMatchInlineSnapshot(`
-          "<p>Click <a href=\\"https://aka.ms/\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\" title=\\"Opens in a new window, external.\\">here<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt=\\"Opens in a new window, external.\\" class=\\"webchat__markdown__external-link-icon\\" /></a> to find out more.</p>
+          "<p>Click <a href=\\"https://aka.ms/\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\" title=\\"Opens in a new window; external.\\">here<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt=\\"Opens in a new window; external.\\" class=\\"webchat__markdown__external-link-icon\\" /></a> to find out more.</p>
           "
         `);
 });
