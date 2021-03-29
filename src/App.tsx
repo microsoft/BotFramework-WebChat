@@ -53,7 +53,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           },
           body: JSON.stringify({
             user: props.user,
-            channel: props.channel
+            channel: props.channel,
+            referrer: window.location.href
           }),
         }
       );
@@ -463,8 +464,9 @@ const ExpandableKnobTheme = (theme: Theme) => `
     padding: 0px;
 
     background-image: url(${
-      theme.template.iconUrl ||
-      "https://cdn.feedyou.ai/webchat/message-icon.png"
+      (theme.template && theme.template.iconUrl)
+        ? theme.template.iconUrl
+        :"https://cdn.feedyou.ai/webchat/message-icon.png"
     });
     background-size: 50px 50px;
     background-position: 12px 12px;
