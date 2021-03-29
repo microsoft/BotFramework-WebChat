@@ -5,6 +5,7 @@
       "plugins": ["babel-plugin-istanbul"]
     }
   },
+  "ignore": ["src/index.tsx"],
   "overrides": [
     {
       "plugins": [],
