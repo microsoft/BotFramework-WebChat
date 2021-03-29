@@ -84,8 +84,6 @@ export {
   renderWebChat
 };
 
-export type { AdaptiveCardContent };
-
 window['WebChat'] = {
   ...window['WebChat'],
   Components,

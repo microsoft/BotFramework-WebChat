@@ -32,7 +32,7 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createToasterStyle from './StyleSet/Toaster';
 import createToastStyle from './StyleSet/Toast';
-import createTypingAnimationStyle from './StyleSet/TypingAnimation.js';
+import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
@@ -47,23 +47,6 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
 export default function createStyleSet(options: StyleOptions) {
   options = { ...options };
-
-  // Keep this list flat (no nested style) and serializable (no functions)
-
-  // TODO: [P4] Deprecate this code after bump to v5
-  const { bubbleFromUserNubOffset, bubbleNubOffset } = options;
-
-  if (bubbleFromUserNubOffset === 'top') {
-    options.bubbleFromUserNubOffset = 0;
-  } else if (typeof bubbleFromUserNubOffset !== 'number') {
-    options.bubbleFromUserNubOffset = -0;
-  }
-
-  if (bubbleNubOffset === 'top') {
-    options.bubbleNubOffset = 0;
-  } else if (typeof bubbleNubOffset !== 'number') {
-    options.bubbleNubOffset = -0;
-  }
 
   return {
     activities: createActivitiesStyle(),

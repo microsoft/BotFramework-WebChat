@@ -29,7 +29,7 @@ type StyleOptions = {
   /**
   Transition for Bubble, Carousel, and StackedLayout
    */
-  transitionDuration: string;
+  transitionDuration?: string;
 
   /**
    * Fonts

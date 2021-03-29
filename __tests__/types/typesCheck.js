@@ -2,53 +2,55 @@ const ts = require('typescript');
 const path = require('path');
 
 function compile(...filenames) {
-const program = ts.createProgram(filenames, {
-  allowSyntheticDefaultImports: true,
-  jsx: 'react',
-  noEmit: false,
-  skipLibCheck: true,
-});
+  const program = ts.createProgram(filenames, {
+    allowSyntheticDefaultImports: true,
+    jsx: 'react',
+    noEmit: false,
+    skipLibCheck: true,
+  });
 
-const emitResult = program.emit();
-const allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
-const errors = [];
+  const emitResult = program.emit();
+  const allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
+  const errors = [];
 
-allDiagnostics.forEach(diagnostic => {
-  if (diagnostic.file) {
-    const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-    const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-    errors.push(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
-  } else {
-    errors.push(ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
-  }
-});
+  allDiagnostics.forEach(diagnostic => {
+    if (diagnostic.file) {
+      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+      const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+      errors.push(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
+    } else {
+      errors.push(ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
+    }
+  });
 
-if (errors.length > 0)
-
-return errors;
+  return errors;
 };
 
 
-it('dir should pass dir as string', () => {
+it('should pass dir as string', () => {
   const dirStringErrors = compile(path.join(__dirname, './dirString.tsx'));
 
   expect(dirStringErrors).toHaveProperty('length', 0);
 });
 
-it('dir should fail on dir as number', () => {
+it('should fail on dir as number', () => {
   const dirNumErrors = compile(path.join(__dirname, './dirNumber.tsx'));
+
+  expect(dirNumErrors[0].includes(`Type 'number' is not assignable to type  '"ltr" | "rtl" | "auto"'`));
 
   expect(dirNumErrors).toHaveProperty('length', 1);
 });
 
-it('styleOptions should fail on accent', () => {
-  const dirStringErrors = compile(path.join(__dirname, './styleOptionsAccent.tsx'));
+it('should fail on accent', () => {
+  const accentErrors = compile(path.join(__dirname, './styleOptionsAccent.tsx'));
 
-  expect(dirStringErrors).toHaveProperty('length', 0);
+  expect(accentErrors).toHaveProperty('length', 0);
 });
 
-it('styleOptions should pass on cardEmphasisBackgroundColor', () => {
-  const dirStringErrors = compile(path.join(__dirname, './styleOptionsCardEmph.tsx'));
+it('should pass on cardEmphasisBackgroundColor', () => {
+  const cardEmphErrors = compile(path.join(__dirname, './styleOptionsCardEmph.tsx'));
 
-  expect(dirStringErrors).toHaveProperty('length', 1);
+  expect(cardEmphErrors[0].includes(`Type '{ cardEmphasisBackgroundColor: string; }' is not assignable to type 'StyleOptions'`));
+
+  expect(cardEmphErrors).toHaveProperty('length', 1);
 });
