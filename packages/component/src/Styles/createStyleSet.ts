@@ -1,4 +1,6 @@
 /* eslint-disable complexity */
+import { StyleOptions } from 'botframework-webchat-api';
+
 import createActivitiesStyle from './StyleSet/Activities';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
@@ -30,7 +32,7 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createToasterStyle from './StyleSet/Toaster';
 import createToastStyle from './StyleSet/Toast';
-import createTypingAnimationStyle from './StyleSet/TypingAnimation';
+import createTypingAnimationStyle from './StyleSet/TypingAnimation.js';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
@@ -39,14 +41,12 @@ import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
-import defaultStyleOptions from './defaultStyleOptions';
-
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
-export default function createStyleSet(options) {
-  options = { ...defaultStyleOptions, ...options };
+export default function createStyleSet(options: StyleOptions) {
+  options = { ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
 
@@ -65,43 +65,10 @@ export default function createStyleSet(options) {
     options.bubbleNubOffset = -0;
   }
 
-  if (options.emojiSet === true) {
-    options.emojiSet = {
-      ':)': '😊',
-      ':-)': '😊',
-      '(:': '😊',
-      '(-:': '😊',
-      ':-|': '😐',
-      ':|': '😐',
-      ':-(': '☹️',
-      ':(': '☹️',
-      ':-D': '😀',
-      ':D': '😀',
-      ':-p': '😛',
-      ':p': '😛',
-      ':-P': '😛',
-      ':P': '😛',
-      ':-o': '😲',
-      ':o': '😲',
-      ':O': '😲',
-      ':-O': '😲',
-      ':-0': '😲',
-      ':0': '😲',
-      ';-)': '😉',
-      ';)': '😉',
-      '<3': '❤️',
-      '</3': '💔',
-      '<\\3': '💔'
-    };
-  } else if (Object.prototype.toString.call(options.emojiSet) !== '[object Object]') {
-    console.warn('botframework-webchat: emojiSet must be a boolean or an object with emoticon: emojiValues');
-    options.emojiSet = false;
-  }
-
   return {
-    activities: createActivitiesStyle(options),
+    activities: createActivitiesStyle(),
     audioAttachment: createAudioAttachmentStyle(options),
-    audioContent: createAudioContentStyle(options),
+    audioContent: createAudioContentStyle(),
     autoResizeTextArea: createAutoResizeTextAreaStyle(options),
     avatar: createAvatarStyle(options),
     basicTranscript: createBasicTranscriptStyle(options),
@@ -134,7 +101,7 @@ export default function createStyleSet(options) {
     typingAnimation: createTypingAnimationStyle(options),
     typingIndicator: createTypingIndicatorStyle(options),
     uploadButton: createUploadButtonStyle(options),
-    videoAttachment: createVideoAttachmentStyle(options),
+    videoAttachment: createVideoAttachmentStyle(),
     videoContent: createVideoContentStyle(options),
     vimeoContent: createVimeoContentStyle(options),
     warningNotification: createWarningNotificationStyle(options),

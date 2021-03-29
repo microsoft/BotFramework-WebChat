@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
 import createCustomEvent from '../utils/createCustomEvent';
@@ -8,7 +8,9 @@ import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
 import normalizeLanguage from '../utils/normalizeLanguage';
+// @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import StyleOptions from '../StyleOptions';
 
 import {
   clearSuggestedActions,
@@ -45,7 +47,7 @@ import mapMap from '../utils/mapMap';
 import observableToPromise from './utils/observableToPromise';
 import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-import WebChatAPIContext from './internal/WebChatAPIContext';
+import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -87,7 +89,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   )({ dispatch });
 
   return {
-    onCardAction: (cardAction, { target } = {}) =>
+    onCardAction: (cardAction, { target }: { target?: any } = {}) =>
       runMiddleware({
         cardAction,
         getSignInUrl:
@@ -148,7 +150,44 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-const Composer = ({
+type ComposerProps = {
+  activityMiddleware: any;
+  activityRenderer: any;
+  activityStatusMiddleware: any;
+  activityStatusRenderer: any;
+  attachmentForScreenReaderMiddleware: any;
+  attachmentMiddleware: any;
+  attachmentRenderer: any;
+  avatarMiddleware: any;
+  avatarRenderer: any;
+  cardActionMiddleware: any;
+  children: ReactNode;
+  dir: string;
+  directLine: any;
+  disabled: boolean;
+  downscaleImageToDataURL: any;
+  grammars: any;
+  groupActivitiesMiddleware: any;
+  groupTimestamp: boolean | number;
+  internalErrorBoxClass: any;
+  internalRenderErrorBox: any;
+  locale: string;
+  onTelemetry: any;
+  overrideLocalizedStrings: any;
+  renderMarkdown: any;
+  selectVoice: any;
+  sendTimeout: number;
+  sendTypingIndicator: any;
+  styleOptions: StyleOptions;
+  toastMiddleware: any;
+  toastRenderer: any;
+  typingIndicatorMiddleware: any;
+  typingIndicatorRenderer: any;
+  userID: string;
+  username: string;
+};
+
+const Composer: FC<ComposerProps> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
@@ -503,7 +542,12 @@ const Composer = ({
 };
 
 // We will create a Redux store if it was not passed in
-const ComposeWithStore = ({ internalRenderErrorBox, onTelemetry, store, ...props }) => {
+const ComposeWithStore: FC<ComposerProps & { store: any }> = ({
+  internalRenderErrorBox,
+  onTelemetry,
+  store,
+  ...props
+}) => {
   const [error, setError] = useState();
 
   const handleError = useCallback(
