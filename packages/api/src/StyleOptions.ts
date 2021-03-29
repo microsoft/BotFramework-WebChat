@@ -205,6 +205,11 @@ type StyleOptions = {
   markdownRespectCRLF?: boolean;
 
   /**
+   * Assign new image for anchor links to indicate external
+   */
+
+  markdownExternalLinkIconImage?: string;
+  /**
    * Scroll behavior styling
    */
 
