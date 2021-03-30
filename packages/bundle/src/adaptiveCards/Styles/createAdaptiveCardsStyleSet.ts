@@ -4,7 +4,7 @@ import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
 import createAdaptiveCardRendererStyle from './StyleSet/AdaptiveCardRenderer';
 import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
-import defaultAdaptiveCardStyleOptions from '../defaultStyleOptions';
+import normalizeAdaptiveCardsStyleOptions from '../normalizeStyleOptions';
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -13,7 +13,7 @@ import defaultAdaptiveCardStyleOptions from '../defaultStyleOptions';
 export default function createAdaptiveCardsStyleSet(options: StyleOptions & AdaptiveCardsStyleOptions): any {
   const strictOptions = {
     ...normalizeStyleOptions(options),
-    ...defaultAdaptiveCardStyleOptions
+    ...normalizeAdaptiveCardsStyleOptions(options)
   };
 
   return {

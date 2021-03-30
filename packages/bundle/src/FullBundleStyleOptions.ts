@@ -1,7 +1,9 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
-import AdaptiveCardStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
+import AdaptiveCardStyleOptions, { StrictAdaptiveCardsStyleOptions } from './adaptiveCards/AdaptiveCardsStyleOptions';
 
-type FullBundleStyleOptionsType = StyleOptions & AdaptiveCardStyleOptions;
+type FullBundleStyleOptions = StyleOptions & AdaptiveCardStyleOptions;
+type StrictFullBundleStyleOptions = StrictStyleOptions & StrictAdaptiveCardsStyleOptions;
 
-export default FullBundleStyleOptionsType;
+export default FullBundleStyleOptions;
+export { StrictFullBundleStyleOptions };
