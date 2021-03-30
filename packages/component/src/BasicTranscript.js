@@ -265,7 +265,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           let showCallout;
 
-          // Depends on different "showAvatarInGroup" setting, we will show the avatar in different positions.
+          // Depending on the "showAvatarInGroup" setting, the avatar will render in different positions.
           if (showAvatarInGroup === 'sender') {
             if (topSideNub) {
               showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;
@@ -766,6 +766,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           </Fade>
         ))}
       </section>
+      {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
+      {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
       <InternalTranscriptScrollable
         activities={renderingActivities}
         onFocusActivity={handleFocusActivity}

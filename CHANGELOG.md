@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#3777](https://github.com/microsoft/BotFramework-WebChat/issues/3777). Added a new `adaptiveCardsParserMaxVersion` style options for selecting the maximum supported version when parsing an Adaptive Cards, by [@compulim](https://github.com/compulim) in PR [#3778](https://github.com/microsoft/BotFramework-WebChat/pull/3778)
+-  Resolves [#2100](https://github.com/microsoft/BotFramework-WebChat/issues/2100). Add types declarations for Style Options in api bundle, by [@corinagum](https://github.com/corinagum), in PR [#3818](https://github.com/microsoft/BotFramework-WebChat/pull/3818)
 
 ### Fixed
 

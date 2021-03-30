@@ -199,9 +199,9 @@ function App() {
   }, [handleUseMockBot]);
 
   // Feel free to change the text to whatever will help you dev faster
-  const handleCurrentCommandClick = useCallback(() => {
+  const handleCurrentCommandClick = () => {
     store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
-  });
+  };
 
   /// END CONNECTIVITY
 

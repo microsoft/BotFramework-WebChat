@@ -30,7 +30,7 @@ You may have noticed that Web Chat provides two different ways to change the app
 1. 'Branding' your bot via `styleSetOptions` (recommended)
 1. Idiosyncratic styling via overriding `createStyleSet` (not recommended)
 
-`styleSetOptions` is the Web Chat supported method of changing existing DOM elements in the application, and the currently available options are listed on the [`defaultStyleOptions.js` file](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js). These options will continue to be updated as we make further as the project grows.
+`styleSetOptions` is the Web Chat supported method of changing existing DOM elements in the application, and the currently available options are listed on the [`defaultStyleOptions.ts` file](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/api/src/defaultStyleOptions.ts) and [`adaptiveCards/defaultStyleOptions.ts` file](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/defaultStyleOptions.ts) when Adaptive Cards is enabled. These options will continue to be updated as we make further as the project grows.
 
 We provide these options to override for several reasons:
 
