@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSendBoxButtonStyle({
   sendBoxButtonColor,
@@ -7,7 +7,7 @@ export default function createSendBoxButtonStyle({
   sendBoxButtonColorOnHover,
   sendBoxHeight,
   subtle
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__icon-button': {
       alignItems: 'center',

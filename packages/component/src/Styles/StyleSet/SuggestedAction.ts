@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSuggestedActionStyle({
   accent,
@@ -22,7 +22,7 @@ export default function createSuggestedActionStyle({
   suggestedActionHeight,
   suggestedActionsStackedLayoutButtonMaxHeight,
   subtle
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__suggested-action': {
       display: 'flex',

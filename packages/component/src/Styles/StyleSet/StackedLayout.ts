@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createStackedLayoutStyle({
   avatarSize,
@@ -8,7 +8,7 @@ export default function createStackedLayoutStyle({
   bubbleMinWidth,
   paddingRegular,
   transitionDuration
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__stacked-layout': {
       marginLeft: paddingRegular,

@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function CarouselFlipper({
   transcriptOverlayButtonBackground,
@@ -9,7 +9,7 @@ export default function CarouselFlipper({
   transcriptOverlayButtonColorOnDisabled,
   transcriptOverlayButtonColorOnFocus,
   transcriptOverlayButtonColorOnHover
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__carousel-layout': {
       '& .react-film__flipper': {

@@ -1,7 +1,7 @@
 /* eslint no-empty-pattern: "off" */
 /* eslint no-magic-numbers: ["error", { "ignore": [1.5, 2] }] */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSuggestedActionsStyle({
   paddingRegular,
@@ -17,7 +17,7 @@ export default function createSuggestedActionsStyle({
   transcriptOverlayButtonColorOnDisabled,
   transcriptOverlayButtonColorOnFocus,
   transcriptOverlayButtonColorOnHover
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__suggested-actions': {
       '&.webchat__suggested-actions--carousel-layout': {

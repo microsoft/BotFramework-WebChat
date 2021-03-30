@@ -1,6 +1,6 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createVimeoContentStyle({ videoHeight }: StyleOptions) {
+export default function createVimeoContentStyle({ videoHeight }: StrictStyleOptions) {
   return {
     border: 0,
     height: videoHeight,

@@ -1,6 +1,11 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function ({ backgroundColor, rootHeight: height, rootWidth: width, rootZIndex: zIndex }: StyleOptions) {
+export default function ({
+  backgroundColor,
+  rootHeight: height,
+  rootWidth: width,
+  rootZIndex: zIndex
+}: StrictStyleOptions) {
   return {
     backgroundColor,
     height,

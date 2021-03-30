@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createBasicTranscriptStyleSet({
   paddingRegular,
@@ -15,7 +15,7 @@ export default function createBasicTranscriptStyleSet({
   transcriptVisualKeyboardIndicatorColor,
   transcriptVisualKeyboardIndicatorStyle,
   transcriptVisualKeyboardIndicatorWidth
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__basic-transcript': {
       '&:focus': {

@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function ConnectivityNotification({
   connectivityMarginLeftRight,
@@ -6,7 +6,7 @@ export default function ConnectivityNotification({
   connectivityTextSize,
   notificationText,
   primaryFont
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     alignItems: 'center',
     color: notificationText,

@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createInitialsAvatarStyle({
   accent,
@@ -6,7 +6,7 @@ export default function createInitialsAvatarStyle({
   botAvatarBackgroundColor,
   primaryFont,
   userAvatarBackgroundColor
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__initialsAvatar': {
       alignItems: 'center',

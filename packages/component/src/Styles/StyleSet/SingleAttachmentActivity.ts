@@ -1,10 +1,10 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSingleCardActivityStyle({
   bubbleMaxWidth,
   bubbleMinWidth,
   paddingRegular
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '& > .bubble-box': {
       maxWidth: bubbleMaxWidth,

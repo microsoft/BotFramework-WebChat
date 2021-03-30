@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 import { toByteArray } from 'base64-js';
 
@@ -13,7 +13,7 @@ export default function createSpinnerAnimationStyle({
   spinnerAnimationHeight,
   spinnerAnimationWidth,
   spinnerAnimationPadding
-}: StyleOptions) {
+}: StrictStyleOptions) {
   defaultImageBlobURL ||
     (defaultImageBlobURL = URL.createObjectURL(
       new Blob([toByteArray(DEFAULT_IMAGE_BASE64)], { type: DEFAULT_IMAGE_TYPE })

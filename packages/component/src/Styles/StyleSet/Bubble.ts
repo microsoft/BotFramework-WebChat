@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 import mirrorStyle from '../mirrorStyle';
 
@@ -25,7 +25,7 @@ export default function createBubbleStyle({
   messageActivityWordBreak,
   paddingRegular,
   transitionDuration
-}: StyleOptions) {
+}: StrictStyleOptions) {
   const botNubCornerRadius =
     typeof bubbleNubOffset === 'number' ? Math.min(bubbleBorderRadius, Math.abs(bubbleNubOffset)) : bubbleBorderRadius;
   const userNubCornerRadius =

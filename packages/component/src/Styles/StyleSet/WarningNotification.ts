@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createWarningNotificationStyle({
   connectivityIconPadding,
@@ -8,7 +8,7 @@ export default function createWarningNotificationStyle({
   primaryFont,
   slowConnectivity,
   notificationText
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     alignItems: 'center',
     color: notificationText,

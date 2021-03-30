@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["off"] */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createToasterStyle({
   primaryFont,
@@ -18,7 +18,7 @@ export default function createToasterStyle({
   toastSuccessColor,
   toastWarnBackgroundColor,
   toastWarnColor
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     overflowY: 'hidden',
 

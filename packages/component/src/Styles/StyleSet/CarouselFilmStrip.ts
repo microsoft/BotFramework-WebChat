@@ -1,5 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 import mirrorStyle from '../mirrorStyle';
 
@@ -9,7 +9,7 @@ export default function CarouselFilmStrip({
   bubbleMinWidth,
   paddingRegular,
   transitionDuration
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip': {
       // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function

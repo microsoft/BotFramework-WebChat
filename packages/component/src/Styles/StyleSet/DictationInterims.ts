@@ -1,6 +1,6 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createDictationInterimsStyle({ paddingRegular, primaryFont }: StyleOptions) {
+export default function createDictationInterimsStyle({ paddingRegular, primaryFont }: StrictStyleOptions) {
   return {
     fontFamily: primaryFont,
     margin: 0,

@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSendBoxTextBoxStyle({
   paddingRegular,
@@ -9,7 +9,7 @@ export default function createSendBoxTextBoxStyle({
   sendBoxPlaceholderColor,
   sendBoxTextColor,
   subtle
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__send-box-text-box': {
       alignItems: 'center',

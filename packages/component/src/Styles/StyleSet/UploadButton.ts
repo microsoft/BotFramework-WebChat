@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createUploadButtonStyle({
   sendBoxButtonColor,
@@ -6,7 +6,7 @@ export default function createUploadButtonStyle({
   sendBoxButtonColorOnHover,
   sendBoxHeight,
   subtle
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     // We use the sendBoxHeight, so the button looks square
     width: sendBoxHeight,

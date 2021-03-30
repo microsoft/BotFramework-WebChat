@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSendBoxStyle({
   sendBoxBackground,
@@ -7,7 +7,7 @@ export default function createSendBoxStyle({
   sendBoxBorderRight,
   sendBoxBorderTop,
   sendBoxHeight
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     '&.webchat__send-box': {
       '& .webchat__send-box__button--align-bottom': { alignSelf: 'flex-end' },

@@ -1,6 +1,6 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function AutoResizeTextArea({ primaryFont }: StyleOptions) {
+export default function AutoResizeTextArea({ primaryFont }: StrictStyleOptions) {
   return {
     '&.webchat__auto-resize-textarea': {
       fontFamily: primaryFont,

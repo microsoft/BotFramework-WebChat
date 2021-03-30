@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createScrollToEndButtonStyle({
   newMessagesButtonFontSize,
@@ -10,7 +10,7 @@ export default function createScrollToEndButtonStyle({
   transcriptOverlayButtonColor,
   transcriptOverlayButtonColorOnFocus,
   transcriptOverlayButtonColorOnHover
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     // TODO: [P3] Can we not to unset borderWidth and outline earlier?
     '@media screen and (-ms-high-contrast: active)': {

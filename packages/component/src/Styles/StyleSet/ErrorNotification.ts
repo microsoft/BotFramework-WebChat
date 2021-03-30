@@ -1,4 +1,4 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createErrorNotificationStyle({
   connectivityIconPadding,
@@ -7,7 +7,7 @@ export default function createErrorNotificationStyle({
   connectivityTextSize,
   failedConnectivity,
   primaryFont
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     alignItems: 'center',
     color: failedConnectivity,

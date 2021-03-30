@@ -1,6 +1,6 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createTypingIndicatorStyle({ paddingRegular }: StyleOptions) {
+export default function createTypingIndicatorStyle({ paddingRegular }: StrictStyleOptions) {
   return {
     paddingBottom: paddingRegular,
 

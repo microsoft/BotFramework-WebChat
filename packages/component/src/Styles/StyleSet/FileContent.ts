@@ -1,6 +1,11 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createFileContentStyle({ accent, bubbleTextColor, paddingRegular, primaryFont }: StyleOptions) {
+export default function createFileContentStyle({
+  accent,
+  bubbleTextColor,
+  paddingRegular,
+  primaryFont
+}: StrictStyleOptions) {
   return {
     color: bubbleTextColor,
     display: 'flex',

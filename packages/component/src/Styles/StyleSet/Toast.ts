@@ -1,5 +1,5 @@
 /* eslint no-magic-numbers: ["off"] */
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createToastStyle({
   primaryFont,
@@ -11,7 +11,7 @@ export default function createToastStyle({
   toastSuccessColor,
   toastTextPadding,
   toastWarnColor
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     fontFamily: primaryFont,
     fontSize: toastFontSize,

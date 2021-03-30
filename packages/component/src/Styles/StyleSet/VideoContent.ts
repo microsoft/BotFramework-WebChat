@@ -1,6 +1,6 @@
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createVideoContentStyle({ videoHeight }: StyleOptions) {
+export default function createVideoContentStyle({ videoHeight }: StrictStyleOptions) {
   return {
     height: videoHeight,
     width: '100%'

@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 
-import { StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createTextContentStyle({
   bubbleMaxWidth,
@@ -8,7 +8,7 @@ export default function createTextContentStyle({
   markdownExternalLinkIconImage,
   primaryFont,
   paddingRegular
-}: StyleOptions) {
+}: StrictStyleOptions) {
   return {
     fontFamily: primaryFont,
     margin: 0,
