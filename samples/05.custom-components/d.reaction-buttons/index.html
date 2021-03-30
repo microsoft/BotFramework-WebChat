@@ -117,8 +117,8 @@
           const [card] = setupArgs;
 
           if (card.activity.type === 'messageReaction') {
-            // Currently, Web Chat do not handle "messageReaction" activity and will show a warning as it is an unknown activity.
-            // In this sample, we will disable the rendering of "messageReaction" activity.
+            // Currently, Web Chat does not handle "messageReaction" activity and will show a warning in console log as it is an unknown activity.
+            // In this sample, we will disable the rendering of "messageReaction" activity, so the warning is not shown.
             return false;
           } else if (card.activity.from.role === 'bot') {
             return (...renderArgs) => (
