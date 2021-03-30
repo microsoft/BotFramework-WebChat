@@ -84,11 +84,11 @@
             });
           };
 
-          const handleDownVoteButton = useCallback(() => {
+          const handleDownvoteButton = useCallback(() => {
             addMessageReaction(-1);
           }, [activityID, postActivity]);
 
-          const handleUpVoteButton = useCallback(() => {
+          const handleUpvoteButton = useCallback(() => {
             addMessageReaction(1);
           }, [activityID, postActivity]);
 
@@ -116,7 +116,11 @@
         const activityMiddleware = () => next => (...setupArgs) => {
           const [card] = setupArgs;
 
-          if (card.activity.from.role === 'bot') {
+          if (card.activity.type === 'messageReaction') {
+            // Currently, Web Chat do not handle "messageReaction" activity and will show a warning as it is an unknown activity.
+            // In this sample, we will disable the rendering of "messageReaction" activity.
+            return false;
+          } else if (card.activity.from.role === 'bot') {
             return (...renderArgs) => (
               <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
                 {next(...setupArgs)(...renderArgs)}
