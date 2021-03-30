@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
-import { concatMiddleware, defaultStyleOptions } from 'botframework-webchat-component';
+import { concatMiddleware } from 'botframework-webchat-component';
 import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
+import fullBundleStyleOptions from './fullBundleDefaultStyleOptions';
 import defaultRenderMarkdown from './renderMarkdown';
 
 export default function useComposerProps({
@@ -24,7 +25,7 @@ export default function useComposerProps({
     [attachmentForScreenReaderMiddleware]
   );
 
-  const patchedStyleOptions = useMemo(() => ({ ...defaultStyleOptions, ...styleOptions }), [styleOptions]);
+  const patchedStyleOptions = useMemo(() => ({ ...fullBundleStyleOptions, ...styleOptions }), [styleOptions]);
 
   // When styleSet is not specified, the styleOptions will be used to create Adaptive Cards styleSet and merged into useStyleSet.
   const extraStyleSet = useMemo(() => (styleSet ? undefined : createAdaptiveCardsStyleSet(patchedStyleOptions)), [

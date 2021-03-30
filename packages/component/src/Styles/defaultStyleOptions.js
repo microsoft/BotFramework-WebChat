@@ -13,7 +13,6 @@ const DEFAULT_OPTIONS = {
   accent: DEFAULT_ACCENT,
   activeActivityOutlineColor: DEFAULT_SUBTLE,
   backgroundColor: 'White',
-  cardEmphasisBackgroundColor: '#F0F0F0',
   paddingRegular: PADDING_REGULAR,
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
@@ -213,10 +212,7 @@ const DEFAULT_OPTIONS = {
 
   transcriptVisualKeyboardIndicatorColor: 'Black',
   transcriptVisualKeyboardIndicatorStyle: 'solid',
-  transcriptVisualKeyboardIndicatorWidth: 2,
-  //AdaptiveCard push button
-  cardPushButtonBackgroundColor: '#0063B1',
-  cardPushButtonTextColor: 'white'
+  transcriptVisualKeyboardIndicatorWidth: 2
 };
 
 export default DEFAULT_OPTIONS;

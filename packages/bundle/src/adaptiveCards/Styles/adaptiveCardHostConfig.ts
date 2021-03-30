@@ -1,4 +1,5 @@
-import { defaultStyleOptions } from 'botframework-webchat-api';
+import FullBundleStyleOptions from '../../FullBundleStyleOptions';
+
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
 export default ({
@@ -7,7 +8,7 @@ export default ({
   cardEmphasisBackgroundColor,
   primaryFont,
   subtle
-} = defaultStyleOptions) => ({
+}: FullBundleStyleOptions) => ({
   containerStyles: {
     default: {
       foregroundColors: {

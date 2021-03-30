@@ -1,10 +1,12 @@
+import FullBundleStyleOptions from '../../../FullBundleStyleOptions';
+
 export default function ({
   cardPushButtonBackgroundColor,
   cardPushButtonTextColor,
   accent,
   paddingRegular,
   primaryFont
-}) {
+}: FullBundleStyleOptions) {
   return {
     '&.webchat__adaptive-card-renderer': {
       '& .ac-input, & .ac-inlineActionButton, & .ac-quickActionButton': {

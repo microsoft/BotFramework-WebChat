@@ -1,16 +1,21 @@
-type AdaptiveCardStyleOptions = {
+type ADAPTIVE_CARD_DEFAULT_STYLE_OPTIONS = {
   /**
-   * Cards styling
+   * Adaptive Cards styling
    */
 
-  // TODO: Put JSDoc on every options.
+  /**
+   * Adaptive Cards styling for 'emphasis' container style
+   */
   cardEmphasisBackgroundColor?: string;
 
   /**
-   * Cards: Adaptive Card push button
+   * Adaptive Cards: background color of Adaptive Cards button with status of 'aria-pressed'
    */
-
   cardPushButtonBackgroundColor?: string;
+
+  /**
+   * Adaptive Cards: text color of Adaptive Cards button with status of 'aria-pressed'
+   */
   cardPushButtonTextColor?: string;
 
   /**
@@ -20,4 +25,4 @@ type AdaptiveCardStyleOptions = {
   richCardWrapTitle?: boolean;
 };
 
-export default AdaptiveCardStyleOptions;
+export default ADAPTIVE_CARD_DEFAULT_STYLE_OPTIONS;
