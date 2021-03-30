@@ -1,3 +1,4 @@
+import fullBundleDefaultStyleOptions from '../../fullBundleDefaultStyleOptions';
 import FullBundleStyleOptions from '../../FullBundleStyleOptions';
 
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
@@ -8,7 +9,7 @@ export default ({
   cardEmphasisBackgroundColor,
   primaryFont,
   subtle
-}: FullBundleStyleOptions) => ({
+}: Required<FullBundleStyleOptions> = fullBundleDefaultStyleOptions) => ({
   containerStyles: {
     default: {
       foregroundColors: {

@@ -9,7 +9,7 @@ const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 const PADDING_REGULAR = 10;
 
-const DEFAULT_OPTIONS: StyleOptions = {
+const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Basic styling
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
@@ -19,6 +19,7 @@ const DEFAULT_OPTIONS: StyleOptions = {
   fontSizeSmall: '80%',
   monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
   primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
+
   // Root
   rootHeight: '100%',
   rootWidth: '100%',

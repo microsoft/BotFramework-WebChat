@@ -1,15 +1,11 @@
-import { defaultStyleOptions as defaultMinimalStyleOptions } from 'botframework-webchat-api';
+import { defaultStyleOptions } from 'botframework-webchat-api';
+import adaptiveCardsDefaultStyleOptions from './adaptiveCards/defaultStyleOptions';
 
 import FullBundleStyleOptions from './FullBundleStyleOptions';
 
-const FULL_BUNDLE_DEFAULT_STYLE_OPTIONS: FullBundleStyleOptions = {
-  ...defaultMinimalStyleOptions,
-
-  // Cards
-  cardEmphasisBackgroundColor: '#F0F0F0',
-  cardPushButtonBackgroundColor: '#0063B1',
-  cardPushButtonTextColor: 'White',
-  richCardWrapTitle: false
+const FULL_BUNDLE_DEFAULT_STYLE_OPTIONS: Required<FullBundleStyleOptions> = {
+  ...defaultStyleOptions,
+  ...adaptiveCardsDefaultStyleOptions
 };
 
 export default FULL_BUNDLE_DEFAULT_STYLE_OPTIONS;

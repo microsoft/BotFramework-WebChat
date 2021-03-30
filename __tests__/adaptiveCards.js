@@ -7,7 +7,7 @@ import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted'
 import uiConnected from './setup/conditions/uiConnected';
 
 import createAdaptiveCardsHostConfig from '../packages/bundle/src/adaptiveCards/Styles/adaptiveCardHostConfig';
-import fullBundleDefaultStyleOptions from '../packages/bundle/src/fullBundleDefaultStyleOptions';
+import defaultStyleOptions from '../packages/bundle/src/defaultStyleOptions';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -57,7 +57,7 @@ test('action styles', async () => {
 });
 
 test('breakfast card with custom host config', async () => {
-  const adaptiveCardHostConfig = createAdaptiveCardsHostConfig({ ...fullBundleDefaultStyleOptions, bubbleTextColor: '#FF0000' });
+  const adaptiveCardHostConfig = createAdaptiveCardsHostConfig({ ...defaultStyleOptions, bubbleTextColor: '#FF0000' });
 
   const { driver, pageObjects } = await setupWebDriver({
     props: {

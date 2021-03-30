@@ -18,7 +18,6 @@ import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
-import fullBundleDefaultStyleOptions from './fullBundleDefaultStyleOptions';
 import FullComposer from './FullComposer';
 import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
 import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';
@@ -80,7 +79,6 @@ export {
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLineSpeechAdapters,
   createStyleSet,
-  fullBundleDefaultStyleOptions,
   patchedHooks as hooks,
   renderMarkdown,
   renderWebChat
@@ -96,7 +94,6 @@ window['WebChat'] = {
   createDirectLineAppServiceExtension,
   createDirectLineSpeechAdapters,
   createStyleSet,
-  fullBundleDefaultStyleOptions,
   hooks: patchedHooks,
   ReactWebChat,
   renderMarkdown,
