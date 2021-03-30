@@ -45,7 +45,6 @@ export default function useComposerProps({
     attachmentMiddleware: patchedAttachmentMiddleware,
     attachmentForScreenReaderMiddleware: patchedAttachmentForScreenReaderMiddleware,
     extraStyleSet,
-    renderMarkdown: patchedRenderMarkdown,
-    styleOptions: patchedStyleOptions
+    renderMarkdown: patchedRenderMarkdown
   };
 }

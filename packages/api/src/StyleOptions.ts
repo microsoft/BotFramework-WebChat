@@ -137,6 +137,8 @@ type StyleOptions = {
   /**
    * Nub offset 'bottom' will render nub at the bottom
    * A positive or negative number will shift nub offset up/down
+   * "top" is equivalent to positive zero.
+   * "bottom" is equivalent to negative zero.
    */
   bubbleFromUserNubOffset?: number | 'bottom' | 'top';
 
@@ -154,6 +156,8 @@ type StyleOptions = {
   /**
    * Nub offset ''bottom' will render nub at the bottom
    * A positive or negative number will shift nub offset up/down
+   * "top" is equivalent to positive zero.
+   * "bottom" is equivalent to negative zero.
    */
   bubbleNubOffset?: number | 'bottom' | 'top';
 
@@ -480,4 +484,11 @@ type StyleOptions = {
   videoHeight?: number | string;
 };
 
+type StrictStyleOptions = Required<StyleOptions> & {
+  bubbleFromUserNubOffset: number;
+  bubbleNubOffset: number;
+  emojiSet: false | Record<string, string>;
+};
+
 export default StyleOptions;
+export { StrictStyleOptions };

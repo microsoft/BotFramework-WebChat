@@ -54,7 +54,8 @@ import applyMiddleware, {
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 
-import patchStyleOptions from '../patchStyleOptions';
+import normalizeStyleOptions from '../normalizeStyleOptions';
+import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import singleToArray from './utils/singleToArray';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
@@ -227,11 +228,10 @@ const Composer: FC<ComposerProps> = ({
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
-  const patchedStyleOptions = useMemo(() => patchStyleOptions(styleOptions, { groupTimestamp, sendTimeout }), [
-    groupTimestamp,
-    sendTimeout,
-    styleOptions
-  ]);
+  const patchedStyleOptions = useMemo(
+    () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions, { groupTimestamp, sendTimeout })),
+    [groupTimestamp, sendTimeout, styleOptions]
+  );
 
   useEffect(() => {
     dispatch(setLanguage(locale));

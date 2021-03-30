@@ -1,4 +1,4 @@
-type ADAPTIVE_CARD_DEFAULT_STYLE_OPTIONS = {
+type AdaptiveCardsStyleOptions = {
   /**
    * Adaptive Cards styling
    */
@@ -25,4 +25,7 @@ type ADAPTIVE_CARD_DEFAULT_STYLE_OPTIONS = {
   richCardWrapTitle?: boolean;
 };
 
-export default ADAPTIVE_CARD_DEFAULT_STYLE_OPTIONS;
+type StrictAdaptiveCardsStyleOptions = Required<AdaptiveCardsStyleOptions>;
+
+export default AdaptiveCardsStyleOptions;
+export { StrictAdaptiveCardsStyleOptions };

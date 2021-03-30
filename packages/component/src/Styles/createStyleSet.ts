@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { StyleOptions } from 'botframework-webchat-api';
+import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import createActivitiesStyle from './StyleSet/Activities';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
@@ -46,7 +46,7 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
 export default function createStyleSet(options: StyleOptions) {
-  options = { ...options };
+  options = normalizeStyleOptions(options);
 
   return {
     activities: createActivitiesStyle(),
