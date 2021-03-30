@@ -5,7 +5,7 @@ function compile(...filenames) {
   const program = ts.createProgram(filenames, {
     allowSyntheticDefaultImports: true,
     jsx: 'react',
-    noEmit: false,
+    noEmit: true,
     skipLibCheck: true,
   });
 
@@ -28,29 +28,27 @@ function compile(...filenames) {
 
 
 it('should pass dir as string', () => {
-  const dirStringErrors = compile(path.join(__dirname, './dirString.tsx'));
+  const dirStringErrors = compile(path.join(__dirname, './__typescript__/dirString.tsx'));
 
   expect(dirStringErrors).toHaveProperty('length', 0);
 });
 
 it('should fail on dir as number', () => {
-  const dirNumErrors = compile(path.join(__dirname, './dirNumber.tsx'));
-
-  expect(dirNumErrors[0].includes(`Type 'number' is not assignable to type  '"ltr" | "rtl" | "auto"'`));
+  const dirNumErrors = compile(path.join(__dirname, './__typescript__/dirNumber.tsx'));
 
   expect(dirNumErrors).toHaveProperty('length', 1);
+  expect(dirNumErrors[0]).toEqual(expect.stringContaining(`Type 'number' is not assignable to type '"ltr" | "rtl" | "auto"'`));
 });
 
 it('should fail on accent', () => {
-  const accentErrors = compile(path.join(__dirname, './styleOptionsAccent.tsx'));
+  const accentErrors = compile(path.join(__dirname, './__typescript__/styleOptionsAccent.tsx'));
 
   expect(accentErrors).toHaveProperty('length', 0);
 });
 
 it('should pass on cardEmphasisBackgroundColor', () => {
-  const cardEmphErrors = compile(path.join(__dirname, './styleOptionsCardEmph.tsx'));
-
-  expect(cardEmphErrors[0].includes(`Type '{ cardEmphasisBackgroundColor: string; }' is not assignable to type 'StyleOptions'`));
+  const cardEmphErrors = compile(path.join(__dirname, './__typescript__/styleOptionsCardEmph.tsx'));
 
   expect(cardEmphErrors).toHaveProperty('length', 1);
+  expect(cardEmphErrors[0]).toEqual(expect.stringContaining(`Type '{ cardEmphasisBackgroundColor: string; }' is not assignable to type 'StyleOptions'`));
 });

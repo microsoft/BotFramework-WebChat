@@ -1,4 +1,4 @@
-import ReactWebChat, { createStyleSet, StyleOptions } from '../../packages/bundle/lib/index-minimal';
+import ReactWebChat, { createStyleSet, StyleOptions } from '../../../packages/bundle/lib/index-minimal';
 
 function main() {
   const styleOptions: StyleOptions = { accent: 'black' };
