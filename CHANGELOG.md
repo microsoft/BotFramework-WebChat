@@ -76,6 +76,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`web-speech-cognitive-services@7.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
       -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
 
+### Samples
+
+-  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Fixed typo in reaction button sample, by [@compulim](https://github.com/compulim) in PR [#3820](https://github.com/microsoft/BotFramework-WebChat/pull/3820)
+
 ## [4.12.1] - 2021-03-16
 
 ### Added
@@ -89,7 +93,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Update reaction button sample : Add replyToId to the postActivity object, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3769](https://github.com/microsoft/BotFramework-WebChat/pull/3769)
+-  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Update reaction button sample: Add `replyToId` to the `postActivity` object, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3769](https://github.com/microsoft/BotFramework-WebChat/pull/3769)
 
 ## [4.12.0] - 2021-03-01
 
