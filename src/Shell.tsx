@@ -101,7 +101,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     private async takeScreenshot() {
-        const screen = await html2canvas(document.body).then((canvas) => {
+        const screen = await html2canvas(document.body, {allowTaint: true, useCORS: true}).then((canvas) => {
             const dataURI = canvas.toDataURL("image/png");
             
             return dataURI

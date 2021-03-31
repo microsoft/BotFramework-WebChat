@@ -10,6 +10,7 @@ export function renderExpandableTemplate(props: AppProps) {
 
   const wrapper = document.createElement("div");
   wrapper.className = "feedbot-wrapper collapsed";
+  wrapper.setAttribute("data-html2canvas-ignore", "")
 
   const signature = document.createElement("div");
   signature.classList.add("feedbot-signature");
