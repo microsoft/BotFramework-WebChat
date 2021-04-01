@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Baixa el fitxer \"$1\"",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Baixa el fitxer \"$1\" amb una mida de $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "\"$1\" amb una mida de $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "S’obre en una finestra nova; externa.",
   "RECEIPT_CARD_TAX": "Impost",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "IVA",

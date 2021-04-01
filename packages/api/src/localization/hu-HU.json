@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "$1 fájl letöltése",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "A(z) $1 fájl letöltése. Méret: $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "$1 mérete: $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Megnyitja egy új ablakban; külső hivatkozás.",
   "RECEIPT_CARD_TAX": "Adó",
   "RECEIPT_CARD_TOTAL": "Összesen",
   "RECEIPT_CARD_VAT": "ÁFA",

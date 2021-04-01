@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Atsisiųsti failą $1",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Atsisiųsti failą $1, kurio dydis $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "$1, kurio dydis $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Atidaroma naujame lange; išorinis.",
   "RECEIPT_CARD_TAX": "Mokestis",
   "RECEIPT_CARD_TOTAL": "Iš viso",
   "RECEIPT_CARD_VAT": "PVM",

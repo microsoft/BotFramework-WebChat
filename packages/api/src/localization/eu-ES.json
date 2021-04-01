@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Deskargatu \"$1\" fitxategia",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Deskargatu \"$1\" fitxategia (tamaina: $2)",
   "FILE_CONTENT_WITH_SIZE_ALT": "\"$1\" (tamaina: $2)",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Beste leiho batean irekitzen da; kanpokoa.",
   "RECEIPT_CARD_TAX": "Zerga",
   "RECEIPT_CARD_TOTAL": "Guztira",
   "RECEIPT_CARD_VAT": "BEZ",

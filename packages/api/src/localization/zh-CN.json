@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "下载文件 '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "下载文件 '$1'，大小为 $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' 的大小为 $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "在新窗口中打开；外部。",
   "RECEIPT_CARD_TAX": "税款",
   "RECEIPT_CARD_TOTAL": "总额",
   "RECEIPT_CARD_VAT": "增值税",

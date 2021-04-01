@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Download filen '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Hent filen '$1', som fylder $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1', som fylder $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Åbner i et nyt vindue, eksternt.",
   "RECEIPT_CARD_TAX": "Moms",
   "RECEIPT_CARD_TOTAL": "I alt",
   "RECEIPT_CARD_VAT": "Moms",
