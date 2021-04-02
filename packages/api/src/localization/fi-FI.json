@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Lataa tiedosto $1",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Lataa tiedosto $1 (koko $2)",
   "FILE_CONTENT_WITH_SIZE_ALT": "$1 (koko $2)",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Avaa uudessa ikkunassa; ulkoinen.",
   "RECEIPT_CARD_TAX": "Vero",
   "RECEIPT_CARD_TOTAL": "Yhteensä",
   "RECEIPT_CARD_VAT": "ALV",

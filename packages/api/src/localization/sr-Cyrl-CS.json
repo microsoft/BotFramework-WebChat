@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Преузимање датотеке „$1“",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Преузмите датотеку „$1“ величине $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "„$1“ величине $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Отвара се у новом прозору; спољно.",
   "RECEIPT_CARD_TAX": "Порез",
   "RECEIPT_CARD_TOTAL": "Укупно",
   "RECEIPT_CARD_VAT": "ПДВ",

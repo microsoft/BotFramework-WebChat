@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Scarica file \"$1\"",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Scarica il file \"$1\" con dimensioni pari a $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "\"$1\" con dimensioni pari a $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Apre in una nuova finestra; esterna.",
   "RECEIPT_CARD_TAX": "Imposte",
   "RECEIPT_CARD_TOTAL": "Totali",
   "RECEIPT_CARD_VAT": "IVA",

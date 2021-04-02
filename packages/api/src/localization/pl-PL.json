@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Pobierz plik „$1”",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Pobierz plik „$1” o rozmiarze $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "Plik „$1” o rozmiarze $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Powoduje otwarcie w nowym oknie; link zewnętrzny.",
   "RECEIPT_CARD_TAX": "Podatek",
   "RECEIPT_CARD_TOTAL": "Suma",
   "RECEIPT_CARD_VAT": "Podatek VAT",

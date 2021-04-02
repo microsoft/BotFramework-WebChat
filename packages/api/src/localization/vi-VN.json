@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Tải tệp '$1' xuống",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Tải tệp '$1' kích thước $2 xuống",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' kích thước $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Mở trong cửa sổ mới; bên ngoài.",
   "RECEIPT_CARD_TAX": "Thuế",
   "RECEIPT_CARD_TOTAL": "Tổng số",
   "RECEIPT_CARD_VAT": "Thuế GTGT",

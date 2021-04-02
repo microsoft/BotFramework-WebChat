@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Stáhnout soubor $1",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Stáhnout soubor $1 o velikosti $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "$1 o velikosti $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Otevře se v novém okně; externí.",
   "RECEIPT_CARD_TAX": "Daň",
   "RECEIPT_CARD_TOTAL": "Celkem",
   "RECEIPT_CARD_VAT": "DPH",
