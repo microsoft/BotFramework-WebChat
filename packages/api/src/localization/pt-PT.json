@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Transferir o ficheiro \"$1\"",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Transferir o ficheiro \"$1\" com um tamanho de $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "\"$1\" com um tamanho de $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Abre numa nova janela externa.",
   "RECEIPT_CARD_TAX": "Imposto",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "IVA",

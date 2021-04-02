@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "'$1' 파일 다운로드",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "$2 크기의 다운로드 파일 '$1'",
   "FILE_CONTENT_WITH_SIZE_ALT": "$2 크기의 '$1'",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "새 창으로 엽니다. 외부.",
   "RECEIPT_CARD_TAX": "세금",
   "RECEIPT_CARD_TOTAL": "합계",
   "RECEIPT_CARD_VAT": "VAT",

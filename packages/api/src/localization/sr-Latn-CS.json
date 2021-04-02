@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Preuzimanje datoteke „$1“",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Preuzmite datoteku „$1“ veličine $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "„$1“ veličine $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Otvara se u novom prozoru; spoljno.",
   "RECEIPT_CARD_TAX": "Porez",
   "RECEIPT_CARD_TOTAL": "Ukupno",
   "RECEIPT_CARD_VAT": "PDV",

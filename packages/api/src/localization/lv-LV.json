@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Lejupielādēt failu “$1”",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Lejupielādēt failu “$1”, kura lielums ir $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "“$1”, kura lielums ir $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Tiek atvērts jaunā logā (ārējā).",
   "RECEIPT_CARD_TAX": "Nodoklis",
   "RECEIPT_CARD_TOTAL": "Kopā",
   "RECEIPT_CARD_VAT": "PVN",
