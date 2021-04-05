@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Bestand '$1' downloaden",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Downloadbestand '$1' van grootte $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' van grootte $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Wordt geopend in een nieuw venster; extern.",
   "RECEIPT_CARD_TAX": "Belastingen",
   "RECEIPT_CARD_TOTAL": "Totaal",
   "RECEIPT_CARD_VAT": "Btw",

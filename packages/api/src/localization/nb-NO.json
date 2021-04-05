@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Last ned filen $1",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Last ned filen $1 med størrelsen $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "$1 med størrelsen $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Åpnes i et nytt vindu, eksternt.",
   "RECEIPT_CARD_TAX": "Avgift",
   "RECEIPT_CARD_TOTAL": "Totalt",
   "RECEIPT_CARD_VAT": "Merverdiavgift",

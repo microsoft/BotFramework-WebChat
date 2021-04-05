@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "ファイル '$1' のダウンロード",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "ファイル '$1' (サイズ: $2) をダウンロードする",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' (サイズ: $2)",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "新しいウィンドウ (外部) でレコードを開きます。",
   "RECEIPT_CARD_TAX": "税額",
   "RECEIPT_CARD_TOTAL": "合計",
   "RECEIPT_CARD_VAT": "VAT",

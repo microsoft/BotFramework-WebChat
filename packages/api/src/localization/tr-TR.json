@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "\"$1\" dosyasını indir",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "$2 boyutlu \"$1\" dosyasını indir",
   "FILE_CONTENT_WITH_SIZE_ALT": "$2 boyutlu \"$1\" dosyası",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Yeni bir pencerede açılır; harici.",
   "RECEIPT_CARD_TAX": "Vergi",
   "RECEIPT_CARD_TOTAL": "Toplam",
   "RECEIPT_CARD_VAT": "KDV",

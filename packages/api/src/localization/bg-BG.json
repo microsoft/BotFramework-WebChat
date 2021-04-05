@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Изтегляне на файл „$1”",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Изтегляне на файл „$1” с размер $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "„$1” с размер $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Отваря се в нов прозорец; външен.",
   "RECEIPT_CARD_TAX": "Данък",
   "RECEIPT_CARD_TOTAL": "Обща сума",
   "RECEIPT_CARD_VAT": "ДДС",
