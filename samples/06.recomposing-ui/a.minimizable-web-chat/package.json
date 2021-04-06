@@ -4,11 +4,11 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/",
   "dependencies": {
-    "botframework-webchat": "^4.12.1",
-    "classnames": "^2.2.6",
+    "botframework-webchat": "^4.13.0",
+    "classnames": "^2.3.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.4"
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -28,29 +28,29 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.13.10",
-    "@babel/core": "^7.13.10",
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.13.14",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
-    "concurrently": "^6.0.0",
-    "copy-webpack-plugin": "^6.0.3",
-    "html-webpack-plugin": "^4.3.0",
-    "http-proxy-middleware": "^1.0.6",
+    "@babel/preset-env": "^7.13.12",
+    "concurrently": "^6.0.1",
+    "copy-webpack-plugin": "^6.4.1",
+    "html-webpack-plugin": "^4.5.2",
+    "http-proxy-middleware": "^1.1.0",
     "jest": "^26.6.3",
-    "node-dev": "^6.4.0",
+    "node-dev": "^6.6.0",
     "node-fetch": "^2.6.1",
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
     "restify": "^8.5.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.6.0",
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "dependencies": {
     "@babel/runtime": "7.13.10",
-    "core-js": "3.9.1",
-    "url-search-params-polyfill": "8.1.0",
-    "whatwg-fetch": "3.4.0"
+    "core-js": "3.10.0",
+    "url-search-params-polyfill": "8.1.1",
+    "whatwg-fetch": "3.6.2"
   }
 }
