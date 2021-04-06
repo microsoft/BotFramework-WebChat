@@ -65,7 +65,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`eslint-plugin-standard@5.0.0`](https://npmjs.com/package/eslint-plugin-standard)
       -  [`eslint@7.23.0`](https://npmjs.com/package/eslint)
       -  [`event-iterator@2.0.0`](https://npmjs.com/package/event-iterator)
-      -  [`expect@26.6.2`](https://npmjs.com/package/expect)
       -  [`global-agent@2.2.0`](https://npmjs.com/package/global-agent)
       -  [`html-webpack-plugin@4.5.2`](https://npmjs.com/package/html-webpack-plugin)
       -  [`http-proxy-middleware@1.1.0`](https://npmjs.com/package/http-proxy-middleware)
