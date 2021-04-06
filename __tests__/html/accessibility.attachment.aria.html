@@ -10,7 +10,6 @@
       const {
         conditions,
         createStore,
-        elements,
         expect,
         host,
         pageObjects,
@@ -32,13 +31,18 @@
 
         await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
 
-        await pageObjects.sendMessageViaSendBox('Hello, world', { waitForSend: true });
+        await pageObjects.sendMessageViaSendBox('document-word', { waitForSend: true });
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        const messageRole = document.querySelector('.webchat__stacked-layout__message-row').getAttribute('role');
+        const fileContentAriaHidden = document.querySelector('.webchat__fileContent').getAttribute('aria-hidden');
 
-        expect(messageRole).toEqual('group');
+        expect(fileContentAriaHidden).toBeFalsy();
+
+
+        const fileContentButtonLinkLabel = document.querySelector('.webchat__fileContent__buttonLink').getAttribute('aria-label');
+
+        expect(fileContentButtonLinkLabel).toBeTruthy();
 
         await host.done();
       })().catch(async err => {
