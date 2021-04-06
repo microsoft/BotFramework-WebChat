@@ -5,6 +5,7 @@ import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 import { SizeAndUnit } from 'adaptivecards/lib/utils';
 import { Tile } from './Types';
 
+
 export class AdaptiveCardBuilder {
     private container: Container;
     public card: AdaptiveCard;
@@ -22,7 +23,9 @@ export class AdaptiveCardBuilder {
         container.addItem(columnSet);
         const columns = sizes.map(size => {
             const column = new Column();
+
             column.width = new SizeAndUnit(size, SizeUnit.Pixel);
+
             columnSet.addColumn(column);
             return column;
         })

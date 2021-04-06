@@ -992,6 +992,46 @@ const BaseTheme = (theme: Theme) => `
         margin-top: 10px !important;
     }
 
+    .wc-carousel .wc-hscroll ul {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li {
+      min-width: calc(100% - 4px) !important;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card {
+      height: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div {
+      height: 100%;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container {
+      padding: 0 !important;
+      height: 100%;
+    }
+    
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container{
+      height: calc(100% - 52px);
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-image{
+      border-radius: 5px 5px 0 0;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-textBlock{
+      padding: 0 20px;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div .ac-actionSet{
+      margin: 8px 20px 12px !important;
+    }
+
     .feedbot-signature {
       display: none;
     }
