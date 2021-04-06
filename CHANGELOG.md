@@ -104,7 +104,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`url-search-params-polyfill@8.1.1`](https://npmjs.com/package/url-search-params-polyfill)
       -  [`whatwg-fetch@3.6.2`](https://npmjs.com/package/whatwg-fetch)
 
-## [4.13.0] - 2021-03-31
+## [4.13.0] - 2021-04-05
 
 ### Added
 
