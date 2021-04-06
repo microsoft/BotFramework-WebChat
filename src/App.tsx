@@ -95,6 +95,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           props.theme.mainColor = config.mainColor;
         }
 
+        props.theme.showSignature = !config.hideSignature
+
         if (config.showInput === "auto") {
           props.disableInputWhenNotNeeded = true;
         }
@@ -645,6 +647,11 @@ const Sidebar = (theme: Theme) => `
     bottom: 1px;
     left: 0px;
     justify-content: center;
+    text-shadow: 1px 1px 7px rgb(255 255 255 / 50%);
+  }
+
+  .feedbot-signature a img {
+    height: 22px;
   }
   
 `;

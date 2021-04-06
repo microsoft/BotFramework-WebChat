@@ -23,16 +23,15 @@
       "
     ></div>
     <script type="text/javascript">
-      (function (f, y, b, o, t, s) {
+      (function (f, y, b, o, t, s) { 
         (t = y.createElement(b)), (s = y.getElementsByTagName(b)[0]);
         t.async = 1;
         t.src = "../../botchat-es5.js";
         t.onload = function () {
           BotChat.App({
             bot: { id: "feedbot-demo-webchat" },
-            theme: { template: { type: "sidebar" } },
-            disableInputWhenNotNeeded: true,
-            showSignature: true
+            theme: { template: { type: "sidebar" }},
+            disableInputWhenNotNeeded: true
           });
         };
         s.parentNode.insertBefore(t, s);
