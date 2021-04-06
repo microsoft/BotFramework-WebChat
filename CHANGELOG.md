@@ -95,9 +95,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`webpack-stats-plugin@1.0.3`](https://npmjs.com/package/webpack-stats-plugin)
       -  [`webpack@4.46.0`](https://npmjs.com/package/webpack)
    -  Production dependencies
+      -  [`@emotion/css@11.1.3`](https://npmjs.com/package/@emotion/css)
       -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
       -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
-      -  [`create-emotion@11.0.0`](https://npmjs.com/package/create-emotion)
       -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)
       -  [`redux-devtools-extension@2.13.9`](https://npmjs.com/package/redux-devtools-extension)
       -  [`url-search-params-polyfill@8.1.1`](https://npmjs.com/package/url-search-params-polyfill)
