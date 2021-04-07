@@ -7,15 +7,7 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createStore,
-        expect,
-        host,
-        pageObjects,
-        timeouts,
-        token
-      } = window.WebChatTest;
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
 
       const {
         Components: { AdaptiveCardContent }
@@ -39,10 +31,19 @@
 
         expect(fileContentAriaHidden).toBeFalsy();
 
-
-        const fileContentButtonLinkLabel = document.querySelector('.webchat__fileContent__buttonLink').getAttribute('aria-label');
+        const fileContentButtonLinkLabel = document
+          .querySelector('.webchat__fileContent__buttonLink')
+          .getAttribute('aria-label');
 
         expect(fileContentButtonLinkLabel).toBeTruthy();
+
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        const carouselContainer = document.querySelector('.webchat__carousel-filmstrip').getAttribute('aria-labelledby');
+
+        expect(carouselContainer).toBeFalsy();
 
         await host.done();
       })().catch(async err => {

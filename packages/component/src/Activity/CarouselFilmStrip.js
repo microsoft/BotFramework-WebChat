@@ -171,7 +171,6 @@ const CarouselFilmStrip = ({
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
       className={classNames(
         'webchat__carousel-filmstrip',
         {
