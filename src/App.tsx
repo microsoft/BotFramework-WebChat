@@ -8,6 +8,7 @@ import {
 } from "./AppService";
 import { DirectLine } from "botframework-directlinejs";
 import * as konsole from "./Konsole";
+import * as rgb2hex from "rgb2hex"
 
 export type Theme = {
   mainColor: string;
@@ -206,6 +207,13 @@ function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
 
   // backward compatibility - knob is new default for remote config, old default is bar
   return remoteConfig ? ExpandableKnobTheme(theme) : ExpandableBarTheme(theme);
+}
+
+function convertRGBtoHex (color: string) {
+  if(color.startsWith("rgb")){
+    return rgb2hex(color).hex
+  }
+  return color
 }
 
 const FullScreenTheme = (theme: Theme) => `
@@ -570,9 +578,6 @@ const Sidebar = (theme: Theme) => `
     background-size: 15px;
     background-position: center center;    
 
-    /*backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    background-color: rgba(256,256,256, 0.5) !important;*/
   }
 
   .feedbot-wrapper.collapsed .feedbot-header {
@@ -608,11 +613,20 @@ const Sidebar = (theme: Theme) => `
     right: 30px;
   }
 
+  /* slightly transparent fallback */
   .feedbot-wrapper {
     max-height: 100%;
-    background: linear-gradient(45deg, rgba(256,256,256, 0.2), rgba(256,256,256, 0.8));
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+    background: rgb(255, 255, 255);
+  }
+
+  /* if backdrop support: very transparent and blurred */
+  @supports ((-webkit-backdrop-filter: blur(40px)) or (backdrop-filter: blur(40px))) {
+    .feedbot-wrapper {
+      max-height: 100%;
+      background: linear-gradient(45deg, #${convertRGBtoHex(theme.mainColor)}33,  #FFFFFFCE);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+    }
   }
 
   .wc-app .wc-message-groups {

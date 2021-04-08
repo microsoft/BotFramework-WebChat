@@ -34,8 +34,8 @@
   "license": "MIT",
   "dependencies": {
     "@types/google.analytics": "0.0.40",
-    "adaptivecards": "^1.1.0",
     "@types/html2canvas": "0.0.36",
+    "adaptivecards": "^1.1.0",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",
     "core-js": "2.4.1",
@@ -49,6 +49,7 @@
     "react-redux": "5.0.5",
     "redux": "3.7.2",
     "redux-observable": "0.13.0",
+    "rgb2hex": "^0.2.5",
     "rxjs": "5.4.3",
     "simple-update-in": "^1.2.0",
     "smartsupp-websocket": "^1.1.0",
