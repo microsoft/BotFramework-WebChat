@@ -623,7 +623,7 @@ const Sidebar = (theme: Theme) => `
   @supports ((-webkit-backdrop-filter: blur(40px)) or (backdrop-filter: blur(40px))) {
     .feedbot-wrapper {
       max-height: 100%;
-      background: linear-gradient(45deg, #${convertRGBtoHex(theme.mainColor)}33,  #FFFFFFCE);
+      background: linear-gradient(45deg, ${convertRGBtoHex(theme.mainColor)}33,  #FFFFFFCE);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
     }
