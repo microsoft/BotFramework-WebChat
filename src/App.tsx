@@ -209,11 +209,15 @@ function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
   return remoteConfig ? ExpandableKnobTheme(theme) : ExpandableBarTheme(theme);
 }
 
-function convertRGBtoHex (color: string) {
+function getSidebarBackgroundColor (theme: Theme) {
+  return '#FFFFFF'
+
+  // TODO make background tint configurable in theme
+  /*const color = theme.mainColor
   if(color.startsWith("rgb")){
     return rgb2hex(color).hex
   }
-  return color
+  return color*/
 }
 
 const FullScreenTheme = (theme: Theme) => `
@@ -623,7 +627,7 @@ const Sidebar = (theme: Theme) => `
   @supports ((-webkit-backdrop-filter: blur(40px)) or (backdrop-filter: blur(40px))) {
     .feedbot-wrapper {
       max-height: 100%;
-      background: linear-gradient(45deg, ${convertRGBtoHex(theme.mainColor)}33,  #FFFFFFCE);
+      background: linear-gradient(45deg, ${getSidebarBackgroundColor(theme)}33,  #FFFFFFCE);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
     }
