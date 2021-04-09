@@ -8,6 +8,9 @@ export default function CarouselFilmStrip({
   bubbleMaxWidth,
   bubbleMinWidth,
   paddingRegular,
+  transcriptVisualKeyboardIndicatorColor,
+  transcriptVisualKeyboardIndicatorStyle,
+  transcriptVisualKeyboardIndicatorWidth,
   transitionDuration
 }: StrictStyleOptions) {
   return {
@@ -19,6 +22,21 @@ export default function CarouselFilmStrip({
       },
 
       '& .webchat__carousel-filmstrip__attachment': {
+        '&:focus': {
+          outline: 0
+        },
+        '&:focus .webchat__carousel-filmstrip__attachment__focus-indicator': {
+          borderColor: transcriptVisualKeyboardIndicatorColor,
+          borderStyle: transcriptVisualKeyboardIndicatorStyle,
+          borderWidth: transcriptVisualKeyboardIndicatorWidth,
+          boxSizing: 'border-box',
+          height: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`,
+          left: '0',
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: 0,
+          width: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`
+        },
         minWidth: bubbleMinWidth,
         maxWidth: bubbleMaxWidth,
         transitionDuration,

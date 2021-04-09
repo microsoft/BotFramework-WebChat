@@ -226,11 +226,13 @@ const CarouselFilmStrip = ({
                     /* eslint-disable-next-line react/no-array-index-key */
                     key={index}
                     role="listitem"
+                    tabIndex={0}
                   >
                     <ScreenReaderText text={attachedAlt} />
                     {/* eslint-disable-next-line react/no-array-index-key */}
                     <Bubble fromUser={fromUser} key={index} nub={false}>
                       {renderAttachment({ activity, attachment })}
+                      <div className="webchat__carousel-filmstrip__attachment__focus-indicator" />
                     </Bubble>
                   </li>
                 ))}
