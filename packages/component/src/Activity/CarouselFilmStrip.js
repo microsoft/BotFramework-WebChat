@@ -13,7 +13,6 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -127,7 +126,6 @@ const CarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__id');
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const showActivityStatus = typeof renderActivityStatus === 'function';
@@ -171,7 +169,6 @@ const CarouselFilmStrip = ({
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
       className={classNames(
         'webchat__carousel-filmstrip',
         {
@@ -196,14 +193,7 @@ const CarouselFilmStrip = ({
         <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
         <div className="webchat__carousel-filmstrip__content">
           {!!activityDisplayText && (
-            <div
-              aria-roledescription="message"
-              className="webchat__carousel-filmstrip__message"
-              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-              /* eslint-disable-next-line react/forbid-dom-props */
-              id={ariaLabelId}
-              role="group"
-            >
+            <div aria-roledescription="message" className="webchat__carousel-filmstrip__message" role="group">
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className="webchat__carousel-filmstrip__bubble"
