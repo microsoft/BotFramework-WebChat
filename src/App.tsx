@@ -666,10 +666,16 @@ const Sidebar = (theme: Theme) => `
   }
 
   .feedbot-wrapper .feedbot-signature {
-    bottom: 1px;
+    bottom: 0px;
     left: 0px;
+    height: 24px;
     justify-content: center;
     text-shadow: 1px 1px 7px rgb(255 255 255 / 50%);
+  }
+  
+  .feedbot-signature a {
+    height: unset;
+    display: flex;
   }
 
   .feedbot-signature a img {
