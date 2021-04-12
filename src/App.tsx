@@ -750,14 +750,8 @@ const ExpandableBarTheme = (theme: Theme) => `
 
   ${BaseTheme(theme)}
 
-  .wc-carousel .wc-hscroll > ul > li {
-    min-width: calc(100% - 4px) !important;
-  }
-
   .wc-carousel .wc-hscroll > ul > li > .wc-card {
     height: 100%;
-    width: 100% !important;
-    max-width: 100% !important;
   }
 
   .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-image{
@@ -1037,10 +1031,6 @@ const BaseTheme = (theme: Theme) => `
     .wc-carousel .wc-hscroll ul {
       display: flex;
       align-items: stretch;
-    }
-
-    .wc-carousel .wc-hscroll > ul > li {
-      min-width: unset !important;
     }
   
     .wc-carousel .wc-hscroll > ul > li > .wc-card {
