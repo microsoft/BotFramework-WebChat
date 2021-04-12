@@ -885,9 +885,12 @@ const BaseTheme = (theme: Theme) => `
         border-color: ${theme.mainColor} !important;
 
         flex: auto;
+        padding: 5px 16px;
+    }
+
+    .feedbot-wrapper .wc-app .wc-card button, .feedbot-wrapper .wc-app .wc-card button > div {
         text-overflow: initial !important;
         white-space: initial !important;
-        padding: 5px 16px;
     }
 
     .feedbot-wrapper .wc-app .wc-card button:active {
