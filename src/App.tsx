@@ -641,6 +641,10 @@ const Sidebar = (theme: Theme) => `
     display: none;
   }
 
+  .feedbot-wrapper .wc-adaptive-card, .feedbot-wrapper .wc-card {
+    max-width: 300px !important;
+  }
+
   .wc-message-content {
     padding: 12px 14px;
     line-height: 1.25em;
@@ -1059,7 +1063,7 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div .ac-actionSet{
-      margin: 8px 20px 12px !important;
+      margin: 4px 20px 12px !important;
     }
 
     .feedbot-signature {
