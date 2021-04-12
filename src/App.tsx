@@ -749,6 +749,20 @@ const ExpandableBarTheme = (theme: Theme) => `
   }
 
   ${BaseTheme(theme)}
+
+  .wc-carousel .wc-hscroll > ul > li {
+    min-width: calc(100% - 4px) !important;
+  }
+
+  .wc-carousel .wc-hscroll > ul > li > .wc-card {
+    height: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-image{
+    border-radius: 5px 5px 0 0;
+  }
 `;
 
 const BaseTheme = (theme: Theme) => `
@@ -1023,13 +1037,11 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .wc-carousel .wc-hscroll > ul > li {
-      min-width: calc(100% - 4px) !important;
+      min-width: unset !important;
     }
-
+  
     .wc-carousel .wc-hscroll > ul > li > .wc-card {
-      height: 100%;
-      width: 100% !important;
-      max-width: 100% !important;
+      width: 398px !important;
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div {
@@ -1046,7 +1058,7 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-image{
-      border-radius: 5px 5px 0 0;
+      border-radius: 8px 8px 0 0;
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-textBlock{
