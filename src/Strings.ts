@@ -327,6 +327,23 @@ const localizedStrings: LocalizedStrings = {
         uploadFile: "Nahrát soubor",
         speak: "Použít hlas"
     },
+    'sk-sk': {
+        title: "Chat",
+        send: "Odoslať",
+        unknownFile: "[Soubor typu '%1']",
+        unknownCard: "[Neznámá karta '%1']",
+        receiptVat: "DPH",
+        receiptTax: "Daň z prod.",
+        receiptTotal: "Celkem",
+        messageRetry: "Opakovať",
+        messageFailed: "Nepodarilo sa odoslať",
+        messageSending: "Odosielanie",
+        timeSent: " v %1",
+        consolePlaceholder: "Prosím, napíšte svoju otázku",
+        listeningIndicator: "Poslouchám...",
+        uploadFile: "Nahrať súbor",
+        speak: "Použít hlas"
+    },
     'ko-kr': {
         title: "채팅",
         send: "전송",
