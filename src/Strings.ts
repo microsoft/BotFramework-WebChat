@@ -516,6 +516,8 @@ function mapLocale(locale: string) {
         return 'ro-ro';
     } else if (locale.startsWith('ru')) {
         return 'ru-ru';
+    } else if (locale.startsWith('sk')) {
+        return 'sk-sk';
     } else if (locale.startsWith('sv')) {
         return 'sv-se';
     } else if (locale.startsWith('tr')) {
