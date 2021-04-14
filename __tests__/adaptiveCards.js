@@ -111,6 +111,7 @@ test('disable card inputs', async () => {
     document.querySelector('.ac-adaptiveCard input[type="radio"]').checked = true;
     document.querySelector('.ac-adaptiveCard input[type="text"]').value = 'William';
     document.querySelector('.ac-adaptiveCard input[type="time"]').value = '12:34';
+    document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
     document.querySelector('.ac-adaptiveCard select').value = '1';
     document.querySelector('.ac-adaptiveCard textarea').value = 'One Redmond Way, Redmond, WA';
   });
