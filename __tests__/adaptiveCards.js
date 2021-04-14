@@ -190,6 +190,11 @@ test('Inputs card with custom style options and submit action', async () => {
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
+  // To submit the input form, the number field is mandatory.
+  await driver.executeScript(() => {
+    document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
+  });
+
   // Click "Submit" button should change the button color
   await driver.executeScript(() => {
     document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
