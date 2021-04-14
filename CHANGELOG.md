@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831) and PR [#3846](https://github.com/microsoft/BotFramework-WebChat/pull/3846)
    -  Development dependencies
       -  [`@azure/storage-blob@12.5.0`](https://npmjs.com/package/@azure/storage-blob)
       -  [`@babel/cli@7.13.14`](https://npmjs.com/package/@babel/cli)
@@ -96,6 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`webpack@4.46.0`](https://npmjs.com/package/webpack)
    -  Production dependencies
       -  [`@emotion/css@11.1.3`](https://npmjs.com/package/@emotion/css), moved from [`create-emotion`](https://npmjs.com/package/create-emotion)
+      -  [`adaptivecards@2.9.0`](https://npmjs.com/package/adaptivecards)
       -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
       -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
       -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)

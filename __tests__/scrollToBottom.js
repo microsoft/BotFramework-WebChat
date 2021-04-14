@@ -26,6 +26,11 @@ test('should stick to bottom if submitting an Adaptive Card while suggested acti
   await driver.wait(suggestedActionsShown(), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
+  // To submit the input form, the number field is mandatory.
+  await driver.executeScript(() => {
+    document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
+  });
+
   const submitButton = await driver.findElement(By.css('button.ac-pushButton:nth-of-type(2)'));
 
   await submitButton.click();
