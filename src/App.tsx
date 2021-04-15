@@ -1043,23 +1043,16 @@ const BaseTheme = (theme: Theme) => `
       align-items: stretch;
     }
   
-    .wc-carousel .wc-hscroll > ul > li > .wc-card {
-      width: 398px !important;
-    }
-
-    .wc-carousel .wc-hscroll > ul > li > .wc-card > div {
-      height: 100%;
-    }
-
-    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container {
-      padding: 0 !important;
-      height: 100%;
-    }
+      .wc-carousel .wc-hscroll > ul > li > .wc-card > div {
+        height: 100%;
+      }
+  
+      .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container {
+        padding: 0 !important;
+        height: 100%;
+        justify-content: space-between !important;
+      }
     
-    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container{
-      height: calc(100% - 52px);
-    }
-
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-image{
       border-radius: 8px 8px 0 0;
     }
