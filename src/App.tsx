@@ -72,7 +72,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       const config = body.config;
       const alwaysVisible = config && config.visibility === 'always'
       const neverVisible = config && config.visibility === 'never'
-      if (neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
+      if (!config || neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
         document
           .getElementsByTagName("body")[0]
           .classList.add("feedbot-disabled");
