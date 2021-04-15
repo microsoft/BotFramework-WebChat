@@ -265,7 +265,7 @@ describe('transcript', () => {
   test('with activity grouping test 46', () =>
     runHTMLTest(
       'transcript.activityGrouping#bi=1&bn=1&bt=1&g=status&l=carousel&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=1',
-      { height: 1280, width: 720 }
+      { height: 1280, ignoreConsoleError: true, width: 720 }
     ));
 
   test('with activity grouping test 47', () =>
