@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from './Bubble';
+import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
 import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
@@ -35,7 +36,7 @@ const ROOT_STYLE = {
       flexShrink: 0
     },
 
-    '& .webchat__carousel-filmstrip__attachment': {
+    '& .webchat__carousel-filmstrip-attachment': {
       flex: 1
     },
 
@@ -144,7 +145,6 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
     : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
@@ -219,22 +219,18 @@ const CarouselFilmStrip = ({
                 ref={itemContainerCallbackRef}
               >
                 {attachments.map((attachment, index) => (
-                  <li
-                    aria-roledescription="attachment"
-                    className="webchat__carousel-filmstrip__attachment react-film__filmstrip__item"
+                  <CarouselFilmStripAttachment
+                    activity={activity}
+                    attachment={attachment}
+                    fromUser={fromUser}
+                    hasAvatar={hasAvatar}
+                    index={index}
                     /* Attachments do not have an ID; it is always indexed by number */
-                    /* eslint-disable-next-line react/no-array-index-key */
+                    // eslint-disable-next-line react/no-array-index-key
                     key={index}
-                    role="listitem"
-                    tabIndex={0}
-                  >
-                    <ScreenReaderText text={attachedAlt} />
-                    {/* eslint-disable-next-line react/no-array-index-key */}
-                    <Bubble fromUser={fromUser} key={index} nub={false}>
-                      {renderAttachment({ activity, attachment })}
-                      <div className="webchat__carousel-filmstrip__attachment__focus-indicator" />
-                    </Bubble>
-                  </li>
+                    renderAttachment={renderAttachment}
+                    showAvatar={showAvatar}
+                  />
                 ))}
               </ul>
             </div>

@@ -66,7 +66,7 @@ export default function createSuggestedActionStyle({
         height: 'auto',
         maxHeight: suggestedActionsStackedLayoutButtonMaxHeight || '100%',
         minHeight:
-          typeof suggestedActionsStackedLayoutButtonMaxHeight === 'number'
+          typeof suggestedActionsStackedLayoutButtonMaxHeight === 'number' && typeof suggestedActionHeight === 'number'
             ? Math.min(suggestedActionsStackedLayoutButtonMaxHeight, suggestedActionHeight)
             : suggestedActionHeight
       },

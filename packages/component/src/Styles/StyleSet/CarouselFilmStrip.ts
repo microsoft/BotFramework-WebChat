@@ -6,11 +6,7 @@ import mirrorStyle from '../mirrorStyle';
 export default function CarouselFilmStrip({
   avatarSize,
   bubbleMaxWidth,
-  bubbleMinWidth,
   paddingRegular,
-  transcriptVisualKeyboardIndicatorColor,
-  transcriptVisualKeyboardIndicatorStyle,
-  transcriptVisualKeyboardIndicatorWidth,
   transitionDuration
 }: StrictStyleOptions) {
   return {
@@ -19,28 +15,6 @@ export default function CarouselFilmStrip({
       // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
       '@supports (-moz-appearance: none)': {
         marginBottom: -17
-      },
-
-      '& .webchat__carousel-filmstrip__attachment': {
-        '&:focus': {
-          outline: 0
-        },
-        '&:focus .webchat__carousel-filmstrip__attachment__focus-indicator': {
-          borderColor: transcriptVisualKeyboardIndicatorColor,
-          borderStyle: transcriptVisualKeyboardIndicatorStyle,
-          borderWidth: transcriptVisualKeyboardIndicatorWidth,
-          boxSizing: 'border-box',
-          height: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`,
-          left: '0',
-          pointerEvents: 'none',
-          position: 'absolute',
-          top: 0,
-          width: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`
-        },
-        minWidth: bubbleMinWidth,
-        maxWidth: bubbleMaxWidth,
-        transitionDuration,
-        transitionProperty: 'max-width, min-width'
       },
 
       '& .webchat__carousel-filmstrip__message': {
@@ -106,17 +80,9 @@ export default function CarouselFilmStrip({
           marginLeft: -paddingRegular
         },
 
-        '& .webchat__carousel-filmstrip__attachment': {
-          paddingLeft: paddingRegular
-        },
-
         '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
           '& .webchat__carousel-filmstrip__attachments': {
             marginLeft: -(avatarSize + paddingRegular * 2)
-          },
-
-          '& .webchat__carousel-filmstrip__attachment:first-child': {
-            paddingLeft: avatarSize + paddingRegular * 2
           }
         },
 
@@ -124,10 +90,6 @@ export default function CarouselFilmStrip({
           '&:not(.webchat__carousel-filmstrip--hide-avatar.webchat__carousel-filmstrip--show-avatar)': {
             '& .webchat__carousel-filmstrip__attachments': {
               marginLeft: -paddingRegular * 2
-            },
-
-            '& .webchat__carousel-filmstrip__attachment:first-child': {
-              paddingLeft: paddingRegular * 2
             }
           }
         }
