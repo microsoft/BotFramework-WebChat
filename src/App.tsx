@@ -546,6 +546,7 @@ const ExpandableKnobTheme = (theme: Theme) => `
     text-decoration: none;
     height: 19px;
     margin-left: 3px;
+    display: flex;
   }
 
   .feedbot-signature a:hover {
@@ -675,7 +676,6 @@ const Sidebar = (theme: Theme) => `
   
   .feedbot-signature a {
     height: unset;
-    display: flex;
   }
 
   .feedbot-signature a img {
