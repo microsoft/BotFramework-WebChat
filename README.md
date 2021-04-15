@@ -317,9 +317,7 @@ Dailies will be released after 3:00AM Pacific Standard Time when changes have be
 
 See our [Contributing page](https://github.com/microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+See our [CODE OF CONDUCT page](https://github.com/microsoft/BotFramework-WebChat/blob/master/.github/CODE_OF_CONDUCT.md) for details about the Microsoft Code of Conduct.
 
 # Reporting Security Issues
 
