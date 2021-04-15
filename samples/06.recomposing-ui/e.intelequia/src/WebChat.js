@@ -36,7 +36,7 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
   button {
     transition: color .2s ease, background-color .2s ease;
   }
-  a {
+  .minimizable-web-chat a {
     color: ${styleOptions.suggestedActionTextColor};
     text-decoration: none;
   }

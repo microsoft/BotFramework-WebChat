@@ -36,19 +36,14 @@ import * as serviceWorker from './serviceWorker';
 //         imageUrl: ''
 //     },
 //     brandMessage: 'Powered by Hotelequia',
-//     directlineTokenUrl: 'https://820ce317d300.ngrok.io/api/directline/generateToken/',
-//     directlineReconnectTokenUrl: 'https://820ce317d300.ngrok.io/api/directline/reconnect/',
-//     speechTokenUrl: 'https://820ce317d300.ngrok.io/api/directline/speech/generatetoken', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
-//     speechCredentials: {
-//         region: undefined,
-//         subscriptionKey: undefined
-//     },
+//     directlineTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/generateToken/',
+//     directlineReconnectTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/reconnect/',
+//     speechTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/speech/generatetoken', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
 //     chatIconMessage: 'hola',
 //     language: 'en'
 // }
 
 // ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));
-
 
 const renderApp = (element, parameters) => {
     ReactDOM.render(<App parameters={parameters} />, document.getElementById(element));
