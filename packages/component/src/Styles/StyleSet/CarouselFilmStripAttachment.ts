@@ -15,6 +15,11 @@ export default function CarouselFilmStripAttachment({
 }: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip-attachment': {
+      minWidth: bubbleMinWidth,
+      maxWidth: bubbleMaxWidth,
+      transitionDuration,
+      transitionProperty: 'max-width, min-width',
+
       '&:focus': {
         outline: 0
       },
@@ -25,16 +30,12 @@ export default function CarouselFilmStripAttachment({
         borderWidth: transcriptVisualKeyboardIndicatorWidth,
         boxSizing: 'border-box',
         height: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`,
-        left: '0',
+        left: 0,
         pointerEvents: 'none',
         position: 'absolute',
         top: 0,
         width: `calc(100% - ${transcriptVisualKeyboardIndicatorWidth}px)`
-      },
-      minWidth: bubbleMinWidth,
-      maxWidth: bubbleMaxWidth,
-      transitionDuration,
-      transitionProperty: 'max-width, min-width'
+      }
     },
     ...mirrorStyle('&.webchat__carousel-filmstrip-attachment--rtl', {
       paddingLeft: paddingRegular,
