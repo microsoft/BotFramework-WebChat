@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#3816](https://github.com/microsoft/BotFramework-WebChat/issues/3816). De-bumped Node.js engine requirement of Direct Line Speech SDK to `>= 10.14.2` from `>= 12.0.0`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+
 ### Changed
 
 -  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831) and PR [#3846](https://github.com/microsoft/BotFramework-WebChat/pull/3846)
