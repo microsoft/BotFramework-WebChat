@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable prefer-const */
+/* eslint-disable no-unused-vars */
 import { initializeIcons } from '@fluentui/react';
 import onErrorResumeNext from 'on-error-resume-next';
 // eslint-disable-next-line no-unused-vars

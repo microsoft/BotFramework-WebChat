@@ -37,7 +37,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
         await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
 
-        const attachmentRole = document.querySelector('.webchat__carousel-filmstrip__attachment').getAttribute('role');
+        const attachmentRole = document.querySelector('.webchat__carousel-filmstrip-attachment').getAttribute('role');
 
         expect(attachmentRole).toBeTruthy();
 
