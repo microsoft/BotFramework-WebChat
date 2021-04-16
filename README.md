@@ -42,7 +42,7 @@ window.WebChat.renderWebChat(
 
 ## Visual focus changes to transcript in Web Chat 4.12.0
 
-A new accessibility update has been added to Web Chat from PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703). This change creates visual focus for the transcript (bold black border) and `aria-activedescendent` focused activity (black dashed border) by default.
+A new accessibility update has been added to Web Chat from PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703). This change creates visual focus for the transcript (bold black border) and `aria-activedescendent` focused activity (black dashed border) by default. Where applicable, `transcriptVisualKeyboardIndicator...` values will also be applied to carousel (`CarouselFilmStrip.js`) children. This is done in order to match current default focus styling for Adaptive Cards, which may be a child of a carousel.
 
 To modify these styles, you can change the following props via `styleOptions`:
 
@@ -55,7 +55,7 @@ To modify these styles, you can change the following props via `styleOptions`:
   transcriptVisualKeyboardIndicatorWidth: 2,
 ```
 
-The above code shows the default values you will see on Web Chat.
+The above code shows the default values you will see in Web Chat.
 
 ## API refactor into new package in Web Chat 4.11.0
 
