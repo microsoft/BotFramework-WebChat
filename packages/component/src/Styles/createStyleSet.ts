@@ -9,6 +9,7 @@ import createAvatarStyle from './StyleSet/Avatar';
 import createBasicTranscriptStyle from './StyleSet/BasicTranscript';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
+import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
@@ -57,6 +58,7 @@ export default function createStyleSet(options: StyleOptions) {
     basicTranscript: createBasicTranscriptStyle(options),
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
+    carouselFilmStripAttachment: createCarouselFilmStripAttachment(options),
     carouselFlipper: createCarouselFlipper(options),
     connectivityNotification: createConnectivityNotification(options),
     dictationInterims: createDictationInterimsStyle(options),
