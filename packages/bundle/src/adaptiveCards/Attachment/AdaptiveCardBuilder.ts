@@ -111,13 +111,13 @@ export default class AdaptiveCardBuilder {
   addCommonHeaders(content: ICommonContent) {
     const { richCardWrapTitle } = this.styleOptions;
     this.addTextBlock(content.title, {
-      color: TextColor.Dark,
+      color: TextColor.Default,
       size: TextSize.Medium,
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });
-    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: richCardWrapTitle });
-    this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
+    this.addTextBlock(content.subtitle, { color: TextColor.Default, isSubtle: true, wrap: richCardWrapTitle });
+    this.addTextBlock(content.text, { color: TextColor.Default, wrap: true });
   }
 
   addCommon(content: ICommonContent) {
