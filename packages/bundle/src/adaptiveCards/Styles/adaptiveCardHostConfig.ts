@@ -21,7 +21,27 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
           },
           accent: {
             default: accent,
-            subtle: accent
+            subtle: '#0078D4'
+          },
+          attention: {
+            default: '#D13438',
+            subtle: '#A4262C'
+          },
+          dark: {
+            default: '#000000',
+            subtle: '#646464'
+          },
+          good: {
+            default: '#0B6A0B',
+            subtle: '#028A02'
+          },
+          light: {
+            default: '#FFFFFF',
+            subtle
+          },
+          warning: {
+            default: '#B75C00',
+            subtle: '#986F0B'
           }
         }
       },
@@ -29,8 +49,8 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
         backgroundColor: cardEmphasisBackgroundColor,
         foregroundColors: {
           default: {
-            default: bubbleTextColor,
-            subtle
+            default: '#000000',
+            subtle: '#484644'
           }
         }
       },
@@ -39,7 +59,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
         foregroundColors: {
           default: {
             default: '#333333',
-            subtle: '#EE333333'
+            subtle: '#484644'
           }
         }
       },
@@ -48,7 +68,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
         foregroundColors: {
           default: {
             default: '#333333',
-            subtle: '#EE333333'
+            subtle: '#484644'
           }
         }
       },
@@ -57,7 +77,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
         foregroundColors: {
           default: {
             default: '#333333',
-            subtle: '#EE333333'
+            subtle: '#484644'
           }
         }
       },
@@ -66,7 +86,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
         foregroundColors: {
           default: {
             default: '#333333',
-            subtle: '#EE333333'
+            subtle: '#484644'
           }
         }
       }
