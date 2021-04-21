@@ -73,7 +73,7 @@ CarouselFilmStripAttachment.propTypes = {
     timestamp: PropTypes.string
   }).isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
+    content: PropTypes.any
   }).isRequired,
   className: PropTypes.string,
   fromUser: PropTypes.any.isRequired,
