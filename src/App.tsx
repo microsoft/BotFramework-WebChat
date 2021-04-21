@@ -73,7 +73,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       const config = body.config;
       const alwaysVisible = config && config.visibility === 'always'
       const neverVisible = config && config.visibility === 'never'
-      if (!config || neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
+      const fullscreen = props.theme && props.theme.template && props.theme.template.type === 'full-screen'
+      if ((!config && !fullscreen) || neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
         document
           .getElementsByTagName("body")[0]
           .classList.add("feedbot-disabled");
@@ -107,6 +108,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
 
         if (config.template.autoExpandTimeout > 0) {
           props.autoExpandTimeout = config.template.autoExpandTimeout;
+        }
+
+        if (config.userData) {
+          // TODO
         }
 
         if (config.customCss) {
