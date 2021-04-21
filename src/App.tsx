@@ -23,6 +23,7 @@ export type AppProps = ChatProps & {
   header?: { textWhenCollapsed?: string; text: string };
   channel?: { index?: number, id?: string },
   autoExpandTimeout?: number;
+  enableScreenshotUpload?: boolean;
 };
 
 export const App = async (props: AppProps, container?: HTMLElement) => {
@@ -100,8 +101,6 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
 
         props.theme.showSignature = !config.hideSignature
 
-        props.theme.enableScreenshotUpload = !!config.enableScreenshotUpload
-
         if (config.showInput === "auto") {
           props.disableInputWhenNotNeeded = true;
         }
@@ -144,6 +143,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
     : false;
   props.resize = props.hasOwnProperty("resize") ? props.resize : "detect";
   props.locale = props.hasOwnProperty("locale") ? props.locale : "cs-cz";
+  props.theme.enableScreenshotUpload = !!props.enableScreenshotUpload
 
   // FEEDYOU configurable theming
   if (props.theme || !container) {
