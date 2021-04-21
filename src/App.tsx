@@ -213,7 +213,7 @@ function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
 }
 
 function getSidebarBackgroundColor(theme: Theme) {
-  return '#FFFFFF'
+  return '#e1e1e1'
 
   // TODO make background tint configurable in theme
   /*const color = theme.mainColor
@@ -639,7 +639,7 @@ const Sidebar = (theme: Theme) => `
   @supports ((-webkit-backdrop-filter: blur(40px)) or (backdrop-filter: blur(40px))) {
     .feedbot-wrapper {
       max-height: 100%;
-      background: linear-gradient(45deg, ${getSidebarBackgroundColor(theme)}33,  #FFFFFFCE);
+      background: linear-gradient(45deg, ${getSidebarBackgroundColor(theme)}33,  #E1E1E1CE);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
     }
@@ -665,7 +665,7 @@ const Sidebar = (theme: Theme) => `
   .wc-message-from-bot .wc-message-content {
     border-radius: 0 16px 16px 16px;
     padding: 14px;
-    background: linear-gradient(-45deg, rgba(245,245,245,0.5), rgba(245,245,245,0.9)) !important;
+    background: linear-gradient(-45deg, rgba(255,255,255,0.5), rgba(255,255,255,0.9)) !important;
   }
 
   .wc-message-from-me .wc-message-content {
