@@ -77,7 +77,8 @@ directLine: {
   webSocket?: boolean = true
 },
 theme?: {
-  mainColor?: string
+  mainColor?: string,
+  enableScreenshotUpload?: boolean
 },
 header?: {
   text?: string,
