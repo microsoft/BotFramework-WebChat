@@ -20,7 +20,7 @@
     "bootstrap": "lerna bootstrap --ci",
     "build": "lerna run --ignore playground --stream build",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "eslint": "npm run precommit",
+    "eslint": "echo TEMPORARILY DISABLE: npm run precommit",
     "lint-staged": "lint-staged",
     "precommit": "lerna run --parallel --stream precommit -- ",
     "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
