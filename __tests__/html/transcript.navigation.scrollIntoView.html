@@ -80,7 +80,7 @@
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('SHIFT-TAB into last active descendant'), timeouts.scrollToBottom);
         await host.snapshot();
 
         await host.done();
