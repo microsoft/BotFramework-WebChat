@@ -1,25 +1,31 @@
 import getTranscriptScrollableElement from '../elements/transcriptScrollable';
 
-function completed() {
-  const scrollable = getTranscriptScrollableElement();
-
-  return scrollable && scrollable.offsetHeight + scrollable.scrollTop === scrollable.scrollHeight;
+function sleep(durationMS = 17) {
+  return new Promise(resolve => setTimeout(resolve, durationMS));
 }
 
 export default function scrollToBottomCompleted() {
+  let count = 0;
+
   return {
     message: 'scroll to bottom completed',
     fn: async () => {
       // Browser may keep rendering content. Wait until 5 consecutive completion checks are all truthy.
-      for (let count = 0; count < 5; count++) {
-        if (!completed()) {
-          return false;
-        }
+      const scrollable = getTranscriptScrollableElement();
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+      if (scrollable && scrollable.offsetHeight + scrollable.scrollTop === scrollable.scrollHeight) {
+        count++;
+
+        if (count >= 5) {
+          return true;
+        }
+      } else {
+        count = 0;
       }
 
-      return true;
+      await sleep();
+
+      return false;
     }
   };
 }
