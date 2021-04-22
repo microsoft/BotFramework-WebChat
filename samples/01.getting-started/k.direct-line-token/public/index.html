@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="/images/BotServices.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>Web Chat Direct Line Token Demo</title>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+
+    <!-- This styling is for Web Chat demonstration purposes -->
+    <style type="text/css">
+      html,
+      body {
+        background-color: #f7f7f7;
+        height: 100%;
+      }
+
+      body {
+        background-image: url(/images/BotServices-Translucent.svg);
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        margin: 0;
+      }
+
+      #webchat {
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+        height: calc(100% - 20px);
+        left: 10px;
+        overflow: hidden;
+        position: fixed;
+        top: 10px;
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="webchat"></div>
+    <script>
+      // This is a helper function for fetching JSON resources.
+      async function fetchJSON(url, options = {}) {
+        const res = await fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            accept: 'application/json'
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch JSON due to ${res.status}`);
+        }
+
+        return await res.json();
+      }
+
+      (async function main() {
+        // This is for obtaining Direct Line token from the bot.
+        // The Direct Line token will be bound to a random user ID.
+        // In a production system, we should avoid using Direct Line secret to connect to the bot.
+        const { token } = await fetchJSON('/api/directline/token');
+
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token }),
+            styleOptions: {
+              backgroundColor: 'rgba(255, 255, 255, .8)'
+            }
+          },
+          document.getElementById('webchat')
+        );
+      })().catch(err => console.error(err));
+    </script>
+    <div id="root"></div>
+  </body>
+</html>
