@@ -83,6 +83,7 @@ module.exports = {
     '<rootDir>/samples/'
   ],
   testRegex: [
+    '/__tests__/html/focusManagement',
     '/__tests__/html/transcript.navigation'
   ],
   transform: {
