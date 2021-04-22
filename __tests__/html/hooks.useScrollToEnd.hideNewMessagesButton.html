@@ -69,7 +69,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
 
         // The "New messages" button should show up
-        await pageObjects.wait(conditions.newMessageButtonShown(), timeouts.ui);
+        await pageObjects.wait(conditions.newMessageButtonShown(), timeouts.test);
 
         // Call "scrollToEnd" should hide the "New messages" button immediately
         await renderWithFunction(() => useScrollToEnd()());

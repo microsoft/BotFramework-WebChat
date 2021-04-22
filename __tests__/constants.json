@@ -12,8 +12,8 @@
     "fetchImage": 5000,
     "navigation": 10000,
     "postActivity": 30000,
-    "scrollToBottom": 2000,
-    "test": 30000,
+    "scrollToBottom": 4000,
+    "test": 50000,
     "ui": 1000
   }
 }
