@@ -22,14 +22,14 @@ This demo includes a bot that you will run locally, so before running the code, 
 
 To host this demo, you will need to clone the code and run locally.
 
-<details><summary>JavaScript</summary>
+<details><summary>Clone the JavaScript project</summary>
 
 1. Clone this repository
 1. Create two empty files for environment variables, `/bot/.env` and `/web/.env`
 
 </details>
 
-<details><summary>C#</summary>
+<details><summary>Clone the C# project</summary>
 
 1. Clone this repository
 1. Open the two `appsettings.json` files at `/bot/appsettings.json` and `/web/appsettings.json`
