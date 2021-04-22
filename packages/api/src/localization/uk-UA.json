@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Завантажити файл '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Завантажити файл \"$1\" завбільшки $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "\"$1\" завбільшки $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Відкривається в новому вікні; зовнішнє.",
   "RECEIPT_CARD_TAX": "Податок",
   "RECEIPT_CARD_TOTAL": "Усього",
   "RECEIPT_CARD_VAT": "ПДВ",

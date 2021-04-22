@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        TestAsset: { waitForFocusedActivityInView },
+        WebChatTest: { conditions, createDirectline, createStore, host, pageObjects, timeouts, token }
+      } = window;
+
+      (async function () {
+        window.WebChat.renderWebChat(
+          {
+            directLine: createDirectLine({ token: await token.fetchDirectLineToken() }),
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.fetch);
+
+        // Move focus to carousel activity
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await waitForFocusedActivityInView();
+
+        await host.sendKeys('ENTER');
+        // focus on first card button
+        await host.sendTab();
+        await host.snapshot();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

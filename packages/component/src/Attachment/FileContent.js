@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
-import ScreenReaderText from '../ScreenReaderText';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
@@ -83,20 +82,17 @@ const FileContent = ({ className, href, fileName, size }) => {
 
   return (
     <div
-      aria-hidden={true}
       className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', (className || '') + '')}
     >
-      <ScreenReaderText text={alt} />
       {href ? (
         <a
-          aria-hidden={true}
+          aria-label={alt}
           className="webchat__fileContent__buttonLink"
           download={fileName}
           href={href}
           rel="noopener noreferrer"
           target="_blank"
         >
-          {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden in FileContentBadge necessary */}
           <FileContentBadge downloadIcon={true} fileName={fileName} size={size} />
         </a>
       ) : (

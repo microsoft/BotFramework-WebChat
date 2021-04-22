@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from './Bubble';
+import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
 import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -36,7 +36,7 @@ const ROOT_STYLE = {
       flexShrink: 0
     },
 
-    '& .webchat__carousel-filmstrip__attachment': {
+    '& .webchat__carousel-filmstrip-attachment': {
       flex: 1
     },
 
@@ -127,7 +127,6 @@ const CarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const ariaLabelId = useUniqueId('webchat__carousel-filmstrip__id');
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const showActivityStatus = typeof renderActivityStatus === 'function';
@@ -146,7 +145,6 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (fromUser
     ? localize('ACTIVITY_YOU_SAID_ALT')
     : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
@@ -171,7 +169,6 @@ const CarouselFilmStrip = ({
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
       className={classNames(
         'webchat__carousel-filmstrip',
         {
@@ -196,14 +193,7 @@ const CarouselFilmStrip = ({
         <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
         <div className="webchat__carousel-filmstrip__content">
           {!!activityDisplayText && (
-            <div
-              aria-roledescription="message"
-              className="webchat__carousel-filmstrip__message"
-              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-              /* eslint-disable-next-line react/forbid-dom-props */
-              id={ariaLabelId}
-              role="group"
-            >
+            <div aria-roledescription="message" className="webchat__carousel-filmstrip__message" role="group">
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className="webchat__carousel-filmstrip__bubble"
@@ -229,20 +219,18 @@ const CarouselFilmStrip = ({
                 ref={itemContainerCallbackRef}
               >
                 {attachments.map((attachment, index) => (
-                  <li
-                    aria-roledescription="attachment"
-                    className="webchat__carousel-filmstrip__attachment react-film__filmstrip__item"
+                  <CarouselFilmStripAttachment
+                    activity={activity}
+                    attachment={attachment}
+                    fromUser={fromUser}
+                    hasAvatar={hasAvatar}
+                    index={index}
                     /* Attachments do not have an ID; it is always indexed by number */
-                    /* eslint-disable-next-line react/no-array-index-key */
+                    // eslint-disable-next-line react/no-array-index-key
                     key={index}
-                    role="listitem"
-                  >
-                    <ScreenReaderText text={attachedAlt} />
-                    {/* eslint-disable-next-line react/no-array-index-key */}
-                    <Bubble fromUser={fromUser} key={index} nub={false}>
-                      {renderAttachment({ activity, attachment })}
-                    </Bubble>
-                  </li>
+                    renderAttachment={renderAttachment}
+                    showAvatar={showAvatar}
+                  />
                 ))}
               </ul>
             </div>

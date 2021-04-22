@@ -4,14 +4,14 @@
   "private": true,
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
-    "botframework-webchat": "^4.12.0",
+    "botframework-webchat": "^4.13.0",
     "math-random": "^2.0.1",
-    "msal": "^1.2.2",
-    "office-ui-fabric-react": "^7.86.1",
+    "msal": "^1.4.9",
+    "office-ui-fabric-react": "^7.165.2",
     "prop-types": "^15.7.2",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-scripts": "^3.4.3"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,6 +35,6 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^0.20.0"
+    "http-proxy-middleware": "^1.1.0"
   }
 }

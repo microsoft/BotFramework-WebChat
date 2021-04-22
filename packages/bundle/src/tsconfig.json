@@ -3,11 +3,13 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "declarationDir": "../lib",
+    "declarationMap": true,
     "emitDeclarationOnly": true,
-    "isolatedModules": true,
     "jsx": "react",
     "preserveWatchOutput": true,
     "pretty": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "sourceMap": true
+  },
+  "files": ["index.tsx", "index-es5.tsx", "index-minimal.tsx"]
 }

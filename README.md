@@ -42,7 +42,7 @@ window.WebChat.renderWebChat(
 
 ## Visual focus changes to transcript in Web Chat 4.12.0
 
-A new accessibility update has been added to Web Chat from PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703). This change creates visual focus for the transcript (bold black border) and `aria-activedescendent` focused activity (black dashed border) by default.
+A new accessibility update has been added to Web Chat from PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703). This change creates visual focus for the transcript (bold black border) and `aria-activedescendent` focused activity (black dashed border) by default. Where applicable, `transcriptVisualKeyboardIndicator...` values will also be applied to carousel (`CarouselFilmStrip.js`) children. This is done in order to match current default focus styling for Adaptive Cards, which may be a child of a carousel.
 
 To modify these styles, you can change the following props via `styleOptions`:
 
@@ -55,7 +55,7 @@ To modify these styles, you can change the following props via `styleOptions`:
   transcriptVisualKeyboardIndicatorWidth: 2,
 ```
 
-The above code shows the default values you will see on Web Chat.
+The above code shows the default values you will see in Web Chat.
 
 ## API refactor into new package in Web Chat 4.11.0
 
@@ -317,9 +317,7 @@ Dailies will be released after 3:00AM Pacific Standard Time when changes have be
 
 See our [Contributing page](https://github.com/microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+See our [CODE OF CONDUCT page](https://github.com/microsoft/BotFramework-WebChat/blob/master/.github/CODE_OF_CONDUCT.md) for details about the Microsoft Code of Conduct.
 
 # Reporting Security Issues
 

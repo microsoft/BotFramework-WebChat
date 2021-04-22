@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Descărcați fișierul „$1”",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Descărcați fișierul „$1” de dimensiune $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "„$1” de dimensiune $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Se deschide într-o fereastră nouă; extern.",
   "RECEIPT_CARD_TAX": "Impozit",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "TVA",

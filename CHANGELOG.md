@@ -22,6 +22,104 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#3814](https://github.com/microsoft/BotFramework-WebChat/issues/3814). Allow carousel's scrollable content to be tabbable, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
+-  Fixes [#3834](https://github.com/microsoft/BotFramework-WebChat/issues/3834). Ensure carousel attachments are read by AT on tab focus, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
+-  Fixes [#3812](https://github.com/microsoft/BotFramework-WebChat/issues/3812). Update `adaptiveCardHostConfig` to accessible text color-contrasts, by [@corinagum](https://github.com/corinagum) in PR [#3853](https://github.com/microsoft/BotFramework-WebChat/pull/3853)
+-  Fixes [#3816](https://github.com/microsoft/BotFramework-WebChat/issues/3816). De-bumped Node.js engine requirement for Direct Line Speech SDK to `>= 10.14.2` from `>= 12.0.0`, by [@compulim](https://github.com/compulim) in PR [#3854](https://github.com/microsoft/BotFramework-WebChat/pull/3854)
+
+### Changed
+
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831) and PR [#3846](https://github.com/microsoft/BotFramework-WebChat/pull/3846)
+   -  Development dependencies
+      -  [`@azure/storage-blob@12.5.0`](https://npmjs.com/package/@azure/storage-blob)
+      -  [`@babel/cli@7.13.14`](https://npmjs.com/package/@babel/cli)
+      -  [`@babel/core@7.13.14`](https://npmjs.com/package/@babel/core)
+      -  [`@babel/plugin-proposal-async-generator-functions@7.13.8`](https://npmjs.com/package/@babel/plugin-proposal-async-generator-functions)
+      -  [`@babel/plugin-proposal-class-properties@7.13.0`](https://npmjs.com/package/@babel/plugin-proposal-class-properties)
+      -  [`@babel/plugin-proposal-object-rest-spread@7.13.8`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+      -  [`@babel/plugin-transform-runtime@7.13.10`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+      -  [`@babel/preset-env@7.13.12`](https://npmjs.com/package/@babel/preset-env)
+      -  [`@babel/preset-react@7.13.13`](https://npmjs.com/package/@babel/preset-react)
+      -  [`@babel/preset-typescript@7.13.0`](https://npmjs.com/package/@babel/preset-typescript)
+      -  [`@babel/runtime@7.13.10`](https://npmjs.com/package/@babel/runtime)
+      -  [`@babel/standalone@7.13.14`](https://npmjs.com/package/@babel/standalone)
+      -  [`@fluentui/react@8.9.0`](https://npmjs.com/package/@fluentui/react)
+      -  [`@types/node@14.14.37`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@17.0.3`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@4.21.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@4.21.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`abort-controller-es5@1.2.0`](https://npmjs.com/package/abort-controller-es5)
+      -  [`abort-controller@3.0.0`](https://npmjs.com/package/abort-controller)
+      -  [`babel-loader@8.2.2`](https://npmjs.com/package/babel-loader)
+      -  [`base64-arraybuffer@0.2.0`](https://npmjs.com/package/base64-arraybuffer)
+      -  [`botbuilder-dialogs@4.12.0`](https://npmjs.com/package/botbuilder-dialogs)
+      -  [`botbuilder@4.12.0`](https://npmjs.com/package/botbuilder)
+      -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
+      -  [`concurrently@6.0.1`](https://npmjs.com/package/concurrently)
+      -  [`copy-webpack-plugin@6.4.1`](https://npmjs.com/package/copy-webpack-plugin)
+      -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
+      -  [`cross-env@7.0.3`](https://npmjs.com/package/cross-env)
+      -  [`css-loader@5.2.0`](https://npmjs.com/package/css-loader)
+      -  [`dotenv@8.2.0`](https://npmjs.com/package/dotenv)
+      -  [`eslint-config-standard@16.0.2`](https://npmjs.com/package/eslint-config-standard)
+      -  [`eslint-plugin-import@2.22.1`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`eslint-plugin-node@11.1.0`](https://npmjs.com/package/eslint-plugin-node)
+      -  [`eslint-plugin-promise@4.3.1`](https://npmjs.com/package/eslint-plugin-promise)
+      -  [`eslint-plugin-react@7.23.1`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint-plugin-react@7.23.1`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint-plugin-standard@5.0.0`](https://npmjs.com/package/eslint-plugin-standard)
+      -  [`eslint@7.23.0`](https://npmjs.com/package/eslint)
+      -  [`event-iterator@2.0.0`](https://npmjs.com/package/event-iterator)
+      -  [`global-agent@2.2.0`](https://npmjs.com/package/global-agent)
+      -  [`html-webpack-plugin@4.5.2`](https://npmjs.com/package/html-webpack-plugin)
+      -  [`http-proxy-middleware@1.1.0`](https://npmjs.com/package/http-proxy-middleware)
+      -  [`husky@6.0.0`](https://npmjs.com/package/husky)
+      -  [`jest-image-snapshot@4.4.1`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`lerna@4.0.0`](https://npmjs.com/package/lerna)
+      -  [`lint-staged@10.5.4`](https://npmjs.com/package/lint-staged)
+      -  [`lolex@6.0.0`](https://npmjs.com/package/lolex)
+      -  [`math-random@2.0.1`](https://npmjs.com/package/math-random)
+      -  [`msal@1.4.9`](https://npmjs.com/package/msal)
+      -  [`node-dev@6.6.0`](https://npmjs.com/package/node-dev)
+      -  [`nodemon@2.0.7`](https://npmjs.com/package/nodemon)
+      -  [`office-ui-fabric-react@7.165.2`](https://npmjs.com/package/office-ui-fabric-react)
+      -  [`p-defer-es5@1.2.1`](https://npmjs.com/package/p-defer-es5)
+      -  [`p-defer@3.0.0`](https://npmjs.com/package/p-defer)
+      -  [`prettier@2.2.1`](https://npmjs.com/package/prettier)
+      -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)
+      -  [`react-scripts@4.0.3`](https://npmjs.com/package/react-scripts)
+      -  [`redux@4.0.5`](https://npmjs.com/package/redux)
+      -  [`restify@8.5.1`](https://npmjs.com/package/restify)
+      -  [`selenium-webdriver@4.0.0-beta.2`](https://npmjs.com/package/selenium-webdriver)
+      -  [`simple-update-in@2.2.0`](https://npmjs.com/package/simple-update-in)
+      -  [`source-map-loader@1.1.3`](https://npmjs.com/package/source-map-loader)
+      -  [`string-similarity@4.0.4`](https://npmjs.com/package/string-similarity)
+      -  [`style-loader@2.0.0`](https://npmjs.com/package/style-loader)
+      -  [`uuid@8.3.2`](https://npmjs.com/package/uuid)
+      -  [`webpack-cli@4.6.0`](https://npmjs.com/package/webpack-cli)
+      -  [`webpack-stats-plugin@1.0.3`](https://npmjs.com/package/webpack-stats-plugin)
+      -  [`webpack@4.46.0`](https://npmjs.com/package/webpack)
+   -  Production dependencies
+      -  [`@emotion/css@11.1.3`](https://npmjs.com/package/@emotion/css), moved from [`create-emotion`](https://npmjs.com/package/create-emotion)
+      -  [`adaptivecards@2.9.0`](https://npmjs.com/package/adaptivecards)
+      -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
+      -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)
+      -  [`redux-devtools-extension@2.13.9`](https://npmjs.com/package/redux-devtools-extension)
+      -  [`url-search-params-polyfill@8.1.1`](https://npmjs.com/package/url-search-params-polyfill)
+      -  [`whatwg-fetch@3.6.2`](https://npmjs.com/package/whatwg-fetch)
+
+## [4.13.0] - 2021-04-05
+
+### Added
+
+-  Resolves [#3087](https://github.com/microsoft/BotFramework-WebChat/issues/3087). External links in Markdown will now be appended with an "open in new window" icon and accessibility label, by [@compulim](https://github.com/compulim) in PR [#3817](https://github.com/microsoft/BotFramework-WebChat/pull/3817)
+-  Resolves [#2100](https://github.com/microsoft/BotFramework-WebChat/issues/2100). Add types declarations for Style Options in api bundle, by [@corinagum](https://github.com/corinagum), in PR [#3818](https://github.com/microsoft/BotFramework-WebChat/pull/3818)
+-  Fixes [#3810](https://github.com/microsoft/BotFramework-WebChat/issues/3810). Removes `aria-hidden` from elements that have a focusable child, by [@corinagum](https://github.com/corinagum) in PR [#3836](https://github.com/microsoft/BotFramework-WebChat/pull/3836)
+-  Fixes [#3811](https://github.com/microsoft/BotFramework-WebChat/issues/3811). Removes erroneous `aria-labelledby` from carousel, by [@corinagum](https://github.com/corinagum) in PR [#3836](https://github.com/microsoft/BotFramework-WebChat/pull/3836)
+
 ### Changed
 
 -  Bumped all dependencies to the latest versions and sample bumps, by [@corinagum](https://github.com/corinagum) in PR [#3805](https://github.com/microsoft/BotFramework-WebChat/pull/3805)
@@ -71,6 +169,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`sanitize-html@2.1.2`](https://npmjs.com/package/sanitize-html)
       -  [`web-speech-cognitive-services@7.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
       -  [`whatwg-fetch@3.4.1`](https://npmjs.com/package/whatwg-fetch)
+
+### Samples
+
+-  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Fixed typo in reaction button sample, by [@compulim](https://github.com/compulim) in PR [#3820](https://github.com/microsoft/BotFramework-WebChat/pull/3820)
 
 ## [4.12.1] - 2021-03-16
 

@@ -1,6 +1,6 @@
+import { concatMiddleware } from 'botframework-webchat-component';
 import { useMemo } from 'react';
 
-import { concatMiddleware, defaultStyleOptions } from 'botframework-webchat-component';
 import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
@@ -24,18 +24,15 @@ export default function useComposerProps({
     [attachmentForScreenReaderMiddleware]
   );
 
-  const patchedStyleOptions = useMemo(() => ({ ...defaultStyleOptions, ...styleOptions }), [styleOptions]);
-
   // When styleSet is not specified, the styleOptions will be used to create Adaptive Cards styleSet and merged into useStyleSet.
-  const extraStyleSet = useMemo(() => (styleSet ? undefined : createAdaptiveCardsStyleSet(patchedStyleOptions)), [
-    patchedStyleOptions,
+  const extraStyleSet = useMemo(() => (styleSet ? undefined : createAdaptiveCardsStyleSet(styleOptions)), [
+    styleOptions,
     styleSet
   ]);
 
   const patchedRenderMarkdown = useMemo(
-    () =>
-      typeof renderMarkdown === 'undefined' ? text => defaultRenderMarkdown(text, patchedStyleOptions) : renderMarkdown,
-    [patchedStyleOptions, renderMarkdown]
+    () => (typeof renderMarkdown === 'undefined' ? (...args) => defaultRenderMarkdown(...args) : renderMarkdown),
+    [renderMarkdown]
   );
 
   return {

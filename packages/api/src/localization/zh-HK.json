@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "下載 '$1' 檔案",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "下載 '$1' 檔案，大小為 $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1'，大小為 $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "在新視窗中開啟; 外部。",
   "RECEIPT_CARD_TAX": "稅金",
   "RECEIPT_CARD_TOTAL": "總計",
   "RECEIPT_CARD_VAT": "加值稅",

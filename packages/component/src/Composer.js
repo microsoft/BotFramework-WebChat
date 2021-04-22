@@ -1,6 +1,6 @@
 import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
-import createEmotion from 'create-emotion';
+import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';

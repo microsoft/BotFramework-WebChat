@@ -331,6 +331,24 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.13": {
+      "redirects": [
+        [
+          "*",
+          "4.13.0"
+        ]
+      ]
+    },
+    "4.13.0": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.13.0/webchat-es5.js",
+          "sha384-wwdw+KudAKGhnGV4ewfJL1KE1dqx8DgQ6TrY3z4hIHXc1GHjuI/HwoEx4p5VOGx1"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
     "3": {
       "redirects": [
         [

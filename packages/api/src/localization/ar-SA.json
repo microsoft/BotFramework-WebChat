@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "تنزيل ملف '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "تنزيل الملف '$1' بحجم $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' بحجم $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "فتح في نافذة جديدة؛ خارجية.",
   "RECEIPT_CARD_TAX": "الضريبة",
   "RECEIPT_CARD_TOTAL": "الإجمالي‬",
   "RECEIPT_CARD_VAT": "ضريبة القيمة المضافة",

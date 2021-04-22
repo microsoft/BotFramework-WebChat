@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "Загрузить файл '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "Загрузить файл '$1' размера $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "'$1' размера $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "Открывает в новом окне; внешняя.",
   "RECEIPT_CARD_TAX": "Налог",
   "RECEIPT_CARD_TOTAL": "Итого",
   "RECEIPT_CARD_VAT": "НДС",

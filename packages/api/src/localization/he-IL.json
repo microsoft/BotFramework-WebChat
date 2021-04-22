@@ -43,6 +43,7 @@
   "FILE_CONTENT_DOWNLOADABLE_ALT": "הורד את הקובץ '$1'",
   "FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT": "הורד את הקובץ '$1' בגודל $2",
   "FILE_CONTENT_WITH_SIZE_ALT": "‏'$1' בגודל $2",
+  "MARKDOWN_EXTERNAL_LINK_ALT": "נפתח בחלון חדש; חיצוני.",
   "RECEIPT_CARD_TAX": "מס",
   "RECEIPT_CARD_TOTAL": "סך הכל",
   "RECEIPT_CARD_VAT": "מע\"מ",

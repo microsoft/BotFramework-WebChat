@@ -19,19 +19,19 @@ test('getter should get suggested actions', async () => {
   await expect(pageObjects.runHook('useSuggestedActions', [], result => result[0])).resolves.toMatchInlineSnapshot(`
           Array [
             Object {
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon.png",
               "title": "IM back as string",
               "type": "imBack",
               "value": "postback imback-string",
             },
             Object {
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon-red.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-red.png",
               "title": "Post back as string",
               "type": "postBack",
               "value": "postback postback-string",
             },
             Object {
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon-green.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-green.png",
               "text": "Some text",
               "title": "Post back as JSON",
               "type": "postBack",
@@ -41,7 +41,7 @@ test('getter should get suggested actions', async () => {
             },
             Object {
               "displayText": "say Hello World!",
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "text": "Some text",
               "title": "Message back as JSON with display text",
               "type": "messageBack",
@@ -50,7 +50,7 @@ test('getter should get suggested actions', async () => {
               },
             },
             Object {
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "title": "Message back as JSON without display text",
               "type": "messageBack",
               "value": Object {
@@ -59,7 +59,7 @@ test('getter should get suggested actions', async () => {
             },
             Object {
               "displayText": "Aloha",
-              "image": "https://tdurnford.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
+              "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "text": "echo Hello",
               "title": "Message back as string with display text",
               "type": "messageBack",

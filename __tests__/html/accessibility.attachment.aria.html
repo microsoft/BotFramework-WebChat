@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+
+      const {
+        Components: { AdaptiveCardContent }
+      } = window.WebChat;
+
+      (async function () {
+        const store = createStore();
+        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
+        const baseProps = { directLine, store };
+        const webChatElement = document.getElementById('webchat');
+
+        window.WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+
+        await pageObjects.sendMessageViaSendBox('document-word', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        const fileContentAriaHidden = document.querySelector('.webchat__fileContent').getAttribute('aria-hidden');
+
+        expect(fileContentAriaHidden).toBeFalsy();
+
+        const fileContentButtonLinkLabel = document
+          .querySelector('.webchat__fileContent__buttonLink')
+          .getAttribute('aria-label');
+
+        expect(fileContentButtonLinkLabel).toBeTruthy();
+
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+
+        const carouselContainer = document.querySelector('.webchat__carousel-filmstrip').getAttribute('aria-labelledby');
+
+        expect(carouselContainer).toBeFalsy();
+
+        await host.done();
+      })().catch(async err => {
+        console.error(err);
+
+        await host.error(err);
+      });
+    </script>
+  </body>
+</html>

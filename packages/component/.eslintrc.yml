@@ -3,6 +3,9 @@ extends:
 plugins:
 - prettier
 - react-hooks
+- '@typescript-eslint/eslint-plugin'
+parser:
+  '@typescript-eslint/parser'
 rules:
 # plugins
   prettier/prettier: error
@@ -89,3 +92,11 @@ rules:
   react/jsx-wrap-multilines: error # Conflict with no-extra-parens
   react-hooks/rules-of-hooks: error
   react-hooks/exhaustive-deps: warn
+
+  # TypeScript
+
+  # The correct way to use with typescript-eslint is to disable the core version.
+  # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+  no-use-before-define: off
+  '@typescript-eslint/no-use-before-define':
+  - error
