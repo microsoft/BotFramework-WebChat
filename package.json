@@ -43,7 +43,8 @@
     "stop:docker": "docker-compose -f docker-compose-wsl2.yml stop",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
     "test": "jest --watch",
-    "test:ci": "npm run test -- --ci --coverage true --no-watch",
+    "test:ci": "npm run test -- --ci --coverage true --no-watch --testPathPattern transcript.navigation",
+    "test:ci:original": "npm run test -- --ci --coverage true --no-watch",
     "update:docker": "docker-compose -f docker-compose-wsl2.yml up --build --detach webchat2",
     "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
   },
