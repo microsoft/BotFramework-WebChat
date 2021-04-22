@@ -82,6 +82,9 @@ module.exports = {
     '<rootDir>/packages/playground/',
     '<rootDir>/samples/'
   ],
+  testRegex: [
+    '/__tests__/html/transcript.navigation'
+  ],
   transform: {
     '\\.[jt]sx?$': './babel-jest-config.js'
   }
