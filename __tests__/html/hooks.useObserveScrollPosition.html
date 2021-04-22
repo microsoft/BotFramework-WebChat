@@ -67,7 +67,7 @@
         await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
 
         // Wait until the scroll view stabilized, we should have a few numbers in the "positions" array.
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
+        await pageObjects.wait(conditions.scrollStabilized(), timeouts.test);
 
         // There should be at least 5 measurements while the transcript auto scroll.
         expect(positions.length).toBeGreaterThanOrEqual(5);
