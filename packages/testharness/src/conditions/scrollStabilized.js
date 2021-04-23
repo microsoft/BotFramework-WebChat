@@ -20,7 +20,10 @@ export default function scrollStabilized(message) {
       console.log(`t=${Date.now() - start}: GOT ${value}`);
 
       scrollTops.push(value);
-      scrollTops.splice(0, COUNT - scrollTops.length);
+
+      while (scrollTops.length > COUNT) {
+        scrollTops.shift();
+      }
 
       if (scrollTops.length === COUNT && scrollTops.every(scrollTop => scrollTop === scrollTops[0])) {
         console.log(`t=${Date.now() - start}: DONE`);

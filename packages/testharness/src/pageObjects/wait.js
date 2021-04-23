@@ -19,7 +19,7 @@ export default async function wait(condition, timeout = 2000) {
 
   return Promise.race([
     waitFn(signal),
-    sleep(timeout, signal).then(() => Promise.reject(new Error(`Test code timed out while waiting for "${condition.message}".`)))
+    sleep(timeout, signal).then(() => Promise.reject(new Error(`Test code timed out after ${timeout} ms while waiting for "${condition.message}".`)))
   ]).finally(() => {
     abortController.abort();
     window.WebChatTest.currentCondition = null;
