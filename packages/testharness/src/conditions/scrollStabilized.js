@@ -24,6 +24,8 @@ export default function scrollStabilized(message) {
       }
 
       if (scrollTops.length === COUNT && scrollTops.every(scrollTop => scrollTop === scrollTops[0])) {
+        console.log(`t=${Date.now() - start}: DONE`);
+
         return true;
       }
 

@@ -84,7 +84,12 @@
           conditions.scrollStabilized('SHIFT-TAB into last active descendant'),
           timeouts.scrollToBottom
         );
+
+        console.log('Taking snapshot.');
+
         await host.snapshot();
+
+        console.log('Marking test as done.');
 
         await host.done();
       })().catch(async err => {
