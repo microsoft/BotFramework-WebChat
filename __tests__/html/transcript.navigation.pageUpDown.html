@@ -40,37 +40,37 @@
 
         // Should scroll a page up
         await host.sendKeys('PAGE_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('First PAGE UP'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should scroll another page up
         await host.sendKeys('PAGE_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('Second PAGE UP'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should scroll back down
         await host.sendKeys('PAGE_DOWN');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('PAGE DOWN'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should scroll to the top
         await host.sendKeys('HOME');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('HOME'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should scroll to the bottom
         await host.sendKeys('END');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('END'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should not scroll because the send box is not empty
         await host.sendKeys('A', 'PAGE_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('Press A and PAGE UP'), timeouts.scrollToBottom);
         await host.snapshot();
 
         // Should page up because the send box is no longer empty
         await host.sendKeys('BACK_SPACE', 'PAGE_UP');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageObjects.wait(conditions.scrollStabilized('Press BACKSPACE and PAGE UP'), timeouts.scrollToBottom);
         await host.snapshot();
 
         await host.done();
