@@ -194,7 +194,7 @@ function generateTranscript() {
 async function waitForFocusedActivityInView(message) {
   await pageObjects.wait(
     conditions.scrollStabilized(`wait for focused activity in view${message ? ': ' + message : ''}`),
-    timeouts.ui
+    timeouts.scrollToBottom
   );
 
   await pageObjects.wait(
@@ -219,7 +219,7 @@ async function waitForFocusedActivityInView(message) {
         );
       }
     },
-    timeouts.ui
+    timeouts.scrollToBottom
   );
 }
 
