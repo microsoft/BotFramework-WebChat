@@ -79,8 +79,7 @@ global.runHTMLTest = async (
     const output = [];
 
     lines.forEach(({ level: { name }, message }) => {
-      const match = /"(.*?)"/.exec(message.split(' ').slice(2).join(' '));
-      const text = (match && match[1]) || '';
+      const text = message.split(' ').slice(2).join(' ').replace(/\\n/gu, '\n');
 
       if (
         ~text.indexOf('in-browser Babel transformer') ||
