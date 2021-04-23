@@ -1,4 +1,4 @@
-import { Builder, logging } from 'selenium-webdriver';
+import { Browser, Builder, logging } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/chrome';
 import { URL } from 'url';
 import fetch from 'node-fetch';
@@ -21,7 +21,8 @@ global.runHTMLTest = async (
 
   const preferences = new logging.Preferences();
 
-  preferences.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
+  // preferences.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
+  preferences.setLevel(logging.Type.BROWSER, logging.Level.ALL);
   chromeOptions.setLoggingPrefs(preferences);
 
   const driver = global.docker
@@ -70,26 +71,31 @@ global.runHTMLTest = async (
       localCoverage: window.__coverage__
     }));
 
-    const lines = [];
-
     global.__coverage__ = mergeCoverageMap(global.__coverage__, localCoverage);
 
-    consoleHistory.forEach(({ args, level }) => {
-      const message = args.join(' ');
+    currentConditionMessage &&
+      console.log(`❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`);
+  } finally {
+    const lines = await driver.manage().logs().get('browser');
+    const output = [];
 
-      if (~message.indexOf('in-browser Babel transformer') || (ignoreConsoleError && level === 'error')) {
+    lines.forEach(({ level: { name }, message }) => {
+      const match = /"(.*?)"/.exec(message.split(' ').slice(2).join(' '));
+      const text = (match && match[1]) || '';
+
+      if (
+        ~text.indexOf('in-browser Babel transformer') ||
+        ~text.indexOf('react-devtools') ||
+        (ignoreConsoleError && level === 'ERROR')
+      ) {
         return;
       }
 
-      lines.push(`📃 [${level}] ${message}`);
+      output.push(`📃 [${name}] ${text}`);
     });
 
-    if (currentConditionMessage) {
-      lines.push(`\n❗ Jest timed out while test code is waiting for "${currentConditionMessage}".\n`);
-    }
+    output.length && console.log(indent([`💬 Browser`, indent(output.join('\n'), 2)].join('\n')));
 
-    lines.length && console.log(indent([`💬 Browser`, indent(lines.join('\n'), 2)].join('\n')));
-  } finally {
     // Using JSON Wire Protocol to kill Web Driver.
     // This is more reliable because Selenium package queue commands.
     const res = await fetch(`${builder.getServerUrl()}/session/${sessionId}`, { method: 'DELETE' });
