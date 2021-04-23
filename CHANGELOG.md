@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3814](https://github.com/microsoft/BotFramework-WebChat/issues/3814). Allow carousel's scrollable content to be tabbable, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
 -  Fixes [#3834](https://github.com/microsoft/BotFramework-WebChat/issues/3834). Ensure carousel attachments are read by AT on tab focus, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
 -  Fixes [#3812](https://github.com/microsoft/BotFramework-WebChat/issues/3812). Update `adaptiveCardHostConfig` to accessible text color-contrasts, by [@corinagum](https://github.com/corinagum) in PR [#3853](https://github.com/microsoft/BotFramework-WebChat/pull/3853)
+-  Fixes [#3816](https://github.com/microsoft/BotFramework-WebChat/issues/3816). De-bumped Node.js engine requirement for Direct Line Speech SDK to `>= 10.14.2` from `>= 12.0.0`, by [@compulim](https://github.com/compulim) in PR [#3854](https://github.com/microsoft/BotFramework-WebChat/pull/3854)
 
 ### Changed
 
@@ -185,7 +186,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
--  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Update reaction button sample: Add `replyToId` to the `postActivity` object, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3769](https://github.com/microsoft/BotFramework-WebChat/pull/3769)
+-  Fixes [#3632](https://github.com/microsoft/BotFramework-WebChat/issues/3632). Update reaction button sample : Add replyToId to the postActivity object, by [@amal-khalaf](https://github.com/amal-khalaf) in PR [#3769](https://github.com/microsoft/BotFramework-WebChat/pull/3769)
+-  Fixes [#2343](https://github.com/microsoft/BotFramework-WebChat/issues/2343). Add sample for Direct Line tokens, by [@navzam](https://github.com/navzam), in PR [#3779](https://github.com/microsoft/BotFramework-WebChat/pull/3779)
 
 ## [4.12.0] - 2021-03-01
 

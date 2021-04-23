@@ -26,6 +26,8 @@
 
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
+        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.fetch);
+
         // Move focus to carousel activity
         await host.sendShiftTab();
         await host.sendShiftTab();
