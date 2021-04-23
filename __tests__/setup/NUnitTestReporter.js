@@ -154,7 +154,7 @@ class NUnitTestReporter {
                     ? {}
                     : {
                         message: {
-                          '#cdata-section': failureMessages.join('\n')
+                          '#cdata-section': failureMessages.map(stripANSI).join('\n')
                         },
                         'stack-trace': {
                           '#cdata-section': error
