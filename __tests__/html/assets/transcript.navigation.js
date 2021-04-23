@@ -199,7 +199,7 @@ async function waitForFocusedActivityInView(message) {
 
   await pageObjects.wait(
     {
-      message: 'focused activity scroll into view',
+      message: `focused activity scroll into view${message ? ': ' + message : ''}`,
       fn: () => {
         const { offsetHeight: activityHeight, offsetTop: activityTop } = elements.focusedActivity();
         const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = elements.transcriptScrollable();
