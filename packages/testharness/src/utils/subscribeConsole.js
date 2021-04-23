@@ -1,45 +1,82 @@
-import intercept from './intercept';
+// import intercept from './intercept';
 
-const FUNCTION_NAMES = ['debug', 'error', 'info', 'log', 'trace', 'warn'];
+// const FUNCTION_NAMES = ['debug', 'error', 'info', 'log', 'trace', 'warn'];
 
-let history = [];
+// let history = [];
 
 function isDeprecation(text) {
   return text.includes('deprecate');
 }
 
-function shiftDeprecationHistory() {
-  const deprecation = history.filter(({ args }) => isDeprecation(args[0]));
+// function shiftDeprecationHistory() {
+//   const deprecation = history.filter(({ args }) => isDeprecation(args[0]));
 
-  history = history.filter(({ args }) => !isDeprecation(args[0]));
+//   history = history.filter(({ args }) => !isDeprecation(args[0]));
 
-  return deprecation;
+//   return deprecation;
+// }
+
+// function getHistory() {
+//   return history;
+// }
+
+// export default function subscribeConsole() {
+//   const originalConsole = FUNCTION_NAMES.map(name => console[name]);
+
+//   FUNCTION_NAMES.forEach(
+//     name =>
+//       (console[name] = intercept(console[name].bind(console), next => (...args) => {
+//         history.push({
+//           args: args.map(arg => (arg instanceof Error ? arg.stack : arg + '')),
+//           level: name
+//         });
+
+//         return next(...args);
+//       }))
+//   );
+
+//   return () => {
+//     FUNCTION_NAMES.forEach(name => {
+//       console[name] = originalConsole[name];
+//     });
+//   };
+// }
+
+// export { getHistory, shiftDeprecationHistory };
+
+let numDeprecation = 0;
+let numError = 0;
+
+function hasConsoleError() {
+  return !!numError;
 }
 
-function getHistory() {
-  return history;
+function shiftDeprecationHistory() {
+  return !!numDeprecation--;
 }
 
 export default function subscribeConsole() {
-  const originalConsole = FUNCTION_NAMES.map(name => console[name]);
+  const originalConsoleError = console.error;
+  const originalConsoleWarn = console.warn;
 
-  FUNCTION_NAMES.forEach(
-    name =>
-      (console[name] = intercept(console[name].bind(console), next => (...args) => {
-        history.push({
-          args: args.map(arg => (arg instanceof Error ? arg.stack : arg + '')),
-          level: name
-        });
+  console.error = (...args) => {
+    numError++;
 
-        return next(...args);
-      }))
-  );
+    return originalConsoleError.call(console, ...args);
+  };
+
+  console.warn = (...args) => {
+    if (args.some(arg => isDeprecation(arg))) {
+      numDeprecation++;
+    }
+
+    return originalConsoleWarn.call(console, ...args);
+  };
 
   return () => {
-    FUNCTION_NAMES.forEach(name => {
-      console[name] = originalConsole[name];
-    });
+    console.error = originalConsoleError;
+    console.warn = originalConsoleWarn;
   };
 }
 
-export { getHistory, shiftDeprecationHistory };
+export { hasConsoleError, shiftDeprecationHistory };

@@ -50,11 +50,9 @@ export default async function runPageProcessor(driver, { ignoreConsoleError = fa
 
   const subscription = jobObservable.subscribe({
     complete: async () => {
-      const numConsoleError = await driver.executeScript(
-        () => window.WebChatTest.getConsoleHistory().filter(({ level }) => level === 'error').length
-      );
+      const hasConsoleError = await driver.executeScript(() => window.WebChatTest.hasConsoleError());
 
-      if (!ignoreConsoleError && numConsoleError) {
+      if (!ignoreConsoleError && hasConsoleError) {
         pageResultDeferred.reject(
           new Error(
             'console.error() was called in browser. Set { ignoreConsoleError: true } if console.error is okay to ignore'
