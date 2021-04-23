@@ -44,7 +44,7 @@ import runAsyncInterval from './utils/runAsyncInterval';
 import shareObservable from './utils/shareObservable';
 import sleep from './utils/sleep';
 import stringToArrayBuffer from './utils/stringToArrayBuffer';
-import subscribeConsole, { getHistory as getConsoleHistory, shiftDeprecationHistory } from './utils/subscribeConsole';
+import subscribeConsole, { hasConsoleError, shiftDeprecationHistory } from './utils/subscribeConsole';
 
 function waitForFinishKey() {
   const { promise, resolve } = createDeferred();
@@ -169,7 +169,7 @@ export {
   fetchSpeechServicesCredentials,
   float32ArraysToPcmWaveArrayBuffer,
   getActionHistory,
-  getConsoleHistory,
+  hasConsoleError,
   host,
   iterateAsyncIterable,
   jobs,

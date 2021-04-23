@@ -65,8 +65,7 @@ global.runHTMLTest = async (
 
     await runPageProcessor(driver, { ignoreConsoleError, ignorePageError });
 
-    const { consoleHistory, currentConditionMessage, localCoverage } = await driver.executeScript(() => ({
-      consoleHistory: window.WebChatTest.getConsoleHistory(),
+    const { currentConditionMessage, localCoverage } = await driver.executeScript(() => ({
       currentConditionMessage: window.WebChatTest.currentCondition && window.WebChatTest.currentCondition.message,
       localCoverage: window.__coverage__
     }));
@@ -86,7 +85,7 @@ global.runHTMLTest = async (
       if (
         ~text.indexOf('in-browser Babel transformer') ||
         ~text.indexOf('react-devtools') ||
-        (ignoreConsoleError && level === 'ERROR')
+        (ignoreConsoleError && name === 'ERROR')
       ) {
         return;
       }
