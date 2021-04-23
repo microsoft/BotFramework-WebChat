@@ -15,13 +15,12 @@ export default function scrollStabilized(message) {
   return {
     message: `scroll stabilized after ${COUNT} counts${message ? ': ' + message : ''}`,
     fn: async () => {
-      scrollTops.push(getTranscriptScrollableElement().scrollTop);
+      const value = getTranscriptScrollableElement().scrollTop;
 
-      console.log(`t=${Date.now() - start}: GOT ${getTranscriptScrollableElement().scrollTop}`);
+      console.log(`t=${Date.now() - start}: GOT ${value}`);
 
-      while (scrollTops.length > COUNT) {
-        scrollTops.splice(0, 1);
-      }
+      scrollTops.push(value);
+      scrollTops.splice(0, COUNT - scrollTops.length);
 
       if (scrollTops.length === COUNT && scrollTops.every(scrollTop => scrollTop === scrollTops[0])) {
         console.log(`t=${Date.now() - start}: DONE`);
