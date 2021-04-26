@@ -4,8 +4,7 @@ pool:
 trigger:
   branches:
     include:
-      - master
-      - sample-sso
+      - main
   paths:
     include:
       - samples/07.advanced-web-chat-apps/b.sso-for-enterprise

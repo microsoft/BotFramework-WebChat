@@ -4,8 +4,7 @@ pool:
 trigger:
   branches:
     include:
-      - master
-      - sample-sso-intranet
+      - main
   paths:
     include:
       - samples/07.advanced-web-chat-apps/c.sso-for-intranet

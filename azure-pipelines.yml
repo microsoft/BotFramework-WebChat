@@ -1,7 +1,7 @@
 # pr:
 #   branches:
 #     include:
-#     - master
+#     - main
 
 variables:
   CI: '1'
