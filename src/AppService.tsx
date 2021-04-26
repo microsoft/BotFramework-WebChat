@@ -71,15 +71,21 @@ export function renderFullScreenTemplate(props: AppProps) {
     logo.className = "feedbot-logo";
     
     const logoImg = document.createElement('img')
-    console.log('render fullscreen', props.theme)
     logoImg.src = props.theme && props.theme.template && props.theme.template.logoUrl || "https://cdn.feedyou.ai/webchat/feedyou_logo_red.png"
     logoImg.alt = "Logo"
     logo.appendChild(logoImg)
     
     wrapper.appendChild(logo);
-  
+
     wrapper.appendChild(container);
     document.body.appendChild(wrapper);
+
+    const customScript = props.theme && props.theme.template && props.theme.template.customScript
+    if (customScript)  {
+      const customScriptTag = document.createElement("script");
+      customScriptTag.appendChild(document.createTextNode(customScript))
+      document.body.appendChild(customScriptTag);
+    }
 
     render(props, container);
   }
