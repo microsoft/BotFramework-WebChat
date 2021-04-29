@@ -6,7 +6,7 @@ services:
   chrome1:
     build:
       context: ./
-      dockerfile: Dockerfile-selenium
+      dockerfile: selenium.dockerfile
     depends_on:
     - selenium-hub
     - webchat
@@ -20,7 +20,7 @@ services:
   chrome2:
     build:
       context: ./
-      dockerfile: Dockerfile-selenium
+      dockerfile: selenium.dockerfile
     depends_on:
     - selenium-hub
     - webchat
@@ -34,7 +34,7 @@ services:
   chrome3:
     build:
       context: ./
-      dockerfile: Dockerfile-selenium
+      dockerfile: selenium.dockerfile
     depends_on:
     - selenium-hub
     - webchat
@@ -48,7 +48,7 @@ services:
   chrome4:
     build:
       context: ./
-      dockerfile: Dockerfile-selenium
+      dockerfile: selenium.dockerfile
     depends_on:
     - selenium-hub
     - webchat
@@ -71,13 +71,13 @@ services:
   webchat:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness
+      dockerfile: testharness.dockerfile
     ports:
     - "5080:80"
 
   webchat2:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness2
+      dockerfile: testharness2.dockerfile
     ports:
     - "5081:80"

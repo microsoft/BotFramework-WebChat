@@ -12,6 +12,9 @@ ENTRYPOINT ["npx", "--no-install", "serve", "-c", "serve-test.json", "-p", "80",
 
 ADD serve-test.json /web/
 ADD __tests__/html/ /web/__tests__/html/
+ADD __tests__/html2/ /web/__tests__/html2/
 ADD packages/bundle/dist/webchat-es5.js /web/packages/bundle/dist/
 ADD packages/testharness/dist/testharness.js /web/packages/testharness/dist/
+ADD packages/testharness2/dist/ /web/packages/testharness2/dist/
+ADD packages/testpageobjects/dist/ /web/packages/testpageobjects/dist/
 RUN echo {}>/web/package.json

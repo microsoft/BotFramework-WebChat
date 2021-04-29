@@ -4,4 +4,6 @@
 !/packages/bundle/dist
 !/packages/playground/build
 !/packages/testharness/dist
+!/packages/testharness2/dist
+!/packages/testpageobjects/dist
 !/serve-test.json
