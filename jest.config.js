@@ -47,22 +47,24 @@ module.exports = {
             testResult.failureMessages.forEach(message => {
               const match = /^See diff for details: (.*)/m.exec(message);
 
-              match &&
-                testResultNode
-                  .ele('ResultFiles')
-                  .ele('ResultFile')
-                  .att('path', match[1]);
+              match && testResultNode.ele('ResultFiles').ele('ResultFile').att('path', match[1]);
             });
 
-            testResultNode.att('testName', `${relative(__dirname, testSuiteResult.testFilePath)} › ${testResult.fullName}`);
+            testResultNode.att(
+              'testName',
+              `${relative(__dirname, testSuiteResult.testFilePath)} › ${testResult.fullName}`
+            );
           }
         ]
       }
     ],
-    ['./__tests__/setup/NUnitTestReporter', {
-      filename: join(__dirname, 'coverage/nunit3.xml'),
-      jestResultFilename: join(__dirname, 'coverage/jest.json')
-    }]
+    [
+      './__tests__/setup/NUnitTestReporter',
+      {
+        filename: join(__dirname, 'coverage/nunit3.xml'),
+        jestResultFilename: join(__dirname, 'coverage/jest.json')
+      }
+    ]
   ],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',
@@ -70,7 +72,10 @@ module.exports = {
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTimeout.js',
-    '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js'
+    '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js',
+
+    '<rootDir>/packages/testharness2/src/host/jest/runHTML.js'
+    // '<rootDir>/packages/testharness2/src/host/jest/setupToMatchImageSnapshot.js'
   ],
   testPathIgnorePatterns: [
     '<rootDir>/__tests__/html/assets',
@@ -82,11 +87,9 @@ module.exports = {
     '<rootDir>/packages/playground/',
     '<rootDir>/samples/'
   ],
-  testRegex: [
-    '/__tests__/html/focusManagement',
-    '/__tests__/html/transcript.navigation'
-  ],
+  // testRegex: ['/__tests__/html/focusManagement', '/__tests__/html/transcript.navigation'],
   transform: {
+    '[\\/]__tests__[\\/]html2[\\/]': './babel-passthru-transformer.js',
     '\\.[jt]sx?$': './babel-jest-config.js'
   }
 };

@@ -1,0 +1,12 @@
+{
+  "extends": "./babel.config.json",
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "forceAllTransforms": true,
+        "modules": "commonjs"
+      }
+    ]
+  ]
+}

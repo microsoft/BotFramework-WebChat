@@ -28,6 +28,14 @@
       "destination": "packages/bundle/dist/webchat-es5.js"
     },
     {
+      "source": "/test-harness2.js",
+      "destination": "packages/testharness2/dist/test-harness2.js"
+    },
+    {
+      "source": "/test-page-objects.js",
+      "destination": "packages/testpageobjects/dist/test-page-objects.js"
+    },
+    {
       "source": "/:page.asset.js",
       "destination": "__tests__/html/:page.asset.js"
     },
@@ -43,5 +51,13 @@
       "source": "/",
       "destination": "__tests__/html"
     }
+  ],
+  "unlisted": [
+    "/__image_snapshots__",
+    "/**/.git*",
+    "/**/*.ico",
+    "/**/*.js",
+    "/**/*.json",
+    "/**/*.map"
   ]
 }

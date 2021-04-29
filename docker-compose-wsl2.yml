@@ -6,7 +6,7 @@ services:
   chrome:
     build:
       context: ./
-      dockerfile: Dockerfile-selenium
+      dockerfile: selenium.dockerfile
     depends_on:
     - selenium-hub
     - webchat
@@ -27,7 +27,7 @@ services:
   webchat:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness
+      dockerfile: testharness.dockerfile
     ports:
     - "5080:80"
     stop_grace_period: 0s
@@ -35,7 +35,7 @@ services:
   webchat2:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness2
+      dockerfile: testharness2.dockerfile
     ports:
     - "5081:80"
     stop_grace_period: 0s

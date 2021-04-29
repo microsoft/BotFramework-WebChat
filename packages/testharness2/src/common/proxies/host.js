@@ -1,0 +1,85 @@
+const { join } = require('path') || {};
+const { logging } = require('selenium-webdriver') || {};
+const createDeferred = require('p-defer');
+
+const IGNORE_CONSOLE_MESSAGE_FRAGMENTS = [
+  '[TESTHARNESS]',
+  'favicon.ico',
+  'in-browser Babel transformer',
+  'react-devtools'
+];
+
+function formatLogEntries(entries) {
+  return entries
+    .map(({ level: { name }, message }) => `📃 [${name}] ${message.split(' ').slice(2).join(' ')}`)
+    .join('\n');
+}
+
+module.exports = function createHost(webDriver) {
+  const completion = createDeferred();
+  const ready = createDeferred();
+  let logs = [];
+
+  const getLogs = async () => {
+    logs = [
+      ...logs,
+      ...(await webDriver.manage().logs().get(logging.Type.BROWSER)).filter(
+        // Ignore console entries that contains specified fragments.
+        ({ message }) =>
+          !IGNORE_CONSOLE_MESSAGE_FRAGMENTS.some(ignoreFragment =>
+            ignoreFragment instanceof RegExp ? ignoreFragment.test(message) : ~message.indexOf(ignoreFragment)
+          )
+      )
+    ];
+
+    return logs;
+  };
+
+  const dumpLogs = async () => {
+    if (process.env.CI) {
+      return;
+    }
+
+    const logs = await getLogs();
+
+    logs.length && console.log(formatLogEntries(logs));
+  };
+
+  return {
+    done: async ({ ignoreErrors = false } = {}) => {
+      const entries = await getLogs();
+
+      // Check if there are any console.error.
+      if (!ignoreErrors && logging) {
+        expect(entries.filter(({ level }) => level === logging.Level.SEVERE)).toHaveLength(0);
+      }
+
+      // Dump all logs to console if we are not in CI.
+      await dumpLogs();
+
+      // Clear out logs, readying for next session.
+      logs = [];
+
+      completion.resolve();
+    },
+    donePromise: completion.promise,
+    error: async error => {
+      // Dump all logs to console if we are not in CI.
+      await dumpLogs();
+
+      // Clear out logs, readying for next session.
+      logs = [];
+
+      completion.reject(error);
+    },
+    getLogs,
+    ready: () => ready.resolve(),
+    readyPromise: ready.promise,
+    snapshot: () =>
+      webDriver &&
+      expect(webDriver.takeScreenshot()).resolves.toMatchImageSnapshot({
+        customSnapshotsDir: join(__dirname, '../../../../../__tests__/__image_snapshots__/html/')
+      }),
+    windowSize: (width, height) => webDriver.manage().window().setRect({ height, width })
+  };
+};
