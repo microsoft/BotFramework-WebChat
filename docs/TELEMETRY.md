@@ -8,8 +8,8 @@ Microsoft **does not** collect or receive any telemetry measurements for Web Cha
 
 We have 2 samples for collecting telemetry measurements:
 
--  [Collecting telemetry measurements using Azure Application Insights](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights)
--  [Collecting telemetry measurements using Google Analytics](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics)
+-  [Collecting telemetry measurements using Azure Application Insights](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/k.telemetry-application-insights)
+-  [Collecting telemetry measurements using Google Analytics](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/l.telemetry-google-analytics)
 
 ## Measurements
 
@@ -125,9 +125,9 @@ Web Chat may emit a large number of dimensions and measurements to your `onTelem
 
 To emit custom measurements through the `onTelemetry` handler, you can use one of the following hooks.
 
--  [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
--  [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackevent) to emit an event
--  [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackexception) to emit an exception
--  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
+-  [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
+-  [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackevent) to emit an event
+-  [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackexception) to emit an exception
+-  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetracktiming) to emit a timing
 
-Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#telemetry) for API references.
+Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#telemetry) for API references.

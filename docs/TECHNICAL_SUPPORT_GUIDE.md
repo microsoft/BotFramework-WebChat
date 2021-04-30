@@ -69,13 +69,13 @@ The question **IS** related to Web Chat if:
 
 For common implementation scenarios, the Web Chat repository includes a list of samples that may jumpstart your development.
 
--  [Samples list](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) (includes demo bots and tutorials)
+-  [Samples list](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples) (includes demo bots and tutorials)
 
 ## Searching documentation
 
 Feel free to peruse our documentation, which is sorted based on general topic. These docs include design decisions, implementation quirks, links to related topics, and more.
 
--  [Web Chat's repository documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs)
+-  [Web Chat's repository documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs)
 -  [Microsoft Web Chat Docs](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-webchat-overview?view=azure-bot-service-4.0)
 
 ## Searching FAQ
@@ -211,10 +211,10 @@ Thanks for the help!
 
 -  [Web Chat FAQ](https://github.com/microsoft/BotFramework-WebChat/issues/1961)
 -  [Web Chat labelling docs](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/LABELLING.md) - this explains the labelling guidelines for GitHub issues, which may help you find what you are looking for
--  [Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+-  [Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 -  [Web Chat Changelog](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
 -  [Stack Overflow Web Chat tag](https://stackoverflow.com/questions/tagged/web-chat)
--  [Web Chat's repository documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs)
+-  [Web Chat's repository documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs)
 -  [Microsoft Docs](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-webchat-overview?view=azure-bot-service-4.0)
 
 ### BotFramework SDK

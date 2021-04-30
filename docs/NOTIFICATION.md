@@ -98,7 +98,7 @@ Slow connectivity timer can now be set using `styleOptions.slowConnectionAfter` 
 
 ### Styling toaster and toast
 
-There are multiple style options for customizing visuals of toast and toaster. You can find them at [`packages/component/src/defaultStyleOptions.js`](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src/defaultStyleOptions.js).
+There are multiple style options for customizing visuals of toast and toaster. You can find them at [`packages/component/src/defaultStyleOptions.js`](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component/src/defaultStyleOptions.js).
 
 ### Customizing notification UI
 

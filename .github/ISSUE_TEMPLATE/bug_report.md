@@ -6,11 +6,11 @@ labels: Bug, Pending, customer-reported, Bot Services
 assignees: ''
 ---
 
-# Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
+# Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
 
 <!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->
 
-<!-- [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TECHNICAL_SUPPORT_GUIDE.md) to get support related to Bot Framework and Web Chat. -->
+<!-- [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) to get support related to Bot Framework and Web Chat. -->
 
 ## Screenshots
 
