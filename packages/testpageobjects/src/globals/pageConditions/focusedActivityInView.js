@@ -1,6 +1,6 @@
 import became from './became';
-import focusedActivity from '../../elements/focusedActivity';
-import transcriptScrollable from '../../elements/transcriptScrollable';
+import focusedActivity from '../pageElements/focusedActivity';
+import transcriptScrollable from '../pageElements/transcriptScrollable';
 import scrollStabilized from './scrollStabilized';
 
 export default async function focusedActivityInView(message) {

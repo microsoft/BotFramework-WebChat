@@ -1,5 +1,5 @@
 import became from './became';
-import getTranscriptScrollableElement from '../../elements/transcriptScrollable';
+import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 
 const COUNT = 5;
 const WAIT_INTERVAL = 17;
