@@ -184,7 +184,7 @@ export default () => {
 ```
 <!-- prettier-ignore-end -->
 
-> You can also run `npm install botframework-webchat@master` to install a development build that is synced with Web Chat's GitHub `master` branch.
+> You can also run `npm install botframework-webchat@main` to install a development build that is synced with Web Chat's GitHub `main` branch.
 
 See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/e.host-with-react/).
 

@@ -3,7 +3,7 @@ name: samples/07.a.upload-to-azure-storage
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/samples.07.a.upload-to-azure-storage.yaml
       - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**

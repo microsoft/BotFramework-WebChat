@@ -46,7 +46,7 @@ npm run bootstrap
 
 # Building the project
 
-> Default build flavor is development. Please read [BUILD_SCRIPTS.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/BUILD_SCRIPTS.md) about different build flavors.
+> Default build flavor is development. Please read [BUILD_SCRIPTS.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/BUILD_SCRIPTS.md) about different build flavors.
 
 There are two ways to build: one-off and continuous build.
 
@@ -181,7 +181,7 @@ There are checks that automation will not be able to capture. For example:
    -  Safari on macOS
    -  Safari on iOS or iPadOS
    -  Chrome on Android
--  For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
+-  For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/ACCESSIBILITY.md)
    -  Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
    -  Assistive technology and browser compatibility
       -  NVDA/JAWS: Chrome and Firefox
@@ -229,7 +229,7 @@ Write the user story while implementing the feature.
    -  Verify screenshots
 1. Write a new sample with `README.md`
    -  This is the user story and proof-of-record on how the feature will work
-   -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/README.md)
+   -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md)
 1. Add more design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs) as needed
 1. Add a few log entries to `CHANGELOG.md`
 1. File a pull request
