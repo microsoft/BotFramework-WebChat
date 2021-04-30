@@ -1,9 +1,6 @@
 import became from './became';
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
-
-function sleep(durationMS = 17) {
-  return new Promise(resolve => setTimeout(resolve, durationMS));
-}
+import sleep from '../../utils/sleep';
 
 export default function scrollToBottomCompleted() {
   let count = 0;
@@ -24,7 +21,7 @@ export default function scrollToBottomCompleted() {
         count = 0;
       }
 
-      await sleep();
+      await sleep(17);
 
       return false;
     },

@@ -15,6 +15,7 @@
     "core-js": "3.11.0",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
+    "lolex": "^6.0.0",
     "math-random": "2.0.1",
     "regenerator-runtime": "0.13.7"
   },
