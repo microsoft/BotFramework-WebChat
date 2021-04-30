@@ -1,5 +1,5 @@
 import * as token from './token/index';
-import * as conditions from '../pageConditions/index';
+import createDirectLineWithTranscript from './createDirectLineWithTranscript';
 import createStore from './createStore';
 
-export { conditions, createStore, token };
+export { createDirectLineWithTranscript, createStore, token };

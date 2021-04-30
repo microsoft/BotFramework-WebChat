@@ -3,5 +3,5 @@
  */
 
 describe('transcript navigation', () => {
-  test('should back up when ESCAPE key is pressed', () => runHTMLTest('transcript.navigation.escapeKey'));
+  test('should back up when ESCAPE key is pressed', () => runHTML('transcript.navigation.escapeKey'));
 });
