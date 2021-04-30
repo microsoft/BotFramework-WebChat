@@ -2,6 +2,7 @@ import became from './became';
 import getTranscriptScrollableElement from '../../elements/transcriptScrollable';
 
 const COUNT = 5;
+const WAIT_INTERVAL = 17;
 
 export default async function scrollStabilized(message) {
   const scrollTops = [];
@@ -20,6 +21,8 @@ export default async function scrollStabilized(message) {
       if (scrollTops.length === COUNT && scrollTops.every(scrollTop => scrollTop === scrollTops[0])) {
         return true;
       }
+
+      await new Promise(resolve => setTimeout(resolve, WAIT_INTERVAL));
 
       return false;
     },

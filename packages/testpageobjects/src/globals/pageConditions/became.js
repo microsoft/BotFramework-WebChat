@@ -8,7 +8,7 @@ export default async function became(message, fn, timeout) {
   }
 
   for (const start = Date.now(); Date.now() < start + timeout; ) {
-    if (fn()) {
+    if (await fn()) {
       return;
     }
 
