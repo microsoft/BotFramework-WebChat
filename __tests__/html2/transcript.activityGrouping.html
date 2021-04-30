@@ -31,6 +31,13 @@
       } = window;
 
       run(async function () {
+        const urlSearchParams = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+        const height = urlSearchParams.get('ch');
+        const width = urlSearchParams.get('cw');
+
+        await host.windowSize(width, height, document.getElementById('webchat'));
+
         const TestHarness = () => {
           const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
           const [store, setStore] = useState(() => createStore());

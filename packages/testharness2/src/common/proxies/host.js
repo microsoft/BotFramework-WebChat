@@ -100,6 +100,24 @@ module.exports = function createHost(webDriver) {
       expect(webDriver.takeScreenshot()).resolves.toMatchImageSnapshot({
         customSnapshotsDir: join(__dirname, '../../../../../__tests__/__image_snapshots__/html/')
       }),
-    windowSize: (width, height) => webDriver.manage().window().setRect({ height, width })
+    windowSize: async (width, height, element) => {
+      await webDriver.manage().window().setRect({ height, width });
+
+      element &&
+        (await webDriver.executeScript(
+          (element, width, height) => {
+            if (width) {
+              element.style.width = width + 'px';
+            }
+
+            if (height) {
+              element.style.height = height + 'px';
+            }
+          },
+          element,
+          width,
+          height
+        ));
+    }
   };
 };
