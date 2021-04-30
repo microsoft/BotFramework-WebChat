@@ -1,5 +1,5 @@
 import became from './became';
-import getTranscriptScrollableElement from '../../elements/transcriptScrollable';
+import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 
 function sleep(durationMS = 17) {
   return new Promise(resolve => setTimeout(resolve, durationMS));
