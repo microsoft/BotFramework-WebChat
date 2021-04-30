@@ -1,5 +1,6 @@
 import became from './became';
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
+import sleep from '../../utils/sleep';
 
 const COUNT = 5;
 const WAIT_INTERVAL = 17;
@@ -22,7 +23,7 @@ export default async function scrollStabilized(message) {
         return true;
       }
 
-      await new Promise(resolve => setTimeout(resolve, WAIT_INTERVAL));
+      await sleep(WAIT_INTERVAL);
 
       return false;
     },

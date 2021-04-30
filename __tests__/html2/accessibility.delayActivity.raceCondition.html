@@ -1,24 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script>
       const {
         lolex,
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          host,
-          Observable,
-          pageObjects,
-          timeouts,
-          token
-        }
+        Observable,
+        WebChatTest: { createDirectLineWithTranscript, createStore, token }
       } = window;
 
       const clock = (window.clock = lolex.install());
@@ -35,7 +29,7 @@
 
       // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
 
-      (async function () {
+      run(async function () {
         const directLine = createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             return new Observable(({ complete, next }) => {
@@ -80,12 +74,12 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageConditions.webChatRendered();
 
         // Wait for "Connecting..." message to dismiss
         clock.tick(600);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         directLine.activityDeferredObservable.next({
           from: {
@@ -100,13 +94,7 @@
         });
 
         // The bot's activity 00000 will show up immediately because it is the very first bot activity and should not send to "Reply-to-ID" queue.
-        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
+        await pageConditions.numActivitiesShown(2);
       });
     </script>
   </body>
