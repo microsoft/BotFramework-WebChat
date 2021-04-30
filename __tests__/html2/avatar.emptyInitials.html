@@ -1,8 +1,26 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .custom-avatar {
+        align-items: center;
+        justify-content: center;
+        background-color: #e00;
+        border-radius: 4px;
+        color: White;
+        display: flex;
+        flex-direction: column;
+        height: 40px;
+        width: 40px;
+      }
+    </style>
   </head>
   <body>
     <div id="webchat"></div>
@@ -10,10 +28,10 @@
       const {
         React: { useMemo },
         WebChat: { renderWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts }
+        WebChatTest: { createDirectLineWithTranscript, createStore }
       } = window;
 
-      (async function() {
+      run(async function () {
         const avatarMiddleware = () => next => (...args) => {
           const [{ activity }] = args;
 
@@ -28,22 +46,22 @@
           {
             from: { role: 'bot' },
             id: '1.0',
-            text: 'Labore ut ad nulla nulla eiusmod duis dolore ut laborum cupidatat est amet veniam sit.',
+            text: 'Laborum irure officia eiusmod dolore culpa.',
             timestamp: -300001,
             type: 'message'
           },
           {
-            channelData: { state: 'sent' },
+            channelData: { clientTimestamp: -300001, state: 'sent' },
             from: { role: 'user' },
             id: '2.0',
-            text: 'Sint labore fugiat ea minim do reprehenderit sunt exercitation.',
+            text: 'Incididunt amet occaecat enim ullamco voluptate proident.',
             timestamp: -300001,
             type: 'message'
           },
           {
             from: { role: 'bot' },
             id: '3.0',
-            text: 'Custom avatar is not available if gutter is not shown.',
+            text: 'We can use custom avatar if gutter is shown.',
             timestamp: 0,
             type: 'message'
           }
@@ -55,7 +73,7 @@
             directLine,
             store: createStore(),
             styleOptions: {
-              botAvatarInitials: undefined,
+              botAvatarInitials: '',
               bubbleBackground: '#0063B1',
               bubbleBorderColor: '#0063B1',
               bubbleBorderRadius: 4,
@@ -69,20 +87,15 @@
               bubbleNubSize: 10,
               bubbleTextColor: 'White',
               groupTimestamp: false,
-              userAvatarInitials: undefined
+              userAvatarInitials: ''
             }
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
