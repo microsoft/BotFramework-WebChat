@@ -46,6 +46,7 @@ module.exports = function createHost(webDriver) {
   };
 
   return {
+    click: element => element.click(),
     done: async ({ ignoreErrors = false } = {}) => {
       const entries = await getLogs();
 

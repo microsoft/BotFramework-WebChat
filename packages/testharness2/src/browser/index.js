@@ -6,7 +6,7 @@ import getHost from './globals/host';
 import webDriverPort from './globals/webDriverPort';
 import webDriverProxy from './globals/webDriverProxy';
 
-window.test = (fn, doneOptions) => {
+window.run = (fn, doneOptions) => {
   // We need to set up the channel port, before setting up other globals.
   webDriverPort();
 

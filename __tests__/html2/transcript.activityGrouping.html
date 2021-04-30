@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -30,7 +30,7 @@
         WebChatTest: { createDirectLineWithTranscript, createStore }
       } = window;
 
-      test(async function () {
+      run(async function () {
         const TestHarness = () => {
           const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
           const [store, setStore] = useState(() => createStore());

@@ -10,7 +10,7 @@
     <div id="webchat"></div>
     <script>
       const {
-        WebChatTest: { createDirectLineWithTranscript, createStore, timeouts }
+        WebChatTest: { createDirectLineWithTranscript, createStore }
       } = window;
 
       run(async function () {
@@ -27,19 +27,15 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        document.querySelector('.ac-adaptiveCard input').focus();
-        document.querySelector('.ac-adaptiveCard input').click();
+        // Should show a focus indicator around the transcript and the terminator. This is our starting point.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.snapshot();
 
-        await pageConditions.scrollStabilized();
-
-        // After focusing/clicking on any <input> inside the Adaptive Card, <BasicTranscript> should not call scrollIntoView().
-        // We should not move the scrollable if the user is already focusing in it.
-
-        const scrollable = pageElements.transcriptScrollable();
-
-        expect(scrollable.scrollTop).toBe(scrollable.scrollHeight - scrollable.offsetHeight);
-
-        await host.done();
+        // Press up on the terminator should focus the bottommost activity.
+        await host.sendKeys('ARROW_UP');
+        await pageConditions.focusedActivityInView();
+        await host.snapshot();
       });
     </script>
   </body>
