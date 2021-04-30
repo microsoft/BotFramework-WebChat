@@ -104,7 +104,7 @@ The code is organized into two separate folders:
 
 -  `/bot/` is the bot server
 -  `/web/` is the REST API for generating Direct Line tokens
-   -  `GET /api/token/directline` will generate a new Direct Line token for the app. The token will be bound to a random user ID.
+   -  `GET /api/directline/token` will generate a new Direct Line token for the app. The token will be bound to a random user ID.
    -  During development-time, it will also serve the bot server via `/api/messages/`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
 
@@ -221,7 +221,7 @@ The client-side page calls the API and uses the resulting Direct Line token to r
 ```js
 // public/index.html
 
-const { token } = await fetchJSON('/api/token/directline');
+const { token } = await fetchJSON('/api/directline/token');
 
 WebChat.renderWebChat(
     {

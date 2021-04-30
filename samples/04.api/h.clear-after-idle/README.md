@@ -111,7 +111,7 @@ import useTimeoutAt from './utils/useTimeoutAt';
 const IDLE_TIMEOUT = 30000;
 
 async function fetchToken() {
-  const res = await fetch('https://webchat-mockbot2.azurewebsites.net/api/token/directline', { method: 'POST' });
+  const res = await fetch('https://webchat-mockbot2.azurewebsites.net/api/directline/token', { method: 'POST' });
   const { token } = await res.json();
 
   return token;

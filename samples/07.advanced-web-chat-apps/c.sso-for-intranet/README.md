@@ -110,7 +110,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 -  `/web/` is the REST API for handling OAuth requests
    -  `GET /api/oauth/authorize` will redirect to Azure AD OAuth authorize page at https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize
    -  `GET /api/oauth/callback` will handle callback from Azure AD OAuth
-   -  `GET /api/token/directline` will generate a new Direct Line token for the React app
+   -  `GET /api/directline/token` will generate a new Direct Line token for the React app
    -  It will serve a static `index.html`
    -  During development-time, it will also serve the bot server via `/api/messages`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
