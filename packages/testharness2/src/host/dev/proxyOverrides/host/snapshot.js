@@ -6,7 +6,7 @@ module.exports = function (webDriver) {
         console.log(message);
         console.log(url);
       },
-      `[TESTHARNESS] Snapshot taken.`,
+      '[TESTHARNESS] Snapshot taken.',
       `data:image/png;base64,${await webDriver.takeScreenshot()}`
     );
   };
