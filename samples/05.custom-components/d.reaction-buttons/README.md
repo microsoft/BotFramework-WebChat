@@ -323,12 +323,12 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
 # Further reading
 
-[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/c.user-highlighting)
+[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/c.user-highlighting)
 
-[Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+[Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/e.card-components)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/e.host-with-react/README.md

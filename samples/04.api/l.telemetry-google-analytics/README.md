@@ -18,7 +18,7 @@ This sample shows how to set up a Web Chat client that will collect telemetry me
 
 > This sample assumes you have already set up Google Analytics and have the measurement ID ready.
 
-This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle) sample.
+This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle) sample.
 
 ## Load Google Analytics SDK (gtag.js)
 
@@ -331,10 +331,10 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/k.telemetry-application-insights`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights) is a sample that will collect telemetry measurements into your own instance of Azure Application Insights.
+[`04.api/k.telemetry-application-insights`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/k.telemetry-application-insights) is a sample that will collect telemetry measurements into your own instance of Azure Application Insights.
 
 [Google Analytics gtag.js Documentation](https://developers.google.com/analytics/devguides/collection/gtagjs)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

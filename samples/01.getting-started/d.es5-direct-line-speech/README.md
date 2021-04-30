@@ -139,8 +139,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Getting Started with Web Chat CDN with ES5 Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech) | [(Getting Started with Web Chat CDN with ES5 Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/d.es5-direct-line-speech/)
+-  [Getting Started with Web Chat CDN with ES5 Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech) | [(Getting Started with Web Chat CDN with ES5 Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/d.es5-direct-line-speech/)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

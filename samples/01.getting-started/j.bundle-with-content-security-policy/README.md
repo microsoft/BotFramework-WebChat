@@ -125,8 +125,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
-You can read about [the design of Content Security Policy in this article](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/CONTENT_SECURITY_POLICY.md).
+You can read about [the design of Content Security Policy in this article](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/CONTENT_SECURITY_POLICY.md).
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

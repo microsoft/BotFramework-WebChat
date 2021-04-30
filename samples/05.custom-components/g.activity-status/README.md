@@ -26,7 +26,7 @@ This sample shows how to customize the activity status component through middlew
 
 ## Overview
 
-> Note: this sample is based from [`01.getting-started/e.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react).
+> Note: this sample is based from [`01.getting-started/e.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/e.host-with-react).
 
 First, create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state returns as failed, developers can add custom retry logic to the app.
 
@@ -214,4 +214,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

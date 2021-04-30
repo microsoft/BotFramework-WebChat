@@ -162,8 +162,8 @@ export default App;
 # Further reading
 
 -  [Hooks at a Glance](https://reactjs.org/docs/hooks-overview.html)
--  [Web Chat Back Channel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/a.welcome-event)
+-  [Web Chat Back Channel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/a.welcome-event)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

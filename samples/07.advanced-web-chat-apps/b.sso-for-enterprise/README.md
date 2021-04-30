@@ -130,7 +130,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  `GET /api/aad/oauth/authorize` will redirect to Azure AD OAuth authorize page at https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
    -  `GET /api/aad/oauth/callback` will handle callback from Azure AD OAuth
    -  `GET /api/aad/settings` will send Azure AD OAuth settings to the React app
-   -  `GET /api/directline/token` will generate a new Direct Line token for the React app
+   -  `GET /api/token/directline` will generate a new Direct Line token for the React app
    -  `GET /api/github/oauth/authorize` will redirect to GitHub OAuth authorize page at https://github.com/login/oauth/authorize
    -  `GET /api/github/oauth/callback` will handle callback from GitHub AD OAuth
    -  `GET /api/github/settings` will send GitHub OAuth settings to the React app

@@ -126,8 +126,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/b.piggyback-on-outgoing-activities`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/b.piggyback-on-outgoing-activities) is a sample that will add custom data to every outgoing activity.
+[`04.api/b.piggyback-on-outgoing-activities`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/b.piggyback-on-outgoing-activities) is a sample that will add custom data to every outgoing activity.
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

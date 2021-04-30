@@ -53,7 +53,7 @@ Notice that traditional Web Chat "pieces" are missing: the transcript and send b
 
 The intent of this sample is to show how you can pick and choose what components you want to use, allowing for expansion and modification of how traditional Web Chat works. If you have a significantly different design spec for your bot, but would still like to use Web Chat, looking at this sample is a great place to start.
 
-To see what components are available for customization, please take a look at the [components directory](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src) of the Web Chat repo. You are welcome to import any one of these into your app and make modifications, or build an entirely new component from scratch.
+To see what components are available for customization, please take a look at the [components directory](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component/src) of the Web Chat repo. You are welcome to import any one of these into your app and make modifications, or build an entirely new component from scratch.
 
 First, let's take a look at the `App.js` file.
 
@@ -499,4 +499,4 @@ export default function() {
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

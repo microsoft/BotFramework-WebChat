@@ -71,7 +71,7 @@ We are replacing the existing code by creating an adapter set using the new `cre
   );
 ```
 
-> For a list of supported options, you can refer to Web Chat's [Direct Line Speech SDK](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/directlinespeech/) documentation.
+> For a list of supported options, you can refer to Web Chat's [Direct Line Speech SDK](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/directlinespeech/) documentation.
 
 Now, you should be able to communicate with your bot using the Direct Line Speech channel. If you encounter any problems while connecting to the service, you should use the in-browser developer tool and investigate.
 
@@ -192,4 +192,4 @@ Open the web page and investigate the network traffic. Confirm that Web Chat is 
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

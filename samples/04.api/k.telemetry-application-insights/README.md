@@ -20,7 +20,7 @@ This sample shows how to set up a Web Chat client that will collect telemetry me
 
 > This sample assumes you have already set up Azure Application Insights and have the instrumentation key ready.
 
-This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle) sample.
+This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle) sample.
 
 ## Load Application Insights SDK
 
@@ -252,10 +252,10 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/l.telemetry-google-analytics`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics) is a sample that will collect telemetry measurements into your own instance of Google Analytics.
+[`04.api/l.telemetry-google-analytics`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/l.telemetry-google-analytics) is a sample that will collect telemetry measurements into your own instance of Google Analytics.
 
 [Application Insights JavaScript SDK API References](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/API-reference.md)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

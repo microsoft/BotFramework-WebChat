@@ -52,7 +52,7 @@ Next, create the `activityMiddleware` which will be passed into the bot. We will
 ```js
 const activityMiddleware = () => next => (...setupArgs) => {
   const render = next(...setupArgs);
-  
+
   if(render) {
     return  (...renderArgs) => {
       const element = render(...renderArgs);
@@ -175,12 +175,12 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 -  [Middleware wiki](https://en.wikipedia.org/wiki/Middleware)
 
--  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons)
+-  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/d.reaction-buttons)
 
--  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+-  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/e.card-components)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/e.host-with-react/README.md

@@ -138,8 +138,8 @@ Feel free to add your own `styleSetOptions` object to override as many of these 
 
 # Further reading
 
--  [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.idiosyncrating-manual-styles) | [(Idiosyncratic styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/b.idiosyncratic-manual-styles)
+-  [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/b.idiosyncrating-manual-styles) | [(Idiosyncratic styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/b.idiosyncratic-manual-styles)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

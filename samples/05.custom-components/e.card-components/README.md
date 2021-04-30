@@ -210,12 +210,12 @@ Finally, make sure the attachmentMiddleware is added to the Web Chat render meth
 
 # Further reading
 
-[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/c.user-highlighting)
+[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/c.user-highlighting)
 
-[Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons)
+[Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/d.reaction-buttons)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/e.host-with-react/README.md

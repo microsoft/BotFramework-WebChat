@@ -20,7 +20,7 @@ This sample shows how to save and restore scroll positions using [Web Chat hooks
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-This sample is based on the [04.api/m.enable-composition-mode](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/m.enable-composition-mode) sample.
+This sample is based on the [04.api/m.enable-composition-mode](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/m.enable-composition-mode) sample.
 
 ## Creating an overlay container
 
@@ -372,4 +372,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
