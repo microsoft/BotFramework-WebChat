@@ -8,7 +8,7 @@ This package contains the source code for the embed page at https://webchat.botf
 
 Web Chat offers multiple levels of integration options. In this package, we focus on embedding an `<iframe>` element in your web page.
 
-`<iframe>` is the simplest way to connect your website to Azure Bot Services. If you prefer more advanced features or customization options, please refer to the [migration guide](https://github.com/microsoft/botframework-webchat/blob/master/README.md#migrating-from-v3-to-v4-of-web-chat) for details.
+`<iframe>` is the simplest way to connect your website to Azure Bot Services. If you prefer more advanced features or customization options, please refer to the [migration guide](https://github.com/microsoft/BotFramework-WebChat/blob/main/README.md#migrating-from-v3-to-v4-of-web-chat) for details.
 
 There are a few features unique to `<iframe>`:
 

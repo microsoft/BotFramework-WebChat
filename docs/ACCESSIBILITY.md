@@ -31,7 +31,7 @@ You can view accessibility bugs and improvements that have already been filed us
 
 The Web Chat team has a comprehensive accessibility test suite, performs thorough manual testing, and also uses [Microsoft FastPass](https://accessibilityinsights.io/docs/en/web/getstarted/fastpass/) to test new features and bug fixes.
 
-To learn more about Assistive Technologies we test and support, please view the [technical support guide](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/TECHNICAL_SUPPORT_GUIDE.md#accessibility)
+To learn more about Assistive Technologies we test and support, please view the [technical support guide](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/TECHNICAL_SUPPORT_GUIDE.md#accessibility)
 
 We welcome your feedback and will continue to improve the product in this area, as accessibility is one of our top priorities.
 

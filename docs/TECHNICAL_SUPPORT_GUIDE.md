@@ -120,9 +120,9 @@ If this section did not help you, please move on to [reporting a bug](#reporting
 
 ## Searching Changelog
 
-All changes made to the Web Chat project are recorded in the repository's [Changelog](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md). Updates are sorted by release, with most-recent changes at the top of the file.
+All changes made to the Web Chat project are recorded in the repository's [Changelog](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md). Updates are sorted by release, with most-recent changes at the top of the file.
 
-1. Navigate to the [`CHANGELOG.MD`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md).
+1. Navigate to the [`CHANGELOG.MD`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md).
 1. Search for keywords related to your question (e.g. iOS, speech, or Dynamics 365)
    1. Use the brower's search function by pressing <kbd>Ctrl</kbd> + <kbd>F</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>F</kbd> (OSX)
 1. Follow the related links for details, design decisions, and implementation information
@@ -210,9 +210,9 @@ Thanks for the help!
 ### Web Chat
 
 -  [Web Chat FAQ](https://github.com/microsoft/BotFramework-WebChat/issues/1961)
--  [Web Chat labelling docs](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/LABELLING.md) - this explains the labelling guidelines for GitHub issues, which may help you find what you are looking for
+-  [Web Chat labelling docs](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LABELLING.md) - this explains the labelling guidelines for GitHub issues, which may help you find what you are looking for
 -  [Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
--  [Web Chat Changelog](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
+-  [Web Chat Changelog](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 -  [Stack Overflow Web Chat tag](https://stackoverflow.com/questions/tagged/web-chat)
 -  [Web Chat's repository documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs)
 -  [Microsoft Docs](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-webchat-overview?view=azure-bot-service-4.0)

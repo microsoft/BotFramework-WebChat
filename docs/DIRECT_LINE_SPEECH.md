@@ -1,6 +1,6 @@
 # Using Direct Line Speech
 
-> For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md).
+> For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md).
 
 This guide is for using Web Chat with chat and speech functionality provided by the [Direct Line Speech protocol](https://docs.microsoft.com/en-us/azure/cognitive-services/Speech-Service/direct-line-speech).
 
@@ -239,7 +239,7 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 
 Direct Line Speech does not support Internet Explorer 11. It requires modern browser media capabilities that are not available in IE11.
 
-Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#requirements).
+Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md#requirements).
 
 ## How to get started
 

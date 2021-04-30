@@ -2,7 +2,7 @@
 
 Web Chat is designed to be highly customizable. In order to build your own UI, you can use React Hooks to hook your UI component into Web Chat API.
 
-To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.recomposing-ui/d.plain-ui) sample for details.
+To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.recomposing-ui/d.plain-ui) sample for details.
 
 ## Why React Hooks
 
@@ -1131,7 +1131,7 @@ useStyleOptions(): [StyleOptions]
 
 This hook will return the style options. UI components should honor the styling preferences.
 
-The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/api/src/defaultStyleOptions.ts) and [`adaptiveCards/defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/defaultStyleOptions.ts) when Adaptive Cards is enabled.
+The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/defaultStyleOptions.ts) and [`adaptiveCards/defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/bundle/src/adaptiveCards/defaultStyleOptions.ts) when Adaptive Cards is enabled.
 
 To modify the value of `styleOptions` state, change the props you pass to Web Chat.
 
