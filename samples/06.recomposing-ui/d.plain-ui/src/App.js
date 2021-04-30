@@ -3,7 +3,6 @@ import { Components } from 'botframework-webchat-component';
 import React from 'react';
 import PlainWebChat from './PlainWebChat';
 
-
 // In this demo, we are using Direct Line token from MockBot.
 // To talk to your bot, you should use the token exchanged using your Direct Line secret.
 // You should never put the Direct Line secret in the browser or client app.

@@ -4,8 +4,6 @@ import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesS
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 import uiConnected from './setup/conditions/uiConnected';
 
-
-
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 

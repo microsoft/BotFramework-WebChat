@@ -3,7 +3,6 @@ import ErrorBox from '../internal/ErrorBox';
 import concatMiddleware from './concatMiddleware';
 import UserlandBoundary from './UserlandBoundary';
 
-
 export default function applyMiddleware(type, ...middleware) {
   return (...setupArgs) =>
     concatMiddleware(...middleware)(...setupArgs)(() => {

@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - main
     paths:
       - .github/workflows/publish-github-pages.yaml
       - samples/**
