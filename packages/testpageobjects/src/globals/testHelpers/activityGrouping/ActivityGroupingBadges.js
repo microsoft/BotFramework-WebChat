@@ -1,7 +1,4 @@
-const {
-  React,
-  React: { useMemo }
-} = window;
+const { React, React: { useMemo } = {} } = window;
 
 const ActivityGroupingBadges = () => {
   const {
