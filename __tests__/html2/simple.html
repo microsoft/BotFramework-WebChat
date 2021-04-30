@@ -27,7 +27,7 @@
 
         document.querySelector('input[type="text"]').focus();
 
-        await webDriverProxy.sendKeys('Hello, World!');
+        await host.sendKeys('Hello, World!');
 
         await host.snapshot();
       });

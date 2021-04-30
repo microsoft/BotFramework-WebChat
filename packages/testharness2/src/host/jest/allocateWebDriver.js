@@ -1,7 +1,7 @@
 const { Builder, logging } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const findHostIP = require('../dev/utils/findHostIP');
+// const findHostIP = require('../dev/utils/findHostIP');
 
 // TODO: We can modify the allocation logic here to reuse existing tabs.
 //       But we will need a out-of-process server to handle the reuse, because Jest is going to teardown the environment.
@@ -13,7 +13,7 @@ module.exports = async function allocateWebDriver({ height, webDriverURL, width 
 
   preferences.setLevel(logging.Type.BROWSER, logging.Level.ALL);
 
-  const hostIP = await findHostIP();
+  // const hostIP = await findHostIP();
 
   const webDriver = await new Builder()
     .forBrowser('chrome')
@@ -23,7 +23,7 @@ module.exports = async function allocateWebDriver({ height, webDriverURL, width 
         .setLoggingPrefs(preferences)
         .windowSize({ height: height || 640, width: width || 360 })
     )
-    .usingWebDriverProxy(`http://${hostIP}:8888`)
+    // .usingWebDriverProxy(`http://${hostIP}:8888`)
     .usingServer(webDriverURL)
     .build();
 
