@@ -105,7 +105,7 @@ test('textarea long text', async () => {
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
-    'https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/component/src/Styles/defaultStyleOptions.js'
+    'https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/bundle/src/fullBundleDefaultStyleOptions.ts'
   );
 
   const base64PNG = await driver.takeScreenshot();
