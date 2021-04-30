@@ -739,7 +739,7 @@ usePerformCardAction(): ({
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
 
-List of supported card action types can be found in this [Direct Line Activity card action schema](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#type-1).
+List of supported card action types can be found in this [Direct Line Activity card action schema](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#type-1).
 
 ## `usePostActivity`
 

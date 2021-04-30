@@ -2,7 +2,7 @@ import { ie11 } from '../../Utils/detectBrowser';
 
 // This code is adopted from sanitize-html/naughtyScheme.
 // sanitize-html is a dependency of Web Chat but the naughtScheme function is neither exposed nor reusable.
-// https://github.com/apostrophecms/sanitize-html/blob/master/src/index.js#L526
+// https://github.com/apostrophecms/sanitize-html/
 function getScheme(href) {
   // Browsers ignore character codes of 32 (space) and below in a surprising
   // number of situations. Start reading here:

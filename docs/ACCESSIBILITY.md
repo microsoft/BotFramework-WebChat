@@ -209,7 +209,7 @@ Messages with a newer timestamp may arrive before messages with an older timesta
 
 Because the time between the insertion is usually very short (adjacent packet in a Web Socket connection), users may not see the insertion visually. But the screen reader always reads the messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, the message order could be confusing to users who rely on the screen reader.
 
-![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/docs/media/direct-line-sequence-diagram.png)
+![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/docs/media/direct-line-sequence-diagram.png)
 
 ### Implementations
 
