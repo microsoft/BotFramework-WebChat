@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .button-bar {
@@ -27,19 +29,8 @@
       <br />
       <button class="add-3-activities-button">Add 3 activities with 10 lines each</button>
     </div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createDirectLineWithTranscript,
-        createStore,
-        elements,
-        expect,
-        host,
-        pageObjects,
-        shareObservable,
-        timeouts,
-        token
-      } = window.WebChatTest;
+    <script>
+      const { createDirectLineWithTranscript, createStore, token } = window.WebChatTest;
 
       const {
         Components: { AdaptiveCardContent }
@@ -90,7 +81,7 @@
         addDummyActivitiesToDirectLine(10);
       });
 
-      (async function () {
+      run(async function () {
         const webChatElement = document.getElementById('webchat');
 
         window.WebChat.renderWebChat(
@@ -102,29 +93,29 @@
           webChatElement
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 2, unacknowledged: 0 });
 
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 3, unacknowledged: 0 });
 
         await pageObjects.sendMessageViaSendBox('Hello, World!');
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 0 });
 
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 1 });
 
@@ -134,7 +125,7 @@
 
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 3 });
 
@@ -145,7 +136,7 @@
 
         await pageObjects.sendMessageViaSendBox('Aloha!');
 
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.scrollToBottomCompleted();
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 0 });
 
         // Scroll to top and lose the stickiness.
@@ -155,19 +146,19 @@
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         addDummyActivitiesToDirectLine(10);
-        await pageObjects.wait(conditions.minNumActivitiesShown(9), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(9);
 
         expect(scrollable.scrollTop).toBe(0);
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 1 });
 
         await pageObjects.clickNewMessageButton();
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.scrollToBottomCompleted();
 
         addDummyActivitiesToDirectLine(10);
         addDummyActivitiesToDirectLine(10);
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 9, unacknowledged: 3 });
 
@@ -181,12 +172,6 @@
         // Wait for scroll-to-bottom to detect it is at the bottom.
         await new Promise(resolve => setTimeout(resolve, 1000));
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 12, unacknowledged: 0 });
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
