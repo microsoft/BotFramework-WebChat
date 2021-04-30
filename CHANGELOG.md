@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+-  Cleanup repo URLs to point to main branch, by [@corinagum](https://github.com/corinagum), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+
 ### Fixed
 
 -  Fixes [#3814](https://github.com/microsoft/BotFramework-WebChat/issues/3814). Allow carousel's scrollable content to be tabbable, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
