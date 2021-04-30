@@ -1,46 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
     <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createRunHookActivityMiddleware,
-        createStore,
-        expect,
-        host,
-        pageObjects,
-        shareObservable,
-        timeouts,
-        token,
-        updateIn
-      } = window.WebChatTest;
+    <script>
+      const { createRunHookActivityMiddleware, createStore, stringToArrayBuffer, token } = window.WebChatTest;
 
-      function stringToArrayBuffer(value) {
-        // This assume the string is ASCII (0-127).
-
-        const { length } = value;
-        const byteArray = new Array(length);
-
-        for (let index = 0; index < length; index++) {
-          const charCode = value.charCodeAt(index);
-
-          if (charCode > 127) {
-            throw new Error('Only ASCII characters are supported.');
-          }
-
-          byteArray[index] = charCode;
-        }
-
-        return new Uint8Array(byteArray).buffer;
-      }
-
-      (async function () {
+      run(async function () {
         window.WebChat.renderWebChat(
           {
             activityMiddleware: createRunHookActivityMiddleware(),
@@ -52,7 +24,7 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         const fileBlob = new Blob([
           stringToArrayBuffer(
@@ -80,35 +52,29 @@
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
 
         // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
-        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(3);
 
         const renderer = document.querySelector('.webchat__adaptive-card-renderer');
         const card = renderer.querySelector('.ac-adaptiveCard[tabindex="0"]');
 
         expect(card).toBeTruthy();
 
-        renderer.click();
+        await host.click(renderer);
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(5);
 
         card.focus();
         await host.sendKeys('\n');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(7), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(7);
 
         card.focus();
         await host.sendKeys(' ');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(9), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(9);
 
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
