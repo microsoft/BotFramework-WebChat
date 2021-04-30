@@ -5,7 +5,6 @@
     <script crossorigin="anonymous" src="/test-harness2.js"></script>
     <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/assets/transcript.navigation.js"></script>
     <style type="text/css">
       input:focus {
         background-color: Red !important;
@@ -17,21 +16,13 @@
     <div id="webchat"></div>
     <script>
       const {
-        pageConditions,
-        pageObjects,
-        TestAsset: { generateTranscript, waitForFocusedActivityInView },
-        WebChatTest: {
-          createDirectLineWithTranscript,
-          createStore,
-          expect,
-          token
-        }
+        WebChatTest: { createDirectLineWithTranscript, createStore }
       } = window;
 
       test(async function () {
         window.WebChat.renderWebChat(
           {
-            directLine: createDirectLineWithTranscript(generateTranscript()),
+            directLine: createDirectLineWithTranscript(testHelpers.transcriptNavigation.generateTranscript()),
             store: createStore()
           },
           document.getElementById('webchat')

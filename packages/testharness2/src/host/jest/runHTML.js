@@ -7,7 +7,9 @@ const createProxies = require('../common/createProxies');
 const WEB_DRIVER_URL = 'http://localhost:4444/wd/hub/';
 
 const DEFAULT_OPTIONS = {
-  webDriverURL: WEB_DRIVER_URL
+  height: 640,
+  webDriverURL: WEB_DRIVER_URL,
+  width: 360
 };
 
 global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {

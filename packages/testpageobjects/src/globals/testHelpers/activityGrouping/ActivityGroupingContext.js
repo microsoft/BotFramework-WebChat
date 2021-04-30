@@ -1,7 +1,5 @@
-const {
-  React: { createContext }
-} = window;
+const { React: { createContext } = {} } = window;
 
-const ActivityGroupingContext = createContext();
+const ActivityGroupingContext = createContext && createContext();
 
 export default ActivityGroupingContext;

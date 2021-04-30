@@ -1,8 +1,5 @@
 // Use React from window (UMD) instead of import.
-const {
-  React,
-  React: { useCallback, useMemo, useState }
-} = window;
+const { React, React: { useCallback, useMemo, useState } = {} } = window;
 
 function comboNumberSetter(value, setters) {
   setters.forEach((setter, index) => setter && setter(!!(value & Math.pow(2, index)), value));
