@@ -14,7 +14,7 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { conditions, createStore, token } = window.WebChatTest;
+      const { createStore, token } = window.WebChatTest;
 
       test(async function () {
         window.WebChat.renderWebChat(
@@ -26,7 +26,7 @@
           document.getElementById('webchat')
         );
 
-        await conditions.uiConnected();
+        await pageConditions.uiConnected();
 
         await host.snapshot();
       });

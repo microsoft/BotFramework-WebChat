@@ -11,7 +11,7 @@
     <script>
       const {
         WebChat: { createDirectLine },
-        WebChatTest: { conditions, createStore, token }
+        WebChatTest: { createStore, token }
       } = window;
 
       test(async function () {
@@ -23,7 +23,11 @@
           document.getElementById('webchat')
         );
 
-        await conditions.uiConnected();
+        await pageConditions.uiConnected();
+
+        document.querySelector('input[type="text"]').focus();
+
+        await webDriverProxy.sendKeys('Hello, World!');
 
         await host.snapshot();
       });

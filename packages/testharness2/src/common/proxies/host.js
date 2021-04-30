@@ -1,5 +1,5 @@
 const { join } = require('path') || {};
-const { logging } = require('selenium-webdriver') || {};
+const { Key, logging } = require('selenium-webdriver') || {};
 const createDeferred = require('p-defer');
 
 const IGNORE_CONSOLE_MESSAGE_FRAGMENTS = [
@@ -75,6 +75,25 @@ module.exports = function createHost(webDriver) {
     getLogs,
     ready: () => ready.resolve(),
     readyPromise: ready.promise,
+    sendAccessKey: async key => {
+      await webDriver
+        .actions()
+        .keyDown(Key.ALT)
+        .keyDown(Key.SHIFT)
+        .sendKeys(key)
+        .keyUp(Key.SHIFT)
+        .keyUp(Key.ALT)
+        .perform();
+    },
+    sendKeys: async (...keys) => {
+      await keys.reduce((actions, key) => actions.sendKeys(Key[key] || key), webDriver.actions()).perform();
+    },
+    sendShiftTab: async () => {
+      await webDriver.actions().keyDown(Key.SHIFT).sendKeys(Key.TAB).keyUp(Key.SHIFT).perform();
+    },
+    sendTab: async () => {
+      await webDriver.actions().sendKeys(Key.TAB).perform();
+    },
     snapshot: () =>
       webDriver &&
       expect(webDriver.takeScreenshot()).resolves.toMatchImageSnapshot({
