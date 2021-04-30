@@ -5,12 +5,6 @@
     <script crossorigin="anonymous" src="/test-harness2.js"></script>
     <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      input:focus {
-        background-color: Red !important;
-        color: White !important;
-      }
-    </style>
   </head>
   <body>
     <div id="webchat"></div>
@@ -33,21 +27,22 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        // Should focus on the first input box of Adaptive Card, this is our starting point.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendKeys('ARROW_UP', 'ARROW_UP');
+        // After clicking on an activity, should show a focus indicator around the transcript, and an active indicator around the activated activity.
+        const activityElements = pageElements.transcript().querySelectorAll('li');
+        const activityToClick = activityElements[activityElements.length - 5];
+
+        // // A real mouseDown would focus on the transcript, but Simulate.mouseDown does not focus on the transcript, we need to manually set the focus.
+        // pageElements.transcript().focus();
+        // Simulate.mouseDown(activityToClick);
+
+        await host.click(activityToClick);
         await pageConditions.focusedActivityInView();
-        await host.sendKeys('ENTER');
+
         await host.snapshot();
 
-        // Press ESCAPE key should focus the activity.
-        await host.sendKeys('ESCAPE');
-        await host.snapshot();
-
-        // Press ESCAPE key should focus the send box.
-        await host.sendKeys('ESCAPE');
+        // Should activate the next activity.
+        await host.sendKeys('ARROW_DOWN');
+        await pageConditions.focusedActivityInView();
         await host.snapshot();
       });
     </script>

@@ -1,0 +1,28 @@
+body,
+html,
+#webchat {
+  height: 100%;
+}
+
+body {
+  align-items: center;
+  background: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+#webchat {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  height: 640px;
+  width: 360px;
+}
+
+input,
+textarea,
+[contenteditable] {
+  caret-color: Transparent;
+}
+
+body {
+}

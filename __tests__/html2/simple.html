@@ -14,7 +14,7 @@
         WebChatTest: { createStore, token }
       } = window;
 
-      test(async function () {
+      run(async function () {
         window.WebChat.renderWebChat(
           {
             directLine: createDirectLine({ token: await token.fetchDirectLineToken() }),
