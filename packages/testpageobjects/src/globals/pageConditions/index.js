@@ -1,6 +1,7 @@
 import allImagesLoaded from './allImagesLoaded';
 import became from './became';
 import focusedActivityInView from './focusedActivityInView';
+import mediaBufferStabilized from './mediaBufferStabilized';
 import minNumActivitiesShown from './minNumActivitiesShown';
 import numActivitiesShown from './numActivitiesShown';
 import scrollStabilized from './scrollStabilized';
@@ -13,6 +14,7 @@ export {
   allImagesLoaded,
   became,
   focusedActivityInView,
+  mediaBufferStabilized,
   minNumActivitiesShown,
   numActivitiesShown,
   scrollStabilized,
