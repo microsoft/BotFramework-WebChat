@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       body {
+        align-items: initial;
         background-color: #f7f7f7;
+        display: initial;
+        justify-content: initial;
       }
 
       #webchat {
@@ -38,10 +46,10 @@
           hooks: { useConnectivityStatus, useSendMessage },
           renderWebChat
         },
-        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, sleep, timeouts, token }
+        WebChatTest: { createStore, sleep, token }
       } = window;
 
-      (async function () {
+      run(async function () {
         const directLine = await createDirectLine({ token: await token.fetchDirectLineToken() });
         const store = createStore();
 
@@ -66,10 +74,10 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.suggestedActionsShown();
 
         expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
           'Suggested Actions Container: Has content. Press Alt + Shift + A to select.'
@@ -83,7 +91,7 @@
 
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
-        elements.transcript().focus();
+        await pageObjects.focusTranscript();
 
         await host.snapshot();
 
@@ -107,10 +115,6 @@
         await host.snapshot();
 
         await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

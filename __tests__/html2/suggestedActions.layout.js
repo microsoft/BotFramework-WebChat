@@ -1,6 +1,4 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/testharness2/src/host/jest/WebDriverEnvironment.js */
 
 describe('suggested actions', () => {
   describe.each([
@@ -20,7 +18,7 @@ describe('suggested actions', () => {
 
         dir && hashParams.set('dir', dir);
 
-        await runHTMLTest(`suggestedActions.layout#${hashParams}`);
+        await runHTML(`suggestedActions.layout#${hashParams}`);
       });
     });
   });

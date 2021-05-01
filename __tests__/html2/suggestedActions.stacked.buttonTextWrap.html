@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style>
       #webchat {
@@ -15,19 +17,19 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script>
       const { createDirectLine, renderWebChat } = window.WebChat;
-      const { conditions, createStore, host, pageObjects, parseURLParams, timeouts, token } = window.WebChatTest;
+      const { createStore, token } = window.WebChatTest;
 
-      (async function () {
+      run(async function () {
         const store = createStore();
         const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
 
-        const {
-          mh: suggestedActionsStackedLayoutButtonMaxHeight,
-          sah: suggestedActionHeight,
-          tw: suggestedActionsStackedLayoutButtonTextWrap
-        } = parseURLParams(window.location.hash);
+        const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+        const suggestedActionsStackedLayoutButtonMaxHeight = params.get('mh');
+        const suggestedActionHeight = params.get('sah');
+        const suggestedActionsStackedLayoutButtonTextWrap = params.get('tw');
 
         const styleOptions = {
           suggestedActionLayout: 'stacked',
@@ -45,18 +47,13 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('suggested-actions');
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
