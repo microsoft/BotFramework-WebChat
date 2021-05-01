@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      (async function() {
-        const { conditions, createStore, host, pageObjects, timeouts, token } = window.WebChatTest;
+    <script>
+      const { createStore, token } = window.WebChatTest;
 
+      run(async function () {
         const store = createStore({}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
             dispatch({
@@ -35,9 +37,7 @@
               payload: {
                 id: 'toast3',
                 level: 'info',
-                message: `This is third toast at ${Math.random()
-                  .toString(10)
-                  .substr(2, 3)}.`
+                message: `This is third toast at ${Math.random().toString(10).substr(2, 3)}.`
               }
             });
           }
@@ -55,8 +55,8 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.toastShown(), timeouts.ui);
+        await pageConditions.uiConnected();
+        await pageConditions.toastShown();
 
         await pageObjects.verifyDOMIntegrity();
 
@@ -77,9 +77,7 @@
         // All toasts have been dismissed.
 
         await pageObjects.verifyDOMIntegrity();
-
-        await host.done();
-      })().catch(err => console.error(err));
+      });
     </script>
   </body>
 </html>
