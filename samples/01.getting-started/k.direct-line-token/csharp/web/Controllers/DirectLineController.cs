@@ -23,7 +23,7 @@ namespace TokenSampleApi.Controllers
 
         // Endpoint for generating a Direct Line token bound to a random user ID
         [HttpGet]
-        [Route("/api/directLine/token")]
+        [Route("/api/directline/token")]
         public async Task<IActionResult> Get()
         {
             // Generate a random user ID to use for DirectLine token

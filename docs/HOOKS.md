@@ -2,7 +2,7 @@
 
 Web Chat is designed to be highly customizable. In order to build your own UI, you can use React Hooks to hook your UI component into Web Chat API.
 
-To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/d.plain-ui) sample for details.
+To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.recomposing-ui/d.plain-ui) sample for details.
 
 ## Why React Hooks
 
@@ -382,7 +382,7 @@ When called, this hook will return a debounced array of notifications.
 
 Due to debouncing, notifications retrieved using this hook may not be current. At the time of convergence, this hook will trigger another render.
 
-For the debounce behavior, please read our [article regarding notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md).
+For the debounce behavior, please read our [article regarding notification system](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md).
 
 ## `useDictateAbortable`
 
@@ -739,7 +739,7 @@ usePerformCardAction(): ({
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
 
-List of supported card action types can be found in this [Direct Line Activity card action schema](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#type-1).
+List of supported card action types can be found in this [Direct Line Activity card action schema](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#type-1).
 
 ## `usePostActivity`
 
@@ -751,7 +751,7 @@ usePostActivity(): (activity: Activity) => void
 
 When called, this function will post the activity on behalf of the user, to the bot.
 
-You can use this function to send any type of activity to the bot, however we highly recommend limiting the [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md) to one of the following:
+You can use this function to send any type of activity to the bot, however we highly recommend limiting the [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACTIVITYTYPES.md) to one of the following:
 
 -  `event`
 -  `message`
@@ -878,7 +878,7 @@ renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
 ```
 <!-- prettier-ignore-end -->
 
-The Markdown engine can be reconfigured by passing `renderMarkdown` prop to Web Chat. The default engine is a customized [Markdown-It](https://npmjs.com/package/markdown-it) with [HTML sanitizer](https://npmjs.com/package/sanitize-html) and [support `aria-label` attribute](https://npmjs.com/package/markdown-it-attrs). The customization can be found in [bundle/src/renderMarkdown.js](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/bundle/src/renderMarkdown.js).
+The Markdown engine can be reconfigured by passing `renderMarkdown` prop to Web Chat. The default engine is a customized [Markdown-It](https://npmjs.com/package/markdown-it) with [HTML sanitizer](https://npmjs.com/package/sanitize-html) and [support `aria-label` attribute](https://npmjs.com/package/markdown-it-attrs). The customization can be found in [bundle/src/renderMarkdown.js](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/bundle/src/renderMarkdown.js).
 
 ## `useRenderToast`
 
@@ -1084,7 +1084,7 @@ This hook will return a function which can be called to add or update a notifica
 
 The `message` field will be processed through an internal Markdown renderer. If Markdown is provided, it is recommended to provide plain text via the `alt` field for assistive technologies.
 
-The toast UI will [debounce notifications](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md#postponing-changes-via-debounce) that update too frequently.
+The toast UI will [debounce notifications](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md#postponing-changes-via-debounce) that update too frequently.
 
 ## `useShouldSpeakIncomingActivity`
 
@@ -1131,7 +1131,7 @@ useStyleOptions(): [StyleOptions]
 
 This hook will return the style options. UI components should honor the styling preferences.
 
-The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/api/src/defaultStyleOptions.ts) and [`adaptiveCards/defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/bundle/src/adaptiveCards/defaultStyleOptions.ts) when Adaptive Cards is enabled.
+The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/defaultStyleOptions.ts) and [`adaptiveCards/defaultStyleOptions.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/bundle/src/adaptiveCards/defaultStyleOptions.ts) when Adaptive Cards is enabled.
 
 To modify the value of `styleOptions` state, change the props you pass to Web Chat.
 

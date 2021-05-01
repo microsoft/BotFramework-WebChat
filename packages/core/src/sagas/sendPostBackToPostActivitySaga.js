@@ -2,12 +2,11 @@
 /* eslint no-undefined: "off" */
 
 import { put, takeEvery } from 'redux-saga/effects';
-
-import { SEND_POST_BACK } from '../actions/sendPostBack';
 import postActivity from '../actions/postActivity';
+import { SEND_POST_BACK } from '../actions/sendPostBack';
 import whileConnected from './effects/whileConnected';
 
-// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#post-back
+// https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#post-back
 function* postActivityWithPostBack({ payload: { value } }) {
   yield put(
     postActivity({

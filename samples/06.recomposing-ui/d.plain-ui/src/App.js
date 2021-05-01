@@ -1,7 +1,6 @@
-import { Components } from 'botframework-webchat-component';
 import { createDirectLine } from 'botframework-webchat';
+import { Components } from 'botframework-webchat-component';
 import React from 'react';
-
 import PlainWebChat from './PlainWebChat';
 
 // In this demo, we are using Direct Line token from MockBot.
@@ -45,7 +44,7 @@ export default () => {
       </ol>
       <p>
         For the{' '}
-        <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/d.plain-ui/">
+        <a href="https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.recomposing-ui/d.plain-ui/">
           source code of this demo
         </a>
         , please visit <a href="https://github.com/microsoft/BotFramework-WebChat/">our GitHub repository</a>.

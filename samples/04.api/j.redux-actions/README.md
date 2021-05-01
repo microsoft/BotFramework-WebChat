@@ -31,7 +31,7 @@ In this sample, we take advantage of the Web Chat (Redux) store to add custom fu
 
 In this case, Web Chat waits for the dispatch of an action with type `'event'` with the name `'sample:backchannel'`. Once it receives that action, the app will send an alert to the browser.
 
-To see the bot actions you are able to intercept, please take a look at the [actions directory](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/core/src/actions) in the Web Chat repo. Note that you can also listen for any specific `activity.name` that pertains to your particular bot.
+To see the bot actions you are able to intercept, please take a look at the [actions directory](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/core/src/actions) in the Web Chat repo. Note that you can also listen for any specific `activity.name` that pertains to your particular bot.
 
 First, set up the store via the `createStore` method, which will be passed into the rendering of Web Chat. The first parameter is the initial state, which you can initialize as an empty object (`{}`) and the second is the middleware we will be applying.
 
@@ -164,4 +164,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

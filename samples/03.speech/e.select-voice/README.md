@@ -4,7 +4,7 @@
 
 A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality that selects different voices based on the activity to be synthesized.
 
-This is an extension of sample [03.speech/b.cognitive-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js).
+This is an extension of sample [03.speech/b.cognitive-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/b.cognitive-speech-services-js).
 
 # Test out the hosted sample
 
@@ -140,4 +140,4 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

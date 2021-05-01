@@ -3,7 +3,7 @@ name: samples/07.d.sso-for-teams
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/samples.07.d.sso-for-teams.yaml
       - samples/07.advanced-web-chat-apps/d.sso-for-teams/**

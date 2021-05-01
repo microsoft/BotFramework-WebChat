@@ -3,7 +3,7 @@ name: samples/07.c.sso-for-intranet
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/samples.07.c.sso-for-intranet.yaml
       - samples/07.advanced-web-chat-apps/c.sso-for-intranet/**

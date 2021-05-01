@@ -1,12 +1,11 @@
-# ![Bot Framework Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/BotFrameworkWebChat_header.png)
+# ![Bot Framework Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png)
 
-### [Click here to find out what is new in Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md)
+### [Click here to find out what is new in Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 
 # Bot Framework Web Chat
 
 [![npm version](https://badge.fury.io/js/botframework-webchat.svg)](https://badge.fury.io/js/botframework-webchat)
-[![Build Status](https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=master)](https://fuselabs.visualstudio.com/BotFramework-WebChat/_build/latest?definitionId=498&branchName=master)
-[![Coverage Status](https://coveralls.io/repos/github/microsoft/BotFramework-WebChat/badge.svg?branch=master)](https://coveralls.io/github/microsoft/BotFramework-WebChat?branch=master)
+[![Build Status](https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=main)](https://fuselabs.visualstudio.com/BotFramework-WebChat/_build/latest?definitionId=498&branchName=main)
 
 This repository contains code for the Bot Framework Web Chat component. The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enables developers to model conversation and build sophisticated bot applications.
 
@@ -16,7 +15,7 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 # Version notes
 
-> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md
+> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md
 
 ### 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
 
@@ -71,15 +70,15 @@ Starting from Web Chat 4.6.0, Web Chat requires React 16.8.6 or up.
 
 Although we recommend that you upgrade your host app at your earliest convenience, we understand that host app may need some time before its React dependencies are updated, especially in regards to huge applications.
 
-If your app is not ready for React 16.8.6 yet, you can follow the [hybrid React sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/g.hybrid-react-npm) to dual-host React in your app.
+If your app is not ready for React 16.8.6 yet, you can follow the [hybrid React sample](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/g.hybrid-react-npm) to dual-host React in your app.
 
 ## Speech changes in Web Chat 4.5.0
 
-There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to the section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
+There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to the section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
 
 ## Migrating from Web Chat v3 to v4
 
-[View migration docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/MIGRATION.md) to learn about migrating from Web Chat v3.
+[View migration docs](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/MIGRATION.md) to learn about migrating from Web Chat v3.
 
 <hr />
 
@@ -156,15 +155,15 @@ Here is how how you can add Web Chat control to your website:
 ```
 <!-- prettier-ignore-end -->
 
-> `userID`, `username`, and `locale` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) documentation.
+> `userID`, `username`, and `locale` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/API.md) documentation.
 
-> Assigning `userID` as a static value is not recommended since this will cause all users to share state. Please see the [`API userID entry`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/API.md#userID) for more information.
+> Assigning `userID` as a static value is not recommended since this will cause all users to share state. Please see the [`API userID entry`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/API.md#userID) for more information.
 
-More information on localization can be found in the [Localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md) documentation.
+More information on localization can be found in the [Localization](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md) documentation.
 
-![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
+![Screenshot of Web Chat](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/weatherquery.png.jpg)
 
-See the working sample of the [full Web Chat bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle).
+See the working sample of the [full Web Chat bundle](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle).
 
 ## Integrate with React
 
@@ -185,15 +184,15 @@ export default () => {
 ```
 <!-- prettier-ignore-end -->
 
-> You can also run `npm install botframework-webchat@master` to install a development build that is synced with Web Chat's GitHub `master` branch.
+> You can also run `npm install botframework-webchat@main` to install a development build that is synced with Web Chat's GitHub `main` branch.
 
-See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react/).
+See the working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/e.host-with-react/).
 
 ### Experimental support for Redux DevTools
 
 Web Chat internally use Redux for state management. [Redux DevTools](https://github.com/reduxjs/redux-devtools) is enabled in the NPM build as an opt-in feature.
 
-This is for glancing into how Web Chat works. This is not an API explorer and is not an endorsement of using the Redux store to programmatically access the UI. The [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) should be used instead.
+This is for glancing into how Web Chat works. This is not an API explorer and is not an endorsement of using the Redux store to programmatically access the UI. The [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) should be used instead.
 
 To use Redux DevTools, use the `createStoreWithDevTools` function for creating a Redux DevTools-enabled store.
 
@@ -218,8 +217,8 @@ There are some limitations when using the Redux DevTools:
 -  The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
 -  Many UI states are stored in React context and state. They are not exposed in the Redux store.
 -  Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
--  Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) instead.
--  Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md) is the official API for accessing the UI.
+-  Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) instead.
+-  Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) is the official API for accessing the UI.
 
 # Customizing the Web Chat UI
 
@@ -237,21 +236,21 @@ Web Chat is designed to be customizable without forking the source code. The tab
 | Add new UI components         |            | &#10004; |
 | Recompose the whole UI        |            | &#10004; |
 
-See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/README.md) to learn more on customization.
+See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md) to learn more on customization.
 
 ## Supported Activity Types on the Web Chat Client
 
-Bot Framework has many activity types, but not all are supported in Web Chat. [View activity types docs](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md) to learn more.
+Bot Framework has many activity types, but not all are supported in Web Chat. [View activity types docs](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACTIVITYTYPES.md) to learn more.
 
 # Samples list
 
-[View the complete list of Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) for more ideas on customizing Web Chat.
+[View the complete list of Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples) for more ideas on customizing Web Chat.
 
 # Further reading
 
 ## API Reference
 
-View the [API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/API.md) for implementing Web Chat.
+View the [API documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/API.md) for implementing Web Chat.
 
 ## Browser compatibility
 
@@ -267,23 +266,23 @@ Please note, however:
 
 ## Accessibility
 
-View the [accessibility documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACCESSIBILITY.md).
+View the [accessibility documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACCESSIBILITY.md).
 
 ## Localization
 
-View the [localization documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md) for implementing in Web Chat.
+View the [localization documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md) for implementing in Web Chat.
 
 ## Notifications
 
-View the [notification documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md) for implementing in Web Chat.
+View the [notification documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md) for implementing in Web Chat.
 
 ## Telemetry
 
-View the [telemetry documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md) for implementing in Web Chat.
+View the [telemetry documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TELEMETRY.md) for implementing in Web Chat.
 
 ## Technical Support Guide
 
-View the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TECHNICAL_SUPPORT_GUIDE.md) to get guidance and help on troubleshooting in the Web Chat repo for more information before filing a new issue.
+View the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) to get guidance and help on troubleshooting in the Web Chat repo for more information before filing a new issue.
 
 ## Speech
 
@@ -295,11 +294,11 @@ Web Chat supports a wide-range of speech engines for a natural chat experience w
 
 ### Integrate with Direct Line Speech
 
-Direct Line Speech is the preferred way to add speech functionality in Web Chat. Please refer to the [Direct Line Speech](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md) documentation for details.
+Direct Line Speech is the preferred way to add speech functionality in Web Chat. Please refer to the [Direct Line Speech](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/DIRECT_LINE_SPEECH.md) documentation for details.
 
 ### Integrate with Cognitive Services Speech Services
 
-You can use Cognitive Services Speech Services to add speech functionality to Web Chat. Please refer to the [Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md) documentation for details.
+You can use Cognitive Services Speech Services to add speech functionality to Web Chat. Please refer to the [Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md) documentation for details.
 
 ### Browser-provided engine or other engines
 
@@ -315,10 +314,10 @@ Dailies will be released after 3:00AM Pacific Standard Time when changes have be
 
 # Contributing
 
-See our [Contributing page](https://github.com/microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
+See our [Contributing page](https://github.com/microsoft/BotFramework-WebChat/tree/main/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
-See our [CODE OF CONDUCT page](https://github.com/microsoft/BotFramework-WebChat/blob/master/.github/CODE_OF_CONDUCT.md) for details about the Microsoft Code of Conduct.
+See our [CODE OF CONDUCT page](https://github.com/microsoft/BotFramework-WebChat/blob/main/.github/CODE_OF_CONDUCT.md) for details about the Microsoft Code of Conduct.
 
 # Reporting Security Issues
 
-[View the security documentation](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/SECURITY.md) to learn more about reporting security issues.
+[View the security documentation](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/SECURITY.md) to learn more about reporting security issues.

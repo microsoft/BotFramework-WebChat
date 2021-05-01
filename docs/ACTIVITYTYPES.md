@@ -21,7 +21,7 @@ Although the Direct Line channel and Web Chat channel support the following acti
 
 When developing your bot's web page, you may discover that the bot sends an activity type that needs to be supported by Web Chat. Luckily, it is possible to create renderers for different activities through the [`activityMiddleware`](https://github.com/microsoft/BotFramework-WebChat#web-chat-api-reference). To learn more, check out the following tutorials:
 
-1. [Customize Web Chat with Reaction Buttons](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons/)
-1. [Customize Web Chat with GitHub Stargazer Components](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+1. [Customize Web Chat with Reaction Buttons](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/d.reaction-buttons/)
+1. [Customize Web Chat with GitHub Stargazer Components](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/e.card-components)
 
 Note: We do not recommend creating custom activity types. Instead, please use the `event` activity type.

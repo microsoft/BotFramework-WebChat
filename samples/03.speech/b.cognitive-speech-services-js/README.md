@@ -121,4 +121,4 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

@@ -3,7 +3,7 @@ name: playground
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/playground.yaml
       - packages/**

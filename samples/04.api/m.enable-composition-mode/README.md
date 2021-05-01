@@ -16,7 +16,7 @@ Composition mode enables developers to use Web Chat APIs, such as the [Web Chat 
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react) sample.
+This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/e.host-with-react) sample.
 
 ## Enable composition mode
 
@@ -176,4 +176,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

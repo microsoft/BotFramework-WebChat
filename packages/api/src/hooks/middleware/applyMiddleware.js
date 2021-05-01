@@ -1,7 +1,6 @@
 import React, { isValidElement } from 'react';
-
-import concatMiddleware from './concatMiddleware';
 import ErrorBox from '../internal/ErrorBox';
+import concatMiddleware from './concatMiddleware';
 import UserlandBoundary from './UserlandBoundary';
 
 export default function applyMiddleware(type, ...middleware) {
@@ -35,7 +34,7 @@ export function forLegacyRenderer(type, ...middleware) {
  *
  * @param {string} type Required. String equivalent of type of container to be rendered.
  * @param { strict = false } - Used to enforce new middleware format which cooperates with new activity grouping.
- * @see See {@link https://github.com/microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#4100---2020-08-18} and {@link https://github.com/microsoft/BotFramework-WebChat/pull/3365} for middleware breaking changes.
+ * @see See {@link https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md#4100---2020-08-18} and {@link https://github.com/microsoft/BotFramework-WebChat/pull/3365} for middleware breaking changes.
  * @param  {middleware[]} middleware list of middleware to be applied.
  * 'createRendererArgs' is "what to render"; for example, an activity.
  * @returns  Returns a function if there is a renderer *committed* to render OR returns false if nothing should be rendered.

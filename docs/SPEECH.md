@@ -1,6 +1,6 @@
 # Using Cognitive Services Speech Services
 
-> Direct Line Speech is the preferred way to provide speech functionality in Web Chat, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md).
+> Direct Line Speech is the preferred way to provide speech functionality in Web Chat, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/DIRECT_LINE_SPEECH.md).
 
 This guide is for integrating speech-to-text and text-to-speech functionality using Azure Cognitive Services.
 
@@ -659,8 +659,8 @@ For details on setting up sovereign cloud and their limitations, please refer to
 
 [authenticate requests to azure cognitive services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [get started with custom voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
-[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js
-[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech
+[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/b.cognitive-speech-services-js
+[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/g.hybrid-speech
 [speech synthesis markup language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
 [try cognitive services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [web audio api support]: https://caniuse.com/#feat=audio-api

@@ -3,7 +3,7 @@ name: samples/07.b.sso-for-enterprise
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - .github/workflows/samples.07.b.sso-for-enterprise.yaml
       - samples/07.advanced-web-chat-apps/b.sso-for-enterprise/**

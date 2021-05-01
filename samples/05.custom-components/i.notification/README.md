@@ -440,10 +440,10 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
--  [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usesetnotification)
--  [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usedismissnotification)
+-  [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md)
+-  [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usesetnotification)
+-  [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usedismissnotification)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

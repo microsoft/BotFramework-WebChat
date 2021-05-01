@@ -116,8 +116,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/c.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
+[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/c.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

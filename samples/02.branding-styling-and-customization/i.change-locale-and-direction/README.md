@@ -24,7 +24,7 @@ This sample shows how to change locale and direction for RTL languages on Web Ch
 
 ## Overview
 
-> Note: this sample is based from [`01.getting-started/a.full-bundle`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle).
+> Note: this sample is based from [`01.getting-started/a.full-bundle`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle).
 
 ### What is Right to Left, Left to Right, and Bidirectional Support?
 
@@ -132,4 +132,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

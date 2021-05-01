@@ -13,7 +13,7 @@ instructions provided by the bot. You will only need to do this once across all 
 
 Thanks for your interest in improving Web Chat. We invest heavily in engineering excellence to reduce our workloads and enable us to move faster. To start the development, please familiarize yourself with the development process and these automation tools.
 
-> If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/microsoft/BotFramework-WebChat/issues/).
+> If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/microsoft/BotFramework-WebChat/issues/).
 >
 > Forking Web Chat to make your own customizations means you will lose access to our latest updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
 
@@ -46,7 +46,7 @@ npm run bootstrap
 
 # Building the project
 
-> Default build flavor is development. Please read [BUILD_SCRIPTS.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/BUILD_SCRIPTS.md) about different build flavors.
+> Default build flavor is development. Please read [BUILD_SCRIPTS.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/BUILD_SCRIPTS.md) about different build flavors.
 
 There are two ways to build: one-off and continuous build.
 
@@ -181,14 +181,14 @@ There are checks that automation will not be able to capture. For example:
    -  Safari on macOS
    -  Safari on iOS or iPadOS
    -  Chrome on Android
--  For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/ACCESSIBILITY.md)
+-  For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/ACCESSIBILITY.md)
    -  Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
    -  Assistive technology and browser compatibility
       -  NVDA/JAWS: Chrome and Firefox
       -  Narrator: Microsoft Edge family and IE11
       -  VoiceOver: Safari
       -  TalkBack: Chrome on Android
--  For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
+-  For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md)
 -  Feature documentation, samples, live demo, operation of demo bots
    -  All samples must also come with a hosted live demo
    -  Please discuss with us if a specific bot is needed for the live demo
@@ -229,8 +229,8 @@ Write the user story while implementing the feature.
    -  Verify screenshots
 1. Write a new sample with `README.md`
    -  This is the user story and proof-of-record on how the feature will work
-   -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/samples/README.md)
-1. Add more design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs) as needed
+   -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md)
+1. Add more design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs) as needed
 1. Add a few log entries to `CHANGELOG.md`
 1. File a pull request
 
@@ -238,4 +238,4 @@ Write the user story while implementing the feature.
 
 ### Adding languages
 
-To add a new language to our localization list, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md).
+To add a new language to our localization list, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md).

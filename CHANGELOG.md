@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+-  Cleanup repo URLs to point to main branch, by [@corinagum](https://github.com/corinagum), in PR [#3870](https://github.com/microsoft/BotFramework-WebChat/pull/3870)
+
 ### Fixed
 
 -  Fixes [#3814](https://github.com/microsoft/BotFramework-WebChat/issues/3814). Allow carousel's scrollable content to be tabbable, by [@corinagum](https://github.com/corinagum) in PR [#3841](https://github.com/microsoft/BotFramework-WebChat/pull/3841)
@@ -201,7 +204,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Supports multiple transcripts in a single composition, by [@compulim](https://github.com/compulim) in PR [#3653](https://github.com/microsoft/BotFramework-WebChat/pull/3653)
 -  Resolves [#3368](https://github.com/microsoft/BotFramework-WebChat/issues/3368). Added new `sendBoxButtonAlignment` for button alignment in multi-line text mode, by [@compulim](https://github.com/compulim) in PR [#3668](https://github.com/microsoft/BotFramework-WebChat/pull/3668)
 -  Resolves [#3666](https://github.com/microsoft/BotFramework-WebChat/issues/3666). Added support of sovereign clouds when using Direct Line Speech, by [@compulim](https://github.com/compulim) in PR [#3694](https://github.com/microsoft/BotFramework-WebChat/pull/3694)
-   -  Please refer to [`DIRECT_LINE_SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md#directlinespeechcredentials) for instructions
+   -  Please refer to [`DIRECT_LINE_SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/DIRECT_LINE_SPEECH.md#directlinespeechcredentials) for instructions
 -  Resolves [#2996](https://github.com/microsoft/BotFramework-WebChat/issues/2996). Added transcript navigation by keyboard navigation keys, by [@compulim](https://github.com/compulim) in PR [#3703](https://github.com/microsoft/BotFramework-WebChat/pull/3703)
 -  Resolves [#3544](https://github.com/microsoft/BotFramework-WebChat/issues/3544). Send user ID from props to chat adapter, by [@timenick](https://github.com/timenick) in PR [#3544)(https://github.com/microsoft/BotFramework-WebChat/issues/3544).
 -  Resolves [#3562](https://github.com/microsoft/BotFramework-WebChat/issues/3562). Add button word wrap to suggested actions stacked layout, by [@corinagum](https://github.com/corinagum), in PR [#3728](https://github.com/microsoft/BotFramework-WebChat/pull/3728) and [#3745](https://github.com/microsoft/BotFramework-WebChat/pull/3745)
@@ -451,7 +454,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Added Content Security Policy sample, by [@compulim](https://github.com/compulim), in PR [#3443](https://github.com/microsoft/BotFramework-WebChat/pull/3443)
 -  Update `create-react-app`-based samples to resolve `p-defer` as peer dependency, by [@compulim](https://github.com/compulim), in PR [#3457](https://github.com/microsoft/BotFramework-WebChat/pull/3457)
--  Bump [`encoding@0.1.13`](https://npmjs.com/package/encoding) in [`06.recomposing-ui/c.smart-display`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.recomposing-ui/c.smart-display), by [@compulim](https://github.com/compulim), in PR [#3458](https://github.com/microsoft/BotFramework-WebChat/pull/3458)
+-  Bump [`encoding@0.1.13`](https://npmjs.com/package/encoding) in [`06.recomposing-ui/c.smart-display`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.recomposing-ui/c.smart-display), by [@compulim](https://github.com/compulim), in PR [#3458](https://github.com/microsoft/BotFramework-WebChat/pull/3458)
 
 ## [4.10.0] - 2020-08-18
 
@@ -468,9 +471,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Default `botAvatarInitials` and `userAvatarInitials` is changed to `undefined`, from `""` (empty string)
    -  When the initials is `undefined`, no gutter space will be reserved for the avatar.
    -  When the initials is `""` (empty string), gutter space will be reserved, but not avatar will be shown.
--  [`useRenderActivity`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderactivity) hook is being deprecated, in favor of the new [`useCreateActivityRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateactivityrenderer) hook.
--  [`useRenderActivityStatus`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderactivitystatus) hook is being deprecated, in favor of the new [`useCreateActivityStatusRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateactivitystatusrenderer) hook.
--  [`useRenderAvatar`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#userenderavatar) hook is being deprecated, in favor of the new [`useCreateAvatarRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usecreateavatarrenderer) hook.
+-  [`useRenderActivity`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#userenderactivity) hook is being deprecated, in favor of the new [`useCreateActivityRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usecreateactivityrenderer) hook.
+-  [`useRenderActivityStatus`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#userenderactivitystatus) hook is being deprecated, in favor of the new [`useCreateActivityStatusRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usecreateactivitystatusrenderer) hook.
+-  [`useRenderAvatar`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#userenderavatar) hook is being deprecated, in favor of the new [`useCreateAvatarRenderer`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usecreateavatarrenderer) hook.
 
 #### Change in general middleware design
 
@@ -855,7 +858,7 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Localization
    -  `locale` prop: `zh-YUE` has been renamed to `yue` to conform with Unicode standard. `zh-YUE` will continue to work with warnings
    -  Most strings have been validated and retranslated by the Microsoft localization team, with the exception of English (US), Egyptian Arabic, Jordan Arabic, and Chinese Yue
-      -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md#overriding-localization-strings) for customization
+      -  If the new strings are undesirable, please use the [`overideLocalizedStrings` prop](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md#overriding-localization-strings) for customization
       -  String IDs have been refreshed and now use a standard format
    -  `useLocalize` and `useLocalizeDate` is deprecated. Please use `useLocalizer` and `useDateFormatter` instead
 -  Customizable typing indicator: data and hook related to typing indicator are being revamped in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
@@ -873,14 +876,14 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Added default `onError` prop to the `Dictation` component, by [@tonyanziano](https://github.com/tonyanziano), in PR [#2866](https://github.com/microsoft/BotFramework-WebChat/pull/2866)
 -  Resolves [#1976](https://github.com/microsoft/BotFramework-WebChat/issues/1976). Added RTL support with localization for Hebrew and Arabic, by [@corinagum](https://github.com/corinagum), in PR [#2890](https://github.com/microsoft/BotFramework-WebChat/pull/2890)
 -  Resolves [#2755](https://github.com/microsoft/BotFramework-WebChat/issues/2755). Added notification system and toast UI, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
-   -  Please read [this article on how to use notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
+   -  Please read [this article on how to use notification](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md)
    -  Slow connection timer can now be set using `styleOptions.slowConnectionAfter` (in milliseconds)
 -  Resolves [#2871](https://github.com/microsoft/BotFramework-WebChat/issues/2871). Moved typing indicator to transcript, by [@compulim](https://github.com/compulim), in PR [#2883](https://github.com/microsoft/BotFramework-WebChat/pull/2883)
 -  Resolves [#2756](https://github.com/microsoft/BotFramework-WebChat/issues/2756). Improved localizability and add override support for localized strings, by [@compulim](https://github.com/compulim) in PR [#2894](https://github.com/microsoft/BotFramework-WebChat/pull/2894)
    -  Will be translated into 44 languages, plus 2 community-contributed translations
-   -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/LOCALIZATION.md)
+   -  For details, please read the [documentation on the localization](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md)
 -  Resolves [#2213](https://github.com/microsoft/BotFramework-WebChat/issues/2213). Added customization for typing activity, by [@compulim](https://github.com/compulim), in PR [#2912](https://github.com/microsoft/BotFramework-WebChat/pull/2912)
--  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/TELEMETRY.md), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
+-  Resolves [#2754](https://github.com/microsoft/BotFramework-WebChat/issues/2754). Added [telemetry system](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TELEMETRY.md), by [@compulim](https://github.com/compulim), in PR [#2922](https://github.com/microsoft/BotFramework-WebChat/pull/2922)
 -  Resolves [#2857](https://github.com/microsoft/BotFramework-WebChat/issues/2857). Added the ability to customize the avatar on a per activity basis, by [@compulim](https://github.com/compulim), in PR [#2943](https://github.com/microsoft/BotFramework-WebChat/pull/2943)
 -  Resolves [#2944](https://github.com/microsoft/BotFramework-WebChat/issues/2944). Updated Azure locale mapping in embed page, by [@compulim](https://github.com/compulim) in PR [#2965](https://github.com/microsoft/BotFramework-WebChat/pull/2965)
 
@@ -1235,7 +1238,7 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Resolves [#2157](https://github.com/microsoft/BotFramework-WebChat/issues/2157), added `emitTypingIndicator` action and dispatcher, by [@compulim](https://github.com/compulim), in PR [#2413](https://github.com/microsoft/BotFramework-WebChat/pull/2413)
 -  Resolves [#2307](https://github.com/microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/microsoft/BotFramework-WebChat/pull/2332)
 -  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/microsoft/BotFramework-WebChat/pull/2137) and PR [#2487](https://github.com/microsoft/BotFramework-WebChat/pull/2487)
--  Resolves [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/ACTIVITYTYPES.md), by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
+-  Resolves [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACTIVITYTYPES.md), by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
 -  Resolves [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
@@ -1539,8 +1542,8 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Backchannel: [Inject custom data into every `POST_ACTIVITY`](https://microsoft.github.io/BotFramework-WebChat/15.backchannel-piggyback-on-outgoing-activities/), in [#1331](https://github.com/microsoft/BotFramework-WebChat/pull/1331)
 -  UI: [Minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/a.minimizable-web-chat/), in [#1290](https://github.com/microsoft/BotFramework-WebChat/pull/1290)
 -  Others: [Using Web Chat v3](https://microsoft.github.io/BotFramework-WebChat/webchat-v3/), in [#1287](https://github.com/microsoft/BotFramework-WebChat/pull/1287)
--  Speech: [Cognitive Services Speech to Text and Text to Speech](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js) (both subscription key and authorization token flow)
--  Speech: [Cognitive Services Speech to Text using lexical result](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.e.cognitive-services-speech-services-with-lexical-result) (text normalization)
+-  Speech: [Cognitive Services Speech to Text and Text to Speech](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.c.cognitive-services-speech-services-js) (both subscription key and authorization token flow)
+-  Speech: [Cognitive Services Speech to Text using lexical result](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/06.e.cognitive-services-speech-services-with-lexical-result) (text normalization)
 
 ## [4.1.0] - 2018-10-31
 

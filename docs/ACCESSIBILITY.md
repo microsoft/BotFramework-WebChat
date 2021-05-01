@@ -31,7 +31,7 @@ You can view accessibility bugs and improvements that have already been filed us
 
 The Web Chat team has a comprehensive accessibility test suite, performs thorough manual testing, and also uses [Microsoft FastPass](https://accessibilityinsights.io/docs/en/web/getstarted/fastpass/) to test new features and bug fixes.
 
-To learn more about Assistive Technologies we test and support, please view the [technical support guide](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/TECHNICAL_SUPPORT_GUIDE.md#accessibility)
+To learn more about Assistive Technologies we test and support, please view the [technical support guide](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/TECHNICAL_SUPPORT_GUIDE.md#accessibility)
 
 We welcome your feedback and will continue to improve the product in this area, as accessibility is one of our top priorities.
 
@@ -209,7 +209,7 @@ Messages with a newer timestamp may arrive before messages with an older timesta
 
 Because the time between the insertion is usually very short (adjacent packet in a Web Socket connection), users may not see the insertion visually. But the screen reader always reads the messages in the order they appear on the screen, regardless of their positions in the DOM tree. Thus, the message order could be confusing to users who rely on the screen reader.
 
-![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/docs/media/direct-line-sequence-diagram.png)
+![Direct Line sequence diagram](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/docs/media/direct-line-sequence-diagram.png)
 
 ### Implementations
 

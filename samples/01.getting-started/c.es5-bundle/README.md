@@ -132,9 +132,9 @@ Here is the finished `index.html`:
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
--  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle)
--  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/b.minimal-bundle) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/b.minimal-bundle)
--  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/h.minimal-markdown) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/h.minimal-markdown)
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle)
+-  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/b.minimal-bundle) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/b.minimal-bundle)
+-  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/h.minimal-markdown) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/h.minimal-markdown)
 
 ## CDN sunburst chart
 
@@ -142,6 +142,6 @@ Check out the hosted samples and source code for other CDN bundle options below.
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../a.full-bundle/README.md
