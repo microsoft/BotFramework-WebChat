@@ -11,7 +11,15 @@ const IGNORE_CONSOLE_MESSAGE_FRAGMENTS = [
 
 function formatLogEntries(entries) {
   return entries
-    .map(({ level: { name }, message }) => `📃 [${name}] ${message.split(' ').slice(2).join(' ')}`)
+    .map(({ level: { name }, message }) => {
+      let text = message.split(' ').slice(2).join(' ');
+
+      if (text.length > 1000) {
+        text = text.slice(0, 1000) + '…';
+      }
+
+      return `📃 [${name}] ${text}`;
+    })
     .join('\n');
 }
 

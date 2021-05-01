@@ -49,7 +49,6 @@
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
     "test": "jest --watch",
     "test:ci": "npm run test -- --ci --coverage true --no-watch",
-    "test:ci:original": "npm run test -- --ci --coverage true --no-watch",
     "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
   },
   "devDependencies": {
