@@ -1,6 +1,8 @@
 import clickNewMessageButton from './clickNewMessageButton';
 import clickNthSuggestedAction from './clickNthSuggestedAction';
 import clickSendButton from './clickSendButton';
+import clickToasterHeader from './clickToasterHeader';
+import dismissToast from './dismissToast';
 import focusNewMessageButton from './focusNewMessageButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
@@ -10,11 +12,14 @@ import scrollToTop from './scrollToTop';
 import sendMessageViaCode from './sendMessageViaCode';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import typeInSendBox from './typeInSendBox';
+import verifyDOMIntegrity from './verifyDOMIntegrity';
 
 export {
   clickNewMessageButton,
   clickNthSuggestedAction,
   clickSendButton,
+  clickToasterHeader,
+  dismissToast,
   focusNewMessageButton,
   focusSendBoxTextBox,
   focusTranscript,
@@ -23,5 +28,6 @@ export {
   scrollToTop,
   sendMessageViaCode,
   sendMessageViaSendBox,
-  typeInSendBox
+  typeInSendBox,
+  verifyDOMIntegrity
 };
