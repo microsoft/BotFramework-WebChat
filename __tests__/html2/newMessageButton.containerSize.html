@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
-    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script> -->
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       body {
@@ -52,17 +56,7 @@
         React: { Fragment, useCallback, useState },
         ReactDOM: { render },
         WebChat: { ReactWebChat },
-        WebChatTest: {
-          classNames,
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
+        WebChatTest: { createDirectLineWithTranscript, createStore, token }
       } = window;
 
       function createActivity(numLines) {
@@ -80,7 +74,7 @@
 
       const directLine = createDirectLineWithTranscript([createActivity(15)]);
 
-      (async function () {
+      run(async function () {
         const store = createStore();
 
         const App = ({ overrideOrientation }) => {
@@ -128,26 +122,26 @@
 
         renderApp();
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollStabilized();
 
         await pageObjects.scrollToTop();
 
         renderApp({ overrideOrientation: 'portrait' });
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         directLine.activityDeferredObservable.next(createActivity(1));
 
         // We need to wait for the scroll-to-bottom button to show up.
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        await pageObjects.wait(() => !elements.newMessageButton(), timeouts.ui);
+        await pageConditions.newMessageButtonHidden();
 
         // As a control experiment, we need to show the scroll-to-bottom button.
         directLine.activityDeferredObservable.next(createActivity(5));
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
         await pageObjects.scrollToTop();
 
         // We need to wait for the scroll detector to register we are at the top.
@@ -155,13 +149,9 @@
 
         directLine.activityDeferredObservable.next(createActivity(1));
 
-        await pageObjects.wait(() => elements.newMessageButton(), timeouts.ui);
+        await pageConditions.newMessageButtonShown();
 
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
+        // TODO: Is this a complete test?
       });
     </script>
   </body>

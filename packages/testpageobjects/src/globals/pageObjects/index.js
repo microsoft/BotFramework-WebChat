@@ -3,6 +3,7 @@ import clickNthSuggestedAction from './clickNthSuggestedAction';
 import clickSendButton from './clickSendButton';
 import focusNewMessageButton from './focusNewMessageButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
+import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
 import runHook from './runHook';
 import scrollToTop from './scrollToTop';
@@ -16,6 +17,7 @@ export {
   clickSendButton,
   focusNewMessageButton,
   focusSendBoxTextBox,
+  focusTranscript,
   getActivities,
   runHook,
   scrollToTop,
