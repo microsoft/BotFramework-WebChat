@@ -3,7 +3,6 @@
   <head>
     <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
     <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness2.js"></script>
     <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -11,25 +10,12 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createRunHookActivityMiddleware, createStore, stringToArrayBuffer, token } = window.WebChatTest;
+      const { createDirectLineWithTranscript, createStore, stringToArrayBuffer, token } = window.WebChatTest;
 
       run(async function () {
-        window.WebChat.renderWebChat(
+        const directLine = createDirectLineWithTranscript([
           {
-            activityMiddleware: createRunHookActivityMiddleware(),
-            directLine: window.WebChat.createDirectLine({
-              token: await token.fetchDirectLineToken()
-            }),
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
-
-        await pageConditions.uiConnected();
-
-        const fileBlob = new Blob([
-          stringToArrayBuffer(
-            JSON.stringify(
+            attachments: [
               {
                 contentType: 'application/vnd.microsoft.card.hero',
                 content: {
@@ -41,19 +27,30 @@
                     'The first `imBack` is from mouse click. The second is from `ENTER` key. The third is from `SPACEBAR` key.',
                   title: 'Tap on this card to say, "echo Hello, World."'
                 }
-              },
-              null,
-              2
-            )
-          )
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
         ]);
 
-        fileBlob.name = 'hello-card.attachmentjson';
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
 
-        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+        await pageConditions.uiConnected();
 
         // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
-        await pageConditions.minNumActivitiesShown(3);
+        await pageConditions.numActivitiesShown(1);
 
         const renderer = document.querySelector('.webchat__adaptive-card-renderer');
         const card = renderer.querySelector('.ac-adaptiveCard[tabindex="0"]');
@@ -62,17 +59,17 @@
 
         await host.click(renderer);
 
-        await pageConditions.minNumActivitiesShown(5);
+        await pageConditions.numActivitiesShown(2);
 
         card.focus();
         await host.sendKeys('\n');
 
-        await pageConditions.minNumActivitiesShown(7);
+        await pageConditions.numActivitiesShown(3);
 
         card.focus();
         await host.sendKeys(' ');
 
-        await pageConditions.minNumActivitiesShown(9);
+        await pageConditions.numActivitiesShown(4);
 
         await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
