@@ -10,25 +10,28 @@
     <div id="webchat"></div>
     <script>
       const {
-        concatArrayBuffer,
-        conditions,
-        createQueuedArrayBufferAudioSource,
-        createStore,
-        EventIterator,
-        expect,
-        fetchSpeechData,
-        fetchSpeechServicesCredentials,
-        float32ArraysToPcmWaveArrayBuffer,
-        host,
-        iterateAsyncIterable,
-        MockAudioContext,
-        pageObjects,
-        pcmWaveArrayBufferToRiffWaveArrayBuffer,
-        recognizeRiffWaveArrayBuffer,
-        shareObservable,
-        timeouts,
-        token
-      } = window.WebChatTest;
+        speech: {
+          concatArrayBuffer,
+          createQueuedArrayBufferAudioSource,
+          fetchSpeechData,
+          float32ArraysToPcmWaveArrayBuffer,
+          MockAudioContext,
+          pcmWaveArrayBufferToRiffWaveArrayBuffer,
+          recognizeRiffWaveArrayBuffer
+        },
+        WebChatTest: {
+          createStore,
+          EventIterator,
+          expect,
+          fetchSpeechServicesCredentials,
+          host,
+          iterateAsyncIterable,
+          pageObjects,
+          shareObservable,
+          timeouts,
+          token
+        }
+      } = window;
 
       run(
         async function () {

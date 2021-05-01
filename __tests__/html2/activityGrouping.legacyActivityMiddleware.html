@@ -35,6 +35,8 @@
       } = window;
 
       run(async function () {
+        await host.windowSize(360, 1280, document.getElementById('webchat'));
+
         const activityMiddleware = () => next => (...renderActivityArgs) => {
           const [{ activity }] = renderActivityArgs;
 
