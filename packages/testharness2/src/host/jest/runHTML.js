@@ -37,7 +37,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     await webDriver.get(absoluteURL);
 
     await webDriver.executeScript(() => {
-      document.body.className = 'ci';
+      document.body.className = 'jest';
     });
 
     const proxies = createProxies(webDriver);

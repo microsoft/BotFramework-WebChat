@@ -1,3 +1,4 @@
+import clickMicrophoneButton from './clickMicrophoneButton';
 import clickNewMessageButton from './clickNewMessageButton';
 import clickNthSuggestedAction from './clickNthSuggestedAction';
 import clickSendButton from './clickSendButton';
@@ -15,6 +16,7 @@ import typeInSendBox from './typeInSendBox';
 import verifyDOMIntegrity from './verifyDOMIntegrity';
 
 export {
+  clickMicrophoneButton,
   clickNewMessageButton,
   clickNthSuggestedAction,
   clickSendButton,
