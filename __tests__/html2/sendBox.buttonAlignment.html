@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      #app {
-        height: 100%;
-      }
-
       .webchat__auto-resize-textarea,
       .webchat__send-box-text-box__input {
         outline-color: rgba(0, 0, 0, 0.4) !important;
@@ -46,7 +47,7 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { Fragment, useCallback, useEffect, useMemo, useState },
@@ -56,10 +57,10 @@
           createDirectLine,
           hooks: { useSendBoxValue }
         },
-        WebChatTest: { conditions, createStore, createWebSpeechMock, host, pageObjects, timeouts, token }
+        WebChatTest: { createStore, createWebSpeechMock, token }
       } = window;
 
-      (async function () {
+      run(async function () {
         const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
         const store = createStore();
 
@@ -209,16 +210,11 @@
           );
         };
 
-        render(<App />, document.getElementById('app'));
+        render(<App />, document.getElementById('webchat'));
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
