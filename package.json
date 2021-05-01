@@ -47,7 +47,7 @@
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
     "stop:docker": "echo This command has been renamed to \"npm run docker:down\" && npm run docker:down",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
-    "test": "jest --watch",
+    "test": "jest",
     "test:ci": "npm run test -- --ci --coverage true --no-watch",
     "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
   },
