@@ -1,4 +1,5 @@
 import allImagesLoaded from './allImagesLoaded';
+import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import became from './became';
 import focusedActivityInView from './focusedActivityInView';
 import mediaBufferStabilized from './mediaBufferStabilized';
@@ -13,6 +14,7 @@ import webChatRendered from './webChatRendered';
 
 export {
   allImagesLoaded,
+  allOutgoingActivitiesSent,
   became,
   focusedActivityInView,
   mediaBufferStabilized,
