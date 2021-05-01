@@ -33,6 +33,8 @@
       const clock = lolex.install();
 
       run(async function () {
+        await host.windowSize(360, 1280, document.getElementById('webchat'));
+
         const activityStatusMiddleware = () => next => (...args) => {
           const [
             {

@@ -34,6 +34,8 @@
       } = window;
 
       run(async function () {
+        await host.windowSize(360, 1280, document.getElementById('webchat'));
+
         const clock = lolex.install();
 
         function refreshClock() {
