@@ -1,4 +1,4 @@
-import { AudioStreamFormat } from '../../external/microsoft-cognitiveservices-speech-sdk';
+import { AudioStreamFormat } from 'microsoft-cognitiveservices-speech-sdk';
 
 export default async function recognizeRiffWaveArrayBuffer({
   arrayBuffer,

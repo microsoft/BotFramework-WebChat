@@ -1,4 +1,4 @@
-import EventTarget, { defineEventAttribute } from 'event-target-shim-es5';
+import EventTarget, { defineEventAttribute } from 'event-target-shim';
 
 import pcmWaveArrayBufferToFloat32Arrays from '../pcmWaveArrayBufferToFloat32Arrays';
 

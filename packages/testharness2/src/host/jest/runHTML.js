@@ -1,22 +1,33 @@
 /* istanbul ignore file */
 const allocateWebDriver = require('./allocateWebDriver');
+const createProxies = require('../common/createProxies');
 const mergeCoverageMap = require('./mergeCoverageMap');
 const registerProxies = require('../common/registerProxies');
-const createProxies = require('../common/createProxies');
-
-const WEB_DRIVER_URL = 'http://localhost:4444/wd/hub/';
+const sleep = require('../../common/utils/sleep');
 
 const DEFAULT_OPTIONS = {
-  height: 640,
-  webDriverURL: WEB_DRIVER_URL,
-  width: 360
+  webDriverURL: 'http://localhost:4444/wd/hub/'
 };
+
+afterEach(async () => {
+  try {
+    // We must stop the bridge too, otherwise, it will cause timeout.
+    global.webDriverBridge && global.webDriverBridge.close();
+  } catch (err) {}
+
+  global.__operation__ && console.log(`Last operation was ${global.__operation__}`);
+
+  try {
+    // Exceptions thrown in setup() will still trigger afterEach(), such as timeout.
+    global.webDriver && (await global.webDriver.quit());
+  } catch (err) {}
+});
 
 global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   options = { ...DEFAULT_OPTIONS, ...options };
 
   // We are assigning it to "global.webDriver" to allow Environment.teardown to terminate it if needed.
-  const webDriver = (global.webDriver = await allocateWebDriver(options));
+  const webDriver = await allocateWebDriver(options);
 
   try {
     const absoluteURL = new URL(url, 'http://webchat2/__tests__/html2/');
@@ -24,6 +35,10 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
     await webDriver.get(absoluteURL);
+
+    await webDriver.executeScript(() => {
+      document.body.className = 'ci';
+    });
 
     const proxies = createProxies(webDriver);
 
@@ -43,6 +58,6 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   } finally {
     // After the done.promise is resolved or rejected, before terminating the Web Driver session, we need to wait a bit longer for the RPC callback to complete.
     // Otherwise, the RPC return call will throw "NoSuchSessionError" because the session was killed.
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await sleep(100);
   }
 };
