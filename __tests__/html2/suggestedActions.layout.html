@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      #app {
+      #webchat {
         height: 100%;
       }
 
@@ -37,14 +42,13 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useCallback, useEffect, useMemo, useState },
         ReactDOM: { render },
-        ReactTestUtils: { Simulate },
         WebChat: { ReactWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+        WebChatTest: { createDirectLineWithTranscript, createStore, sleep, token }
       } = window;
 
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
@@ -242,10 +246,10 @@
         );
       };
 
-      render(<TestHarness />, document.getElementById('app'));
+      render(<TestHarness />, document.getElementById('webchat'));
 
-      (async function () {
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+      run(async function () {
+        await pageConditions.uiConnected();
 
         await host.snapshot();
 
@@ -257,15 +261,18 @@
           );
 
           for (let count = 0; count < 5; count++) {
-            Simulate.click(endFlipper);
+            await host.click(endFlipper);
 
             await new Promise(resolve => setTimeout(resolve, 200));
           }
 
           // We need to wait for the scroll animation to complete before taking a screenshot.
-          await new Promise(resolve => setTimeout(resolve, timeouts.ui));
+          await sleep(1000);
 
           await host.snapshot();
+
+          // We need to scroll it back, otherwise, we will not be able to click the first button.
+          document.querySelector('.react-film__filmstrip').scrollLeft = 0;
         } else if (/-maxheight$/iu.test(initialPreset)) {
           // When maxHeight is set, take extra screenshots at the bottommost of the scrollable.
 
@@ -278,16 +285,12 @@
           await host.snapshot();
         }
 
-        Simulate.click(document.querySelector('.webchat__suggested-action__button'));
+        await host.click(document.querySelector('.webchat__suggested-action__button'));
 
-        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
+        await pageConditions.numActivitiesShown(2);
         await host.snapshot();
 
         await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
