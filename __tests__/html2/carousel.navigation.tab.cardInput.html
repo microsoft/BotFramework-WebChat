@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script>
       const {
-        TestAsset: { waitForFocusedActivityInView },
-        WebChatTest: { conditions, createDirectline, createStore, host, pageObjects, timeouts, token }
+        WebChatTest: { createDirectline, createStore, token }
       } = window;
 
-      (async function () {
+      run(async function () {
         window.WebChat.renderWebChat(
           {
             directLine: createDirectLine({ token: await token.fetchDirectLineToken() }),
@@ -22,7 +22,7 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
@@ -30,18 +30,12 @@
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
-        await waitForFocusedActivityInView();
+        await pageConditions.focusedActivityInView();
 
         await host.sendKeys('ENTER');
         // focus on first card button
         await host.sendTab();
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

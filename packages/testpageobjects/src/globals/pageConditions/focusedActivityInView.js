@@ -9,24 +9,21 @@ export default async function focusedActivityInView(message) {
   await became(
     `focused activity scroll into view${message ? ': ' + message : ''}`,
     () => {
-      let { offsetHeight: activityHeight, offsetTop: activityTop } = focusedActivity();
-      let { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = transcriptScrollable();
+      const { offsetHeight: activityHeight, offsetTop: activityTop } = focusedActivity();
+      const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = transcriptScrollable();
 
-      const activityBottom = Math.ceil(activityHeight + activityTop);
-      const scrollableBottom = Math.ceil(scrollableHeight + scrollableTop);
-
-      activityTop = ~~activityTop;
-      scrollableTop = ~~scrollableTop;
+      const activityBottom = activityHeight + activityTop;
+      const scrollableBottom = scrollableHeight + scrollableTop;
 
       return (
-        (activityTop >= scrollableTop &&
-          activityTop <= scrollableBottom &&
-          activityBottom >= scrollableTop &&
-          activityBottom <= scrollableBottom) ||
-        (scrollableTop >= activityTop &&
-          scrollableTop <= activityBottom &&
-          scrollableBottom >= activityTop &&
-          scrollableBottom <= activityBottom)
+        (activityTop + 1 >= scrollableTop &&
+          activityTop - 1 <= scrollableBottom &&
+          activityBottom + 1 >= scrollableTop &&
+          activityBottom - 1 <= scrollableBottom) ||
+        (scrollableTop + 1 >= activityTop &&
+          scrollableTop - 1 <= activityBottom &&
+          scrollableBottom + 1 >= activityTop &&
+          scrollableBottom - 1 <= activityBottom)
       );
     },
     5000
