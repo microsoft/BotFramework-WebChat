@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import lolex from 'lolex';
 import Observable from 'core-js/modules/esnext.observable';
+import updateIn from 'simple-update-in';
 
 import * as pageConditions from './globals/pageConditions/index';
 import * as pageElements from './globals/pageElements/index';
@@ -15,4 +16,5 @@ window.pageConditions = pageConditions;
 window.pageElements = pageElements;
 window.pageObjects = pageObjects;
 window.testHelpers = testHelpers;
+window.updateIn = updateIn;
 window.WebChatTest = WebChatTest;

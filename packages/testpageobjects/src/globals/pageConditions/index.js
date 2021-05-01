@@ -6,6 +6,7 @@ import minNumActivitiesShown from './minNumActivitiesShown';
 import numActivitiesShown from './numActivitiesShown';
 import scrollStabilized from './scrollStabilized';
 import scrollToBottomCompleted from './scrollToBottomCompleted';
+import suggestedActionsShown from './suggestedActionsShown';
 import typingIndicatorShown from './typingIndicatorShown';
 import uiConnected from './uiConnected';
 import webChatRendered from './webChatRendered';
@@ -19,6 +20,7 @@ export {
   numActivitiesShown,
   scrollStabilized,
   scrollToBottomCompleted,
+  suggestedActionsShown,
   typingIndicatorShown,
   uiConnected,
   webChatRendered
