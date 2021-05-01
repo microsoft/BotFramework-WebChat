@@ -23,7 +23,11 @@
   },
   "dependencies": {
     "@babel/preset-react": "^7.13.13",
+    "base64-arraybuffer": "^0.2.0",
     "classnames": "^2.3.1",
+    "event-iterator": "^2.0.0",
+    "event-target-shim": "^6.0.2",
+    "microsoft-cognitiveservices-speech-sdk": "^1.16.0",
     "p-defer": "4.0.0",
     "simple-update-in": "2.2.0"
   }

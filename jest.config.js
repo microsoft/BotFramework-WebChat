@@ -71,11 +71,7 @@ module.exports = {
     '<rootDir>/__tests__/setup/setupGlobalAgent.js',
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
-    '<rootDir>/__tests__/setup/setupTimeout.js',
-    '<rootDir>/__tests__/html/__jest__/setupRunHTMLTest.js',
-
-    '<rootDir>/packages/testharness2/src/host/jest/runHTML.js'
-    // '<rootDir>/packages/testharness2/src/host/jest/setupToMatchImageSnapshot.js'
+    '<rootDir>/__tests__/setup/setupTimeout.js'
   ],
   testPathIgnorePatterns: [
     '<rootDir>/__tests__/html/assets',

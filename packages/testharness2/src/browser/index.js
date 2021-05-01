@@ -17,8 +17,6 @@ window.run = (fn, doneOptions) => {
 
   window.addEventListener('error', event => host.error(event.error));
 
-  document.body.className = 'ci';
-
   return Promise.resolve()
     .then(host.ready)
     .then(fn)

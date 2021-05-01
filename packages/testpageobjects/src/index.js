@@ -1,3 +1,4 @@
+import { EventIterator } from 'event-iterator';
 import classNames from 'classnames';
 import createDeferred from 'p-defer';
 import lolex from 'lolex';
@@ -12,6 +13,7 @@ import * as WebChatTest from './globals/WebChatTest/index';
 
 window.classNames = classNames;
 window.createDeferred = createDeferred;
+window.EventIterator = EventIterator;
 window.lolex = lolex;
 window.Observable = Observable;
 window.pageConditions = pageConditions;
