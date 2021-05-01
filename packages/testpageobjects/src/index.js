@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import createDeferred from 'p-defer';
 import lolex from 'lolex';
 import Observable from 'core-js/modules/esnext.observable';
 import updateIn from 'simple-update-in';
@@ -10,6 +11,7 @@ import * as testHelpers from './globals/testHelpers/index';
 import * as WebChatTest from './globals/WebChatTest/index';
 
 window.classNames = classNames;
+window.createDeferred = createDeferred;
 window.lolex = lolex;
 window.Observable = Observable;
 window.pageConditions = pageConditions;

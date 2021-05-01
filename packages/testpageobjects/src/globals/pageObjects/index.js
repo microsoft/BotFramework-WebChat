@@ -1,5 +1,6 @@
 import clickNewMessageButton from './clickNewMessageButton';
 import clickNthSuggestedAction from './clickNthSuggestedAction';
+import clickSendButton from './clickSendButton';
 import focusNewMessageButton from './focusNewMessageButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
 import getActivities from './getActivities';
@@ -12,6 +13,7 @@ import typeInSendBox from './typeInSendBox';
 export {
   clickNewMessageButton,
   clickNthSuggestedAction,
+  clickSendButton,
   focusNewMessageButton,
   focusSendBoxTextBox,
   getActivities,
