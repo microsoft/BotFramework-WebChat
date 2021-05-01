@@ -1,6 +1,4 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/testharness2/src/host/jest/WebDriverEnvironment.js */
 
 import fetch from 'node-fetch';
 
@@ -139,8 +137,6 @@ describe.each([
       }
     }
 
-    return runHTMLTest(`speechRecognition.simple.html#${new URLSearchParams(queryParams)}`, {
-      ignoreConsoleError: true
-    });
+    return runHTML(`speechRecognition.simple.html#${new URLSearchParams(queryParams)}`);
   });
 });
