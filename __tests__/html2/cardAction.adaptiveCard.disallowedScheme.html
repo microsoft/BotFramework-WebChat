@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      const {
+        WebChat: { renderWebChat },
+        WebChatTest: { createDirectLineWithTranscript, createStore, stringToArrayBuffer, token }
+      } = window;
+
+      run(async function () {
+        const directLine = await createDirectLineWithTranscript([
+          {
+            type: 'message',
+            id: '1',
+            channelId: 'directline',
+            from: { role: 'bot' },
+            locale: 'en-US',
+            text: 'Showing card',
+            attachmentLayout: 'carousel',
+            timestamp: '2019-08-08T16:41:12.9397263Z',
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  type: 'AdaptiveCard',
+                  body: [
+                    {
+                      type: 'TextBlock',
+                      size: 'Medium',
+                      text: 'Tap on this Adaptive Card will open Bing.com.'
+                    }
+                  ],
+                  $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  version: '1.2',
+                  selectAction: {
+                    type: 'Action.OpenUrl',
+                    url: 'javascript:alert(1)'
+                  }
+                }
+              }
+            ]
+          }
+        ]);
+
+        renderWebChat(
+          {
+            directLine,
+            store: createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.minNumActivitiesShown(1);
+
+        const calls = [];
+
+        window.open = (url, windowName, windowFeatures) => calls.push([url, windowName, windowFeatures]);
+
+        const activities = pageElements.activities();
+        const adaptiveCard = activities[activities.length - 1].querySelector('.ac-adaptiveCard');
+
+        adaptiveCard.click();
+
+        expect(calls).toHaveProperty('length', 0);
+
+        // Expect to show a warning.
+        await expect(host.getLogs()).resolves.toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              message: expect.stringContaining('disallowed scheme'),
+              level: 'WARNING'
+            })
+          ])
+        );
+      });
+    </script>
+  </body>
+</html>
