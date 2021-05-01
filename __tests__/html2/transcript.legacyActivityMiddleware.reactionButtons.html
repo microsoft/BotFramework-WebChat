@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .bot-activity-decorator {
@@ -36,16 +42,7 @@
         WebChat: {
           hooks: { useRenderActivityStatus, useSendPostBack }
         },
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
+        WebChatTest: { createDirectLineWithTranscript, createStore, token }
       } = window;
 
       const BotActivityDecorator = ({ activityID, children }) => (
@@ -85,7 +82,7 @@
         return next(...args);
       };
 
-      (async function() {
+      run(async function () {
         const now = Date.now();
 
         window.WebChat.renderWebChat(
@@ -97,14 +94,9 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
