@@ -7,5 +7,5 @@ export default function clickSendButton() {
     throw new Error('Cannot find send button');
   }
 
-  host.click(sendButton);
+  return host.click(sendButton);
 }

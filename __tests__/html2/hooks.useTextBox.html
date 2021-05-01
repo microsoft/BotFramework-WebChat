@@ -48,7 +48,7 @@
 
         await pageObjects.typeInSendBox('help');
 
-        expect(
+        await expect(
           renderWithFunction(() => {
             const [textBoxValue] = useTextBoxValue();
 

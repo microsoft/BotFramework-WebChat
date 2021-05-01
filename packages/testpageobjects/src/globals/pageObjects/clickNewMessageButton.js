@@ -7,5 +7,5 @@ export default function clickNewMessageButton() {
     throw new Error('Cannot find new message button');
   }
 
-  host.click(newMessageButton);
+  return host.click(newMessageButton);
 }
