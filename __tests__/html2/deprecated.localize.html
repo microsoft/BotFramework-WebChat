@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
@@ -12,22 +17,14 @@
           Components: { Composer, Localize }
         },
         WebChatTest: {
-          conditions,
           createStore,
-          expect,
-          host,
-          pageObjects,
-          parseURLParams,
-          shareObservable,
-          timeouts,
-          token: { fetchDirectLineToken },
-          updateIn
+          token: { fetchDirectLineToken }
         }
       } = window;
 
-      (async function () {
+      run(async function () {
         const token = await fetchDirectLineToken();
-        const { l: locale } = parseURLParams(window.location.hash);
+        const locale = new URLSearchParams(location.hash.replace(/^#/u, '')).get('l') || undefined;
 
         await new Promise(resolve =>
           ReactDOM.render(
@@ -40,11 +37,6 @@
         );
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>
