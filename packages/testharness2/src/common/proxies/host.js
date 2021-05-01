@@ -15,6 +15,10 @@ function formatLogEntries(entries) {
     .join('\n');
 }
 
+function isDeprecation(message) {
+  return message.includes('deprecate');
+}
+
 module.exports = function createHost(webDriver) {
   const completion = createDeferred();
   const ready = createDeferred();
@@ -47,8 +51,12 @@ module.exports = function createHost(webDriver) {
 
   return {
     click: element => element.click(),
-    done: async ({ ignoreErrors = false } = {}) => {
+    done: async ({ expectDeprecations = false, ignoreErrors = false } = {}) => {
       const entries = await getLogs();
+
+      if (expectDeprecations) {
+        expect(entries.some(({ message }) => isDeprecation(message))).toBeTruthy();
+      }
 
       // Check if there are any console.error.
       if (!ignoreErrors && logging) {
