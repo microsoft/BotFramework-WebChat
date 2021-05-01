@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness2.js"></script>
+    <script crossorigin="anonymous" src="/test-page-objects.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      const {
+        concatArrayBuffer,
+        conditions,
+        createQueuedArrayBufferAudioSource,
+        createStore,
+        EventIterator,
+        expect,
+        fetchSpeechData,
+        fetchSpeechServicesCredentials,
+        float32ArraysToPcmWaveArrayBuffer,
+        host,
+        iterateAsyncIterable,
+        MockAudioContext,
+        pageObjects,
+        pcmWaveArrayBufferToRiffWaveArrayBuffer,
+        recognizeRiffWaveArrayBuffer,
+        shareObservable,
+        timeouts,
+        token
+      } = window.WebChatTest;
+
+      run(
+        async function () {
+          const queryParams = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+          const directLineSpeechHostname = queryParams.get('dlsh');
+          const speechRecognitionHostname = queryParams.get('srh');
+          const speechSubscriptionKey = queryParams.get('ss');
+          const speechSynthesisHostname = queryParams.get('ssh');
+          let channelType = queryParams.get('t');
+          let speechAuthorizationToken = queryParams.get('sa');
+          let speechRegion = queryParams.get('sr');
+
+          if (!channelType) {
+            console.warn(
+              'Channel type is not specified, assuming Direct Line. To change channel type, pass it via hash, #t=dl or #t=dlspeech.'
+            );
+
+            channelType = 'dl';
+          } else if (channelType !== 'dl' && channelType !== 'dlspeech') {
+            throw new Error('Invalid channel type specified, must be either "dl" or "dlspeech".');
+          } else if (
+            speechSubscriptionKey &&
+            !speechRegion &&
+            ((channelType === 'dl' && (!speechRecognitionHostname || !speechSynthesisHostname)) ||
+              (channelType === 'dlspeech' && !directLineSpeechHostname))
+          ) {
+            throw new Error('Speech region or hostname must be specified when speech subscription key is specified.');
+          }
+
+          if (!speechAuthorizationToken && !speechSubscriptionKey) {
+            console.warn(
+              'Both speech authorization token and subscription key are not passed, will fetch it from bot.'
+            );
+
+            const {
+              authorizationToken: fetchedSpeechAuthorizationToken,
+              region: fetchedSpeechRegion
+            } = await fetchSpeechServicesCredentials();
+
+            speechAuthorizationToken = fetchedSpeechAuthorizationToken;
+            speechRegion = fetchedSpeechRegion;
+          }
+
+          const speechCredentials = {
+            authorizationToken: speechAuthorizationToken,
+            directLineSpeechHostname,
+            region: speechRegion,
+            speechRecognitionHostname,
+            speechSynthesisHostname,
+            subscriptionKey: speechSubscriptionKey
+          };
+
+          let audioContext;
+
+          // EventIterator will only start listening when passed to for-await-of. This is correct behavior and follow the standard async iterator protocol.
+          // Since we construct the MockAudioContext in the iterable, we need to start the iteration sooner.
+          // The iterateAsyncIterable() will iterate the async iterable immediately and return a new iterable.
+          const bufferSourceAsyncIterable = iterateAsyncIterable(
+            new EventIterator(({ push, stop }) => {
+              let allBuffers = [];
+              let timer;
+
+              audioContext = new MockAudioContext({
+                bufferSourceStartHandler: async ({ target: { buffer } }) => {
+                  allBuffers.push(float32ArraysToPcmWaveArrayBuffer([new Float32Array(buffer.getChannelData(0))]));
+
+                  timer && clearTimeout(timer);
+
+                  timer = setTimeout(async () => {
+                    const pcmWaveArrayBuffer = concatArrayBuffer(...allBuffers);
+
+                    allBuffers = [];
+
+                    if (pcmWaveArrayBuffer.byteLength) {
+                      const riffWaveArrayBuffer = pcmWaveArrayBufferToRiffWaveArrayBuffer(pcmWaveArrayBuffer, {
+                        channels: buffer.numberOfChannels,
+                        samplesPerSec: buffer.sampleRate
+                      });
+
+                      const filename = await host.saveFile(Date.now() + '-recognizing.wav', riffWaveArrayBuffer);
+
+                      push({
+                        filename,
+                        text: await recognizeRiffWaveArrayBuffer({
+                          arrayBuffer: riffWaveArrayBuffer,
+                          credentials: speechCredentials
+                        })
+                      });
+
+                      stop();
+                    }
+                  }, 2000);
+                }
+              });
+            })
+          );
+
+          const audioConfig = createQueuedArrayBufferAudioSource();
+
+          let adapters;
+
+          if (channelType === 'dlspeech') {
+            adapters = await window.WebChat.createDirectLineSpeechAdapters({
+              audioConfig,
+              audioContext,
+              fetchCredentials: () => speechCredentials
+            });
+          } else {
+            adapters = {
+              directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+              webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+                audioConfig,
+                audioContext,
+                credentials: speechCredentials,
+                speechSynthesisOutputFormat: 'raw-16khz-16bit-mono-pcm'
+              })
+            };
+          }
+
+          window.WebChat.renderWebChat(
+            {
+              ...adapters,
+              store: createStore()
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          audioConfig.push(
+            await fetchSpeechData({
+              fetchCredentials: () => speechCredentials,
+              text: 'Hello World.'
+            })
+          );
+
+          await pageObjects.clickMicrophoneButton();
+          await pageConditions.allOutgoingActivitiesSent();
+          await pageConditions.minNumActivitiesShown(2);
+
+          const recognized = [];
+
+          for await (const result of bufferSourceAsyncIterable) {
+            recognized.push(result);
+          }
+
+          try {
+            expect(
+              recognized.map(({ text }) =>
+                text
+                  .replace(/[^\w']/giu, ' ')
+                  .replace(new RegExp('\\s+', 'gu'), ' ')
+                  .trim()
+                  .toLowerCase()
+              )
+            ).toEqual(["unknown command i don't know hello world you can say help to learn more"]);
+          } catch (err) {
+            const files = recognized.map(({ filename }) => `See diff for details: ${filename}`).join('\n');
+            const detailedError = new Error(err.message + '\n\n' + files);
+
+            detailedError.stack = files + '\n\n' + err.stack;
+
+            throw detailedError;
+          }
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>
