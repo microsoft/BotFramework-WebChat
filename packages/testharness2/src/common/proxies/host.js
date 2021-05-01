@@ -117,6 +117,11 @@ module.exports = function createHost(webDriver) {
         customSnapshotsDir: join(__dirname, '../../../../../__tests__/__image_snapshots__/html/')
       }),
     windowSize: async (width, height, element) => {
+      const rect = await webDriver.manage().window().getRect();
+
+      height = +height || rect.height;
+      width = +width || rect.width;
+
       await webDriver.manage().window().setRect({ height, width });
 
       element &&
