@@ -25,10 +25,6 @@
 
         await pageConditions.uiConnected();
 
-        document.querySelector('input[type="text"]').focus();
-
-        await host.sendKeys('Hello, World!');
-
         await host.snapshot();
       });
     </script>
