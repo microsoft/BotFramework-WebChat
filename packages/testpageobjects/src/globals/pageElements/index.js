@@ -1,4 +1,5 @@
 import activities from './activities';
+import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import newMessageButton from './newMessageButton';
 import sendBoxTextBox from './sendBoxTextBox';
@@ -9,6 +10,7 @@ import transcriptScrollable from './transcriptScrollable';
 
 export {
   activities,
+  connectivityStatus,
   focusedActivity,
   newMessageButton,
   sendBoxTextBox,

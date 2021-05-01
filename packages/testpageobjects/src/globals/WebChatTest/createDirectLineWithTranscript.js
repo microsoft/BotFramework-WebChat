@@ -2,7 +2,7 @@ import Observable from 'core-js/features/observable';
 
 import createDeferredObservable from './internal/createDeferredObservable';
 import loadTranscriptAsset from './internal/loadTranscriptAsset';
-import shareObservable from './internal/shareObservable';
+import shareObservable from './shareObservable';
 
 function updateRelativeTimestamp(now, activity) {
   return {
