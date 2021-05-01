@@ -26,7 +26,7 @@
 
       // TODO: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
       run(async function () {
-        await host.windowSize(360, 1280, document.getElementById('webchat'));
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();

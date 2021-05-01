@@ -53,7 +53,7 @@
       } = window;
 
       run(async function () {
-        await host.windowSize(360, 1280, document.getElementById('webchat'));
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
         const AvatarWithOnlineStatus = ({ children }) => {
           const [direction] = useDirection();

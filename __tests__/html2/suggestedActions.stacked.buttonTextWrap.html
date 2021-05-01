@@ -6,10 +6,6 @@
     <script crossorigin="anonymous" src="/test-page-objects.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style>
-      #webchat {
-        width: 300px;
-      }
-
       :focus {
         background-color: initial !important;
       }
@@ -22,6 +18,8 @@
       const { createStore, token } = window.WebChatTest;
 
       run(async function () {
+        await host.windowSize(300, undefined, document.getElementById('webchat'));
+
         const store = createStore();
         const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
 
