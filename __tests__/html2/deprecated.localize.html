@@ -22,22 +22,25 @@
         }
       } = window;
 
-      run(async function () {
-        const token = await fetchDirectLineToken();
-        const locale = new URLSearchParams(location.hash.replace(/^#/u, '')).get('l') || undefined;
+      run(
+        async function () {
+          const token = await fetchDirectLineToken();
+          const locale = new URLSearchParams(location.hash.replace(/^#/u, '')).get('l') || undefined;
 
-        await new Promise(resolve =>
-          ReactDOM.render(
-            <Composer directLine={window.WebChat.createDirectLine({ token })} locale={locale} store={createStore()}>
-              <Localize text="SPEECH_INPUT_LISTENING" />
-            </Composer>,
-            document.getElementById('webchat'),
-            resolve
-          )
-        );
+          await new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={window.WebChat.createDirectLine({ token })} locale={locale} store={createStore()}>
+                <Localize text="SPEECH_INPUT_LISTENING" />
+              </Composer>,
+              document.getElementById('webchat'),
+              resolve
+            )
+          );
 
-        await host.snapshot();
-      });
+          await host.snapshot();
+        },
+        { expectDeprecations: true }
+      );
     </script>
   </body>
 </html>
