@@ -1,5 +1,8 @@
 module.exports = function (webDriver) {
   return async () => {
+    const element = await webDriver.executeScript(() => document.getElementById('webchat'));
+    const base64 = await element.takeScreenshot();
+
     /* istanbul ignore next */
     await webDriver.executeScript(
       (message, url) => {
@@ -8,7 +11,7 @@ module.exports = function (webDriver) {
         console.groupEnd();
       },
       '[TESTHARNESS] Snapshot taken.',
-      `data:image/png;base64,${await webDriver.takeScreenshot()}`
+      `data:image/png;base64,${base64}`
     );
   };
 };

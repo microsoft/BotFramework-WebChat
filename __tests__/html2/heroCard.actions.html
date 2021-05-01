@@ -27,10 +27,10 @@
         await pageObjects.sendMessageViaSendBox('herocardactions', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
 
-        const urlHashParams = new URLSearchParams(location.hash.replace(/^#/u, ''));
+        const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
 
-        const buttonIndex = urlHashParams.get('btn') || 1;
-        const numActivities = urlHashParams.get('exp') || 4;
+        const buttonIndex = params.get('btn') || 1;
+        const numActivities = params.get('exp') || 4;
 
         document.querySelector(`.ac-actionSet button:nth-of-type(${buttonIndex})`).click();
 

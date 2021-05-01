@@ -1,5 +1,8 @@
-import transcriptScrollable from '../pageElements/transcriptScrollable';
+import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 
 export default function scrollToTop(offset = 0) {
-  transcriptScrollable().scrollTop = offset;
+  const transcriptScrollable = getTranscriptScrollableElement();
+
+  transcriptScrollable.scrollTop =
+    offset < 0 ? transcriptScrollable.scrollHeight - transcriptScrollable.offsetHeight + offset : offset;
 }
