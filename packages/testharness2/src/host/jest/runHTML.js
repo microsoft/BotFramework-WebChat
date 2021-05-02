@@ -6,7 +6,7 @@ const registerProxies = require('../common/registerProxies');
 const sleep = require('../../common/utils/sleep');
 
 const DEFAULT_OPTIONS = {
-  webDriverURL: 'http://localhost:4444/wd/hub/'
+  webDriverURL: 'http://localhost:4445/wd/hub/'
 };
 
 afterEach(async () => {
@@ -27,7 +27,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   options = { ...DEFAULT_OPTIONS, ...options };
 
   // We are assigning it to "global.webDriver" to allow Environment.teardown to terminate it if needed.
-  const webDriver = await allocateWebDriver(options);
+  const webDriver = (global.webDriver = await allocateWebDriver(options));
 
   try {
     const absoluteURL = new URL(url, 'http://webchat2/__tests__/html2/');

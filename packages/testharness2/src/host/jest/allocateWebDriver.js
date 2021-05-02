@@ -18,7 +18,11 @@ module.exports = async function allocateWebDriver({ webDriverURL }) {
   const webDriver = (global.webDriver = await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(
-      new ChromeOptions().headless().setLoggingPrefs(preferences).windowSize({ height: 640, width: 360 })
+      new ChromeOptions()
+        .addArguments('--single-process')
+        .headless()
+        .setLoggingPrefs(preferences)
+        .windowSize({ height: 640, width: 360 })
     )
     // .usingWebDriverProxy(`http://${hostIP}:8888`)
     .usingServer(webDriverURL)
