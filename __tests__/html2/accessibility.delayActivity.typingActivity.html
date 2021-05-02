@@ -26,7 +26,7 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.sendMessageViaSendBox('echo-typing', { waitForSend: true });
+        await pageObjects.sendMessageViaSendBox('echo-typing');
         await pageConditions.minNumActivitiesShown(2);
 
         await pageObjects.typeInSendBox('a');

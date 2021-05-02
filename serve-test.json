@@ -32,8 +32,16 @@
       "destination": "packages/testharness2/dist/test-harness2.js"
     },
     {
+      "source": "/test-harness2.js.map",
+      "destination": "packages/testharness2/dist/test-harness2.js.map"
+    },
+    {
       "source": "/test-page-objects.js",
       "destination": "packages/testpageobjects/dist/test-page-objects.js"
+    },
+    {
+      "source": "/test-page-objects.js.map",
+      "destination": "packages/testpageobjects/dist/test-page-objects.js.map"
     },
     {
       "source": "/:page.asset.js",
