@@ -1,5 +1,5 @@
 import createDeferredObservable from '../../WebChatTest/internal/createDeferredObservable';
-import shareObservable from '../../WebChatTest/internal/shareObservable';
+import shareObservable from '../../WebChatTest/shareObservable';
 
 export default function createDirectLineForTest({ withReplyToId = true } = {}) {
   const connectionStatusDeferred$ = createDeferredObservable(observer => observer.next(0));
