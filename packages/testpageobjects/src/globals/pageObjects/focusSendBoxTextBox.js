@@ -1,4 +1,4 @@
-import sendBoxTextBox from '../../elements/sendBoxTextBox';
+import sendBoxTextBox from '../pageElements/sendBoxTextBox';
 
 export default function focusSendBoxTextBox() {
   sendBoxTextBox().focus();

@@ -1,4 +1,4 @@
-import transcript from '../../elements/transcript';
+import transcript from '../pageElements/transcript';
 
 export default function focusTranscript() {
   transcript().focus();
