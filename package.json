@@ -26,7 +26,7 @@
     "docker:ci": "npm run docker:up -- --detach",
     "docker:down": "docker-compose -f docker-compose-wsl2.yml down --rmi all",
     "docker:up": "docker-compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
-    "docker:watch": "nodemon --exec \"docker-compose -f docker-compose-wsl2.yml build --quiet -- jestserver webchat2 && docker-compose -f docker-compose-wsl2.yml kill jestserver webchat2 && docker-compose -f docker-compose-wsl2.yml rm --force --stop jestserver webchat2 && docker-compose -f docker-compose-wsl2.yml up --detach -- jestserver webchat2 && echo\" --ext html,js,map --on-change-only --watch __tests__/html2 --watch packages/testharness2/dist --watch packages/testpageobjects/dist --watch serve-test.json --watch packages/testharness2/src/host/jestserver",
+    "docker:watch": "nodemon --exec \"docker-compose -f docker-compose-wsl2.yml build --quiet -- jestserver webchat2 && docker-compose -f docker-compose-wsl2.yml kill webchat2 && docker-compose -f docker-compose-wsl2.yml rm --force --stop jestserver webchat2 && docker-compose -f docker-compose-wsl2.yml up --detach -- jestserver webchat2 && echo\" --ext html,js,map --on-change-only --watch __tests__/html2 --watch packages/testharness2/dist --watch packages/testpageobjects/dist --watch serve-test.json --watch packages/testharness2/src/host/jestserver",
     "eslint": "echo TEMPORARILY DISABLE: npm run precommit",
     "lint-staged": "lint-staged",
     "precommit": "lerna run --parallel --stream precommit -- ",
