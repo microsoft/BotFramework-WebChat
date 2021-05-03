@@ -15,7 +15,13 @@ function formatLogEntries(entries) {
 }
 
 module.exports = async function dumpLogs(webDriver, { clear } = {}) {
-  const logs = await getLogs(webDriver, { clear });
+  let logs;
+
+  try {
+    logs = await getLogs(webDriver, { clear });
+  } catch (err) {
+    logs = [];
+  }
 
   logs.length && console.log(formatLogEntries(logs));
 };
