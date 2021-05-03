@@ -1,3 +1,5 @@
+require('global-agent/bootstrap');
+
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 const express = require('express');
 const fetch = require('node-fetch');
@@ -34,14 +36,14 @@ function housekeep(pool) {
       );
 
       // Ignore errors for terminating the session, it is already taken out of the pool.
-      fetch(new URL(`/wd/hub/session/${entry.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' }).catch(() => {});
+      sendWebDriverCommand(entry.sessionId, undefined, undefined, { method: 'DELETE' }).catch(err => console.log(err));
     });
 }
 
 async function pingSession(sessionId) {
-  const res = await fetch(new URL(`/wd/hub/session/${sessionId}/url`, WEB_DRIVER_URL));
-
-  if (!res.ok) {
+  try {
+    await sendWebDriverCommand(sessionId, 'url');
+  } catch (err) {
     console.log(
       `Instance ${entry.sessionId} does not respond, taking out of the pool, with ${~~(
         timeLeft(entry) / 1000
@@ -55,18 +57,16 @@ async function pingSession(sessionId) {
 }
 
 async function checkGridCapacity() {
-  const res = await fetch(new URL('/wd/hub/status', WEB_DRIVER_URL));
+  try {
+    const {
+      value: { message, ready }
+    } = await sendWebDriverCommand(undefined, 'status');
 
-  if (!res.ok) {
-    throw new Error('Grid does not respond.');
-  }
-
-  const {
-    value: { message, ready }
-  } = await res.json();
-
-  if (!ready) {
-    throw new Error(`Grid does NOT have capacity for new instance: ${message}.`);
+    if (!ready) {
+      throw new Error(`Grid does NOT have capacity for new instance: ${message}.`);
+    }
+  } catch (err) {
+    throw new Error(`Grid does not respond: ${err.message}`);
   }
 }
 
@@ -85,7 +85,6 @@ async function checkGridCapacity() {
 
       if (entry) {
         entry.busy = true;
-        entry.numUsed++;
 
         try {
           await pingSession(entry.sessionId);
@@ -98,6 +97,8 @@ async function checkGridCapacity() {
             entry
           )} runs left.`
         );
+
+        entry.numUsed++;
 
         return res.send(entry.session);
       }
@@ -125,7 +126,11 @@ async function checkGridCapacity() {
 
         setTimeout(() => housekeep(pool), INSTANCE_LIFE - INSTANCE_MIN_LIFE);
 
-        console.log(`New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances.`);
+        console.log(
+          `New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances: [${pool
+            .map(runLeft)
+            .join(', ')}].`
+        );
 
         return responseBuffer;
       }),
@@ -142,15 +147,9 @@ async function checkGridCapacity() {
       await housekeep(pool);
 
       if (pool.includes(entry)) {
-        await fetch(new URL(`/wd/hub/session/${entry.sessionId}/url`, WEB_DRIVER_URL), {
-          data: JSON.stringify({ url: 'about:blank' }),
-          method: 'POST'
-        });
-
-        await fetch(new URL(`/wd/hub/session/${entry.sessionId}/window/rect`, WEB_DRIVER_URL), {
-          data: JSON.stringify({ height: 360, width: 640 }),
-          method: 'POST'
-        });
+        // The instance is being released back into the pool, we need to clean it up.
+        await sendWebDriverCommand(entry.sessionId, 'url', { url: 'about:blank' });
+        await sendWebDriverCommand(entry.sessionId, 'window/rect', { height: 360, width: 640 });
 
         console.log(
           `Releasing instance ${entry.sessionId} back to the pool, with ${~~(
@@ -182,3 +181,34 @@ async function checkGridCapacity() {
     process.exit(0);
   });
 })();
+
+async function sendWebDriverCommand(sessionId, command, body, fetchOptions) {
+  const url = sessionId
+    ? command
+      ? new URL(`/wd/hub/session/${sessionId}/${command}`, WEB_DRIVER_URL)
+      : new URL(`/wd/hub/session/${sessionId}`, WEB_DRIVER_URL)
+    : command
+    ? new URL(`/wd/hub/${command}`, WEB_DRIVER_URL)
+    : new URL(`/wd/hub`, WEB_DRIVER_URL);
+
+  const res = await fetch(
+    url,
+    body
+      ? {
+          ...fetchOptions,
+          body: JSON.stringify(body),
+          headers: {
+            accept: 'application/json',
+            contentType: 'application/json'
+          },
+          method: 'POST'
+        }
+      : fetchOptions || {}
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to send command "${command}": ${(await res.json()).value.message}`);
+  }
+
+  return await res.json();
+}
