@@ -25,20 +25,28 @@ function timeLeft({ startTime }) {
 }
 
 function housekeep(pool) {
-  pool
-    .filter(entry => entry.error || (!entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE)))
-    .forEach(entry => {
-      removeInline(pool, entry);
+  const entriesToRemove = pool.filter(
+    entry => entry.error || (!entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE))
+  );
 
+  entriesToRemove.forEach(entry => removeInline(pool, entry));
+
+  return Promise.all(
+    entriesToRemove.map(async entry => {
       console.log(
         `Instance ${entry.sessionId} is being terminated with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
           entry
         )} runs left.`
       );
 
-      // Ignore errors for terminating the session, it is already taken out of the pool.
-      sendWebDriverCommand(entry.sessionId, undefined, undefined, { method: 'DELETE' }).catch(err => console.log(err));
-    });
+      try {
+        // We need to wait for the DELETE command to complete, otherwise, the next test may run too fast and the grid will run out of capacity temporally.
+        await sendWebDriverCommand(entry.sessionId, undefined, undefined, { method: 'DELETE' });
+      } catch (err) {
+        // Ignore errors for terminating the session, it is already taken out of the pool.
+      }
+    })
+  );
 }
 
 async function pingSession(sessionId) {
@@ -51,7 +59,7 @@ async function pingSession(sessionId) {
       )} seconds and ${runLeft(entry)} runs left.`
     );
 
-    entry.error = true;
+    entry.numUsed = Infinity;
 
     throw new Error('Session failed to response to ping.');
   }
@@ -172,17 +180,19 @@ async function checkGridCapacity() {
 
   setInterval(() => housekeep(pool), 5000);
 
-  process.on('SIGTERM', async () => {
+  const terminate = async () => {
     pool.forEach(entry => {
       entry.error = true;
     });
 
-    housekeep(pool);
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await housekeep(pool);
+    // await new Promise(resolve => setTimeout(resolve, 1000));
 
     process.exit(0);
-  });
+  };
+
+  process.once('SIGINT', terminate);
+  process.once('SIGTERM', terminate);
 })();
 
 async function sendWebDriverCommand(sessionId, command, body, fetchOptions) {
