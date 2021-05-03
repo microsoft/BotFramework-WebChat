@@ -75,7 +75,7 @@ app.post(
 
       setTimeout(housekeep, INSTANCE_LIFE - INSTANCE_MIN_LIFE);
 
-      console.log(`New instance ${entry.sessionId} created.`);
+      console.log(`New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances.`);
 
       return responseBuffer;
     }),
