@@ -51,4 +51,4 @@ services:
       dockerfile: jestserver.dockerfile
     ports:
       - '4445:4444'
-    stop_grace_period: 0s
+    stop_grace_period: 5s

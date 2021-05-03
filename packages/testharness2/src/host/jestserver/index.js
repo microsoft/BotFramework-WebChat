@@ -5,7 +5,7 @@ const removeInline = require('./removeInline');
 
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
 const INSTANCE_MIN_LIFE = 30000; // The instance must have at least 30 seconds left, otherwise, we should recycle it as we don't have much time left.
-const NUM_RECYCLE = 5; // We will reuse the instance only 5 times.
+const NUM_RECYCLE = 1; // We will reuse the instance only 5 times.
 const WEB_DRIVER_URL = 'http://selenium-hub:4444/';
 
 const app = express();
@@ -16,33 +16,70 @@ function runLeft({ numUsed }) {
 }
 
 function timeLeft({ startTime }) {
-  return INSTANCE_LIFE - Date.now() + startTime;
+  return Math.max(0, INSTANCE_LIFE - Date.now() + startTime);
 }
 
-async function housekeep() {
-  const entriesToHousekeep = pool.filter(
-    entry => !entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE)
-  );
+function housekeep() {
+  pool
+    .filter(entry => entry.error || (!entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE)))
+    .forEach(entry => {
+      removeInline(pool, entry);
 
-  await Promise.all(
-    entriesToHousekeep.map(entry =>
-      (async () => {
-        removeInline(pool, entry);
+      console.log(
+        `Instance ${entry.sessionId} is being terminated with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
+          entry
+        )} runs left.`
+      );
 
-        console.log(
-          `Instance ${entry.sessionId} maximum usage is up, terminating. ${~~(
-            timeLeft(entry) / 1000
-          )} seconds and ${runLeft(entry)} runs left.`
-        );
+      // Ignore errors for terminating the session, it is already taken out of the pool.
+      fetch(new URL(`/wd/hub/session/${entry.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' }).catch(() => {});
+    });
+}
 
-        try {
-          await fetch(new URL(`/wd/hub/session/${entry.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
-        } catch (err) {
-          console.error(err);
-        }
-      })()
-    )
-  );
+setInterval(housekeep, 5000);
+
+async function pingSession(sessionId) {
+  const res = await fetch(new URL(`/wd/hub/session/${sessionId}/url`, WEB_DRIVER_URL));
+
+  if (!res.ok) {
+    console.log(
+      `Instance ${entry.sessionId} does not respond, taking out of the pool, with ${~~(
+        timeLeft(entry) / 1000
+      )} seconds and ${runLeft(entry)} runs left.`
+    );
+
+    entry.error = true;
+
+    throw new Error('Session failed to response to ping.');
+  }
+}
+
+process.on('SIGTERM', async () => {
+  pool.forEach(entry => {
+    entry.error = true;
+  });
+
+  housekeep();
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  process.exit(0);
+});
+
+async function checkGridCapacity() {
+  const res = await fetch(new URL('/wd/hub/status', WEB_DRIVER_URL));
+
+  if (!res.ok) {
+    throw new Error('Grid does not respond.');
+  }
+
+  const {
+    value: { message, ready }
+  } = await res.json();
+
+  if (!ready) {
+    throw new Error(`Grid does NOT have capacity for new instance: ${message}.`);
+  }
 }
 
 app.post(
@@ -50,16 +87,35 @@ app.post(
   async (_, res, next) => {
     await housekeep();
 
-    const entry = pool.find(entry => !entry.busy && runLeft(entry) && timeLeft(entry) >= INSTANCE_MIN_LIFE);
+    const entry = pool.find(
+      entry => !entry.busy && !entry.error && runLeft(entry) && timeLeft(entry) >= INSTANCE_MIN_LIFE
+    );
 
     if (entry) {
-      console.log(
-        `Acquiring instance ${entry.sessionId}, ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(entry)} runs left.`
-      );
-      entry.busy = true;
-      entry.numUsed++;
+      try {
+        await pingSession(entry.sessionId);
 
-      return res.send(entry.session);
+        console.log(
+          `Acquiring instance ${entry.sessionId}, with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
+            entry
+          )} runs left.`
+        );
+
+        entry.busy = true;
+        entry.numUsed++;
+
+        return res.send(entry.session);
+      } catch (err) {}
+    }
+
+    // Check if the grid has capacity.
+
+    try {
+      await checkGridCapacity();
+    } catch (err) {
+      console.log(err.message);
+
+      return res.status(500).end(err.message);
     }
 
     next();
@@ -94,9 +150,9 @@ app.delete('/wd/hub/session/:sessionId', async (req, res) => {
 
     if (pool.includes(entry)) {
       console.log(
-        `Releasing instance ${entry.sessionId} back to the pool, ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
-          entry
-        )} runs left.`
+        `Releasing instance ${entry.sessionId} back to the pool, with ${~~(
+          timeLeft(entry) / 1000
+        )} seconds and ${runLeft(entry)} runs left.`
       );
     }
 
