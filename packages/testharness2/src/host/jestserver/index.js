@@ -11,23 +11,37 @@ const WEB_DRIVER_URL = 'http://selenium-hub:4444/';
 const app = express();
 const pool = [];
 
+function runLeft({ numUsed }) {
+  return Math.max(0, NUM_RECYCLE - numUsed);
+}
+
 function timeLeft({ startTime }) {
   return INSTANCE_LIFE - Date.now() + startTime;
 }
 
 async function housekeep() {
   const entriesToHousekeep = pool.filter(
-    entry => !entry.busy && (entry.numUsed >= NUM_RECYCLE || timeLeft(entry) < INSTANCE_MIN_LIFE)
+    entry => !entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE)
   );
 
   await Promise.all(
-    entriesToHousekeep.map(entry => async () => {
-      removeInline(pool, entry);
+    entriesToHousekeep.map(entry =>
+      (async () => {
+        removeInline(pool, entry);
 
-      console.log(`Instance ${entry.session.value.sessionId} maximum usage is up, terminating.`);
+        console.log(
+          `Instance ${entry.sessionId} maximum usage is up, terminating. ${~~(
+            timeLeft(entry) / 1000
+          )} seconds and ${runLeft(entry)} runs left.`
+        );
 
-      await fetch(new URL(`/wd/hub/session/${entry.session.value.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
-    })
+        try {
+          await fetch(new URL(`/wd/hub/session/${entry.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
+        } catch (err) {
+          console.error(err);
+        }
+      })()
+    )
   );
 }
 
@@ -36,12 +50,12 @@ app.post(
   async (_, res, next) => {
     await housekeep();
 
-    const entry = pool.find(
-      entry => !entry.busy && entry.numUsed < NUM_RECYCLE && timeLeft(entry) >= INSTANCE_MIN_LIFE
-    );
+    const entry = pool.find(entry => !entry.busy && runLeft(entry) && timeLeft(entry) >= INSTANCE_MIN_LIFE);
 
     if (entry) {
-      console.log(`Reusing instance ${entry.session.value.sessionId}.`);
+      console.log(
+        `Acquiring instance ${entry.sessionId}, ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(entry)} runs left.`
+      );
       entry.busy = true;
       entry.numUsed++;
 
@@ -55,13 +69,13 @@ app.post(
     onProxyRes: responseInterceptor(async responseBuffer => {
       const session = JSON.parse(responseBuffer.toString());
 
-      const entry = { busy: true, numUsed: 1, session, startTime: Date.now() };
-
-      console.log(`New instance ${entry.session.value.sessionId} created.`);
+      const entry = { busy: true, numUsed: 1, session, sessionId: session.value.sessionId, startTime: Date.now() };
 
       pool.push(entry);
 
       setTimeout(housekeep, INSTANCE_LIFE - INSTANCE_MIN_LIFE);
+
+      console.log(`New instance ${entry.sessionId} created.`);
 
       return responseBuffer;
     }),
@@ -71,7 +85,7 @@ app.post(
 );
 
 app.delete('/wd/hub/session/:sessionId', async (req, res) => {
-  const entry = pool.find(entry => entry.session.value.sessionId === req.params.sessionId);
+  const entry = pool.find(entry => entry.sessionId === req.params.sessionId);
 
   if (entry) {
     entry.busy = false;
@@ -79,7 +93,11 @@ app.delete('/wd/hub/session/:sessionId', async (req, res) => {
     await housekeep();
 
     if (pool.includes(entry)) {
-      console.log(`Putting instance ${entry.session.value.sessionId} back to the pool.`);
+      console.log(
+        `Releasing instance ${entry.sessionId} back to the pool, ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
+          entry
+        )} runs left.`
+      );
     }
 
     return res.status(200).end();

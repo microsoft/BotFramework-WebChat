@@ -8,83 +8,83 @@ services:
       context: ./
       dockerfile: selenium.dockerfile
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      HUB_HOST: selenium-hub
+      HUB_PORT: '4444'
     volumes:
-    - /dev/shm:/dev/shm
+      - /dev/shm:/dev/shm
 
   chrome2:
     build:
       context: ./
       dockerfile: selenium.dockerfile
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      HUB_HOST: selenium-hub
+      HUB_PORT: '4444'
     volumes:
-    - /dev/shm:/dev/shm
+      - /dev/shm:/dev/shm
 
   chrome3:
     build:
       context: ./
       dockerfile: selenium.dockerfile
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      HUB_HOST: selenium-hub
+      HUB_PORT: '4444'
     volumes:
-    - /dev/shm:/dev/shm
+      - /dev/shm:/dev/shm
 
   chrome4:
     build:
       context: ./
       dockerfile: selenium.dockerfile
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      HUB_HOST: selenium-hub
+      HUB_PORT: '4444'
     volumes:
-    - /dev/shm:/dev/shm
+      - /dev/shm:/dev/shm
 
   selenium-hub:
     image: selenium/hub:3.141.59-zirconium
     container_name: selenium-hub
     environment:
-    - GRID_TIMEOUT=300
+      GRID_TIMEOUT: '300'
     ports:
-    - "4444:4444"
+      - '4444:4444'
 
   webchat:
     build:
       context: ./
       dockerfile: testharness.dockerfile
     ports:
-    - "5080:80"
+      - '5080:80'
 
   webchat2:
     build:
       context: ./
       dockerfile: testharness2.dockerfile
     ports:
-    - "5081:80"
+      - '5081:80'
 
   jestserver:
     build:
       context: ./packages/testharness2/
       dockerfile: jestserver.dockerfile
     ports:
-    - "4445:4444"
+      - '4445:4444'
     stop_grace_period: 0s

@@ -6,29 +6,35 @@ services:
   chrome:
     build:
       context: ./
-      dockerfile: selenium.dockerfile
+      dockerfile: chrome.dockerfile
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      HUB_HOST: selenium-hub
+      HUB_PORT: '4444'
+      # SE_EVENT_BUS_HOST: selenium-hub
+      # SE_EVENT_BUS_PUBLISH_PORT: '4442
+      # SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
+      # SE_OPTS: '--log-level WARNING'
+      # SE_NODE_SESSION_TIMEOUT: '300'
 
   selenium-hub:
     image: selenium/hub:3.141.59-zirconium
+    # image: selenium/hub:4.0.0-beta-3-20210426
     container_name: selenium-hub
     environment:
-    - GRID_TIMEOUT=300
+      GRID_TIMEOUT: '300'
     ports:
-    - "4444:4444"
+      - '4444:4444'
 
   webchat:
     build:
       context: ./
       dockerfile: testharness.dockerfile
     ports:
-    - "5080:80"
+      - '5080:80'
     stop_grace_period: 0s
 
   webchat2:
@@ -36,7 +42,7 @@ services:
       context: ./
       dockerfile: testharness2.dockerfile
     ports:
-    - "5081:80"
+      - '5081:80'
     stop_grace_period: 0s
 
   jestserver:
@@ -44,5 +50,5 @@ services:
       context: ./packages/testharness2/
       dockerfile: jestserver.dockerfile
     ports:
-    - "4445:4444"
+      - '4445:4444'
     stop_grace_period: 0s

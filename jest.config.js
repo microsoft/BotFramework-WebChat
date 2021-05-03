@@ -14,7 +14,7 @@ module.exports = {
     npm_package_version: '0.0.0-0.jest'
   },
   // We only have 4 instances of Chromium running simultaneously.
-  maxWorkers: 4,
+  maxWorkers: 2,
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   reporters: [
