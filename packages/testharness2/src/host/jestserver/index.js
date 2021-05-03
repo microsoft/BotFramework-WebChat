@@ -1,5 +1,6 @@
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 const express = require('express');
+const fetch = require('node-fetch');
 const removeInline = require('./removeInline');
 
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
@@ -9,14 +10,37 @@ const WEB_DRIVER_URL = 'http://selenium-hub:4444/';
 
 const app = express();
 const pool = [];
-const proxy = createProxyMiddleware({ changeOrigin: true, target: WEB_DRIVER_URL });
+
+function timeLeft({ startTime }) {
+  return INSTANCE_LIFE - Date.now() + startTime;
+}
+
+async function housekeep() {
+  let entry;
+
+  while (
+    (entry = pool.find(entry => !entry.busy && (entry.numUsed >= NUM_RECYCLE || timeLeft(entry) < INSTANCE_MIN_LIFE)))
+  ) {
+    console.log(`Instance ${entry.session.value.sessionId} maximum usage is up, terminating.`);
+
+    entry.busy = true;
+
+    await fetch(new URL(`/wd/hub/session/${entry.session.value.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
+
+    removeInline(pool, entry);
+  }
+}
 
 app.post(
   '/wd/hub/session',
   async (_, res, next) => {
-    const entry = pool.find(({ busy }) => !busy);
+    await housekeep();
 
-    if (entry && INSTANCE_LIFE - Date.now() + entry.startTime >= INSTANCE_MIN_LIFE) {
+    const entry = pool.find(
+      entry => !entry.busy && entry.numUsed < NUM_RECYCLE && timeLeft(entry) >= INSTANCE_MIN_LIFE
+    );
+
+    if (entry) {
       console.log(`Reusing instance ${entry.session.value.sessionId}.`);
       entry.busy = true;
       entry.numUsed++;
@@ -37,11 +61,7 @@ app.post(
 
       pool.push(entry);
 
-      setTimeout(() => {
-        console.log(`Instance ${entry.session.value.sessionId} reached EOL, removing.`);
-
-        removeInline(pool, entry);
-      }, INSTANCE_LIFE);
+      setTimeout(housekeep, INSTANCE_LIFE - INSTANCE_MIN_LIFE);
 
       return responseBuffer;
     }),
@@ -50,27 +70,21 @@ app.post(
   })
 );
 
-app.delete(
-  '/wd/hub/session/:sessionId',
-  (req, res, next) => {
-    const entry = pool.find(entry => entry.session.value.sessionId === req.params.sessionId);
+app.delete('/wd/hub/session/:sessionId', async (req, res) => {
+  const entry = pool.find(entry => entry.session.value.sessionId === req.params.sessionId);
 
-    if (entry && entry.numUsed < NUM_RECYCLE) {
-      console.log(`Recycling instance ${entry.session.value.sessionId}.`);
+  if (entry) {
+    entry.busy = false;
+  }
 
-      entry.busy = false;
+  await housekeep();
 
-      return res.status(200).end();
-    }
+  if (pool.includes(entry)) {
+    console.log(`Putting instance ${entry.session.value.sessionId} back to the pool.`);
+  }
 
-    console.log(`Instance ${entry.session.value.sessionId} maximum usage is up, terminating.`);
+  res.status(200).end();
+});
 
-    removeInline(pool, entry);
-
-    next();
-  },
-  proxy
-);
-
-app.use('/', proxy);
+app.use('/', createProxyMiddleware({ changeOrigin: true, target: WEB_DRIVER_URL }));
 app.listen(4444);
