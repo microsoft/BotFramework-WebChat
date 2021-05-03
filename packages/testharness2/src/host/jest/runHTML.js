@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 const allocateWebDriver = require('./allocateWebDriver');
 const createProxies = require('../common/createProxies');
+const dumpLogs = require('../dev/utils/dumpLogs');
 const mergeCoverageMap = require('./mergeCoverageMap');
 const registerProxies = require('../common/registerProxies');
 const sleep = require('../../common/utils/sleep');
@@ -17,10 +18,18 @@ afterEach(async () => {
 
   global.__operation__ && console.log(`Last operation was ${global.__operation__}`);
 
-  try {
-    // Exceptions thrown in setup() will still trigger afterEach(), such as timeout.
-    global.webDriver && (await global.webDriver.quit());
-  } catch (err) {}
+  const { webDriver } = global;
+
+  if (webDriver) {
+    try {
+      dumpLogs(webDriver);
+    } catch (err) {}
+
+    try {
+      // Exceptions thrown in setup() will still trigger afterEach(), such as timeout.
+      webDriver && (await webDriver.quit());
+    } catch (err) {}
+  }
 });
 
 global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
@@ -34,9 +43,13 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
+    await webDriver.get(absoluteURL);
+
+    global.__operation__ = 'setting window size to 360x640';
+
     await webDriver.manage().window().setRect({ height: 640, width: 360 });
 
-    await webDriver.get(absoluteURL);
+    global.__operation__ = 'setting class name for body element';
 
     await webDriver.executeScript(() => {
       document.body.className = 'jest';
@@ -45,6 +58,8 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     const proxies = createProxies(webDriver);
 
     global.webDriverBridge = registerProxies(webDriver, proxies);
+
+    global.__operation__ = 'waiting for the bridge to ready';
 
     // Wait until the page is loaded. This will generate a better errors.
     await expect(proxies.host.readyPromise).resolves.toBeUndefined();

@@ -81,8 +81,6 @@
           return false;
         };
 
-        const webDriver = new URLSearchParams(window.location.hash.replace(/^#/gu, '')).get('wd');
-
         const App = () => {
           const [enableWebSpeech, setEnableWebSpeech] = useState(false);
           const [sendBoxTextWrap, setSendBoxTextWrap] = useState(false);
@@ -107,39 +105,39 @@
 
           useEffect(updateState, [updateState]);
 
-          const mergeHash = useCallback(
+          const mergeParams = useCallback(
             merge => {
               const params = new URLSearchParams(window.location.hash.replace(/^#/gu, ''));
 
               Object.entries(merge).forEach(([name, value]) => params.set(name, value));
 
-              document.location = `#${params}`;
+              document.location = `?${params}`;
             },
             [sendBoxButtonAlignment, sendBoxTextWrap]
           );
 
           const handleSendBoxTextWrapChange = useCallback(
-            ({ target: { checked } }) => mergeHash({ m: checked ? 1 : 0 }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ m: checked ? 1 : 0 }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentTopClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'top' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'top' }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentBottomClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'bottom' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'bottom' }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentStretchClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'stretch' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'stretch' }),
+            [mergeParams]
           );
 
-          const handleWebSpeechChange = useCallback(({ target: { checked } }) => mergeHash({ ws: checked ? 1 : 0 }), [
-            mergeHash
+          const handleWebSpeechChange = useCallback(({ target: { checked } }) => mergeParams({ ws: checked ? 1 : 0 }), [
+            mergeParams
           ]);
 
           const styleOptions = useMemo(

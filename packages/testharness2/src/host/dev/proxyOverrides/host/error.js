@@ -1,5 +1,5 @@
 const stripANSI = require('strip-ansi');
-
+const dumpLogs = require('../../utils/dumpLogs');
 const override = require('../../utils/override');
 
 // Send the error back to the browser console.
@@ -34,5 +34,9 @@ module.exports = function (webDriver, error) {
       stripANSI(error.message),
       stripANSI(error.stack)
     );
+
+    await dumpLogs(webDriver, { clear: true });
+
+    global.__logs = [];
   });
 };

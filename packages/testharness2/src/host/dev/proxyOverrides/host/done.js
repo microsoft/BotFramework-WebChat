@@ -1,3 +1,4 @@
+const dumpLogs = require('../../utils/dumpLogs');
 const override = require('../../utils/override');
 
 // Send the completion back to the browser console.
@@ -22,5 +23,9 @@ module.exports = function (webDriver, done) {
 
       document.body.appendChild(div);
     });
+
+    await dumpLogs(webDriver, { clear: true });
+
+    global.__logs = [];
   });
 };

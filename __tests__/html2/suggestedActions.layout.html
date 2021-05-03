@@ -51,10 +51,10 @@
         WebChatTest: { createDirectLineWithTranscript, createStore, sleep, token }
       } = window;
 
-      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
-      const initialDirection = hashParams.get('dir');
-      const initialFewerItems = !!hashParams.get('fewer');
-      const initialPreset = hashParams.get('preset');
+      const params = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
+      const initialDirection = params.get('dir');
+      const initialFewerItems = !!params.get('fewer');
+      const initialPreset = params.get('preset');
 
       const RadioRow = ({ checked, onChange, label, value }) => (
         <div className="test-harness__form-row">

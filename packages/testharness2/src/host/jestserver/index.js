@@ -5,11 +5,13 @@ const removeInline = require('./removeInline');
 
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
 const INSTANCE_MIN_LIFE = 30000; // The instance must have at least 30 seconds left, otherwise, we should recycle it as we don't have much time left.
-const NUM_RECYCLE = 1; // We will reuse the instance only 5 times.
+const NUM_RECYCLE = 5; // We will reuse the instance only 5 times.
 const WEB_DRIVER_URL = 'http://selenium-hub:4444/';
 
-const app = express();
-const pool = [];
+const DEFAULT_PROXY_OPTIONS = {
+  changeOrigin: true,
+  target: WEB_DRIVER_URL
+};
 
 function runLeft({ numUsed }) {
   return Math.max(0, NUM_RECYCLE - numUsed);
@@ -19,7 +21,7 @@ function timeLeft({ startTime }) {
   return Math.max(0, INSTANCE_LIFE - Date.now() + startTime);
 }
 
-function housekeep() {
+function housekeep(pool) {
   pool
     .filter(entry => entry.error || (!entry.busy && (!runLeft(entry) || timeLeft(entry) < INSTANCE_MIN_LIFE)))
     .forEach(entry => {
@@ -35,8 +37,6 @@ function housekeep() {
       fetch(new URL(`/wd/hub/session/${entry.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' }).catch(() => {});
     });
 }
-
-setInterval(housekeep, 5000);
 
 async function pingSession(sessionId) {
   const res = await fetch(new URL(`/wd/hub/session/${sessionId}/url`, WEB_DRIVER_URL));
@@ -54,18 +54,6 @@ async function pingSession(sessionId) {
   }
 }
 
-process.on('SIGTERM', async () => {
-  pool.forEach(entry => {
-    entry.error = true;
-  });
-
-  housekeep();
-
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  process.exit(0);
-});
-
 async function checkGridCapacity() {
   const res = await fetch(new URL('/wd/hub/status', WEB_DRIVER_URL));
 
@@ -82,18 +70,28 @@ async function checkGridCapacity() {
   }
 }
 
-app.post(
-  '/wd/hub/session',
-  async (_, res, next) => {
-    await housekeep();
+(async function () {
+  const app = express();
+  const pool = [];
 
-    const entry = pool.find(
-      entry => !entry.busy && !entry.error && runLeft(entry) && timeLeft(entry) >= INSTANCE_MIN_LIFE
-    );
+  app.post(
+    '/wd/hub/session',
+    async (_, res, next) => {
+      await housekeep(pool);
 
-    if (entry) {
-      try {
-        await pingSession(entry.sessionId);
+      const entry = pool.find(
+        entry => !entry.busy && !entry.error && runLeft(entry) && timeLeft(entry) >= INSTANCE_MIN_LIFE
+      );
+
+      if (entry) {
+        entry.busy = true;
+        entry.numUsed++;
+
+        try {
+          await pingSession(entry.sessionId);
+        } catch (err) {
+          entry.error = new Error('Failed to acquire session.');
+        }
 
         console.log(
           `Acquiring instance ${entry.sessionId}, with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
@@ -101,66 +99,86 @@ app.post(
           )} runs left.`
         );
 
-        entry.busy = true;
-        entry.numUsed++;
-
         return res.send(entry.session);
-      } catch (err) {}
+      }
+
+      // Check if the grid has capacity.
+
+      try {
+        await checkGridCapacity();
+      } catch (err) {
+        console.log(err.message);
+
+        return res.status(500).end(err.message);
+      }
+
+      next();
+    },
+    createProxyMiddleware({
+      ...DEFAULT_PROXY_OPTIONS,
+      onProxyRes: responseInterceptor(async responseBuffer => {
+        const session = JSON.parse(responseBuffer.toString());
+
+        const entry = { busy: true, numUsed: 1, session, sessionId: session.value.sessionId, startTime: Date.now() };
+
+        pool.push(entry);
+
+        setTimeout(() => housekeep(pool), INSTANCE_LIFE - INSTANCE_MIN_LIFE);
+
+        console.log(`New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances.`);
+
+        return responseBuffer;
+      }),
+      selfHandleResponse: true
+    })
+  );
+
+  app.delete('/wd/hub/session/:sessionId', async (req, res) => {
+    const entry = pool.find(entry => entry.sessionId === req.params.sessionId);
+
+    if (entry) {
+      entry.busy = false;
+
+      await housekeep(pool);
+
+      if (pool.includes(entry)) {
+        await fetch(new URL(`/wd/hub/session/${entry.sessionId}/url`, WEB_DRIVER_URL), {
+          data: JSON.stringify({ url: 'about:blank' }),
+          method: 'POST'
+        });
+
+        await fetch(new URL(`/wd/hub/session/${entry.sessionId}/window/rect`, WEB_DRIVER_URL), {
+          data: JSON.stringify({ height: 360, width: 640 }),
+          method: 'POST'
+        });
+
+        console.log(
+          `Releasing instance ${entry.sessionId} back to the pool, with ${~~(
+            timeLeft(entry) / 1000
+          )} seconds and ${runLeft(entry)} runs left.`
+        );
+      }
+
+      return res.status(200).end();
     }
 
-    // Check if the grid has capacity.
+    res.status(404).end();
+  });
 
-    try {
-      await checkGridCapacity();
-    } catch (err) {
-      console.log(err.message);
+  app.use('/', createProxyMiddleware(DEFAULT_PROXY_OPTIONS));
+  app.listen(4444);
 
-      return res.status(500).end(err.message);
-    }
+  setInterval(() => housekeep(pool), 5000);
 
-    next();
-  },
-  createProxyMiddleware({
-    changeOrigin: true,
-    onProxyRes: responseInterceptor(async responseBuffer => {
-      const session = JSON.parse(responseBuffer.toString());
+  process.on('SIGTERM', async () => {
+    pool.forEach(entry => {
+      entry.error = true;
+    });
 
-      const entry = { busy: true, numUsed: 1, session, sessionId: session.value.sessionId, startTime: Date.now() };
+    housekeep(pool);
 
-      pool.push(entry);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-      setTimeout(housekeep, INSTANCE_LIFE - INSTANCE_MIN_LIFE);
-
-      console.log(`New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances.`);
-
-      return responseBuffer;
-    }),
-    selfHandleResponse: true,
-    target: WEB_DRIVER_URL
-  })
-);
-
-app.delete('/wd/hub/session/:sessionId', async (req, res) => {
-  const entry = pool.find(entry => entry.sessionId === req.params.sessionId);
-
-  if (entry) {
-    entry.busy = false;
-
-    await housekeep();
-
-    if (pool.includes(entry)) {
-      console.log(
-        `Releasing instance ${entry.sessionId} back to the pool, with ${~~(
-          timeLeft(entry) / 1000
-        )} seconds and ${runLeft(entry)} runs left.`
-      );
-    }
-
-    return res.status(200).end();
-  }
-
-  res.status(404).end();
-});
-
-app.use('/', createProxyMiddleware({ changeOrigin: true, target: WEB_DRIVER_URL }));
-app.listen(4444);
+    process.exit(0);
+  });
+})();

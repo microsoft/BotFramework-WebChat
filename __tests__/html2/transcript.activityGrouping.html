@@ -31,10 +31,10 @@
       } = window;
 
       run(async function () {
-        const urlSearchParams = new URLSearchParams(location.hash.replace(/^#/u, ''));
+        const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
 
-        const height = urlSearchParams.get('ch');
-        const width = urlSearchParams.get('cw');
+        const height = params.get('ch');
+        const width = params.get('cw');
 
         await host.windowSize(width, height, document.getElementById('webchat'));
 

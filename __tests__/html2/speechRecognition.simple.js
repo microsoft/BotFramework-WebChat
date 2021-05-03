@@ -24,7 +24,7 @@ describe.each([
   ]
 ])('speech recognition using %s', (_, { useSubscriptionKey, useDirectLineSpeech, useHostname }) => {
   test('should recognize "Hello, World!".', async () => {
-    const searchParams = new URLSearchParams({
+    const params = new URLSearchParams({
       'dls.key': DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY || '',
       'dls.region': DIRECT_LINE_SPEECH_REGION || '',
       'speech.key': COGNITIVE_SERVICES_SUBSCRIPTION_KEY || '',
@@ -34,6 +34,6 @@ describe.each([
       type: useDirectLineSpeech ? 'dlspeech' : 'dl'
     });
 
-    return runHTML(`speechRecognition.simple.html#${searchParams}`);
+    return runHTML(`speechRecognition.simple.html#${params}`);
   });
 });

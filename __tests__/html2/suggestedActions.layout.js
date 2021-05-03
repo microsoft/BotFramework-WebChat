@@ -14,11 +14,11 @@ describe('suggested actions', () => {
       ['stacked layout with height', 'stacked-maxheight']
     ])('using %s', (_, preset, extraSearchParams) => {
       test('should be correct', async () => {
-        const hashParams = new URLSearchParams({ ...extraSearchParams, preset });
+        const params = new URLSearchParams({ ...extraSearchParams, preset });
 
-        dir && hashParams.set('dir', dir);
+        dir && params.set('dir', dir);
 
-        await runHTML(`suggestedActions.layout#${hashParams}`);
+        await runHTML(`suggestedActions.layout#${params}`);
       });
     });
   });
