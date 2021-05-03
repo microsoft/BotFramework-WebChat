@@ -63,8 +63,7 @@ services:
     image: selenium/hub:3.141.59-zirconium
     container_name: selenium-hub
     environment:
-    - GRID_BROWSER_TIMEOUT=60
-    - GRID_TIMEOUT=60
+    - GRID_TIMEOUT=300
     ports:
     - "4444:4444"
 
@@ -81,3 +80,11 @@ services:
       dockerfile: testharness2.dockerfile
     ports:
     - "5081:80"
+
+  jestserver:
+    build:
+      context: ./packages/testharness2/
+      dockerfile: jestserver.dockerfile
+    ports:
+    - "4445:4444"
+    stop_grace_period: 0s
