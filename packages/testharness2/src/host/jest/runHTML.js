@@ -22,7 +22,7 @@ afterEach(async () => {
 
   if (webDriver) {
     try {
-      dumpLogs(webDriver);
+      await dumpLogs(webDriver);
     } catch (err) {}
 
     try {
