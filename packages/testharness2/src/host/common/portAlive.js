@@ -1,15 +1,18 @@
-const { Socket } = require('net');
+// const { Socket } = require('net');
 
-module.exports = function portAlive(host, port) {
-  const socket = new Socket();
+// module.exports = function portAlive(host, port, duration = 200) {
+//   const socket = new Socket();
 
-  return new Promise(resolve => {
-    try {
-      socket.connect(port, host, () => resolve(true));
-    } catch (err) {
-      resolve(false);
-    }
-  }).finally(() => {
-    socket.end();
-  });
-};
+//   return Promise.race([
+//     new Promise(resolve => setTimeout(resolve, duration)),
+//     new Promise(resolve => {
+//       try {
+//         socket.connect(port, host, () => resolve(true));
+//       } catch (err) {
+//         resolve(false);
+//       }
+//     }).finally(() => {
+//       socket.end();
+//     })
+//   ]);
+// };

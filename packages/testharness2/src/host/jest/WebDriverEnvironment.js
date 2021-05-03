@@ -1,3 +1,5 @@
+require('global-agent/bootstrap');
+
 const { join } = require('path');
 const NodeEnvironment = require('jest-environment-node');
 
