@@ -27,7 +27,7 @@ afterEach(async () => {
 
     try {
       // Exceptions thrown in setup() will still trigger afterEach(), such as timeout.
-      webDriver && (await webDriver.quit());
+      await webDriver.quit();
     } catch (err) {}
   }
 });

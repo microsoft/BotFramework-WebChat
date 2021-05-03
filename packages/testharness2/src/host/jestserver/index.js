@@ -8,7 +8,8 @@ const removeInline = require('./removeInline');
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
 const INSTANCE_MIN_LIFE = 30000; // The instance must have at least 30 seconds left, otherwise, we should recycle it as we don't have much time left.
 const NUM_RECYCLE = 5; // We will reuse the instance only 5 times.
-const WEB_DRIVER_URL = 'http://selenium-hub:4444/';
+const PORT = 4445;
+const WEB_DRIVER_URL = process.argv[2] || 'http://selenium-hub:4444/';
 
 const DEFAULT_PROXY_OPTIONS = {
   changeOrigin: true,
@@ -100,6 +101,8 @@ async function checkGridCapacity() {
 
         entry.numUsed++;
 
+        // TODO: If it was allocated for more than 30s, kill it.
+
         return res.send(entry.session);
       }
 
@@ -158,14 +161,14 @@ async function checkGridCapacity() {
         );
       }
 
-      return res.status(200).end();
+      return res.status(200).end(JSON.stringify({ value: null }));
     }
 
     res.status(404).end();
   });
 
   app.use('/', createProxyMiddleware(DEFAULT_PROXY_OPTIONS));
-  app.listen(4444);
+  app.listen(PORT);
 
   setInterval(() => housekeep(pool), 5000);
 

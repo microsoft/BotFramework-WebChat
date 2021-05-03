@@ -86,5 +86,5 @@ services:
       context: ./packages/testharness2/
       dockerfile: jestserver.dockerfile
     ports:
-      - '4445:4444'
+      - '4445:4445'
     stop_grace_period: 0s
