@@ -16,19 +16,19 @@ function timeLeft({ startTime }) {
 }
 
 async function housekeep() {
-  let entry;
+  const entriesToHousekeep = pool.filter(
+    entry => !entry.busy && (entry.numUsed >= NUM_RECYCLE || timeLeft(entry) < INSTANCE_MIN_LIFE)
+  );
 
-  while (
-    (entry = pool.find(entry => !entry.busy && (entry.numUsed >= NUM_RECYCLE || timeLeft(entry) < INSTANCE_MIN_LIFE)))
-  ) {
-    console.log(`Instance ${entry.session.value.sessionId} maximum usage is up, terminating.`);
+  await Promise.all(
+    entriesToHousekeep.map(entry => async () => {
+      removeInline(pool, entry);
 
-    entry.busy = true;
+      console.log(`Instance ${entry.session.value.sessionId} maximum usage is up, terminating.`);
 
-    await fetch(new URL(`/wd/hub/session/${entry.session.value.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
-
-    removeInline(pool, entry);
-  }
+      await fetch(new URL(`/wd/hub/session/${entry.session.value.sessionId}`, WEB_DRIVER_URL), { method: 'DELETE' });
+    })
+  );
 }
 
 app.post(
@@ -75,15 +75,17 @@ app.delete('/wd/hub/session/:sessionId', async (req, res) => {
 
   if (entry) {
     entry.busy = false;
+
+    await housekeep();
+
+    if (pool.includes(entry)) {
+      console.log(`Putting instance ${entry.session.value.sessionId} back to the pool.`);
+    }
+
+    return res.status(200).end();
   }
 
-  await housekeep();
-
-  if (pool.includes(entry)) {
-    console.log(`Putting instance ${entry.session.value.sessionId} back to the pool.`);
-  }
-
-  res.status(200).end();
+  res.status(404).end();
 });
 
 app.use('/', createProxyMiddleware({ changeOrigin: true, target: WEB_DRIVER_URL }));
