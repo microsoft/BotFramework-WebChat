@@ -6,7 +6,7 @@ services:
   chrome1:
     build:
       context: ./
-      dockerfile: selenium.dockerfile
+      dockerfile: chrome.dockerfile
     depends_on:
       - selenium-hub
       - webchat
@@ -20,7 +20,7 @@ services:
   chrome2:
     build:
       context: ./
-      dockerfile: selenium.dockerfile
+      dockerfile: chrome.dockerfile
     depends_on:
       - selenium-hub
       - webchat
@@ -34,7 +34,7 @@ services:
   chrome3:
     build:
       context: ./
-      dockerfile: selenium.dockerfile
+      dockerfile: chrome.dockerfile
     depends_on:
       - selenium-hub
       - webchat
@@ -48,7 +48,7 @@ services:
   chrome4:
     build:
       context: ./
-      dockerfile: selenium.dockerfile
+      dockerfile: chrome.dockerfile
     depends_on:
       - selenium-hub
       - webchat
