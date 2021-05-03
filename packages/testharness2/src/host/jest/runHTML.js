@@ -34,6 +34,8 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
+    await webDriver.manage().window().setRect({ height: 640, width: 360 });
+
     await webDriver.get(absoluteURL);
 
     await webDriver.executeScript(() => {
