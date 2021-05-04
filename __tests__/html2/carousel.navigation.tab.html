@@ -39,6 +39,11 @@
 
         await host.sendKeys('ENTER');
         // first focus inside carousel
+        await pageConditions.became(
+          'focus on the attachment',
+          () => document.activeElement.getAttribute('aria-roledescription', 'attachment'),
+          1000
+        );
         await host.snapshot();
 
         // second focus inside carousel
