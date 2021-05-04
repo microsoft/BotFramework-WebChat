@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -9,16 +9,12 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const {
-        WebChatTest: { createStore }
-      } = window;
-
       run(async function () {
         const clock = lolex.install();
 
         window.WebChat.renderWebChat(
           {
-            directLine: WebChatTest.createDirectLineWithTranscript([
+            directLine: testHelpers.createDirectLineWithTranscript([
               {
                 text: 'Hello, World!',
                 type: 'message',
@@ -51,7 +47,7 @@
               }
             ]),
             sendTypingIndicator: true,
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );

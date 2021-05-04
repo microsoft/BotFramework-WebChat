@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -45,13 +45,12 @@
           Components: { BasicWebChat, Composer },
           hooks: { useConnectivityStatus, useSendMessage },
           renderWebChat
-        },
-        WebChatTest: { createStore, sleep, token }
+        }
       } = window;
 
       run(async function () {
-        const directLine = await createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
+        const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -102,7 +101,7 @@
         await host.sendAccessKey('A');
 
         // We need to wait for flipper button animation to complete.
-        await sleep(1000);
+        await testHelpers.sleep(1000);
 
         await host.snapshot();
 
@@ -110,7 +109,7 @@
         await host.sendAccessKey('S');
 
         // We need to wait for flipper button animation to complete.
-        await sleep(1000);
+        await testHelpers.sleep(1000);
 
         await host.snapshot();
       });

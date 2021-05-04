@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -11,13 +11,12 @@
     <script>
       const {
         lolex,
-        WebChat: { renderWebChat },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        WebChat: { renderWebChat }
       } = window;
 
       run(async function () {
         const clock = lolex.install();
-        const directLine = await createDirectLineWithTranscript([
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
             from: { role: 'bot' },
             id: '1.0',
@@ -64,7 +63,7 @@
         renderWebChat(
           {
             directLine,
-            store: createStore(),
+            store: testHelpers.createStore(),
             styleOptions: {
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',

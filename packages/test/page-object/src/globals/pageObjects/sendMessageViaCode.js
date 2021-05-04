@@ -1,4 +1,4 @@
-import { dispatch } from '../../utils/createStore';
+import { dispatch } from '../testHelpers/createStore';
 import allOutgoingActivitiesSent from '../pageConditions/allOutgoingActivitiesSent';
 
 export default async function sendMessageViaCode(text, { waitForSend = true } = {}) {

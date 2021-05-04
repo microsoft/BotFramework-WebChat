@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
@@ -10,10 +10,8 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createDirectLineWithTranscript, createStore, stringToArrayBuffer, token } = window.WebChatTest;
-
       run(async function () {
-        const directLine = createDirectLineWithTranscript([
+        const directLine = testHelpers.createDirectLineWithTranscript([
           {
             attachments: [
               {
@@ -42,7 +40,7 @@
         window.WebChat.renderWebChat(
           {
             directLine,
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );

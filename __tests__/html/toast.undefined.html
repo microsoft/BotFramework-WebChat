@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -18,8 +18,7 @@
         WebChat: {
           Components: { BasicWebChat, Composer },
           hooks: { useConnectivityStatus, useSetNotification }
-        },
-        WebChatTest: { createStore, token }
+        }
       } = window;
 
       run(
@@ -35,8 +34,8 @@
             return false;
           };
 
-          const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-          const store = createStore();
+          const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+          const store = testHelpers.createStore();
 
           render(
             <Composer directLine={directLine} store={store}>

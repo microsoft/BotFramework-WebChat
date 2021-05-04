@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -41,8 +41,7 @@
         React: { useCallback },
         WebChat: {
           hooks: { useRenderActivityStatus, useSendPostBack }
-        },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        }
       } = window;
 
       const BotActivityDecorator = ({ activityID, children }) => (
@@ -88,8 +87,8 @@
         window.WebChat.renderWebChat(
           {
             activityMiddleware,
-            directLine: await createDirectLineWithTranscript('multiple-lines-multiple-files.json'),
-            store: createStore()
+            directLine: await testHelpers.createDirectLineWithTranscript('multiple-lines-multiple-files.json'),
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );

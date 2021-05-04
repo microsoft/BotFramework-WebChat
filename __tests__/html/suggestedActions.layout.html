@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -47,8 +47,7 @@
       const {
         React: { useCallback, useEffect, useMemo, useState },
         ReactDOM: { render },
-        WebChat: { ReactWebChat },
-        WebChatTest: { createDirectLineWithTranscript, createStore, sleep, token }
+        WebChat: { ReactWebChat }
       } = window;
 
       const params = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
@@ -80,7 +79,7 @@
 
         const directLine = useMemo(
           () =>
-            createDirectLineWithTranscript([
+            testHelpers.createDirectLineWithTranscript([
               {
                 text: `Using preset \`${initialPreset}\` ${initialDirection === 'rtl' ? '(RTL)' : ''}`,
                 type: 'message',
@@ -231,7 +230,7 @@
               className="test-harness__webchat"
               directLine={directLine}
               dir={direction === 'rtl' ? 'rtl' : undefined}
-              store={createStore()}
+              store={testHelpers.createStore()}
               styleOptions={STYLE_OPTIONS_PRESETS[preset]}
             />
           </div>
@@ -259,7 +258,7 @@
           }
 
           // We need to wait for the scroll animation to complete before taking a screenshot.
-          await sleep(1000);
+          await testHelpers.sleep(1000);
 
           await host.snapshot();
 

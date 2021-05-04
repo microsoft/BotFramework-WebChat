@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -11,6 +11,10 @@
     <script>
       const {
         testHelpers: {
+          arrayBufferToBase64,
+          createStore,
+          iterateAsyncIterable,
+          shareObservable,
           speech: {
             concatArrayBuffer,
             createQueuedArrayBufferAudioSource,
@@ -19,13 +23,7 @@
             MockAudioContext,
             pcmWaveArrayBufferToRiffWaveArrayBuffer,
             recognizeRiffWaveArrayBuffer
-          }
-        },
-        WebChatTest: {
-          arrayBufferToBase64,
-          createStore,
-          iterateAsyncIterable,
-          shareObservable,
+          },
           token: {
             fetchDirectLineSpeechCredentials,
             fetchDirectLineToken,
@@ -255,7 +253,7 @@
           window.WebChat.renderWebChat(
             {
               ...adapters,
-              store: createStore()
+              store: testHelpers.createStore()
             },
             document.getElementById('webchat')
           );

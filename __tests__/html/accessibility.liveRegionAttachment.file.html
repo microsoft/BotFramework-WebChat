@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
@@ -20,8 +20,7 @@
           Components: { BasicWebChat, Composer },
           createDirectLine,
           hooks: { useConnectivityStatus, useSendFiles }
-        },
-        WebChatTest: { createStore, stringToArrayBuffer, token }
+        }
       } = window;
 
       // TODO: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
@@ -32,7 +31,7 @@
 
           useEffect(() => {
             if (connectivityStatus === 'connected') {
-              const blob = new Blob([stringToArrayBuffer('Hello, World!')]);
+              const blob = new Blob([testHelpers.stringToArrayBuffer('Hello, World!')]);
 
               blob.name = 'hello.zip';
 
@@ -45,8 +44,8 @@
 
         render(
           <Composer
-            directLine={window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() })}
-            store={createStore()}
+            directLine={window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })}
+            store={testHelpers.createStore()}
             styleOptions={{ internalLiveRegionFadeAfter: 60000 }}
           >
             <BasicWebChat />

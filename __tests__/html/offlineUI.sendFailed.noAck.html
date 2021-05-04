@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -9,14 +9,12 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createStore, shareObservable, token } = window.WebChatTest;
-
       function createDirectLineForTest(options) {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const bannedClientActivityIDs = [];
         const { activity$, postActivity } = workingDirectLine;
 
-        workingDirectLine.activity$ = shareObservable(
+        workingDirectLine.activity$ = testHelpers.shareObservable(
           new Observable(observer => {
             const subscription = activity$.subscribe({
               complete: () => observer.complete(),
@@ -56,8 +54,8 @@
 
           window.WebChat.renderWebChat(
             {
-              directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
-              store: createStore()
+              directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
+              store: testHelpers.createStore()
             },
             document.getElementById('webchat')
           );

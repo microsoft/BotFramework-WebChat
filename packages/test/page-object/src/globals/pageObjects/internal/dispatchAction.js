@@ -1,4 +1,4 @@
-import { dispatch } from '../../../utils/createStore';
+import { dispatch } from '../../testHelpers/createStore';
 
 export default function dispatchAction(action) {
   return dispatch(action);

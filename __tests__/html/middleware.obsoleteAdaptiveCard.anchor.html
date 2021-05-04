@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -11,8 +11,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createStore, token } = window.WebChatTest;
-
       run(async function () {
         const attachmentMiddleware = () => next => card => {
           const { activity, attachment } = card;
@@ -31,8 +29,8 @@
           return next(card);
         };
 
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
+        const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
 
         window.WebChat.renderWebChat(
           {

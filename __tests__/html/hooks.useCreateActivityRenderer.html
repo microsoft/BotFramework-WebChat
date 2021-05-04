@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -17,8 +17,7 @@
         WebChat: {
           Components: { Composer },
           hooks: { useActivities, useCreateActivityRenderer }
-        },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        }
       } = window;
 
       run(async function () {
@@ -40,7 +39,7 @@
           );
         };
 
-        const directLine = await createDirectLineWithTranscript([
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
             from: { role: 'bot' },
             id: '1.0',
@@ -50,7 +49,7 @@
           }
         ]);
 
-        const store = createStore();
+        const store = testHelpers.createStore();
 
         render(
           <Composer directLine={directLine} store={store}>

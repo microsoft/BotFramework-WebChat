@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -55,8 +55,7 @@
       const {
         React: { Fragment, useCallback, useState },
         ReactDOM: { render },
-        WebChat: { ReactWebChat },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        WebChat: { ReactWebChat }
       } = window;
 
       function createActivity(numLines) {
@@ -72,10 +71,10 @@
         };
       }
 
-      const directLine = createDirectLineWithTranscript([createActivity(15)]);
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(15)]);
 
       run(async function () {
-        const store = createStore();
+        const store = testHelpers.createStore();
 
         const App = ({ overrideOrientation }) => {
           const [orientation, setOrientation] = useState('landscape');

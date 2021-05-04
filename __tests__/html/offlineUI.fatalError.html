@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -9,11 +9,9 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createStore, token } = window.WebChatTest;
-
       run(
         async function () {
-          const store = createStore({}, ({ dispatch }) => next => action => {
+          const store = testHelpers.createStore({}, ({ dispatch }) => next => action => {
             if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity) {
               if (action.payload.activity.from.role === 'bot' && action.payload.activity.type === 'message') {
                 // We are dispatching an invalid action that would cause Web Chat core to fail, producing a fatal error.
@@ -33,7 +31,7 @@
 
           window.WebChat.renderWebChat(
             {
-              directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
+              directLine: window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
               store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },

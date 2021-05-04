@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -48,8 +48,7 @@
         React: { useMemo },
         WebChat: {
           hooks: { useDirection }
-        },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        }
       } = window;
 
       run(async function () {
@@ -92,7 +91,7 @@
         window.WebChat.renderWebChat(
           {
             avatarMiddleware,
-            directLine: await createDirectLineWithTranscript([
+            directLine: await testHelpers.createDirectLineWithTranscript([
               {
                 from: { role: 'bot' },
                 id: '1.0',
@@ -183,7 +182,7 @@
                 type: 'message'
               }
             ]),
-            store: createStore(),
+            store: testHelpers.createStore(),
             styleOptions: {
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',

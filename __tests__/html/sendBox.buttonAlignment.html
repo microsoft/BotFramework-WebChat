@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
@@ -63,13 +63,12 @@
           Components: { BasicWebChat, Composer },
           createDirectLine,
           hooks: { useSendBoxValue }
-        },
-        WebChatTest: { createStore, token }
+        }
       } = window;
 
       run(async function () {
-        const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
+        const directLine = createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
 
         const TypeOnStartup = ({ value }) => {
           const [_, setSendBoxValue] = useSendBoxValue();

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -9,16 +9,14 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createStore, token } = window.WebChatTest;
-
       run(async function () {
         window.WebChat.renderWebChat(
           {
             directLine: await window.WebChat.createDirectLineAppServiceExtension({
               domain: 'https://webchat-mockbot2.azurewebsites.net/.bot/v3/directline',
-              token: await token.fetchDirectLineAppServiceExtensionToken()
+              token: await testHelpers.token.fetchDirectLineAppServiceExtensionToken()
             }),
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );

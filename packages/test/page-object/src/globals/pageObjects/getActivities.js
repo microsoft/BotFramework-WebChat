@@ -1,4 +1,4 @@
-import { getState } from '../../utils/createStore';
+import { getState } from '../testHelpers/createStore';
 
 export default function getActivities() {
   return getState().activities;

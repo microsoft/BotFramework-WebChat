@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
@@ -18,8 +18,7 @@
         WebChat: {
           Components: { Composer },
           hooks: { useCreateAttachmentForScreenReaderRenderer }
-        },
-        WebChatTest: { createDirectLineWithTranscript, createStore, token }
+        }
       } = window;
 
       run(async function () {
@@ -39,8 +38,8 @@
           render(
             <Composer
               attachmentForScreenReaderMiddleware={attachmentForScreenReaderMiddleware}
-              directLine={createDirectLineWithTranscript([])}
-              store={createStore()}
+              directLine={testHelpers.createDirectLineWithTranscript([])}
+              store={testHelpers.createStore()}
             >
               <RenderAttachmentForScreenReader />
             </Composer>,

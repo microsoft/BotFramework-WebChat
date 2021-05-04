@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -30,14 +30,12 @@
       <button class="add-3-activities-button">Add 3 activities with 10 lines each</button>
     </div>
     <script>
-      const { createDirectLineWithTranscript, createStore, token } = window.WebChatTest;
-
       const {
         Components: { AdaptiveCardContent }
       } = window.WebChat;
 
-      const directLine = createDirectLineWithTranscript([createActivity(20)]);
-      const store = createStore();
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(20)]);
+      const store = testHelpers.createStore();
 
       let now = +new Date(2020, 0, 23, 12, 34);
 
