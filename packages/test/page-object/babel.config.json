@@ -1,0 +1,22 @@
+{
+  "env": {
+    "test": {
+      "plugins": [
+        "babel-plugin-istanbul"
+      ]
+    }
+  },
+  "presets": [
+    "@babel/preset-react",
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "chrome": "90"
+        },
+        "modules": false
+      }
+    ]
+  ],
+  "sourceMaps": "inline"
+}

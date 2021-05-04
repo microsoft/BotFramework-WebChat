@@ -48,7 +48,7 @@ services:
 
   jestserver:
     build:
-      context: ./packages/testharness2/
+      context: ./packages/test/harness/
       dockerfile: jestserver.dockerfile
     ports:
       - '4445:4445'

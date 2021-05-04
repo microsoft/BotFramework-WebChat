@@ -87,7 +87,7 @@ module.exports = {
   ],
   // testRegex: ['/__tests__/html/focusManagement', '/__tests__/html/transcript.navigation'],
   transform: {
-    '[\\/]__tests__[\\/]html2[\\/]': './babel-passthru-transformer.js',
+    '[\\/]__tests__[\\/]html[\\/]': './babel-passthru-transformer.js',
     '\\.[jt]sx?$': './babel-jest-config.js'
   }
 };
