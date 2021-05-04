@@ -23,7 +23,7 @@ export {
   shareObservable,
   sleep,
   speech,
-  stringToArrayBuffer
+  stringToArrayBuffer,
   token,
-  transcriptNavigation,
+  transcriptNavigation
 };
