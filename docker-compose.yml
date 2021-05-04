@@ -73,6 +73,7 @@ services:
       dockerfile: testharness.dockerfile
     ports:
       - '5080:80'
+    stop_grace_period: 0s
 
   webchat2:
     build:
@@ -80,6 +81,7 @@ services:
       dockerfile: testharness2.dockerfile
     ports:
       - '5081:80'
+    stop_grace_period: 0s
 
   jestserver:
     build:
