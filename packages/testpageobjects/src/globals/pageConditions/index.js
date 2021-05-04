@@ -12,6 +12,7 @@ import numActivitiesShown from './numActivitiesShown';
 import scrolling from './scrolling';
 import scrollStabilized from './scrollStabilized';
 import scrollToBottomCompleted from './scrollToBottomCompleted';
+import stabilized from './stabilized';
 import suggestedActionsShown from './suggestedActionsShown';
 import toastShown from './toastShown';
 import typingIndicatorShown from './typingIndicatorShown';
@@ -33,6 +34,7 @@ export {
   scrolling,
   scrollStabilized,
   scrollToBottomCompleted,
+  stabilized,
   suggestedActionsShown,
   toastShown,
   typingIndicatorShown,
