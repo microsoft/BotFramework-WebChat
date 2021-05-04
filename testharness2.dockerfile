@@ -7,12 +7,12 @@ RUN apk update && \
 ENV PORT=80
 EXPOSE 80
 RUN npm install serve@11.3.0 -g
-WORKDIR /web/
-ENTRYPOINT ["npx", "--no-install", "serve", "-c", "serve-test.json", "-p", "80", "/web/"]
+WORKDIR /var/web/
+ENTRYPOINT ["npx", "--no-install", "serve", "-c", "serve-test.json", "-p", "80", "/var/web/"]
 
-ADD serve-test.json /web/
-ADD __tests__/html/ /web/__tests__/html/
-ADD packages/bundle/dist/webchat-es5.js /web/packages/bundle/dist/
-ADD packages/test/harness/dist/ /web/packages/test/harness/dist/
-ADD packages/test/page-object/dist/ /web/packages/test/page-object/dist/
-RUN echo {}>/web/package.json
+ADD serve-test.json /var/web/
+ADD __tests__/html/ /var/web/__tests__/html/
+ADD packages/bundle/dist/webchat-es5.js /var/web/packages/bundle/dist/
+ADD packages/test/harness/dist/ /var/web/packages/test/harness/dist/
+ADD packages/test/page-object/dist/ /var/web/packages/test/page-object/dist/
+RUN echo {}>/var/web/package.json

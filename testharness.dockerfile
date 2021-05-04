@@ -7,9 +7,9 @@ RUN apk update && \
 ENV PORT=80
 EXPOSE 80
 RUN npm install serve@10.0.0 -g
-ENTRYPOINT ["npx", "--no-install", "serve", "-p", "80", "/web"]
+ENTRYPOINT ["npx", "--no-install", "serve", "-p", "80", "/var/web"]
 
-ADD __tests__/setup/web/ /web
-ADD packages/bundle/dist /web
-RUN echo {}>/web/package.json
-WORKDIR /web
+ADD __tests__/setup/web/ /var/web
+ADD packages/bundle/dist /var/web
+RUN echo {}>/var/web/package.json
+WORKDIR /var/web
