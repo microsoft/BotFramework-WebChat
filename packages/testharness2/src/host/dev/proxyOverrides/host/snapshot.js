@@ -1,7 +1,6 @@
 module.exports = function (webDriver) {
   return async () => {
-    const element = await webDriver.executeScript(() => document.getElementById('webchat'));
-    const base64 = await element.takeScreenshot();
+    const base64 = await webDriver.takeScreenshot();
 
     /* istanbul ignore next */
     await webDriver.executeScript(
