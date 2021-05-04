@@ -47,7 +47,7 @@ module.exports = {
             // - https://github.com/no23reason/jest-trx-results-processor/tree/master/src
 
             testResult.failureMessages.forEach(message => {
-              const match = /^See diff for details: (.*)/m.exec(message);
+              const match = /See diff for details: (.*)/m.exec(message);
 
               match && testResultNode.ele('ResultFiles').ele('ResultFile').att('path', match[1]);
             });
