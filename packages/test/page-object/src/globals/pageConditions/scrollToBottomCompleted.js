@@ -1,29 +1,19 @@
-import became from './became';
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
-import sleep from '../../utils/sleep';
+import stabilized from './stabilized';
 
 export default function scrollToBottomCompleted() {
-  let count = 0;
-
-  return became(
-    'scroll to bottom completed',
-    async () => {
-      // Browser may keep rendering content. Wait until 5 consecutive completion checks are all truthy.
+  return stabilized(
+    'scroll is at bottom and',
+    () => {
       const scrollable = getTranscriptScrollableElement();
+      const { offsetHeight, scrollHeight, scrollTop } = scrollable;
 
-      if (scrollable && Math.abs(scrollable.offsetHeight + scrollable.scrollTop - scrollable.scrollHeight) <= 1) {
-        count++;
+      // Browser may keep rendering content. Wait until consecutively:
+      // 1. Scroll position is at the bottom
+      // 2. Scroll top does not move
 
-        if (count >= 5) {
-          return true;
-        }
-      } else {
-        count = 0;
-      }
-
-      await sleep(17);
-
-      return false;
+      // If it is not at the bottom, create a new empty object and return it, so it will fail the consecutive test.
+      return Math.abs(offsetHeight + scrollTop - scrollHeight) <= 1 ? scrollTop : {};
     },
     5000
   );

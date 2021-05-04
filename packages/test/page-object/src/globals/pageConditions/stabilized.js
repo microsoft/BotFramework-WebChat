@@ -17,7 +17,7 @@ export default async function stabilized(name, getValue, count, timeout) {
         values.shift();
       }
 
-      if (values.length === count && values.every(value => value === values[0])) {
+      if (values.length === count && values.every(value => Object.is(value, values[0]))) {
         return true;
       }
 

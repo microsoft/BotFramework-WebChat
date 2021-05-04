@@ -16,10 +16,12 @@ export default async function focusedActivityInView(message) {
       const scrollableBottom = scrollableHeight + scrollableTop;
 
       return (
+        // If the activity is smaller than the viewport, wait until the whole activity is wholly contained in the viewport.
         (activityTop + 1 >= scrollableTop &&
           activityTop - 1 <= scrollableBottom &&
           activityBottom + 1 >= scrollableTop &&
           activityBottom - 1 <= scrollableBottom) ||
+        // If the activity is larger than the viewport, wait until the viewport is wholly contained in the activity.
         (scrollableTop + 1 >= activityTop &&
           scrollableTop - 1 <= activityBottom &&
           scrollableBottom + 1 >= activityTop &&
