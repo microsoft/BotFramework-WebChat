@@ -15,5 +15,5 @@ export default async function became(message, fn, timeout) {
     await sleep(CHECK_INTERVAL);
   }
 
-  throw new Error(`Timed out while waiting for page condition "${message}".`);
+  throw new Error(`Timed out while waiting for page condition "${message}" after ${timeout / 1000} seconds.`);
 }

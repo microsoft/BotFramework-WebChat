@@ -20,7 +20,7 @@
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useContext, useEffect, useState },
+        React: { useContext, useEffect, useMemo },
         ReactDOM: { render },
         testHelpers: {
           activityGrouping: {
@@ -45,15 +45,11 @@
 
         const TestHarness = () => {
           const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
-          const [store, setStore] = useState(() => testHelpers.createStore());
-
-          useEffect(() => {
-            setStore(createStore());
-          }, [directLine, setStore]);
+          const store = useMemo(() => testHelpers.createStore());
 
           return (
             <div className={classNames('test-harness', { 'test-harness--wide': wide })} dir={rtl ? 'rtl' : 'ltr'}>
-              {!!directLine && !!store && (
+              {!!directLine && (
                 <Composer
                   activityMiddleware={activityMiddleware}
                   directLine={directLine}
