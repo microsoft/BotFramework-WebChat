@@ -1,3 +1,5 @@
+import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
+
 // Use React from window (UMD) instead of import.
 const { React, React: { useEffect, useMemo, useState } = {} } = window;
 
