@@ -19,6 +19,7 @@ services:
       # SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
       # SE_OPTS: '--log-level WARNING'
       # SE_NODE_SESSION_TIMEOUT: '300'
+    shm_size: '2.5gb'
 
   selenium-hub:
     image: selenium/hub:3.141.59-zirconium
