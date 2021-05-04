@@ -45,10 +45,6 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     await webDriver.get(absoluteURL);
 
-    global.__operation__ = 'setting window size to 360x640';
-
-    await webDriver.manage().window().setRect({ height: 640, width: 360 });
-
     global.__operation__ = 'setting class name for body element';
 
     await webDriver.executeScript(() => {

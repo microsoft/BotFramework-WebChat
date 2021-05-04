@@ -79,6 +79,28 @@ async function checkGridCapacity() {
   }
 }
 
+async function prepareSession(sessionId) {
+  // The instance is being released back into the pool, we need to clean it up.
+
+  // If subsequent test is loading the same URL but different hash, it may not work.
+  await sendWebDriverCommand(sessionId, 'url', { url: 'about:blank' });
+
+  // It may have set a different window size.
+  await sendWebDriverCommand(sessionId, 'window/rect', { height: 640, width: 360 });
+
+  // Last test may have moved the mouse cursor.
+  await sendWebDriverCommand(sessionId, 'actions', {
+    actions: [
+      {
+        actions: [{ type: 'pointerMove', origin: 'viewport', duration: 100, x: 0, y: 0 }],
+        parameters: { pointerType: 'mouse' },
+        type: 'pointer',
+        id: 'default mouse'
+      }
+    ]
+  });
+}
+
 (async function () {
   const app = express();
   const pool = [];
@@ -137,6 +159,8 @@ async function checkGridCapacity() {
 
         setTimeout(() => housekeep(pool), INSTANCE_LIFE - INSTANCE_MIN_LIFE);
 
+        await prepareSession(entry.sessionId);
+
         console.log(
           `New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances: [${pool
             .map(runLeft)
@@ -158,10 +182,6 @@ async function checkGridCapacity() {
       await housekeep(pool);
 
       if (pool.includes(entry)) {
-        // The instance is being released back into the pool, we need to clean it up.
-        await sendWebDriverCommand(entry.sessionId, 'url', { url: 'about:blank' });
-        await sendWebDriverCommand(entry.sessionId, 'window/rect', { height: 360, width: 640 });
-
         console.log(
           `Releasing instance ${entry.sessionId} back to the pool, with ${~~(
             timeLeft(entry) / 1000
