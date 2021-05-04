@@ -1,4 +1,4 @@
-export default function webDriverPort() {
+export default function () {
   return (
     window.webDriverPort ||
     (window.webDriverPort = {

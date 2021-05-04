@@ -1,22 +1,9 @@
 import expect from './globals/expect';
-import getHost from './globals/host';
+import host from './globals/host';
+import run from './globals/run';
 import webDriverPort from './globals/webDriverPort';
-import webDriverProxy from './globals/webDriverProxy';
 
-window.run = (fn, doneOptions) => {
-  // We need to set up the channel port, before setting up other globals.
-  webDriverPort();
-
-  const host = getHost();
-
-  expect();
-  webDriverProxy();
-
-  window.addEventListener('error', event => host.error(event.error));
-
-  return Promise.resolve()
-    .then(host.ready)
-    .then(fn)
-    .then(() => host.done(doneOptions))
-    .catch(host.error);
-};
+expect();
+host();
+run();
+webDriverPort();

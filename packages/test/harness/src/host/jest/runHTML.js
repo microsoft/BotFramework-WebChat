@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 const allocateWebDriver = require('./allocateWebDriver');
 const createProxies = require('../common/createProxies');
-const dumpLogs = require('../dev/utils/dumpLogs');
+const dumpLogs = require('../common/dumpLogs');
 const mergeCoverageMap = require('./mergeCoverageMap');
 const registerProxies = require('../common/registerProxies');
 const sleep = require('../../common/utils/sleep');

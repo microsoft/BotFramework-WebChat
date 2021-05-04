@@ -1,4 +1,4 @@
-const getLogs = require('../../common/getLogs');
+const getBrowserLogs = require('./getBrowserLogs');
 
 function formatLogEntries(entries) {
   return entries
@@ -18,7 +18,7 @@ module.exports = async function dumpLogs(webDriver, { clear } = {}) {
   let logs;
 
   try {
-    logs = await getLogs(webDriver, { clear });
+    logs = await getBrowserLogs(webDriver, { clear });
   } catch (err) {
     logs = [];
   }

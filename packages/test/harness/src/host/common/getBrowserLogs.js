@@ -7,7 +7,7 @@ const IGNORE_CONSOLE_MESSAGE_FRAGMENTS = [
   'react-devtools'
 ];
 
-module.exports = async (webDriver, { clear = false } = {}) => {
+module.exports = async function getBrowserLogs(webDriver, { clear = false } = {}) {
   const newLogs = (await webDriver.manage().logs().get(logging.Type.BROWSER)).filter(
     // Ignore console entries that contains specified fragments.
     ({ message }) =>

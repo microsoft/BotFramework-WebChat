@@ -1,10 +1,10 @@
+const dumpLogs = require('../../common/dumpLogs');
+const override = require('../utils/override');
 const stripANSI = require('strip-ansi');
-const dumpLogs = require('../../utils/dumpLogs');
-const override = require('../../utils/override');
 
 // Send the error back to the browser console.
-module.exports = function (webDriver, error) {
-  return override(error, async error => {
+module.exports = (webDriver, error) =>
+  override(error, async function error(error) {
     /* istanbul ignore next */
     await webDriver.executeScript(
       (message, stack) => {
@@ -39,4 +39,3 @@ module.exports = function (webDriver, error) {
 
     global.__logs = [];
   });
-};

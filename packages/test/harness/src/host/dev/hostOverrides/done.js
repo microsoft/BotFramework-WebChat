@@ -1,9 +1,9 @@
-const dumpLogs = require('../../utils/dumpLogs');
-const override = require('../../utils/override');
+const dumpLogs = require('../../common/dumpLogs');
+const override = require('../utils/override');
 
 // Send the completion back to the browser console.
-module.exports = function (webDriver, done) {
-  return override(done, undefined, async () => {
+module.exports = (webDriver, done) =>
+  override(done, undefined, async function done() {
     /* istanbul ignore next */
     await webDriver.executeScript(() => {
       console.log(
@@ -28,4 +28,3 @@ module.exports = function (webDriver, done) {
 
     global.__logs = [];
   });
-};

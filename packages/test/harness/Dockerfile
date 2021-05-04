@@ -6,10 +6,10 @@ RUN apk update && \
 
 ENV PORT=80
 EXPOSE 80
-WORKDIR /var/jestserver/
-ENTRYPOINT ["node", "src/host/jestserver/"]
+WORKDIR /var/jest-server/
+ENTRYPOINT ["node", "src/host/jest-server/"]
 
-ADD package*.json /var/jestserver/
+ADD package*.json /var/jest-server/
 RUN npm ci
 
-ADD . /var/jestserver/
+ADD . /var/jest-server/

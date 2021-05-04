@@ -1,8 +1,8 @@
 const createProxies = require('../common/createProxies');
-const overrideDone = require('./proxyOverrides/host/done');
-const overrideError = require('./proxyOverrides/host/error');
-const overrideSnapshot = require('./proxyOverrides/host/snapshot');
-const overrideWindowSize = require('./proxyOverrides/host/windowSize');
+const done = require('./hostOverrides/done');
+const error = require('./hostOverrides/error');
+const snapshot = require('./hostOverrides/snapshot');
+const windowSize = require('./hostOverrides/windowSize');
 
 module.exports = function createDevProxies(webDriver) {
   const { host, ...proxies } = createProxies(webDriver);
@@ -10,10 +10,10 @@ module.exports = function createDevProxies(webDriver) {
   return {
     host: {
       ...host,
-      done: overrideDone(webDriver, host.done),
-      error: overrideError(webDriver, host.error),
-      snapshot: overrideSnapshot(webDriver, host.snapshot),
-      windowSize: overrideWindowSize(webDriver, host.windowSize)
+      done: done(webDriver, host.done),
+      error: error(webDriver, host.error),
+      snapshot: snapshot(webDriver, host.snapshot),
+      windowSize: windowSize(webDriver, host.windowSize)
     },
     ...proxies
   };

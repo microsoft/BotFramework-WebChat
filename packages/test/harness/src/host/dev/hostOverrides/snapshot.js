@@ -1,5 +1,5 @@
-module.exports = function (webDriver) {
-  return async () => {
+module.exports = webDriver =>
+  async function snapshot() {
     const base64 = await webDriver.takeScreenshot();
 
     /* istanbul ignore next */
@@ -13,4 +13,3 @@ module.exports = function (webDriver) {
       `data:image/png;base64,${base64}`
     );
   };
-};

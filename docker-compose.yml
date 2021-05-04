@@ -83,10 +83,9 @@ services:
       - '5081:80'
     stop_grace_period: 0s
 
-  jestserver:
+  jest-server:
     build:
       context: ./packages/test/harness/
-      dockerfile: jestserver.dockerfile
     ports:
       - '4445:4445'
     stop_grace_period: 0s

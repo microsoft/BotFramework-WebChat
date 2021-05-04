@@ -6,7 +6,6 @@
   "license": "MIT",
   "private": true,
   "browser": {
-    "path": false,
     "selenium-webdriver": false
   },
   "scripts": {

@@ -1,5 +1,5 @@
-module.exports = function (webDriver) {
-  return async (width, height, element) => {
+module.exports = webDriver =>
+  async function windowSize(width, height, element) {
     /* istanbul ignore next */
     element &&
       (await webDriver.executeScript(
@@ -17,4 +17,3 @@ module.exports = function (webDriver) {
         height
       ));
   };
-};
