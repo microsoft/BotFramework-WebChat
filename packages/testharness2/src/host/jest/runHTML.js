@@ -61,7 +61,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     await expect(proxies.host.readyPromise).resolves.toBeUndefined();
 
     // Wait until test call done() or errored out.
-    await expect(proxies.host.donePromise).resolves.toBeUndefined();
+    await proxies.host.donePromise;
 
     const postCoverage = await webDriver.executeScript(() => window.__coverage__);
 

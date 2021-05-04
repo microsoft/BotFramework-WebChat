@@ -4,8 +4,10 @@
     [
       "@babel/preset-env",
       {
-        "forceAllTransforms": true,
-        "modules": false
+        "modules": false,
+        "targets": {
+          "chrome": "90"
+        }
       }
     ]
   ]

@@ -1,3 +1,5 @@
+import 'core-js/stable';
+
 import { EventIterator } from 'event-iterator';
 import classNames from 'classnames';
 import createDeferred from 'p-defer';

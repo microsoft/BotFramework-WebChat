@@ -1,6 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-
 import expect from './globals/expect';
 import getHost from './globals/host';
 import webDriverPort from './globals/webDriverPort';

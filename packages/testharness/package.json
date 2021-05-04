@@ -25,7 +25,6 @@
     "@babel/preset-env": "^7.13.12",
     "babel-loader": "^8.2.2",
     "concurrently": "^6.0.1",
-    "core-js": "^3.10.0",
     "css-loader": "^5.2.0",
     "script-loader": "^0.7.2",
     "source-map-loader": "^1.1.3",
