@@ -40,33 +40,45 @@
         await host.sendKeys('ENTER');
         // first focus inside carousel
         await pageConditions.became(
-          'focus on the attachment',
-          () => document.activeElement.getAttribute('aria-roledescription', 'attachment'),
+          'focus on the first attachment',
+          () =>
+            document.activeElement.tagName === 'LI' &&
+            document.activeElement === document.activeElement.parentElement.children[0],
           1000
         );
         await host.snapshot();
 
-        // second focus inside carousel
+        // Second focus is not very stable because of its position, we are skipping snapshotting it.
+        // Third focus inside carousel
         await host.sendTab();
-        await pageConditions.stabilized(
-          'carousel',
-          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft
+        await host.sendTab();
+        await pageConditions.became(
+          'focus on the third attachment',
+          () =>
+            document.activeElement.tagName === 'LI' &&
+            document.activeElement === document.activeElement.parentElement.children[2],
+          1000
         );
-        await host.snapshot();
-
-        // third focus inside carousel
-        await host.sendTab();
         await pageConditions.stabilized(
           'carousel',
-          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft
+          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft,
+          5,
+          5000
         );
         await host.snapshot();
 
         // Press ESCAPE key should focus the activity.
         await host.sendKeys('ESCAPE');
+        await pageConditions.became(
+          'focus on the transcript with active descendant on the activity',
+          () => /(^|\s)webchat__basic-transcript(\s|$)/.test(document.activeElement.className),
+          1000
+        );
         await pageConditions.stabilized(
           'carousel',
-          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft
+          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft,
+          5,
+          5000
         );
         await host.snapshot();
       });

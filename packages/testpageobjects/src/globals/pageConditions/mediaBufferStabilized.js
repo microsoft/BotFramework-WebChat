@@ -7,5 +7,5 @@ function getBufferedEnd(mediaElement) {
 }
 
 export default function mediaBuffered(mediaElement) {
-  return stabilized('media', () => getBufferedEnd(mediaElement));
+  return stabilized('media', () => getBufferedEnd(mediaElement), 5, 15000);
 }
