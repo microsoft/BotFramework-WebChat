@@ -18,7 +18,6 @@
         ReactDOM: { render },
         WebChat: {
           Components: { BasicWebChat, Composer },
-          createDirectLine,
           hooks: { useConnectivityStatus, useSendMessage }
         }
       } = window;
@@ -39,7 +38,7 @@
 
           render(
             <Composer
-              directLine={window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })}
+              directLine={WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })}
               store={testHelpers.createStore()}
               styleOptions={{ internalLiveRegionFadeAfter: 60000 }}
             >

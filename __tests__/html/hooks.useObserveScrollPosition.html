@@ -16,13 +16,12 @@
         React: { useCallback, useLayoutEffect, useRef, useState },
         WebChat: {
           Components: { BasicWebChat, Composer },
-          createDirectLine,
           hooks: { useObserveScrollPosition, useSendMessage }
         }
       } = window;
 
       run(async function () {
-        const directLine = createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
         const RunFunction = ({ fn }) => {

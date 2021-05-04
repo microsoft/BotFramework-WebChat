@@ -9,15 +9,11 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const {
-        WebChat: { createDirectLine }
-      } = window;
-
       run(
         async function () {
-          window.WebChat.renderWebChat(
+          WebChat.renderWebChat(
             {
-              directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+              directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
               role: 'invalid',
               store: testHelpers.createStore()
             },

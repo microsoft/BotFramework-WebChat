@@ -233,15 +233,15 @@
           let adapters;
 
           if (channelType === 'dlspeech') {
-            adapters = await window.WebChat.createDirectLineSpeechAdapters({
+            adapters = await WebChat.createDirectLineSpeechAdapters({
               audioConfig,
               audioContext,
               fetchCredentials: () => speechCredentials
             });
           } else {
             adapters = {
-              directLine: window.WebChat.createDirectLine({ token: await fetchDirectLineToken() }),
-              webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+              directLine: WebChat.createDirectLine({ token: await fetchDirectLineToken() }),
+              webSpeechPonyfillFactory: WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
                 audioConfig,
                 audioContext,
                 credentials: speechCredentials,
@@ -250,7 +250,7 @@
             };
           }
 
-          window.WebChat.renderWebChat(
+          WebChat.renderWebChat(
             {
               ...adapters,
               store: testHelpers.createStore()

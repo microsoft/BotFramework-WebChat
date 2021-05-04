@@ -43,9 +43,9 @@
           return next(action);
         });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({
+            directLine: WebChat.createDirectLine({
               token: await testHelpers.token.fetchDirectLineToken()
             }),
             store

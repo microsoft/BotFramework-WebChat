@@ -14,7 +14,7 @@
         // This variable must be declared within scope
         const ONLINE = 2;
 
-        const workingDirectLine = window.WebChat.createDirectLine(options);
+        const workingDirectLine = WebChat.createDirectLine(options);
 
         return {
           activity$: workingDirectLine.activity$,
@@ -41,7 +41,7 @@
           styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
         };
 
-        const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+        const render = () => WebChat.renderWebChat(props, document.getElementById('webchat'));
 
         render();
 

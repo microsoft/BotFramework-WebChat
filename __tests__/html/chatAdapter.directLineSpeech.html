@@ -10,9 +10,9 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            ...(await window.WebChat.createDirectLineSpeechAdapters({
+            ...(await WebChat.createDirectLineSpeechAdapters({
               fetchCredentials: await testHelpers.token.fetchDirectLineSpeechCredentials()
             })),
             store: testHelpers.createStore()

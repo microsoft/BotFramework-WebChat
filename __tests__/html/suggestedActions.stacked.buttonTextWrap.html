@@ -14,12 +14,10 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const { createDirectLine, renderWebChat } = window.WebChat;
-
       run(async function () {
         await host.windowSize(300, undefined, document.getElementById('webchat'));
 
-        const directLine = createDirectLine({ token: await testHelpers..fetchDirectLineToken() });
+        const directLine = WebChat.createDirectLine({ token: await testHelpers..fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
         const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
@@ -35,7 +33,7 @@
           suggestedActionsStackedLayoutButtonTextWrap: suggestedActionsStackedLayoutButtonTextWrap === 'true' || null
         };
 
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store,

@@ -16,10 +16,10 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
-        const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             activityMiddleware: testHelpers.createRunHookActivityMiddleware(),
             directLine,

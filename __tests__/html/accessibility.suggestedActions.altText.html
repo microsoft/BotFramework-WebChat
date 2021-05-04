@@ -9,10 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const {
-        WebChat: { renderWebChat }
-      } = window;
-
       run(async function () {
         const directLine = testHelpers.createDirectLineWithTranscript([
           {
@@ -35,7 +31,7 @@
           }
         ]);
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store: testHelpers.createStore()

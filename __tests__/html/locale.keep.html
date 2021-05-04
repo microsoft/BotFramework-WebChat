@@ -11,9 +11,9 @@
     <script>
       run(async function () {
         const store = testHelpers.createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
 

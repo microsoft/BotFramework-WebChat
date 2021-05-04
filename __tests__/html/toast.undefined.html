@@ -34,7 +34,7 @@
             return false;
           };
 
-          const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+          const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
           const store = testHelpers.createStore();
 
           render(

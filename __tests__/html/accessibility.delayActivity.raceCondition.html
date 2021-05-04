@@ -9,8 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const clock = (window.clock = lolex.install());
-
       // This test is to make sure we don't regress issue #3431, a race condition:
 
       // - After created a conversation
@@ -24,6 +22,8 @@
       // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
 
       run(async function () {
+        const clock = lolex.install();
+
         const directLine = testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             return new Observable(({ complete, next }) => {
@@ -60,7 +60,7 @@
           return next(action);
         });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store

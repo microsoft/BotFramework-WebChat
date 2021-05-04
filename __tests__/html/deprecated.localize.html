@@ -26,7 +26,7 @@
           await new Promise(resolve =>
             ReactDOM.render(
               <Composer
-                directLine={window.WebChat.createDirectLine({ token })}
+                directLine={WebChat.createDirectLine({ token })}
                 locale={locale}
                 store={testHelpers.createStore()}
               >

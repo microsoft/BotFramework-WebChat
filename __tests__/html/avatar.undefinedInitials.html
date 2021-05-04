@@ -13,8 +13,7 @@
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useMemo },
-        WebChat: { renderWebChat }
+        React: { useMemo }
       } = window;
 
       run(async function () {
@@ -53,7 +52,7 @@
           }
         ]);
 
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             avatarMiddleware,
             directLine,

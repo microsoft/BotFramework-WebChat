@@ -9,11 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const {
-        lolex,
-        WebChat: { renderWebChat }
-      } = window;
-
       run(async function () {
         const clock = lolex.install();
         const directLine = await testHelpers.createDirectLineWithTranscript([
@@ -60,7 +55,7 @@
           }
         ]);
 
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store: testHelpers.createStore(),

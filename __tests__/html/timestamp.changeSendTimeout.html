@@ -10,7 +10,7 @@
     <div id="webchat"></div>
     <script>
       function createDirectLineForTest(options) {
-        const workingDirectLine = window.WebChat.createDirectLine(options);
+        const workingDirectLine = WebChat.createDirectLine(options);
 
         return {
           activity$: workingDirectLine.activity$,
@@ -23,8 +23,6 @@
       run(async function () {
         const clock = lolex.install();
 
-        window.clock = clock;
-
         async function createWebChat() {
           let props = {
             directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
@@ -34,7 +32,7 @@
             }
           };
 
-          const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+          const render = () => WebChat.renderWebChat(props, document.getElementById('webchat'));
 
           render();
 

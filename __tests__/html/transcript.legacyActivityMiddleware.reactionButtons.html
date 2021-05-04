@@ -84,7 +84,7 @@
       run(async function () {
         const now = Date.now();
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             activityMiddleware,
             directLine: await testHelpers.createDirectLineWithTranscript('multiple-lines-multiple-files.json'),

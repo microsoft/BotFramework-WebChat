@@ -12,7 +12,7 @@
       function createDirectLineForTest(options) {
         const CONNECTING = 1;
         const ONLINE = 2;
-        const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+        const reconnectingDirectLine = WebChat.createDirectLine(options);
 
         return {
           activity$: reconnectingDirectLine.activity$,
@@ -36,7 +36,7 @@
       run(async function () {
         const clock = lolex.install();
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore(),

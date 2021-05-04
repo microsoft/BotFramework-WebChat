@@ -22,15 +22,13 @@
           }
         ]);
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
-
-        window.clock = clock;
 
         await pageConditions.webChatRendered();
 

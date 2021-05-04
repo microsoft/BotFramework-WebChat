@@ -20,7 +20,7 @@
           const mostRecent = messages.pop() === activity;
 
           if (attachment.contentType === 'application/vnd.microsoft.card.adaptive') {
-            return React.createElement(window.WebChat.Components.AdaptiveCardContent, {
+            return React.createElement(WebChat.Components.AdaptiveCardContent, {
               content: attachment.content,
               disabled: !mostRecent
             });
@@ -29,10 +29,10 @@
           return next(card);
         };
 
-        const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             attachmentMiddleware,
             directLine,

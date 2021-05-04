@@ -13,7 +13,7 @@
         const clock = lolex.install();
         const directLine = testHelpers.accessibility.createDirectLineForTest({ withReplyToId: false });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store: testHelpers.createStore()

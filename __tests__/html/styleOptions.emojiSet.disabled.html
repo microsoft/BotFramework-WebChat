@@ -10,9 +10,9 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore(),
             styleOptions: {
               emojiSet: false

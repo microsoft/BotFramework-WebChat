@@ -29,9 +29,9 @@
             return next(action);
           });
 
-          window.WebChat.renderWebChat(
+          WebChat.renderWebChat(
             {
-              directLine: window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+              directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
               store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },

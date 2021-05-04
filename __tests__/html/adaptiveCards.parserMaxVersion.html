@@ -9,43 +9,43 @@
   <body>
     <div id="webchat"></div>
     <script>
-      const directLine = testHelpers.createDirectLineWithTranscript([
-        {
-          attachments: [
-            {
-              contentType: 'application/vnd.microsoft.card.adaptive',
-              content: {
-                type: 'AdaptiveCard',
-                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-                version: '1.3',
-                body: [
-                  {
-                    type: 'Input.Text',
-                    placeholder: 'Placeholder text',
-                    isRequired: true,
-                    errorMessage: 'Error message',
-                    label: 'Label',
-                    id: 'id-1'
-                  }
-                ]
-              }
-            }
-          ],
-          from: {
-            id: 'bot',
-            role: 'bot'
-          },
-          id: '1',
-          timestamp: new Date().toISOString(),
-          type: 'message'
-        }
-      ]);
-
-      const store = testHelpers.createStore();
-
       run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  type: 'AdaptiveCard',
+                  $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  version: '1.3',
+                  body: [
+                    {
+                      type: 'Input.Text',
+                      placeholder: 'Placeholder text',
+                      isRequired: true,
+                      errorMessage: 'Error message',
+                      label: 'Label',
+                      id: 'id-1'
+                    }
+                  ]
+                }
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        const store = testHelpers.createStore();
+
         function renderWebChatWithMaxVersion(adaptiveCardsParserMaxVersion) {
-          window.WebChat.renderWebChat(
+          WebChat.renderWebChat(
             {
               directLine,
               store,
