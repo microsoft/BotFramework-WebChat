@@ -15,6 +15,7 @@ export default function scrollToBottomCompleted() {
       // If it is not at the bottom, create a new empty object and return it, so it will fail the consecutive test.
       return Math.abs(offsetHeight + scrollTop - scrollHeight) <= 1 ? scrollTop : {};
     },
+    5,
     5000
   );
 }
