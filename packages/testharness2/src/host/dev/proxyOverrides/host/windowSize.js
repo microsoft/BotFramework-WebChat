@@ -1,5 +1,6 @@
 module.exports = function (webDriver) {
   return async (width, height, element) => {
+    /* istanbul ignore next */
     element &&
       (await webDriver.executeScript(
         (element, width, height) => {

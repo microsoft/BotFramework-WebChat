@@ -73,6 +73,7 @@ module.exports = function createHost(webDriver) {
 
       await webDriver.manage().window().setRect({ height, width });
 
+      /* istanbul ignore next */
       element &&
         (await webDriver.executeScript(
           (element, width, height) => {

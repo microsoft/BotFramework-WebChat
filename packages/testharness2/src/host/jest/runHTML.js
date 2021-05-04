@@ -47,6 +47,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = 'setting class name for body element';
 
+    /* istanbul ignore next */
     await webDriver.executeScript(() => {
       document.body.className = 'jest';
     });
