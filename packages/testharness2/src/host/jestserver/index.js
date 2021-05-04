@@ -49,22 +49,6 @@ function housekeep(pool) {
   );
 }
 
-async function pingSession(sessionId) {
-  try {
-    await sendWebDriverCommand(sessionId, 'url');
-  } catch (err) {
-    console.log(
-      `Instance ${entry.sessionId} does not respond, taking out of the pool, with ${~~(
-        timeLeft(entry) / 1000
-      )} seconds and ${runLeft(entry)} runs left.`
-    );
-
-    entry.numUsed = Infinity;
-
-    throw new Error('Session failed to response to ping.');
-  }
-}
-
 async function checkGridCapacity() {
   try {
     const {
@@ -118,22 +102,24 @@ async function prepareSession(sessionId) {
         entry.busy = true;
 
         try {
-          await pingSession(entry.sessionId);
+          await prepareSession(entry.sessionId);
         } catch (err) {
-          entry.error = new Error('Failed to acquire session.');
+          entry.error = new Error('Failed to prepare session.');
         }
 
-        console.log(
-          `Acquiring instance ${entry.sessionId}, with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
-            entry
-          )} runs left.`
-        );
+        if (!entry.error) {
+          console.log(
+            `Acquiring instance ${entry.sessionId}, with ${~~(timeLeft(entry) / 1000)} seconds and ${runLeft(
+              entry
+            )} runs left.`
+          );
 
-        entry.numUsed++;
+          entry.numUsed++;
 
-        // TODO: If it was allocated for more than 30s, kill it.
+          // TODO: If it was allocated for more than 30s, kill it.
 
-        return res.send(entry.session);
+          return res.send(entry.session);
+        }
       }
 
       // Check if the grid has capacity.
