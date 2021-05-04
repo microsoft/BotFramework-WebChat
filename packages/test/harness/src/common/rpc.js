@@ -4,6 +4,12 @@ const random = require('math-random');
 const marshal = require('./marshal');
 const unmarshal = require('./unmarshal');
 
+/**
+ * Enables remoting to an object over receive/send ports using a RPC mechanism.
+ *
+ * This implementation only support arguments of primitive types. Look at `marshal.js` and `unmarshal.js` for supported types.
+ * It does not support arguments of functions, such as callback functions.
+ */
 module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
   const invocations = {};
 

@@ -1,10 +1,9 @@
 const { readFile } = require('fs').promises;
+const isWSL2 = require('./isWSL2');
 
+/** Finds the Windows (host) IP address when running under WSL2. */
 module.exports = async function findHostIP() {
-  // https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip
-  const procVersion = await readFile('/proc/version');
-
-  if (/wsl2/iu.test(procVersion)) {
+  if (await isWSL2()) {
     try {
       const content = await readFile('/etc/resolv.conf');
 

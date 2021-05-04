@@ -1,3 +1,5 @@
+// In dev mode, we don't resize the window.
+
 module.exports = webDriver =>
   async function windowSize(width, height, element) {
     /* istanbul ignore next */

@@ -12,10 +12,12 @@ const sendTab = require('./sendTab');
 const snapshot = require('./snapshot');
 const windowSize = require('./windowSize');
 
+/** RPC object on the Jest side. */
 module.exports = function createHost(webDriver) {
   const doneDeferred = createDeferred();
   const readyDeferred = createDeferred();
 
+  // Modifying this map will also requires modifying the corresponding RPC dummy at /src/browser/proxies/host.js
   return {
     click: click(),
     done: done(webDriver, doneDeferred.resolve),

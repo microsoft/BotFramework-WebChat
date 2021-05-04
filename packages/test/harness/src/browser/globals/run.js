@@ -8,6 +8,8 @@ export default function () {
 
       window.addEventListener('error', event => host.error(event.error));
 
+      // Run the test, signal start by host.ready().
+      // On success or failure, call host.done() or host.error() correspondingly.
       return Promise.resolve()
         .then(host.ready)
         .then(fn)

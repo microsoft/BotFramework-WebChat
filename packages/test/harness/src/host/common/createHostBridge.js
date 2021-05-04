@@ -26,6 +26,10 @@ class HostBridgePort {
   }
 }
 
+/**
+ * This is a bridge to talk to the JavaScript VM in the browser, via Web Driver executeScript().
+ * The object pattern is based on W3C MessageChannel and MessagePort standard.
+ */
 class HostBridge extends EventTarget {
   constructor(driver) {
     super();

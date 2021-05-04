@@ -1,11 +1,9 @@
-const { readFile } = require('fs').promises;
 const { spawn } = require('child_process');
+const isWSL2 = require('./isWSL2');
 
-module.exports = async function findHostIP() {
-  // https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip
-  const procVersion = await readFile('/proc/version');
-
-  if (/wsl2/iu.test(procVersion)) {
+/** Finds the Linux IP address when running under WSL2. */
+module.exports = async function findLocalIP() {
+  if (await isWSL2()) {
     try {
       const childProcess = spawn('hostname', ['-I']);
 

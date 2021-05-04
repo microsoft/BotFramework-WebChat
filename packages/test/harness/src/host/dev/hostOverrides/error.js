@@ -1,3 +1,5 @@
+// In dev mode, draw a red cross when test failed.
+
 const dumpLogs = require('../../common/dumpLogs');
 const override = require('../utils/override');
 const stripANSI = require('strip-ansi');

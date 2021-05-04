@@ -1,3 +1,8 @@
+/**
+ * `MessagePort` from browser to Jest.
+ *
+ * Jest will frequently poll the content of `window.webDriver.__queue`.
+ */
 export default function () {
   return (
     window.webDriverPort ||

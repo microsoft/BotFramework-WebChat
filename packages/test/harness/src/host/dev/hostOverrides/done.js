@@ -1,3 +1,5 @@
+// In dev mode, draw a green tick when test succeeded.
+
 const dumpLogs = require('../../common/dumpLogs');
 const override = require('../utils/override');
 

@@ -21,6 +21,7 @@ export default function scrolling() {
         scrollTops.splice(0, 1);
       }
 
+      // We cannot use "stabilized" helper condition because this is waiting for 5 consecutive DIFFERENT values.
       if (scrollTops.length === COUNT && unique(scrollTops)) {
         return true;
       }

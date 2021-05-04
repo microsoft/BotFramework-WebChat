@@ -106,25 +106,6 @@ function createInputCardActivity(index = 0) {
   };
 }
 
-// async function expectScroll(element, eventInitDict, shouldScroll) {
-//   const scrollable = elements.transcriptScrollable();
-
-//   const scrollTopAtBottommost = scrollable.scrollHeight - scrollable.offsetHeight;
-
-//   scrollable.scrollTop = scrollTopAtBottommost;
-
-//   Simulate.keyDown(element, eventInitDict);
-
-//   // "scrollTop" may not move immediately, but probably within the next 500 ms.
-//   await new Promise(resolve => setTimeout(resolve, 500));
-
-//   if (shouldScroll) {
-//     expect(scrollable.scrollTop).toBeLessThan(scrollTopAtBottommost, `Should scroll for ${element.outerHTML}`);
-//   } else {
-//     expect(scrollable.scrollTop).toBe(scrollTopAtBottommost, `Should not scroll for ${element.outerHTML}`);
-//   }
-// }
-
 function generateTranscript() {
   const messages = [
     'Do incididunt qui sit nulla dolor.',

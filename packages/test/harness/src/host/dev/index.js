@@ -1,3 +1,6 @@
+// This will run an instance of Chrome via Web Driver locally.
+// It will be headed (vs. headless) and is used for development purpose only.
+
 const { Builder, logging } = require('selenium-webdriver');
 const { Options: ChromeOptions, ServiceBuilder: ChromeServiceBuilder } = require('selenium-webdriver/chrome');
 const AbortController = require('abort-controller');

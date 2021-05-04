@@ -1,3 +1,8 @@
+// This is a proxy server for Web Driver to help pooling sessions.
+// Instead of creating/deleting sessions, this proxy server will preserve the session in-between, up to a limit (5 runs or 3 mins).
+// Since Web Chat is uniform on capabilities (e.g. window size, etc), this implementation works for Web Chat.
+// API reference: https://www.w3.org/TR/webdriver1/
+
 require('global-agent/bootstrap');
 
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
