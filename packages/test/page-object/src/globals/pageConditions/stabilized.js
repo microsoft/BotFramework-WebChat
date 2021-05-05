@@ -1,6 +1,7 @@
 import became from './became';
 import sleep from '../../utils/sleep';
 
+// 17 ms is a frame on a display with 60 Hz refresh rate.
 const WAIT_INTERVAL = 17;
 
 export default async function stabilized(name, getValue, count, timeout) {
