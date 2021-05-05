@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Cleanup repo URLs to point to main branch, by [@corinagum](https://github.com/corinagum), in PR [#3870](https://github.com/microsoft/BotFramework-WebChat/pull/3870)
 -  Improved test harness and added browser pooling, by [@compulim](https://github.com/compulim), in PR [#3871](https://github.com/microsoft/BotFramework-WebChat/pull/3871)
+-  Updated [`husky`](https://npmjs.com/package/husky), [`lint-staged`](https://npmjs.com/package/lint-staged) and corresponding `precommit` scripts, by [@compulim](https://github.com/compulim), in PR [#3871](https://github.com/microsoft/BotFramework-WebChat/pull/3871)
 
 ### Fixed
 
