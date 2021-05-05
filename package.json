@@ -21,7 +21,6 @@
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "build": "lerna run --ignore playground --stream build",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "docker": "concurrently \"npm run docker:up\" \"npm run docker:watch\"",
     "docker:ci": "npm run docker:up -- --detach",
     "docker:down": "docker-compose -f docker-compose-wsl2.yml down --rmi all",
@@ -49,9 +48,8 @@
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
     "stop:docker": "echo This command has been renamed to \"npm run docker:down\" && npm run docker:down",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
-    "test": "jest",
-    "test:ci": "npm run test -- --ci --coverage true --no-watch",
-    "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
+    "test": "jest --watch",
+    "test:ci": "npm run test -- --ci --coverage true --no-watch"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.13.0",
