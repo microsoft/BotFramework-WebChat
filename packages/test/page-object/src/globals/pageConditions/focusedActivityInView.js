@@ -1,5 +1,5 @@
 import became from './became';
-import focusedActivity from '../pageElements/focusedActivity';
+import getFocusedActivity from '../pageElements/focusedActivity';
 import scrollStabilized from './scrollStabilized';
 import transcriptScrollable from '../pageElements/transcriptScrollable';
 
@@ -9,7 +9,13 @@ export default async function focusedActivityInView(message) {
   await became(
     `focused activity scroll into view${message ? ': ' + message : ''}`,
     () => {
-      const { offsetHeight: activityHeight, offsetTop: activityTop } = focusedActivity();
+      const focusedActivity = getFocusedActivity();
+
+      if (!focusedActivity) {
+        return false;
+      }
+
+      const { offsetHeight: activityHeight, offsetTop: activityTop } = focusedActivity;
       const { offsetHeight: scrollableHeight, scrollTop: scrollableTop } = transcriptScrollable();
 
       const activityBottom = activityHeight + activityTop;
