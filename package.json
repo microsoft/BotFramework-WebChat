@@ -37,6 +37,8 @@
     "precommit:eslint:directlinespeech": "cd packages && cd directlinespeech && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react": "cd packages && cd isomorphic-react && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run precommit:eslint",
+    "precommit:eslint:test-harness": "cd packages && cd test && cd harness && npm run precommit:eslint",
+    "precommit:eslint:test-page-object": "cd packages && cd test && cd page-object && npm run precommit:eslint",
     "precommit:typecheck": "concurrently --raw \"npm run precommit:typecheck:*\"",
     "precommit:typecheck:api": "cd packages && cd api && npm run precommit:typecheck",
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
