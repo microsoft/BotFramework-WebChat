@@ -47,10 +47,9 @@
 
         // Send "markdown", so it show a message long enough to occupy the whole scroll view.
         await renderWithFunction(() => useSendMessage()('markdown'));
-        await pageConditions.minNumActivitiesShown(2);
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
-        await pageConditions.scrolling();
+        await pageConditions.became('scrolling', () => pageElements.transcriptScrollable().scrollTop, 5000);
         await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }));
 
         // Wait until the view is not sticky.
@@ -68,10 +67,7 @@
         await pageConditions.newMessageButtonHidden();
 
         // Tests to add:
-        // - "New messages" button shown, then issue a `scrollToEnd()`, the "New messages" button should gone immediately
-        // - "New messages" button shown, then issue a `scrollTo({ scrollTop: 100 })`, the "New messages" button should stay
         // - Type "help", scroll to top, type "help" again, the "New messages" button should not flash-appear
-        // - Calling "useObserveScrollPosition" should get some scroll positions
       });
     </script>
   </body>

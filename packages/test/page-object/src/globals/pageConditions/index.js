@@ -9,7 +9,6 @@ import minNumActivitiesShown from './minNumActivitiesShown';
 import newMessageButtonHidden from './newMessageButtonHidden';
 import newMessageButtonShown from './newMessageButtonShown';
 import numActivitiesShown from './numActivitiesShown';
-import scrolling from './scrolling';
 import scrollStabilized from './scrollStabilized';
 import scrollToBottomCompleted from './scrollToBottomCompleted';
 import stabilized from './stabilized';
@@ -31,7 +30,6 @@ export {
   minNumActivitiesShown,
   newMessageButtonShown,
   numActivitiesShown,
-  scrolling,
   scrollStabilized,
   scrollToBottomCompleted,
   stabilized,
