@@ -1,6 +1,6 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment jsdom */
+
+/* eslint no-magic-numbers: "off" */
 
 import hasResolved from 'has-resolved';
 
@@ -72,9 +72,9 @@ function createStreamFromChunks(format, chunks) {
         new Uint8Array(destination).set(new Uint8Array(chunk));
 
         return Promise.resolve(chunk.byteLength);
-      } else {
-        return Promise.resolve(0);
       }
+
+      return Promise.resolve(0);
     }
   };
 }
@@ -95,13 +95,11 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
     )
   );
 
-  const nodes = audioContext.connectedNodes.map(bufferSource => {
-    return {
-      channelData: bufferSource.buffer.channelData.map(arrayBuffer => new Float32Array(arrayBuffer.buffer, 0, 10)),
-      startAtTime: bufferSource.startAtTime,
-      samplesPerSec: bufferSource.buffer.samplesPerSec
-    };
-  });
+  const nodes = audioContext.connectedNodes.map(bufferSource => ({
+    channelData: bufferSource.buffer.channelData.map(arrayBuffer => new Float32Array(arrayBuffer.buffer, 0, 10)),
+    startAtTime: bufferSource.startAtTime,
+    samplesPerSec: bufferSource.buffer.samplesPerSec
+  }));
 
   expect(nodes).toMatchInlineSnapshot(`
     Array [
@@ -173,6 +171,8 @@ test('should stop when abort is called after all buffer queued', async () => {
 test('should stop when abort is called before first buffer is queued', async () => {
   const audioContext = createMockAudioContext();
   const abortController = new AbortController();
+
+  // eslint-disable-next-line no-empty-function
   const read = jest.fn(() => new Promise(() => {}));
 
   const playPromise = playCognitiveServicesStream(
