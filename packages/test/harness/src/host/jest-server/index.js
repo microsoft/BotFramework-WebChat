@@ -11,6 +11,7 @@ const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middl
 const express = require('express');
 const fetch = require('node-fetch');
 const removeInline = require('./removeInline');
+const sleep = require('../../common/utils/sleep');
 
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
 const INSTANCE_MIN_LIFE = 30000; // The instance must have at least 30 seconds left, otherwise, we should recycle it as we don't have much time left.
@@ -88,16 +89,31 @@ function housekeep(pool) {
 }
 
 async function checkGridCapacity() {
-  try {
-    const {
-      value: { message, ready }
-    } = await sendWebDriverCommand(undefined, 'status');
+  // We will wait for up to 2 seconds for the grid to come back with capacity.
+  const MAX_WAIT_FOR_CAPACITY = 2000;
 
-    if (!ready) {
-      throw new Error(`Grid does NOT have capacity for new instance: ${message}.`);
+  let message;
+  let ready;
+
+  for (const start = Date.now(); Date.now() - start < MAX_WAIT_FOR_CAPACITY; ) {
+    try {
+      const { value } = await sendWebDriverCommand(undefined, 'status');
+
+      message = value.message;
+      ready = value.ready;
+
+      if (ready) {
+        break;
+      }
+    } catch (err) {
+      throw new Error(`Grid does not respond: ${err.message}`);
     }
-  } catch (err) {
-    throw new Error(`Grid does not respond: ${err.message}`);
+
+    await sleep(100);
+  }
+
+  if (!ready) {
+    throw new Error(`Grid does not have capacity for new instance: ${message}.`);
   }
 }
 
