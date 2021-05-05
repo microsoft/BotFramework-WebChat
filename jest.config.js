@@ -49,7 +49,7 @@ module.exports = {
             testResult.failureMessages.forEach(message => {
               const match = /See (diff|screenshot) for details: (.*)/m.exec(message);
 
-              match && testResultNode.ele('ResultFiles').ele('ResultFile').att('path', match[1]);
+              match && testResultNode.ele('ResultFiles').ele('ResultFile').att('path', match[2]);
             });
 
             testResultNode.att(
