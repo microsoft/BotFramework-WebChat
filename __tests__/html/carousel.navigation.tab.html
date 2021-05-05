@@ -26,6 +26,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
 
         // Move focus to carousel activity
         await host.sendShiftTab();
