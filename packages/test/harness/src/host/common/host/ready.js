@@ -1,5 +1,4 @@
-module.exports = resolve => {
-  return function ready() {
+module.exports = resolve =>
+  function ready() {
     resolve();
   };
-};

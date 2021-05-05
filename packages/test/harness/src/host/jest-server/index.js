@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 // This is a proxy server for Web Driver to help pooling sessions.
 // Instead of creating/deleting sessions, this proxy server will preserve the session in-between, up to a limit (5 runs or 3 mins).
 // Since Web Chat is uniform on capabilities (e.g. window size, etc), this implementation works for Web Chat.
@@ -27,6 +29,37 @@ function runLeft({ numUsed }) {
 
 function timeLeft({ startTime }) {
   return Math.max(0, INSTANCE_LIFE - Date.now() + startTime);
+}
+
+async function sendWebDriverCommand(sessionId, command, body, fetchOptions) {
+  const url = sessionId
+    ? command
+      ? new URL(`/wd/hub/session/${sessionId}/${command}`, WEB_DRIVER_URL)
+      : new URL(`/wd/hub/session/${sessionId}`, WEB_DRIVER_URL)
+    : command
+    ? new URL(`/wd/hub/${command}`, WEB_DRIVER_URL)
+    : new URL(`/wd/hub`, WEB_DRIVER_URL);
+
+  const res = await fetch(
+    url,
+    body
+      ? {
+          ...fetchOptions,
+          body: JSON.stringify(body),
+          headers: {
+            accept: 'application/json',
+            contentType: 'application/json'
+          },
+          method: 'POST'
+        }
+      : fetchOptions || {}
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to send command "${command}": ${(await res.json()).value.message}`);
+  }
+
+  return res.json();
 }
 
 function housekeep(pool) {
@@ -197,42 +230,11 @@ async function prepareSession(sessionId) {
     });
 
     await housekeep(pool);
-    // await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // eslint-disable-next-line no-process-exit
     process.exit(0);
   };
 
   process.once('SIGINT', terminate);
   process.once('SIGTERM', terminate);
 })();
-
-async function sendWebDriverCommand(sessionId, command, body, fetchOptions) {
-  const url = sessionId
-    ? command
-      ? new URL(`/wd/hub/session/${sessionId}/${command}`, WEB_DRIVER_URL)
-      : new URL(`/wd/hub/session/${sessionId}`, WEB_DRIVER_URL)
-    : command
-    ? new URL(`/wd/hub/${command}`, WEB_DRIVER_URL)
-    : new URL(`/wd/hub`, WEB_DRIVER_URL);
-
-  const res = await fetch(
-    url,
-    body
-      ? {
-          ...fetchOptions,
-          body: JSON.stringify(body),
-          headers: {
-            accept: 'application/json',
-            contentType: 'application/json'
-          },
-          method: 'POST'
-        }
-      : fetchOptions || {}
-  );
-
-  if (!res.ok) {
-    throw new Error(`Failed to send command "${command}": ${(await res.json()).value.message}`);
-  }
-
-  return await res.json();
-}

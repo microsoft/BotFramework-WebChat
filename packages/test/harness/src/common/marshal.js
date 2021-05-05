@@ -1,5 +1,7 @@
+const SeleniumWebDriver = require('selenium-webdriver');
+
 // "selenium-webdriver" is undefined if running under browser.
-const { WebElement } = require('selenium-webdriver') || {};
+const { WebElement } = SeleniumWebDriver || {};
 
 // Format a JavaScript object to another format that is okay to send over the Web Driver protocol.
 module.exports = function marshal(value) {
@@ -19,7 +21,7 @@ module.exports = function marshal(value) {
     );
   } else if (typeof window !== 'undefined' && value instanceof window.HTMLElement) {
     return value;
-  } else if (typeof WebElement !== 'undefined' && arg instanceof WebElement) {
+  } else if (typeof WebElement !== 'undefined' && value instanceof WebElement) {
     return value;
   } else if (value instanceof Error) {
     return {

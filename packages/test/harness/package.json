@@ -8,10 +8,14 @@
   "browser": {
     "selenium-webdriver": false
   },
+  "engines": {
+    "node": ">= 14.0.0"
+  },
   "scripts": {
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",
+    "precommit": "eslint -c .eslintrc.yml src/**",
     "prestart": "concurrently \"npm run build:babel\" && npm run build:esbuild",
     "start": "concurrently --kill-others \"npm run start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
@@ -33,6 +37,9 @@
     "babel-plugin-istanbul": "^6.0.0",
     "concurrently": "6.0.2",
     "esbuild": "0.11.13",
+    "eslint": "^7.25.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "express": "^4.17.1",
     "global-agent": "^2.2.0",
     "http-proxy-middleware": "^1.3.1",
@@ -43,6 +50,7 @@
     "node-dev": "6.7.0",
     "node-fetch": "^2.6.1",
     "p-defer": "^3.0.0",
+    "prettier": "^2.2.1",
     "selenium-webdriver": "4.0.0-beta.3",
     "serve": "11.3.2",
     "strip-ansi": "^6.0.0"

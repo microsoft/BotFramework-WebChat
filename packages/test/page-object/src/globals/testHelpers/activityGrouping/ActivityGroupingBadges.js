@@ -1,4 +1,6 @@
-const { React, React: { useMemo } = {} } = window;
+import ActivityGroupingContext from './ActivityGroupingContext';
+
+const { React: { useContext, useMemo } = {} } = window;
 
 const ActivityGroupingBadges = () => {
   const {

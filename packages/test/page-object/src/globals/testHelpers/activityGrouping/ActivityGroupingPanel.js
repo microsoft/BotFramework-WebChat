@@ -1,5 +1,8 @@
+import ActivityGroupingContext from './ActivityGroupingContext';
+import classNames from 'classnames';
+
 // Use React from window (UMD) instead of import.
-const { React, React: { useCallback, useMemo, useState } = {} } = window;
+const { React: { useCallback, useContext, useState } = {} } = window;
 
 function comboNumberSetter(value, setters) {
   setters.forEach((setter, index) => setter && setter(!!(value & Math.pow(2, index)), value));
@@ -9,17 +12,17 @@ function getComboNumber(states) {
   return states.reduce((value, state, index) => value + (state ? Math.pow(2, index) : 0), 0);
 }
 
-const Toggle = ({ checked, children, disabled, onChange, type }) => {
-  const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
-  const style = useMemo(() => ({ userSelect: 'none' }), []);
+// const Toggle = ({ checked, children, disabled, onChange, type }) => {
+//   const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
+//   const style = useMemo(() => ({ userSelect: 'none' }), []);
 
-  return (
-    <label style={style}>
-      <input checked={checked} disabled={disabled} onChange={handleChange} type={type || 'checkbox'} />
-      {children}
-    </label>
-  );
-};
+//   return (
+//     <label style={style}>
+//       <input checked={checked} disabled={disabled} onChange={handleChange} type={type || 'checkbox'} />
+//       {children}
+//     </label>
+//   );
+// };
 
 const ActivityGroupingPanel = () => {
   const context = useContext(ActivityGroupingContext);
@@ -58,7 +61,7 @@ const ActivityGroupingPanel = () => {
       if (value) {
         setShowAvatarInGroup(true);
       } else if (showAvatarInGroup === true) {
-        setShowAvatarInGroup(DEFAULT_STATE.showAvatarInGroup);
+        setShowAvatarInGroup('status');
       }
     },
     [setShowAvatarInGroup, showAvatarInGroup]
@@ -93,7 +96,7 @@ const ActivityGroupingPanel = () => {
   ];
 
   const styleValues = styleValueAndSetters.map(([value]) => value);
-  const styleSetters = styleValueAndSetters.map(([_, setter]) => setter);
+  const styleSetters = styleValueAndSetters.map(([, setter]) => setter);
 
   const styleComboNumber = getComboNumber(styleValues);
   const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
@@ -118,7 +121,7 @@ const ActivityGroupingPanel = () => {
   ];
 
   const viewValues = viewValueAndSetters.map(([value]) => value);
-  const viewSetters = viewValueAndSetters.map(([_, setter]) => setter);
+  const viewSetters = viewValueAndSetters.map(([, setter]) => setter);
 
   const viewComboNumber = getComboNumber(viewValues);
   const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
@@ -158,7 +161,7 @@ const ActivityGroupingPanel = () => {
   ];
 
   const groupingValues = groupingValueAndSetters.map(([value]) => value);
-  const groupingSetters = groupingValueAndSetters.map(([_, setter]) => setter);
+  const groupingSetters = groupingValueAndSetters.map(([, setter]) => setter);
 
   const groupingComboNumber = getComboNumber(groupingValues);
   const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [...groupingSetters]);

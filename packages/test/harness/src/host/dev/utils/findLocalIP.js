@@ -13,6 +13,8 @@ module.exports = async function findLocalIP() {
         childProcess.stdout.on('data', chunk => chunks.push(chunk));
         childProcess.on('close', () => resolve(Buffer.concat(chunks).toString()));
       });
+
+      // eslint-disable-next-line no-empty
     } catch (err) {}
   }
 

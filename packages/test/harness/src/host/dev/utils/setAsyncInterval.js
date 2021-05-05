@@ -8,11 +8,7 @@ module.exports = function setAsyncInterval(fn, interval, signal) {
       return;
     }
 
-    try {
-      await fn();
-    } catch (err) {
-      throw err;
-    }
+    await fn();
 
     schedule();
   };

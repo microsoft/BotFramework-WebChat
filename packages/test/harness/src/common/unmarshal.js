@@ -1,5 +1,7 @@
+const SeleniumWebDriver = require('selenium-webdriver');
+
 // "selenium-webdriver" is undefined if running under browser.
-const { WebElement } = require('selenium-webdriver') || {};
+const { WebElement } = SeleniumWebDriver || {};
 
 // Unformat a JavaScript object from another format received over the Web Driver protocol.
 module.exports = function unmarshal(value) {
@@ -20,13 +22,13 @@ module.exports = function unmarshal(value) {
       return error;
     } else if (value.__type === 'undefined') {
       return;
-    } else {
-      return Object.fromEntries(
-        Object.entries(value).map(([name, value]) =>
-          name !== '__proto__' && name !== 'constructor' && name !== 'prototype' ? [name, unmarshal(value)] : [name]
-        )
-      );
     }
+
+    return Object.fromEntries(
+      Object.entries(value).map(([name, value]) =>
+        name !== '__proto__' && name !== 'constructor' && name !== 'prototype' ? [name, unmarshal(value)] : [name]
+      )
+    );
   }
 
   return value;

@@ -1,0 +1,15 @@
+env:
+  browser: true
+  es2021: true
+  jest: true
+extends:
+  - eslint:recommended
+globals:
+  global: true
+  host: true
+  Observable: true
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  sourceType: module
+root: true

@@ -16,12 +16,13 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
   receivePort.addEventListener('message', async ({ data }) => {
     const { type } = data || {};
 
-    if (!/^rpc:/.test(type) || data.rpcName !== rpcName) {
+    if (!/^rpc:/u.test(type) || data.rpcName !== rpcName) {
       return;
     }
 
     data = unmarshal(data);
 
+    /* eslint-disable-next-line default-case */
     switch (type) {
       case 'rpc:call':
         if (data.fn === '__proto__' || data.fn === 'constructor' || data.fn === 'prototype') {
@@ -77,6 +78,7 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
       typeof value === 'function'
         ? (...args) =>
             new Promise((resolve, reject) => {
+              // eslint-disable-next-line no-magic-numbers
               const invocationID = random().toString(36).substr(2, 5);
 
               invocations[invocationID] = { reject, resolve };

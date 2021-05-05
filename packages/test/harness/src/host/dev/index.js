@@ -54,6 +54,8 @@ async function main() {
         webDriver.quit(); // Don't await or Promise.all on quit().
 
         await fetch(new URL(sessionId, webDriverURL), { method: 'DELETE', timeout: 2000 });
+
+        // eslint-disable-next-line no-empty
       } catch (err) {}
     };
 

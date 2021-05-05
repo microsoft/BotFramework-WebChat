@@ -8,6 +8,8 @@ module.exports = async function findHostIP() {
       const content = await readFile('/etc/resolv.conf');
 
       return /^nameserver\s(.*)/mu.exec(content)[1];
+
+      // eslint-disable-next-line no-empty
     } catch (err) {}
   }
 
