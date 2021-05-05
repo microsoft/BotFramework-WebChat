@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import findMin, { map as findMinFromMap } from './findMin';
 
 describe('array: minimum of 2 values', () => {
