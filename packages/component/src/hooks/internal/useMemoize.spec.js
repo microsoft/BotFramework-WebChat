@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import useMemoize from './useMemoize';
 
 jest.mock('react', () => {

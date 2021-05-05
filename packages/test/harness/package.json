@@ -15,7 +15,7 @@
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",
-    "precommit": "eslint -c .eslintrc.yml src/**",
+    "precommit": "eslint src",
     "prestart": "concurrently \"npm run build:babel\" && npm run build:esbuild",
     "start": "concurrently --kill-others \"npm run start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",

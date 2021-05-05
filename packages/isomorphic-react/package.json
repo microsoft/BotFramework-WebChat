@@ -9,7 +9,7 @@
     "build:webpack": "webpack-cli",
     "eslint": "npm run precommit",
     "precommit": "concurrently --raw \"npm run precommit:*\"",
-    "precommit:eslint": "eslint src/**/*.{js,ts,tsx}",
+    "precommit:eslint": "eslint src",
     "prettier": "prettier --check src/**/*.{js,ts,tsx}",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
     "start:babel": "npm run build:babel",
