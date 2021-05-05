@@ -1,4 +1,7 @@
 /* istanbul ignore file */
+const { basename, join } = require('path');
+const { tmpdir } = require('os');
+const { writeFile } = require('fs').promises;
 const allocateWebDriver = require('./allocateWebDriver');
 const createProxies = require('../common/createProxies');
 const dumpLogs = require('../common/dumpLogs');
@@ -79,6 +82,18 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     // Merge code coverage result.
     global.__coverage__ = mergeCoverageMap(global.__coverage__, postCoverage);
     global.__operation__ = undefined;
+  } catch (err) {
+    try {
+      const filename = join(tmpdir(), basename(global.jasmine.testPath, '.js') + '.png');
+
+      writeFile(filename, Buffer.from(await webDriver.takeScreenshot(), 'base64'));
+
+      console.error(`See screenshot for details: ${filename}`);
+
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+
+    throw err;
   } finally {
     // After the done.promise is resolved or rejected, before terminating the Web Driver session, we need to wait a bit longer for the RPC callback to complete.
     // Otherwise, the RPC return call will throw "NoSuchSessionError" because the session was killed.
