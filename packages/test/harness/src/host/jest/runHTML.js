@@ -88,7 +88,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
       writeFile(filename, Buffer.from(await webDriver.takeScreenshot(), 'base64'));
 
-      console.error(`See screenshot for details: ${filename}`);
+      err.message += `\nSee screenshot for details: ${filename}`;
 
       // eslint-disable-next-line no-empty
     } catch (err) {}
