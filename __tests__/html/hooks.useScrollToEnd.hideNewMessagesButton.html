@@ -21,54 +21,56 @@
       } = window;
 
       run(async function () {
+        const start = Date.now();
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
-        const RunFunction = ({ fn }) => {
+        const RunFunction = ({ fn, message }) => {
+          ~document.body.className.indexOf('jest') ||
+            console.log(`t=${Date.now() - start}: Running function "${message}".`, { fn });
+
           fn();
 
           return false;
         };
 
-        const renderWithFunction = fn =>
+        const renderWithFunction = (fn, message) =>
           new Promise(resolve =>
             ReactDOM.render(
               <Composer directLine={directLine} store={store}>
                 <BasicWebChat />
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} message={message} />
               </Composer>,
               document.getElementById('webchat')
             )
           );
 
-        await renderWithFunction();
+        await renderWithFunction(undefined, 'initial');
 
         await pageConditions.uiConnected();
 
         // Send "markdown", so it show a message long enough to occupy the whole scroll view.
-        await renderWithFunction(() => useSendMessage()('markdown'));
+        await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
         await pageConditions.scrollToBottomCompleted();
-        await renderWithFunction(() => {
-          const scrollTo = useScrollTo();
-
-          scrollTo({ scrollTop: 0 }, { behavior: 'auto' });
-        });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }), 'useScrollTo');
 
         // Wait until the view is not sticky.
-        await new Promise(resolve => setTimeout(resolve, 1000));
         await pageConditions.scrollStabilized(0);
 
+        location.reload();
+
         // Send another "markdown", it should not scroll to bottom ("useSendMessage" do not automatically scroll-to-bottom)
-        await renderWithFunction(() => useSendMessage()('markdown'));
+        await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
         await pageConditions.minNumActivitiesShown(4);
 
         // The "New messages" button should show up
         await pageConditions.newMessageButtonShown();
 
         // Call "scrollToEnd" should hide the "New messages" button immediately
-        await renderWithFunction(() => useScrollToEnd()());
+        await renderWithFunction(() => useScrollToEnd()()), 'useScrollToEnd';
         await pageConditions.newMessageButtonHidden();
 
         // Tests to add:
