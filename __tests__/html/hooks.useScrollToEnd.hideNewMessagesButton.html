@@ -60,8 +60,6 @@
         // Wait until the view is not sticky.
         await pageConditions.scrollStabilized(0);
 
-        location.reload();
-
         // Send another "markdown", it should not scroll to bottom ("useSendMessage" do not automatically scroll-to-bottom)
         await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
         await pageConditions.minNumActivitiesShown(4);
