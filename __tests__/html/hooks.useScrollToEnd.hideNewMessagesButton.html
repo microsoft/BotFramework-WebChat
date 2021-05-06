@@ -26,6 +26,8 @@
         const store = testHelpers.createStore();
 
         const RunFunction = ({ fn, message }) => {
+          // TODO: We should skip logging to Jest console if it is console.info().
+          //       But if it is console.log(), we will log it out.
           ~document.body.className.indexOf('jest') ||
             console.log(`t=${Date.now() - start}: Running function "${message}".`, { fn });
 
@@ -54,7 +56,6 @@
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
         await pageConditions.scrollToBottomCompleted();
-        await new Promise(resolve => setTimeout(resolve, 1000));
         await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }), 'useScrollTo');
 
         // Wait until the view is not sticky.

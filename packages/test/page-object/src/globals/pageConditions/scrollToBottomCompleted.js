@@ -1,8 +1,9 @@
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 import stabilized from './stabilized';
+import sleep from '../../utils/sleep';
 
-export default function scrollToBottomCompleted() {
-  return stabilized(
+export default async function scrollToBottomCompleted() {
+  await stabilized(
     'scroll is at bottom and',
     () => {
       const scrollable = getTranscriptScrollableElement();
@@ -18,4 +19,7 @@ export default function scrollToBottomCompleted() {
     5,
     5000
   );
+
+  // TODO: This is probably a patch for test reliabilty. When we fix the root cause, remove this delay.
+  await sleep(500);
 }
