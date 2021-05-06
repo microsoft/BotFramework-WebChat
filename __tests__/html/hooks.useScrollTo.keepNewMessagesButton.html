@@ -50,7 +50,7 @@
         await pageConditions.minNumActivitiesShown(2);
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
-        await pageConditions.became('scrolling', () => pageElements.transcriptScrollable().scrollTop, 5000);
+        await pageConditions.scrollToBottomCompleted();
         await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }));
 
         // Wait until the view is not sticky.

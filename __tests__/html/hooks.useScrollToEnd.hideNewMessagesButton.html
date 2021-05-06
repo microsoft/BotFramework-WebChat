@@ -49,11 +49,16 @@
         await renderWithFunction(() => useSendMessage()('markdown'));
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
-        await pageConditions.became('scrolling', () => pageElements.transcriptScrollable().scrollTop, 5000);
-        await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }));
+        await pageConditions.scrollToBottomCompleted();
+        await renderWithFunction(() => {
+          const scrollTo = useScrollTo();
+
+          scrollTo({ scrollTop: 0 }, { behavior: 'auto' });
+        });
 
         // Wait until the view is not sticky.
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await pageConditions.scrollStabilized(0);
 
         // Send another "markdown", it should not scroll to bottom ("useSendMessage" do not automatically scroll-to-bottom)
         await renderWithFunction(() => useSendMessage()('markdown'));
