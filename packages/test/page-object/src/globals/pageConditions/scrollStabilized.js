@@ -7,7 +7,7 @@ export default async function scrollStabilized(scrollTop) {
   if (typeof scrollTop === 'number') {
     return await stabilized(
       `scroll is at ${scrollTop}px and`,
-      () => (transcriptScrollable.scrollTop === scrollTop ? scrollTop : {}),
+      () => (Math.abs(transcriptScrollable.scrollTop - scrollTop) <= 1 ? scrollTop : {}),
       5,
       5000
     );
