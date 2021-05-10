@@ -11,7 +11,7 @@
     <script>
       run(async function () {
         const clock = lolex.install();
-        const directLine = testHelpers.accessibility.createDirectLineForTest({ withReplyToId: false });
+        const directLine = testHelpers.accessibility.delayActivity.createDirectLineForTest({ withReplyToId: false });
 
         WebChat.renderWebChat(
           {

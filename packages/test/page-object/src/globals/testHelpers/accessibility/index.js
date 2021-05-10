@@ -1,3 +1,3 @@
-import createDirectLineForTest from './createDirectLineForTest';
+import delayActivity from './delayActivity';
 
-export { createDirectLineForTest };
+export { delayActivity };
