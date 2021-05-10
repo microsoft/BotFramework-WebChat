@@ -10,8 +10,8 @@ export default async function scrollToBottomCompleted() {
       const { offsetHeight, scrollHeight, scrollTop } = scrollable;
 
       // Browser may keep rendering content. Wait until consecutively:
-      // 1. Scroll position is at the bottom
-      // 2. Scroll top does not move
+      // 1. Scroll position is at the bottom, and;
+      // 2. Scroll is stabilized, i.e. `scrollTop` returns same value.
 
       // If it is not at the bottom, create a new empty object and return it, so it will fail the consecutive test.
       return Math.abs(offsetHeight + scrollTop - scrollHeight) <= 1 ? scrollTop : {};
