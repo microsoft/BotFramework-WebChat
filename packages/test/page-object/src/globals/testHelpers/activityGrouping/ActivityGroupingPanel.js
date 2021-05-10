@@ -12,18 +12,6 @@ function getComboNumber(states) {
   return states.reduce((value, state, index) => value + (state ? Math.pow(2, index) : 0), 0);
 }
 
-// const Toggle = ({ checked, children, disabled, onChange, type }) => {
-//   const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
-//   const style = useMemo(() => ({ userSelect: 'none' }), []);
-
-//   return (
-//     <label style={style}>
-//       <input checked={checked} disabled={disabled} onChange={handleChange} type={type || 'checkbox'} />
-//       {children}
-//     </label>
-//   );
-// };
-
 const ActivityGroupingPanel = () => {
   const context = useContext(ActivityGroupingContext);
 

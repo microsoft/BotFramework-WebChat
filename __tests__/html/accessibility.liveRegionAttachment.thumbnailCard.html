@@ -22,7 +22,7 @@
         }
       } = window;
 
-      // TODO: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
+      // TODO: P3 [#3881]: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
       run(async function () {
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
