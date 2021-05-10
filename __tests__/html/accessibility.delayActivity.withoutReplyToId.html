@@ -32,7 +32,7 @@
         // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
         // 2. Bot-initiated message "You said: Hello, World!"
         await pageConditions.numActivitiesShown(2);
-        await pageConditions.became('directLine.numActivities become 1', () => directLine.numActivities === 1, 15000);
+        await pageConditions.became('directLine.numActivities became 1', () => directLine.numActivities === 1, 15000);
         await host.snapshot();
 
         directLine.releaseEchoBackOnce();
