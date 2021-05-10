@@ -46,9 +46,9 @@ async function main() {
 
     const terminate = async () => {
       abortController.abort();
-      // WebDriver.quit() will kill all async function for executeScript().
+      // WebDriver.quit() will kill all async functions for executeScript().
       // HTTP DELETE will kill the session.
-      // Combining two will forcifully killed the Web Driver session immediately.
+      // Combining two will forcefully kill the Web Driver session immediately.
 
       try {
         webDriver.quit(); // Don't await or Promise.all on quit().

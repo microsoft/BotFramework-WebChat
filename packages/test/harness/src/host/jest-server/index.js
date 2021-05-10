@@ -82,7 +82,7 @@ function housekeep(pool) {
         // We need to wait for the DELETE command to complete, otherwise, the next test may run too fast and the grid will run out of capacity temporally.
         await sendWebDriverCommand(entry.sessionId, undefined, undefined, { method: 'DELETE' });
       } catch (err) {
-        // Ignore errors for terminating the session, it is already taken out of the pool.
+        // Ignore errors for terminating the session; it is already taken out of the pool.
       }
     })
   );

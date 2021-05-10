@@ -3,7 +3,7 @@ import getActionHistory from '../pageObjects/internal/getActionHistory';
 
 export default function uiConnected() {
   return became(
-    `to become connected`,
+    `connected`,
     () =>
       ~getActionHistory().findIndex(({ type }) => type === 'DIRECT_LINE/CONNECT_FULFILLED') &&
       !document.querySelector(`.webchat__connectivityStatus`),

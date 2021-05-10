@@ -1,4 +1,4 @@
-// In dev mode, we output the screenshot in console, instead of checking against a PNG file.
+// In dev mode, we output the screenshot in console instead of checking against a PNG file.
 
 module.exports = webDriver =>
   async function snapshot() {

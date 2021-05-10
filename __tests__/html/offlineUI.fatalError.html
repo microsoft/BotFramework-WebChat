@@ -21,7 +21,7 @@
                 });
               } else if (action.payload.activity.from.role === 'user') {
                 // Do not send echo back because sometimes, we will receive it, and sometimes don't, due to race conditions in sagas.
-                // Better not sending all of them to make our test more reliable.
+                // Better not send all of them to make our test more reliable.
                 return;
               }
             }
