@@ -53,6 +53,7 @@
 
         // Send "markdown", so it show a message long enough to occupy the whole scroll view.
         await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
+        await pageConditions.minNumActivitiesShown(2);
 
         // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
         await pageConditions.scrollToBottomCompleted();
