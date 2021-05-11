@@ -1,3 +1,3 @@
-import delayActivity from './delayActivity/index';
+import * as delayActivity from './delayActivity/index';
 
 export { delayActivity };
