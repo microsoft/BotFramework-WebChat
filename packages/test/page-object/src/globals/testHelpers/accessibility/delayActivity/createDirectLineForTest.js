@@ -1,5 +1,5 @@
-import createDeferredObservable from '../../../utils/createDeferredObservable';
-import shareObservable from '../shareObservable';
+import createDeferredObservable from '../../../../utils/createDeferredObservable';
+import shareObservable from '../../shareObservable';
 
 export default function createDirectLineForTest({ withReplyToId = true } = {}) {
   const connectionStatusDeferred$ = createDeferredObservable(observer => observer.next(0));
