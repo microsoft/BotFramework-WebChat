@@ -1,7 +1,3 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-describe('text file sent from bot should be rendered', () => {
-  test('', () => runHTMLTest('sendFiles.textFiles.html'));
-});
+test('text file sent from bot should be rendered', () => runHTML('sendFiles.textFiles.html'));

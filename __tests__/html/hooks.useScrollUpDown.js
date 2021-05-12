@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useScrollUp and useScrollDown hook', () => {
-  test('should scroll', () => runHTMLTest('hooks.useScrollUpDown.html'));
+  test('should scroll', () => runHTML('hooks.useScrollUpDown.html'));
 });

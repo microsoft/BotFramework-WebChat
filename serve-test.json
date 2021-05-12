@@ -20,16 +20,24 @@
       "destination": "__tests__/html/assets/transcripts/:filename"
     },
     {
-      "source": "/__dist__/testharness.js",
-      "destination": "packages/testharness/dist/testharness.js"
-    },
-    {
       "source": "/__dist__/webchat-es5.js",
       "destination": "packages/bundle/dist/webchat-es5.js"
     },
     {
-      "source": "/:page.asset.js",
-      "destination": "__tests__/html/:page.asset.js"
+      "source": "/test-harness.js",
+      "destination": "packages/test/harness/dist/test-harness.js"
+    },
+    {
+      "source": "/test-harness.js.map",
+      "destination": "packages/test/harness/dist/test-harness.js.map"
+    },
+    {
+      "source": "/test-page-object.js",
+      "destination": "packages/test/page-object/dist/test-page-object.js"
+    },
+    {
+      "source": "/test-page-object.js.map",
+      "destination": "packages/test/page-object/dist/test-page-object.js.map"
     },
     {
       "source": "/:page.css",
@@ -43,5 +51,13 @@
       "source": "/",
       "destination": "__tests__/html"
     }
+  ],
+  "unlisted": [
+    "/__image_snapshots__",
+    "/**/.git*",
+    "/**/*.ico",
+    "/**/*.js",
+    "/**/*.json",
+    "/**/*.map"
   ]
 }

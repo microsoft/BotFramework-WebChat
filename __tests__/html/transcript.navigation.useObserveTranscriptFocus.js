@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation using useObserveTranscriptFocus hook', () => {
   test('should observe transcript focus', () =>
-    runHTMLTest('transcript.navigation.useObserveTranscriptFocus'));
+    runHTML('transcript.navigation.useObserveTranscriptFocus'));
 });

@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('activity grouping', () => {
   test('should not break avatar middleware with avatar at bottom', () =>
-    runHTMLTest('activityGrouping.avatarMiddleware.atBottom.html', { height: 1280 }));
+    runHTML('activityGrouping.avatarMiddleware.atBottom.html'));
 });

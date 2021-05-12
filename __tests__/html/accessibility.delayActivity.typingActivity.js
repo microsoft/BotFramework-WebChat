@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('accessibility requirement', () => {
   test('activity should not be delayed due to user typing activity', () =>
-    runHTMLTest('accessibility.delayActivity.typingActivity.html'));
+    runHTML('accessibility.delayActivity.typingActivity.html'));
 });

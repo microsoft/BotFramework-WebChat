@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .activity-status {
@@ -19,14 +24,11 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+      run(async function () {
+        const clock = lolex.install();
 
-      const clock = lolex.install();
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-      (async function() {
         const activityStatusMiddleware = () => next => (...args) => {
           const [
             {
@@ -63,10 +65,10 @@
           return next(...args);
         };
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             activityStatusMiddleware,
-            directLine: await createDirectLineWithTranscript([
+            directLine: await testHelpers.createDirectLineWithTranscript([
               {
                 from: { role: 'bot' },
                 id: '1.0',
@@ -95,12 +97,12 @@
                 type: 'message'
               }
             ]),
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
         clock.tick(1000);
 
@@ -109,12 +111,6 @@
         clock.tick(19000);
 
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

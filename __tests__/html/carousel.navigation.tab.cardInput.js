@@ -1,9 +1,7 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('carousel navigation', () => {
   describe('should focus on card button when present', () => {
-    test('carousel', () => runHTMLTest('carousel.navigation.tab.cardInput.html'));
+    test('carousel', () => runHTML('carousel.navigation.tab.cardInput.html'));
   });
 });

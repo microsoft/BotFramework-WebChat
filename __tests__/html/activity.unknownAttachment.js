@@ -1,8 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('activity', () => {
-  test('should not show unknown attachment', () =>
-    runHTMLTest('activity.unknownAttachment.html', { ignoreConsoleError: true }));
+  test('should not show unknown attachment', () => runHTML('activity.unknownAttachment.html'));
 });

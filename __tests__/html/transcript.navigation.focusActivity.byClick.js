@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation', () => {
-  test('should focus activity by click', () => runHTMLTest('transcript.navigation.focusActivity.byClick'));
+  test('should focus activity by click', () => runHTML('transcript.navigation.focusActivity.byClick'));
 });

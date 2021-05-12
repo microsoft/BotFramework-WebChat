@@ -1,9 +1,7 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('deprecated <Localize>', () => {
-  test('should localize text in navigator language', () => runHTMLTest('deprecated.localize.html'));
-  test('should localize text in "en"', () => runHTMLTest('deprecated.localize.html#l=en'));
-  test('should localize text in "yue"', () => runHTMLTest('deprecated.localize.html#l=yue'));
+  test('should localize text in navigator language', () => runHTML('deprecated.localize.html'));
+  test('should localize text in "en"', () => runHTML('deprecated.localize.html#l=en'));
+  test('should localize text in "yue"', () => runHTML('deprecated.localize.html#l=yue'));
 });

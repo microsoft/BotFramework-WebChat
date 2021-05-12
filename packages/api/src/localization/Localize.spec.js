@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { getLocaleString, localize } from './Localize';
 
 const originalWarn = console.warn;

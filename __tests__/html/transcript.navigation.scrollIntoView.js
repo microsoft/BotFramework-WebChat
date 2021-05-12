@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation', () => {
-  test('should scroll focused activity into view', () => runHTMLTest('transcript.navigation.scrollIntoView'));
+  test('should scroll focused activity into view', () => runHTML('transcript.navigation.scrollIntoView'));
 });

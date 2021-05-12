@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      body.webdriver .lolex {
+      body.jest .lolex {
         display: none;
       }
 
@@ -25,22 +27,10 @@
       <button class="lolex__advance-button">Advance</button>
       <span class="lolex__clock">t = 0</span>
     </div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        WebChatTest: {
-          clock,
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
-      } = window;
+    <script>
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-      (async function() {
         const clock = lolex.install();
 
         function refreshClock() {
@@ -88,7 +78,7 @@
           refreshClock();
         });
 
-        const directLine = await createDirectLineWithTranscript([
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
             from: {
               role: 'bot'
@@ -184,10 +174,10 @@
           }
         ]);
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore(),
+            store: testHelpers.createStore(),
             styleOptions: {
               groupTimestamp: 60000,
               sendTimeout: 5000
@@ -196,7 +186,7 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
         const advanceButton = document.querySelector('.lolex__advance-button');
 
@@ -208,12 +198,6 @@
 
         advanceButton.click();
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

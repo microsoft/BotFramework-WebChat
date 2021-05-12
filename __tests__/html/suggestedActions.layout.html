@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      #app {
-        height: 100%;
-      }
-
       .test-harness {
         display: flex;
         flex-direction: column;
@@ -21,6 +22,10 @@
           'Helvetica Neue', sans-serif;
         margin: 5px;
         padding: 5px;
+      }
+
+      body.jest .test-harness__form {
+        display: none;
       }
 
       .test-harness__form-row {
@@ -37,21 +42,18 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useCallback, useEffect, useMemo, useState },
         ReactDOM: { render },
-        ReactTestUtils: { Simulate },
-        WebChat: { ReactWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+        WebChat: { ReactWebChat }
       } = window;
 
-      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
-      const initialDirection = hashParams.get('dir');
-      const initialFewerItems = !!hashParams.get('fewer');
-      const initialPreset = hashParams.get('preset');
-      const webDriver = hashParams.get('wd');
+      const params = new URLSearchParams(window.location.hash.replace(/^#/u, ''));
+      const initialDirection = params.get('dir');
+      const initialFewerItems = !!params.get('fewer');
+      const initialPreset = params.get('preset');
 
       const RadioRow = ({ checked, onChange, label, value }) => (
         <div className="test-harness__form-row">
@@ -77,7 +79,7 @@
 
         const directLine = useMemo(
           () =>
-            createDirectLineWithTranscript([
+            testHelpers.createDirectLineWithTranscript([
               {
                 text: `Using preset \`${initialPreset}\` ${initialDirection === 'rtl' ? '(RTL)' : ''}`,
                 type: 'message',
@@ -179,93 +181,89 @@
 
         return (
           <div className="test-harness">
-            {!webDriver && (
-              <form className="test-harness__form">
-                <RadioRow
-                  checked={preset === 'carousel'}
-                  onChange={handlePresetChange}
-                  label="Carousel"
-                  value="carousel"
-                />
-                <RadioRow checked={preset === 'flow'} onChange={handlePresetChange} label="Flow" value="flow" />
-                <RadioRow
-                  checked={preset === 'flow-maxheight'}
-                  onChange={handlePresetChange}
-                  label="Flow with maxHeight"
-                  value="flow-maxheight"
-                />
-                <RadioRow
-                  checked={preset === 'stacked'}
-                  onChange={handlePresetChange}
-                  label="Stacked"
-                  value="stacked"
-                />
-                <RadioRow
-                  checked={preset === 'stacked-maxheight'}
-                  onChange={handlePresetChange}
-                  label="Stacked with maxHeight"
-                  value="stacked-maxheight"
-                />
-                <hr />
-                <div className="test-harness__form-row">
-                  <label>
-                    <input
-                      checked={fewerItems}
-                      className="test_harness__input"
-                      onChange={handleFewerItemsChange}
-                      type="checkbox"
-                    />
-                    Fewer items
-                  </label>
-                </div>
-                <div className="test-harness__form-row">
-                  <label>
-                    <input
-                      checked={direction === 'rtl'}
-                      className="test_harness__input"
-                      onChange={handleDirectionChange}
-                      type="checkbox"
-                    />
-                    Right-to-left
-                  </label>
-                </div>
-              </form>
-            )}
+            <form className="test-harness__form">
+              <RadioRow
+                checked={preset === 'carousel'}
+                onChange={handlePresetChange}
+                label="Carousel"
+                value="carousel"
+              />
+              <RadioRow checked={preset === 'flow'} onChange={handlePresetChange} label="Flow" value="flow" />
+              <RadioRow
+                checked={preset === 'flow-maxheight'}
+                onChange={handlePresetChange}
+                label="Flow with maxHeight"
+                value="flow-maxheight"
+              />
+              <RadioRow checked={preset === 'stacked'} onChange={handlePresetChange} label="Stacked" value="stacked" />
+              <RadioRow
+                checked={preset === 'stacked-maxheight'}
+                onChange={handlePresetChange}
+                label="Stacked with maxHeight"
+                value="stacked-maxheight"
+              />
+              <hr />
+              <div className="test-harness__form-row">
+                <label>
+                  <input
+                    checked={fewerItems}
+                    className="test_harness__input"
+                    onChange={handleFewerItemsChange}
+                    type="checkbox"
+                  />
+                  Fewer items
+                </label>
+              </div>
+              <div className="test-harness__form-row">
+                <label>
+                  <input
+                    checked={direction === 'rtl'}
+                    className="test_harness__input"
+                    onChange={handleDirectionChange}
+                    type="checkbox"
+                  />
+                  Right-to-left
+                </label>
+              </div>
+            </form>
             <ReactWebChat
               className="test-harness__webchat"
               directLine={directLine}
               dir={direction === 'rtl' ? 'rtl' : undefined}
-              store={createStore()}
+              store={testHelpers.createStore()}
               styleOptions={STYLE_OPTIONS_PRESETS[preset]}
             />
           </div>
         );
       };
 
-      render(<TestHarness />, document.getElementById('app'));
+      render(<TestHarness />, document.getElementById('webchat'));
 
-      (async function () {
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+      run(async function () {
+        await pageConditions.uiConnected();
 
         await host.snapshot();
 
         if (initialPreset === 'carousel' && !initialFewerItems) {
           // In carousel mode, take extra screenshots at the far side of the carousel.
 
+          const scrollLeftOrigin = document.querySelector('.react-film__filmstrip').scrollLeft;
+
           const endFlipper = document.querySelector(
             initialDirection === 'rtl' ? '.react-film__main__slider--left' : '.react-film__main__slider--right'
           );
 
           for (let count = 0; count < 5; count++) {
-            Simulate.click(endFlipper);
-
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await host.click(endFlipper);
           }
 
           // We need to wait for the scroll animation to complete before taking a screenshot.
-          await new Promise(resolve => setTimeout(resolve, timeouts.ui));
+          await testHelpers.sleep(1000);
 
           await host.snapshot();
+
+          // We need to scroll it back, otherwise, we will not be able to click the first button.
+          document.querySelector('.react-film__filmstrip').scrollLeft = scrollLeftOrigin;
         } else if (/-maxheight$/iu.test(initialPreset)) {
           // When maxHeight is set, take extra screenshots at the bottommost of the scrollable.
 
@@ -278,16 +276,10 @@
           await host.snapshot();
         }
 
-        Simulate.click(document.querySelector('.webchat__suggested-action__button'));
+        await host.click(document.querySelector('.webchat__suggested-action__button'));
 
-        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.directLine);
+        await pageConditions.numActivitiesShown(2);
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

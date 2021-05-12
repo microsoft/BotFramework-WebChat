@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import mapMap from './mapMap';
 
 test('multiply a map by 10', () => {

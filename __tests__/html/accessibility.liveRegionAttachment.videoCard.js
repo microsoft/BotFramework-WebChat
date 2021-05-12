@@ -1,9 +1,7 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('accessibility requirement', () => {
   describe('attachments in live region', () => {
-    test('video card', () => runHTMLTest('accessibility.liveRegionAttachment.videoCard.html'));
+    test('video card', () => runHTML('accessibility.liveRegionAttachment.videoCard.html'));
   });
 });

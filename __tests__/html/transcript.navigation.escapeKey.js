@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation', () => {
-  test('should back up when ESCAPE key is pressed', () => runHTMLTest('transcript.navigation.escapeKey'));
+  test('should back up when ESCAPE key is pressed', () => runHTML('transcript.navigation.escapeKey'));
 });

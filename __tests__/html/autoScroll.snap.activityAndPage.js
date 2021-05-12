@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Auto-scroll with "activity" and "page" snap behavior', () => {
-  test('should scroll correctly', () => runHTMLTest('autoScroll.snap.activityAndPage.html'));
+  test('should scroll correctly', () => runHTML('autoScroll.snap.activityAndPage.html'));
 });

@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('activity grouping', () => {
   test('should show timestamp even if timestamp is disabled', () =>
-    runHTMLTest('activityGrouping.disableTimestamp.html'));
+    runHTML('activityGrouping.disableTimestamp.html'));
 });

@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { getEarliestUpdateNotBefore } from './useDebouncedNotifications';
 
 describe('getEarliestUpdateNotBefore', () => {

@@ -1,99 +1,85 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createRunHookActivityMiddleware,
-        createStore,
-        expect,
-        host,
-        pageObjects,
-        timeouts,
-        token,
-        updateIn
-      } = window.WebChatTest;
+    <script>
+      function createDirectLineForTest(options) {
+        const workingDirectLine = WebChat.createDirectLine(options);
 
-      (async function() {
-        function createDirectLineForTest(options) {
-          const workingDirectLine = window.WebChat.createDirectLine(options);
+        return {
+          activity$: workingDirectLine.activity$,
+          connectionStatus$: workingDirectLine.connectionStatus$,
+          postActivity: activity =>
+            activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
+        };
+      }
 
-          return {
-            activity$: workingDirectLine.activity$,
-            connectionStatus$: workingDirectLine.connectionStatus$,
-            postActivity: activity =>
-              activity.type === 'message' ? new Observable(() => {}) : workingDirectLine.postActivity(activity)
-          };
-        }
+      run(
+        async function () {
+          const clock = lolex.install();
 
-        const clock = lolex.install();
+          async function createWebChat() {
+            let props = {
+              activityMiddleware: testHelpers.createRunHookActivityMiddleware(),
+              directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
+              store: testHelpers.createStore(),
+              styleOptions: {
+                sendTimeout: 20000
+              }
+            };
 
-        window.clock = clock;
+            const render = () => WebChat.renderWebChat(props, document.getElementById('webchat'));
 
-        async function createWebChat() {
-          let props = {
-            activityMiddleware: createRunHookActivityMiddleware(),
-            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
-            store: createStore(),
-            styleOptions: {
-              sendTimeout: 20000
-            }
-          };
+            render();
 
-          const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+            return {
+              updateProps: updater => {
+                props = updater(props);
+                render(props);
+              }
+            };
+          }
 
-          render();
+          const { updateProps } = await createWebChat();
 
-          return {
-            updateProps: updater => {
-              props = updater(props);
-              render(props);
-            }
-          };
-        }
+          await pageConditions.webChatRendered();
 
-        const { updateProps } = await createWebChat();
+          // Advance 1 second for the connection status prompt to be gone.
+          clock.tick(1000);
 
-        await pageObjects.waitWithTick(conditions.webChatRendered(), clock, timeouts.ui);
+          await pageConditions.uiConnected();
 
-        // Advance 1 second for the connection status prompt to be gone.
-        clock.tick(1000);
+          const fileBlob = new Blob([new ArrayBuffer(0)]);
 
-        await pageObjects.waitWithTick(conditions.uiConnected(), clock, timeouts.directLine);
+          fileBlob.name = 'empty.zip';
 
-        const fileBlob = new Blob([new ArrayBuffer(0)]);
+          await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+          await host.snapshot();
 
-        fileBlob.name = 'empty.zip';
+          clock.tick(20000);
 
-        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-        await host.snapshot();
+          // After 20 seconds, it should still show "sending".
+          await host.snapshot();
 
-        clock.tick(20000);
+          clock.tick(100000);
 
-        // After 20 seconds, it should still show "sending".
-        await host.snapshot();
+          // After 120 seconds, it should show time out.
+          await host.snapshot();
 
-        clock.tick(100000);
+          updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
 
-        // After 120 seconds, it should show time out.
-        await host.snapshot();
-
-        updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
-
-        // After changing the timeout to 130 seconds, it should show "sending".
-        await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
-      });
+          // After changing the timeout to 130 seconds, it should show "sending".
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>

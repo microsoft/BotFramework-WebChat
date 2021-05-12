@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('timestamp', () => {
   test('send timeout for attachment should be different', () =>
-    runHTMLTest('timestamp.attachmentSendTimeout.html', { ignoreConsoleError: true }));
+    runHTML('timestamp.attachmentSendTimeout.html'));
 });

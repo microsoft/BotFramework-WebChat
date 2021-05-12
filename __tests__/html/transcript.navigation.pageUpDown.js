@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation', () => {
-  test('should scroll page up and down on keys', () => runHTMLTest('transcript.navigation.pageUpDown'));
+  test('should scroll page up and down on keys', () => runHTML('transcript.navigation.pageUpDown'));
 });

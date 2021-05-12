@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
-
-      (async function () {
+    <script>
+      run(async function () {
         const attachmentMiddleware = () => next => card => {
           const { activity, attachment } = card;
           const { activities } = store.getState();
@@ -18,17 +20,19 @@
           const mostRecent = messages.pop() === activity;
 
           if (attachment.contentType === 'application/vnd.microsoft.card.adaptive') {
-            return React.createElement(window.WebChat.Components.AdaptiveCardContent, {
+            return React.createElement(WebChat.Components.AdaptiveCardContent, {
               content: attachment.content,
               disabled: !mostRecent
             });
           }
+
           return next(card);
         };
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
 
-        window.WebChat.renderWebChat(
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
           {
             attachmentMiddleware,
             directLine,
@@ -37,24 +41,18 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('card markdown');
         await pageObjects.sendMessageViaSendBox('stop');
-        await pageObjects.wait(conditions.minNumActivitiesShown(4));
+        await pageConditions.minNumActivitiesShown(4);
 
-        const externalLink = elements.transcript().querySelector('.ac-adaptiveCard a');
+        const externalLink = pageElements.transcript().querySelector('.ac-adaptiveCard a');
         const relationships = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
         const ariaDisabled = externalLink.getAttribute('aria-disabled');
 
         expect(relationships).toEqual(['noopener', 'noreferrer']);
 
         expect(ariaDisabled).toBeFalsy();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

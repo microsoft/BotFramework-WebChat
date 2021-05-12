@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        WebChat: { createDirectLine },
-        WebChatTest: { conditions, createStore, expect, host, pageObjects, timeouts, token }
-      } = window;
+    <script>
+      run(
+        async function () {
+          WebChat.renderWebChat(
+            {
+              directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+              role: 'invalid',
+              store: testHelpers.createStore()
+            },
+            document.getElementById('webchat')
+          );
 
-      (async function () {
-        window.WebChat.renderWebChat(
-          {
-            directLine: createDirectLine({ token: await token.fetchDirectLineToken() }),
-            role: 'invalid',
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
+          await pageConditions.uiConnected();
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        // Should fallback to "complementary" if the role specified is not a valid landmark role.
-        await expect(document.querySelector('#webchat > *').getAttribute('role')).toBe('complementary');
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
-      });
+          // Should fallback to "complementary" if the role specified is not a valid landmark role.
+          await expect(document.querySelector('#webchat > *').getAttribute('role')).toBe('complementary');
+        },
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>

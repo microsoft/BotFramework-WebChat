@@ -1,60 +1,41 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        ReactTestUtils: { Simulate },
-        TestAsset: { generateTranscript },
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
-      } = window;
-
-      (async function () {
-        window.WebChat.renderWebChat(
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
           {
-            directLine: createDirectLineWithTranscript(generateTranscript()),
-            store: createStore()
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
 
-        elements.sendBoxTextBox().focus();
+        await pageObjects.focusSendBoxTextBox();
 
         document.querySelector('.ac-adaptiveCard input').focus();
         document.querySelector('.ac-adaptiveCard input').click();
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.ui);
+        await pageConditions.scrollStabilized();
 
         // After focusing/clicking on any <input> inside the Adaptive Card, <BasicTranscript> should not call scrollIntoView().
         // We should not move the scrollable if the user is already focusing in it.
 
-        const scrollable = elements.transcriptScrollable();
+        const scrollable = pageElements.transcriptScrollable();
 
         expect(scrollable.scrollTop).toBe(scrollable.scrollHeight - scrollable.offsetHeight);
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

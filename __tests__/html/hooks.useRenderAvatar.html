@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .avatar-box {
@@ -31,118 +36,115 @@
         WebChat: {
           Components: { Composer },
           hooks: { useActivities, useRenderAvatar }
-        },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts }
+        }
       } = window;
 
-      (async function() {
-        const RenderAvatarTest = ({ activity }) => {
-          const renderAvatar = useRenderAvatar({ activity });
+      run(
+        async function () {
+          const RenderAvatarTest = ({ activity }) => {
+            const renderAvatar = useRenderAvatar({ activity });
 
-          return renderAvatar ? renderAvatar() : 'false';
-        };
+            return renderAvatar ? renderAvatar() : 'false';
+          };
 
-        const Test = () => {
-          const [activities] = useActivities();
+          const Test = () => {
+            const [activities] = useActivities();
 
-          return (
-            <React.Fragment>
-              {activities.map(activity => (
-                <div className="avatar-box" key={activity.id}>
-                  <RenderAvatarTest activity={activity} />
-                </div>
-              ))}
-              {!!activities.length && <div className="done" />}
-            </React.Fragment>
-          );
-        };
+            return (
+              <React.Fragment>
+                {activities.map(activity => (
+                  <div className="avatar-box" key={activity.id}>
+                    <RenderAvatarTest activity={activity} />
+                  </div>
+                ))}
+                {!!activities.length && <div className="done" />}
+              </React.Fragment>
+            );
+          };
 
-        const directLine = await createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '1.0',
-            text: 'Irure officia aliqua incididunt do deserunt dolor dolor labore qui nulla.',
-            timestamp: 0,
-            type: 'message'
-          },
-          {
-            from: { role: 'user' },
-            id: '2.0',
-            text: 'Et elit non ea amet nostrud elit qui elit.',
-            timestamp: 0,
-            type: 'message'
-          },
-          {
-            from: { role: 'bot' },
-            id: '3.0',
-            text: 'Sit sit aliquip ipsum sit do ullamco non tempor velit qui irure cillum veniam labore.',
-            timestamp: 0,
-            type: 'message'
-          },
-          {
-            from: { role: 'user' },
-            id: '4.0',
-            text: 'Esse culpa tempor deserunt aute nisi ullamco laboris ullamco aute irure sunt tempor occaecat do.',
-            timestamp: 0,
-            type: 'message'
-          },
-          {
-            from: { role: 'bot' },
-            id: '5.0',
-            text: 'Commodo quis pariatur nostrud eu ea ullamco voluptate ea.',
-            timestamp: 0,
-            type: 'message'
-          }
-        ]);
-
-        const avatarMiddleware = () => next => (...args) => {
-          const [
+          const directLine = await testHelpers.createDirectLineWithTranscript([
             {
-              activity: { id },
-              styleOptions: { botAvatarInitials, userAvatarInitials }
+              from: { role: 'bot' },
+              id: '1.0',
+              text: 'Irure officia aliqua incididunt do deserunt dolor dolor labore qui nulla.',
+              timestamp: 0,
+              type: 'message'
+            },
+            {
+              from: { role: 'user' },
+              id: '2.0',
+              text: 'Et elit non ea amet nostrud elit qui elit.',
+              timestamp: 0,
+              type: 'message'
+            },
+            {
+              from: { role: 'bot' },
+              id: '3.0',
+              text: 'Sit sit aliquip ipsum sit do ullamco non tempor velit qui irure cillum veniam labore.',
+              timestamp: 0,
+              type: 'message'
+            },
+            {
+              from: { role: 'user' },
+              id: '4.0',
+              text: 'Esse culpa tempor deserunt aute nisi ullamco laboris ullamco aute irure sunt tempor occaecat do.',
+              timestamp: 0,
+              type: 'message'
+            },
+            {
+              from: { role: 'bot' },
+              id: '5.0',
+              text: 'Commodo quis pariatur nostrud eu ea ullamco voluptate ea.',
+              timestamp: 0,
+              type: 'message'
             }
-          ] = args;
+          ]);
 
-          if (id === '3.0') {
-            return () => <div className="custom-avatar">{botAvatarInitials}</div>;
-          } else if (id === '4.0') {
-            return () => <div className="custom-avatar">{userAvatarInitials}</div>;
-          } else if (id === '5.0') {
-            return false;
-          }
+          const avatarMiddleware = () => next => (...args) => {
+            const [
+              {
+                activity: { id },
+                styleOptions: { botAvatarInitials, userAvatarInitials }
+              }
+            ] = args;
 
-          return next(...args);
-        };
+            if (id === '3.0') {
+              return () => <div className="custom-avatar">{botAvatarInitials}</div>;
+            } else if (id === '4.0') {
+              return () => <div className="custom-avatar">{userAvatarInitials}</div>;
+            } else if (id === '5.0') {
+              return false;
+            }
 
-        const store = createStore();
+            return next(...args);
+          };
 
-        const styleOptions = {
-          botAvatarInitials: 'Bot',
-          userAvatarInitials: 'You'
-        };
+          const store = testHelpers.createStore();
 
-        render(
-          <Composer
-            avatarMiddleware={avatarMiddleware}
-            directLine={directLine}
-            store={store}
-            styleOptions={styleOptions}
-          >
-            <Test />
-          </Composer>,
-          document.getElementById('webchat')
-        );
+          const styleOptions = {
+            botAvatarInitials: 'Bot',
+            userAvatarInitials: 'You'
+          };
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
+          render(
+            <Composer
+              avatarMiddleware={avatarMiddleware}
+              directLine={directLine}
+              store={store}
+              styleOptions={styleOptions}
+            >
+              <Test />
+            </Composer>,
+            document.getElementById('webchat')
+          );
 
-        await host.snapshot();
-        await host.done({ deprecation: true });
-      })().catch(async err => {
-        console.error(err);
+          await pageConditions.uiConnected();
+          await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
 
-        await host.error(err);
-      });
+          await host.snapshot();
+        },
+        { expectDeprecations: true }
+      );
     </script>
   </body>
 </html>

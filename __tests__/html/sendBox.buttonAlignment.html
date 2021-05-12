@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      #app {
-        height: 100%;
-      }
-
       .webchat__auto-resize-textarea,
       .webchat__send-box-text-box__input {
         outline-color: rgba(0, 0, 0, 0.4) !important;
@@ -36,6 +37,10 @@
         width: calc(100% - 40px);
       }
 
+      body.jest .button-bar {
+        display: none;
+      }
+
       .webchat {
         flex: 1;
       }
@@ -46,22 +51,24 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { Fragment, useCallback, useEffect, useMemo, useState },
         ReactDOM: { render },
+        testHelpers: {
+          speech: { createWebSpeechMock }
+        },
         WebChat: {
           Components: { BasicWebChat, Composer },
           createDirectLine,
           hooks: { useSendBoxValue }
-        },
-        WebChatTest: { conditions, createStore, createWebSpeechMock, host, pageObjects, timeouts, token }
+        }
       } = window;
 
-      (async function () {
-        const directLine = createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
+      run(async function () {
+        const directLine = createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
 
         const TypeOnStartup = ({ value }) => {
           const [_, setSendBoxValue] = useSendBoxValue();
@@ -72,8 +79,6 @@
 
           return false;
         };
-
-        const webDriver = new URLSearchParams(window.location.hash.replace(/^#/gu, '')).get('wd');
 
         const App = () => {
           const [enableWebSpeech, setEnableWebSpeech] = useState(false);
@@ -99,39 +104,39 @@
 
           useEffect(updateState, [updateState]);
 
-          const mergeHash = useCallback(
+          const mergeParams = useCallback(
             merge => {
               const params = new URLSearchParams(window.location.hash.replace(/^#/gu, ''));
 
               Object.entries(merge).forEach(([name, value]) => params.set(name, value));
 
-              document.location = `#${params}`;
+              document.location = `?${params}`;
             },
             [sendBoxButtonAlignment, sendBoxTextWrap]
           );
 
           const handleSendBoxTextWrapChange = useCallback(
-            ({ target: { checked } }) => mergeHash({ m: checked ? 1 : 0 }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ m: checked ? 1 : 0 }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentTopClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'top' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'top' }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentBottomClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'bottom' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'bottom' }),
+            [mergeParams]
           );
 
           const handleSendBoxButtonAlignmentStretchClick = useCallback(
-            ({ target: { checked } }) => mergeHash({ a: 'stretch' }),
-            [mergeHash]
+            ({ target: { checked } }) => mergeParams({ a: 'stretch' }),
+            [mergeParams]
           );
 
-          const handleWebSpeechChange = useCallback(({ target: { checked } }) => mergeHash({ ws: checked ? 1 : 0 }), [
-            mergeHash
+          const handleWebSpeechChange = useCallback(({ target: { checked } }) => mergeParams({ ws: checked ? 1 : 0 }), [
+            mergeParams
           ]);
 
           const styleOptions = useMemo(
@@ -159,66 +164,59 @@
                 <BasicWebChat className="webchat" />
                 <TypeOnStartup value="Esse enim adipisicing duis occaecat sunt incididunt qui occaecat voluptate. Commodo veniam sint elit adipisicing consequat ullamco reprehenderit tempor exercitation. Non officia proident aute labore ea sunt incididunt excepteur enim. Qui consequat nostrud exercitation Lorem eiusmod do minim et reprehenderit incididunt ad. Elit veniam consequat ea qui." />
               </Composer>
-              {!webDriver && (
-                <div className="button-bar">
-                  <div>
-                    <label>
-                      <input checked={enableWebSpeech} onChange={handleWebSpeechChange} type="checkbox" /> Enable Web
-                      Speech
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      <input checked={sendBoxTextWrap} onChange={handleSendBoxTextWrapChange} type="checkbox" />{' '}
-                      Multi-line text box
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      <input
-                        checked={sendBoxButtonAlignment === 'top'}
-                        onChange={handleSendBoxButtonAlignmentTopClick}
-                        type="radio"
-                      />{' '}
-                      Button alignment top
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      <input
-                        checked={sendBoxButtonAlignment === 'bottom'}
-                        onChange={handleSendBoxButtonAlignmentBottomClick}
-                        type="radio"
-                      />{' '}
-                      Button alignment bottom
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      <input
-                        checked={sendBoxButtonAlignment === 'stretch'}
-                        onChange={handleSendBoxButtonAlignmentStretchClick}
-                        type="radio"
-                      />{' '}
-                      Button alignment stretch
-                    </label>
-                  </div>
+              <div className="button-bar">
+                <div>
+                  <label>
+                    <input checked={enableWebSpeech} onChange={handleWebSpeechChange} type="checkbox" /> Enable Web
+                    Speech
+                  </label>
                 </div>
-              )}
+                <div>
+                  <label>
+                    <input checked={sendBoxTextWrap} onChange={handleSendBoxTextWrapChange} type="checkbox" />{' '}
+                    Multi-line text box
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'top'}
+                      onChange={handleSendBoxButtonAlignmentTopClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment top
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'bottom'}
+                      onChange={handleSendBoxButtonAlignmentBottomClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment bottom
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'stretch'}
+                      onChange={handleSendBoxButtonAlignmentStretchClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment stretch
+                  </label>
+                </div>
+              </div>
             </Fragment>
           );
         };
 
-        render(<App />, document.getElementById('app'));
+        render(<App />, document.getElementById('webchat'));
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

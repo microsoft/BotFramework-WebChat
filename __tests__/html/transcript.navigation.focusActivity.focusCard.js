@@ -1,8 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('transcript navigation', () => {
-  test('should focus activity and focus on card', () =>
-    runHTMLTest('transcript.navigation.focusActivity.focusCard'));
+  test('should focus activity and focus on card', () => runHTML('transcript.navigation.focusActivity.focusCard'));
 });

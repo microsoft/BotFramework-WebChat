@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment jsdom */
 
 import Observable from 'core-js/features/observable';
 
@@ -20,9 +18,7 @@ test('should only subscribe when there is at least one subscriber', () => {
 
 test('should unsubscribe when there are no subscribers', () => {
   const unsubscribe = jest.fn();
-  const observerCallback = jest.fn(() => {
-    return () => unsubscribe();
-  });
+  const observerCallback = jest.fn(() => () => unsubscribe());
   const parent = new Observable(observerCallback);
   const sharedParent = shareObservable(parent);
 
@@ -59,7 +55,7 @@ test('should call next/complete for all subscribers', () => {
   expect(next1).toHaveBeenCalledTimes(0);
   expect(next2).toHaveBeenCalledTimes(0);
 
-  const observer = observerCallback.mock.calls[0][0];
+  const [[observer]] = observerCallback.mock.calls;
 
   observer.next('Hello, World!');
 
@@ -95,7 +91,7 @@ test('should call error for all subscribers', () => {
 
   const error = new Error('artificial');
 
-  const observer = observerCallback.mock.calls[0][0];
+  const [[observer]] = observerCallback.mock.calls;
 
   observer.error(error);
 

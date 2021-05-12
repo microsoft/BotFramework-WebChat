@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
@@ -11,29 +16,18 @@
         WebChat: {
           Components: { BasicWebChat, Composer },
           hooks: { useScrollDown, useScrollUp }
-        },
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
         }
       } = window;
 
-      (async function () {
-        const res = await fetch('assets/transcripts/markdown-message.json');
+      run(async function () {
+        const res = await fetch('/assets/transcripts/markdown-message.json');
 
         if (!res.ok) {
           throw new Error(`Server returned ${res.status} while fetching transcript`);
         }
 
-        const directLine = createDirectLineWithTranscript(await res.json());
-        const store = createStore();
+        const directLine = testHelpers.createDirectLineWithTranscript(await res.json());
+        const store = testHelpers.createStore();
 
         const RunFunction = ({ fn }) => {
           fn();
@@ -54,29 +48,23 @@
 
         await renderWithFunction();
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollStabilized();
 
-        const scrollable = elements.transcriptScrollable();
+        const scrollable = pageElements.transcriptScrollable();
         const scrollTopAtBottommost = scrollable.scrollHeight - scrollable.offsetHeight;
 
         expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
 
         // Call useScrollUp() should scroll the transcript view up
         await renderWithFunction(() => useScrollUp()());
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
         expect(scrollable.scrollTop).toBeLessThan(scrollTopAtBottommost);
 
         // Call useScrollDown() should scroll the transcript view down, back at the bottommost position
         await renderWithFunction(() => useScrollDown()());
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
         expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useTextBox', () => {
-  test('should work properly', () => runHTMLTest('hooks.useTextBox.html'));
+  test('should work properly', () => runHTML('hooks.useTextBox.html'));
 });

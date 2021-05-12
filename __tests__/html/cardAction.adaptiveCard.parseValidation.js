@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('"Adaptive card', () => {
-  test('parsing error', () => runHTMLTest('cardAction.adaptiveCard.parseValidation.html'));
+  test('parsing error', () => runHTML('cardAction.adaptiveCard.parseValidation.html'));
 });

@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Adaptive Cards', () => {
   test('with "adaptiveCardsParserMaxVersion" style options', () =>
-    runHTMLTest('adaptiveCards.parserMaxVersion.html'));
+    runHTML('adaptiveCards.parserMaxVersion.html'));
 });

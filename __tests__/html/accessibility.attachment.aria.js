@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('accessibility requirement', () => {
   test('Element with aria-label should not have parent aria-hidden', () =>
-    runHTMLTest('accessibility.attachment.aria'));
+    runHTML('accessibility.attachment.aria'));
 });

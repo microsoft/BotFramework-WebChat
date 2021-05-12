@@ -1,6 +1,4 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('suggested actions', () => {
   describe.each([
@@ -16,11 +14,11 @@ describe('suggested actions', () => {
       ['stacked layout with height', 'stacked-maxheight']
     ])('using %s', (_, preset, extraSearchParams) => {
       test('should be correct', async () => {
-        const hashParams = new URLSearchParams({ ...extraSearchParams, preset });
+        const params = new URLSearchParams({ ...extraSearchParams, preset });
 
-        dir && hashParams.set('dir', dir);
+        dir && params.set('dir', dir);
 
-        await runHTMLTest(`suggestedActions.layout#${hashParams}`);
+        await runHTML(`suggestedActions.layout#${params}`);
       });
     });
   });

@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('offline UI', () => {
   test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', () =>
-    runHTMLTest('offlineUI.networkInterrupt.html'));
+    runHTML('offlineUI.networkInterrupt.html'));
 });

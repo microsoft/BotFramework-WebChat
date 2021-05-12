@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useScrollTo.keepNewMessagesButton', () => {
   test('should scroll and keep "New Messages" button', () =>
-    runHTMLTest('hooks.useScrollTo.keepNewMessagesButton.html'));
+    runHTML('hooks.useScrollTo.keepNewMessagesButton.html'));
 });

@@ -1,6 +1,6 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment jsdom */
+
+/* eslint no-magic-numbers: "off" */
 
 import createDeferred from 'p-defer-es5';
 import createTaskQueue from './createTaskQueue';
@@ -43,9 +43,9 @@ describe('with 2 tasks', () => {
   test('queued simultaneously with resolves and rejects', async () => {
     expect(task1.fn).toHaveBeenCalledTimes(0);
 
-    const { cancel: cancel1, result: result1 } = queue.push(task1.fn);
-    const { cancel: cancel2, result: result2 } = queue.push(task2.fn);
-    const { cancel: cancel3, result: result3 } = queue.push(task3.fn);
+    const { cancel: _cancel1, result: result1 } = queue.push(task1.fn);
+    const { cancel: _cancel2, result: result2 } = queue.push(task2.fn);
+    const { cancel: _cancel3, result: result3 } = queue.push(task3.fn);
 
     expect(queue.length).toBe(3);
 
@@ -79,7 +79,7 @@ describe('with 2 tasks', () => {
     expect(task1.fn).toHaveBeenCalledTimes(0);
     expect(task2.fn).toHaveBeenCalledTimes(0);
 
-    const { cancel: cancel1, result: result1 } = queue.push(task1.fn);
+    const { cancel: _cancel1, result: result1 } = queue.push(task1.fn);
 
     expect(queue.length).toBe(1);
 
@@ -89,7 +89,7 @@ describe('with 2 tasks', () => {
     await expect(result1).resolves.toBe(1);
     expect(queue.length).toBe(0);
 
-    const { cancel: cancel2, result: result2 } = queue.push(task2.fn);
+    const { cancel: _cancel2, result: result2 } = queue.push(task2.fn);
 
     expect(queue.length).toBe(1);
 
@@ -105,7 +105,7 @@ describe('with 2 tasks', () => {
     expect(task1.fn).toHaveBeenCalledTimes(0);
 
     const { cancel: cancel1, result: result1 } = queue.push(task1.fn);
-    const { cancel: cancel2, result: result2 } = queue.push(task2.fn);
+    const { cancel: _cancel2, result: result2 } = queue.push(task2.fn);
 
     expect(queue.length).toBe(2);
 
@@ -130,9 +130,9 @@ describe('with 2 tasks', () => {
   test('queued simultaneously, abort the second task should dequeue the task without starting it', async () => {
     expect(task1.fn).toHaveBeenCalledTimes(0);
 
-    const { cancel: cancel1, result: result1 } = queue.push(task1.fn);
+    const { cancel: _cancel1, result: result1 } = queue.push(task1.fn);
     const { cancel: cancel2, result: result2 } = queue.push(task2.fn);
-    const { cancel: cancel3, result: result3 } = queue.push(task3.fn);
+    const { cancel: _cancel3, result: result3 } = queue.push(task3.fn);
 
     expect(queue.length).toBe(3);
 
@@ -179,9 +179,9 @@ describe('with 2 tasks', () => {
   test('queued simultaneously and cancel all at once', async () => {
     expect(task1.fn).toHaveBeenCalledTimes(0);
 
-    const { cancel: cancel1, result: result1 } = queue.push(task1.fn);
-    const { cancel: cancel2, result: result2 } = queue.push(task2.fn);
-    const { cancel: cancel3, result: result3 } = queue.push(task3.fn);
+    const { cancel: _cancel1, result: result1 } = queue.push(task1.fn);
+    const { cancel: _cancel2, result: result2 } = queue.push(task2.fn);
+    const { cancel: _cancel3, result: result3 } = queue.push(task3.fn);
 
     expect(queue.length).toBe(3);
     await task1.started;

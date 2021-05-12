@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="assets/transcript.navigation.js" type="text/babel"></script>
     <style type="text/css">
       input:focus {
         background-color: Red !important;
@@ -13,43 +14,29 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        ReactTestUtils: { Simulate },
-        TestAsset: { generateTranscript, waitForFocusedActivityInView },
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
-      } = window;
-
-      (async function () {
-        window.WebChat.renderWebChat(
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
           {
-            directLine: createDirectLineWithTranscript(generateTranscript()),
-            store: createStore()
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
 
-        elements.sendBoxTextBox().focus();
+        await pageObjects.focusSendBoxTextBox();
 
         // Should focus on the first input box of Adaptive Card, this is our starting point.
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendKeys('ARROW_UP', 'ARROW_UP');
-        await waitForFocusedActivityInView();
+        await pageConditions.focusedActivityInView();
         await host.sendKeys('ENTER');
         await host.snapshot();
 
@@ -60,12 +47,6 @@
         // Press ESCAPE key should focus the send box.
         await host.sendKeys('ESCAPE');
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

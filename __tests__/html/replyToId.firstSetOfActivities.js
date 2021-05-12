@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('first activity with replyToId', () => {
-  test('should render immediately', () => runHTMLTest('replyToId.firstSetOfActivities.html'));
+  test('should render immediately', () => runHTML('replyToId.firstSetOfActivities.html'));
 });

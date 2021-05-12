@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('accessibility requirement', () => {
   test('should not delay activity without "replyToId"', () =>
-    runHTMLTest('accessibility.delayActivity.withoutReplyToId.html'));
+    runHTML('accessibility.delayActivity.withoutReplyToId.html'));
 });

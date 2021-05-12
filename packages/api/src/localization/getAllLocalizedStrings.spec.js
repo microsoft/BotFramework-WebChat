@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import getAllLocalizedStrings from './getAllLocalizedStrings';
 
 const strings = getAllLocalizedStrings();
@@ -180,7 +182,7 @@ describe('Verify all strings are loaded properly', () => {
   });
 
   test('yue', () => {
-    expect(strings['yue'].CONNECTIVITY_STATUS_ALT_CONNECTED).toBe('接駁到');
+    expect(strings.yue.CONNECTIVITY_STATUS_ALT_CONNECTED).toBe('接駁到');
   });
 
   test('zh-Hans', () => {

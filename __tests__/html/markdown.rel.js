@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Markdown', () => {
-  test('must have rel="noopener noreferrer"', () => runHTMLTest('markdown.rel.html'));
+  test('must have rel="noopener noreferrer"', () => runHTML('markdown.rel.html'));
 });

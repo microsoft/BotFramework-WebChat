@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('focus management', () => {
   test('focus should not move after hero card is disable after obsolete', () =>
-    runHTMLTest('focusManagement.disableHeroCard.obsolete.html'));
+    runHTML('focusManagement.disableHeroCard.obsolete.html'));
 });

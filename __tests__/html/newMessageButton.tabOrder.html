@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       *:focus {
@@ -12,28 +14,12 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createStore,
-        elements,
-        expect,
-        host,
-        pageObjects,
-        shareObservable,
-        timeouts,
-        token
-      } = window.WebChatTest;
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
 
-      const {
-        Components: { HeroCardContent }
-      } = window.WebChat;
-
-      (async function () {
-        const store = createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store
@@ -41,13 +27,13 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('markdown', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
 
-        elements.transcript().focus();
+        await pageObjects.focusTranscript();
 
         // Select the first activity, this should scroll to the top of the transcript.
         await host.sendKeys('ARROW_UP', 'ARROW_UP');
@@ -62,21 +48,16 @@
           }
         });
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
-        await pageObjects.wait(conditions.newMessageButtonShown(), timeouts.ui);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+        await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.newMessageButtonShown();
+        await pageConditions.allImagesLoaded();
 
         await host.sendTab();
 
         // After pressing TAB from transcript, it should focus on the "New messages" button.
-        expect(document.activeElement === elements.newMessageButton()).toBe(true);
+        expect(document.activeElement === pageElements.newMessageButton()).toBe(true);
+
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

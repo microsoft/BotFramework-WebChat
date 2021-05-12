@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useCreateActivityRenderer', () => {
-  test('should render activity', () => runHTMLTest('hooks.useCreateActivityRenderer.html'));
+  test('should render activity', () => runHTML('hooks.useCreateActivityRenderer.html'));
 });

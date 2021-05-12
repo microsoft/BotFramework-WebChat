@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('middleware to disable obsolete Adaptive Cards', () => {
-  test('should NOT disable anchors', () => runHTMLTest('middleware.obsoleteAdaptiveCard.anchor.html'));
+  test('should NOT disable anchors', () => runHTML('middleware.obsoleteAdaptiveCard.anchor.html'));
 });

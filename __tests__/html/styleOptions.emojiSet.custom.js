@@ -1,5 +1,3 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-test('Emoji should be enabled and customizable through emojiSet', () => runHTMLTest('styleOptions.emojiSet.custom.html'));
+test('Emoji should be enabled and customizable through emojiSet', () => runHTML('styleOptions.emojiSet.custom.html'));

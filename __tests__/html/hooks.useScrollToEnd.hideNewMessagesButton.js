@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useScrollToEnd.hideNewMessagesButton', () => {
   test('should scroll to end and hide "New Messages" button', () =>
-    runHTMLTest('hooks.useScrollToEnd.hideNewMessagesButton.html'));
+    runHTML('hooks.useScrollToEnd.hideNewMessagesButton.html'));
 });

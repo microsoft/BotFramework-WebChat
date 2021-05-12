@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useSendTimeoutForActivity', () => {
   test('should return send timeout for activity with and without attachments', () =>
-    runHTMLTest('hooks.useSendTimeoutForActivity.html'));
+    runHTML('hooks.useSendTimeoutForActivity.html'));
 });

@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import concatMiddleware from './concatMiddleware';
 
 describe('two middleware concatenated and ran', () => {
@@ -26,9 +28,7 @@ describe('two middleware concatenated and ran', () => {
   });
 
   test('by a single upstream middleware', () => {
-    const combine = () => next => value => {
-      return next(value) + next(value + 1);
-    };
+    const combine = () => next => value => next(value) + next(value + 1);
 
     const middleware = concatMiddleware(combine, oddMultiplyByTen, evenMultiplyByHundred);
     const work = middleware()(value => value);
@@ -38,9 +38,7 @@ describe('two middleware concatenated and ran', () => {
 });
 
 test('one middleware ran twice by a single upstream middleware', () => {
-  const combine = () => next => value => {
-    return next(value) + next(value + 1);
-  };
+  const combine = () => next => value => next(value) + next(value + 1);
 
   const oddMultiplyByTenAndEvenMultiplyByHundred = () => () => value => {
     if (value % 2) {

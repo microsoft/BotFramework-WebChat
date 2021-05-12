@@ -1,0 +1,17 @@
+env:
+  browser: true
+  es2021: true
+  jest: true
+  node: true
+extends:
+  - eslint:recommended
+root: true
+
+overrides:
+- files:
+  - src/browser/**
+  parserOptions:
+    sourceType: module
+  env:
+    jest: false
+    node: false

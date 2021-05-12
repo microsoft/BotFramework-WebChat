@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('new message button', () => {
-  test('tab order', () => runHTMLTest('newMessageButton.tabOrder.html'));
+  test('tab order', () => runHTML('newMessageButton.tabOrder.html'));
 });

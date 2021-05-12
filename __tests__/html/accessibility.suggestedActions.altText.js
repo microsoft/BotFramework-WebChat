@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('accessibility requirement', () => {
   test('should support "imageAltText" for images in suggested actions', () =>
-    runHTMLTest('accessibility.suggestedActions.altText.html'));
+    runHTML('accessibility.suggestedActions.altText.html'));
 });

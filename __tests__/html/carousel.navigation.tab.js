@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('carousel navigation', () => {
-  test('should show focus when tabbing inside carousel', () => runHTMLTest('carousel.navigation.tab.html'));
+  test('should show focus when tabbing inside carousel', () => runHTML('carousel.navigation.tab.html'));
 });

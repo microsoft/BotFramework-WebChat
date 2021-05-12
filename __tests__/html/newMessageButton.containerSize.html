@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
-    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script> -->
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       body {
@@ -24,10 +28,6 @@
         /* width: calc(100% - 40px); */
       }
 
-      #app {
-        height: 100%;
-      }
-
       .webchat {
         width: 100%;
         height: 100%;
@@ -46,23 +46,12 @@
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="webchat"></div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { Fragment, useCallback, useState },
         ReactDOM: { render },
-        WebChat: { ReactWebChat },
-        WebChatTest: {
-          classNames,
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
+        WebChat: { ReactWebChat }
       } = window;
 
       function createActivity(numLines) {
@@ -78,10 +67,12 @@
         };
       }
 
-      const directLine = createDirectLineWithTranscript([createActivity(15)]);
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(15)]);
 
-      (async function () {
-        const store = createStore();
+      run(async function () {
+        await host.windowSize(720, 720, document.getElementById('webchat'));
+
+        const store = testHelpers.createStore();
 
         const App = ({ overrideOrientation }) => {
           const [orientation, setOrientation] = useState('landscape');
@@ -123,45 +114,46 @@
         };
 
         function renderApp(overrideProps = {}) {
-          render(<App {...overrideProps} />, document.getElementById('app'));
+          render(<App {...overrideProps} />, document.getElementById('webchat'));
         }
 
         renderApp();
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollStabilized();
 
         await pageObjects.scrollToTop();
+        await pageConditions.scrollStabilized();
 
         renderApp({ overrideOrientation: 'portrait' });
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
 
         directLine.activityDeferredObservable.next(createActivity(1));
 
-        // We need to wait for the scroll-to-bottom button to show up.
+        // Wait for some time, to make sure the "New messages" button would never show up.
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        await pageObjects.wait(() => !elements.newMessageButton(), timeouts.ui);
+        // The "New messages" button should not show up because we still have spaces after adding 1 activity.
+        // I.e. the user can see the new activity and they don't need to scroll.
+        await pageConditions.newMessageButtonHidden();
 
         // As a control experiment, we need to show the scroll-to-bottom button.
         directLine.activityDeferredObservable.next(createActivity(5));
 
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.scrollStabilized();
         await pageObjects.scrollToTop();
 
-        // We need to wait for the scroll detector to register we are at the top.
+        // We need to wait for the scroll detector to know we are not sticky.
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // Add a new message, since we don't have enough space and is not sticky, the new message will be hidden from the view.
+        // The "New messages" button will show up.
         directLine.activityDeferredObservable.next(createActivity(1));
 
-        await pageObjects.wait(() => elements.newMessageButton(), timeouts.ui);
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
+        // After scrolled to top, we add a new activity, the "New messages" button should show up.
+        // This is because the user would need to scroll, to see the newly added message.
+        await pageConditions.newMessageButtonShown();
       });
     </script>
   </body>

@@ -1,77 +1,72 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+    <script>
+      run(
+        async function () {
+          const clock = lolex.install();
+          const store = testHelpers.createStore();
+          const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+          const hackedDirectLine = {
+            ...directLine,
+            activity$: directLine.activity$,
+            connectionStatus$: directLine.connectionStatus$,
+            postActivity: activity => {
+              if (activity.type === 'message') {
+                return new Observable(({ error }) => error(new Error('artificial error')));
+              } else {
+                return directLine.postActivity(activity);
+              }
+            }
+          };
 
-      (async function() {
-        function allOutgoingMessagesFailed() {
-          return {
-            message: 'All outgoing messages to fail sending',
-            fn: () =>
+          window.WebChat.renderWebChat(
+            {
+              directLine: hackedDirectLine,
+              store
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.webChatRendered();
+
+          clock.tick(400);
+
+          await pageConditions.uiConnected();
+          await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+
+          clock.tick(20000);
+
+          await pageConditions.became(
+            'All outgoing messages to fail sending',
+            () =>
               pageObjects
                 .getActivities()
                 .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed')
-          };
-        }
+                .every(({ channelData: { state } }) => state === 'send failed'),
+            30000
+          );
 
-        const clock = lolex.install();
+          // TODO: We should make this CSS better, and probably put it inside pageElements.
+          const retryButton = document.querySelector('button[data-markdown-href]');
 
-        const store = createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-        const hackedDirectLine = {
-          ...directLine,
-          activity$: directLine.activity$,
-          connectionStatus$: directLine.connectionStatus$,
-          postActivity: activity => {
-            if (activity.type === 'message') {
-              return new Observable(({ error }) => error(new Error('artificial error')));
-            } else {
-              return directLine.postActivity(activity);
-            }
-          }
-        };
+          retryButton.click();
 
-        window.WebChat.renderWebChat(
-          {
-            directLine: hackedDirectLine,
-            store
-          },
-          document.getElementById('webchat')
-        );
+          // After clicking on retry button, it should focus back on the type focus sink.
+          expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
-
-        clock.tick(400);
-
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
-
-        clock.tick(20000);
-
-        await pageObjects.wait(allOutgoingMessagesFailed(), timeouts.postActivity);
-
-        const retryButton = document.querySelector('button[data-markdown-href]');
-
-        retryButton.click();
-
-        // After clicking on retry button, it should focus back on the type focus sink.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
-
-        await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
-      });
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>

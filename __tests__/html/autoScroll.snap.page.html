@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .webchat__basic-transcript__activity.webchat__basic-transcript__activity--acknowledged {
@@ -15,26 +17,9 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createDirectLineWithTranscript,
-        createStore,
-        elements,
-        expect,
-        host,
-        pageObjects,
-        shareObservable,
-        timeouts,
-        token
-      } = window.WebChatTest;
-
-      const {
-        Components: { AdaptiveCardContent }
-      } = window.WebChat;
-
-      const directLine = createDirectLineWithTranscript([createActivity(20)]);
-      const store = createStore();
+    <script>
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(20)]);
+      const store = testHelpers.createStore();
 
       let now = +new Date(2020, 0, 23, 12, 34);
 
@@ -68,10 +53,10 @@
         };
       }
 
-      (async function () {
+      run(async function () {
         const webChatElement = document.getElementById('webchat');
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store,
@@ -80,22 +65,22 @@
           webChatElement
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         addDummyActivitiesToDirectLine(10);
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollStabilized();
 
         await pageObjects.sendMessageViaSendBox('Hello, World!');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(3), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(3);
+        await pageConditions.scrollToBottomCompleted();
 
         addDummyActivitiesToDirectLine(40);
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollStabilized(), timeouts.scrollToBottom);
+        await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.scrollStabilized();
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 3, unacknowledged: 1 });
 
@@ -107,11 +92,6 @@
         );
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

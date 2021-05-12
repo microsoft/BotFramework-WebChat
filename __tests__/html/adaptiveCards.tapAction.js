@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Adaptive Cards', () => {
   test('with "tapAction" prop should react to click, ENTER, and SPACEBAR', () =>
-    runHTMLTest('adaptiveCards.tapAction.html'));
+    runHTML('adaptiveCards.tapAction.html'));
 });

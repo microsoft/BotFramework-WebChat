@@ -1,39 +1,33 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
-
-      (async function () {
-        window.WebChat.renderWebChat(
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
           {
-            ...(await window.WebChat.createDirectLineSpeechAdapters({
-              fetchCredentials: await token.fetchDirectLineSpeechCredentials()
+            ...(await WebChat.createDirectLineSpeechAdapters({
+              fetchCredentials: await testHelpers.token.fetchDirectLineSpeechCredentials()
             })),
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(2);
 
         // The next message should arrive quickly as the connection has already established.
         await pageObjects.sendMessageViaSendBox('Aloha!', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), 2000);
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
+        await pageConditions.minNumActivitiesShown(4);
       });
     </script>
   </body>

@@ -1,5 +1,4 @@
 const { resolve } = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 
@@ -17,13 +16,6 @@ let config = {
     path: resolve(__dirname, 'dist')
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [{
-        from: 'public',
-        noErrorOnMissing: true,
-        to: '.'
-      }]
-    }),
     new HtmlWebpackPlugin({
       inject: false,
       template: 'src/index.pug',

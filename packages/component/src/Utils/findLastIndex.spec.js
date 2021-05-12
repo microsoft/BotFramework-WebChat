@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import findLastIndex from './findLastIndex';
 
 describe('find last index', () => {

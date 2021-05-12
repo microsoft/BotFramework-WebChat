@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Markdown', () => {
-  test('should not render URL with "javascript" scheme', () => runHTMLTest('markdown.noJavaScriptScheme.html'));
+  test('should not render URL with "javascript" scheme', () => runHTML('markdown.noJavaScriptScheme.html'));
 });

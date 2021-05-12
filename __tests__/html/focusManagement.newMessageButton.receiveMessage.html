@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
 
-      (async function() {
-        const store = createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
             store
@@ -22,11 +22,11 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('herocard');
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
 
         // Waiting for scroll-to-end panel to detect unsticky.
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -37,27 +37,20 @@
 
         await pageObjects.sendMessageViaCode('echo Hello, World!');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(5), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(5);
 
-        const newMessageButton = elements.newMessageButton();
-
-        newMessageButton.focus();
+        await pageObjects.focusNewMessageButton();
 
         await host.snapshot();
 
-        newMessageButton.click();
+        await pageObjects.clickNewMessageButton();
 
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageConditions.scrollToBottomCompleted();
 
         // After clicking on "New messages" button, it should focus on the transcript and the next unread activity.
-        expect(document.activeElement === elements.transcript()).toBe(true);
+        expect(document.activeElement === pageElements.transcript()).toBe(true);
+
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

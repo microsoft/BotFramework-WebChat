@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('offline UI', () => {
   test('should display "Send failed. Retry" when activity is not able to send', () =>
-    runHTMLTest('offlineUI.sendFailed.notSend.html', { ignoreConsoleError: true }));
+    runHTML('offlineUI.sendFailed.notSend.html'));
 });

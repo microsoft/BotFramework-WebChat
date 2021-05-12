@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('Direct Line Speech chat adapter', () => {
-  test('should connect to the MockBot.', () => runHTMLTest('chatAdapter.directLineSpeech.html'));
+  test('should connect to the MockBot.', () => runHTML('chatAdapter.directLineSpeech.html'));
 });

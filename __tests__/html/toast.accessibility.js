@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('toast', () => {
-  test('should have valid aria-labelled-by.', () => runHTMLTest('toast.accessibility.html'));
+  test('should have valid aria-labelled-by.', () => runHTML('toast.accessibility.html'));
 });
