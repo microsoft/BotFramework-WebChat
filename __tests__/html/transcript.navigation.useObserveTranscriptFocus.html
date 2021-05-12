@@ -53,9 +53,7 @@
         await pageObjects.focusSendBoxTextBox();
 
         // Should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
 
         // Should focus on activity with ID 31.
         expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31']);

@@ -26,9 +26,7 @@
         await pageObjects.focusSendBoxTextBox();
 
         // Should show a visual keyboard indicator around the transcript and the last activity. This is our starting point.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
         await host.snapshot();
 
         // Should show an visual keyboard indicator around the second last activity.

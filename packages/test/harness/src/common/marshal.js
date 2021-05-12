@@ -12,7 +12,7 @@ module.exports = function marshal(value) {
   } else if (!value) {
     return value;
   } else if (Array.isArray(value)) {
-    return value.map(value => marshal(value));
+    return value.map(element => marshal(element));
   } else if ([].toString.call(value) === '[object Object]') {
     return Object.fromEntries(
       Object.entries(value).map(([name, value]) =>

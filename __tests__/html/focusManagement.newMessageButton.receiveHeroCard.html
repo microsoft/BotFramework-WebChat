@@ -46,8 +46,7 @@
         await pageConditions.minNumActivitiesShown(4);
 
         // Make sure TAB on the last button will jump to the transcript, then the "New messages" button.
-        await host.sendTab();
-        await host.sendTab();
+        await host.sendTab(2);
 
         expect(document.activeElement === pageElements.newMessageButton()).toBe(true);
 

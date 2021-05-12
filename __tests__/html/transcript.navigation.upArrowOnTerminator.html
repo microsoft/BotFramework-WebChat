@@ -26,8 +26,7 @@
         await pageObjects.focusSendBoxTextBox();
 
         // Should show a focus indicator around the transcript and the terminator. This is our starting point.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(2);
         await host.snapshot();
 
         // Press up on the terminator should focus the bottommost activity.
