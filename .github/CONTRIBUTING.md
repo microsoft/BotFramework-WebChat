@@ -15,29 +15,27 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
 
 > If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/microsoft/BotFramework-WebChat/issues/).
 >
-> Forking Web Chat to make your own customizations means you will lose access to our latest updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
+> Forking Web Chat to make your own customizations means you will lose access to our latest features and security updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
 
 # Preparing the environment
 
-There are 2 steps to prepare your environment: [install tools](#installing-tools) and [prepare the repository](#preparing-the-repository).
+There are 2 steps to prepare the environment: [install tools](#installing-tools) and [prepare the repository](#preparing-the-repository).
 
 ## Installing tools
 
-Please install the follow in your development environment:
+Please install the follow in the development environment:
 
 -  [Node.js](https://nodejs.org/) of LTS or latest version
--  [NPM] minimum required version v7.0.0-rc.3
+-  [NPM] with minimum version of 7.0.0
 -  [Docker](https://docs.docker.com/get-docker/)
-
-These are development environments we tested:
-
--  Windows 10 Professional
-   -  With WSL1 or [WSL2](https://aka.ms/wsl2) installed
--  [Ubuntu 18 running under WSL2](https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q)
+-  On Windows 10, install [Windows Subsystem for Linux 2](https://aka.ms/wsl2)
+   -  [Ubuntu 20.04](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71)
 
 ## Preparing the repository
 
-Web Chat is a monorepo and uses [`lerna`](https://lerna.js.org/). After the repository is [forked and cloned](https://github.com/microsoft/botframework-webchat/fork), run the following to install all dependencies.
+To keep our main repository clean and easy to maintain, all changes must done in a [fork](https://github.com/microsoft/botframework-webchat/fork).
+
+Web Chat is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) and uses [`lerna`](https://lerna.js.org/). After the repository is cloned locally, run the following to install all dependencies.
 
 ```sh
 npm ci
@@ -58,9 +56,9 @@ The bundle output will be located at:
 -  http://localhost:5000/webchat.js (also `webchat-es5.js` and `webchat-minimal.js`)
 -  `packages/bundle/dist/webchat*.js`
 
-# Playing with the build
+# Trying out the build
 
-There are few ways you can play with the build:
+There are multiple ways to try out the build:
 
 -  Playing with playground
    -  `cd packages/playground`
@@ -69,102 +67,142 @@ There are few ways you can play with the build:
 -  Playing with `webchat-loader`
    -  Navigate to https://compulim.github.io/webchat-loader/
    -  In the version dropdown, select `http://localhost:5000/webchat-es5.js`
--  Write your own web app
+-  Write your own HTML page to load Web Chat
    -  `<script src="http://localhost:5000/webchat.js"></script>`
-   -  Or using tarballs
+-  Create a new React app and symlink or load tarballs from these packages, in this specific order
+   1. `/packages/core`
+   1. `/packages/api`
+   1. `/packages/component`
+   1. `/packages/directlinespeech`
+   1. `/packages/bundle`
 
-# Readying for publication
+# How to contribute to our code
+
+1. [Write test pages first](#test-driven-development)
+1. Fix the issue or implement the new feature
+1. [Run static code analysis](#static-code-analysis)
+1. [Final checks](#final-checks)
+
+## Test driven development
 
 We care about software quality. Quality checking prevents regressions, reduces maintenance costs, minimizes chores, and enables us to move faster.
 
-Before submitting the pull request, please check your build by running these checks:
+For bugs, write test page to reproduce the bug, then fix it. This will prevent future regression.
 
--  [Running automated tests](#running-automated-tests)
--  [Performing static code analysis](#static-code-analysis)
+For features, use test page as a playground. Write new tests to verify different sub-features, e.g. rendering in carousel layout vs. rendering in stacked layout. Also write tests for both happy and unhappy paths. This will future-proof the work and protect the investment.
 
-## Running automated tests
+### Writing first test
 
-Automated tests in Web Chat are designed to run inside a stable and isolated test environment. To run the test suite, you will need to [start the test environment](#starting-the-test-environment), then [run the test suite](#running-the-test-suite).
+Start by copying the test page template from [`/__tests__/html/simple.html`](https://github.com/microsoft/BotFramework-WebChat/blob/main/__tests__/html/simple.html) and [`simple.js`](https://github.com/microsoft/BotFramework-WebChat/blob/main/__tests__/html/simple.js). Additionally, follow [other test pages](https://github.com/microsoft/BotFramework-WebChat/tree/main/__tests__/html) to learn about our [page object model](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/test/page-object/src/globals).
 
-### Starting the test environment
+We prefer using end-to-end visual regression tests (VRT) for pixel-perfect and whole feature verification. And unit tests for utility functions. For VRT, we use [`pixelmatch`](https://npmjs.com/package/pixelmatch) via [`jest-image-snapshot`](https://npmjs.com/package/jest-image-snapshot).
 
-For environment stability, Web Chat uses Docker for hosting the test environment.
+### Running tests manually
 
--  Docker with [Windows Subsystem for Linux 2 (a.k.a. WSL2)](https://aka.ms/wsl2)
-   -  To start, run `npm run start:docker`
-   -  To stop/cleanup, run `npm run stop:docker`
--  Other Docker setup
-   -  To start, run `docker-compose up --build`
-   -  To stop/cleanup, run `docker-compose down`
+Download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to the project root.
 
-> On Windows, set environment variable `COMPOSE_CONVERT_WINDOWS_PATHS=1`.
+Run `npm run browser`. It will open a new browser window to http://localhost:5001/**tests**/html/. Then, navigate to the test file.
 
-### Running the test suite
+When tests have completed successfully, it should show a green check.
 
-> Testing pages under `__tests__/html/` are served under http://localhost:5001/ (locally) and http://localhost:5081/ (from Docker). All Jest tests will run against Docker version of the page. To update the page, restart Docker.
+![Transcript with a green check showing test succeeded](https://github.com/microsoft/BotFramework-WebChat/raw/main/docs/media/running-test.png)
 
-There are 2 ways to run the test suite, either one-off or continuously:
+> If the test pages take any screenshots, run them in an automated manner to save the screenshots.
 
-> To run Web Driver test, locally, download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to project root. Then set environment variable `WEBCHAT_TEST_ENV=chrome-local` before running Jest.
+### Running tests automatically
 
--  For one-off testing, `node_modules/.bin/jest`
--  For continuous testing, `npm test`
-   -  To speed up continuous testing, you can install [watchman](https://facebook.github.io/watchman/)
+For test environment convergence and stability, Web Chat uses Docker for hosting the test environment. Please install the following components:
 
-If your development box has less than 4 cores, you will need to reduce the number of simultaneous test agents:
+-  On Windows, install [Windows Subsystem for Linux 2 (a.k.a. WSL 2)](https://aka.ms/wsl2)
+-  [Docker Desktop](https://www.docker.com/get-started)
+-  (Optional) Install [watchman](https://facebook.github.io/watchman/) to improve Jest performance
 
--  For one-off testing: run `node_modules/.bin/jest --maxWorkers 1`
--  For continuous testing: run `npm test -- --maxWorkers 1`
+Run `npm run docker`. It will start a Docker Compose with Selenium Grid and 4 nodes of Chrome.
 
-Our CI pipeline run tests with 4 agents simultaneously. If new tests are added, please make sure they can run simultaneously.
+Then, run `npm test` to start Jest. When Jest run the test pages, it will take screenshots and save it under [`/__tests__/__image_snapshots__/html`](https://github.com/microsoft/BotFramework-WebChat/tree/main/__tests__/__image_snapshots__/html).
 
-### Troubleshooting the test suite
+### Troubleshooting test suites
 
-We run test suite on every commit and requires 100% test pass. If the test suite did not complete successfully, they are likely:
+We run test suites on every commit and requires 100% test pass. If test suites did not complete successfully, they are likely:
 
+-  New changes causing fail in existing tests
 -  Intermittent services issue
 -  Test reliability issue, please see [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
 -  Polluted development environment, for example:
    -  Outdated `node_modules` content
    -  Outdated Node.js or NPM
 
-When the test suite failed:
+When the test suites failed:
 
-1. Re-run the test suite
-   1. If it succeeded but a specific test fails intermittently, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
-1. If it continues to fail, please fresh clone the repository and run the test suite without your changes
-   1. If you suspect your environment is polluted, please use [Windows Sandbox](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview) and/or a new Linux distro on WSL to verify
-1. If it still fails repeatedly, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) to us.
+-  Identify if it is related to new changes or not
+   -  Clone a clean repository and run the test suites without any changes
+-  Identify if it is intermittent issue or not
+   -  Run the test suites again
+
+If existing test suites failed without any changes:
+
+-  Test suites always fail
+   1. Service could be updated and causing a break in our test suites, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose)
+-  Test suites fail intermittently
+   1. If related to service issue, such as the MockBot is down, please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose)
+   1. If related to test reliability, please comment to [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938)
+
+To debug race conditions:
+
+1. Append `location.reload()` to the test page so it will keep reloading the test page until it fail
+1. Navigate to the test page manually and wait until it failed and stop reloading
+
+General tips on race conditions or intermittent test failures:
+
+-  After sending a message, wait for responses from bot
+-  After a long message is shown, wait for scroll to complete
+-  Remove or speed up animations and media progress bars
 
 ## Static code analysis
 
-Run `npm run eslint` for static code analysis.
+Run `npm run precommit` for static code analysis.
 
-If you need to skip any ESLint errors, we recommend `eslint-disable-next-line`. Comments are required on why the rule is disabled.
+To skip any ESLint errors, we prefer `eslint-disable-next-line` instead of disabling a specific rule for the whole file. Comments are required on why the rule is disabled.
 
-# Final checks
+## Final checks
 
 There are checks that automation will not be able to capture. For example:
 
--  Hygiene
-
+-  Transparency
    -  Add a new log to `CHANGELOG.md`
-   -  Fill out the pull request form for traceability
+   -  Fill out the pull request form with details
+-  Hygiene
    -  Make sure imports, members, variables, etc, are sorted alphabetically
    -  Avoid one-off variables, prefer JavaScript shorthands, shorter and faster code
-   -  No global pollution:
-      -  no specific tab order,
-      -  minimize `z-index` usage
-         -  if z-index is ultimately required, use a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context),
-      -  all polyfills must comply with ECMAScript/W3C standards
-
+   -  CSS
+      -  Remove unneeded CSS styles
+      -  Use CSS BEM and always namespace with `webchat__`, for example, `webchat__block__element--modifier`
+   -  Assume offline
+      -  All assets must be self-contained, and not loaded from any external URLs
+   -  No log to console unless it is a deprecation notes, warning, or error
+   -  No global pollution, for example:
+      -  No `taborder` with numbers other than `0` or `-1`
+      -  Minimize `z-index` usage
+         -  If `z-index` is a must, it must be in a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
+      -  Be mindful when using CSS styles in a component with content from end-developers, CSS style may leak into the content, for example:
+         -  Set `font-family` as early as possible
+-  Inclusivity
+   -  All features must be accessible, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/ACCESSIBILITY.md)
+      -  Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained
+      -  Assistive technology and browser compatibility
+         -  NVDA/JAWS: Chrome and Firefox
+         -  Narrator: Microsoft Edge and Internet Explorer 11
+         -  VoiceOver: Safari
+         -  TalkBack: Chrome on Android
+   -  All strings must be localized, all formats must be internationalized
+      -  Please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md)
 -  Tests
-   -  Tests are important to reduces our maintenence burden. Pull requests without needed tests will not be approved or merged into the project.
-   -  When fixing a bug, the original bug repro must be included as a new test
-   -  For feature work, please add as many tests as needed to future-proof the feature, including both happy and unhappy paths
-   -  We prefer integration tests over unit tests
-      -  Visual regression tests are preferred and we use [`pixelmatch`](https://npmjs.com/package/pixelmatch) via [`jest-image-snapshot`](https://npmjs.com/package/jest-image-snapshot)
-   -  Avoid using timeout in tests. Instead, use [fake timer](https://www.npmjs.com/package/lolex) instead
+   -  Tests are important to reduces our maintenence burden
+   -  Pull requests without tests will not be approved or merged into the project
+   -  When fixing a bug, a new test must be added to reproduce the bug to protect regressions
+   -  For feature work, please add as many tests as needed to future-proof the feature and protect the investment
+   -  Avoid using sleeps, use [fake timer](https://www.npmjs.com/package/lolex) instead
+   -  Writes shorter test code and more test pages, to maximize test parallelism
 -  [Secure by default](https://en.wikipedia.org/wiki/Secure_by_default)
 -  Benchmark
    -  Performance should not drop significantly
@@ -175,64 +213,56 @@ There are checks that automation will not be able to capture. For example:
    -  Windows 10
       -  Chrome
       -  Microsoft Edge Chromium
-      -  Microsoft Edge UWP (Legacy)
       -  Firefox
-      -  IE11 (except speech features)
+      -  Internet Explorer 11 (except speech features)
    -  Safari on macOS
    -  Safari on iOS or iPadOS
    -  Chrome on Android
--  For accessibility, please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/ACCESSIBILITY.md)
-   -  Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained.
-   -  Assistive technology and browser compatibility
-      -  NVDA/JAWS: Chrome and Firefox
-      -  Narrator: Microsoft Edge family and IE11
-      -  VoiceOver: Safari
-      -  TalkBack: Chrome on Android
--  For internationalization, please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md)
 -  Feature documentation, samples, live demo, operation of demo bots
    -  All samples must also come with a hosted live demo
    -  Please discuss with us if a specific bot is needed for the live demo
 
-# Workflow
+## Our workflows
 
 Here list how we generally work when [fixing a bug](#fixing-bug) or [implementing a new feature](#implement-new-feature).
 
-## Fixing bug
+### Fixing bugs
 
 Write the bug repro as a test, before fixing the bug.
 
-1. Clone/prepare the repository or reset an existing repository
-   -  To reset the repo, run `npm run tableflip`
-1. Run continuous build, run `npm start`
-1. Convert bug into a test case, under `__tests__/html/this-is-the-bug.html`
-1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/this-is-the-bug.html`
+1. Clone and prepare the repository or reset an existing one
+   -  To reset, run `npm run tableflip`
+1. Run continuous build by running `npm start`
+1. Reproduce the bug on a test page, under `__tests__/html/this-is-the-bug.html`
+1. Run `npm run browser` and navigate to the test page
    -  Make sure the test fail as described in the repro
 1. Fix the bug
-1. Re-run `npm run start:docker` to refresh the code inside Docker
-1. Re-run the test, it should succeed
-   -  Verify screenshots if any
-1. Add a log entry to `CHANGELOG.md`
-1. File a pull request
+1. Reload the test page, it should succeed
+1. Run all test suites in an automated manner
+   -  Run `npm run docker`, followed by `npm test` in a new terminal
+1. Do [final checks](#final-checks)
+1. Submit a pull request
 
-## Implementing new features
+### Implementing new features
 
 Write the user story while implementing the feature.
 
-1. Clone/prepare the repository or reset an existing repository
-   -  To reset the repo, run `npm run tableflip`
-1. Run continuous build, run `npm start`
-1. Clone `__tests__/html/simple.html` to `my-feature.html` and use it as a playground
-1. Navigate to the new playground at http://localhost:5001/my-feature.html
-1. Implement the feature while modifying the playground
-1. After the feature is completed, write more tests to include cases that need more attention, and unhappy paths
-1. Run the test, `npm run start:docker`, then `npm test -- --testPathPattern html/my-feature*.html`
-   -  Verify screenshots
-1. Write a new sample with `README.md`
-   -  This is the user story and proof-of-record on how the feature will work
-   -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md)
-1. Add more design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs) as needed
-1. Add a few log entries to `CHANGELOG.md`
-1. File a pull request
+1. Clone and prepare the repository or reset an existing one
+   -  To reset, run `npm run tableflip`
+1. Run continuous build by running `npm start`
+1. Clone the test page `__tests__/html/simple.html` to `my-feature.html` and use it as a playground
+1. Run `npm run browser` and navigate to the test page
+1. Implement the feature and update/add test pages as needed
+   -  Test pages should include cases that need more attention, and unhappy paths
+1. Run all test suites in an automated manner
+   -  Run `npm run docker`, followed by `npm test` in a new terminal
+1. For prominent features
+   -  Write a new sample with `README.md`
+      -  This is the user story and proof-of-record on how the feature will work
+      -  Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md)
+   -  Add design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs)
+1. Do [final checks](#final-checks)
+1. Submit a pull request
 
 ## Additional context
 
