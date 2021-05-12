@@ -30,7 +30,8 @@
 
         expect(document.activeElement === pageElements.transcript()).toBe(true);
 
-        // There should be no yellow part on the screen as there are no focusing elements.
+        // The card should be in white because it is not tappable, it should not be focused.
+        // The transcript will become yellow because it is focused.
         await host.snapshot();
       });
     </script>

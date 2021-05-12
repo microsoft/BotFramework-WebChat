@@ -6,13 +6,16 @@
 
 // Sample code:
 
-// fn = override(
-//   (x, y) => x + y,
+// const fn = (x, y) => x + y;
+
+// overrodeFn = override(
+//   fn,
 //   (x, y) => [x * 10, y],
 //   result => `Result is ${result}.`
 // );
 
-// fn(1, 2) === 'Result is 12.'
+// fn(1, 2) === 3
+// overrodeFn(1, 2) === 'Result is 12.'
 
 module.exports = function override(fn, pre = (...args) => args, post = result => result) {
   return async (...args) => post(await fn(...((await pre(...args)) || [])));
