@@ -38,9 +38,9 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
             rpcName,
             type: 'rpc:return'
           });
-        } catch ({ message, stack }) {
+        } catch (error) {
           sendPort.postMessage({
-            error: { message, stack },
+            error,
             invocationID: data.invocationID,
             rpcName,
             type: 'rpc:error'
@@ -61,11 +61,8 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
       case 'rpc:error':
         {
           const { [data.invocationID]: { reject } = {} } = invocations;
-          const error = new Error(data.error.message);
 
-          error.stack = data.error.stack;
-
-          reject && reject(error);
+          reject && reject(data.error);
         }
 
         break;
