@@ -66,8 +66,6 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
         {
           const { [data.invocationID]: { reject } = {} } = invocations;
 
-          console.log('!!!!!!!!!!!!!', data);
-
           reject && reject(data.error);
         }
 
