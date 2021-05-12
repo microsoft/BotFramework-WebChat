@@ -5,7 +5,7 @@ const takeStabilizedScreenshot = require('../takeStabilizedScreenshot');
 
 module.exports = webDriver =>
   async function snapshot() {
-    await allImagesCompleted();
+    await allImagesCompleted(webDriver);
 
     const screenshot = await takeStabilizedScreenshot(webDriver);
 
