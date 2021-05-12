@@ -35,6 +35,7 @@
         );
 
         await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
         await pageConditions.scrollToBottomCompleted();
 
         await pageObjects.focusSendBoxTextBox();
