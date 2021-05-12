@@ -120,10 +120,8 @@
         renderApp();
 
         await pageConditions.uiConnected();
-        await pageConditions.scrollStabilized();
 
         await pageObjects.scrollToTop();
-        await pageConditions.scrollStabilized();
 
         renderApp({ overrideOrientation: 'portrait' });
 
@@ -141,7 +139,6 @@
         // As a control experiment, we need to show the scroll-to-bottom button.
         directLine.activityDeferredObservable.next(createActivity(5));
 
-        await pageConditions.scrollStabilized();
         await pageObjects.scrollToTop();
 
         // We need to wait for the scroll detector to know we are not sticky.
