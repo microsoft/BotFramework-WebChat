@@ -21,6 +21,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await pageConditions.numActivitiesShown(2);
 
         await pageConditions.allImagesLoaded();
 
