@@ -130,13 +130,11 @@ When tests have completed successfully, the page should display a green check.
 
 For test environment convergence and stability, Web Chat uses Docker for hosting the test environment. Please install the following components:
 
-- On Windows, install [Windows Subsystem for Linux 2 (a.k.a. WSL 2)](https://aka.ms/wsl2)
-- [Docker Desktop](https://www.docker.com/get-started)
-- (Optional) Install [watchman](https://facebook.github.io/watchman/) to improve Jest performance
-
-Run `npm run docker`. It will start a Docker Compose with Selenium Grid and 4 nodes of Chrome.
-
-Run `npm test` to start Jest. When Jest runs the test pages, it will take screenshots of new tests and save it under [`/__tests__/__image_snapshots__/html`](https://github.com/microsoft/BotFramework-WebChat/tree/main/__tests__/__image_snapshots__/html).
+1. On Windows, install [Windows Subsystem for Linux 2 (a.k.a. WSL 2)](https://aka.ms/wsl2)
+1. [Docker Desktop](https://www.docker.com/get-started)
+1. (Optional) Install [watchman](https://facebook.github.io/watchman/) to improve Jest performance
+1. Run `npm run docker`. It will start a Docker Compose with Selenium Grid and 4 nodes of Chrome
+1. In a new terminal, run `npm test` to start Jest. When Jest runs the test pages, it will take screenshots of new tests and save it under [`/__tests__/__image_snapshots__/html`](https://github.com/microsoft/BotFramework-WebChat/tree/main/__tests__/__image_snapshots__/html)
 
 ### Troubleshooting test suites
 
