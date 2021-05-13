@@ -35,6 +35,7 @@
         // Should focus on the first input box of Adaptive Card, this is our starting point.
         await host.sendShiftTab(3);
         await host.sendKeys('ARROW_UP', 'ARROW_UP');
+        await pageConditions.scrollStabilized();
         await pageConditions.focusedActivityInView();
 
         await host.sendKeys('ENTER');
