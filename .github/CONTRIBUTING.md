@@ -222,7 +222,7 @@ There are checks that automation will not be able to capture. For example:
   - All strings must be localized and all formats internationalized
     - Please refer to [`docs/LOCALIZATION.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/LOCALIZATION.md)
 - Tests
-  - Tests are important to reduces our maintenence burden
+  - Tests are important to reduce maintenence burden
   - Pull requests without tests will not be approved or merged into the project
   - When fixing a bug, a new test must be added to reproduce the bug to protect regressions
   - For feature work, please add as many tests as needed to future-proof the feature and protect the investment
