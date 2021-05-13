@@ -154,7 +154,7 @@ When the test suites fail:
 - Identify whether the tests fail WITHOUT any code changes
   - Make a fresh clone of BotFramework-WebChat and run the test suites without any changes. If the fresh clone tests pass, this means the latest code changes are causing failures.
 - Identify whether the failure is intermittent
-  - Run the (failing) test suites again, potentially using jest filters (`f` for failed tests)
+  - Run the (failing) test suites again, potentially using Jest filters (<kbd>F</kbd> for failed tests)
 
 If existing test suites fail without any code changes, please determine the following:
 
