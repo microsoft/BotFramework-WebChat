@@ -11,5 +11,5 @@ export default async function scrollToTop(offset = 0) {
 
   transcriptScrollable.scrollTop = offset;
 
-  await scrollStabilized(0);
+  await scrollStabilized(offset);
 }
