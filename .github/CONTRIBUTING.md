@@ -60,31 +60,34 @@ The bundle output will be located at:
 
 There are multiple ways to try out the build:
 
-- Using the Web Chat playground
-  - `cd packages/playground`
-  - `npm start`
-  - Navigate to [http://localhost:3000/](http://localhost:3000/), and click on "Official MockBot" on the upper right corner
-- Using `webchat-loader`
-  - Navigate to [https://compulim.github.io/webchat-loader/](https://compulim.github.io/webchat-loader/)
-  - In the version dropdown, select [`http://localhost:5000/webchat-es5.js`](`http://localhost:5000/webchat-es5.js`)
-    - If you do not see this options, make sure you have run `npm start` and can access the URL
-  - Selecting a bot to use
-    - If you do not own a bot or prefer to use our bots, select "[Public] MockBot" or other bots from the presets
-    - If you have your own Direct Line or Direct Line App Service Extension bot:
-      - Check "Direct Line via Web Socket" or "Direct Line App Service Extension" in the "Protocol" section
-        - For "Direct Line App Service Extension", set the host name to your bot
-      - If you have the Direct Line secret of your bot, type it in the "Secret" box
-      - Otherwise, type the token in the "Token" box
-    - If you have a Direct Line Speech bot:
-      - Select the region of your resource in the "Speech region" box
-      - Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
-  - Selecting speech options for non-Direct Line Speech bot:
-    - If you do not need to use speech, clear "Speech key" and "Speech token"
-    - If you own a Cognitive Services Speech Services resource:
-      - Select the region of your resource in the "Speech region" box
-      - Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
-    - If you do not own Cognitive Services Speech Services resource, click "MockBot" below the "Speech key" box
+- Using our prebuilt environments
+  - Our prebuilt environments are great ways to test out the latest from Web Chat
+  - Using the Web Chat playground
+    - `cd packages/playground`
+    - `npm start`
+    - Navigate to [http://localhost:3000/](http://localhost:3000/), and click on "Official MockBot" on the upper right corner
+  - Using `webchat-loader`
+    - Navigate to [https://compulim.github.io/webchat-loader/](https://compulim.github.io/webchat-loader/)
+    - In the version dropdown, select [`http://localhost:5000/webchat-es5.js`](`http://localhost:5000/webchat-es5.js`)
+      - If you do not see this options, make sure you have run `npm start` and can access the URL
+    - Selecting a bot to use
+      - If you do not own a bot or prefer to use our bots, select "[Public] MockBot" or other bots from the presets
+      - If you have your own Direct Line or Direct Line App Service Extension bot:
+        - Check "Direct Line via Web Socket" or "Direct Line App Service Extension" in the "Protocol" section
+          - For "Direct Line App Service Extension", set the host name to your bot
+        - If you have the Direct Line secret of your bot, type it in the "Secret" box
+        - Otherwise, type the token in the "Token" box
+      - If you have a Direct Line Speech bot:
+        - Select the region of your resource in the "Speech region" box
+        - Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
+    - Selecting speech options for non-Direct Line Speech bot:
+      - If you do not need to use speech, clear "Speech key" and "Speech token"
+      - If you own a Cognitive Services Speech Services resource:
+        - Select the region of your resource in the "Speech region" box
+        - Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
+      - If you do not own Cognitive Services Speech Services resource, click "MockBot" below the "Speech key" box
 - Write your own HTML page to load Web Chat
+  - Using a HTML page is recommended over using the playground or loader for development, for faster loading and quick reproduce ability
   - `<script src="http://localhost:5000/webchat.js"></script>`
 - Create a new React app and symlink or load tarballs from these packages, in the following order:
   1. `/packages/core`
@@ -106,7 +109,7 @@ We care about software quality. Quality checking prevents regressions, reduces m
 
 For bugs, write test page(s) to reproduce the bug, then fix it. This will prevent future regressions.
 
-For features, use test page as a playground. Write new tests to verify different sub-features, e.g. rendering in carousel layout vs. rendering in stacked layout. Also write tests for both happy and unhappy paths. This will future-proof the work and protect the investment.
+For features, write test page(s) to try out the feature. Write new test pages to verify different sub-features, e.g. rendering in carousel layout vs. rendering in stacked layout. Also write tests for both happy and unhappy paths. This will future-proof the work and protect the investment.
 
 ### Writing a test
 
@@ -124,7 +127,7 @@ When tests have completed successfully, the page should display a green check.
 
 ![Transcript with a green check showing test succeeded](https://github.com/microsoft/BotFramework-WebChat/raw/main/docs/media/running-test.png)
 
-> If the test pages take any screenshots, run them in an automated manner to save the screenshots.
+> If the test pages take any screenshots, run them in Jest to save the screenshots to `/__tests__/__image_snapshots__/html/`.
 
 ### Running tests automatically
 
@@ -248,9 +251,9 @@ There are checks that automation will not be able to capture. For example:
   - All samples must also come with a hosted live demo
   - Please discuss with us if a specific bot is needed for the live demo
 
-## Workflow
+## Summary
 
-The following is a guidance list on how to approach when [fixing a bug](#fixing-bug) or [implementing a new feature](#implement-new-feature).
+The following is a quick summary on how to approach when [fixing a bug](#fixing-bug) or [implementing a new feature](#implement-new-feature).
 
 ### Fixing bugs
 
@@ -259,7 +262,7 @@ Write the bug repro as a test before fixing the bug.
 1. Clone and prepare the repository or reset an existing one
    - To reset, run `npm run tableflip`
 1. Run continuous build by running `npm start`
-1. Reproduce the bug on a test page under `__tests__/html/this-is-the-bug.html`
+1. Reproduce the bug on a test page under `__tests__/html/this.is.the.bug.html`
 1. Run `npm run browser` and navigate to the test page
    - Make sure the test(s) fail as described in the repro
 1. Fix the bug
@@ -267,7 +270,7 @@ Write the bug repro as a test before fixing the bug.
 1. Run all test suites:
    - Run `npm run docker`, followed by `npm test` in a new terminal
 1. Do [final checks](#final-checks)
-1. Submit a pull request
+1. [Submit a pull request](https://github.com/microsoft/BotFramework-WebChat/compare)
 
 ### Implementing new features
 
@@ -276,7 +279,7 @@ Write the user story while implementing the feature.
 1. Clone and prepare the repository or reset an existing one
    - To reset, run `npm run tableflip`
 1. Run continuous build by running `npm start`
-1. Clone the test page `__tests__/html/simple.html` to `my-feature.html` and use it as a playground
+1. Clone the test page `__tests__/html/simple.html` to `feature.subfeature.scenario.html` and use it as a playground
 1. Run `npm run browser` and navigate to the test page
 1. Implement the feature and update/add test pages as needed
    - Test pages should include cases that need more attention, and unhappy paths
@@ -288,7 +291,7 @@ Write the user story while implementing the feature.
      - Update [`samples/README.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/samples/README.md) to include the new sample in the list
    - Add design docs to [`/docs`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs)
 1. Do [final checks](#final-checks)
-1. Submit a pull request
+1. [Submit a pull request](https://github.com/microsoft/BotFramework-WebChat/compare)
 
 ## Additional context
 
