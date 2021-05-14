@@ -164,9 +164,9 @@ If existing test suites fail without any code changes, please determine the foll
 - Test suites fail intermittently
   1.  Service reliability problems (e.g. for DirectLine, or Mockbot) may be the cause. Please [file an issue](https://github.com/microsoft/BotFramework-WebChat/issues/new/choose) on the Web Chat repository.
   1.  Test reliability problems may be the cause. If so, please comment on [#2938](https://github.com/microsoft/BotFramework-WebChat/issues/2938) and include:
-  - Failing test names/files
-  - Failing screencaps, if available. These images can be retrieved from `__diff_output__`
-  - Error messages
+    - Failing test names/files
+    - Failing screencaps, if available. These images can be retrieved from `__diff_output__`
+    - Error messages
 
 To debug race conditions:
 
