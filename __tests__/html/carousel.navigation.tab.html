@@ -29,9 +29,7 @@
         await pageConditions.minNumActivitiesShown(2);
 
         // Move focus to carousel activity
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
         await pageConditions.focusedActivityInView();
 
         await host.sendKeys('ENTER');
@@ -47,8 +45,7 @@
 
         // Second focus is not very stable because of its position, we are skipping snapshotting it.
         // Third focus inside carousel
-        await host.sendTab();
-        await host.sendTab();
+        await host.sendTab(2);
         await pageConditions.became(
           'focus on the third attachment',
           () =>

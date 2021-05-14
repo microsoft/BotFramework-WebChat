@@ -21,14 +21,13 @@
         );
 
         await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
         await pageConditions.scrollToBottomCompleted();
 
         await pageObjects.focusSendBoxTextBox();
 
         // Should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
         await host.snapshot();
 
         // Should show an active indicator around the second last activity.
@@ -56,17 +55,13 @@
         await host.snapshot();
 
         // Should allow active activity to be out of view when scrolled.
-        await host.sendTab();
-        await host.sendTab();
-        await host.sendTab();
+        await host.sendTab(3);
         await host.sendKeys('PAGE_UP');
         await pageConditions.scrollStabilized();
         await host.snapshot();
 
         // Should scroll active activity in view when focused.
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
         await pageConditions.scrollStabilized();
 
         await host.snapshot();

@@ -20,18 +20,17 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForNumResponse: 1, waitForSend: true });
 
         await pageConditions.allImagesLoaded();
 
         // Move focus to carousel activity
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
         await pageConditions.focusedActivityInView();
 
         await host.sendKeys('ENTER');
-        // focus on first card button
+
+        // Focus on first card button
         await host.sendTab();
         await host.snapshot();
       });

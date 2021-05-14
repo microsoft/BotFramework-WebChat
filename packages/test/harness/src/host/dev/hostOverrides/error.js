@@ -1,12 +1,11 @@
 // In dev mode, draw a red cross when test failed.
 
 const dumpLogs = require('../../common/dumpLogs');
-const override = require('../utils/override');
 const stripANSI = require('strip-ansi');
 
 // Send the error back to the browser console.
-module.exports = (webDriver, error) =>
-  override(error, async function error(error) {
+module.exports = webDriver =>
+  async function error(error) {
     /* istanbul ignore next */
     await webDriver.executeScript(
       (message, stack) => {
@@ -40,4 +39,4 @@ module.exports = (webDriver, error) =>
     await dumpLogs(webDriver, { clear: true });
 
     global.__logs = [];
-  });
+  };

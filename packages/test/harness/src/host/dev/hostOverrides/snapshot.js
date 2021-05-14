@@ -1,17 +1,30 @@
+const allImagesCompleted = require('../../common/allImagesCompleted');
+const takeStabilizedScreenshot = require('../../common/takeStabilizedScreenshot');
+
 // In dev mode, we output the screenshot in console instead of checking against a PNG file.
 
 module.exports = webDriver =>
   async function snapshot() {
-    const base64 = await webDriver.takeScreenshot();
+    await allImagesCompleted(webDriver);
+
+    const base64 = await takeStabilizedScreenshot(webDriver);
 
     /* istanbul ignore next */
-    await webDriver.executeScript(
-      (message, url) => {
-        console.groupCollapsed(message);
-        console.log(url);
-        console.groupEnd();
+    await webDriver.executeAsyncScript(
+      (message, base64, callback) => {
+        (async function () {
+          // "imageAsLog" is from /src/browser/globals/imageAsLog.
+          // eslint-disable-next-line no-undef
+          const log = await imageAsLog(base64, 0.5);
+
+          console.group(message);
+          console.log(...log);
+          console.groupEnd();
+
+          callback();
+        })();
       },
       '[TESTHARNESS] Snapshot taken.',
-      `data:image/png;base64,${base64}`
+      base64
     );
   };

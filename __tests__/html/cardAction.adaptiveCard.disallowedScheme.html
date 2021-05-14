@@ -69,8 +69,8 @@
         await expect(host.getLogs()).resolves.toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              message: expect.stringContaining('disallowed scheme'),
-              level: 'WARNING'
+              level: expect.objectContaining({ name_: 'WARNING' }),
+              message: expect.stringContaining('disallowed scheme')
             })
           ])
         );

@@ -37,9 +37,7 @@
 
         // Select the first activity, this should scroll to the top of the transcript.
         await host.sendKeys('ARROW_UP', 'ARROW_UP');
-
-        // Wait for 200ms for scroll-to-bottom component to detect unstickiness.
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await pageConditions.scrollStabilized(0);
 
         store.dispatch({
           type: 'WEB_CHAT/SEND_MESSAGE',
@@ -50,6 +48,7 @@
 
         await pageConditions.minNumActivitiesShown(4);
         await pageConditions.newMessageButtonShown();
+
         await pageConditions.allImagesLoaded();
 
         await host.sendTab();

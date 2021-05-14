@@ -84,11 +84,13 @@ module.exports = {
     '<rootDir>/__tests__/setup/setupTimeout.js'
   ],
   testPathIgnorePatterns: [
-    '<rootDir>/__tests__/html/assets',
+    '/lib/',
+    '/node_modules/',
     '<rootDir>/__tests__/html/__dist__',
     '<rootDir>/__tests__/html/__jest__',
-    '<rootDir>/__tests__/types/__typescript__',
+    '<rootDir>/__tests__/html/assets',
     '<rootDir>/__tests__/setup/',
+    '<rootDir>/__tests__/types/__typescript__',
     '<rootDir>/packages/directlinespeech/__tests__/utilities/',
     '<rootDir>/packages/playground/',
     '<rootDir>/samples/'

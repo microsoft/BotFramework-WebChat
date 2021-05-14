@@ -69,7 +69,7 @@
     "react-film": "3.0.0",
     "react-redux": "7.2.3",
     "react-say": "2.0.2-master.ee7cd76",
-    "react-scroll-to-bottom": "4.1.0",
+    "react-scroll-to-bottom": "4.1.1",
     "redux": "4.0.5",
     "remark": "10.0.1",
     "sanitize-html": "1.27.5",

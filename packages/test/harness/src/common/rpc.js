@@ -32,19 +32,23 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
         try {
           const returnValue = await fns[data.fn](...data.args);
 
-          sendPort.postMessage({
-            invocationID: data.invocationID,
-            returnValue,
-            rpcName,
-            type: 'rpc:return'
-          });
+          sendPort.postMessage(
+            marshal({
+              invocationID: data.invocationID,
+              returnValue,
+              rpcName,
+              type: 'rpc:return'
+            })
+          );
         } catch (error) {
-          sendPort.postMessage({
-            error,
-            invocationID: data.invocationID,
-            rpcName,
-            type: 'rpc:error'
-          });
+          sendPort.postMessage(
+            marshal({
+              error,
+              invocationID: data.invocationID,
+              rpcName,
+              type: 'rpc:error'
+            })
+          );
         }
 
         break;

@@ -63,9 +63,7 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        await host.sendShiftTab();
-        await host.sendShiftTab();
-        await host.sendShiftTab();
+        await host.sendShiftTab(3);
 
         await host.snapshot();
       });

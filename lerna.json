@@ -4,5 +4,12 @@
     "packages/*",
     "packages/test/*"
   ],
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": [
+        "--legacy-peer-deps"
+      ]
+    }
+  }
 }
