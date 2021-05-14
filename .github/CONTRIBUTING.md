@@ -213,7 +213,16 @@ There are checks that automation will not be able to capture. For example:
     - Minimize `z-index` usage
       - If `z-index` is an absolute must, it must be used in a [new stacking context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
     - Be mindful when using CSS styles in a component with content from end-developers. CSS styles may leak into the content, for example:
-      - Set `font-family` as early as possible
+      - Set CSS as high in the DOM tree as possible, for example:
+        - ```html
+          <section>
+            <header>Header</header>
+            <p>First</p>
+            <p>Second</p>
+            <footer>Footer</p>
+          </section>
+          ```
+        - Setting `font-family` in `<section>` produces fewer lines of code than setting `font-family` in `<header>`, `<p>`, and `<footer>`, due to the cascade effect
 - Inclusivity
   - All features must be accessible. Please refer to [`docs/ACCESSIBILITY.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/ACCESSIBILITY.md)
     - Tab order, content readability, assistive technology-only text, color contrast, etc. must be maintained
