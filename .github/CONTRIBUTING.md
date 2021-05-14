@@ -175,8 +175,8 @@ To debug race conditions:
 
 General tips on race conditions or intermittent test failures:
 
-- After sending a message, wait for responses from the bot (using `host.minMessagesShown(2)`)
-- After a long message is shown, wait for scroll to complete using `host.scrollComplete()`
+- After sending a message, wait for responses from the bot, using `await pageConditions.minNumActivitiesShown(2)`
+- After a long message is shown, wait for scroll to complete, using `await pageConditions.scrollToBottomCompleted()`
 - Remove or speed up animations and media progress bars
   - If your screenshot is taken with a GIF animation, such as the spinner next to "Connecting..." prompt, you will want to replace it using `styleOptions`:
     - `styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }`
