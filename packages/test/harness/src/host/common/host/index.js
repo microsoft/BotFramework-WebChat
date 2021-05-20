@@ -6,6 +6,7 @@ const error = require('./error');
 const getLogs = require('./getLogs');
 const ready = require('./ready');
 const sendAccessKey = require('./sendAccessKey');
+const sendDevToolsCommand = require('./sendDevToolsCommand');
 const sendKeys = require('./sendKeys');
 const sendShiftTab = require('./sendShiftTab');
 const sendTab = require('./sendTab');
@@ -27,6 +28,7 @@ module.exports = function createHost(webDriver) {
     ready: ready(readyDeferred.resolve),
     readyPromise: readyDeferred.promise,
     sendAccessKey: sendAccessKey(webDriver),
+    sendDevToolsCommand: sendDevToolsCommand(webDriver),
     sendKeys: sendKeys(webDriver),
     sendShiftTab: sendShiftTab(webDriver),
     sendTab: sendTab(webDriver),

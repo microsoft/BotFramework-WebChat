@@ -5,6 +5,7 @@ import whileConnected from './effects/whileConnected';
 
 import clockSkewAdjustmentSelector from '../selectors/clockSkewAdjustment';
 import combineSelectors from '../selectors/combineSelectors';
+import dateToLocaleISOString from '../utils/dateToLocaleISOString';
 import languageSelector from '../selectors/language';
 import sendTimeoutSelector from '../selectors/sendTimeout';
 
@@ -21,8 +22,9 @@ import {
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
-function getTimestamp(clockSkewAdjustment = 0) {
-  return new Date(Date.now() + clockSkewAdjustment).toISOString();
+function getTimestamp(date, clockSkewAdjustment = 0) {
+  // "+date" will return epoch time in milliseconds, same as Date.getTime().
+  return new Date(+date + clockSkewAdjustment).toISOString();
 }
 
 function* postActivity(directLine, userID, username, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
@@ -31,6 +33,9 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
   );
   const { attachments } = activity;
   const clientActivityID = uniqueID();
+  const now = new Date();
+  const localTimeZone =
+    typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   activity = {
     ...deleteKey(activity, 'id'),
@@ -46,7 +51,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       ...deleteKey(activity.channelData, 'state'),
       clientActivityID,
       // This is unskewed local timestamp for estimating clock skew.
-      clientTimestamp: getTimestamp()
+      clientTimestamp: getTimestamp(now)
     },
     channelId: 'webchat',
     from: {
@@ -55,9 +60,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       role: 'user'
     },
     locale,
+    localTimestamp: dateToLocaleISOString(now),
+    localTimezone: localTimeZone,
     // This timestamp will be replaced by Direct Line Channel in echoback.
     // We are temporarily adding this timestamp for sorting.
-    timestamp: getTimestamp(clockSkewAdjustment)
+    timestamp: getTimestamp(now, clockSkewAdjustment)
   };
 
   if (!numActivitiesPosted) {
