@@ -334,7 +334,7 @@ const TextBox = ({ className }) => {
 
       if (current) {
         // The "disable soft keyboard on mobile devices" logic will not work on IE11. It will cause the <input> to become read-only until next focus.
-        // Thus, no mobile devices carry IE11, we don't need to explicitly disable soft keyboard on IE11.
+        // Thus, no mobile devices carry IE11 so we don't need to explicitly disable soft keyboard on IE11.
         // See #3757 for repro and details.
         if (noKeyboard && !ie11) {
           // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
