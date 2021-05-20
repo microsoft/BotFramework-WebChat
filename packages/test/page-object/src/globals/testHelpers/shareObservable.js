@@ -1,3 +1,5 @@
+import Observable from 'core-js/features/observable';
+
 export default function shareObservable(observable) {
   const observers = [];
   let subscription;

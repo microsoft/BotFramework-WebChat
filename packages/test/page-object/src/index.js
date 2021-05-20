@@ -4,7 +4,7 @@ import { EventIterator } from 'event-iterator';
 import classNames from 'classnames';
 import createDeferred from 'p-defer';
 import lolex from 'lolex';
-import Observable from 'core-js/modules/esnext.observable';
+import Observable from 'core-js/features/observable';
 import updateIn from 'simple-update-in';
 
 import * as pageConditions from './globals/pageConditions/index';
