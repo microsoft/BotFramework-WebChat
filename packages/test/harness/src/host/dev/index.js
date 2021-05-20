@@ -63,7 +63,7 @@ async function main() {
     process.once('SIGTERM', terminate);
 
     try {
-      await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
+      await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' });
       await webDriver.get(process.argv[2] || 'http://localhost:5080/');
 
       registerProxies(webDriver, createDevProxies(webDriver));

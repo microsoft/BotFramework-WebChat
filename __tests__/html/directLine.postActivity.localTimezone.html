@@ -10,6 +10,8 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
+        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
+
         const clock = lolex.install();
 
         // Before running the test, the browser should have setup with time zone of GMT-08, at epoch time.

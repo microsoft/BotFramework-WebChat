@@ -52,8 +52,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
-    await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
-
+    await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' });
     await webDriver.get(absoluteURL);
 
     global.__operation__ = 'setting class name for body element';
