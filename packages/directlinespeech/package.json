@@ -64,7 +64,7 @@
     "event-target-shim": "5.0.1",
     "event-target-shim-es5": "1.2.0",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "p-defer": "3.0.0",
     "p-defer-es5": "1.2.1",
     "web-speech-cognitive-services": "7.1.0"
