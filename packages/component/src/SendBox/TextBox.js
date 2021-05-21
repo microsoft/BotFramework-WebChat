@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef } from 'react';
 
+import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import AutoResizeTextArea from './AutoResizeTextArea';
 import connectToWebChat from '../connectToWebChat';
@@ -332,7 +333,10 @@ const TextBox = ({ className }) => {
       const { current } = inputElementRef;
 
       if (current) {
-        if (noKeyboard) {
+        // The "disable soft keyboard on mobile devices" logic will not work on IE11. It will cause the <input> to become read-only until next focus.
+        // Thus, no mobile devices carry IE11 so we don't need to explicitly disable soft keyboard on IE11.
+        // See #3757 for repro and details.
+        if (noKeyboard && !ie11) {
           // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
           // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
           const readOnly = current.getAttribute('readonly');
