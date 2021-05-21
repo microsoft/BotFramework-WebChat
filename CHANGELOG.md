@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Improved test reliability and added snapshots to console of test harness in development mode, by [@compulim](https://github.com/compulim), in PR [#3891](https://github.com/microsoft/BotFramework-WebChat/pull/3891)
 -  Fixes [#3757](https://github.com/microsoft/BotFramework-WebChat/issues/3757). IE11: Send box should not be disabled after pressing <kbd>ESCAPE</kbd> key in the transcript, by [@compulim](https://github.com/compulim), in PR [#3902](https://github.com/microsoft/BotFramework-WebChat/pull/3902)
 -  Fixes [#3901](https://github.com/microsoft/BotFramework-WebChat/issues/3901). IE11: SVG icons for buttons should not be focusable, by [@compulim](https://github.com/compulim), in PR [#3902](https://github.com/microsoft/BotFramework-WebChat/pull/3902)
+-  Fixes [#3825](https://github.com/microsoft/BotFramework-WebChat/issues/3825). Add `role="presentation"` to all decorative `<svg>`, by [@compulim](https://github.com/compulim), in PR [#3903](https://github.com/microsoft/BotFramework-WebChat/pull/3903)
 
 ### Changed
 
