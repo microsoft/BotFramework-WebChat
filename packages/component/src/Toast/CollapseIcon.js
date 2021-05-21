@@ -6,6 +6,7 @@ const CollapseIcon = ({ className }) => (
     className={(className || '') + ''}
     focusable={false}
     height="9"
+    role="presentation"
     viewBox="0 0 16 9"
     width="16"
     xmlns="http://www.w3.org/2000/svg"
