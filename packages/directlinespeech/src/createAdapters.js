@@ -135,11 +135,6 @@ export default async function create({
     } else {
       config = BotFrameworkConfig.fromHost(new URL(`wss://${directLineSpeechHostname}`), subscriptionKey);
     }
-
-    // TODO: [P1] #3693 In Speech SDK 1.15.0, there is a bug that wrongly construct the endpoint.
-    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/315
-    //       Remove the following line after the bug is resolved.
-    config.setProperty(PropertyId.SpeechServiceConnection_Host, `wss://${directLineSpeechHostname}`);
   } else {
     if (authorizationToken) {
       config = BotFrameworkConfig.fromAuthorizationToken(authorizationToken, region);

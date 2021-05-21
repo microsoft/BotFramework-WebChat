@@ -46,7 +46,7 @@
     "markdown-it-for-inline": "0.1.1",
     "math-random": "2.0.1",
     "memoize-one": "5.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.15.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.7.2",
     "sanitize-html": "1.27.5",
     "url-search-params-polyfill": "8.1.1",
