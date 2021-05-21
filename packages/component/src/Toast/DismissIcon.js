@@ -6,6 +6,7 @@ const DismissIcon = ({ className }) => (
     className={(className || '') + ''}
     focusable={false}
     height="14"
+    role="presentation"
     viewBox="0 0 14 14"
     width="14"
     xmlns="http://www.w3.org/2000/svg"

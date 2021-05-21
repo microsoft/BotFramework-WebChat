@@ -8,6 +8,7 @@ const DownloadIcon = ({ className, size }) => (
     className={className}
     focusable={false}
     height={ICON_SIZE_FACTOR * size}
+    role="presentation"
     viewBox="0 0 31.8 46"
     width={ICON_SIZE_FACTOR * size}
   >

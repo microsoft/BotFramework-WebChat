@@ -6,6 +6,7 @@ const ExpandIcon = ({ className }) => (
     className={(className || '') + ''}
     focusable={false}
     height="10"
+    role="presentation"
     viewBox="0 0 16 10"
     width="16"
     xmlns="http://www.w3.org/2000/svg"
