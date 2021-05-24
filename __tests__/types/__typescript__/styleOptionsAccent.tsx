@@ -5,6 +5,6 @@ function main() {
 
   createStyleSet(styleOptions);
 
-  // Verify: Setting "accent" must should pass.
+  // Verify: Setting "accent" must pass.
   return <ReactWebChat dir="ltr" styleOptions={styleOptions} />;
 }

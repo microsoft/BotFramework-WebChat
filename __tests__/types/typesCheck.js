@@ -26,6 +26,29 @@ function compile(...filenames) {
   return errors;
 };
 
+it('should pass with non-exported component type SendTextBox', () => {
+  const componentErrors = compile(path.join(__dirname, './__typescript__/componentSendTextBox.tsx'));
+
+  expect(componentErrors).toHaveProperty('length', 0);
+});
+
+it('should pass with non-exported type directLine', () => {
+  const directLineErrors = compile(path.join(__dirname, './__typescript__/directLineObject.tsx'));
+
+  expect(directLineErrors).toHaveProperty('length', 0);
+});
+
+it('should pass with non-exported type directLine in Composer', () => {
+  const directLineErrors = compile(path.join(__dirname, './__typescript__/directLineInComposer.tsx'));
+
+  expect(directLineErrors).toHaveProperty('length', 0);
+});
+
+it('should pass dir as string in Composer ', () => {
+  const dirStringErrors = compile(path.join(__dirname, './__typescript__/dirInComposer.tsx'));
+
+  expect(dirStringErrors).toHaveProperty('length', 0);
+});
 
 it('should pass dir as string', () => {
   const dirStringErrors = compile(path.join(__dirname, './__typescript__/dirString.tsx'));
@@ -38,6 +61,18 @@ it('should fail on dir as number', () => {
 
   expect(dirNumErrors).toHaveProperty('length', 1);
   expect(dirNumErrors[0]).toEqual(expect.stringContaining(`Type 'number' is not assignable to type '"ltr" | "rtl" | "auto"'`));
+});
+
+it('should pass with non-exported type store', () => {
+  const storeObjectErrors = compile(path.join(__dirname, './__typescript__/storeObject.tsx'));
+
+  expect(storeObjectErrors).toHaveProperty('length', 0);
+});
+
+it('should pass with non-exported type store in Composer ', () => {
+  const storeObjectErrors = compile(path.join(__dirname, './__typescript__/storeInComposer.tsx'));
+
+  expect(storeObjectErrors).toHaveProperty('length', 0);
 });
 
 it('should fail on accent', () => {
