@@ -3,9 +3,8 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { Fragment } from 'react';
 
-import activityAltText from './Utils/activityAltText';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
@@ -31,21 +30,10 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-// When "renderAttachments" is false, we will not render the content of attachments.
-// That means, it will only render "2 attachments", instead of "image attachment".
-// This is used in the visual transcript, where we render "Press ENTER to interact."
-const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
-  const [{ initials: botInitials }] = useAvatarForBot();
+const GenericScreenReaderAttachments = ({ activity, renderAttachments }) => {
+  const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
-  const formatDate = useDateFormatter();
-  const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-  const textAlt = useMemo(() => activityAltText(activity), [activity]);
-
-  const { attachments = [], from: { role } = {}, timestamp } = activity;
-
-  const fromUser = role === 'user';
 
   const attachmentForScreenReaderRenderers = renderAttachments
     ? attachments
@@ -53,14 +41,51 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
         .filter(render => render)
     : [];
 
-  const greetingAlt = (fromUser
-    ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
   const numGenericAttachments = attachments.length - attachmentForScreenReaderRenderers.length;
 
   const numAttachmentsAlt =
     !!numGenericAttachments && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, numGenericAttachments);
+
+  return (
+    <Fragment>
+      {!!attachmentForScreenReaderRenderers.length && (
+        <ul>
+          {attachmentForScreenReaderRenderers.map((render, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <li key={index}>{render()}</li>
+          ))}
+        </ul>
+      )}
+      {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
+    </Fragment>
+  );
+};
+
+GenericScreenReaderAttachments.propTypes = {
+  activity: PropTypes.shape({
+    attachments: PropTypes.array
+  }).isRequired,
+  renderAttachments: PropTypes.bool.isRequired
+};
+
+// When "renderAttachments" is false, we will not render the content of attachments.
+// That means, it will only render "2 attachments", instead of "image attachment".
+// This is used in the visual transcript, where we render "Press ENTER to interact."
+const ScreenReaderActivity = ({ activity, children, id, renderAttachments, textAlt }) => {
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const formatDate = useDateFormatter();
+  const localize = useLocalizer();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  const { from: { role } = {}, speak, summary, timestamp } = activity;
+
+  const fromUser = role === 'user';
+
+  const greetingAlt = (fromUser
+    ? localize('ACTIVITY_YOU_SAID_ALT')
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+  ).replace(/\s{2,}/gu, ' ');
+
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (
@@ -77,15 +102,13 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
-      {!!attachmentForScreenReaderRenderers.length && (
-        <ul>
-          {attachmentForScreenReaderRenderers.map((render, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li key={index}>{render()}</li>
-          ))}
-        </ul>
+      {speak ? (
+        false
+      ) : summary ? (
+        <p>{summary}</p>
+      ) : (
+        <GenericScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />
       )}
-      {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
       {children}
     </article>
@@ -95,14 +118,16 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
 ScreenReaderActivity.defaultProps = {
   children: undefined,
   id: undefined,
-  renderAttachments: true
+  renderAttachments: true,
+  textAlt: undefined
 };
 
 ScreenReaderActivity.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
   id: PropTypes.string,
-  renderAttachments: PropTypes.bool
+  renderAttachments: PropTypes.bool,
+  textAlt: PropTypes.string
 };
 
 export default ScreenReaderActivity;

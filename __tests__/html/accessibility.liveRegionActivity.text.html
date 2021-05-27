@@ -97,6 +97,21 @@ Hello, World with simple speak property in SSML.
                   id: 'bot',
                   role: 'bot'
                 },
+                speak: `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="string">
+  <p>
+    <s>今日天氣<prosody pitch="high">很好</prosody>。</s>
+  </p>
+</speak>`,
+                text: 'Hello, **World** with complex `speak` property in SSML.',
+                textFormat: 'markdown',
+                timestamp,
+                type: 'message'
+              },
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
                 speak: 'Say another thing.',
                 text: 'Display one thing.',
                 textFormat: 'markdown',
@@ -113,6 +128,16 @@ Hello, World with simple speak property in SSML.
                 text: 'This should not be displayed.',
                 timestamp,
                 type: 'message'
+              },
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                speak: '',
+                text: 'This is presentational, should not narrate.',
+                timestamp,
+                type: 'message'
               }
             ]),
             store: testHelpers.createStore(),
@@ -125,35 +150,42 @@ Hello, World with simple speak property in SSML.
 
         await pageConditions.uiConnected();
 
-        const liveRegion = document.querySelector('[aria-roledescription="transcript"][role="log"]');
-        const screenReaderTexts = [].map.call(liveRegion.children, child => allTextContents(child).join(' '));
+        const screenReaderTexts = [].map.call(
+          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
+          child => allTextContents(child).join('\n')
+        );
 
-        expect(screenReaderTexts).toHaveLength(7);
+        expect(screenReaderTexts).toHaveLength(8);
 
         // Without "speak" property set, we will be narrating the "text" as-is.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said: Hello, **World** without `speak` property. Sent at January 1 at 12:34 PM'
+          'Bot said:\nHello, **World** without `speak` property.\nSent at January 1 at 12:34 PM'
         );
 
         // Without "speak" property set, we will be narrating the "text" as-is.
         expect(screenReaderTexts[1]).toBe(
-          'Bot said: Hello, **World** with invalid `speak` property. Sent at January 1 at 12:34 PM'
+          'Bot said:\nHello, **World** with invalid `speak` property.\nSent at January 1 at 12:34 PM'
         );
 
         expect(screenReaderTexts[2]).toBe(
-          'Bot said: Hello, World with speak property in plain text. Sent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World with speak property in plain text.\nSent at January 1 at 12:34 PM'
         );
 
         expect(screenReaderTexts[3]).toBe(
-          'Bot said: Hello, World with simple speak property in SSML. Sent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World with simple speak property in SSML.\nSent at January 1 at 12:34 PM'
         );
 
         expect(screenReaderTexts[4]).toBe(
-          'Bot said: Hello, World with complex speak property in SSML. Sent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World with complex speak property in SSML.\nSent at January 1 at 12:34 PM'
         );
 
-        expect(screenReaderTexts[5]).toBe('Bot said: Say another thing. Sent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[6]).toBe('You said: Text from MessageBack. Sent at January 1 at 12:34 PM');
+        // Expectation: when we concatenate the text content, we must not add whitespaces. Some languages don't have whitespaces.
+        expect(screenReaderTexts[5]).toBe(
+          'Bot said:\n今日天氣很好。\nSent at January 1 at 12:34 PM'
+        );
+
+        expect(screenReaderTexts[6]).toBe('Bot said:\nSay another thing.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[7]).toBe('You said:\nText from MessageBack.\nSent at January 1 at 12:34 PM');
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         // It must not show the text "This should not be displayed."
