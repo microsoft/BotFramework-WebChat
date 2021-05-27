@@ -53,23 +53,12 @@
             directLine: testHelpers.createDirectLineWithTranscript([
               {
                 ...baseActivity,
-                text: 'No "speak" or "summary" properties.'
+                text: 'No "speak" property.'
               },
               {
                 ...baseActivity,
-                speak: 'Only "speak" property.',
-                text: 'Only "speak" property.'
-              },
-              {
-                ...baseActivity,
-                summary: '2 documents.',
-                text: 'Only "summary" property.'
-              },
-              {
-                ...baseActivity,
-                speak: 'Both "speak" and "summary" properties.',
-                summary: 'This should not be narrated.',
-                text: 'Both "speak" and "summary" properties.'
+                speak: 'With "speak" property.',
+                text: 'With "speak" property.'
               },
               {
                 ...baseActivity,
@@ -86,30 +75,23 @@
         );
 
         await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(3);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
           child => allTextContents(child).join('\n')
         );
 
-        // Verify compliance of https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#summary.
-
         // The last activity have "speak" property set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(4);
+        expect(screenReaderTexts).toHaveLength(2);
 
         // In screen reader transcript, the attachment are rendered and narrated.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nNo "speak" or "summary" properties.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo "speak" property.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
         );
 
-        expect(screenReaderTexts[1]).toBe('Bot said:\nOnly "speak" property.\nSent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[2]).toBe(
-          'Bot said:\nOnly "summary" property.\n2 documents.\nSent at January 1 at 12:34 PM'
-        );
-
-        expect(screenReaderTexts[3]).toBe(
-          'Bot said:\nBoth "speak" and "summary" properties.\nSent at January 1 at 12:34 PM'
-        );
+        // No attachments should be narrated.
+        expect(screenReaderTexts[1]).toBe('Bot said:\nWith "speak" property.\nSent at January 1 at 12:34 PM');
 
         const activityAlts = [].map.call(
           document.querySelectorAll(
@@ -119,16 +101,14 @@
         );
 
         // The last activity have "speak" property set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(4);
+        expect(screenReaderTexts).toHaveLength(2);
 
         // In interactive transcript, this is narrated as "2 attachments".
         expect(activityAlts[0]).toBe(
-          'Bot said:\nNo "speak" or "summary" properties.\n2 attachments.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo "speak" property.\n2 attachments.\nSent at January 1 at 12:34 PM'
         );
 
-        expect(activityAlts[1]).toBe('Bot said:\nOnly "speak" property.\nSent at January 1 at 12:34 PM');
-        expect(activityAlts[2]).toBe('Bot said:\nOnly "summary" property.\n2 documents.\nSent at January 1 at 12:34 PM');
-        expect(activityAlts[3]).toBe('Bot said:\nBoth "speak" and "summary" properties.\nSent at January 1 at 12:34 PM');
+        expect(activityAlts[1]).toBe('Bot said:\nWith "speak" property.\nSent at January 1 at 12:34 PM');
       });
     </script>
   </body>

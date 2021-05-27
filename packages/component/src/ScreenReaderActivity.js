@@ -30,7 +30,7 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-const GenericScreenReaderAttachments = ({ activity, renderAttachments }) => {
+const ScreenReaderAttachments = ({ activity, renderAttachments }) => {
   const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -61,7 +61,7 @@ const GenericScreenReaderAttachments = ({ activity, renderAttachments }) => {
   );
 };
 
-GenericScreenReaderAttachments.propTypes = {
+ScreenReaderAttachments.propTypes = {
   activity: PropTypes.shape({
     attachments: PropTypes.array
   }).isRequired,
@@ -77,7 +77,7 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments, textA
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
-  const { from: { role } = {}, speak, summary, timestamp } = activity;
+  const { from: { role } = {}, speak, timestamp } = activity;
 
   const fromUser = role === 'user';
 
@@ -102,13 +102,7 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments, textA
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
-      {speak ? (
-        false
-      ) : summary ? (
-        <p>{summary}</p>
-      ) : (
-        <GenericScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />
-      )}
+      {!speak && <ScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
       {children}
     </article>

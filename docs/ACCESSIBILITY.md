@@ -259,11 +259,11 @@ To make the live region more consistent across browsers and easier to control, w
 
 ### Technical Limitation
 
--  Activity Time Stamp Announcement : Related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
-   -  Problem definition : Even when a user overrides the 'grouptimestamp' props and sets it to true or to some interval, AT still announces every activity with it's associated Time stamp.
-   -  Explanation of current behavior : Once activity is marked as sent, it is written to DOM as well as it's Timestamp; the timestamp grouping logic is executed only when the next activity arrives. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
+-  Activity timestamp announcement: related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
+   -  Problem definition: when the developer overrides the 'groupTimestamp' props and sets it to `true` or to some interval, screen reader still announces every activity with its associated timestamp.
+   -  Explanation of current behavior: Once activity is marked as sent, it is written to DOM as well as its timestamp; the timestamp grouping logic is executed only when the next activity arrives. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
    -  Given above limitation even if we removed the timestamp element from DOM after group timestamp logic is executed this will not change the screen reader behavior.
-   -  As per Accessibility team review/recommendation : There is no hiding or loss of information in this case - so will keep the current behavior as is.
+   -  As per accessibility team review/recommendation: there is no hiding or loss of information in this case - so will keep the current behavior as is.
 
 ## Do's and don't
 
@@ -292,6 +292,46 @@ To make the live region more consistent across browsers and easier to control, w
    -  Screen reader reading will be interrupted when focus changes
    -  Only change focus synchronous to user gesture
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
+
+# Controlling the narration of activities and attachments
+
+> This is related to [#3360](https://github.com/microsoft/BotFramework-WebChat/issues/3360), [#3615](https://github.com/microsoft/BotFramework-WebChat/issues/3615), [#3918](https://github.com/microsoft/BotFramework-WebChat/issues/3918).
+
+## User story
+
+A bot developer want to set the narration for a message activity. The activity may or may not have attachments.
+
+For example, it is required for the following user stories:
+
+-  The message contains Markdown
+   -  For example, the `text` field is `"Hello, *World!*"`
+   -  Desirable: "hello world"
+   -  Undesirable: if `speak` field is not set, it will be narrated as "hello (pause) asterisk world asterisk"
+-  The message contains HTML
+   -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  Desirable: "Exchange rate for 1 USD dollar is 0.91 Japanese yen."
+   -  Undesirable: any HTML or Markdown syntax
+-  The message contains a document, such as an insurance policy
+   -  For example, the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
+   -  Desirable: "The insurance policy is ready to download."
+   -  Undesirable: any narration containing the bogus file name
+
+## Implementation
+
+Based on [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md), the following fields can be used to control the narration: `speak` and `text`.
+
+We implemented the following logic for computing the text for screen reader:
+
+1. If `speak` field present
+   1. If `speak` field is not an empty string, narrate the field, don't narrate attachments
+   2. If `speak` field is an empty string, don't narrate the whole activity (treat it as `aria-hidden="true"` or `role="presentation"`)
+2. Otherwise
+   -  Narrate `text` field, followed by every attachment rendered via `attachmentForScreenReader` middleware
+   -  Note the `text` field is optional
+
+If `speak` field is present, the attachments will not be narrated, as stated in the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak), excerpt:
+
+> (`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries.
 
 # Screen reader renderer for custom activities and attachments
 

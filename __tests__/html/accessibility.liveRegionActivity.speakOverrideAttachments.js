@@ -2,6 +2,6 @@
 
 // Verify compliance of https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak.
 describe('accessibility requirement', () => {
-  test('should clean up "speak" property for live region text', () =>
-    runHTML('accessibility.liveRegionActivity.text.html'));
+  test('when "speak" field present, it should override all attachments', () =>
+    runHTML('accessibility.liveRegionActivity.speakOverrideAttachments.html'));
 });

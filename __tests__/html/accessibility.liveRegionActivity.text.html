@@ -149,6 +149,7 @@ Hello, World with simple speak property in SSML.
         );
 
         await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(9);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
@@ -180,9 +181,7 @@ Hello, World with simple speak property in SSML.
         );
 
         // Expectation: when we concatenate the text content, we must not add whitespaces. Some languages don't have whitespaces.
-        expect(screenReaderTexts[5]).toBe(
-          'Bot said:\n今日天氣很好。\nSent at January 1 at 12:34 PM'
-        );
+        expect(screenReaderTexts[5]).toBe('Bot said:\n今日天氣很好。\nSent at January 1 at 12:34 PM');
 
         expect(screenReaderTexts[6]).toBe('Bot said:\nSay another thing.\nSent at January 1 at 12:34 PM');
         expect(screenReaderTexts[7]).toBe('You said:\nText from MessageBack.\nSent at January 1 at 12:34 PM');
