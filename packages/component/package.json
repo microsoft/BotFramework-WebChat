@@ -71,9 +71,7 @@
     "react-say": "2.0.2-master.ee7cd76",
     "react-scroll-to-bottom": "4.1.1",
     "redux": "4.0.5",
-    "remark": "10.0.1",
-    "simple-update-in": "2.2.0",
-    "strip-markdown": "3.0.4"
+    "simple-update-in": "2.2.0"
   },
   "peerDependencies": {
     "react": "16.8.6",

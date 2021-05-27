@@ -3,10 +3,9 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import textFormatToContentType from './Utils/textFormatToContentType';
-import useStripMarkdown from './hooks/internal/useStripMarkdown';
+import activityAltText from './Utils/activityAltText';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
 const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
@@ -42,19 +41,11 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const textAlt = useMemo(() => activityAltText(activity), [activity]);
 
-  const {
-    attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-    from: { role } = {},
-    text,
-    textFormat,
-    timestamp
-  } = activity;
+  const { attachments = [], from: { role } = {}, timestamp } = activity;
 
   const fromUser = role === 'user';
-  const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
-  const displayText = messageBackDisplayText || text;
 
   const attachmentForScreenReaderRenderers = renderAttachments
     ? attachments
@@ -70,7 +61,6 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
 
   const numAttachmentsAlt =
     !!numGenericAttachments && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, numGenericAttachments);
-  const textAlt = useStripMarkdown(contentTypeMarkdown && displayText) || displayText;
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (
