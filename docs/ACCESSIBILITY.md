@@ -326,19 +326,25 @@ We implemented the following logic for computing the text for screen reader:
    1. If `speak` field is not an empty string, narrate the field, don't narrate attachments
    2. If `speak` field is an empty string, don't narrate the whole activity (treat it as `aria-hidden="true"` or `role="presentation"`)
 2. Otherwise
-   -  Narrate `text` field, followed by every attachment rendered via `attachmentForScreenReader` middleware
+   -  If `textFormat` is `markdown`
+      -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best-effort
+      -  Narrate the `text` field with Markdown syntax removed, followed by every attachment rendered through `attachmentForScreenReader` middleware
+   -  Otherwise
+      -  Narrate the `text` field as-is, followed by every attachment rendered through `attachmentForScreenReader` middleware
    -  Note the `text` field is optional
 
 If `speak` field is present, the attachments will not be narrated, as stated in the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak), excerpt:
 
 > (`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries.
 
-If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader use:
+### Remove Markdown syntax from `text` field
+
+If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader:
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
 -  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
    -  Works on IE11, but not React Native
--  Walk the `HTMLDocument` and concatenates all text nodes
+-  Walk the `HTMLDocument`, flatten and concatenate all text nodes
 
 # Screen reader renderer for custom activities and attachments
 
