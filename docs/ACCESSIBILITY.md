@@ -308,7 +308,7 @@ It is required for the following user stories:
    -  Desirable: narrate "hello world"
    -  Undesirable: "hello (pause) asterisk world asterisk"
 -  The message contains HTML
-   -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  For example, the `text` field is `"### Exchange rate\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
    -  Desirable: narrate "exchange rate for 1 US dollar is 0.91 Japanese yen"
    -  Undesirable: any HTML or Markdown syntax
 -  The message contains a document, such as an insurance policy
@@ -325,7 +325,7 @@ We implemented the following logic for computing the text for screen reader:
 1. If `speak` field present
    1. If `speak` field is not an empty string, narrate the field, [don't narrate attachments](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak)
       -  Excerpt from the spec: "(`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries."
-   2. If `speak` field is an empty string, don't narrate the whole activity (treat it as `aria-hidden="true"` or `role="presentation"`)
+   2. If `speak` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"` or `role="presentation"`)
 2. Otherwise
    -  If `textFormat` is `markdown`
       -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best-effort
@@ -336,10 +336,10 @@ We implemented the following logic for computing the text for screen reader:
 
 ### Remove Markdown syntax from `text` field
 
-If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader. It may not give best result. But it will not narrate extraneous syntax or tags.
+If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader. It may not give best result. But it should not narrate extraneous syntax or tags.
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
-   -  This uses the `renderMarkdown` props passed to Web Chat and can be customized by developer
+   -  The hook will leverage `renderMarkdown` props passed to Web Chat and can be customized by the web developer
 -  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
 -  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
    -  If it is a text node, get the `textContent`
@@ -348,14 +348,14 @@ If the `speak` field is not present, we will use best-effort to convert Markdown
 Applying the logic to samples above:
 
 -  The message contains Markdown
-   -  For example, the `text` field is `"Hello, *World!*"`
-   -  Narration: "Hello, World!"
+   -  If the `text` field is `"Hello, *World!*"`
+   -  Narration will be "Hello, World!"
 -  The message contains HTML
-   -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
-   -  Narration: "Exchange rate: USD 1.00 JPY 0.91"
+   -  If the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  Narration will be "Exchange rate: USD 1.00 JPY 0.91"
 -  The message contains a document, such as an insurance policy
-   -  For example, the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
-   -  Narration: "Insurance policy: 12345678-1234-5678-abcd-12345678abcd.doc"
+   -  If the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
+   -  Narration will be "Insurance policy: 12345678-1234-5678-abcd-12345678abcd.doc"
 
 # Screen reader renderer for custom activities and attachments
 

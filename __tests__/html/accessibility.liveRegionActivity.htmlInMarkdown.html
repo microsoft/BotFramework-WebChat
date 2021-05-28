@@ -96,7 +96,6 @@
         expect(screenReaderTexts[5]).toBe('Bot said:\nHello, Bing!\nSent at January 1 at 12:34 PM');
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
-        // It must not show the text "This should not be displayed."
         await host.snapshot();
       });
     </script>
