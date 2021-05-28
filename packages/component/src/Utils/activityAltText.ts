@@ -102,7 +102,7 @@ function htmlTextContents(document: Document): string[] {
 /** Returns the alt text for a message activity. */
 export default function activityAltText(
   activity: any,
-  renderMarkdownAsHTML: (markdown: string) => string
+  renderMarkdownAsHTML?: (markdown: string) => string
 ): false | string {
   if (activity.type !== 'message') {
     return false;
@@ -133,7 +133,7 @@ export default function activityAltText(
     return '';
   }
 
-  if (textFormatToContentType(activity.textFormat) === 'text/markdown') {
+  if (renderMarkdownAsHTML && textFormatToContentType(activity.textFormat) === 'text/markdown') {
     return htmlTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
       .join('')
       .replace(/\n{2,}/gu, '\n')
