@@ -765,7 +765,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         role="log"
       >
         {renderingElements
-          .filter(({ textAlt }) => textAlt)
+          .filter(({ textAlt }) => textAlt !== false)
           .map(({ activity, liveRegionKey, textAlt }) => (
             <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
               {() => <ScreenReaderActivity activity={activity} textAlt={textAlt} />}
@@ -825,7 +825,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
-                {textAlt && (
+                {textAlt !== false && (
                   <ScreenReaderActivity
                     activity={activity}
                     id={ariaLabelID}

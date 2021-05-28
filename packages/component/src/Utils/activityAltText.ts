@@ -32,8 +32,11 @@ export default function activityAltText(
   const { speak } = activity;
 
   if (speak === '') {
+    // We will treat the activity as presentational and skip narrating it.
     return false;
-  } else if (typeof speak === 'string') {
+  }
+
+  if (typeof speak === 'string') {
     if (isSSML(speak)) {
       return allTextContents(new DOMParser().parseFromString(activity.speak, 'application/xml')).join('').trim();
     }
@@ -42,6 +45,11 @@ export default function activityAltText(
   }
 
   const text: string = activity?.channelData?.messageBack?.displayText || activity.text;
+
+  if (!text) {
+    // We will continue to narrate the activity, as empty.
+    return '';
+  }
 
   if (textFormatToContentType(activity.textFormat) === 'text/markdown') {
     return allTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))

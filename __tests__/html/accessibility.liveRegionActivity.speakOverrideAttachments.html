@@ -64,6 +64,10 @@
                 ...baseActivity,
                 speak: '',
                 text: 'Empty string for "speak" property.'
+              },
+              {
+                // No "text" property.
+                ...baseActivity
               }
             ]),
             store: testHelpers.createStore(),
@@ -75,7 +79,7 @@
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.numActivitiesShown(3);
+        await pageConditions.numActivitiesShown(4);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
@@ -83,7 +87,7 @@
         );
 
         // The last activity have "speak" property set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(2);
+        expect(screenReaderTexts).toHaveLength(3);
 
         // In screen reader transcript, the attachment are rendered and narrated.
         expect(screenReaderTexts[0]).toBe(
@@ -92,6 +96,7 @@
 
         // No attachments should be narrated.
         expect(screenReaderTexts[1]).toBe('Bot said:\nWith "speak" property.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM');
 
         const activityAlts = [].map.call(
           document.querySelectorAll(
@@ -101,7 +106,7 @@
         );
 
         // The last activity have "speak" property set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(2);
+        expect(screenReaderTexts).toHaveLength(3);
 
         // In interactive transcript, this is narrated as "2 attachments".
         expect(activityAlts[0]).toBe(
@@ -109,6 +114,7 @@
         );
 
         expect(activityAlts[1]).toBe('Bot said:\nWith "speak" property.\nSent at January 1 at 12:34 PM');
+        expect(activityAlts[2]).toBe('Bot said:\n2 attachments.\nSent at January 1 at 12:34 PM');
       });
     </script>
   </body>
