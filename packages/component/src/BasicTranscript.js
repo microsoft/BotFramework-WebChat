@@ -15,7 +15,6 @@ import PropTypes from 'prop-types';
 import random from 'math-random';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import activityAltText from './Utils/activityAltText';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -258,7 +257,15 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
-          const textAlt = activityAltText(activity, renderMarkdownAsHTML);
+          const baseAltText =
+            typeof activity.speak === 'string'
+              ? activity.speak
+              : activity?.channelData?.messageBack?.displayText || activity.text;
+
+          // If "speak" field is set to empty string, the activity must not be narrated.
+          // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak
+          const supportScreenReader = activity.speak !== '';
+
           const {
             from: { role }
           } = activity;
@@ -344,8 +351,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
             key,
 
-            // When "liveRegionKey" changes, it will show up in the live region momentarily.
-            liveRegionKey: key + '|' + textAlt,
+            // When "liveRegionKey" changes or contents that made up the alt text changed, it will show up in the live region momentarily.
+            liveRegionKey: key + '|' + baseAltText,
             renderActivity,
             renderActivityStatus,
             renderAvatar,
@@ -354,7 +361,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
             shouldSpeak: activity.channelData && activity.channelData.speak,
             showCallout,
-            textAlt
+            supportScreenReader
           });
         });
       });
@@ -765,10 +772,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         role="log"
       >
         {renderingElements
-          .filter(({ textAlt }) => textAlt !== false)
-          .map(({ activity, liveRegionKey, textAlt }) => (
+          .filter(({ supportScreenReader }) => supportScreenReader)
+          .map(({ activity, liveRegionKey }) => (
             <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
-              {() => <ScreenReaderActivity activity={activity} textAlt={textAlt} />}
+              {() => <ScreenReaderActivity activity={activity} />}
             </Fade>
           ))}
       </section>
@@ -797,7 +804,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               role,
               shouldSpeak,
               showCallout,
-              textAlt
+              supportScreenReader
             },
             index
           ) => {
@@ -825,13 +832,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
-                {textAlt !== false && (
-                  <ScreenReaderActivity
-                    activity={activity}
-                    id={ariaLabelID}
-                    renderAttachments={false}
-                    textAlt={textAlt}
-                  >
+                {supportScreenReader && (
+                  <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
                     {!!isContentInteractive && <p>{activityInteractiveAlt}</p>}
                   </ScreenReaderActivity>
                 )}

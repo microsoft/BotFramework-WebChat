@@ -3,9 +3,11 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
+import activityAltText from './Utils/activityAltText';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useRenderMarkdownAsHTML from './hooks/useRenderMarkdownAsHTML';
 
 const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
 
@@ -71,11 +73,13 @@ ScreenReaderAttachments.propTypes = {
 // When "renderAttachments" is false, we will not render the content of attachments.
 // That means, it will only render "2 attachments", instead of "image attachment".
 // This is used in the visual transcript, where we render "Press ENTER to interact."
-const ScreenReaderActivity = ({ activity, children, id, renderAttachments, textAlt }) => {
+const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
 
   const { from: { role } = {}, speak, timestamp } = activity;
 
@@ -112,16 +116,14 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments, textA
 ScreenReaderActivity.defaultProps = {
   children: undefined,
   id: undefined,
-  renderAttachments: true,
-  textAlt: undefined
+  renderAttachments: true
 };
 
 ScreenReaderActivity.propTypes = {
   activity: PropTypes.any.isRequired,
   children: PropTypes.any,
   id: PropTypes.string,
-  renderAttachments: PropTypes.bool,
-  textAlt: PropTypes.string
+  renderAttachments: PropTypes.bool
 };
 
 export default ScreenReaderActivity;
