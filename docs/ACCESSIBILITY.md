@@ -301,7 +301,7 @@ To make the live region more consistent across browsers and easier to control, w
 
 A bot developer want to set the narration for a message activity. The activity may or may not have attachments.
 
-For example, it is required for the following user stories:
+It is required for the following user stories:
 
 -  The message contains Markdown
    -  For example, the `text` field is `"Hello, *World!*"`
@@ -336,7 +336,7 @@ We implemented the following logic for computing the text for screen reader:
 
 ### Remove Markdown syntax from `text` field
 
-If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader:
+If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader. It may not give best result. But it will not narrate extraneous syntax or tags.
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
    -  This uses the `renderMarkdown` props passed to Web Chat and can be customized by developer
@@ -344,6 +344,18 @@ If the `speak` field is not present, we will use best-effort to convert Markdown
 -  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
    -  If it is a text node, get the `textContent`
    -  If it is a `<img>` element, get the `alt` or the `title` attribute
+
+Applying the logic to samples above:
+
+-  The message contains Markdown
+   -  For example, the `text` field is `"Hello, *World!*"`
+   -  Narration: "Hello, World!"
+-  The message contains HTML
+   -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  Narration: "Exchange rate: USD 1.00 JPY 0.91"
+-  The message contains a document, such as an insurance policy
+   -  For example, the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
+   -  Narration: "Insurance policy: 12345678-1234-5678-abcd-12345678abcd.doc"
 
 # Screen reader renderer for custom activities and attachments
 
