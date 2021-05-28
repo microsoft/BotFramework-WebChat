@@ -305,15 +305,15 @@ For example, it is required for the following user stories:
 
 -  The message contains Markdown
    -  For example, the `text` field is `"Hello, *World!*"`
-   -  Desirable: "hello world"
+   -  Desirable: narrate "hello world"
    -  Undesirable: "hello (pause) asterisk world asterisk"
 -  The message contains HTML
    -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
-   -  Desirable: "Exchange rate for 1 USD dollar is 0.91 Japanese yen."
+   -  Desirable: narrate "exchange rate for 1 US dollar is 0.91 Japanese yen"
    -  Undesirable: any HTML or Markdown syntax
 -  The message contains a document, such as an insurance policy
    -  For example, the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
-   -  Desirable: "The insurance policy is ready to download."
+   -  Desirable: narrate "the insurance policy is ready to download"
    -  Undesirable: any narration containing the bogus file name
 
 ## Implementation
@@ -323,7 +323,8 @@ Based on [Bot Framework Activity spec](https://github.com/microsoft/botframework
 We implemented the following logic for computing the text for screen reader:
 
 1. If `speak` field present
-   1. If `speak` field is not an empty string, narrate the field, don't narrate attachments
+   1. If `speak` field is not an empty string, narrate the field, [don't narrate attachments](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak)
+      -  Excerpt from the spec: "(`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries."
    2. If `speak` field is an empty string, don't narrate the whole activity (treat it as `aria-hidden="true"` or `role="presentation"`)
 2. Otherwise
    -  If `textFormat` is `markdown`
@@ -333,10 +334,6 @@ We implemented the following logic for computing the text for screen reader:
       -  Narrate the `text` field as-is, followed by every attachment rendered through `attachmentForScreenReader` middleware
    -  Note the `text` field is optional
 
-If `speak` field is present, the attachments will not be narrated, as stated in the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak), excerpt:
-
-> (`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries.
-
 ### Remove Markdown syntax from `text` field
 
 If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader:
@@ -344,7 +341,9 @@ If the `speak` field is not present, we will use best-effort to convert Markdown
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
 -  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
    -  Works on IE11, but not React Native
--  Walk the `HTMLDocument`, flatten and concatenate all text nodes
+-  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
+   -  If it is a text node, get the `textContent`
+   -  If it is a `<img>` element, get the `alt` attribute
 
 # Screen reader renderer for custom activities and attachments
 

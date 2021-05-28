@@ -1,23 +1,45 @@
 import isSSML from './isSSML';
 import textFormatToContentType from './textFormatToContentType';
 
-/** Retrieves all text nodes from a given DOM tree as flattened array. */
-function allTextContents(element: Node): string[] {
-  const nodes: Node[] = [].slice.call(element.childNodes);
+function walk<T extends Node>(document: Document, walker: (node: T) => string[]): string[] {
+  const nodes: T[] = [].slice.call(document.childNodes);
   const results: string[] = [];
 
   while (nodes.length) {
-    const { childNodes, nodeType, textContent } = nodes.shift();
+    const node = nodes.shift();
+    const { childNodes } = node;
 
-    if (nodeType === Node.TEXT_NODE) {
-      // Concatenate only if the text content is not full of whitespaces.
-      !/^\s*$/u.test(textContent) && results.push(textContent);
-    } else {
-      nodes.unshift(...[].slice.call(childNodes));
-    }
+    results.push(...(walker(node) || []));
+    nodes.unshift(...[].slice.call(childNodes));
   }
 
   return results;
+}
+
+/** Retrieves all text nodes from a given XML document as flattened array. */
+function xmlTextContents(document: Document): string[] {
+  return walk(document, ({ nodeType, textContent }) => {
+    if (nodeType === Node.TEXT_NODE) {
+      return [textContent];
+    }
+  });
+}
+
+const HTML_INLINE_TAGS = ['A', 'B', 'CODE', 'DEL', 'EM', 'I', 'INS', 'S', 'SPAN', 'STRIKE', 'STRONG'];
+
+/** Computes all text from a given HTML document as flattened array. This is best-effort. */
+function htmlTextContents(document: Document): string[] {
+  return walk<HTMLElement>(document, node => {
+    const { nodeType, tagName, textContent } = node;
+
+    if (nodeType === Node.TEXT_NODE) {
+      return [textContent];
+    } else if (tagName === 'IMG') {
+      return [node.getAttribute('alt') || node.getAttribute('title')];
+    } else if (!HTML_INLINE_TAGS.includes(tagName)) {
+      return ['\n'];
+    }
+  });
 }
 
 /** Returns the alt text for a message activity. */
@@ -38,7 +60,10 @@ export default function activityAltText(
 
   if (typeof speak === 'string') {
     if (isSSML(speak)) {
-      return allTextContents(new DOMParser().parseFromString(activity.speak, 'application/xml')).join('').trim();
+      return xmlTextContents(new DOMParser().parseFromString(activity.speak, 'application/xml'))
+        .join('')
+        .replace(/\n{2,}/gu, '\n')
+        .trim();
     }
 
     return speak;
@@ -52,8 +77,9 @@ export default function activityAltText(
   }
 
   if (textFormatToContentType(activity.textFormat) === 'text/markdown') {
-    return allTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
+    return htmlTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
       .join('')
+      .replace(/\n{2,}/gu, '\n')
       .trim();
   }
 
