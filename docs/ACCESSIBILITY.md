@@ -306,7 +306,7 @@ For example, it is required for the following user stories:
 -  The message contains Markdown
    -  For example, the `text` field is `"Hello, *World!*"`
    -  Desirable: "hello world"
-   -  Undesirable: if `speak` field is not set, it will be narrated as "hello (pause) asterisk world asterisk"
+   -  Undesirable: "hello (pause) asterisk world asterisk"
 -  The message contains HTML
    -  For example, the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
    -  Desirable: "Exchange rate for 1 USD dollar is 0.91 Japanese yen."
@@ -332,6 +332,13 @@ We implemented the following logic for computing the text for screen reader:
 If `speak` field is present, the attachments will not be narrated, as stated in the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak), excerpt:
 
 > (`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries.
+
+If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader use:
+
+-  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
+-  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
+   -  Works on IE11, but not React Native
+-  Walk the `HTMLDocument` and concatenates all text nodes
 
 # Screen reader renderer for custom activities and attachments
 
