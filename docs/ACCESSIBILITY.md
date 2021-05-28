@@ -339,11 +339,11 @@ We implemented the following logic for computing the text for screen reader:
 If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader:
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
+   -  This uses the `renderMarkdown` props passed to Web Chat and can be customized by developer
 -  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
-   -  Works on IE11, but not React Native
 -  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
    -  If it is a text node, get the `textContent`
-   -  If it is a `<img>` element, get the `alt` attribute
+   -  If it is a `<img>` element, get the `alt` or the `title` attribute
 
 # Screen reader renderer for custom activities and attachments
 
