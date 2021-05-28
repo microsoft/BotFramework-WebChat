@@ -1,4 +1,5 @@
 import isSSML from './isSSML';
+import textFormatToContentType from './textFormatToContentType';
 
 /** Retrieves all text nodes from a given DOM tree as flattened array. */
 function allTextContents(element: Node): string[] {
@@ -19,23 +20,34 @@ function allTextContents(element: Node): string[] {
   return results;
 }
 
-/** Returns the alt text for an activity. */
-export default function activityAltText(activity: any): false | string {
-  const { speak } = activity;
-
-  if (typeof speak !== 'string') {
-    return activity?.channelData?.messageBack?.displayText || activity.text;
-  } else if (speak === '') {
+/** Returns the alt text for a message activity. */
+export default function activityAltText(
+  activity: any,
+  renderMarkdownAsHTML: (markdown: string) => string
+): false | string {
+  if (activity.type !== 'message') {
     return false;
   }
 
-  if (isSSML(speak)) {
-    const parser = new DOMParser();
+  const { speak } = activity;
 
-    const doc = parser.parseFromString(activity.speak, 'application/xml');
+  if (speak === '') {
+    return false;
+  } else if (typeof speak === 'string') {
+    if (isSSML(speak)) {
+      return allTextContents(new DOMParser().parseFromString(activity.speak, 'application/xml')).join('').trim();
+    }
 
-    return allTextContents(doc).join('').trim();
+    return speak;
   }
 
-  return speak;
+  const text: string = activity?.channelData?.messageBack?.displayText || activity.text;
+
+  if (textFormatToContentType(activity.textFormat) === 'text/markdown') {
+    return allTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
+      .join('')
+      .trim();
+  }
+
+  return text;
 }

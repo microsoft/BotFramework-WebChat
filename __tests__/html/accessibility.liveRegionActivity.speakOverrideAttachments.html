@@ -87,7 +87,7 @@
 
         // In screen reader transcript, the attachment are rendered and narrated.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nNo "speak" property.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo “speak” property.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
         );
 
         // No attachments should be narrated.
@@ -105,7 +105,7 @@
 
         // In interactive transcript, this is narrated as "2 attachments".
         expect(activityAlts[0]).toBe(
-          'Bot said:\nNo "speak" property.\n2 attachments.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo “speak” property.\n2 attachments.\nSent at January 1 at 12:34 PM'
         );
 
         expect(activityAlts[1]).toBe('Bot said:\nWith "speak" property.\nSent at January 1 at 12:34 PM');

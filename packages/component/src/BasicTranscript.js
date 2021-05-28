@@ -39,6 +39,7 @@ import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscr
 import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
+import useRenderMarkdownAsHTML from './hooks/useRenderMarkdownAsHTML';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
@@ -99,6 +100,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const focus = useFocus();
   const groupActivities = useGroupActivities();
   const localize = useLocalizer();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootElementRef = useRef();
   const terminatorRef = useRef();
@@ -256,7 +258,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
-          const textAlt = activityAltText(activity);
+          const textAlt = activityAltText(activity, renderMarkdownAsHTML);
           const {
             from: { role }
           } = activity;
@@ -395,6 +397,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     createActivityStatusRenderer,
     createAvatarRenderer,
     hideAllTimestamps,
+    renderMarkdownAsHTML,
     rootElementRef,
     showAvatarInGroup
   ]);

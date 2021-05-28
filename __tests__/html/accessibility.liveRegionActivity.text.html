@@ -27,6 +27,8 @@
       }
 
       run(async function () {
+        await host.windowSize(360, 720, document.getElementById('webchat'));
+
         const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
 
         WebChat.renderWebChat(
@@ -138,6 +140,16 @@ Hello, World with simple speak property in SSML.
                 text: 'This is presentational, should not narrate.',
                 timestamp,
                 type: 'message'
+              },
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                text: 'This is *plain text*.',
+                textFormat: 'plain',
+                timestamp,
+                type: 'message'
               }
             ]),
             store: testHelpers.createStore(),
@@ -149,23 +161,23 @@ Hello, World with simple speak property in SSML.
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.numActivitiesShown(9);
+        await pageConditions.numActivitiesShown(10);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
           child => allTextContents(child).join('\n')
         );
 
-        expect(screenReaderTexts).toHaveLength(8);
+        expect(screenReaderTexts).toHaveLength(9);
 
-        // Without "speak" property set, we will be narrating the "text" as-is.
+        // Without "speak" property set, we will be narrating the "text" with best-effort.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nHello, **World** without `speak` property.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World without speak property.\nSent at January 1 at 12:34 PM'
         );
 
-        // Without "speak" property set, we will be narrating the "text" as-is.
+        // Without valid "speak" property, we will be narrating the "text" with best-effort.
         expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nHello, **World** with invalid `speak` property.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World with invalid speak property.\nSent at January 1 at 12:34 PM'
         );
 
         expect(screenReaderTexts[2]).toBe(
@@ -185,6 +197,7 @@ Hello, World with simple speak property in SSML.
 
         expect(screenReaderTexts[6]).toBe('Bot said:\nSay another thing.\nSent at January 1 at 12:34 PM');
         expect(screenReaderTexts[7]).toBe('You said:\nText from MessageBack.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[8]).toBe('Bot said:\nThis is *plain text*.\nSent at January 1 at 12:34 PM');
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         // It must not show the text "This should not be displayed."
