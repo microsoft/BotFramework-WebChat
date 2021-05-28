@@ -27,7 +27,7 @@
       }
 
       run(async function () {
-        await host.windowSize(360, 720, document.getElementById('webchat'));
+        await host.windowSize(360, 800, document.getElementById('webchat'));
 
         const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
 
@@ -123,8 +123,19 @@ Hello, World with simple speak property in SSML.
               {
                 channelData: {
                   messageBack: {
-                    // Although the "textFormat" is Markdown, content of messageBack is always plain text.
-                    displayText: 'Text from *MessageBack*.'
+                    displayText: 'Text from *MessageBack* (plain).'
+                  }
+                },
+                from: { id: 'user', role: 'user' },
+                text: 'This should not be displayed.',
+                textFormat: 'plain',
+                timestamp,
+                type: 'message'
+              },
+              {
+                channelData: {
+                  messageBack: {
+                    displayText: 'Text from *MessageBack* (Markdown).'
                   }
                 },
                 from: { id: 'user', role: 'user' },
@@ -163,14 +174,14 @@ Hello, World with simple speak property in SSML.
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.numActivitiesShown(10);
+        await pageConditions.numActivitiesShown(11);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
           child => allTextContents(child).join('\n')
         );
 
-        expect(screenReaderTexts).toHaveLength(9);
+        expect(screenReaderTexts).toHaveLength(10);
 
         // Without "speak" property set, we will be narrating the "text" with best-effort.
         expect(screenReaderTexts[0]).toBe(
@@ -198,8 +209,11 @@ Hello, World with simple speak property in SSML.
         expect(screenReaderTexts[5]).toBe('Bot said:\n今日天氣很好。\nSent at January 1 at 12:34 PM');
 
         expect(screenReaderTexts[6]).toBe('Bot said:\nSay another thing.\nSent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[7]).toBe('You said:\nText from *MessageBack*.\nSent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[8]).toBe('Bot said:\nThis is *plain text*.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[7]).toBe('You said:\nText from *MessageBack* (plain).\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[8]).toBe(
+          'You said:\nText from MessageBack (Markdown).\nSent at January 1 at 12:34 PM'
+        );
+        expect(screenReaderTexts[9]).toBe('Bot said:\nThis is *plain text*.\nSent at January 1 at 12:34 PM');
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         // It must not show the text "This should not be displayed."

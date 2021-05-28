@@ -126,13 +126,7 @@ export default function activityAltText(
     return speak;
   }
 
-  const messageBackDisplayText: string = activity?.channelData?.messageBack?.displayText;
-
-  if (messageBackDisplayText) {
-    return messageBackDisplayText;
-  }
-
-  const { text } = activity;
+  const text = activity?.channelData?.messageBack?.displayText || activity.text;
 
   if (!text) {
     // We will continue to narrate the activity, as empty.
