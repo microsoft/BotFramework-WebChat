@@ -1,4 +1,3 @@
-import isSSML from './isSSML';
 import textFormatToContentType from './textFormatToContentType';
 
 function walk<T extends Node>(document: Document, walker: (node: T) => string[]): string[] {
@@ -14,15 +13,6 @@ function walk<T extends Node>(document: Document, walker: (node: T) => string[])
   }
 
   return results;
-}
-
-/** Retrieves all text nodes from a given XML document as flattened array. */
-function xmlTextContents(document: Document): string[] {
-  return walk(document, ({ nodeType, textContent }) => {
-    if (nodeType === Node.TEXT_NODE) {
-      return [textContent];
-    }
-  });
 }
 
 // From https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements
@@ -85,14 +75,17 @@ const HTML_INLINE_TAGS = [
 ];
 
 /** Computes all text from a given HTML document as flattened array. This is best-effort. */
-function htmlTextContents(document: Document): string[] {
+function htmlTextAlternatives(document: Document): string[] {
+  // TODO: [P2] #XXX Revisit this logic with W3C standard, we could do a better text alternatives computation.
+  //       For example, <abbr title="..."> is not computed.
+  //       https://www.w3.org/TR/accname-1.1/#mapping_additional_nd_name
   return walk<HTMLElement>(document, node => {
     const { nodeType, tagName, textContent } = node;
 
     if (nodeType === Node.TEXT_NODE) {
       return [textContent];
     } else if (tagName === 'IMG') {
-      return [node.getAttribute('alt') || node.getAttribute('title')];
+      return [node.getAttribute('alt')];
     } else if (!HTML_INLINE_TAGS.includes(tagName)) {
       return ['\n'];
     }
@@ -108,22 +101,11 @@ export default function activityAltText(
     return false;
   }
 
-  const { speak } = activity;
+  const alt = activity?.channelData?.['webchat:alt'];
 
-  if (speak === '') {
-    // We will treat the activity as presentational and skip narrating it.
-    return false;
-  }
-
-  if (typeof speak === 'string') {
-    if (isSSML(speak)) {
-      return xmlTextContents(new DOMParser().parseFromString(activity.speak, 'application/xml'))
-        .join('')
-        .replace(/\n{2,}/gu, '\n')
-        .trim();
-    }
-
-    return speak;
+  if (typeof alt === 'string') {
+    // If alt is an empty string, we will treat the activity as presentational and skip narrating it (return false).
+    return alt || false;
   }
 
   const text = activity?.channelData?.messageBack?.displayText || activity.text;
@@ -134,7 +116,7 @@ export default function activityAltText(
   }
 
   if (renderMarkdownAsHTML && textFormatToContentType(activity.textFormat) === 'text/markdown') {
-    return htmlTextContents(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
+    return htmlTextAlternatives(new DOMParser().parseFromString(renderMarkdownAsHTML(text), 'text/html'))
       .join('')
       .replace(/\n{2,}/gu, '\n')
       .trim();

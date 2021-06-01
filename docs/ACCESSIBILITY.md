@@ -318,14 +318,14 @@ It is required for the following user stories:
 
 ## Implementation
 
-Based on [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md), the following fields can be used to control the narration: `speak` and `text`.
+Currently, the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) does not provide any field for text alternatives.
 
-We implemented the following logic for computing the text for screen reader:
+A new field is added to `channelData` field with the following logic:
 
-1. If `speak` field present
-   1. If `speak` field is not an empty string, narrate the field, [don't narrate attachments](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak)
-      -  Excerpt from the spec: "(`speak` field) replaces speech synthesis for any content within the activity, including text, attachments, and summaries."
-   2. If `speak` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"` or `role="presentation"`)
+1. If `channelData['webchat:alt']` field present
+   1. If `channelData['webchat:alt']` field is not an empty string, narrate the field, don't narrate attachments
+      -  The field should contains narration of attachments
+   2. If `channelData['webchat:alt']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
 2. Otherwise
    -  If `textFormat` is `markdown`
       -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best-effort
@@ -336,14 +336,16 @@ We implemented the following logic for computing the text for screen reader:
 
 ### Remove Markdown syntax from `text` field
 
-If the `speak` field is not present, we will use best-effort to convert Markdown text for screen reader. It may not give best result. But it should not narrate extraneous syntax or tags.
+> This algorithm is subject to change to provide a better text alternatives experience. For consistent result, please use the `channelData['webchat:alt']` field instead.
+
+If the `channelData['webchat:alt']` field is not present, we will use best-effort to convert Markdown text for screen reader.
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
-   -  The hook will leverage `renderMarkdown` props passed to Web Chat and can be customized by the web developer
+   -  The hook will use the `renderMarkdown` prop passed to Web Chat and it can be customized by the web developer
 -  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
 -  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
    -  If it is a text node, get the `textContent`
-   -  If it is a `<img>` element, get the `alt` or the `title` attribute
+   -  If it is a `<img>` element, get the `alt` attribute
 
 Applying the logic to samples above:
 
@@ -355,7 +357,7 @@ Applying the logic to samples above:
    -  Narration will be "Exchange rate: USD 1.00 JPY 0.91"
 -  The message contains a document, such as an insurance policy
    -  If the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
-   -  Narration will be "Insurance policy: 12345678-1234-5678-abcd-12345678abcd.doc"
+   -  Narration will be "Insurance policy: A file: 12345678-1234-5678-abcd-12345678abcd.doc"
 
 # Screen reader renderer for custom activities and attachments
 
