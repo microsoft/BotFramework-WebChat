@@ -328,7 +328,7 @@ A new field `webchat:fallback-text` is added to `channelData` field with the fol
    2. If `channelData['webchat:fallback-text']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
 2. Otherwise
    -  If `textFormat` is `markdown`
-      -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best-effort
+      -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best effort
       -  Narrate the `text` field with Markdown syntax removed, followed by every attachment rendered through `attachmentForScreenReader` middleware
    -  Otherwise
       -  Narrate the `text` field as-is, followed by every attachment rendered through `attachmentForScreenReader` middleware
@@ -338,7 +338,7 @@ A new field `webchat:fallback-text` is added to `channelData` field with the fol
 
 > This algorithm is subject to change to provide a better text alternatives experience. For consistent result, please use the `channelData['webchat:fallback-text']` field instead.
 
-If the `channelData['webchat:fallback-text']` field is not present, we will use best-effort to convert Markdown text for screen reader.
+If the `channelData['webchat:fallback-text']` field is not present, we will use best effort to convert Markdown text for screen reader.
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
    -  The hook will use the `renderMarkdown` prop passed to Web Chat and it can be customized by the web developer
