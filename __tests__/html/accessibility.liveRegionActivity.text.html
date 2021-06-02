@@ -29,98 +29,41 @@
       run(async function () {
         await host.windowSize(360, 800, document.getElementById('webchat'));
 
-        const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
+        const baseActivity = {
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          timestamp: new Date(2000, 0, 1, 12, 34, 56, 789).toISOString(),
+          type: 'message'
+        };
 
         WebChat.renderWebChat(
           {
             directLine: testHelpers.createDirectLineWithTranscript([
               {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                text: 'Hello, **World** without `speak` property.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
+                ...baseActivity,
+                text: 'Hello, **World** without `webchat:fallback-text` field.',
+                textFormat: 'markdown'
               },
               {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
+                ...baseActivity,
+                channelData: {
+                  'webchat:fallback-text': {}
                 },
-                speak: {},
-                text: 'Hello, **World** with invalid `speak` property.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
+                text: 'Hello, **World** with invalid `webchat:fallback-text` field.',
+                textFormat: 'markdown'
               },
               {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
+                ...baseActivity,
+                channelData: {
+                  'webchat:fallback-text': 'Display another thing.'
                 },
-                speak: 'Hello, World with speak property in plain text.',
-                text: 'Hello, **World** with `speak` property in plain text.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
-              },
-              {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                speak: `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="string">
-Hello, World with simple speak property in SSML.
-</speak>`,
-                text: 'Hello, **World** with simple `speak` property in SSML.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
-              },
-              {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                speak: `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="string">
-  <p>
-    <s>Hello, <prosody pitch="high">World</prosody> with <say-as interpret-as="spell-out">complex</say-as> speak property in SSML.</s>
-  </p>
-</speak>`,
-                text: 'Hello, **World** with complex `speak` property in SSML.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
-              },
-              {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                speak: `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="string">
-  <p>
-    <s>今日天氣<prosody pitch="high">很好</prosody>。</s>
-  </p>
-</speak>`,
-                text: 'Hello, **World** with complex `speak` property in SSML.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
-              },
-              {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                speak: 'Say another thing.',
                 text: 'Display one thing.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
+                textFormat: 'markdown'
               },
               {
+                ...baseActivity,
                 channelData: {
                   messageBack: {
                     displayText: 'Text from *MessageBack* (plain).'
@@ -128,11 +71,10 @@ Hello, World with simple speak property in SSML.
                 },
                 from: { id: 'user', role: 'user' },
                 text: 'This should not be displayed.',
-                textFormat: 'plain',
-                timestamp,
-                type: 'message'
+                textFormat: 'plain'
               },
               {
+                ...baseActivity,
                 channelData: {
                   messageBack: {
                     displayText: 'Text from *MessageBack* (Markdown).'
@@ -140,29 +82,17 @@ Hello, World with simple speak property in SSML.
                 },
                 from: { id: 'user', role: 'user' },
                 text: 'This should not be displayed.',
-                textFormat: 'markdown',
-                timestamp,
-                type: 'message'
+                textFormat: 'markdown'
               },
               {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                speak: '',
-                text: 'This is presentational, should not narrate.',
-                timestamp,
-                type: 'message'
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': '' },
+                text: 'This is presentational, should not narrate.'
               },
               {
-                from: {
-                  id: 'bot',
-                  role: 'bot'
-                },
-                text: 'This is *plain text*.',
-                textFormat: 'plain',
-                timestamp,
-                type: 'message'
+                ...baseActivity,
+                text: 'This is *plain text*, preserve asterisks.',
+                textFormat: 'plain'
               }
             ]),
             store: testHelpers.createStore(),
@@ -174,46 +104,32 @@ Hello, World with simple speak property in SSML.
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.numActivitiesShown(11);
+        await pageConditions.numActivitiesShown(7);
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
           child => allTextContents(child).join('\n')
         );
 
-        expect(screenReaderTexts).toHaveLength(10);
+        // One of the activity contains a fallback text of empty string. It become presentational and not rendered.
+        expect(screenReaderTexts).toHaveLength(6);
 
-        // Without "speak" property set, we will be narrating the "text" with best-effort.
+        // Without `webchat:fallback-text` field set, we will be narrating the "text" with best-effort.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nHello, World without speak property.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World without webchat:fallback-text field.\nSent at January 1 at 12:34 PM'
         );
 
-        // Without valid "speak" property, we will be narrating the "text" with best-effort.
+        // Without valid `webchat:fallback-text` field, we will be narrating the "text" with best-effort.
         expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nHello, World with invalid speak property.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nHello, World with invalid webchat:fallback-text field.\nSent at January 1 at 12:34 PM'
         );
 
-        expect(screenReaderTexts[2]).toBe(
-          'Bot said:\nHello, World with speak property in plain text.\nSent at January 1 at 12:34 PM'
-        );
-
-        expect(screenReaderTexts[3]).toBe(
-          'Bot said:\nHello, World with simple speak property in SSML.\nSent at January 1 at 12:34 PM'
-        );
-
+        expect(screenReaderTexts[2]).toBe('Bot said:\nDisplay another thing.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[3]).toBe('You said:\nText from *MessageBack* (plain).\nSent at January 1 at 12:34 PM');
         expect(screenReaderTexts[4]).toBe(
-          'Bot said:\nHello, World with complex speak property in SSML.\nSent at January 1 at 12:34 PM'
-        );
-
-        // Expectation: when we concatenate the text content, we must not add whitespaces. Some languages don't have whitespaces.
-        expect(screenReaderTexts[5]).toBe('Bot said:\n今日天氣很好。\nSent at January 1 at 12:34 PM');
-
-        expect(screenReaderTexts[6]).toBe('Bot said:\nSay another thing.\nSent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[7]).toBe('You said:\nText from *MessageBack* (plain).\nSent at January 1 at 12:34 PM');
-        expect(screenReaderTexts[8]).toBe(
           'You said:\nText from MessageBack (Markdown).\nSent at January 1 at 12:34 PM'
         );
-        expect(screenReaderTexts[9]).toBe('Bot said:\nThis is *plain text*.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[5]).toBe('Bot said:\nThis is *plain text*, preserve asterisks.\nSent at January 1 at 12:34 PM');
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         // It must not show the text "This should not be displayed."

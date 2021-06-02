@@ -320,12 +320,12 @@ It is required for the following user stories:
 
 Currently, the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) does not provide any field for text alternatives.
 
-A new field is added to `channelData` field with the following logic:
+A new field `webchat:fallback-text` is added to `channelData` field with the following logic:
 
-1. If `channelData['webchat:alt']` field present
-   1. If `channelData['webchat:alt']` field is not an empty string, narrate the field, don't narrate attachments
+1. If `channelData['webchat:fallback-text']` field present
+   1. If `channelData['webchat:fallback-text']` field is not an empty string, narrate the field, don't narrate attachments
       -  The field should contains narration of attachments
-   2. If `channelData['webchat:alt']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
+   2. If `channelData['webchat:fallback-text']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
 2. Otherwise
    -  If `textFormat` is `markdown`
       -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best-effort
@@ -336,9 +336,9 @@ A new field is added to `channelData` field with the following logic:
 
 ### Remove Markdown syntax from `text` field
 
-> This algorithm is subject to change to provide a better text alternatives experience. For consistent result, please use the `channelData['webchat:alt']` field instead.
+> This algorithm is subject to change to provide a better text alternatives experience. For consistent result, please use the `channelData['webchat:fallback-text']` field instead.
 
-If the `channelData['webchat:alt']` field is not present, we will use best-effort to convert Markdown text for screen reader.
+If the `channelData['webchat:fallback-text']` field is not present, we will use best-effort to convert Markdown text for screen reader.
 
 -  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
    -  The hook will use the `renderMarkdown` prop passed to Web Chat and it can be customized by the web developer

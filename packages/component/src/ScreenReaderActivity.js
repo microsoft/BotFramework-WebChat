@@ -81,7 +81,7 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
 
-  const { from: { role } = {}, speak, timestamp } = activity;
+  const { channelData: { 'webchat:fallback-text': fallbackText } = {}, from: { role } = {}, timestamp } = activity;
 
   const fromUser = role === 'user';
 
@@ -106,7 +106,7 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
-      {!speak && <ScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />}
+      {!fallbackText && <ScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
       {children}
     </article>

@@ -101,11 +101,11 @@ export default function activityAltText(
     return false;
   }
 
-  const alt = activity?.channelData?.['webchat:alt'];
+  const fallbackText = activity?.channelData?.['webchat:fallback-text'];
 
-  if (typeof alt === 'string') {
-    // If alt is an empty string, we will treat the activity as presentational and skip narrating it (return false).
-    return alt || false;
+  if (typeof fallbackText === 'string') {
+    // If `fallbackText` is an empty string, we will treat the activity as presentational and skip narrating it (return false).
+    return fallbackText || false;
   }
 
   const text = activity?.channelData?.messageBack?.displayText || activity.text;

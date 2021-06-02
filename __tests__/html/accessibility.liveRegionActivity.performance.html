@@ -59,8 +59,8 @@
         WebChat.renderWebChat(
           {
             directLine: testHelpers.createDirectLineWithTranscript(
-              // If "speech" field is set to empty string, it will disable <ScreenReaderActivity>.
-              transcript.map(activity => ({ ...activity, speak: '' }))
+              // If "channelData['webchat:fallback-text']" field is set to empty string, it will disable <ScreenReaderActivity>.
+              transcript.map(activity => ({ ...activity, channelData: { 'webchat:fallback-text': '' } }))
             ),
             renderMarkdown: markdown => {
               numRenderMarkdownWithoutScreenReaderActivity++;

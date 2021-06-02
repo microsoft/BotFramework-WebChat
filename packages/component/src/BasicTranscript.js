@@ -256,13 +256,12 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
           const baseAltText =
-            typeof activity.speak === 'string'
-              ? activity.speak
+            typeof activity?.channelData?.['webchat:fallback-text'] === 'string'
+              ? activity?.channelData?.['webchat:fallback-text']
               : activity?.channelData?.messageBack?.displayText || activity.text;
 
-          // If "speak" field is set to empty string, the activity must not be narrated.
-          // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#speak
-          const supportScreenReader = activity.speak !== '';
+          // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
+          const supportScreenReader = activity?.channelData?.['webchat:fallback-text'] !== '';
 
           const {
             from: { role }
