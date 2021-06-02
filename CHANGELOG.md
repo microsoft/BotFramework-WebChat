@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`adaptivecards@2.9.0`](https://npmjs.com/package/adaptivecards)
       -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
       -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
-      -  [`react-dictate-button@2.0.0`](https://npmjs.com/package/react-dictate-button)
+      -  [`react-dictate-button@2.0.1`](https://npmjs.com/package/react-dictate-button)
       -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)
       -  [`redux-devtools-extension@2.13.9`](https://npmjs.com/package/redux-devtools-extension)
       -  [`sanitize-html@2.4.0`](https://npmjs.com/package/sanitize-html)
