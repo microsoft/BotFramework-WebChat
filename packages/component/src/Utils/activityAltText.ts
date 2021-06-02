@@ -76,7 +76,7 @@ const HTML_INLINE_TAGS = [
 
 /** Computes all text from a given HTML document as flattened array. This is best-effort. */
 function htmlTextAlternatives(document: Document): string[] {
-  // TODO: [P2] #XXX Revisit this logic with W3C standard, we could do a better text alternatives computation.
+  // TODO: [P2] #3923 Revisit this logic with W3C standard, we could do a better text alternatives computation.
   //       For example, <abbr title="..."> is not computed.
   //       https://www.w3.org/TR/accname-1.1/#mapping_additional_nd_name
   return walk<HTMLElement>(document, node => {
