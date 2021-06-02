@@ -363,7 +363,7 @@ Applying the logic to samples above:
 
 Web Chat render components are accompanied by a screen reader renderer to maximize accessibility. In the case of custom components, the bot/Web Chat developer will need to implement a screen reader renderer for the equivalent custom visual component.
 
-![image: Console warning: "No renderer for attachment for screen reader of type "application/mnd.microsoft.card.adaptive"](https://user-images.githubusercontent.com/14900841/106323546-6f47ed80-622c-11eb-96d7-de6f72818525.png)
+![image: Console warning: "No renderer for attachment for screen reader of type "application/vnd.microsoft.card.adaptive"](https://user-images.githubusercontent.com/14900841/106323546-6f47ed80-622c-11eb-96d7-de6f72818525.png)
 
 The Web Chat team **DOES NOT** recommend disabling warning messages regarding screen readers and accessibility. However, if the developer decides to suppress these messages, it can be done by adding the following code to `attachmentForScreenReaderMiddleware` in the `Composer` props.
 
