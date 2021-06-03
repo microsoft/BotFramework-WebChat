@@ -9,23 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      function allTextContents(element) {
-        const nodes = [].slice.call(element.childNodes);
-        const results = [];
-
-        while (nodes.length) {
-          const node = nodes.shift();
-
-          if (node.nodeType === Node.TEXT_NODE) {
-            results.push(node.textContent);
-          } else {
-            nodes.unshift(...[].slice.call(node.childNodes));
-          }
-        }
-
-        return results;
-      }
-
       run(async function () {
         await host.windowSize(360, 800, document.getElementById('webchat'));
 
@@ -108,7 +91,7 @@
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => allTextContents(child).join('\n')
+          child => testHelpers.getAllTextContents(child).join('\n')
         );
 
         // One of the activity contains a fallback text of empty string. It become presentational and not rendered.
@@ -129,7 +112,9 @@
         expect(screenReaderTexts[4]).toBe(
           'You said:\nText from MessageBack (Markdown).\nSent at January 1 at 12:34 PM'
         );
-        expect(screenReaderTexts[5]).toBe('Bot said:\nThis is *plain text*, preserve asterisks.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[5]).toBe(
+          'Bot said:\nThis is *plain text*, preserve asterisks.\nSent at January 1 at 12:34 PM'
+        );
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         // It must not show the text "This should not be displayed."

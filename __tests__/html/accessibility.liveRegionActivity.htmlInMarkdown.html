@@ -10,23 +10,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      function allTextContents(element) {
-        const nodes = [].slice.call(element.childNodes);
-        const results = [];
-
-        while (nodes.length) {
-          const node = nodes.shift();
-
-          if (node.nodeType === Node.TEXT_NODE) {
-            results.push(node.textContent);
-          } else {
-            nodes.unshift(...[].slice.call(node.childNodes));
-          }
-        }
-
-        return results;
-      }
-
       run(async function () {
         const baseActivity = {
           from: {
@@ -83,7 +66,7 @@
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => allTextContents(child).join('\n')
+          child => testHelpers.getAllTextContents(child).join('\n')
         );
 
         expect(screenReaderTexts).toHaveLength(6);

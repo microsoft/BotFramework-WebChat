@@ -7,6 +7,8 @@ import arrayBufferToBase64 from './arrayBufferToBase64';
 import createDirectLineWithTranscript from './createDirectLineWithTranscript';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
 import createStore from './createStore';
+import depthFirstWalk from './depthFirstWalk';
+import getAllTextContents from './getAllTextContents';
 import iterateAsyncIterable from './iterateAsyncIterable';
 import shareObservable from './shareObservable';
 import sleep from './sleep';
@@ -19,6 +21,8 @@ export {
   createDirectLineWithTranscript,
   createRunHookActivityMiddleware,
   createStore,
+  depthFirstWalk,
+  getAllTextContents,
   iterateAsyncIterable,
   shareObservable,
   sleep,

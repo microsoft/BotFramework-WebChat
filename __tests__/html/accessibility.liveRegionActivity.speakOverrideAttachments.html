@@ -9,23 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      function allTextContents(element) {
-        const nodes = [].slice.call(element.childNodes);
-        const results = [];
-
-        while (nodes.length) {
-          const node = nodes.shift();
-
-          if (node.nodeType === Node.TEXT_NODE) {
-            results.push(node.textContent);
-          } else {
-            nodes.unshift(...[].slice.call(node.childNodes));
-          }
-        }
-
-        return results;
-      }
-
       run(async function () {
         const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
         const baseActivity = {
@@ -83,7 +66,7 @@
 
         const screenReaderTexts = [].map.call(
           document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => allTextContents(child).join('\n')
+          child => testHelpers.getAllTextContents(child).join('\n')
         );
 
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
@@ -102,7 +85,7 @@
           document.querySelectorAll(
             '.webchat__basic-transcript__activity .webchat__screen-reader-activity[aria-roledescription="message"]'
           ),
-          element => allTextContents(element).join('\n')
+          element => testHelpers.getAllTextContents(element).join('\n')
         );
 
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
