@@ -1,6 +1,3 @@
-// Renderer middleware signature:
-// (setup: SetupOptions) => (next: Enhancer) => (create: CreateOptions) => false | React.FC<ReactProps>
-
 /**
  * Renders a UI component by returning a React component, or `false`, if nothing should be rendered.
  *
