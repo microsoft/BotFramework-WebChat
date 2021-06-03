@@ -47,14 +47,14 @@
         });
 
         await pageConditions.minNumActivitiesShown(4);
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
         await pageConditions.allImagesLoaded();
 
         await host.sendTab();
 
         // After pressing TAB from transcript, it should focus on the "New messages" button.
-        expect(document.activeElement === pageElements.newMessageButton()).toBe(true);
+        expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
         await host.snapshot();
       });

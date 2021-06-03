@@ -1,3 +1,3 @@
-export default function newMessageButton() {
+export default function scrollToEndButton() {
   return document.querySelector(`.webchat__scroll-to-end-button`);
 }

@@ -149,7 +149,7 @@
         expect(scrollable.scrollTop).toBe(0);
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 1 });
 
-        await pageObjects.clickNewMessageButton();
+        await pageObjects.clickScrollToEndButton();
         await pageConditions.scrollToBottomCompleted();
 
         addDummyActivitiesToDirectLine(10);

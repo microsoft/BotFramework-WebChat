@@ -39,11 +39,11 @@
 
         await pageConditions.minNumActivitiesShown(5);
 
-        await pageObjects.focusNewMessageButton();
+        await pageObjects.focusScrollToEndButton();
 
         await host.snapshot();
 
-        await pageObjects.clickNewMessageButton();
+        await pageObjects.clickScrollToEndButton();
 
         await pageConditions.scrollToBottomCompleted();
 

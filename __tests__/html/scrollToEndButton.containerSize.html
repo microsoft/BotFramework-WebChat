@@ -134,7 +134,7 @@
 
         // The "New messages" button should not show up because we still have spaces after adding 1 activity.
         // I.e. the user can see the new activity and they don't need to scroll.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // As a control experiment, we need to show the scroll-to-bottom button.
         directLine.activityDeferredObservable.next(createActivity(5));
@@ -150,7 +150,7 @@
 
         // After scrolled to top, we add a new activity, the "New messages" button should show up.
         // This is because the user would need to scroll, to see the newly added message.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
       });
     </script>
   </body>

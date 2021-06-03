@@ -45,15 +45,15 @@
 
         // SETUP: With "any" behavior, scroll to top, click the button, it should focus on the "End of transcript" terminator.
         await pageObjects.scrollToTop();
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
-        await pageObjects.clickNewMessageButton();
+        await pageObjects.clickScrollToEndButton();
 
         // EXPECT: After clicking on the button, it should scroll to bottom.
         await pageConditions.scrollToBottomCompleted();
 
         // EXPECT: After clicking on the button, it should hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // EXPECT: After clicking on the button, no unread activity, it should focus on the "End of transcript" terminator.
         await pageConditions.became(
@@ -64,16 +64,16 @@
 
         // SETUP: With "any" behavior, scroll to top, add 2 activities, click the button, it should focus on the first unread activity.
         await pageObjects.scrollToTop();
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
         directLine.activityDeferredObservable.next(paragraphs.shift());
         directLine.activityDeferredObservable.next(paragraphs.shift());
         await pageConditions.minNumActivitiesShown(7);
 
-        await pageObjects.clickNewMessageButton();
+        await pageObjects.clickScrollToEndButton();
         await pageConditions.scrollStabilized();
 
         // EXPECT: After clicking on the button, it should hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // EXPECT: After clicking on the button, 2 unread activities, it should focus on the first unread, which is the second last.
         await pageConditions.became(
@@ -88,26 +88,26 @@
 
         // CLEANUP: Click on the scroll to bottom button to mark all activities as read.
         await pageObjects.scrollToBottom();
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // SETUP: With "unread" behavior, scroll to top, add 2 activities, click the button, it should focus on the first unread activity.
         render();
 
         await pageObjects.scrollToTop();
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         directLine.activityDeferredObservable.next(paragraphs.shift());
         directLine.activityDeferredObservable.next(paragraphs.shift());
         await pageConditions.minNumActivitiesShown(9);
 
         // EXPECT: Behavior is "unread", we are at top, 2 unread activities, the button should show up.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
-        await pageObjects.clickNewMessageButton();
+        await pageObjects.clickScrollToEndButton();
         await pageConditions.scrollStabilized();
 
         // EXPECT: After clicking on the button, it should hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // EXPECT: After clicking on the button, 2 unread activities, it should focus on the first unread, which is the second last.
         await pageConditions.became(

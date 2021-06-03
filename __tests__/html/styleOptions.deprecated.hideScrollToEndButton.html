@@ -52,13 +52,15 @@
           await pageConditions.minNumActivitiesShown(6);
 
           // EXPECT: The button should not show up.
-          await pageConditions.newMessageButtonHidden();
+          await pageConditions.scrollToEndButtonHidden();
+          await host.snapshot();
 
           // SETUP: With default options, the button should show up.
           render();
 
           // EXPECT: The button should show up.
-          await pageConditions.newMessageButtonShown();
+          await pageConditions.scrollToEndButtonShown();
+          await host.snapshot();
         },
         { expectDeprecations: true }
       );

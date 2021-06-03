@@ -13,13 +13,11 @@ const ScrollToEndButton = ({ onClick }) => {
   const [direction] = useDirection();
   const localize = useLocalizer();
 
-  const newMessageText = localize(
-    scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES'
-  );
+  const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
 
   return (
     <button
-      aria-label={newMessageText}
+      aria-label={text}
       className={classNames(
         'webchat__scroll-to-end-button',
         scrollToEndButtonStyleSet + '',
@@ -29,7 +27,7 @@ const ScrollToEndButton = ({ onClick }) => {
       tabIndex={0}
       type="button"
     >
-      {newMessageText}
+      {text}
     </button>
   );
 };

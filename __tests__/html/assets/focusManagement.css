@@ -5,7 +5,7 @@
   outline-width: 2px !important;
 }
 
-:focus:not(.webchat__scrollToEndButton) {
+:focus:not(.webchat__scroll-to-end-button) {
   background-color: Yellow !important;
 }
 
@@ -28,6 +28,6 @@
   outline-offset: 2px !important;
 }
 
-#webchat .webchat__scrollToEndButton:focus {
+#webchat .webchat__scroll-to-end-button:focus {
   outline-color: rgba(255, 255, 255, 0.6) !important;
 }

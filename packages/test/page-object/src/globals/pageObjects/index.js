@@ -1,10 +1,10 @@
 import clickMicrophoneButton from './clickMicrophoneButton';
-import clickNewMessageButton from './clickNewMessageButton';
 import clickNthSuggestedAction from './clickNthSuggestedAction';
+import clickScrollToEndButton from './clickScrollToEndButton';
 import clickSendButton from './clickSendButton';
 import clickToasterHeader from './clickToasterHeader';
 import dismissToast from './dismissToast';
-import focusNewMessageButton from './focusNewMessageButton';
+import focusScrollToEndButton from './focusScrollToEndButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
@@ -18,12 +18,12 @@ import verifyDOMIntegrity from './verifyDOMIntegrity';
 
 export {
   clickMicrophoneButton,
-  clickNewMessageButton,
   clickNthSuggestedAction,
+  clickScrollToEndButton,
   clickSendButton,
   clickToasterHeader,
   dismissToast,
-  focusNewMessageButton,
+  focusScrollToEndButton,
   focusSendBoxTextBox,
   focusTranscript,
   getActivities,

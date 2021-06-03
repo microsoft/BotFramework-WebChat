@@ -45,7 +45,7 @@
         // Make sure TAB on the last button will jump to the transcript, then the "New messages" button.
         await host.sendTab(2);
 
-        expect(document.activeElement === pageElements.newMessageButton()).toBe(true);
+        expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
         await host.snapshot();
 

@@ -41,52 +41,52 @@
         await pageConditions.scrollToBottomCompleted();
 
         // EXPECT: We are at the bottom, hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         await pageObjects.scrollToTop();
 
         // EXPECT: With "any" behavior, we are at the top, show the button.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
         // EXPECT: With "any" behavior, the button should say "More messages".
         await pageConditions.became(
           'Show "More messages"',
-          () => pageElements.newMessageButton().textContent === 'More messages',
+          () => pageElements.scrollToEndButton().textContent === 'More messages',
           1000
         );
 
         await pageObjects.scrollToBottom();
 
         // EXPECT: We are at the bottom, hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         await pageObjects.scrollToTop();
 
         // EXPECT: With "any" behavior, we are at the top, show the button.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
         render();
 
         // EXPECT: With "unread" (default) behavior, we are at the top, everything is read, hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         directLine.activityDeferredObservable.next(paragraphs.shift());
         await pageConditions.minNumActivitiesShown(6);
 
         // EXPECT: With "unread" behavior, we are at the top, 1 activity is unread, show the button.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
         // EXPECT: With "unread" behavior', the button show say "New messages"
         await pageConditions.became(
           'Show "New messages"',
-          () => pageElements.newMessageButton().textContent === 'New messages',
+          () => pageElements.scrollToEndButton().textContent === 'New messages',
           1000
         );
 
         await pageObjects.scrollToBottom();
 
         // EXPECT: We are at the bottom, mark everything as read and hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         await pageObjects.scrollToTop();
 
@@ -94,24 +94,24 @@
         await testHelpers.sleep(1000);
 
         // EXPECT: With "unread" behavior, we are at the top, everything is read, hide the button.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         render({ styleOptions: { scrollToEndButtonBehavior: 'any' } });
 
         // EXPECT: With "any" behavior, we are at the top, show the button.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
 
         // SETUP: With "false" behavior, the button should hide.
         render({ styleOptions: { scrollToEndButtonBehavior: false } });
 
         // EXPECT: The button is hidden.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // SETUP: With "any" behavior, the button should show again.
         render({ styleOptions: { scrollToEndButtonBehavior: 'any' } });
 
         // EXPECT: The button is shown.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
       });
     </script>
   </body>

@@ -2,7 +2,7 @@ import activities from './activities';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import microphoneButton from './microphoneButton';
-import newMessageButton from './newMessageButton';
+import scrollToEndButton from './scrollToEndButton';
 import sendBoxTextBox from './sendBoxTextBox';
 import sendButton from './sendButton';
 import suggestedActions from './suggestedActions';
@@ -18,7 +18,7 @@ export {
   connectivityStatus,
   focusedActivity,
   microphoneButton,
-  newMessageButton,
+  scrollToEndButton,
   sendBoxTextBox,
   sendButton,
   suggestedActions,

@@ -40,7 +40,7 @@
 
           // SETUP: Scroll to the top, set the font size.
           await pageObjects.scrollToTop();
-          await pageConditions.newMessageButtonShown();
+          await pageConditions.scrollToEndButtonShown();
 
           // EXPECT: Should show a "More messages" button with enlarged font.
           await host.snapshot();
