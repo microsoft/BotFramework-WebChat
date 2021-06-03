@@ -22,11 +22,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  A new style option is introduced to control when the scroll to end button should show (formerly "new messages" button):
+   -  A new `styleOptions.scrollToEndButtonBehavior` is introduced:
+      -  If unset, will maintain same behavior as previous versions, same as `"unread"`;
+      -  `"unread"` will show when there are any unread and offscreen messages (default);
+      -  `"any"` will show when there are any offscreen messages;
+      -  `false` will always hide the button.
+   -  `styleOptions.hideScrollToEndButton` has been deprecated. To hide the scroll to end button, set `styleOptions.scrollToEndButtonBehavior` to `false`.
+   -  `styleOptions.newMessageButtonFontSize` has been renamed to `styleOptions.scrollToEndButtonFontSize` to better reflect its purpose.
+
 ### Added
 
 -  Cleanup repo URLs to point to main branch, by [@corinagum](https://github.com/corinagum), in PR [#3870](https://github.com/microsoft/BotFramework-WebChat/pull/3870)
 -  Resolves [#3557](https://github.com/microsoft/BotFramework-WebChat/issues/3557) and [#3736](https://github.com/microsoft/BotFramework-WebChat/issues/3736). Improved test harness and added browser pooling, by [@compulim](https://github.com/compulim), in PR [#3871](https://github.com/microsoft/BotFramework-WebChat/pull/3871)
 -  Resolves [#3788](https://github.com/microsoft/BotFramework-WebChat/issues/3788). Added `localTimestamp` and `localTimezone` (if available) to all outgoing activities, by [@compulim](https://github.com/compulim), in PR [#3896](https://github.com/microsoft/BotFramework-WebChat/pull/3896)
+-  Resolves [#3925](https://github.com/microsoft/BotFramework-WebChat/issues/3925). Added `scrollToEndButtonBehavior` to control when the scroll to end button should show, removed `hideScrollToEndButton`, and renamed `newMessagesButtonFontSize` to `scrollToEndButtonFontSize`, by [@compulim](https://github.com/compulim), in PR [#3926](https://github.com/microsoft/BotFramework-WebChat/issues/3926).
 
 ### Fixed
 
