@@ -416,11 +416,11 @@ type StyleOptions = {
    */
 
   /**
-   * Defines when should the new messages button shown.
+   * Controls when the new messages button should show.
    *
-   * - `false` to always hide the button
-   * - `"any"` show when there are any offscreen messages
-   * - `"unread"` only show when there are unread offscreen messages (default)
+   * - `"unread"` will show when there are any unread and offscreen messages (default)
+   * - `"any"` will show when there are any offscreen messages
+   * - `false` will always hide the button
    */
   scrollToEndButtonBehavior?: false | 'any' | 'unread';
 
