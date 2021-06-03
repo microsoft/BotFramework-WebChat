@@ -1,3 +1,5 @@
+import { RendererMiddleware } from './types/rendererMiddleware';
+import { ScrollToEndButtonMiddleware } from './types/scrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 
 declare const defaultStyleOptions: Required<StyleOptions>;
@@ -6,5 +8,5 @@ declare const defaultStyleOptions: Required<StyleOptions>;
 // eslint-disable-next-line no-unused-vars
 declare function normalizeStyleOptions(styleOptions: StyleOptions): StrictStyleOptions;
 
-export type { StrictStyleOptions, StyleOptions };
+export type { RendererMiddleware, ScrollToEndButtonMiddleware, StrictStyleOptions, StyleOptions };
 export { defaultStyleOptions, normalizeStyleOptions };

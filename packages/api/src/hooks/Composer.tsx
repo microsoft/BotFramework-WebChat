@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
+import { ScrollToEndButtonMiddleware } from '../types/scrollToEndButtonMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
@@ -176,6 +177,7 @@ type ComposerProps = {
   onTelemetry: any;
   overrideLocalizedStrings: any;
   renderMarkdown: any;
+  scrollToEndButtonMiddleware: ScrollToEndButtonMiddleware | ScrollToEndButtonMiddleware[];
   selectVoice: any;
   sendTimeout: number;
   sendTypingIndicator: any;
@@ -212,6 +214,7 @@ const Composer: FC<ComposerProps> = ({
   onTelemetry,
   overrideLocalizedStrings,
   renderMarkdown,
+  scrollToEndButtonMiddleware,
   selectVoice,
   sendTimeout,
   sendTypingIndicator,
@@ -459,6 +462,17 @@ const Composer: FC<ComposerProps> = ({
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
+  const scrollToEndButtonRenderer: ScrollToEndButtonMiddleware = useMemo(
+    () =>
+      applyMiddlewareForRenderer(
+        'scroll to end button',
+        { strict: true },
+        ...singleToArray(scrollToEndButtonMiddleware),
+        () => () => () => false
+      )({ styleOptions: patchedStyleOptions }) as any,
+    [patchedStyleOptions, scrollToEndButtonMiddleware]
+  );
+
   /**
    * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
    * - User ID changed, causing all send* functions to be updated
@@ -491,6 +505,7 @@ const Composer: FC<ComposerProps> = ({
       localizedStrings: patchedLocalizedStrings,
       onTelemetry,
       renderMarkdown,
+      scrollToEndButtonRenderer,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
       styleOptions: patchedStyleOptions,
@@ -525,6 +540,7 @@ const Composer: FC<ComposerProps> = ({
       patchedToastRenderer,
       patchedTypingIndicatorRenderer,
       renderMarkdown,
+      scrollToEndButtonRenderer,
       sendTypingIndicator,
       telemetryDimensionsRef,
       trackDimension,
@@ -616,6 +632,7 @@ Composer.defaultProps = {
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
   renderMarkdown: undefined,
+  scrollToEndButtonMiddleware: undefined,
   selectVoice: undefined,
   sendTimeout: undefined,
   sendTypingIndicator: false,
@@ -664,6 +681,7 @@ Composer.propTypes = {
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   renderMarkdown: PropTypes.func,
+  scrollToEndButtonMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   selectVoice: PropTypes.func,
   sendTimeout: PropTypes.number,
   sendTypingIndicator: PropTypes.bool,

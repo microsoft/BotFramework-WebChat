@@ -1,5 +1,10 @@
 import defaultStyleOptions from './defaultStyleOptions';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import warnOnce from './utils/warnOnce';
+
+const hideScrollToEndButtonDeprecation = warnOnce(
+  '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2021-06-02.'
+);
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -67,10 +72,30 @@ export default function normalizeStyleOptions(options: StyleOptions = {}): Stric
     normalizedEmojiSet = emojiSet;
   }
 
+  if (options.hideScrollToEndButton) {
+    hideScrollToEndButtonDeprecation();
+
+    // Only set if the "scrollToEndButtonBehavior" is not set.
+    // If it has been set, the developer should know the older "hideScrollToEndButton" option is deprecated.
+    filledOptions.scrollToEndButtonBehavior = options.scrollToEndButtonBehavior || false;
+  }
+
+  let patchedScrollToEndButtonBehavior = filledOptions.scrollToEndButtonBehavior;
+
+  if (patchedScrollToEndButtonBehavior !== 'any' && patchedScrollToEndButtonBehavior !== false) {
+    patchedScrollToEndButtonBehavior === 'unread' ||
+      console.warn(
+        'Web Chat: "scrollToEndButtonBehavior" must be either "unread", "any", or false, will set to "unread".'
+      );
+
+    patchedScrollToEndButtonBehavior = 'unread';
+  }
+
   return {
     ...filledOptions,
     bubbleFromUserNubOffset: normalizedBubbleFromUserNubOffset,
     bubbleNubOffset: normalizedBubbleNubOffset,
-    emojiSet: normalizedEmojiSet
+    emojiSet: normalizedEmojiSet,
+    scrollToEndButtonBehavior: patchedScrollToEndButtonBehavior
   };
 }

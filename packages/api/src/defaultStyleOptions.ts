@@ -84,7 +84,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   markdownRespectCRLF: true,
 
   // Scroll behavior
-  hideScrollToEndButton: false,
+  hideScrollToEndButton: undefined, // Deprecated as of 4.14.0.
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
@@ -158,6 +158,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   timestampFormat: 'relative',
 
   // Transcript overlay buttons
+  scrollToEndButtonBehavior: 'unread',
   newMessagesButtonFontSize: '85%',
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnDisabled: 'rgba(0, 0, 0, .6)',

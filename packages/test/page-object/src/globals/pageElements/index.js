@@ -11,6 +11,7 @@ import toasterHeader from './toasterHeader';
 import toasts from './toasts';
 import transcript from './transcript';
 import transcriptScrollable from './transcriptScrollable';
+import transcriptTerminator from './transcriptTerminator';
 
 export {
   activities,
@@ -25,5 +26,6 @@ export {
   toasterHeader,
   toasts,
   transcript,
-  transcriptScrollable
+  transcriptScrollable,
+  transcriptTerminator
 };

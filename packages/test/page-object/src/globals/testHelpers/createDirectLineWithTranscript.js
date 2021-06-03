@@ -5,6 +5,19 @@ import loadTranscriptAsset from '../../utils/loadTranscriptAsset';
 import shareObservable from './shareObservable';
 
 function updateRelativeTimestamp(now, activity) {
+  if (typeof activity === 'string') {
+    activity = {
+      from: {
+        id: 'bot',
+        role: 'bot'
+      },
+      id: Math.random().toString(36).substr(2, 5),
+      text: activity,
+      timestamp: 0,
+      type: 'message'
+    };
+  }
+
   return {
     ...activity,
 

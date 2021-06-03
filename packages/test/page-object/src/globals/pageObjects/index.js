@@ -9,6 +9,7 @@ import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
 import runHook from './runHook';
+import scrollToBottom from './scrollToBottom';
 import scrollToTop from './scrollToTop';
 import sendMessageViaCode from './sendMessageViaCode';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
@@ -27,6 +28,7 @@ export {
   focusTranscript,
   getActivities,
   runHook,
+  scrollToBottom,
   scrollToTop,
   sendMessageViaCode,
   sendMessageViaSendBox,

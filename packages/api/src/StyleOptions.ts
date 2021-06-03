@@ -219,6 +219,8 @@ type StyleOptions = {
 
   /**
    * Prevent scroll to end button from rendering
+   *
+   * @deprecated Since 4.14.0: To hide the scroll to end button, please set `scrollToEndButtonBehavior` to `false`.
    */
   hideScrollToEndButton?: boolean;
 
@@ -413,6 +415,15 @@ type StyleOptions = {
    * e.g. carousel and suggested action flippers, scroll to bottom, etc.
    */
 
+  /**
+   * Defines when should the new messages button shown.
+   *
+   * - `false` to always hide the button
+   * - `"any"` show when there are any offscreen messages
+   * - `"unread"` only show when there are unread offscreen messages (default)
+   */
+  scrollToEndButtonBehavior?: false | 'any' | 'unread';
+
   newMessagesButtonFontSize?: number | string;
   transcriptOverlayButtonBackground?: string;
   transcriptOverlayButtonBackgroundOnDisabled?: string;
@@ -484,7 +495,11 @@ type StyleOptions = {
   videoHeight?: number | string;
 };
 
-type StrictStyleOptions = Required<StyleOptions> & {
+// StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
+// 1. Allow developers to set the "bubbleNubOffset" option as "top" (string), but when we normalize them, we will convert it to 0 (number);
+// 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
+//    Internally, no code should use the deprecated value except the migration code.
+type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton'>> & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
   emojiSet: false | Record<string, string>;

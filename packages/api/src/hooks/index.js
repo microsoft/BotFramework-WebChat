@@ -8,6 +8,7 @@ import useCreateActivityRenderer from './useCreateActivityRenderer';
 import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 import useCreateAttachmentForScreenReaderRenderer from './useCreateAttachmentForScreenReaderRenderer';
 import useCreateAvatarRenderer from './useCreateAvatarRenderer';
+import useCreateScrollToEndButtonRenderer from './useCreateScrollToEndButtonRenderer';
 import useDateFormatter from './useDateFormatter';
 import useDebouncedNotifications from './useDebouncedNotifications';
 import useDictateInterims from './useDictateInterims';
@@ -71,6 +72,7 @@ export {
   useCreateActivityStatusRenderer,
   useCreateAttachmentForScreenReaderRenderer,
   useCreateAvatarRenderer,
+  useCreateScrollToEndButtonRenderer,
   useDateFormatter,
   useDebouncedNotifications,
   useDictateInterims,

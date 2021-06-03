@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -36,7 +37,7 @@ const SendButton = ({ className }) => {
   return (
     <IconButton
       alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
-      className={className}
+      className={classNames('webchat__send-button', className)}
       disabled={disabled}
       onClick={handleClick}
     >
