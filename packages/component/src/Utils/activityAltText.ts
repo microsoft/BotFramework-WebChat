@@ -74,7 +74,11 @@ const HTML_INLINE_TAGS = [
   'WBR'
 ];
 
-/** Computes all text from a given HTML document as flattened array. This is best-effort. */
+/**
+ * Computes all text from a given HTML document as flattened array. This is best-effort.
+ *
+ * @param {Document} document - HTML document to computes texts from.
+ */
 function htmlTextAlternatives(document: Document): string[] {
   // TODO: [P2] #3923 Revisit this logic with W3C standard, we could do a better text alternatives computation.
   //       For example, <abbr title="..."> is not computed.
@@ -92,7 +96,12 @@ function htmlTextAlternatives(document: Document): string[] {
   });
 }
 
-/** Returns the alt text for a message activity. */
+/**
+ * Returns the text alternatives for a message activity.
+ *
+ * @param {object} activity - Activity to compute the text alternatives.
+ * @param {function} renderMarkdownAsHTML - Callback function to render Markdown as HTML string.
+ */
 export default function activityAltText(
   activity: any,
   renderMarkdownAsHTML?: (markdown: string) => string
