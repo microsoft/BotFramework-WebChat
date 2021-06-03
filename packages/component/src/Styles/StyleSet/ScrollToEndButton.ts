@@ -1,9 +1,9 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createScrollToEndButtonStyle({
-  newMessagesButtonFontSize,
   paddingRegular,
   primaryFont,
+  scrollToEndButtonFontSize,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnFocus,
   transcriptOverlayButtonBackgroundOnHover,
@@ -26,7 +26,7 @@ export default function createScrollToEndButtonStyle({
       bottom: 5,
       color: transcriptOverlayButtonColor,
       fontFamily: primaryFont,
-      fontSize: newMessagesButtonFontSize,
+      fontSize: scrollToEndButtonFontSize,
       outline: 0,
       padding: paddingRegular,
       position: 'absolute',

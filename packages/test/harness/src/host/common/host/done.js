@@ -2,7 +2,8 @@ const { logging } = require('selenium-webdriver');
 const getBrowserLogs = require('../getBrowserLogs');
 
 function isDeprecation(message) {
-  return message.includes('deprecate');
+  // Match "deprecate" or "deprecation".
+  return message.includes('deprecat');
 }
 
 module.exports = (webDriver, resolve) => {

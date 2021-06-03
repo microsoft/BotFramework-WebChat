@@ -6,6 +6,10 @@ const hideScrollToEndButtonDeprecation = warnOnce(
   '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2021-06-02.'
 );
 
+const newMessagesButtonFontSizeDeprecation = warnOnce(
+  '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2021-06-02.'
+);
+
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
@@ -89,6 +93,13 @@ export default function normalizeStyleOptions(options: StyleOptions = {}): Stric
       );
 
     patchedScrollToEndButtonBehavior = 'unread';
+  }
+
+  if (options.newMessagesButtonFontSize) {
+    newMessagesButtonFontSizeDeprecation();
+
+    // Only set if the "scrollToEndButtonFontSize" is not set.
+    filledOptions.scrollToEndButtonFontSize = options.scrollToEndButtonFontSize || options.newMessagesButtonFontSize;
   }
 
   return {

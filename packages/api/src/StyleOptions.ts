@@ -424,7 +424,16 @@ type StyleOptions = {
    */
   scrollToEndButtonBehavior?: false | 'any' | 'unread';
 
+  /** Font size of the new message button. */
+  scrollToEndButtonFontSize?: number | string;
+
+  /**
+   * Font size of the new message button.
+   *
+   * @deprecated Since 4.14.0: Renamed to {@linkcode scrollToEndButtonFontSize}.
+   */
   newMessagesButtonFontSize?: number | string;
+
   transcriptOverlayButtonBackground?: string;
   transcriptOverlayButtonBackgroundOnDisabled?: string;
   transcriptOverlayButtonBackgroundOnFocus?: string;
@@ -499,7 +508,7 @@ type StyleOptions = {
 // 1. Allow developers to set the "bubbleNubOffset" option as "top" (string), but when we normalize them, we will convert it to 0 (number);
 // 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
 //    Internally, no code should use the deprecated value except the migration code.
-type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton'>> & {
+type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>> & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
   emojiSet: false | Record<string, string>;
