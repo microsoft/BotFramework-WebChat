@@ -15,7 +15,11 @@ const newMessagesButtonFontSizeDeprecation = warnOnce(
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
 // eslint-disable-next-line complexity
-export default function normalizeStyleOptions(options: StyleOptions = {}): StrictStyleOptions {
+export default function normalizeStyleOptions({
+  hideScrollToEndButton,
+  newMessagesButtonFontSize,
+  ...options
+}: StyleOptions = {}): StrictStyleOptions {
   const filledOptions: Required<StyleOptions> = { ...defaultStyleOptions, ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
@@ -76,7 +80,7 @@ export default function normalizeStyleOptions(options: StyleOptions = {}): Stric
     normalizedEmojiSet = emojiSet;
   }
 
-  if (options.hideScrollToEndButton) {
+  if (hideScrollToEndButton) {
     hideScrollToEndButtonDeprecation();
 
     // Only set if the "scrollToEndButtonBehavior" is not set.
@@ -95,11 +99,11 @@ export default function normalizeStyleOptions(options: StyleOptions = {}): Stric
     patchedScrollToEndButtonBehavior = 'unread';
   }
 
-  if (options.newMessagesButtonFontSize) {
+  if (newMessagesButtonFontSize) {
     newMessagesButtonFontSizeDeprecation();
 
     // Only set if the "scrollToEndButtonFontSize" is not set.
-    filledOptions.scrollToEndButtonFontSize = options.scrollToEndButtonFontSize || options.newMessagesButtonFontSize;
+    filledOptions.scrollToEndButtonFontSize = options.scrollToEndButtonFontSize || newMessagesButtonFontSize;
   }
 
   return {
