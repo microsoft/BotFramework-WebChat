@@ -110,6 +110,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           props.autoExpandTimeout = config.template.autoExpandTimeout;
         }
 
+        if (config.introDialogId) {
+          props.introDialog = {id: config.introDialogId}
+        }
+
         if (config.userData) {
           // TODO
         }
