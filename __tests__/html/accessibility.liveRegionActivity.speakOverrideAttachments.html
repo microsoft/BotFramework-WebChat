@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
+        const baseActivity = {
+          attachments: [
+            {
+              content: 'Hello.',
+              contentType: 'text/plain'
+            },
+            {
+              content: 'World!',
+              contentType: 'text/plain'
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          textFormat: 'markdown',
+          timestamp,
+          type: 'message'
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                ...baseActivity,
+                text: 'No "webchat:fallback-text" field.'
+              },
+              {
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': 'With "webchat:fallback-text" field.' },
+                text: 'With "webchat:fallback-text" field.'
+              },
+              {
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': '' },
+                text: 'Empty string for "webchat:fallback-text" field.'
+              },
+              {
+                // No "text" field.
+                ...baseActivity
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              internalLiveRegionFadeAfter: 60000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(4);
+
+        const screenReaderTexts = [].map.call(
+          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
+          child => testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
+        expect(screenReaderTexts).toHaveLength(3);
+
+        // In screen reader transcript, the attachment are rendered and narrated.
+        expect(screenReaderTexts[0]).toBe(
+          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
+        );
+
+        // No attachments should be narrated.
+        expect(screenReaderTexts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM');
+
+        const activityAlts = [].map.call(
+          document.querySelectorAll(
+            '.webchat__basic-transcript__activity .webchat__screen-reader-activity[aria-roledescription="message"]'
+          ),
+          element => testHelpers.getAllTextContents(element).join('\n')
+        );
+
+        // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
+        expect(screenReaderTexts).toHaveLength(3);
+
+        // In interactive transcript, this is narrated as "2 attachments".
+        expect(activityAlts[0]).toBe('Bot said:\nNo “webchat:fallback-text” field.\n2 attachments.\nSent at January 1 at 12:34 PM');
+
+        expect(activityAlts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM');
+        expect(activityAlts[2]).toBe('Bot said:\n2 attachments.\nSent at January 1 at 12:34 PM');
+      });
+    </script>
+  </body>
+</html>

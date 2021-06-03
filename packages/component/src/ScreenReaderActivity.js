@@ -3,11 +3,11 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment, useMemo } from 'react';
 
-import textFormatToContentType from './Utils/textFormatToContentType';
-import useStripMarkdown from './hooks/internal/useStripMarkdown';
+import activityAltText from './Utils/activityAltText';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useRenderMarkdownAsHTML from './hooks/useRenderMarkdownAsHTML';
 
 const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
 
@@ -32,29 +32,10 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-// When "renderAttachments" is false, we will not render the content of attachments.
-// That means, it will only render "2 attachments", instead of "image attachment".
-// This is used in the visual transcript, where we render "Press ENTER to interact."
-const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
-  const [{ initials: botInitials }] = useAvatarForBot();
+const ScreenReaderAttachments = ({ activity, renderAttachments }) => {
+  const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
-  const formatDate = useDateFormatter();
-  const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-
-  const {
-    attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-    from: { role } = {},
-    text,
-    textFormat,
-    timestamp
-  } = activity;
-
-  const fromUser = role === 'user';
-  const contentTypeMarkdown = textFormatToContentType(textFormat) === 'text/markdown';
-  const displayText = messageBackDisplayText || text;
 
   const attachmentForScreenReaderRenderers = renderAttachments
     ? attachments
@@ -62,15 +43,53 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
         .filter(render => render)
     : [];
 
-  const greetingAlt = (fromUser
-    ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
   const numGenericAttachments = attachments.length - attachmentForScreenReaderRenderers.length;
 
   const numAttachmentsAlt =
     !!numGenericAttachments && localizeWithPlural(ACTIVITY_NUM_ATTACHMENTS_ALT_IDS, numGenericAttachments);
-  const textAlt = useStripMarkdown(contentTypeMarkdown && displayText) || displayText;
+
+  return (
+    <Fragment>
+      {!!attachmentForScreenReaderRenderers.length && (
+        <ul>
+          {attachmentForScreenReaderRenderers.map((render, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <li key={index}>{render()}</li>
+          ))}
+        </ul>
+      )}
+      {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
+    </Fragment>
+  );
+};
+
+ScreenReaderAttachments.propTypes = {
+  activity: PropTypes.shape({
+    attachments: PropTypes.array
+  }).isRequired,
+  renderAttachments: PropTypes.bool.isRequired
+};
+
+// When "renderAttachments" is false, we will not render the content of attachments.
+// That means, it will only render "2 attachments", instead of "image attachment".
+// This is used in the visual transcript, where we render "Press ENTER to interact."
+const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const formatDate = useDateFormatter();
+  const localize = useLocalizer();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
+
+  const { channelData: { 'webchat:fallback-text': fallbackText } = {}, from: { role } = {}, timestamp } = activity;
+
+  const fromUser = role === 'user';
+
+  const greetingAlt = (fromUser
+    ? localize('ACTIVITY_YOU_SAID_ALT')
+    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+  ).replace(/\s{2,}/gu, ' ');
+
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
 
   return (
@@ -87,15 +106,7 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>
-      {!!attachmentForScreenReaderRenderers.length && (
-        <ul>
-          {attachmentForScreenReaderRenderers.map((render, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li key={index}>{render()}</li>
-          ))}
-        </ul>
-      )}
-      {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
+      {!fallbackText && <ScreenReaderAttachments activity={activity} renderAttachments={renderAttachments} />}
       <p className="webchat__screen-reader-activity__timestamp">{timestampAlt}</p>
       {children}
     </article>

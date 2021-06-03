@@ -65,16 +65,13 @@
     "math-random": "2.0.1",
     "memoize-one": "5.1.1",
     "prop-types": "15.7.2",
-    "react-dictate-button": "1.2.3-master.6b4fe72",
+    "react-dictate-button": "2.0.1",
     "react-film": "3.0.0",
     "react-redux": "7.2.3",
     "react-say": "2.0.2-master.ee7cd76",
     "react-scroll-to-bottom": "4.1.1",
     "redux": "4.0.5",
-    "remark": "10.0.1",
-    "sanitize-html": "1.27.5",
-    "simple-update-in": "2.2.0",
-    "strip-markdown": "3.0.4"
+    "simple-update-in": "2.2.0"
   },
   "peerDependencies": {
     "react": "16.8.6",

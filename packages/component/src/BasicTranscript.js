@@ -255,10 +255,16 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key = getActivityUniqueId(activity) || renderingElements.length;
+          const baseAltText =
+            typeof activity?.channelData?.['webchat:fallback-text'] === 'string'
+              ? activity?.channelData?.['webchat:fallback-text']
+              : activity?.channelData?.messageBack?.displayText || activity.text;
+
+          // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
+          const supportScreenReader = activity?.channelData?.['webchat:fallback-text'] !== '';
+
           const {
-            channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-            from: { role },
-            text
+            from: { role }
           } = activity;
 
           const topSideNub = role === 'user' ? topSideUserNub : topSideBotNub;
@@ -342,8 +348,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
             key,
 
-            // When "liveRegionKey" changes, it will show up in the live region momentarily.
-            liveRegionKey: key + '|' + (messageBackDisplayText || text),
+            // When "liveRegionKey" changes or contents that made up the alt text changed, it will show up in the live region momentarily.
+            liveRegionKey: key + '|' + baseAltText,
             renderActivity,
             renderActivityStatus,
             renderAvatar,
@@ -351,7 +357,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
             shouldSpeak: activity.channelData && activity.channelData.speak,
-            showCallout
+            showCallout,
+            supportScreenReader
           });
         });
       });
@@ -760,11 +767,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         aria-roledescription={transcriptRoleDescription}
         role="log"
       >
-        {renderingElements.map(({ activity, liveRegionKey }) => (
-          <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
-            {() => <ScreenReaderActivity activity={activity} />}
-          </Fade>
-        ))}
+        {renderingElements
+          .filter(({ supportScreenReader }) => supportScreenReader)
+          .map(({ activity, liveRegionKey }) => (
+            <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
+              {() => <ScreenReaderActivity activity={activity} />}
+            </Fade>
+          ))}
       </section>
       {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
       {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
@@ -790,7 +799,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               renderAvatar,
               role,
               shouldSpeak,
-              showCallout
+              showCallout,
+              supportScreenReader
             },
             index
           ) => {
@@ -818,9 +828,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
-                <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
-                  {!!isContentInteractive && <p>{activityInteractiveAlt}</p>}
-                </ScreenReaderActivity>
+                {supportScreenReader && (
+                  <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
+                    {!!isContentInteractive && <p>{activityInteractiveAlt}</p>}
+                  </ScreenReaderActivity>
+                )}
                 <FocusRedirector
                   className="webchat__basic-transcript__activity-sentinel"
                   onFocus={focusActivity}

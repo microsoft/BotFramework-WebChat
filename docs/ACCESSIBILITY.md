@@ -259,11 +259,11 @@ To make the live region more consistent across browsers and easier to control, w
 
 ### Technical Limitation
 
--  Activity Time Stamp Announcement : Related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
-   -  Problem definition : Even when a user overrides the 'grouptimestamp' props and sets it to true or to some interval, AT still announces every activity with it's associated Time stamp.
-   -  Explanation of current behavior : Once activity is marked as sent, it is written to DOM as well as it's Timestamp; the timestamp grouping logic is executed only when the next activity arrives. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
+-  Activity timestamp announcement: related to [#3136](https://github.com/microsoft/BotFramework-WebChat/issues/3136)
+   -  Problem definition: when the developer overrides the 'groupTimestamp' props and sets it to `true` or to some interval, screen reader still announces every activity with its associated timestamp.
+   -  Explanation of current behavior: Once activity is marked as sent, it is written to DOM as well as its timestamp; the timestamp grouping logic is executed only when the next activity arrives. As mention earlier once a text is queued for narration and even if DOM element is removed it will still be announced by the screen reader as it is not technically possible to removed from the narration queue.
    -  Given above limitation even if we removed the timestamp element from DOM after group timestamp logic is executed this will not change the screen reader behavior.
-   -  As per Accessibility team review/recommendation : There is no hiding or loss of information in this case - so will keep the current behavior as is.
+   -  As per accessibility team review/recommendation: there is no hiding or loss of information in this case - so will keep the current behavior as is.
 
 ## Do's and don't
 
@@ -293,11 +293,77 @@ To make the live region more consistent across browsers and easier to control, w
    -  Only change focus synchronous to user gesture
    -  Related to [#3135](https://github.com/microsoft/BotFramework-WebChat/issues/3135)
 
+# Controlling the narration of activities and attachments
+
+> This is related to [#3360](https://github.com/microsoft/BotFramework-WebChat/issues/3360), [#3615](https://github.com/microsoft/BotFramework-WebChat/issues/3615), [#3918](https://github.com/microsoft/BotFramework-WebChat/issues/3918).
+
+## User story
+
+A bot developer wants to set the narration for a message activity. The activity may or may not have attachments.
+
+It is required for the following user stories:
+
+-  The message contains Markdown
+   -  For example, the `text` field is `"Hello, *World!*"`
+   -  Desirable: narrate "hello world"
+   -  Undesirable: "hello (pause) asterisk world asterisk"
+-  The message contains HTML
+   -  For example, the `text` field is `"### Exchange rate\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  Desirable: narrate "exchange rate for 1 US dollar is 0.91 Japanese yen"
+   -  Undesirable: any HTML or Markdown syntax
+-  The message contains a document, such as an insurance policy
+   -  For example, the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
+   -  Desirable: narrate "the insurance policy is ready to download"
+   -  Undesirable: any narration containing the bogus file name
+
+## Implementation
+
+Currently, the [Bot Framework Activity spec](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) does not provide any field for text alternatives.
+
+A new field `webchat:fallback-text` is added to `channelData` field with the following logic:
+
+1. If `channelData['webchat:fallback-text']` field present
+   1. If `channelData['webchat:fallback-text']` field is not an empty string, narrate the field, don't narrate attachments
+      -  The field should contains narration of attachments
+   2. If `channelData['webchat:fallback-text']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
+2. Otherwise
+   -  If `textFormat` is `markdown`
+      -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best effort
+      -  Narrate the `text` field with Markdown syntax removed, followed by every attachment rendered through `attachmentForScreenReader` middleware
+   -  Otherwise
+      -  Narrate the `text` field as-is, followed by every attachment rendered through `attachmentForScreenReader` middleware
+   -  Note the `text` field is optional
+
+### Remove Markdown syntax from `text` field
+
+> This algorithm is subject to change to provide a better text alternatives experience. For consistent result, please use the `channelData['webchat:fallback-text']` field instead.
+
+If the `channelData['webchat:fallback-text']` field is not present, we will use best effort to convert Markdown text for screen reader.
+
+-  Use `useRenderMarkdown` hook to render the Markdown into HTML (as string)
+   -  The hook will use the `renderMarkdown` prop passed to Web Chat and it can be customized by the web developer
+-  Use `DOMParser().parseFromString()` to parse the HTML string into `HTMLDocument`
+-  Walk all the nodes in the `HTMLDocument`, flatten and concatenate
+   -  If it is a text node, get the `textContent`
+   -  If it is a `<img>` element, get the `alt` attribute
+
+Applying the logic to samples above:
+
+-  The message contains Markdown
+   -  If the `text` field is `"Hello, *World!*"`
+   -  Narration will be "Hello, World!"
+-  The message contains HTML
+   -  If the `text` field is `"## Exchange rate:\n\n<table><tr><th>USD</th><td>1.00</td></tr><tr><th>JPY</th><td>0.91</td></tr></table>"`
+   -  Narration will be "Exchange rate: USD 1.00 JPY 0.91"
+-  The message contains a document, such as an insurance policy
+   -  If the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
+   -  Narration will be "Insurance policy: A file: 12345678-1234-5678-abcd-12345678abcd.doc"
+
 # Screen reader renderer for custom activities and attachments
 
 Web Chat render components are accompanied by a screen reader renderer to maximize accessibility. In the case of custom components, the bot/Web Chat developer will need to implement a screen reader renderer for the equivalent custom visual component.
 
-![image: Console warning: "No renderer for attachment for screen reader of type "application/mnd.microsoft.card.adaptive"](https://user-images.githubusercontent.com/14900841/106323546-6f47ed80-622c-11eb-96d7-de6f72818525.png)
+![image: Console warning: "No renderer for attachment for screen reader of type "application/vnd.microsoft.card.adaptive"](https://user-images.githubusercontent.com/14900841/106323546-6f47ed80-622c-11eb-96d7-de6f72818525.png)
 
 The Web Chat team **DOES NOT** recommend disabling warning messages regarding screen readers and accessibility. However, if the developer decides to suppress these messages, it can be done by adding the following code to `attachmentForScreenReaderMiddleware` in the `Composer` props.
 

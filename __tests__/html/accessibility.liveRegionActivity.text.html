@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        await host.windowSize(360, 800, document.getElementById('webchat'));
+
+        const baseActivity = {
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          timestamp: new Date(2000, 0, 1, 12, 34, 56, 789).toISOString(),
+          type: 'message'
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                ...baseActivity,
+                text: 'Hello, **World** without `webchat:fallback-text` field.',
+                textFormat: 'markdown'
+              },
+              {
+                ...baseActivity,
+                channelData: {
+                  'webchat:fallback-text': {}
+                },
+                text: 'Hello, **World** with invalid `webchat:fallback-text` field.',
+                textFormat: 'markdown'
+              },
+              {
+                ...baseActivity,
+                channelData: {
+                  'webchat:fallback-text': 'Display another thing.'
+                },
+                text: 'Display one thing.',
+                textFormat: 'markdown'
+              },
+              {
+                ...baseActivity,
+                channelData: {
+                  messageBack: {
+                    displayText: 'Text from *MessageBack* (plain).'
+                  }
+                },
+                from: { id: 'user', role: 'user' },
+                text: 'This should not be displayed.',
+                textFormat: 'plain'
+              },
+              {
+                ...baseActivity,
+                channelData: {
+                  messageBack: {
+                    displayText: 'Text from *MessageBack* (Markdown).'
+                  }
+                },
+                from: { id: 'user', role: 'user' },
+                text: 'This should not be displayed.',
+                textFormat: 'markdown'
+              },
+              {
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': '' },
+                text: 'This is presentational, should not be narrated.'
+              },
+              {
+                ...baseActivity,
+                text: 'This is *plain text*, preserve asterisks.',
+                textFormat: 'plain'
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              internalLiveRegionFadeAfter: 60000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(7);
+
+        const screenReaderTexts = [].map.call(
+          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
+          child => testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        // One of the activity contains a fallback text of empty string. It become presentational and not rendered.
+        expect(screenReaderTexts).toHaveLength(6);
+
+        // Without `webchat:fallback-text` field set, we will be narrating the "text" with best-effort.
+        expect(screenReaderTexts[0]).toBe(
+          'Bot said:\nHello, World without webchat:fallback-text field.\nSent at January 1 at 12:34 PM'
+        );
+
+        // Without valid `webchat:fallback-text` field, we will be narrating the "text" with best-effort.
+        expect(screenReaderTexts[1]).toBe(
+          'Bot said:\nHello, World with invalid webchat:fallback-text field.\nSent at January 1 at 12:34 PM'
+        );
+
+        expect(screenReaderTexts[2]).toBe('Bot said:\nDisplay another thing.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[3]).toBe('You said:\nText from *MessageBack* (plain).\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[4]).toBe(
+          'You said:\nText from MessageBack (Markdown).\nSent at January 1 at 12:34 PM'
+        );
+        expect(screenReaderTexts[5]).toBe(
+          'Bot said:\nThis is *plain text*, preserve asterisks.\nSent at January 1 at 12:34 PM'
+        );
+
+        // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
+        // It must not show the text "This should not be displayed."
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
