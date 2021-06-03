@@ -299,7 +299,7 @@ To make the live region more consistent across browsers and easier to control, w
 
 ## User story
 
-A bot developer want to set the narration for a message activity. The activity may or may not have attachments.
+A bot developer wants to set the narration for a message activity. The activity may or may not have attachments.
 
 It is required for the following user stories:
 
