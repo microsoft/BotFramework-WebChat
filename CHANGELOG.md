@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#3557](https://github.com/microsoft/BotFramework-WebChat/issues/3557) and [#3736](https://github.com/microsoft/BotFramework-WebChat/issues/3736). Improved test harness and added browser pooling, by [@compulim](https://github.com/compulim), in PR [#3871](https://github.com/microsoft/BotFramework-WebChat/pull/3871)
 -  Resolves [#3788](https://github.com/microsoft/BotFramework-WebChat/issues/3788). Added `localTimestamp` and `localTimezone` (if available) to all outgoing activities, by [@compulim](https://github.com/compulim), in PR [#3896](https://github.com/microsoft/BotFramework-WebChat/pull/3896)
 -  Resolves [#3925](https://github.com/microsoft/BotFramework-WebChat/issues/3925). Added `scrollToEndButtonBehavior` to control when the scroll to end button should show, removed `hideScrollToEndButton`, and renamed `newMessagesButtonFontSize` to `scrollToEndButtonFontSize`, by [@compulim](https://github.com/compulim), in PR [#3926](https://github.com/microsoft/BotFramework-WebChat/issues/3926).
+   -  Added new [`scrollToEndButtonMiddleware`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/types/scrollToEndButtonMiddleware.ts) to customize the appearance of the scroll to end button.
 
 ### Fixed
 
