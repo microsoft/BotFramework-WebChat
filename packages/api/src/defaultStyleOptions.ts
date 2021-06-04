@@ -84,7 +84,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   markdownRespectCRLF: true,
 
   // Scroll behavior
-  hideScrollToEndButton: undefined, // Deprecated as of 4.14.0. Use "scrollToEndButtonBehavior" instead.
+  hideScrollToEndButton: undefined, // Deprecated as of 4.14.0. Use "scrollToEndButtonBehavior" instead. Remove on or after 2023-06-02.
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
@@ -160,7 +160,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Transcript overlay buttons
   scrollToEndButtonBehavior: 'unread',
   scrollToEndButtonFontSize: '85%',
-  newMessagesButtonFontSize: undefined, // Deprecated as of 4.14.0, renamed to "scrollToEndButtonFontSize".
+  newMessagesButtonFontSize: undefined, // Deprecated as of 4.14.0, renamed to "scrollToEndButtonFontSize". Remove on or after 2023-06-02.
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnDisabled: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
