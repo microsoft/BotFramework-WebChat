@@ -6,6 +6,7 @@ import updateIn from 'simple-update-in';
 import { ScrollToEndButtonMiddleware } from '../types/ScrollToEndButtonMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import DirectLineActivity from '../types/DirectLineActivity';
+import DirectLineJSBotConnection from '../types/DirectLineJSBotConnection';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
@@ -165,7 +166,7 @@ type ComposerProps = {
   cardActionMiddleware?: any;
   children?: ReactNode;
   dir?: string;
-  directLine: any;
+  directLine: DirectLineJSBotConnection;
   disabled?: boolean;
   downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
   grammars?: any;
