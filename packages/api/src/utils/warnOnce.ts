@@ -1,4 +1,4 @@
-export default function warnOnce(message) {
+export default function warnOnce(message: string): () => void {
   let warned;
 
   return () => {

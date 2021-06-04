@@ -50,11 +50,12 @@ import zhHK from './zh-HK.json';
 import zhTW from './zh-TW.json';
 
 import bundledOverrides from './overrides.json';
+import LocalizedStrings from '../types/LocalizedStrings';
 import mergeLocalizedStrings from './mergeLocalizedStrings';
 
 let localizedStrings;
 
-function getAllLocalizedStrings() {
+function getAllLocalizedStrings(): { [language: string]: LocalizedStrings } {
   return (
     localizedStrings ||
     (localizedStrings = mergeLocalizedStrings(

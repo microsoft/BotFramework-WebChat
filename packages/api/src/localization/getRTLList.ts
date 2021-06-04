@@ -33,7 +33,7 @@
 // 'zh-HANT'
 // 'zh-YUE'
 
-export default function getRTLList() {
+export default function getRTLList(): string[] {
   const rtlList = ['ar-EG', 'ar-JO', 'ar-SA', 'he-IL'];
 
   return rtlList;

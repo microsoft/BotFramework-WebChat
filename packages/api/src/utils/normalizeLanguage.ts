@@ -2,7 +2,7 @@
 
 // https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support
 
-export default function normalizeLanguage(language) {
+export default function normalizeLanguage(language: string): string {
   language = language.toLowerCase();
 
   if (language === 'ar-eg') {

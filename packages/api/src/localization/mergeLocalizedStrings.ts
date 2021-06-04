@@ -1,4 +1,6 @@
-export default function mergeLocalizedStrings(...args) {
+import LocalizedStrings from '../types/LocalizedStrings';
+
+export default function mergeLocalizedStrings(...args: string[][]): { [language: string]: LocalizedStrings } {
   const merged = {};
   const languages = args.reduce((keys, arg) => [...keys, ...Object.keys(arg)], []);
 
