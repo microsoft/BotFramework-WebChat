@@ -1,13 +1,15 @@
 import { Constants } from 'botframework-webchat-core';
+import DirectLineActivity from '../../types/DirectLineActivity';
+import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 const {
   ActivityClientState: { SENT }
 } = Constants;
 
-function bin(items, grouping) {
-  let lastBin;
-  const bins = [];
-  let lastItem;
+function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
+  let lastBin: T[];
+  const bins: T[][] = [];
+  let lastItem: T;
 
   items.forEach(item => {
     if (lastItem && grouping(lastItem, item)) {
@@ -23,11 +25,15 @@ function bin(items, grouping) {
   return bins;
 }
 
-function sending(activity) {
+function sending(activity: DirectLineActivity): boolean {
   return activity.from.role === 'user' && activity.channelData && activity.channelData.state !== SENT;
 }
 
-function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
+function shouldGroupTimestamp(
+  activityX: DirectLineActivity,
+  activityY: DirectLineActivity,
+  groupTimestamp: boolean | number
+): boolean {
   if (groupTimestamp === false) {
     // Hide timestamp for all activities.
     return true;
@@ -47,7 +53,7 @@ function shouldGroupTimestamp(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-export default function createDefaultGroupActivityMiddleware({ groupTimestamp }) {
+export default function createDefaultGroupActivityMiddleware({ groupTimestamp }): GroupActivitiesMiddleware {
   return () => () => ({ activities }) => ({
     sender: bin(activities, (x, y) => x.from.role === y.from.role),
     status: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp))

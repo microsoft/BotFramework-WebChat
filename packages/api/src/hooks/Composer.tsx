@@ -3,21 +3,6 @@ import PropTypes from 'prop-types';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
-import { ScrollToEndButtonMiddleware } from '../types/ScrollToEndButtonMiddleware';
-import createCustomEvent from '../utils/createCustomEvent';
-import DirectLineActivity from '../types/DirectLineActivity';
-import DirectLineJSBotConnection from '../types/DirectLineJSBotConnection';
-import ErrorBoundary from './utils/ErrorBoundary';
-import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
-import isObject from '../utils/isObject';
-import LocalizedStrings from '../types/LocalizedStrings';
-import normalizeLanguage from '../utils/normalizeLanguage';
-import OneOrMany from '../types/OneOrMany';
-// @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-import StyleOptions from '../StyleOptions';
-import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
-
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -46,23 +31,38 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
+import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import { ScrollToEndButtonMiddleware } from '../types/ScrollToEndButtonMiddleware';
+import createCustomEvent from '../utils/createCustomEvent';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
+import DirectLineActivity from '../types/DirectLineActivity';
+import DirectLineJSBotConnection from '../types/DirectLineJSBotConnection';
+import ErrorBoundary from './utils/ErrorBoundary';
+import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
+import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
+import isObject from '../utils/isObject';
+import LocalizedStrings from '../types/LocalizedStrings';
 import mapMap from '../utils/mapMap';
+import normalizeLanguage from '../utils/normalizeLanguage';
+import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
+import OneOrMany from '../types/OneOrMany';
+import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
+import singleToArray from './utils/singleToArray';
+import StyleOptions from '../StyleOptions';
+import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 import Tracker from './internal/Tracker';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 
-import normalizeStyleOptions from '../normalizeStyleOptions';
-import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
-import singleToArray from './utils/singleToArray';
+// @ts-ignore
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -158,19 +158,19 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 }
 
 type ComposerProps = {
-  activityMiddleware?: any;
-  activityStatusMiddleware?: any;
-  attachmentForScreenReaderMiddleware?: any;
-  attachmentMiddleware?: any;
-  avatarMiddleware?: any;
-  cardActionMiddleware?: any;
+  activityMiddleware?: OneOrMany<Function>;
+  activityStatusMiddleware?: OneOrMany<Function>;
+  attachmentForScreenReaderMiddleware?: OneOrMany<Function>;
+  attachmentMiddleware?: OneOrMany<Function>;
+  avatarMiddleware?: OneOrMany<Function>;
+  cardActionMiddleware?: OneOrMany<Function>;
   children?: ReactNode;
   dir?: string;
   directLine: DirectLineJSBotConnection;
   disabled?: boolean;
   downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
   grammars?: any;
-  groupActivitiesMiddleware?: any;
+  groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
   internalErrorBoxClass?: React.Component | Function;
   internalRenderErrorBox?: any;
   locale?: string;
@@ -181,8 +181,8 @@ type ComposerProps = {
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
-  toastMiddleware?: any;
-  typingIndicatorMiddleware?: any;
+  toastMiddleware?: OneOrMany<Function>;
+  typingIndicatorMiddleware?: OneOrMany<Function>;
   userID?: string;
   username?: string;
 
