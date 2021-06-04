@@ -3,11 +3,11 @@ import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import warnOnce from './utils/warnOnce';
 
 const hideScrollToEndButtonDeprecation = warnOnce(
-  '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2021-06-02.'
+  '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'
 );
 
 const newMessagesButtonFontSizeDeprecation = warnOnce(
-  '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2021-06-02.'
+  '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2023-06-02.'
 );
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".

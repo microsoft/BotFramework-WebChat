@@ -222,6 +222,7 @@ type StyleOptions = {
    *
    * @deprecated Since 4.14.0: To hide the scroll to end button, please set `scrollToEndButtonBehavior` to `false`.
    */
+  // TODO: [P4] Will be removed on or after 2023-06-02.
   hideScrollToEndButton?: boolean;
 
   /**
@@ -432,6 +433,7 @@ type StyleOptions = {
    *
    * @deprecated Since 4.14.0: Renamed to {@linkcode scrollToEndButtonFontSize}.
    */
+  // TODO: [P4] Will be removed on or after 2023-06-02.
   newMessagesButtonFontSize?: number | string;
 
   transcriptOverlayButtonBackground?: string;
