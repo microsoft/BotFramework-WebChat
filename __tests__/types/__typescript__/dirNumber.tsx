@@ -1,4 +1,4 @@
-import ReactWebChat, { createStyleSet, StyleOptions } from '../../../packages/bundle/lib/index';
+import ReactWebChat, { createStyleSet, StyleOptions } from '../../../packages/bundle';
 
 function main() {
   const styleOptions: StyleOptions = { accent: 'black', cardEmphasisBackgroundColor: 'orange' };

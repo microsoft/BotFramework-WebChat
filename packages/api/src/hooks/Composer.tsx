@@ -5,13 +5,16 @@ import updateIn from 'simple-update-in';
 
 import { ScrollToEndButtonMiddleware } from '../types/scrollToEndButtonMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
+import DirectLineActivity from '../types/DirectLineActivity';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
+import LocalizedStrings from '../types/LocalizedStrings';
 import normalizeLanguage from '../utils/normalizeLanguage';
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import StyleOptions from '../StyleOptions';
+import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 
 import {
   clearSuggestedActions,
@@ -153,41 +156,50 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 }
 
 type ComposerProps = {
-  activityMiddleware: any;
-  activityRenderer: any;
-  activityStatusMiddleware: any;
-  activityStatusRenderer: any;
-  attachmentForScreenReaderMiddleware: any;
-  attachmentMiddleware: any;
-  attachmentRenderer: any;
-  avatarMiddleware: any;
-  avatarRenderer: any;
-  cardActionMiddleware: any;
-  children: ReactNode;
-  dir: string;
+  activityMiddleware?: any;
+  activityStatusMiddleware?: any;
+  attachmentForScreenReaderMiddleware?: any;
+  attachmentMiddleware?: any;
+  avatarMiddleware?: any;
+  cardActionMiddleware?: any;
+  children?: ReactNode;
+  dir?: string;
   directLine: any;
-  disabled: boolean;
-  downscaleImageToDataURL: any;
-  grammars: any;
-  groupActivitiesMiddleware: any;
-  groupTimestamp: boolean | number;
-  internalErrorBoxClass: any;
-  internalRenderErrorBox: any;
-  locale: string;
-  onTelemetry: any;
-  overrideLocalizedStrings: any;
-  renderMarkdown: any;
+  disabled?: boolean;
+  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  grammars?: any;
+  groupActivitiesMiddleware?: any;
+  internalErrorBoxClass?: React.Component | Function;
+  internalRenderErrorBox?: any;
+  locale?: string;
+  onTelemetry?: (event: TelemetryMeasurementEvent) => void;
+  overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
+  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
   scrollToEndButtonMiddleware: ScrollToEndButtonMiddleware | ScrollToEndButtonMiddleware[];
-  selectVoice: any;
-  sendTimeout: number;
-  sendTypingIndicator: any;
-  styleOptions: StyleOptions;
-  toastMiddleware: any;
-  toastRenderer: any;
-  typingIndicatorMiddleware: any;
-  typingIndicatorRenderer: any;
-  userID: string;
-  username: string;
+  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
+  sendTypingIndicator?: boolean;
+  styleOptions?: StyleOptions;
+  toastMiddleware?: any;
+  typingIndicatorMiddleware?: any;
+  userID?: string;
+  username?: string;
+
+  /** @deprecated Please use "activityMiddleware" instead. */
+  activityRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "activityStatusMiddleware" instead. */
+  activityStatusRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "attachmentMiddleware" instead. */
+  attachmentRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "avatarMiddleware" instead. */
+  avatarRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "styleOptions.groupTimestamp" instead. */
+  groupTimestamp?: boolean | number; // TODO: [P4] Remove on or after 2022-01-01
+  /** @deprecated Please use "styleOptions.sendTimeout" instead. */
+  sendTimeout?: number; // TODO: [P4] Remove on or after 2022-01-01.
+  /** @deprecated Please use "toastMiddleware" instead. */
+  toastRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "typingIndicatorRenderer" instead. */
+  typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
 };
 
 const Composer: FC<ComposerProps> = ({
@@ -570,7 +582,8 @@ const ComposeWithStore: FC<ComposerProps & { store: any }> = ({
     error => {
       console.error('botframework-webchat: Uncaught exception', { error });
 
-      onTelemetry && onTelemetry(createCustomEvent('exception', { error, fatal: true }));
+      onTelemetry &&
+        onTelemetry(createCustomEvent('exception', { error, fatal: true }) as TelemetryExceptionMeasurementEvent);
       setError(error);
     },
     [onTelemetry, setError]

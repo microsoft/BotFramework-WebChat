@@ -1,8 +1,9 @@
-import Composer from '../../../packages/component/lib/Composer';
-import createDirectLine from '../../../packages/bundle/lib/createDirectLine';
+import { Components, createDirectLine } from '../../../packages/component';
+
+const { Composer } = Components;
 
 function main() {
-  const directLine = createDirectLine({ token: 'faketoken'});
+  const directLine = createDirectLine({ token: 'faketoken' });
 
   return <Composer directLine={directLine} />;
 }

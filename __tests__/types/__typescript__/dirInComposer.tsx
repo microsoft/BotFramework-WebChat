@@ -1,5 +1,7 @@
-import Composer from '../../../packages/component/lib/Composer';
+import { Components } from '../../../packages/component';
+
+const { Composer } = Components;
 
 function main() {
-  return <Composer dir='rtl' />;
+  return <Composer dir="rtl" />;
 }

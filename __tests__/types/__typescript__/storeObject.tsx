@@ -1,5 +1,5 @@
-import ReactWebChat from '../../../packages/bundle/lib/index';
-import createStore from '../../../packages/core/lib/createStore';
+import ReactWebChat from '../../../packages/bundle';
+import { createStore } from '../../../packages/core';
 
 function main() {
   const store = createStore({});

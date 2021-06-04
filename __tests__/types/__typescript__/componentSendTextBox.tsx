@@ -1,4 +1,4 @@
-import { Components } from '../../../packages/bundle/lib/index';
+import { Components } from '../../../packages/bundle';
 
 function main() {
   const { SendTextBox } = Components;
