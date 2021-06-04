@@ -2,23 +2,29 @@
 
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import CommonCard from './CommonCard';
 
+const { AudioContent } = Components;
 const { useStyleSet } = hooks;
-const { VideoContent } = Components;
 
-const VideoCardContent = ({ actionPerformedClassName, content, disabled }) => {
-  const { media, autostart, autoloop, image: { url: imageURL } = {} } = content;
+type AudioCardContentProps = {
+  actionPerformedClassName?: string;
+  content: any;
+  disabled?: boolean;
+};
+
+const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
+  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 
   return (
     <div className={audioCardAttachmentStyleSet}>
       <ul className="media-list">
         {media.map(({ url }, index) => (
           <li key={index}>
-            <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+            <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
           </li>
         ))}
       </ul>
@@ -27,27 +33,26 @@ const VideoCardContent = ({ actionPerformedClassName, content, disabled }) => {
   );
 };
 
-VideoCardContent.defaultProps = {
+AudioCardContent.defaultProps = {
   actionPerformedClassName: '',
   disabled: undefined
 };
 
-VideoCardContent.propTypes = {
+AudioCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
-    autoloop: PropTypes.bool,
     autostart: PropTypes.bool,
+    autoloop: PropTypes.bool,
     image: PropTypes.shape({
       url: PropTypes.string.isRequired
     }),
     media: PropTypes.arrayOf(
       PropTypes.shape({
-        profile: PropTypes.string.isRequired,
         url: PropTypes.string.isRequired
-      })
-    )
+      }).isRequired
+    ).isRequired
   }).isRequired,
   disabled: PropTypes.bool
 };
 
-export default VideoCardContent;
+export default AudioCardContent;

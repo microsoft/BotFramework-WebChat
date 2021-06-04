@@ -1,4 +1,4 @@
-import { RendererCreator, RendererMiddleware } from './RendererMiddleware';
+import { RendererMiddleware } from './RendererMiddleware';
 import { StrictStyleOptions } from '../StyleOptions';
 
 /**
@@ -7,7 +7,7 @@ import { StrictStyleOptions } from '../StyleOptions';
  * @property {object} styleOptions - Normalized style options.
  * @property {boolean} unread - `true`, if there are unread messages in the transcripts, otherwise, `false`.
  */
-export type ScrollToEndButtonCreateOptions = {
+type ScrollToEndButtonCreateOptions = {
   atEnd: boolean;
   styleOptions: StrictStyleOptions;
   unread: boolean;
@@ -17,17 +17,13 @@ export type ScrollToEndButtonCreateOptions = {
  * @type {object}
  * @property {function} onClick - The callback function to call when the user click on the button.
  */
-export type ScrollToEndButtonProps = {
+type ScrollToEndButtonProps = {
   onClick: () => any;
 };
 
 /**
  * The middleware for rendering scroll to end button.
  */
-export type ScrollToEndButtonMiddleware = RendererMiddleware<
-  {},
-  ScrollToEndButtonCreateOptions,
-  ScrollToEndButtonProps
->;
+type ScrollToEndButtonMiddleware = RendererMiddleware<{}, ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
 
-export type ScrollToEndButtonCreator = RendererCreator<ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
+export default ScrollToEndButtonMiddleware;

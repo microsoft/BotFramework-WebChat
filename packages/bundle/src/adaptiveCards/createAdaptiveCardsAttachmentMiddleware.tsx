@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { AttachmentMiddleware } from 'botframework-webchat-api';
+
 import AdaptiveCardAttachment from './Attachment/AdaptiveCardAttachment';
 import AnimationCardAttachment from './Attachment/AnimationCardAttachment';
 import AudioCardAttachment from './Attachment/AudioCardAttachment';
@@ -10,30 +12,30 @@ import SignInCardAttachment from './Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
-export default function createAdaptiveCardsAttachmentMiddleware() {
+export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMiddleware {
   // This is not returning a React component, but a render function.
   /* eslint-disable-next-line react/display-name */
   return () => next => (...args) => {
-    const [{ activity, attachment }] = args;
+    const [{ attachment }] = args;
 
     return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
-      <HeroCardAttachment activity={activity} attachment={attachment} />
+      <HeroCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
-      <AdaptiveCardAttachment activity={activity} attachment={attachment} />
+      <AdaptiveCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
-      <AnimationCardAttachment activity={activity} attachment={attachment} />
+      <AnimationCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
-      <AudioCardAttachment activity={activity} attachment={attachment} />
+      <AudioCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
-      <OAuthCardAttachment activity={activity} attachment={attachment} />
+      <OAuthCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
-      <ReceiptCardAttachment activity={activity} attachment={attachment} />
+      <ReceiptCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
-      <SignInCardAttachment activity={activity} attachment={attachment} />
+      <SignInCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (
-      <ThumbnailCardAttachment activity={activity} attachment={attachment} />
+      <ThumbnailCardAttachment attachment={attachment} />
     ) : attachment.contentType === 'application/vnd.microsoft.card.video' ? (
-      <VideoCardAttachment activity={activity} attachment={attachment} />
+      <VideoCardAttachment attachment={attachment} />
     ) : (
       next(...args)
     );

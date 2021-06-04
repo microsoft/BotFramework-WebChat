@@ -59,8 +59,8 @@ const patchedHooks = {
 const Components = {
   ...MinimalComponents,
   AdaptiveCardContent,
-  AudioCardContent,
   AnimationCardContent,
+  AudioCardContent,
   Composer: FullComposer,
   HeroCardContent,
   OAuthCardContent,

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useParseAdaptiveCardJSON from '../hooks/internal/useParseAdaptiveCardJSON';
@@ -17,7 +17,13 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
-const AdaptiveCardContent = ({ actionPerformedClassName, content, disabled }) => {
+type AdaptiveCardContentProps = {
+  actionPerformedClassName?: string;
+  content: any;
+  disabled?: boolean;
+};
+
+const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
   const card = useMemo(

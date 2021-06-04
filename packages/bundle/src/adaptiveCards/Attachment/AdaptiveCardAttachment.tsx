@@ -1,9 +1,15 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import AdaptiveCardContent from './AdaptiveCardContent';
+import DirectLineAttachment from '../../types/external/DirectLineAttachment';
 
-const AdaptiveCardAttachment = ({ attachment: { content }, disabled }) => (
+type AdaptiveCardAttachmentProps = {
+  attachment: DirectLineAttachment;
+  disabled?: boolean;
+};
+
+const AdaptiveCardAttachment: FC<AdaptiveCardAttachmentProps> = ({ attachment: { content }, disabled }) => (
   <AdaptiveCardContent content={content} disabled={disabled} />
 );
 

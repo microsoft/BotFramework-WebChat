@@ -1,5 +1,7 @@
-import { RendererMiddleware } from './types/RendererMiddleware';
-import { ScrollToEndButtonMiddleware } from './types/ScrollToEndButtonMiddleware';
+import ActivityMiddleware from './types/ActivityMiddleware';
+import AttachmentMiddleware from './types/AttachmentMiddleware';
+import GroupActivitiesMiddleware from './types/GroupActivitiesMiddleware';
+import ScrollToEndButtonMiddleware from './types/ScrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 
 declare const defaultStyleOptions: Required<StyleOptions>;
@@ -8,5 +10,13 @@ declare const defaultStyleOptions: Required<StyleOptions>;
 // eslint-disable-next-line no-unused-vars
 declare function normalizeStyleOptions(styleOptions: StyleOptions): StrictStyleOptions;
 
-export type { RendererMiddleware, ScrollToEndButtonMiddleware, StrictStyleOptions, StyleOptions };
+export type {
+  ActivityMiddleware,
+  AttachmentMiddleware,
+  GroupActivitiesMiddleware,
+  ScrollToEndButtonMiddleware,
+  StrictStyleOptions,
+  StyleOptions
+};
+
 export { defaultStyleOptions, normalizeStyleOptions };

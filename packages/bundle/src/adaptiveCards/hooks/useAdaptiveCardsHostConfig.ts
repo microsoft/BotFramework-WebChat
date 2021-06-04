@@ -6,7 +6,7 @@ import useAdaptiveCardsContext from './internal/useAdaptiveCardsContext';
 
 const { useStyleOptions } = hooks;
 
-export default function useAdaptiveCardsHostConfig() {
+export default function useAdaptiveCardsHostConfig(): [any] {
   const { hostConfigFromProps } = useAdaptiveCardsContext();
   const [styleOptions] = useStyleOptions();
 

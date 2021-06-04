@@ -1,12 +1,18 @@
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import CommonCard from './CommonCard';
 
 const { useStyleSet } = hooks;
 
-const SignInCardContent = ({ actionPerformedClassName, content, disabled }) => {
+type SignInCardContentProps = {
+  actionPerformedClassName?: string;
+  content: any;
+  disabled?: boolean;
+};
+
+const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (

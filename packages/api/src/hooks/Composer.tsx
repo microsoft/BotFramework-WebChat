@@ -32,13 +32,13 @@ import {
 } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
-import { ScrollToEndButtonMiddleware } from '../types/ScrollToEndButtonMiddleware';
+import ActivityMiddleware from '../types/ActivityMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
-import DirectLineActivity from '../types/DirectLineActivity';
-import DirectLineJSBotConnection from '../types/DirectLineJSBotConnection';
+import DirectLineActivity from '../types/external/DirectLineActivity';
+import DirectLineJSBotConnection from '../types/external/DirectLineJSBotConnection';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
@@ -50,6 +50,7 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
 import OneOrMany from '../types/OneOrMany';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
+import ScrollToEndButtonMiddleware from '../types/ScrollToEndButtonMiddleware';
 import singleToArray from './utils/singleToArray';
 import StyleOptions from '../StyleOptions';
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
@@ -158,7 +159,7 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 }
 
 type ComposerProps = {
-  activityMiddleware?: OneOrMany<Function>;
+  activityMiddleware?: OneOrMany<ActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<Function>;
   attachmentForScreenReaderMiddleware?: OneOrMany<Function>;
   attachmentMiddleware?: OneOrMany<Function>;

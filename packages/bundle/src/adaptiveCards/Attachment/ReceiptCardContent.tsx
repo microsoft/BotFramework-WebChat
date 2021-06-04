@@ -2,7 +2,7 @@
 
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -14,7 +14,13 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => {
+type ReceiptCardContentProps = {
+  actionPerformedClassName?: string;
+  content: any;
+  disabled?: boolean;
+};
+
+const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -47,32 +53,54 @@ const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }) => 
       }
 
       items &&
-        items.map(({ image: { alt, tap: imageTap, url } = {}, price, quantity, subtitle, tap, text, title }) => {
-          let itemColumns;
+        items.map(
+          ({
+            image: { alt, tap: imageTap, url } = {},
+            price,
+            quantity,
+            subtitle,
+            tap,
+            text,
+            title
+          }: {
+            image: {
+              alt?: string;
+              tap?: any;
+              url?: string;
+            };
+            price: string;
+            quantity: string;
+            subtitle: string;
+            tap: any;
+            text: string;
+            title: string;
+          }) => {
+            let itemColumns;
 
-          if (url) {
-            const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
+            if (url) {
+              const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
-            itemColumns = columns;
-            builder.addImage(url, itemImageColumn, imageTap, alt);
-          } else {
-            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
+              itemColumns = columns;
+              builder.addImage(url, itemImageColumn, imageTap, alt);
+            } else {
+              itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
+            }
+
+            const [itemTitleColumn, itemPriceColumn] = itemColumns;
+
+            builder.addTextBlock(
+              quantity ? `${title} &times; ${quantity}` : title,
+              { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
+              itemTitleColumn
+            );
+            builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+            builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
+
+            if (text) {
+              builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+            }
           }
-
-          const [itemTitleColumn, itemPriceColumn] = itemColumns;
-
-          builder.addTextBlock(
-            quantity ? `${title} &times; ${quantity}` : title,
-            { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
-            itemTitleColumn
-          );
-          builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
-          builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
-
-          if (text) {
-            builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
-          }
-        });
+        );
 
       if (!nullOrUndefined(vat)) {
         const vatCol = builder.addColumnSet([75, 25]);

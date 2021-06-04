@@ -2,14 +2,20 @@
 
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import CommonCard from './CommonCard';
 
 const { ImageContent, VideoContent } = Components;
 const { useStyleSet } = hooks;
 
-const AnimationCardContent = ({ actionPerformedClassName, content, disabled }) => {
+type AnimationCardContentProps = {
+  actionPerformedClassName?: string;
+  content: any;
+  disabled?: boolean;
+};
+
+const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const { media = [] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 

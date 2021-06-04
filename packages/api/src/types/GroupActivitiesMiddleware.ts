@@ -1,6 +1,6 @@
-import DirectLineActivity from './DirectLineActivity';
+import DirectLineActivity from './external/DirectLineActivity';
 
-type GroupActivitiesMiddleware = () => () => ({
+type GroupActivities = ({
   activities
 }: {
   activities: DirectLineActivity[];
@@ -8,5 +8,8 @@ type GroupActivitiesMiddleware = () => () => ({
   sender: DirectLineActivity[][];
   status: DirectLineActivity[][];
 };
+
+type GroupActivitiesEnhancer = (next: GroupActivities) => GroupActivities;
+type GroupActivitiesMiddleware = () => GroupActivitiesEnhancer;
 
 export default GroupActivitiesMiddleware;

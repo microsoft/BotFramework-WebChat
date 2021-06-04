@@ -2,23 +2,34 @@
 
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import CommonCard from './CommonCard';
 
-const { AudioContent } = Components;
 const { useStyleSet } = hooks;
+const { VideoContent } = Components;
 
-const AudioCardContent = ({ actionPerformedClassName, content, disabled }) => {
+type VideoCardContentProps = {
+  actionPerformedClassName?: string;
+  content: {
+    autoloop?: boolean;
+    autostart?: boolean;
+    image?: { url?: string };
+    media?: { profile?: string; url?: string }[];
+  };
+  disabled?: boolean;
+};
+
+const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+  const { autoloop, autostart, image: { url: imageURL } = {}, media } = content;
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
-  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 
   return (
     <div className={audioCardAttachmentStyleSet}>
       <ul className="media-list">
         {media.map(({ url }, index) => (
           <li key={index}>
-            <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+            <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
           </li>
         ))}
       </ul>
@@ -27,26 +38,27 @@ const AudioCardContent = ({ actionPerformedClassName, content, disabled }) => {
   );
 };
 
-AudioCardContent.defaultProps = {
+VideoCardContent.defaultProps = {
   actionPerformedClassName: '',
   disabled: undefined
 };
 
-AudioCardContent.propTypes = {
+VideoCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
   content: PropTypes.shape({
-    autostart: PropTypes.bool,
     autoloop: PropTypes.bool,
+    autostart: PropTypes.bool,
     image: PropTypes.shape({
       url: PropTypes.string.isRequired
     }),
     media: PropTypes.arrayOf(
       PropTypes.shape({
+        profile: PropTypes.string.isRequired,
         url: PropTypes.string.isRequired
-      }).isRequired
-    ).isRequired
+      })
+    )
   }).isRequired,
   disabled: PropTypes.bool
 };
 
-export default AudioCardContent;
+export default VideoCardContent;
