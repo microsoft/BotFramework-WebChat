@@ -1,9 +1,6 @@
-import DirectLineCardAction from '../types/DirectLineCardAction';
+import { PerformCardAction } from '../types/CardActionMiddleware';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function usePerformCardAction(): (
-  cardAction: DirectLineCardAction,
-  { target }?: { target?: any }
-) => void {
+export default function usePerformCardAction(): PerformCardAction {
   return useWebChatAPIContext().onCardAction;
 }

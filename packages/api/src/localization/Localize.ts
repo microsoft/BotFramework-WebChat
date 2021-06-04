@@ -22,13 +22,13 @@ function localize(id: string, language: string, ...args: string[]) {
   const normalizedLanguage = normalizeLanguage(language);
   const localizedStrings = allStrings[normalizedLanguage];
 
-  return Object.entries(args).reduce(
-    (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
+  return Object.entries(args).reduce<boolean | string>(
+    (value, [index, arg]) => (typeof value === 'string' ? value.replace(`$${+index + 1}`, arg) : value),
     (localizedStrings && localizedStrings[id]) || allStrings['en-US'][id] || ''
   );
 }
 
-function getLocaleString(...args) {
+function getLocaleString(date: Date | number | string, language: string) {
   if (!deprecationNotesShown) {
     console.warn(
       'botframework-webchat: localize() is deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'
@@ -37,10 +37,10 @@ function getLocaleString(...args) {
     deprecationNotesShown = true;
   }
 
-  return deprecatingGetLocaleString(...args);
+  return deprecatingGetLocaleString(date, language);
 }
 
-export default ({ args, text }) => {
+export default ({ args, text }: { args: [(number | string)?, ...string[]]; text: string | any }) => {
   if (!deprecationNotesShown) {
     console.warn(
       'botframework-webchat: <Localize> is deprecated. Please use the useLocalizer() hooks instead. This function will be removed on or after 2022-02-12.'

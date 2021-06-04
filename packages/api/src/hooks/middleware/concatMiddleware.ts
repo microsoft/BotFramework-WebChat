@@ -1,4 +1,10 @@
-export default function concatMiddleware(...middleware) {
+type Work<T> = (...args: any[]) => T;
+type Enhancer<T> = (next: Work<T>) => Work<T>;
+type Middleware<Setup, Result> = (setup: Setup) => Enhancer<Result>;
+
+export default function concatMiddleware<Setup, Result>(
+  ...middleware: Middleware<Setup, Result>[]
+): Middleware<Setup, Result> {
   return setupArgs => {
     const setup = middleware.reduce(
       (setup, middleware) => (middleware ? [...setup, middleware(setupArgs)] : setup),

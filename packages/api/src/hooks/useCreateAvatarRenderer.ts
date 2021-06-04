@@ -1,15 +1,18 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import useStyleOptions from './useStyleOptions';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function useCreateAvatarRenderer() {
+export default function useCreateAvatarRenderer(): (
+  activity: DirectLineActivity
+) => (() => Exclude<ReactNode, boolean | null | undefined>) | false {
   const [styleOptions] = useStyleOptions();
   const { avatarRenderer } = useWebChatAPIContext();
 
   return useMemo(
     () => ({ activity }) => {
-      const { from: { role } = {} } = activity;
+      const { from: { role } = {} }: { from?: { role?: string } } = activity;
 
       const result = avatarRenderer({
         activity,

@@ -57,7 +57,11 @@ const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAA
 // This is used for parsing Markdown for external links.
 const internalMarkdownIt = new MarkdownIt();
 
-export default function render(markdown, { markdownRespectCRLF }, { externalLinkAlt = '' } = {}) {
+export default function render(
+  markdown: string,
+  { markdownRespectCRLF }: { markdownRespectCRLF: boolean },
+  { externalLinkAlt = '' }: { externalLinkAlt?: string } = {}
+) {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
@@ -93,5 +97,8 @@ export default function render(markdown, { markdownRespectCRLF }, { externalLink
     })
     .render(markdown);
 
+  // The signature from "sanitize-html" module is not correct.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
 }

@@ -1,5 +1,5 @@
 import { Constants } from 'botframework-webchat-core';
-import DirectLineActivity from '../../types/DirectLineActivity';
+import DirectLineActivity from '../../types/external/DirectLineActivity';
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 const {

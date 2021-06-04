@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
-import DirectLineSuggestedAction from '../types/DirectLineSuggestedAction';
+import DirectLineSuggestedAction from '../types/external/DirectLineSuggestedAction';
 
 export default function useSuggestedActions(): [
   DirectLineSuggestedAction[],

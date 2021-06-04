@@ -1,8 +1,8 @@
 type Notification = {
-  alt?: string;
+  alt: string;
   data?: any;
   id: string;
-  level?: string;
+  level: string;
   message?: string;
   timestamp?: number;
 };

@@ -1,13 +1,17 @@
 import { isValidElement, useMemo } from 'react';
 
+import { ActivityComponentFactory } from '../../types/ActivityMiddleware';
+import { RenderAttachment } from '../../types/AttachmentMiddleware';
 import useRenderAttachment from '../useRenderAttachment';
 import useWebChatAPIContext from './useWebChatAPIContext';
 
-export default function useCreateActivityRendererInternal(renderAttachmentOverride) {
+export default function useCreateActivityRendererInternal(
+  renderAttachmentOverride?: RenderAttachment
+): ActivityComponentFactory {
   const { activityRenderer: createActivityRenderer } = useWebChatAPIContext();
   const defaultRenderAttachment = useRenderAttachment();
 
-  const renderAttachment = renderAttachmentOverride || defaultRenderAttachment;
+  const renderAttachment: RenderAttachment = renderAttachmentOverride || defaultRenderAttachment;
 
   return useMemo(
     () => (...createActivityRendererOptions) => {

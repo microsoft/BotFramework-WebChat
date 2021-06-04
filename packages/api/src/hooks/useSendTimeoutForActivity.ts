@@ -1,4 +1,4 @@
-import DirectLineActivity from '../types/DirectLineActivity';
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 
 let showDeprecationNotes = true;

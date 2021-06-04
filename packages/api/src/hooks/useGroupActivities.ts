@@ -1,4 +1,4 @@
-import DirectLineActivity from '../types/DirectLineActivity';
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useGroupActivities(): ({

@@ -1,4 +1,4 @@
-import { RendererMiddleware } from './RendererMiddleware';
+import { RendererCreator, RendererMiddleware } from './RendererMiddleware';
 import { StrictStyleOptions } from '../StyleOptions';
 
 /**
@@ -25,5 +25,7 @@ type ScrollToEndButtonProps = {
  * The middleware for rendering scroll to end button.
  */
 type ScrollToEndButtonMiddleware = RendererMiddleware<{}, ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
+
+export type ScrollToEndButtonCreator = RendererCreator<ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
 
 export default ScrollToEndButtonMiddleware;

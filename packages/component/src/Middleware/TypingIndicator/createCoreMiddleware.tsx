@@ -1,6 +1,4 @@
-/* eslint react/prop-types: "off"*/
-
-import { hooks } from 'botframework-webchat-api';
+import { hooks, TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -22,6 +20,7 @@ const DotIndicator = () => {
 };
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
-export default function createCoreMiddleware() {
+export default function createCoreMiddleware(): TypingIndicatorMiddleware[] {
+  /* eslint-disable-next-line react/prop-types */
   return [() => () => ({ visible }) => visible && <DotIndicator />];
 }

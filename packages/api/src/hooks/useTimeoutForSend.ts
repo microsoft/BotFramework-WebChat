@@ -1,4 +1,4 @@
-import DirectLineActivity from '../types/DirectLineActivity';
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import useStyleOptions from './useStyleOptions';
 
 export default function useTimeoutForSend(): [number | ((activity: DirectLineActivity) => number)] {

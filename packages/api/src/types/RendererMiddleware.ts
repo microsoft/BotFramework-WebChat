@@ -1,3 +1,5 @@
+// TODO: Rename to ComponentMiddleware.
+
 /**
  * Renders a UI component by returning a React component, or `false`, if nothing should be rendered.
  *

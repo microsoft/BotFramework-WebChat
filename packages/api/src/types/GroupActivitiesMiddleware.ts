@@ -1,15 +1,21 @@
 import DirectLineActivity from './external/DirectLineActivity';
+import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
-type GroupActivities = ({
-  activities
-}: {
-  activities: DirectLineActivity[];
-}) => {
-  sender: DirectLineActivity[][];
-  status: DirectLineActivity[][];
-};
+export type GroupActivities = CallFunction<
+  [{ activities: DirectLineActivity[] }],
+  {
+    sender: DirectLineActivity[][];
+    status: DirectLineActivity[][];
+  }
+>;
 
-type GroupActivitiesEnhancer = (next: GroupActivities) => GroupActivities;
-type GroupActivitiesMiddleware = () => GroupActivitiesEnhancer;
+type GroupActivitiesMiddleware = FunctionMiddleware<
+  [],
+  [{ activities: DirectLineActivity[] }],
+  {
+    sender: DirectLineActivity[][];
+    status: DirectLineActivity[][];
+  }
+>;
 
 export default GroupActivitiesMiddleware;

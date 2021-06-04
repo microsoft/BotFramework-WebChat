@@ -1,6 +1,8 @@
 import LocalizedStrings from '../types/LocalizedStrings';
 
-export default function mergeLocalizedStrings(...args: string[][]): { [language: string]: LocalizedStrings } {
+type LocalizedStringsMap = { [language: string]: LocalizedStrings };
+
+export default function mergeLocalizedStrings(...args: LocalizedStringsMap[]): LocalizedStringsMap {
   const merged = {};
   const languages = args.reduce((keys, arg) => [...keys, ...Object.keys(arg)], []);
 

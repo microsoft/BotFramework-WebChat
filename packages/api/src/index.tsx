@@ -1,9 +1,15 @@
+export * as hooks from './hooks';
+
 import ActivityMiddleware from './types/ActivityMiddleware';
-import AttachmentMiddleware from './types/AttachmentMiddleware';
+import ActivityStatusMiddleware from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from './types/AttachmentForScreenReaderMiddleware';
+import AttachmentMiddleware from './types/AttachmentMiddleware';
+import AvatarMiddleware from './types/AvatarMiddleware';
 import GroupActivitiesMiddleware from './types/GroupActivitiesMiddleware';
 import ScrollToEndButtonMiddleware from './types/ScrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import ToastMiddleware from './types/ToastMiddleware';
+import TypingIndicatorMiddleware from './types/TypingIndicatorMiddleware';
 
 declare const defaultStyleOptions: Required<StyleOptions>;
 
@@ -13,12 +19,16 @@ declare function normalizeStyleOptions(styleOptions: StyleOptions): StrictStyleO
 
 export type {
   ActivityMiddleware,
-  AttachmentMiddleware,
+  ActivityStatusMiddleware,
   AttachmentForScreenReaderMiddleware,
+  AttachmentMiddleware,
+  AvatarMiddleware,
   GroupActivitiesMiddleware,
   ScrollToEndButtonMiddleware,
   StrictStyleOptions,
-  StyleOptions
+  StyleOptions,
+  ToastMiddleware,
+  TypingIndicatorMiddleware
 };
 
 export { defaultStyleOptions, normalizeStyleOptions };

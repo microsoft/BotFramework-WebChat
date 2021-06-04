@@ -1,6 +1,82 @@
-import { createContext } from 'react';
+import React, { createContext } from 'react';
 
-const context = createContext<any>({
+import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
+import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
+import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
+import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
+import { Observable } from 'redux';
+import { PerformCardAction } from '../../types/CardActionMiddleware';
+import { RenderActivityStatusComponent } from '../../types/ActivityStatusMiddleware';
+import { RenderAttachment } from '../../types/AttachmentMiddleware';
+import { RenderToast } from '../../types/ToastMiddleware';
+import { ScrollToEndButtonCreator } from '../../types/ScrollToEndButtonMiddleware';
+import { StrictStyleOptions } from '../../StyleOptions';
+import DirectLineActivity from '../../types/external/DirectLineActivity';
+import DirectLineJSBotConnection from '../../types/external/DirectLineJSBotConnection';
+import LocalizedStrings from '../../types/LocalizedStrings';
+import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+
+type PrecompiledGlobalize = {
+  dateFormatter: ({ skeleton }: { skeleton: 'MMMMdhm' }) => string;
+  relativeTimeFormatter: (format: 'hour' | 'minute') => string;
+  unitFormatter:
+    | ((unit: 'byte', options: { form: 'long' }) => string)
+    | ((unit: 'kilobyte' | 'megabyte' | 'gigabyte', options: { form: 'short' }) => string);
+};
+
+type WebChatAPIContext = {
+  activityRenderer?: LegacyActivityRenderer;
+  activityStatusRenderer?: RenderActivityStatusComponent;
+  attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
+  attachmentRenderer?: RenderAttachment;
+  avatarRenderer?: AvatarComponentFactory;
+  clearSuggestedActions?: () => void;
+  dir?: string;
+  directLine?: DirectLineJSBotConnection;
+  disabled?: boolean;
+  dismissNotification?: (id: string) => void;
+  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  emitTypingIndicator?: () => void;
+  grammars?: any;
+  groupActivities?: GroupActivities;
+  internalErrorBoxClass?: React.Component | Function;
+  language?: string;
+  localizedGlobalizeState?: [PrecompiledGlobalize];
+  localizedStrings?: { [language: string]: LocalizedStrings };
+  markActivity?: ({ id: string }, name: string, value?: any) => void;
+  onCardAction?: PerformCardAction;
+  onTelemetry?: (event: TelemetryMeasurementEvent) => void;
+  postActivity?: (activity: DirectLineActivity) => Observable<string>;
+  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  scrollToEndButtonRenderer?: ScrollToEndButtonCreator;
+  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
+  sendEvent?: (name: string, value: any) => void;
+  sendFiles?: (files: File[]) => void;
+  sendFocusRef: any;
+  sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;
+  sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
+  sendPostBack?: (value?: any) => void;
+  sendTypingIndicator?: boolean;
+  setDictateInterims?: (interims: string[]) => void;
+  setDictateState?: (dictateState: number) => void;
+  setNotification?: (notification: Notification) => void;
+  setSendBox?: (value: string) => void;
+  setSendTimeout?: (timeout: number) => void;
+  startDictate?: () => void;
+  startSpeakingActivity?: () => void;
+  stopDictate?: () => void;
+  stopSpeakingActivity?: () => void;
+  styleOptions?: StrictStyleOptions;
+  submitSendBox?: (method?: string, { channelData }?: { channelData: any }) => void;
+  telemetryDimensionsRef?: React.Ref<any>;
+  toastRenderer?: RenderToast;
+  trackDimension?: (name: string, data: any) => void;
+  typingIndicatorRenderer?: any; // TODO
+  userID?: string;
+  username?: string;
+};
+
+const context = createContext<WebChatAPIContext>({
   sendFocusRef: null
 });
 

@@ -1,8 +1,11 @@
-/* eslint react/prop-types: "off"*/
+/* eslint react/prop-types: "off" */
+/* eslint react/require-default-props: "off" */
 
 import { Constants } from 'botframework-webchat-core';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
+import DirectLineActivity from '../types/external/DirectLineActivity';
+import SendState from '../types/SendState';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
@@ -20,6 +23,14 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
   const {
     channelData: { clientTimestamp = 0, state } = {},
     from: { role }
+  }: {
+    channelData: {
+      clientTimestamp?: number;
+      state?: SendState;
+    };
+    from: {
+      role: string;
+    };
   } = activity;
 
   const activitySent = state !== SENDING && state !== SEND_FAILED;
@@ -43,9 +54,18 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
   );
 };
 
-export default function useCreateActivityStatusRenderer() {
+export default function useCreateActivityStatusRenderer(): (renderOptions: {
+  activity: DirectLineActivity;
+  nextVisibleActivity: DirectLineActivity;
+}) => (props: { hideTimestamp?: boolean }) => ReactNode {
   return useMemo(
-    () => ({ activity, nextVisibleActivity }) => ({ hideTimestamp } = {}) => (
+    () => ({
+      activity,
+      nextVisibleActivity
+    }: {
+      activity: DirectLineActivity;
+      nextVisibleActivity: DirectLineActivity;
+    }) => ({ hideTimestamp }: { hideTimestamp?: boolean } = {}) => (
       <ActivityStatusContainer
         activity={activity}
         hideTimestamp={hideTimestamp}

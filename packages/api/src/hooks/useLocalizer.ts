@@ -21,7 +21,7 @@ export default function useLocalizer({ plural }: { plural?: keyof Plural } = {})
   const localizedStrings = useLocalizedStrings();
 
   return useCallback(
-    (id: string | Plural, ...args) => {
+    (id: string | Plural, ...args: [(number | string)?, ...string[]]) => {
       let stringId = id as string;
 
       if (plural) {

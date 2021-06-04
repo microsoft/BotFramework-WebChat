@@ -1,6 +1,8 @@
+import { ToastMiddleware } from 'botframework-webchat-api';
+
 import createToastMiddleware from '../../Toast/createToastMiddleware';
 
-function createCoreMiddleware() {
+function createCoreMiddleware(): ToastMiddleware[] {
   return [
     () => next => (...args) => {
       const [

@@ -1,6 +1,7 @@
+import { AvatarMiddleware } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
@@ -18,7 +19,13 @@ const ROOT_STYLE = {
   }
 };
 
-const DefaultAvatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+type DefaultAvatarProps = {
+  'aria-hidden'?: boolean;
+  className?: string;
+  fromUser: boolean;
+};
+
+const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -50,7 +57,7 @@ DefaultAvatar.propTypes = {
   fromUser: PropTypes.bool.isRequired
 };
 
-export default function createCoreAvatarMiddleware() {
+export default function createCoreAvatarMiddleware(): [AvatarMiddleware] {
   return [
     () => () => ({ fromUser, styleOptions }) => {
       const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
