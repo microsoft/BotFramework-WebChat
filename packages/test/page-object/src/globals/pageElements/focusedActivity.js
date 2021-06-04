@@ -15,7 +15,7 @@ function isSelfOrAncestor(parent, node) {
 export default function focusedActivity() {
   const activity = document.getElementById(transcript().getAttribute('aria-activedescendant'));
 
-  // Could be focusing on Adaptive Card or <input> inside the activity, we will consider it is focused.
+  // If focus is on the Adaptive Card or <input> inside the activity, it is considered as focused.
   if (activity && (document.activeElement === transcript() || isSelfOrAncestor(activity, document.activeElement))) {
     return activity;
   }
