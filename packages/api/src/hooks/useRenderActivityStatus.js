@@ -16,6 +16,7 @@ import useCreateActivityStatusRenderer from './useCreateActivityStatusRenderer';
 
 let showDeprecationNotes = true;
 
+/** @deprecated Please use `useCreateActivityStatusRenderer()` instead. */
 export default function useRenderActivityStatus({ activity, nextVisibleActivity }) {
   if (showDeprecationNotes) {
     console.warn(

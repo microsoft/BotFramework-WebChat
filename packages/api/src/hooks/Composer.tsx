@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
-import { ScrollToEndButtonMiddleware } from '../types/scrollToEndButtonMiddleware';
+import { ScrollToEndButtonMiddleware } from '../types/ScrollToEndButtonMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import DirectLineActivity from '../types/DirectLineActivity';
 import ErrorBoundary from './utils/ErrorBoundary';
@@ -11,6 +11,7 @@ import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import isObject from '../utils/isObject';
 import LocalizedStrings from '../types/LocalizedStrings';
 import normalizeLanguage from '../utils/normalizeLanguage';
+import OneOrMany from '../types/OneOrMany';
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import StyleOptions from '../StyleOptions';
@@ -175,7 +176,7 @@ type ComposerProps = {
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
-  scrollToEndButtonMiddleware: ScrollToEndButtonMiddleware | ScrollToEndButtonMiddleware[];
+  scrollToEndButtonMiddleware: OneOrMany<ScrollToEndButtonMiddleware>;
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
@@ -314,7 +315,7 @@ const Composer: FC<ComposerProps> = ({
   }, [patchedLocalizedStrings]);
 
   const trackDimension = useCallback(
-    (name, data) => {
+    (name: string, data: any) => {
       if (!name || typeof name !== 'string') {
         return console.warn('botframework-webchat: Telemetry dimension name must be a string.');
       }
@@ -482,7 +483,7 @@ const Composer: FC<ComposerProps> = ({
         ...singleToArray(scrollToEndButtonMiddleware),
         () => () => () => false
       )() as any,
-    [patchedStyleOptions, scrollToEndButtonMiddleware]
+    [scrollToEndButtonMiddleware]
   );
 
   /**

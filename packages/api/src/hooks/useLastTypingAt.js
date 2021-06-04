@@ -2,6 +2,7 @@ import { useSelector } from './internal/WebChatReduxContext';
 
 let showDeprecationNotes = true;
 
+/** @deprecated Please use "useActiveTyping" instead. */
 export default function useLastTypingAt() {
   if (showDeprecationNotes) {
     console.warn(

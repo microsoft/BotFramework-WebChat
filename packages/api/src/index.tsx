@@ -1,5 +1,5 @@
-import { RendererMiddleware } from './types/rendererMiddleware';
-import { ScrollToEndButtonMiddleware } from './types/scrollToEndButtonMiddleware';
+import { RendererMiddleware } from './types/RendererMiddleware';
+import { ScrollToEndButtonMiddleware } from './types/ScrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 
 declare const defaultStyleOptions: Required<StyleOptions>;

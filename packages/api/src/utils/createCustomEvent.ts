@@ -1,4 +1,9 @@
-export default function createCustomEvent(name: string, eventInitDict: any): Event {
+export default function createCustomEvent<T>(
+  name: string,
+  eventInitDict: T
+): {
+  type: string;
+} & T {
   let event: Event;
 
   if (typeof CustomEvent === 'function') {
@@ -13,5 +18,5 @@ export default function createCustomEvent(name: string, eventInitDict: any): Eve
     event[key] = value;
   });
 
-  return event;
+  return event as any;
 }
