@@ -4,7 +4,7 @@
  * @returns {(React.FC|false)} Returns a React component to render, or `false`, if nothing should be rendered.
  */
 export type RendererCreator<TCreateOptions, TReactProps> = (
-  options: TCreateOptions,
+  options?: TCreateOptions,
   ...extraArgs: any[]
 ) => React.FC<TReactProps> | false;
 
@@ -27,10 +27,10 @@ export type RendererEnhancer<TCreateOptions, TReactProps> = (
  * The signature of the middleware is:
  *
  * ```
- * (setup: SetupOptions) => (next: Enhancer) => (create: CreateOptions) => false | React.FC<ReactProps>
+ * (setup?: SetupOptions) => (next: Enhancer) => (create?: CreateOptions) => false | React.FC<ReactProps>
  * ```
  */
 export type RendererMiddleware<TSetupOptions, TCreateOptions, TReactProps> = (
-  options: TSetupOptions,
+  options?: TSetupOptions,
   ...extraArgs: any[]
 ) => RendererEnhancer<TCreateOptions, TReactProps>;

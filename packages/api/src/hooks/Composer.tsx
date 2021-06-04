@@ -469,7 +469,7 @@ const Composer: FC<ComposerProps> = ({
         { strict: true },
         ...singleToArray(scrollToEndButtonMiddleware),
         () => () => () => false
-      )({ styleOptions: patchedStyleOptions }) as any,
+      )() as any,
     [patchedStyleOptions, scrollToEndButtonMiddleware]
   );
 
