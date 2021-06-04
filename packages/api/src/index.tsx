@@ -1,5 +1,6 @@
 import ActivityMiddleware from './types/ActivityMiddleware';
 import AttachmentMiddleware from './types/AttachmentMiddleware';
+import AttachmentForScreenReaderMiddleware from './types/AttachmentForScreenReaderMiddleware';
 import GroupActivitiesMiddleware from './types/GroupActivitiesMiddleware';
 import ScrollToEndButtonMiddleware from './types/ScrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
@@ -13,6 +14,7 @@ declare function normalizeStyleOptions(styleOptions: StyleOptions): StrictStyleO
 export type {
   ActivityMiddleware,
   AttachmentMiddleware,
+  AttachmentForScreenReaderMiddleware,
   GroupActivitiesMiddleware,
   ScrollToEndButtonMiddleware,
   StrictStyleOptions,

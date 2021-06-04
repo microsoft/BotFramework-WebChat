@@ -1,3 +1,4 @@
+import { AttachmentForScreenReaderMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import AdaptiveCardAttachment from './AttachmentForScreenReader/AdaptiveCardAttachment';
@@ -14,12 +15,10 @@ const RICH_CARD_CONTENT_TYPES = [
   'application/vnd.microsoft.card.video'
 ];
 
-export default function createAdaptiveCardsAttachmentMiddleware() {
+export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentForScreenReaderMiddleware {
   return () => next => (...args) => {
     const [
       {
-        activity,
-        attachment,
         attachment: { content, contentType }
       }
     ] = args;
@@ -28,6 +27,6 @@ export default function createAdaptiveCardsAttachmentMiddleware() {
       ? () => <RichCardAttachment content={content} />
       : content && contentType === 'application/vnd.microsoft.card.adaptive'
       ? () => <AdaptiveCardAttachment content={content} />
-      : next({ activity, attachment });
+      : next(...args);
   };
 }
