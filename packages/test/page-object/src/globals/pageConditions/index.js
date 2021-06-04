@@ -6,11 +6,11 @@ import connectivityStatusShown from './connectivityStatusShown';
 import focusedActivityInView from './focusedActivityInView';
 import mediaBufferStabilized from './mediaBufferStabilized';
 import minNumActivitiesShown from './minNumActivitiesShown';
-import newMessageButtonHidden from './newMessageButtonHidden';
-import newMessageButtonShown from './newMessageButtonShown';
 import numActivitiesShown from './numActivitiesShown';
 import scrollStabilized from './scrollStabilized';
 import scrollToBottomCompleted from './scrollToBottomCompleted';
+import scrollToEndButtonHidden from './scrollToEndButtonHidden';
+import scrollToEndButtonShown from './scrollToEndButtonShown';
 import stabilized from './stabilized';
 import suggestedActionsShown from './suggestedActionsShown';
 import toastShown from './toastShown';
@@ -26,12 +26,12 @@ export {
   connectivityStatusShown,
   focusedActivityInView,
   mediaBufferStabilized,
-  newMessageButtonHidden,
   minNumActivitiesShown,
-  newMessageButtonShown,
   numActivitiesShown,
   scrollStabilized,
   scrollToBottomCompleted,
+  scrollToEndButtonHidden,
+  scrollToEndButtonShown,
   stabilized,
   suggestedActionsShown,
   toastShown,

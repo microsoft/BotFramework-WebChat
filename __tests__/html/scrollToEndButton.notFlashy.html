@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      run(async function () {
+        const {
+          Components: { BasicWebChat, Composer },
+          hooks: { useScrollTo }
+        } = WebChat;
+
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        let recordings;
+
+        const scrollToEndButtonMiddleware = () => next => (...args) => {
+          recordings && recordings.push(args[0]);
+
+          return next(...args);
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            scrollToEndButtonMiddleware,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // SETUP: With "unread" behavior, send "help", scroll to top, send "help" again. The scroll to end button should not flashy and it should scroll to bottom.
+        await pageObjects.sendMessageViaSendBox('help');
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.scrollToTop();
+
+        recordings = [];
+
+        await pageObjects.sendMessageViaSendBox('help');
+        await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.scrollToBottomCompleted();
+
+        // EXPECT: Make sure the button always appear on the screen and did not flash.
+        expect(recordings.length).toBeGreaterThan(0);
+        expect(recordings.every(({ atEnd, unread }) => atEnd && !unread)).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>

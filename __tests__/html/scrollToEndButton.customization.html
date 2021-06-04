@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .my-scroll-to-end-button {
+        appearance: none;
+        background-color: #e00;
+        border: 0;
+        border-radius: 5px;
+        color: White;
+        left: 10px;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        z-index: 1;
+      }
+
+      .my-scroll-to-end-button:active {
+        background-color: #060;
+      }
+
+      .my-scroll-to-end-button:hover {
+        background-color: #a00;
+      }
+
+      .my-scroll-to-end-button:disabled {
+        background-color: #ccc;
+        color: initial;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      run(async function () {
+        const paragraphs = [
+          'Aliqua non sint est tempor nisi voluptate amet ipsum. Mollit do velit do eu laboris proident minim dolore non est excepteur. Enim reprehenderit aliqua nostrud adipisicing veniam consequat sit veniam id. Nisi dolore laboris dolore duis Lorem officia proident nostrud. Esse dolor nisi ad nisi est sit magna minim duis laborum.',
+          'Ex eu consectetur ut Lorem ipsum velit. Do aute aliquip esse ea. Ea voluptate velit est reprehenderit ullamco voluptate quis nisi nisi dolor. Velit do exercitation cillum proident minim. Exercitation sint cillum aliquip in. Excepteur elit veniam consectetur ea ad incididunt.',
+          'Nisi ipsum in enim et. Reprehenderit dolore proident ad id. Lorem elit incididunt aliquip sit elit pariatur sit ea aliquip officia deserunt enim incididunt. Occaecat consectetur ullamco adipisicing pariatur. Consectetur id cupidatat nulla deserunt eiusmod commodo laborum laboris laborum.',
+          'Anim fugiat quis consectetur do. Do ipsum qui commodo commodo officia. Ex qui pariatur reprehenderit aliqua consequat eu veniam laborum est mollit fugiat. Esse nisi consectetur laborum tempor cillum officia officia qui labore ipsum adipisicing.',
+          'Dolor ea labore aute culpa veniam voluptate fugiat commodo sint do aliqua aute ea. In aute commodo ex labore sint quis. Et aliquip laboris excepteur quis aliqua sit do labore eiusmod.',
+          'Exercitation amet excepteur quis ipsum officia. Occaecat dolor velit reprehenderit ullamco cillum nostrud culpa qui. Reprehenderit id cupidatat nostrud occaecat. Tempor ea exercitation aliqua non consequat officia cillum sunt.'
+        ];
+
+        const directLine = testHelpers.createDirectLineWithTranscript(paragraphs.splice(0, 5));
+        const store = testHelpers.createStore();
+
+        function render(options) {
+          return WebChat.renderWebChat(
+            {
+              ...options,
+              directLine,
+              store
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        const MyScrollToEndButton = ({ atEnd, onClick }) => {
+          return (
+            <button className="my-scroll-to-end-button" disabled={atEnd} onClick={onClick} type="button">
+              {atEnd ? 'At bottom' : 'Not at bottom'}
+            </button>
+          );
+        };
+
+        render({
+          styleOptions: {
+            scrollToEndButtonBehavior: 'any'
+          },
+          scrollToEndButtonMiddleware: () => () => ({ atEnd }) => props => (
+            <MyScrollToEndButton atEnd={atEnd} {...props} />
+          )
+        });
+
+        await pageConditions.uiConnected();
+
+        await pageConditions.minNumActivitiesShown(5);
+        await pageConditions.scrollToBottomCompleted();
+
+        // EXPECT: We are at the bottom, the button should show "At bottom".
+        await pageConditions.became(
+          'Button show "At bottom"',
+          () => document.getElementsByClassName('my-scroll-to-end-button')[0].textContent === 'At bottom',
+          1000
+        );
+
+        // EXPECT: The button should show on upper left corner.
+        await host.snapshot();
+
+        // SETUP: Scroll to top, the button should know it is not at bottom.
+        await pageObjects.scrollToTop();
+
+        // EXPECT: We are at the top, the button should show "Not at bottom".
+        await pageConditions.became(
+          'Button show "Not at bottom"',
+          () => document.getElementsByClassName('my-scroll-to-end-button')[0].textContent === 'Not at bottom',
+          1000
+        );
+
+        // EXPECT: The button should show on upper left corner.
+        await host.snapshot();
+
+        // SETUP: Click the button, it should scroll to the bottom.
+        await host.click(document.getElementsByClassName('my-scroll-to-end-button')[0]);
+
+        // EXPECT: After clicking the button, it should call "onClick" and at the bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // EXPECT: We are at the bottom, the button should show "At bottom".
+        await pageConditions.became(
+          'Button show "At bottom"',
+          () => document.getElementsByClassName('my-scroll-to-end-button')[0].textContent === 'At bottom',
+          1000
+        );
+
+        // EXPECT: The button should show on upper left corner.
+        await host.snapshot();
+
+        // SETUP: Switch back to the default button with "any" behavior.
+        render({ styleOptions: { scrollToEndButtonBehavior: 'any' } });
+        await pageObjects.scrollToTop();
+
+        // EXPECT: The default button should show up.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -26,7 +26,7 @@
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(3);
 
-        // After clicking on new message button, it should focus back on the type focus sink.
+        // After sending the message, it should focus back on the type focus sink.
         expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
         await host.snapshot();

@@ -111,6 +111,7 @@
   "_TRANSCRIPT_ARIA_LABEL_ALT.comment": "This is for screen reader for the label that will be narrated when the transcript is focused.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "transcript",
   "_TRANSCRIPT_ARIA_ROLE_ALT.comment": "This is for screen reader for the aria-roledescription of the transcript container.",
+  "TRANSCRIPT_MORE_MESSAGES": "More messages",
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
   "TRANSCRIPT_TERMINATOR_TEXT": "End of transcript",
   "TYPING_INDICATOR_ALT": "Showing typing indicator",

@@ -78,7 +78,7 @@
         await pageConditions.minNumActivitiesShown(4);
         await pageConditions.scrollToBottomCompleted();
 
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
         await host.snapshot();
       });
     </script>

@@ -5,6 +5,7 @@ import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
   useAnimatingToEnd,
+  useAtEnd,
   useObserveScrollPosition,
   useScrollTo,
   useScrollToEnd,
@@ -26,7 +27,6 @@ import isZeroOrPositive from './Utils/isZeroOrPositive';
 import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScreenReaderText from './ScreenReaderText';
-import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import tabbableElements from './Utils/tabbableElements';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
@@ -47,6 +47,7 @@ const {
   useCreateActivityRenderer,
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
+  useCreateScrollToEndButtonRenderer,
   useDirection,
   useGroupActivities,
   useLocalizer,
@@ -447,6 +448,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [activityElementsRef, rootElementRef, scrollToBottomScrollTo]
   );
 
+  const scrollToEnd = useCallback(() => scrollToBottomScrollToEnd({ behavior: 'smooth' }), [scrollToBottomScrollToEnd]);
+
   const scrollRelative = useCallback(
     (direction, { displacement } = {}) => {
       const { current: rootElement } = rootElementRef;
@@ -477,7 +480,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // Since there could be multiple instances of <BasicTranscript> inside the <Composer>, when the developer calls `scrollXXX`, we need to call it on all instances.
   // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
   useRegisterScrollTo(scrollTo);
-  useRegisterScrollToEnd(scrollToBottomScrollToEnd);
+  useRegisterScrollToEnd(scrollToEnd);
   useRegisterScrollRelative(scrollRelative);
 
   const dispatchScrollPosition = useDispatchScrollPosition();
@@ -928,19 +931,20 @@ InternalScreenReaderTranscript.propTypes = {
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, onFocusFiller, terminatorRef }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
-  const [{ hideScrollToEndButton }] = useStyleOptions();
   const [animatingToEnd] = useAnimatingToEnd();
+  const [atEnd] = useAtEnd();
   const [sticky] = useSticky();
+  const [styleOptions] = useStyleOptions();
   const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1] || {}); // Activity ID of the last visible activity in the list.
   const localize = useLocalizer();
-  const scrollToEndButtonRef = useRef();
+  const scrollToEnd = useScrollToEnd();
 
   const lastReadActivityIdRef = useRef(lastVisibleActivityId);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
-  const allActivitiesRead = lastVisibleActivityId === lastReadActivityIdRef.current;
-
   const handleScrollToEndButtonClick = useCallback(() => {
+    scrollToEnd({ behavior: 'smooth' });
+
     // After the "New message" button is clicked, focus on the first unread activity.
     const index = activities.findIndex(({ id }) => id === lastReadActivityIdRef.current);
 
@@ -955,49 +959,29 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, o
     const { current } = terminatorRef;
 
     current && current.focus();
-  }, [activities, lastReadActivityIdRef, onFocusActivity, terminatorRef]);
+  }, [activities, lastReadActivityIdRef, onFocusActivity, scrollToEnd, terminatorRef]);
 
-  if (sticky) {
-    // If it is sticky, the user is at the bottom of the transcript, everything is read.
+  if (atEnd || sticky) {
+    // If it is sticky or at the end, the user is at the bottom of the transcript, everything is read.
     // So mark the activity ID as read.
     lastReadActivityIdRef.current = lastVisibleActivityId;
   }
 
-  // Finds where we should render the "New messages" button, in index. Returns -1 to hide the button.
-  const renderSeparatorAfterIndex = useMemo(() => {
-    // Don't show the button if:
-    // - All activities have been read
-    // - Currently animating towards bottom
-    //   - "New messages" button must not flash when: 1. Type "help", 2. Scroll to top, 3. Type "help" again, 4. Expect the "New messages" button not flashy
-    // - Hidden by style options
-    // - It is already at the bottom (sticky)
+  const ScrollToEndButton = useCreateScrollToEndButtonRenderer()({
+    atEnd: animatingToEnd || atEnd || sticky,
+    styleOptions,
 
-    // Any changes to this logic, verify:
-    // - "New messages" button should persist while programmatically scrolling to mid-point of the transcript:
-    //   1. Type "help"
-    //   2. Type "proactive", then immediately scroll to top
-    //      Expect: the "New messages" button should appear
-    //   3. Run hook "useScrollTo({ scrollTop: 500 })"
-    //      Expect: when the scroll is animating to 500px, the "New messages" button should kept on the screen
-    // - "New messages" button must not flashy:
-    //   1. Type "help"
-    //   2. Scroll to top
-    //      Expect: no "New messages" button is shown
-    //   3. Type "help" again
-    //      Expect: "New messages" button must not flash-appear
-
-    if (allActivitiesRead || animatingToEnd || hideScrollToEndButton || sticky) {
-      return -1;
-    }
-
-    return activities.findIndex(activity => getActivityUniqueId(activity) === lastReadActivityIdRef.current);
-  }, [activities, allActivitiesRead, animatingToEnd, hideScrollToEndButton, lastReadActivityIdRef, sticky]);
+    // Unread means:
+    // 1. Last read is not the last one in the transcript, and;
+    // 2. Last read is still in the transcript.
+    unread:
+      lastVisibleActivityId !== lastReadActivityIdRef.current &&
+      !!~activities.findIndex(activity => getActivityUniqueId(activity) === lastReadActivityIdRef.current)
+  });
 
   return (
     <React.Fragment>
-      {renderSeparatorAfterIndex !== -1 && (
-        <ScrollToEndButton onClick={handleScrollToEndButtonClick} ref={scrollToEndButtonRef} />
-      )}
+      {ScrollToEndButton && <ScrollToEndButton onClick={handleScrollToEndButtonClick} />}
       {!!React.Children.count(children) && (
         <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
       )}

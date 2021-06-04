@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const paragraphs = [
+          'Aliqua non sint est tempor nisi voluptate amet ipsum. Mollit do velit do eu laboris proident minim dolore non est excepteur. Enim reprehenderit aliqua nostrud adipisicing veniam consequat sit veniam id. Nisi dolore laboris dolore duis Lorem officia proident nostrud. Esse dolor nisi ad nisi est sit magna minim duis laborum.',
+          'Ex eu consectetur ut Lorem ipsum velit. Do aute aliquip esse ea. Ea voluptate velit est reprehenderit ullamco voluptate quis nisi nisi dolor. Velit do exercitation cillum proident minim. Exercitation sint cillum aliquip in. Excepteur elit veniam consectetur ea ad incididunt.',
+          'Nisi ipsum in enim et. Reprehenderit dolore proident ad id. Lorem elit incididunt aliquip sit elit pariatur sit ea aliquip officia deserunt enim incididunt. Occaecat consectetur ullamco adipisicing pariatur. Consectetur id cupidatat nulla deserunt eiusmod commodo laborum laboris laborum.',
+          'Anim fugiat quis consectetur do. Do ipsum qui commodo commodo officia. Ex qui pariatur reprehenderit aliqua consequat eu veniam laborum est mollit fugiat. Esse nisi consectetur laborum tempor cillum officia officia qui labore ipsum adipisicing.',
+          'Dolor ea labore aute culpa veniam voluptate fugiat commodo sint do aliqua aute ea. In aute commodo ex labore sint quis. Et aliquip laboris excepteur quis aliqua sit do labore eiusmod.',
+          'Exercitation amet excepteur quis ipsum officia. Occaecat dolor velit reprehenderit ullamco cillum nostrud culpa qui. Reprehenderit id cupidatat nostrud occaecat. Tempor ea exercitation aliqua non consequat officia cillum sunt.',
+          'Velit deserunt cillum sunt cupidatat fugiat culpa occaecat ipsum in esse. In commodo ut amet anim ea sint incididunt. Amet dolor laborum velit sunt velit laborum.',
+          'Sint voluptate laboris minim fugiat. Sint incididunt sit proident amet ut exercitation cillum id id culpa culpa. Mollit ad occaecat occaecat aliqua tempor anim elit commodo do. Sunt minim ut quis dolore pariatur non veniam duis Lorem labore aliquip ut.',
+          'Id occaecat tempor sit anim Lorem cupidatat officia voluptate. Laborum consectetur commodo velit aute ex. Dolore reprehenderit nostrud est ullamco aliqua irure enim. Eiusmod laborum adipisicing pariatur esse laboris consectetur nulla veniam minim dolor cupidatat excepteur. Ad tempor sint do mollit fugiat amet veniam culpa sunt cupidatat. Laboris ut labore commodo aliquip laboris laboris consequat voluptate.'
+        ];
+
+        const directLine = testHelpers.createDirectLineWithTranscript(paragraphs.splice(0, 5));
+        const store = testHelpers.createStore();
+
+        function render(options) {
+          return WebChat.renderWebChat(
+            {
+              ...options,
+              directLine,
+              store
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        render({ styleOptions: { scrollToEndButtonBehavior: 'any' } });
+
+        await pageConditions.uiConnected();
+
+        await pageConditions.minNumActivitiesShown(5);
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: With "any" behavior, scroll to top, click the button, it should focus on the "End of transcript" terminator.
+        await pageObjects.scrollToTop();
+        await pageConditions.scrollToEndButtonShown();
+
+        await pageObjects.clickScrollToEndButton();
+
+        // EXPECT: After clicking on the button, it should scroll to bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // EXPECT: After clicking on the button, it should hide the button.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // EXPECT: After clicking on the button, no unread activity, it should focus on the "End of transcript" terminator.
+        await pageConditions.became(
+          'Focus on terminator',
+          () => document.activeElement === pageElements.transcriptTerminator(),
+          1000
+        );
+
+        // SETUP: With "any" behavior, scroll to top, add 2 activities, click the button, it should focus on the first unread activity.
+        await pageObjects.scrollToTop();
+        await pageConditions.scrollToEndButtonShown();
+        directLine.activityDeferredObservable.next(paragraphs.shift());
+        directLine.activityDeferredObservable.next(paragraphs.shift());
+        await pageConditions.minNumActivitiesShown(7);
+
+        await pageObjects.clickScrollToEndButton();
+        await pageConditions.scrollStabilized();
+
+        // EXPECT: After clicking on the button, it should hide the button.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // EXPECT: After clicking on the button, 2 unread activities, it should focus on the first unread, which is the second last.
+        await pageConditions.became(
+          'Focus on first unread activity',
+          () => {
+            const activities = pageElements.activities();
+
+            return pageElements.focusedActivity() === activities[activities.length - 2];
+          },
+          1000
+        );
+
+        // CLEANUP: Click on the scroll to bottom button to mark all activities as read.
+        await pageObjects.scrollToBottom();
+        await pageConditions.scrollToEndButtonHidden();
+
+        // SETUP: With "unread" behavior, scroll to top, add 2 activities, click the button, it should focus on the first unread activity.
+        render();
+
+        await pageObjects.scrollToTop();
+        await pageConditions.scrollToEndButtonHidden();
+
+        directLine.activityDeferredObservable.next(paragraphs.shift());
+        directLine.activityDeferredObservable.next(paragraphs.shift());
+        await pageConditions.minNumActivitiesShown(9);
+
+        // EXPECT: Behavior is "unread", we are at top, 2 unread activities, the button should show up.
+        await pageConditions.scrollToEndButtonShown();
+
+        await pageObjects.clickScrollToEndButton();
+        await pageConditions.scrollStabilized();
+
+        // EXPECT: After clicking on the button, it should hide the button.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // EXPECT: After clicking on the button, 2 unread activities, it should focus on the first unread, which is the second last.
+        await pageConditions.became(
+          'Focus on first unread activity',
+          () => {
+            const activities = pageElements.activities();
+
+            return pageElements.focusedActivity() === activities[activities.length - 2];
+          },
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>

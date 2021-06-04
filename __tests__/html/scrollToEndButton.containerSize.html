@@ -130,11 +130,11 @@
         directLine.activityDeferredObservable.next(createActivity(1));
 
         // Wait for some time, to make sure the "New messages" button would never show up.
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await testHelpers.sleep(1000);
 
         // The "New messages" button should not show up because we still have spaces after adding 1 activity.
         // I.e. the user can see the new activity and they don't need to scroll.
-        await pageConditions.newMessageButtonHidden();
+        await pageConditions.scrollToEndButtonHidden();
 
         // As a control experiment, we need to show the scroll-to-bottom button.
         directLine.activityDeferredObservable.next(createActivity(5));
@@ -142,7 +142,7 @@
         await pageObjects.scrollToTop();
 
         // We need to wait for the scroll detector to know we are not sticky.
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await testHelpers.sleep(1000);
 
         // Add a new message, since we don't have enough space and is not sticky, the new message will be hidden from the view.
         // The "New messages" button will show up.
@@ -150,7 +150,7 @@
 
         // After scrolled to top, we add a new activity, the "New messages" button should show up.
         // This is because the user would need to scroll, to see the newly added message.
-        await pageConditions.newMessageButtonShown();
+        await pageConditions.scrollToEndButtonShown();
       });
     </script>
   </body>

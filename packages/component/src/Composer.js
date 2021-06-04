@@ -18,6 +18,7 @@ import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/Attac
 import createDefaultAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
+import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import Dictation from './Dictation';
@@ -236,6 +237,7 @@ const Composer = ({
   children,
   extraStyleSet,
   renderMarkdown,
+  scrollToEndButtonMiddleware,
   styleSet,
   suggestedActionsAccessKey,
   toastMiddleware,
@@ -287,6 +289,13 @@ const Composer = ({
     [typingIndicatorMiddleware]
   );
 
+  const defaultScrollToEndButtonMiddleware = useMemo(() => createDefaultScrollToEndButtonMiddleware(), []);
+
+  const patchedScrollToEndButtonMiddleware = useMemo(
+    () => [...singleToArray(scrollToEndButtonMiddleware), ...defaultScrollToEndButtonMiddleware],
+    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware]
+  );
+
   return (
     <React.Fragment>
       <APIComposer
@@ -300,6 +309,7 @@ const Composer = ({
         // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
         internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
         nonce={nonce}
+        scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
         toastMiddleware={patchedToastMiddleware}
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
         {...composerProps}
@@ -336,6 +346,7 @@ Composer.defaultProps = {
   children: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
+  scrollToEndButtonMiddleware: undefined,
   toastMiddleware: undefined,
   toastRenderer: undefined,
   typingIndicatorMiddleware: undefined,
@@ -359,6 +370,7 @@ Composer.propTypes = {
   children: PropTypes.any,
   nonce: PropTypes.string,
   renderMarkdown: PropTypes.func,
+  scrollToEndButtonMiddleware: PropTypes.func,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
