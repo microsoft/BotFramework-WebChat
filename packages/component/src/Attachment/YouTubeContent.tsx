@@ -1,15 +1,22 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-const YouTubeContent = ({ alt, autoPlay, embedID, loop }) => {
+type YouTubeContentProps = {
+  alt?: string;
+  autoPlay?: boolean;
+  embedID: string;
+  loop?: boolean;
+};
+
+const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop }) => {
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
 
   const search = new URLSearchParams({
-    autoplay: autoPlay ? 1 : 0,
-    loop: loop ? 1 : 0,
-    modestbranding: 1
+    autoplay: autoPlay ? '1' : '0',
+    loop: loop ? '1' : '0',
+    modestbranding: '1'
   }).toString();
 
   return (

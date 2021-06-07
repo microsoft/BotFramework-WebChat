@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import HTMLVideoContent from './HTMLVideoContent';
 import VimeoContent from './VimeoContent';
@@ -30,7 +30,15 @@ function parseURL(url) {
   return { hostname, pathname, search };
 }
 
-const VideoContent = ({ alt, autoPlay, loop, poster, src }) => {
+type VideoContentProps = {
+  alt?: string;
+  autoPlay?: boolean;
+  loop?: boolean;
+  poster?: string;
+  src: string;
+};
+
+const VideoContent: FC<VideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);

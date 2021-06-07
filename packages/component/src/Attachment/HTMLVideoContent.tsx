@@ -1,9 +1,17 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src }) => {
+type HTMLVideoContentProps = {
+  alt?: string;
+  autoPlay?: boolean;
+  loop?: boolean;
+  poster?: string;
+  src: string;
+};
+
+const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 
   return (

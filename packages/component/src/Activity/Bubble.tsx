@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useStyleSet from '../hooks/useStyleSet';
@@ -62,7 +62,15 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
   );
 }
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+type BubbleProps = {
+  'aria-hidden'?: boolean;
+  children?: ReactNode;
+  className?: string;
+  fromUser?: boolean;
+  nub?: boolean | 'hidden';
+};
+
+const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [

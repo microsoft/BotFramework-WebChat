@@ -1,18 +1,25 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-const VimeoContent = ({ alt, autoPlay, embedID, loop }) => {
+type VimeoContentProps = {
+  alt?: string;
+  autoPlay?: boolean;
+  embedID: string;
+  loop?: boolean;
+};
+
+const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) => {
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
 
   const search = new URLSearchParams({
-    autoplay: autoPlay ? 1 : 0,
-    badge: 0,
-    byline: 0,
-    loop: loop ? 1 : 0,
-    portrait: 0,
-    title: 0
+    autoplay: autoPlay ? '1' : '0',
+    badge: '0',
+    byline: '0',
+    loop: loop ? '1' : '0',
+    portrait: '0',
+    title: '0'
   }).toString();
 
   return (

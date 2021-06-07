@@ -1,9 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import SayAlt from './SayAlt';
 
 const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
@@ -22,7 +23,11 @@ const connectSpeakActivity = (...selectors) =>
     ...selectors
   );
 
-const Speak = ({ activity }) => {
+type SpeakProps = {
+  activity: DirectLineActivity;
+};
+
+const Speak: FC<SpeakProps> = ({ activity }) => {
   const [{ showSpokenText }] = useStyleOptions();
   const markActivityAsSpoken = useMarkActivityAsSpoken();
   const selectVoice = useVoiceSelector(activity);
@@ -40,14 +45,16 @@ const Speak = ({ activity }) => {
         speak || text,
         ...attachments
           .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
-          .map(({ content: { speak } = {} }) => speak)
+          .map(({ content: { speak } = {} }: { content: { speak?: string } }) => speak)
       ]
         .filter(line => line)
         .join('\r\n')
     );
   }, [activity]);
 
-  const { channelData: { speechSynthesisUtterance } = {} } = activity;
+  const {
+    channelData: { speechSynthesisUtterance } = {}
+  }: { channelData: { speechSynthesisUtterance?: SpeechSynthesisUtterance } } = activity;
 
   return (
     !!activity && (
@@ -57,7 +64,7 @@ const Speak = ({ activity }) => {
         ) : (
           <Say onEnd={markAsSpoken} onError={markAsSpoken} text={singleLine} voice={selectVoice} />
         )}
-        {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
+        {!!showSpokenText && <SayAlt speak={singleLine} />}
       </React.Fragment>
     )
   );

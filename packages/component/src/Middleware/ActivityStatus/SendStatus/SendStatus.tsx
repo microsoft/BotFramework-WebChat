@@ -1,9 +1,10 @@
 import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import connectToWebChat from '../../../connectToWebChat';
+import DirectLineActivity from '../../../types/external/DirectLineActivity';
 import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';
@@ -32,7 +33,12 @@ const connectSendStatus = (...selectors) =>
     ...selectors
   );
 
-const SendStatus = ({ activity, sendState }) => {
+type SendStatusProps = {
+  activity: DirectLineActivity;
+  sendState: 'sending' | 'send failed' | 'sent';
+};
+
+const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();
   const localize = useLocalizer();

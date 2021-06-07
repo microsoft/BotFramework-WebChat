@@ -1,15 +1,21 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './RelativeTime';
 import useStyleSet from '../../hooks/useStyleSet';
+import DirectLineActivity from 'botframework-webchat-api/lib/types/external/DirectLineActivity';
 
 const { useStyleOptions } = hooks;
 
-const Timestamp = ({ activity: { timestamp }, className }) => {
+type TimestampProps = {
+  activity: DirectLineActivity;
+  className?: string;
+};
+
+const Timestamp: FC<TimestampProps> = ({ activity: { timestamp }, className }) => {
   const [{ timestampFormat }] = useStyleOptions();
   const [{ timestamp: timestampStyleSet, sendStatus: sendStatusStyleSet }] = useStyleSet();
 

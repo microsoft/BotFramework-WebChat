@@ -7,8 +7,8 @@ const { useLocalizer, useStyleOptions } = hooks;
 
 export default function useRenderMarkdownAsHTML(): (
   markdown: String,
-  styleOptions: StrictStyleOptions,
-  options: { externalLinkAlt: string }
+  styleOptions?: StrictStyleOptions,
+  options?: { externalLinkAlt: string }
 ) => string {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
