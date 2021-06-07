@@ -1,4 +1,4 @@
-version: '3'
+version: '4'
 
 services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
@@ -12,13 +12,10 @@ services:
       - webchat
       - webchat2
     environment:
-      HUB_HOST: selenium-hub
-      HUB_PORT: '4444'
-      # SE_EVENT_BUS_HOST: selenium-hub
-      # SE_EVENT_BUS_PUBLISH_PORT: '4442
-      # SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
-      # SE_OPTS: '--log-level WARNING'
-      # SE_NODE_SESSION_TIMEOUT: '300'
+      SE_EVENT_BUS_HOST: selenium-hub
+      SE_EVENT_BUS_PUBLISH_PORT: '4442'
+      SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
+      SE_OPTS: '--log-level WARNING'
     shm_size: '2.5gb'
 
   selenium-hub:
