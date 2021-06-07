@@ -2,7 +2,7 @@ import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
@@ -31,11 +31,11 @@ const ROOT_STYLE = {
 };
 
 // TODO: [P3] We should consider exposing core/src/definitions and use it instead
-function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
+function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }: { channelData: { speak?: any } }) {
   return !!speak;
 }
 
-function useSendBoxSpeechInterimsVisible() {
+function useSendBoxSpeechInterimsVisible(): [boolean] {
   const [activities] = useActivities();
   const [dictateState] = useDictateState();
 
@@ -45,13 +45,19 @@ function useSendBoxSpeechInterimsVisible() {
   ];
 }
 
-const BasicSendBox = ({ className }) => {
+type BasicSendBoxProps = {
+  className?: string;
+};
+
+const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
   const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
-  const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
+  const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const styleToEmotionObject = useStyleToEmotionObject();
+
+  const { SpeechRecognition } = webSpeechPonyfill || {};
 
   const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
 

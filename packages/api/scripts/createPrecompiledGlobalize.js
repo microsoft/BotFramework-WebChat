@@ -6,6 +6,7 @@ const globalizeCompiler = require('globalize-compiler');
 const languages = Object.values(require('../src/localization/overrides.json')).map(
   ({ GLOBALIZE_LANGUAGE }) => GLOBALIZE_LANGUAGE
 );
+const { sync: mkdirpSync } = require('mkdirp');
 
 Globalize.load(require('cldr-data').entireSupplemental());
 
@@ -31,6 +32,8 @@ const formattersAndParsers = languages.reduce((formattersAndParsers, language) =
 
 const code = format(globalizeCompiler.compile(formattersAndParsers), { parser: 'babel' });
 const filename = join(__dirname, '../lib/external/PrecompiledGlobalize.js');
+
+mkdirpSync(dirname(filename));
 
 // globalize-compiler is emitting AMD code, pointing to "globalize-runtime" instead of "globalize/dist/globalize-runtime"
 const patchedCode = code.replace(/\"globalize-runtime\//g, '"globalize/dist/globalize-runtime/');

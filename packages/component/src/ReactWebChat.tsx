@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import BasicWebChat from './BasicWebChat';
-import Composer from './Composer';
+import Composer, { ComposerProps } from './Composer';
 
 // Please keep this file as simple as possible. This is for setting up the surface (a.k.a. <Composer>) and <BasicWebChat> only.
 
@@ -12,7 +12,12 @@ import Composer from './Composer';
 // - They can run hooks outside of activity/attachment middleware
 //   - They will put <Composer> as very top of their page, and allow buttons on their existing page to send message to bot
 
-const ReactWebChat = ({ className, role, ...composerProps }) => (
+type ReactWebChatProps = ComposerProps & {
+  className: string;
+  role: string;
+};
+
+const ReactWebChat: FC<ReactWebChatProps> = ({ className, role, ...composerProps }) => (
   <Composer {...composerProps}>
     <BasicWebChat className={className} role={role} />
   </Composer>

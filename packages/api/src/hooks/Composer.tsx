@@ -33,6 +33,11 @@ import {
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityMiddleware from '../types/ActivityMiddleware';
+import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
+import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
+import AttachmentMiddleware from '../types/AttachmentMiddleware';
+import AvatarMiddleware from '../types/AvatarMiddleware';
+import CardActionMiddleware from '../types/CardActionMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
@@ -54,7 +59,9 @@ import ScrollToEndButtonMiddleware from '../types/ScrollToEndButtonMiddleware';
 import singleToArray from './utils/singleToArray';
 import StyleOptions from '../StyleOptions';
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
+import ToastMiddleware from '../types/ToastMiddleware';
 import Tracker from './internal/Tracker';
+import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 
 import applyMiddleware, {
@@ -158,13 +165,13 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-type ComposerProps = {
+export type ComposerProps = {
   activityMiddleware?: OneOrMany<ActivityMiddleware>;
-  activityStatusMiddleware?: OneOrMany<Function>;
-  attachmentForScreenReaderMiddleware?: OneOrMany<Function>;
-  attachmentMiddleware?: OneOrMany<Function>;
-  avatarMiddleware?: OneOrMany<Function>;
-  cardActionMiddleware?: OneOrMany<Function>;
+  activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
+  attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
+  attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
+  avatarMiddleware?: OneOrMany<AvatarMiddleware>;
+  cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
   children?: ReactNode;
   dir?: string;
   directLine: DirectLineJSBotConnection;
@@ -182,8 +189,8 @@ type ComposerProps = {
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
-  toastMiddleware?: OneOrMany<Function>;
-  typingIndicatorMiddleware?: OneOrMany<Function>;
+  toastMiddleware?: OneOrMany<ToastMiddleware>;
+  typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
   userID?: string;
   username?: string;
 

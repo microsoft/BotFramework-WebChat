@@ -3,6 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
+import DirectLineAttachment from '../types/external/DirectLineAttachment';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 
 const { useSendFiles: useAPISendFiles, useStyleOptions, useTrackTiming } = hooks;
@@ -19,7 +20,7 @@ async function makeThumbnail(file, width, height, contentType, quality) {
   }
 }
 
-export default function useSendFiles() {
+export default function useSendFiles(): (files: File[]) => void {
   const sendFiles = useAPISendFiles();
   const [
     {
@@ -40,7 +41,7 @@ export default function useSendFiles() {
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
         //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-        const attachments = await Promise.all(
+        const attachments: DirectLineAttachment[] = await Promise.all(
           [].map.call(files, async file => {
             let thumbnail;
 

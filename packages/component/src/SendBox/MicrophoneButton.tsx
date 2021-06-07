@@ -6,7 +6,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
@@ -66,37 +66,43 @@ const connectMicrophoneButton = (...selectors) => {
       startDictate,
       stopDictate,
       stopSpeakingActivity,
-      webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
-    }) => ({
-      click: () => {
-        if (dictateState === DictateState.WILL_START) {
-          stopSpeakingActivity();
-        } else if (dictateState === DictateState.DICTATING) {
-          stopDictate();
-          setSendBox(dictateInterims.join(' '));
-        } else {
-          stopSpeakingActivity();
-          startDictate();
-        }
+      webSpeechPonyfill
+    }) => {
+      const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
-        primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
-      },
-      dictating: dictateState === DictateState.DICTATING,
-      disabled: disabled || (dictateState === DictateState.STARTING && dictateState === DictateState.STOPPING),
-      language
-    }),
+      return {
+        click: () => {
+          if (dictateState === DictateState.WILL_START) {
+            stopSpeakingActivity();
+          } else if (dictateState === DictateState.DICTATING) {
+            stopDictate();
+            setSendBox(dictateInterims.join(' '));
+          } else {
+            stopSpeakingActivity();
+            startDictate();
+          }
+
+          primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
+        },
+        dictating: dictateState === DictateState.DICTATING,
+        disabled: disabled || (dictateState === DictateState.STARTING && dictateState === DictateState.STOPPING),
+        language
+      };
+    },
     ...selectors
   );
 };
 
-const useMicrophoneButtonClick = () => {
+function useMicrophoneButtonClick(): () => void {
   const [, setSendBox] = useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
-  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
+  const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const startDictate = useStartDictate();
   const stopDictate = useStopDictate();
+
+  const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
   const [primeSpeechSynthesis] = useState(() =>
     memoize((speechSynthesis, SpeechSynthesisUtterance) => {
@@ -134,9 +140,9 @@ const useMicrophoneButtonClick = () => {
     startDictate,
     stopDictate
   ]);
-};
+}
 
-function useMicrophoneButtonDisabled() {
+function useMicrophoneButtonDisabled(): [boolean] {
   const [abortable] = useDictateAbortable();
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
@@ -149,7 +155,11 @@ function useMicrophoneButtonDisabled() {
   ];
 }
 
-const MicrophoneButton = ({ className }) => {
+type MicrophoneButtonProps = {
+  className?: string;
+};
+
+const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
   const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();

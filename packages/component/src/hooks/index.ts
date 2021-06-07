@@ -20,6 +20,7 @@ import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 export {
   useDictateAbortable,
   useFocus,
+  /** @deprecated Please use `useFocus('sendBox')` instead. */
   useFocusSendBox,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,

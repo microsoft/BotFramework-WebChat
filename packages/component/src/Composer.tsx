@@ -1,10 +1,10 @@
-import { Composer as APIComposer, hooks } from 'botframework-webchat-api';
+import { Composer as APIComposer, ComposerProps as APIComposerProps, hooks } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -25,9 +25,11 @@ import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
+import OneOrMany from './types/OneOrMany';
 import singleToArray from './Utils/singleToArray';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
+import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -40,7 +42,17 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-const ComposerCore = ({
+type ComposerCoreProps = {
+  children?: ReactNode;
+  extraStyleSet?: any;
+  nonce?: string;
+  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  styleSet?: any;
+  suggestedActionsAccessKey?: boolean | string;
+  webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
+};
+
+const ComposerCore: FC<ComposerCoreProps> = ({
   children,
   extraStyleSet,
   nonce,
@@ -227,7 +239,14 @@ ComposerCore.propTypes = {
   webSpeechPonyfillFactory: PropTypes.func
 };
 
-const Composer = ({
+type ComposerProps = APIComposerProps &
+  ComposerCoreProps & {
+    nonce?: string;
+    scrollToEndButtonMiddleware?: OneOrMany<Function>;
+    webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
+  };
+
+const Composer: FC<ComposerProps> = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -333,49 +352,13 @@ const Composer = ({
 Composer.defaultProps = {
   ...APIComposer.defaultProps,
   ...ComposerCore.defaultProps,
-  activityMiddleware: undefined,
-  activityRenderer: undefined,
-  activityStatusMiddleware: undefined,
-  activityStatusRenderer: undefined,
-  attachmentForScreenReaderMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  attachmentRenderer: undefined,
-  avatarMiddleware: undefined,
-  avatarRenderer: undefined,
-  cardActionMiddleware: undefined,
-  children: undefined,
-  nonce: undefined,
-  renderMarkdown: undefined,
-  scrollToEndButtonMiddleware: undefined,
-  toastMiddleware: undefined,
-  toastRenderer: undefined,
-  typingIndicatorMiddleware: undefined,
-  typingIndicatorRenderer: undefined,
-  webSpeechPonyfillFactory: undefined
+  children: undefined
 };
 
 Composer.propTypes = {
   ...APIComposer.propTypes,
   ...ComposerCore.propTypes,
-  activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  activityRenderer: PropTypes.func,
-  activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  activityStatusRenderer: PropTypes.func,
-  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentRenderer: PropTypes.func,
-  avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  avatarRenderer: PropTypes.func,
-  cardActionMiddleware: PropTypes.func,
-  children: PropTypes.any,
-  nonce: PropTypes.string,
-  renderMarkdown: PropTypes.func,
-  scrollToEndButtonMiddleware: PropTypes.func,
-  toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  toastRenderer: PropTypes.func,
-  typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  typingIndicatorRenderer: PropTypes.func,
-  webSpeechPonyfillFactory: PropTypes.func
+  children: PropTypes.any
 };
 
 export default Composer;

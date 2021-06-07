@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
+
+import DirectLineActivity from '../types/external/DirectLineActivity';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
-export default function useObserveTranscriptFocus(observer, deps) {
+export default function useObserveTranscriptFocus(
+  observer: (event: { activity: DirectLineActivity }) => void,
+  deps: any[]
+): void {
   if (typeof observer !== 'function') {
     observer = undefined;
     console.warn('botframework-webchat: First argument passed to "useObserveTranscriptFocus" must be a function.');

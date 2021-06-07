@@ -1,11 +1,15 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
-export default function useRenderMarkdownAsHTML() {
+export default function useRenderMarkdownAsHTML(): (
+  markdown: String,
+  styleOptions: StrictStyleOptions,
+  options: { externalLinkAlt: string }
+) => string {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
   const localize = useLocalizer();

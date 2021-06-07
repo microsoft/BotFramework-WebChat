@@ -1,7 +1,14 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef, useRef } from 'react';
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  forwardRef,
+  KeyboardEventHandler,
+  ReactEventHandler,
+  useRef
+} from 'react';
 
 // Differences between <textarea> and <AccessibleTextArea>:
 // - Disable behavior
@@ -21,8 +28,43 @@ import React, { forwardRef, useRef } from 'react';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleTextArea = forwardRef(
-  ({ disabled, onChange, onFocus, onKeyDown, onKeyPress, onSelect, tabIndex, ...props }, forwardedRef) => {
+type AccessibleTextAreaProps = {
+  className?: string;
+  disabled?: boolean;
+  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+  onFocus?: FocusEventHandler<HTMLTextAreaElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onKeyDownCapture?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onKeyPress?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onSelect?: ReactEventHandler<HTMLTextAreaElement>;
+  placeholder?: string;
+  readOnly?: boolean;
+  rows?: number;
+  tabIndex?: number;
+  value?: string;
+};
+
+const AccessibleTextArea = forwardRef<HTMLTextAreaElement, AccessibleTextAreaProps>(
+  (
+    {
+      className,
+      disabled,
+      inputMode,
+      onChange,
+      onFocus,
+      onKeyDown,
+      onKeyDownCapture,
+      onKeyPress,
+      onSelect,
+      placeholder,
+      readOnly,
+      rows,
+      tabIndex,
+      ...props
+    },
+    forwardedRef
+  ) => {
     const targetRef = useRef();
 
     const ref = forwardedRef || targetRef;
@@ -30,13 +72,18 @@ const AccessibleTextArea = forwardRef(
     return (
       <textarea
         aria-disabled={disabled || undefined}
+        className={className}
+        inputMode={inputMode}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
+        onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
         onKeyPress={disabled ? undefined : onKeyPress}
         onSelect={disabled ? undefined : onSelect}
-        readOnly={disabled}
+        placeholder={placeholder}
+        readOnly={readOnly || disabled}
         ref={ref}
+        rows={rows}
         tabIndex={disabled ? -1 : tabIndex}
         {...props}
       />
@@ -45,25 +92,39 @@ const AccessibleTextArea = forwardRef(
 );
 
 AccessibleTextArea.defaultProps = {
+  className: undefined,
   disabled: undefined,
+  inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
   onKeyDown: undefined,
+  onKeyDownCapture: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
-  tabIndex: undefined
+  placeholder: undefined,
+  readOnly: undefined,
+  rows: undefined,
+  tabIndex: undefined,
+  value: undefined
 };
 
 AccessibleTextArea.displayName = 'AccessibleTextArea';
 
 AccessibleTextArea.propTypes = {
+  className: PropTypes.string,
   disabled: PropTypes.bool,
+  inputMode: PropTypes.oneOf(['text', 'none', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']),
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyDownCapture: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
-  tabIndex: PropTypes.number
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool,
+  rows: PropTypes.number,
+  tabIndex: PropTypes.number,
+  value: PropTypes.string
 };
 
 export default AccessibleTextArea;

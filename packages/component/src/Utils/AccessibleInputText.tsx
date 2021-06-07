@@ -1,7 +1,14 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef, useRef } from 'react';
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  forwardRef,
+  KeyboardEventHandler,
+  ReactEventHandler,
+  useRef
+} from 'react';
 
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 
@@ -23,9 +30,28 @@ import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-const AccessibleInputText = forwardRef(
+type AccessibleInputTextProps = {
+  className?: string;
+  disabled?: boolean;
+  enterKeyHint?: string;
+  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+  onKeyDownCapture?: KeyboardEventHandler<HTMLInputElement>;
+  onKeyPress?: KeyboardEventHandler<HTMLInputElement>;
+  onSelect?: ReactEventHandler<HTMLInputElement>;
+  placeholder?: string;
+  readOnly?: boolean;
+  tabIndex?: number;
+  type: 'text';
+  value?: string;
+};
+
+const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProps>(
   (
     {
+      className,
       disabled,
       enterKeyHint,
       onChange,
@@ -34,7 +60,10 @@ const AccessibleInputText = forwardRef(
       onKeyDownCapture,
       onKeyPress,
       onSelect,
+      placeholder,
+      readOnly,
       tabIndex,
+      value,
       ...props
     },
     forwardedRef
@@ -48,15 +77,18 @@ const AccessibleInputText = forwardRef(
     return (
       <input
         aria-disabled={disabled || undefined}
+        className={className}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
         onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
         onKeyPress={disabled ? undefined : onKeyPress}
         onSelect={disabled ? undefined : onSelect}
-        readOnly={disabled}
+        placeholder={placeholder}
+        readOnly={readOnly || disabled}
         ref={ref}
         tabIndex={disabled ? -1 : tabIndex}
+        value={value}
         {...props}
         type="text"
       />
@@ -65,30 +97,41 @@ const AccessibleInputText = forwardRef(
 );
 
 AccessibleInputText.defaultProps = {
+  className: undefined,
   disabled: undefined,
   enterKeyHint: undefined,
+  inputMode: undefined,
   onChange: undefined,
   onFocus: undefined,
   onKeyDown: undefined,
   onKeyDownCapture: undefined,
   onKeyPress: undefined,
   onSelect: undefined,
-  tabIndex: undefined
+  placeholder: undefined,
+  readOnly: undefined,
+  tabIndex: undefined,
+  value: undefined
 };
 
 AccessibleInputText.displayName = 'AccessibleInputText';
 
 AccessibleInputText.propTypes = {
+  className: PropTypes.string,
   disabled: PropTypes.bool,
   enterKeyHint: PropTypes.string,
+  inputMode: PropTypes.oneOf(['text', 'none', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']),
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
   onKeyDownCapture: PropTypes.func,
   onKeyPress: PropTypes.func,
   onSelect: PropTypes.func,
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool,
   tabIndex: PropTypes.number,
-  type: PropTypes.oneOf(['text']).isRequired
+  // @ts-ignore PropTypes and TypeScript type do not well understood each other.
+  type: PropTypes.oneOf(['text']).isRequired,
+  value: PropTypes.string
 };
 
 export default AccessibleInputText;

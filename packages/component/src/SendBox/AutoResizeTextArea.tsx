@@ -1,12 +1,38 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef } from 'react';
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  forwardRef,
+  KeyboardEventHandler,
+  ReactEventHandler
+} from 'react';
 
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 import useStyleSet from '../hooks/useStyleSet';
 
-const AutoResizeTextArea = forwardRef(
+type AutoResizeTextAreaProps = {
+  'aria-label'?: string;
+  className?: string;
+  'data-id'?: string;
+  disabled?: boolean;
+  enterKeyHint?: string;
+  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+  onFocus?: FocusEventHandler<HTMLTextAreaElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onKeyDownCapture?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onKeyPress?: KeyboardEventHandler<HTMLTextAreaElement>;
+  onSelect?: ReactEventHandler<HTMLTextAreaElement>;
+  placeholder?: string;
+  readOnly?: boolean;
+  rows?: number;
+  textAreaClassName?: string;
+  value?: string;
+};
+
+const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaProps>(
   (
     {
       'aria-label': ariaLabel,
@@ -88,7 +114,7 @@ AutoResizeTextArea.propTypes = {
   'data-id': PropTypes.string,
   disabled: PropTypes.bool,
   enterKeyHint: PropTypes.string,
-  inputMode: PropTypes.string,
+  inputMode: PropTypes.oneOf(['text', 'none', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']),
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
@@ -97,7 +123,7 @@ AutoResizeTextArea.propTypes = {
   onSelect: PropTypes.func,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
-  rows: PropTypes.string,
+  rows: PropTypes.number,
   textAreaClassName: PropTypes.string,
   value: PropTypes.string
 };

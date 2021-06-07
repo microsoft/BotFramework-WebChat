@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 
 import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
@@ -67,7 +67,7 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-function useTextBoxSubmit() {
+function useTextBoxSubmit(): (setFocus?: boolean | 'sendBox') => void {
   const [sendBoxValue] = useSendBoxValue();
   const focus = useFocus();
   const scrollToEnd = useScrollToEnd();
@@ -98,7 +98,13 @@ function useTextBoxSubmit() {
   );
 }
 
-function useTextBoxValue() {
+function useTextBoxValue(): [
+  string,
+  (
+    textBoxValue: string,
+    options: { selectionEnd: number; selectionStart: number }
+  ) => { selectionEnd: number; selectionStart: number; value: string }
+] {
   const [value, setValue] = useSendBoxValue();
   const replaceEmoticon = useReplaceEmoticon();
   const stopDictate = useStopDictate();
@@ -147,10 +153,14 @@ const TextBox = ({ className }) => {
   const [{ sendBoxTextWrap }] = useStyleOptions();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
-  const inputElementRef = useRef();
+  const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
   const placeCheckpointOnChangeRef = useRef(false);
-  const prevInputStateRef = useRef();
+  const prevInputStateRef: MutableRefObject<{
+    selectionEnd: number;
+    selectionStart: number;
+    value: string;
+  }> = useRef();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const scrollDown = useScrollDown();
   const scrollUp = useScrollUp();
@@ -409,7 +419,7 @@ const TextBox = ({ className }) => {
           placeholder={typeYourMessageString}
           readOnly={disabled}
           ref={inputElementRef}
-          rows="1"
+          rows={1}
           textAreaClassName="webchat__send-box-text-box__html-text-area"
           value={textBoxValue}
         />

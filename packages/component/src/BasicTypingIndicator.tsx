@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
-function useTypingIndicatorVisible() {
+function useTypingIndicatorVisible(): [boolean] {
   const [activeTyping] = useActiveTyping();
 
   return [!!Object.values(activeTyping).filter(({ role }) => role !== 'user').length];

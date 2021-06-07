@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 
+import Typing from './Typing';
+
 type TypingIndicatorProps = {
+  activeTyping: { [id: string]: Typing };
+  typing: { [id: string]: Typing };
   visible: boolean;
 };
 

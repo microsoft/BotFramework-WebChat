@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
+
+import ScrollPosition from '../types/ScrollPosition';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
-export default function useObserveScrollPosition(observer, deps) {
+export default function useObserveScrollPosition(
+  observer: (scrollPosition: ScrollPosition) => void,
+  deps: any[]
+): void {
   if (typeof observer !== 'function') {
     observer = undefined;
     console.warn('botframework-webchat: First argument passed to "useObserveScrollPosition" must be a function.');
