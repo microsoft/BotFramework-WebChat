@@ -4,7 +4,7 @@ import DirectLineActivity from './external/DirectLineActivity';
 import SendState from './SendState';
 
 // TODO: Migrate this legacy middleware signature.
-type RenderActivityStatusComponentOptions = {
+type RenderActivityStatusOptions = {
   activity: DirectLineActivity;
   hideTimestamp: boolean;
   sendState: SendState;
@@ -18,9 +18,9 @@ type RenderActivityStatusComponentOptions = {
   sameTimestampGroup: boolean;
 };
 
-export type RenderActivityStatusComponent = (options: RenderActivityStatusComponentOptions) => ReactNode;
+export type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactNode;
 
-type ActivityStatusEnhancer = (next: RenderActivityStatusComponent) => RenderActivityStatusComponent;
+type ActivityStatusEnhancer = (next: RenderActivityStatus) => RenderActivityStatus;
 type ActivityStatusMiddleware = () => ActivityStatusEnhancer;
 
 export default ActivityStatusMiddleware;

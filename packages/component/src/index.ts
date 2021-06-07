@@ -37,7 +37,7 @@ import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 declare module 'botframework-webchat-api' {
   export function concatMiddleware(): any;
-  export const hooks: any;
+  // export const hooks: any;
   export function Localize(): any;
   export function localize(): any;
 }

@@ -1,10 +1,11 @@
 /* eslint-disable complexity */
+import { ActivityMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
-export default function createCoreMiddleware() {
+export default function createCoreMiddleware(): ActivityMiddleware[] {
   return [
     () => next => (...args) => {
       const [{ activity }] = args;

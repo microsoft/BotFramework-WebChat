@@ -1,3 +1,4 @@
+import { AttachmentMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import AudioAttachment from '../../Attachment/AudioAttachment';
@@ -7,7 +8,7 @@ import TextAttachment from '../../Attachment/TextAttachment';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
-export default function createCoreMiddleware() {
+export default function createCoreMiddleware(): AttachmentMiddleware[] {
   return [
     // This is not returning a React component, but a render function.
     /* eslint-disable-next-line react/display-name */
@@ -15,9 +16,9 @@ export default function createCoreMiddleware() {
       const [
         {
           activity = {},
-          activity: { from: { role } = {} } = {},
+          activity: { from: { role = undefined } = {} } = {},
           attachment,
-          attachment: { contentType, contentUrl, thumbnailUrl } = {}
+          attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
         }
       ] = args;
 
@@ -26,15 +27,15 @@ export default function createCoreMiddleware() {
       return (isText ? !attachment.content : role === 'user' && !thumbnailUrl) ? (
         <FileAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
-        <AudioAttachment activity={activity} attachment={attachment} />
+        <AudioAttachment attachment={attachment} />
       ) : /^image\//u.test(contentType) ? (
-        <ImageAttachment activity={activity} attachment={attachment} />
+        <ImageAttachment attachment={attachment} />
       ) : /^video\//u.test(contentType) ? (
-        <VideoAttachment activity={activity} attachment={attachment} />
+        <VideoAttachment attachment={attachment} />
       ) : contentUrl || contentType === 'application/octet-stream' ? (
         <FileAttachment activity={activity} attachment={attachment} />
       ) : isText ? (
-        <TextAttachment activity={activity} attachment={attachment} />
+        <TextAttachment attachment={attachment} />
       ) : (
         next(...args)
       );

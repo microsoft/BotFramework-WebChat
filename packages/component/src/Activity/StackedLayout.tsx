@@ -1,9 +1,9 @@
 /* eslint complexity: ["error", 30] */
 
-import { hooks } from 'botframework-webchat-api';
+import { AvatarComponentFactory, hooks, RenderActivityStatus, RenderAttachment } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { FC } from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -14,6 +14,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 import useUniqueId from '../hooks/internal/useUniqueId';
+import DirectLineActivity from '../types/external/DirectLineActivity';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
@@ -73,7 +74,7 @@ const connectStackedLayout = (...selectors) =>
           options: { botAvatarInitials, userAvatarInitials }
         }
       },
-      { activity: { from: { role } = {} } = {} }
+      { activity: { from: { role = undefined } = {} } = {} }
     ) => ({
       avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
       language,
@@ -85,7 +86,16 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-const StackedLayout = ({
+type StackedLayoutProps = {
+  activity: DirectLineActivity;
+  hideTimestamp?: boolean;
+  renderActivityStatus?: false | RenderActivityStatus;
+  renderAttachment?: RenderAttachment;
+  renderAvatar?: AvatarComponentFactory;
+  showCallout?: boolean;
+};
+
+const StackedLayout: FC<StackedLayoutProps> = ({
   activity,
   hideTimestamp,
   renderActivityStatus,
@@ -108,6 +118,12 @@ const StackedLayout = ({
     from: { role } = {},
     text,
     textFormat
+  }: {
+    attachments?: [];
+    channelData?: { messageBack?: { displayText?: string } };
+    from?: { role?: 'bot' | 'user' };
+    text?: string;
+    textFormat?: string;
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
@@ -168,7 +184,7 @@ const StackedLayout = ({
               <Bubble
                 className="webchat__stacked-layout__message"
                 fromUser={fromUser}
-                nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
+                nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
               >
                 {renderAttachment({
                   activity,
@@ -197,7 +213,7 @@ const StackedLayout = ({
                 fromUser={fromUser}
                 /* eslint-disable-next-line react/no-array-index-key */
                 key={index}
-                nub={(hasAvatar || hasNub) && 'hidden'}
+                nub={hasAvatar || hasNub ? 'hidden' : false}
               >
                 {renderAttachment({ activity, attachment })}
               </Bubble>

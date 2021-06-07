@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
-import { RenderAttachment } from './AttachmentMiddleware';
 
+import { AvatarComponentFactory } from './AvatarMiddleware';
+import { RenderActivityStatus } from './ActivityStatusMiddleware';
+import { RenderAttachment } from './AttachmentMiddleware';
 import DirectLineActivity from './external/DirectLineActivity';
 
 type ActivityProps = {
   hideTimestamp: boolean;
-  renderActivityStatus: Function;
-  renderAvatar: Function;
+  renderActivityStatus: RenderActivityStatus;
+  renderAvatar: AvatarComponentFactory;
   showCallout: boolean;
 };
 
