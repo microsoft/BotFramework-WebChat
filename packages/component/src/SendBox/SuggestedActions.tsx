@@ -4,7 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -15,6 +15,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
+import DirectLineCardAction from 'botframework-webchat-api/lib/types/external/DirectLineCardAction';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -206,7 +207,12 @@ SuggestedActionStackedContainer.propTypes = {
   screenReaderText: PropTypes.string.isRequired
 };
 
-const SuggestedActions = ({ className, suggestedActions = [] }) => {
+type SuggestedActionsProps = {
+  className?: string;
+  suggestedActions?: DirectLineCardAction;
+};
+
+const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [accessKey] = useSuggestedActionsAccessKey();
   const localize = useLocalizer();
@@ -223,7 +229,7 @@ const SuggestedActions = ({ className, suggestedActions = [] }) => {
 
   const children = suggestedActions.map(({ displayText, image, imageAltText, text, title, type, value }, index) => (
     <SuggestedAction
-      ariaHidden={true}
+      aria-hidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
       className="webchat__suggested-actions__button"
       displayText={displayText}

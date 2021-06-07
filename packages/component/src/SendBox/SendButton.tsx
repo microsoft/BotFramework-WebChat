@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
@@ -21,7 +21,11 @@ const connectSendButton = (...selectors) =>
     ...selectors
   );
 
-const SendButton = ({ className }) => {
+type SendButtonProps = {
+  className?: string;
+};
+
+const SendButton: FC<SendButtonProps> = ({ className }) => {
   const [disabled] = useDisabled();
   const focus = useFocus();
   const localize = useLocalizer();
