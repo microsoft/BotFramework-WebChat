@@ -55,7 +55,8 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
 import OneOrMany from '../types/OneOrMany';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
-import ScrollToEndButtonMiddleware from '../types/ScrollToEndButtonMiddleware';
+import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
+import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
 import singleToArray from './utils/singleToArray';
 import StyleOptions from '../StyleOptions';
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
@@ -317,7 +318,7 @@ const Composer: FC<ComposerProps> = ({
     [locale, overrideLocalizedStrings]
   );
 
-  const localizedGlobalize = useMemo(() => {
+  const localizedGlobalize = useMemo<PrecompiledGlobalizeType>(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
 
     return GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en');
@@ -484,7 +485,7 @@ const Composer: FC<ComposerProps> = ({
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
-  const scrollToEndButtonRenderer: ScrollToEndButtonMiddleware = useMemo(
+  const scrollToEndButtonRenderer: ScrollToEndButtonComponentFactory = useMemo(
     () =>
       applyMiddlewareForRenderer(
         'scroll to end button',
@@ -580,7 +581,7 @@ const Composer: FC<ComposerProps> = ({
 };
 
 // We will create a Redux store if it was not passed in
-const ComposeWithStore: FC<ComposerProps & { store: any }> = ({
+const ComposeWithStore: FC<ComposerProps & { store?: any }> = ({
   internalRenderErrorBox,
   onTelemetry,
   store,

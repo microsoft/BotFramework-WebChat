@@ -1,4 +1,10 @@
-import { Composer as APIComposer, ComposerProps as APIComposerProps, hooks } from 'botframework-webchat-api';
+import {
+  Composer as APIComposer,
+  ComposerProps as APIComposerProps,
+  hooks,
+  WebSpeechPonyfillFactory
+} from 'botframework-webchat-api';
+
 import { Composer as SayComposer } from 'react-say';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
@@ -29,7 +35,6 @@ import OneOrMany from './types/OneOrMany';
 import singleToArray from './Utils/singleToArray';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
-import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -362,3 +367,5 @@ Composer.propTypes = {
 };
 
 export default Composer;
+
+export type { ComposerProps };

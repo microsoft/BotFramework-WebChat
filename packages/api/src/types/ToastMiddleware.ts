@@ -6,9 +6,11 @@ type ToastProps = {
   notification: Notification;
 };
 
-export type RenderToast = (props: ToastProps) => ReactNode;
+type RenderToast = (props: ToastProps) => ReactNode;
 
 type ToastEnhancer = (next: RenderToast) => RenderToast;
 type ToastMiddleware = () => ToastEnhancer;
 
 export default ToastMiddleware;
+
+export type { RenderToast };

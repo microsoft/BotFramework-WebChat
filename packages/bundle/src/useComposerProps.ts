@@ -1,4 +1,4 @@
-import { concatMiddleware } from 'botframework-webchat-component';
+import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
 import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
@@ -12,15 +12,25 @@ export default function useComposerProps({
   renderMarkdown,
   styleOptions,
   styleSet
-}) {
+}: {
+  attachmentForScreenReaderMiddleware: AttachmentForScreenReaderMiddleware[];
+  attachmentMiddleware: AttachmentMiddleware[];
+  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  styleOptions: any;
+  styleSet: any;
+}): {
+  attachmentForScreenReaderMiddleware: AttachmentForScreenReaderMiddleware[];
+  attachmentMiddleware: AttachmentMiddleware[];
+  renderMarkdown: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  extraStyleSet: any;
+} {
   const patchedAttachmentMiddleware = useMemo(
-    () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
+    () => [...attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()],
     [attachmentMiddleware]
   );
 
   const patchedAttachmentForScreenReaderMiddleware = useMemo(
-    () =>
-      concatMiddleware(attachmentForScreenReaderMiddleware, createAdaptiveCardsAttachmentForScreenReaderMiddleware()),
+    () => [...attachmentForScreenReaderMiddleware, createAdaptiveCardsAttachmentForScreenReaderMiddleware()],
     [attachmentForScreenReaderMiddleware]
   );
 
@@ -31,13 +41,13 @@ export default function useComposerProps({
   ]);
 
   const patchedRenderMarkdown = useMemo(
-    () => (typeof renderMarkdown === 'undefined' ? (...args) => defaultRenderMarkdown(...args) : renderMarkdown),
+    () => (typeof renderMarkdown === 'undefined' ? defaultRenderMarkdown : renderMarkdown),
     [renderMarkdown]
   );
 
   return {
-    attachmentMiddleware: patchedAttachmentMiddleware,
     attachmentForScreenReaderMiddleware: patchedAttachmentForScreenReaderMiddleware,
+    attachmentMiddleware: patchedAttachmentMiddleware,
     extraStyleSet,
     renderMarkdown: patchedRenderMarkdown
   };

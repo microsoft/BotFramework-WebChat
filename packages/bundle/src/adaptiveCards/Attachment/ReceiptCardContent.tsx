@@ -4,6 +4,7 @@ import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
 
+import { StrictFullBundleStyleOptions } from '../../FullBundleStyleOptions';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -23,7 +24,9 @@ type ReceiptCardContentProps = {
 const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
-  const [styleOptions] = useStyleOptions();
+
+  // TODO: Create another useStyleOptions that natively export the correct type.
+  const [styleOptions] = useStyleOptions() as [StrictFullBundleStyleOptions];
   const localize = useLocalizer();
 
   const taxText = localize('RECEIPT_CARD_TAX');

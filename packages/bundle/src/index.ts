@@ -56,8 +56,7 @@ const patchedHooks = {
   useAdaptiveCardsPackage
 };
 
-const Components = {
-  ...MinimalComponents,
+const AdditionalComponents = {
   AdaptiveCardContent,
   AnimationCardContent,
   AudioCardContent,
@@ -68,6 +67,11 @@ const Components = {
   SignInCardContent,
   ThumbnailCardContent,
   VideoCardContent
+};
+
+const Components: typeof MinimalComponents & typeof AdditionalComponents = {
+  ...MinimalComponents,
+  ...AdditionalComponents
 };
 
 export default ReactWebChat;

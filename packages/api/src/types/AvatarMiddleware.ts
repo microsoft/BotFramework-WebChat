@@ -2,7 +2,7 @@ import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 import DirectLineActivity from './external/DirectLineActivity';
 
-export type AvatarComponentFactoryArguments = [
+type AvatarComponentFactoryArguments = [
   {
     activity: DirectLineActivity;
     fromUser: boolean;
@@ -10,8 +10,10 @@ export type AvatarComponentFactoryArguments = [
   }
 ];
 
-export type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, {}>;
+type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, {}>;
 
 type AvatarMiddleware = ComponentMiddleware<[], AvatarComponentFactoryArguments, {}>;
 
 export default AvatarMiddleware;
+
+export type { AvatarComponentFactory };

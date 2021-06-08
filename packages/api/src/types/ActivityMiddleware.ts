@@ -1,13 +1,12 @@
 import { ReactNode } from 'react';
 
 import { AvatarComponentFactory } from './AvatarMiddleware';
-import { RenderActivityStatus } from './ActivityStatusMiddleware';
 import { RenderAttachment } from './AttachmentMiddleware';
 import DirectLineActivity from './external/DirectLineActivity';
 
 type ActivityProps = {
   hideTimestamp: boolean;
-  renderActivityStatus: RenderActivityStatus;
+  renderActivityStatus: ({ hideTimestamp: boolean }) => ReactNode;
   renderAvatar: AvatarComponentFactory;
   showCallout: boolean;
 };
@@ -36,4 +35,4 @@ type ActivityMiddleware = () => ActivityEnhancer;
 
 export default ActivityMiddleware;
 
-export type { ActivityComponentFactory, ActivityProps, ActivityComponentFactoryOptions, LegacyActivityRenderer };
+export type { ActivityComponentFactory, LegacyActivityRenderer };

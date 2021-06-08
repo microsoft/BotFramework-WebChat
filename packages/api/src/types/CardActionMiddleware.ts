@@ -1,7 +1,7 @@
 import DirectLineCardAction from './external/DirectLineCardAction';
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
-export type PerformCardAction = CallFunction<
+type PerformCardAction = CallFunction<
   [
     {
       cardAction: DirectLineCardAction;
@@ -25,3 +25,5 @@ type CardActionMiddleware = FunctionMiddleware<
 >;
 
 export default CardActionMiddleware;
+
+export { PerformCardAction };

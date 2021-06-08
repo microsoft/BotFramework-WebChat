@@ -8,9 +8,11 @@ type AttachmentProps = {
   attachment: DirectLineAttachment;
 };
 
-export type RenderAttachment = (props?: AttachmentProps) => ReactNode;
+type RenderAttachment = (props?: AttachmentProps) => ReactNode;
 
 type AttachmentEnhancer = (next: RenderAttachment) => RenderAttachment;
 type AttachmentMiddleware = () => AttachmentEnhancer;
 
 export default AttachmentMiddleware;
+
+export type { RenderAttachment };

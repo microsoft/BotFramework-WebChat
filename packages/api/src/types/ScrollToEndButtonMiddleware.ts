@@ -1,5 +1,5 @@
-import { RendererCreator, RendererMiddleware } from './RendererMiddleware';
 import { StrictStyleOptions } from '../StyleOptions';
+import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 
 /**
  * @type {object}
@@ -7,11 +7,13 @@ import { StrictStyleOptions } from '../StyleOptions';
  * @property {object} styleOptions - Normalized style options.
  * @property {boolean} unread - `true`, if there are unread messages in the transcripts, otherwise, `false`.
  */
-type ScrollToEndButtonCreateOptions = {
-  atEnd: boolean;
-  styleOptions: StrictStyleOptions;
-  unread: boolean;
-};
+type ScrollToEndButtonComponentArguments = [
+  {
+    atEnd: boolean;
+    styleOptions: StrictStyleOptions;
+    unread: boolean;
+  }
+];
 
 /**
  * @type {object}
@@ -24,8 +26,9 @@ type ScrollToEndButtonProps = {
 /**
  * The middleware for rendering scroll to end button.
  */
-type ScrollToEndButtonMiddleware = RendererMiddleware<{}, ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
-
-export type ScrollToEndButtonCreator = RendererCreator<ScrollToEndButtonCreateOptions, ScrollToEndButtonProps>;
+type ScrollToEndButtonMiddleware = ComponentMiddleware<[], ScrollToEndButtonComponentArguments, ScrollToEndButtonProps>;
+type ScrollToEndButtonComponentFactory = ComponentFactory<ScrollToEndButtonComponentArguments, ScrollToEndButtonProps>;
 
 export default ScrollToEndButtonMiddleware;
+
+export { ScrollToEndButtonComponentFactory };

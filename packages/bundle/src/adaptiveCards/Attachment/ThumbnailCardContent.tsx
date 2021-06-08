@@ -7,6 +7,7 @@ import React, { FC, useMemo } from 'react';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import { StrictFullBundleStyleOptions } from '../../FullBundleStyleOptions';
 
 const { useDirection, useStyleOptions } = hooks;
 
@@ -19,7 +20,10 @@ type ThumbnailCardContentProps = {
 const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
-  const [styleOptions] = useStyleOptions();
+
+  // TODO: Create another useStyleOptions that natively export the correct type.
+  const [styleOptions] = useStyleOptions() as [StrictFullBundleStyleOptions];
+
   const builtCard = useMemo(() => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);

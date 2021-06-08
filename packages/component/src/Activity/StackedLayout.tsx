@@ -1,9 +1,9 @@
 /* eslint complexity: ["error", 30] */
 
-import { AvatarComponentFactory, hooks, RenderActivityStatus, RenderAttachment } from 'botframework-webchat-api';
+import { hooks, RenderAttachment } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -89,9 +89,9 @@ const connectStackedLayout = (...selectors) =>
 type StackedLayoutProps = {
   activity: DirectLineActivity;
   hideTimestamp?: boolean;
-  renderActivityStatus?: false | RenderActivityStatus;
+  renderActivityStatus?: (({ hideTimestamp: boolean }) => Exclude<ReactNode, boolean | null | undefined>) | false;
   renderAttachment?: RenderAttachment;
-  renderAvatar?: AvatarComponentFactory;
+  renderAvatar?: (activity: DirectLineActivity) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
   showCallout?: boolean;
 };
 
@@ -103,14 +103,15 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   renderAvatar,
   showCallout
 }) => {
-  const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-  const showActivityStatus = typeof renderActivityStatus === 'function';
+
+  const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
 
   const {
     attachments = [],
@@ -169,7 +170,9 @@ const StackedLayout: FC<StackedLayoutProps> = ({
       role="group"
     >
       <div className="webchat__stacked-layout__main">
-        <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
+        <div className="webchat__stacked-layout__avatar-gutter">
+          {showAvatar && renderAvatar && renderAvatar({ activity })}
+        </div>
         <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
             <div
@@ -222,7 +225,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
         </div>
         <div className="webchat__stacked-layout__alignment-pad" />
       </div>
-      {showActivityStatus && (
+      {typeof renderActivityStatus === 'function' && (
         <div className="webchat__stacked-layout__status">
           <div className="webchat__stacked-layout__avatar-gutter" />
           <div className="webchat__stacked-layout__nub-pad" />
@@ -237,7 +240,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 StackedLayout.defaultProps = {
   hideTimestamp: false,
   renderActivityStatus: false,
-  renderAvatar: false,
+  renderAvatar: undefined,
   showCallout: true
 };
 
@@ -258,8 +261,14 @@ StackedLayout.propTypes = {
     type: PropTypes.string.isRequired
   }).isRequired,
   hideTimestamp: PropTypes.bool,
+
+  // PropTypes cannot validate precisely with its TypeScript counterpart.
+  // @ts-ignore
   renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   renderAttachment: PropTypes.func.isRequired,
+
+  // PropTypes cannot validate precisely with its TypeScript counterpart.
+  // @ts-ignore
   renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
   showCallout: PropTypes.bool
 };

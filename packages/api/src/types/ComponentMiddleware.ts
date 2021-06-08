@@ -7,14 +7,14 @@ type OnScreenReactNode = Exclude<ReactNode, boolean | null | undefined>;
  *
  * @returns {(React.FC|false)} Returns a React component to render, or `false`, if nothing should be rendered.
  */
-export type ComponentFactory<TComponentFactoryArguments extends any[], TProps> = (
+type ComponentFactory<TComponentFactoryArguments extends any[], TProps> = (
   ...args: TComponentFactoryArguments
 ) => ((props?: TProps) => OnScreenReactNode) | false;
 
 /**
  * Enhances a UI component through decoration, replacement, or removal.
  */
-export type ComponentEnhancer<TComponentFactoryArguments extends any[], TProps> = (
+type ComponentEnhancer<TComponentFactoryArguments extends any[], TProps> = (
   next: ComponentFactory<TComponentFactoryArguments, TProps>
 ) => ComponentFactory<TComponentFactoryArguments, TProps>;
 
@@ -38,3 +38,5 @@ type ComponentMiddleware<TSetupArguments extends any[], TComponentFactoryArgumen
 ) => ComponentEnhancer<TComponentFactoryArguments, TProps>;
 
 export default ComponentMiddleware;
+
+export { ComponentEnhancer, ComponentFactory };

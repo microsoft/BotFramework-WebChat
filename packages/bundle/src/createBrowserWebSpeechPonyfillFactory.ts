@@ -1,4 +1,4 @@
-import WebSpeechPonyfill from './types/WebSpeechPonyfill';
+import { WebSpeechPonyfill } from 'botframework-webchat-api';
 
 export default function createBrowserWebSpeechPonyfillFactory(): () => WebSpeechPonyfill {
   // eslint-disable-next-line dot-notation

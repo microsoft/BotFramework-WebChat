@@ -1,7 +1,7 @@
 import DirectLineActivity from './external/DirectLineActivity';
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
-export type GroupActivities = CallFunction<
+type GroupActivities = CallFunction<
   [{ activities: DirectLineActivity[] }],
   {
     sender: DirectLineActivity[][];
@@ -19,3 +19,5 @@ type GroupActivitiesMiddleware = FunctionMiddleware<
 >;
 
 export default GroupActivitiesMiddleware;
+
+export { GroupActivities };

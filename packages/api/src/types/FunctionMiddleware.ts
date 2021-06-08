@@ -1,6 +1,6 @@
-export type CallFunction<TArguments extends any[], TResult> = (...args: TArguments) => TResult;
+type CallFunction<TArguments extends any[], TResult> = (...args: TArguments) => TResult;
 
-export type FunctionEnhancer<TCallArguments extends any[], TResult> = (
+type FunctionEnhancer<TCallArguments extends any[], TResult> = (
   next: CallFunction<TCallArguments, TResult>
 ) => CallFunction<TCallArguments, TResult>;
 
@@ -9,3 +9,5 @@ export type FunctionMiddleware<TSetupArguments extends any[], TCallArguments ext
 ) => FunctionEnhancer<TCallArguments, TResult>;
 
 export default FunctionMiddleware;
+
+export type { CallFunction, FunctionEnhancer };

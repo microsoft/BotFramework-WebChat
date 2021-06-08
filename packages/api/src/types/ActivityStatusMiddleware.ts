@@ -18,9 +18,11 @@ type RenderActivityStatusOptions = {
   sameTimestampGroup: boolean;
 };
 
-export type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactNode;
+type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactNode;
 
 type ActivityStatusEnhancer = (next: RenderActivityStatus) => RenderActivityStatus;
 type ActivityStatusMiddleware = () => ActivityStatusEnhancer;
 
 export default ActivityStatusMiddleware;
+
+export type { RenderActivityStatus };

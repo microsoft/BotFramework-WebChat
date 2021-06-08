@@ -61,7 +61,7 @@ export default function render(
   markdown: string,
   { markdownRespectCRLF }: { markdownRespectCRLF: boolean },
   { externalLinkAlt = '' }: { externalLinkAlt?: string } = {}
-) {
+): string {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }

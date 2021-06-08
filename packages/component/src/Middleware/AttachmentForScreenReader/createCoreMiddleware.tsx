@@ -1,3 +1,4 @@
+import { AttachmentForScreenReaderMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import AudioAttachment from './AudioAttachment';
@@ -6,14 +7,14 @@ import ImageAttachment from './ImageAttachment';
 import TextAttachment from './TextAttachment';
 import VideoAttachment from './VideoAttachment';
 
-export default function createCoreMiddleware() {
+export default function createCoreMiddleware(): AttachmentForScreenReaderMiddleware[] {
   return [
     () => next => (...args) => {
       const [
         {
-          activity: { from: { role } = {} } = {},
+          activity: { from: { role = undefined } = {} } = {},
           attachment,
-          attachment: { contentType, contentUrl, thumbnailUrl } = {}
+          attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
         }
       ] = args;
 

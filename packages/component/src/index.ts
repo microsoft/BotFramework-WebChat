@@ -1,8 +1,8 @@
-import ReactWebChat from './ReactWebChat';
+import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
-import Composer from './Composer';
+import Composer, { ComposerProps } from './Composer';
 
-import BasicWebChat from './BasicWebChat';
+import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
@@ -111,3 +111,5 @@ export {
   localize,
   version
 };
+
+export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };

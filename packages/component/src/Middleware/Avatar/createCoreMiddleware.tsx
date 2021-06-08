@@ -57,7 +57,7 @@ DefaultAvatar.propTypes = {
   fromUser: PropTypes.bool.isRequired
 };
 
-export default function createCoreAvatarMiddleware(): [AvatarMiddleware] {
+export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
   return [
     () => () => ({ fromUser, styleOptions }) => {
       const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;

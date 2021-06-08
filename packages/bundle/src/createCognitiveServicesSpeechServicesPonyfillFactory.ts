@@ -1,8 +1,8 @@
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
+import { WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
-import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
 type CognitiveServicesAudioOutputFormat =
   | 'audio-16khz-128kbitrate-mono-mp3'
