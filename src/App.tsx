@@ -106,7 +106,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           props.disableInputWhenNotNeeded = true;
         }
 
-        if (config.template.autoExpandTimeout > 0) {
+        if (config.template.autoExpandTimeout > 0 && !props.hasOwnProperty("autoExpandTimeout")) {
           props.autoExpandTimeout = config.template.autoExpandTimeout;
         }
 
