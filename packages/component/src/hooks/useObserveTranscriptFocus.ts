@@ -1,6 +1,6 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { useEffect } from 'react';
 
-import DirectLineActivity from '../types/external/DirectLineActivity';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useObserveTranscriptFocus(

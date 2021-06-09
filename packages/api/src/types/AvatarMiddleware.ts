@@ -1,6 +1,7 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
+
 import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
-import DirectLineActivity from './external/DirectLineActivity';
 
 type AvatarComponentFactoryArguments = [
   {

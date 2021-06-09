@@ -1,10 +1,9 @@
 /* eslint react/prop-types: "off" */
 /* eslint react/require-default-props: "off" */
 
-import { Constants } from 'botframework-webchat-core';
+import { Constants, DirectLineActivity } from 'botframework-webchat-core';
 import React, { ReactNode, useMemo } from 'react';
 
-import DirectLineActivity from '../types/external/DirectLineActivity';
 import SendState from '../types/SendState';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';

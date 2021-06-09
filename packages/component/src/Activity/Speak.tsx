@@ -1,10 +1,10 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
-import DirectLineActivity from '../types/external/DirectLineActivity';
 import SayAlt from './SayAlt';
 
 const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;

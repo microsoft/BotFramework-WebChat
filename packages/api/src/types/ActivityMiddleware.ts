@@ -1,8 +1,8 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode } from 'react';
 
 import { AvatarComponentFactory } from './AvatarMiddleware';
 import { RenderAttachment } from './AttachmentMiddleware';
-import DirectLineActivity from './external/DirectLineActivity';
 
 type ActivityProps = {
   hideTimestamp: boolean;

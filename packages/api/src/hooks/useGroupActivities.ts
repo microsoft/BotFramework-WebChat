@@ -1,4 +1,5 @@
-import DirectLineActivity from '../types/external/DirectLineActivity';
+import { DirectLineActivity } from 'botframework-webchat-core';
+
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useGroupActivities(): ({

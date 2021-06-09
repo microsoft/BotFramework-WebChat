@@ -1,4 +1,4 @@
-import DirectLineActivity from './types/external/DirectLineActivity';
+import { DirectLineActivity } from 'botframework-webchat-core';
 
 type StyleOptions = {
   /**

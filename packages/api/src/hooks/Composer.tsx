@@ -7,10 +7,13 @@ import {
   clearSuggestedActions,
   connect as createConnectAction,
   createStore,
+  DirectLineActivity,
+  DirectLineJSBotConnection,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
   markActivity,
+  OneOrMany,
   postActivity,
   sendEvent,
   sendFiles,
@@ -42,8 +45,6 @@ import createCustomEvent from '../utils/createCustomEvent';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
-import DirectLineActivity from '../types/external/DirectLineActivity';
-import DirectLineJSBotConnection from '../types/external/DirectLineJSBotConnection';
 import ErrorBoundary from './utils/ErrorBoundary';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
@@ -53,7 +54,6 @@ import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
-import OneOrMany from '../types/OneOrMany';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';

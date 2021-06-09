@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 30] */
 
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks, RenderAttachment } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -14,7 +15,6 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 import useUniqueId from '../hooks/internal/useUniqueId';
-import DirectLineActivity from '../types/external/DirectLineActivity';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 

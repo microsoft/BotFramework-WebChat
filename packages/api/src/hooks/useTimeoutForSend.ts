@@ -1,4 +1,5 @@
-import DirectLineActivity from '../types/external/DirectLineActivity';
+import { DirectLineActivity } from 'botframework-webchat-core';
+
 import useStyleOptions from './useStyleOptions';
 
 export default function useTimeoutForSend(): [number | ((activity: DirectLineActivity) => number)] {

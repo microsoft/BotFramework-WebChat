@@ -23,7 +23,7 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "eslint",
-    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "prettier": "prettier --check src/**/*.{js,ts,tsx}",
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",

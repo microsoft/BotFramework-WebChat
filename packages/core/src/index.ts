@@ -1,10 +1,17 @@
+import * as ActivityClientState from './constants/ActivityClientState';
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
+import DirectLineActivity from './types/external/DirectLineActivity';
+import DirectLineAttachment from './types/external/DirectLineAttachment';
+import DirectLineCardAction from './types/external/DirectLineCardAction';
+import DirectLineJSBotConnection from './types/external/DirectLineJSBotConnection';
+import DirectLineSuggestedAction from './types/external/DirectLineSuggestedAction';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import markActivity from './actions/markActivity';
+import OneOrMany from './types/OneOrMany';
 import postActivity from './actions/postActivity';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
@@ -23,8 +30,6 @@ import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
 import stopSpeakingActivity from './actions/stopSpeakingActivity';
 import submitSendBox from './actions/submitSendBox';
-
-import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
 
 const Constants = { ActivityClientState, DictateState };
@@ -59,4 +64,13 @@ export {
   stopSpeakingActivity,
   submitSendBox,
   version
+};
+
+export type {
+  DirectLineActivity,
+  DirectLineAttachment,
+  DirectLineCardAction,
+  DirectLineJSBotConnection,
+  DirectLineSuggestedAction,
+  OneOrMany
 };

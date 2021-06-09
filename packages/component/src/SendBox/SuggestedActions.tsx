@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { DirectLineCardAction } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
@@ -15,7 +16,6 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useUniqueId from '../hooks/internal/useUniqueId';
-import DirectLineCardAction from 'botframework-webchat-api/lib/types/external/DirectLineCardAction';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 

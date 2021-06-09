@@ -1,9 +1,9 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
+import { DirectLineAttachment } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import DirectLineAttachment from '../types/external/DirectLineAttachment';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 
 const { useSendFiles: useAPISendFiles, useStyleOptions, useTrackTiming } = hooks;

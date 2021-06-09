@@ -1,6 +1,6 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode } from 'react';
 
-import DirectLineActivity from './external/DirectLineActivity';
 import SendState from './SendState';
 
 // TODO: Migrate this legacy middleware signature.

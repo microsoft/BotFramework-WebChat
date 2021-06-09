@@ -1,4 +1,5 @@
 import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware, StyleOptions } from 'botframework-webchat-api';
+import { OneOrMany } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { FC, ReactNode } from 'react';
 
@@ -6,7 +7,6 @@ import { StrictFullBundleStyleOptions } from './FullBundleStyleOptions';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
-import OneOrMany from './types/OneOrMany';
 import singleToArray from './utils/singleToArray';
 import useComposerProps from './useComposerProps';
 import warnOnce from './utils/warnOnce';

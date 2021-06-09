@@ -1,8 +1,8 @@
+import { DirectLineAttachment } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
 import AdaptiveCardContent from './AdaptiveCardContent';
-import DirectLineAttachment from '../../types/external/DirectLineAttachment';
 
 type AdaptiveCardAttachmentProps = {
   attachment: DirectLineAttachment;

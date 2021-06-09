@@ -1,10 +1,9 @@
-import { Constants } from 'botframework-webchat-core';
+import { Constants, DirectLineActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
 
 import connectToWebChat from '../../../connectToWebChat';
-import DirectLineActivity from '../../../types/external/DirectLineActivity';
 import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';

@@ -1,4 +1,5 @@
-import DirectLineCardAction from './external/DirectLineCardAction';
+import { DirectLineCardAction } from 'botframework-webchat-core';
+
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
 type PerformCardAction = CallFunction<

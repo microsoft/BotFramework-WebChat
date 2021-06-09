@@ -1,3 +1,4 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -6,7 +7,6 @@ import React, { FC } from 'react';
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './RelativeTime';
 import useStyleSet from '../../hooks/useStyleSet';
-import DirectLineActivity from 'botframework-webchat-api/lib/types/external/DirectLineActivity';
 
 const { useStyleOptions } = hooks;
 

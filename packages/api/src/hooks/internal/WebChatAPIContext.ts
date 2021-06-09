@@ -1,3 +1,4 @@
+import { DirectLineActivity, DirectLineJSBotConnection } from 'botframework-webchat-core';
 import React, { createContext } from 'react';
 
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
@@ -11,8 +12,6 @@ import { RenderAttachment } from '../../types/AttachmentMiddleware';
 import { RenderToast } from '../../types/ToastMiddleware';
 import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import { StrictStyleOptions } from '../../StyleOptions';
-import DirectLineActivity from '../../types/external/DirectLineActivity';
-import DirectLineJSBotConnection from '../../types/external/DirectLineJSBotConnection';
 import LocalizedStrings from '../../types/LocalizedStrings';
 import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';

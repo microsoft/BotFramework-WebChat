@@ -1,6 +1,6 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode, useMemo } from 'react';
 
-import DirectLineActivity from '../types/external/DirectLineActivity';
 import useStyleOptions from './useStyleOptions';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 

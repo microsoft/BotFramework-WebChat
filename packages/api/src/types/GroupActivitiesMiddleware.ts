@@ -1,4 +1,5 @@
-import DirectLineActivity from './external/DirectLineActivity';
+import { DirectLineActivity } from 'botframework-webchat-core';
+
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
 type GroupActivities = CallFunction<
