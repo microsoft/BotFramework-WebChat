@@ -34,3 +34,5 @@ FullComposer.propTypes = {
 };
 
 export default FullComposer;
+
+export type { FullComposerProps };

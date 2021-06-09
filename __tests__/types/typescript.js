@@ -1,5 +1,6 @@
 const { join, relative } = require('path');
 const { readdir } = require('fs').promises;
+
 const ts = require('typescript');
 
 function compile(...filenames) {
@@ -7,7 +8,8 @@ function compile(...filenames) {
     allowSyntheticDefaultImports: true,
     jsx: 'react',
     noEmit: true,
-    skipLibCheck: true
+    skipLibCheck: true,
+    strict: true
   });
 
   const emitResult = program.emit();
@@ -41,12 +43,13 @@ describe('compiling TypeScript files', () => {
       files.forEach(file => {
         const fullPath = join(path, file);
 
-        results[relative(process.cwd(), fullPath)] = { errors: compile(fullPath) };
+        results[relative(path, fullPath)] = { errors: compile(fullPath) };
       });
     });
 
     test('should pass', () => {
       for (const filename of Object.keys(results)) {
+        expect(results).toHaveProperty([filename, 'errors'], []);
         expect(results).toHaveProperty([filename, 'errors', 'length'], 0);
       }
     });
@@ -64,7 +67,7 @@ describe('compiling TypeScript files', () => {
       files.forEach(file => {
         const fullPath = join(path, file);
 
-        results[relative(process.cwd(), fullPath)] = { errors: compile(fullPath) };
+        results[relative(path, fullPath)] = { errors: compile(fullPath) };
       });
     });
 
