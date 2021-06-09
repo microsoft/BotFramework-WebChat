@@ -4,6 +4,7 @@
 // window['WebChat'] is required for TypeScript
 
 import { Constants, createStore, createStoreWithDevTools, version } from 'botframework-webchat-core';
+import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import ReactWebChat, {
   Components,
@@ -54,6 +55,8 @@ export {
   renderWebChat,
   version
 };
+
+export type { StyleOptions, StrictStyleOptions };
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
 window['WebChat'] = {

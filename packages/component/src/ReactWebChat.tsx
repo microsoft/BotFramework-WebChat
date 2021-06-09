@@ -16,7 +16,7 @@ import Composer, { ComposerProps } from './Composer';
 const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
 type ReactWebChatProps = ComposerProps & {
-  className: string;
+  className?: string;
   role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
 };
 

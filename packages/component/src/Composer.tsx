@@ -31,7 +31,6 @@ import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
-import OneOrMany from './types/OneOrMany';
 import singleToArray from './Utils/singleToArray';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
@@ -247,7 +246,6 @@ ComposerCore.propTypes = {
 type ComposerProps = APIComposerProps &
   ComposerCoreProps & {
     nonce?: string;
-    scrollToEndButtonMiddleware?: OneOrMany<Function>;
     webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
   };
 

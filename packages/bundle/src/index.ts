@@ -30,6 +30,8 @@ import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHo
 import useAdaptiveCardsPackage from './adaptiveCards/hooks/useAdaptiveCardsPackage';
 import VideoCardContent from './adaptiveCards/Attachment/VideoCardContent';
 
+import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from './FullBundleStyleOptions';
+
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
 export const createDirectLine = options => {
@@ -74,6 +76,9 @@ const Components: typeof MinimalComponents & typeof AdditionalComponents = {
   ...AdditionalComponents
 };
 
+type StyleOptions = FullBundleStyleOptions;
+type StrictStyleOptions = StrictFullBundleStyleOptions;
+
 export default ReactWebChat;
 
 export {
@@ -87,6 +92,8 @@ export {
   renderMarkdown,
   renderWebChat
 };
+
+export type { StyleOptions, StrictStyleOptions };
 
 window['WebChat'] = {
   ...window['WebChat'],

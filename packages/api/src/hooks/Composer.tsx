@@ -166,7 +166,7 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-export type ComposerProps = {
+type ComposerCoreProps = {
   activityMiddleware?: OneOrMany<ActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
@@ -186,7 +186,7 @@ export type ComposerProps = {
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
-  scrollToEndButtonMiddleware: OneOrMany<ScrollToEndButtonMiddleware>;
+  scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
@@ -213,7 +213,7 @@ export type ComposerProps = {
   typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
 };
 
-const Composer: FC<ComposerProps> = ({
+const ComposerCore: FC<ComposerCoreProps> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
@@ -580,60 +580,13 @@ const Composer: FC<ComposerProps> = ({
   );
 };
 
-// We will create a Redux store if it was not passed in
-const ComposeWithStore: FC<ComposerProps & { store?: any }> = ({
-  internalRenderErrorBox,
-  onTelemetry,
-  store,
-  ...props
-}) => {
-  const [error, setError] = useState();
-
-  const handleError = useCallback(
-    error => {
-      console.error('botframework-webchat: Uncaught exception', { error });
-
-      onTelemetry &&
-        onTelemetry(createCustomEvent('exception', { error, fatal: true }) as TelemetryExceptionMeasurementEvent);
-      setError(error);
-    },
-    [onTelemetry, setError]
-  );
-
-  const memoizedStore = useMemo(() => store || createStore(), [store]);
-
-  return error ? (
-    !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
-  ) : (
-    <ErrorBoundary onError={handleError}>
-      <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <Composer internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
-      </Provider>
-    </ErrorBoundary>
-  );
-};
-
-ComposeWithStore.defaultProps = {
-  internalRenderErrorBox: undefined,
-  onTelemetry: undefined,
-  store: undefined
-};
-
-ComposeWithStore.propTypes = {
-  internalRenderErrorBox: PropTypes.any,
-  onTelemetry: PropTypes.func,
-  store: PropTypes.any
-};
-
-export default ComposeWithStore;
-
 /**
  * @todo TODO: [P3] We should consider moving some data from Redux store to props
  *       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
  *       we should clean up the responsibility between Context and Redux store
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
-Composer.defaultProps = {
+ComposerCore.defaultProps = {
   activityMiddleware: undefined,
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
@@ -669,7 +622,7 @@ Composer.defaultProps = {
   username: ''
 };
 
-Composer.propTypes = {
+ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
@@ -717,3 +670,49 @@ Composer.propTypes = {
   userID: PropTypes.string,
   username: PropTypes.string
 };
+
+type ComposerProps = ComposerCoreProps & { store?: any };
+
+// We will create a Redux store if it was not passed in
+const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, store, ...props }) => {
+  const [error, setError] = useState();
+
+  const handleError = useCallback(
+    error => {
+      console.error('botframework-webchat: Uncaught exception', { error });
+
+      onTelemetry &&
+        onTelemetry(createCustomEvent('exception', { error, fatal: true }) as TelemetryExceptionMeasurementEvent);
+      setError(error);
+    },
+    [onTelemetry, setError]
+  );
+
+  const memoizedStore = useMemo(() => store || createStore(), [store]);
+
+  return error ? (
+    !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
+  ) : (
+    <ErrorBoundary onError={handleError}>
+      <Provider context={WebChatReduxContext} store={memoizedStore}>
+        <ComposerCore internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
+      </Provider>
+    </ErrorBoundary>
+  );
+};
+
+Composer.defaultProps = {
+  internalRenderErrorBox: undefined,
+  onTelemetry: undefined,
+  store: undefined
+};
+
+Composer.propTypes = {
+  internalRenderErrorBox: PropTypes.any,
+  onTelemetry: PropTypes.func,
+  store: PropTypes.any
+};
+
+export default Composer;
+
+export type { ComposerProps };

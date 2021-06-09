@@ -23,16 +23,7 @@ import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/Typing
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
-export {
-  Composer,
-  ComposerProps,
-  concatMiddleware,
-  defaultStyleOptions,
-  hooks,
-  Localize,
-  localize,
-  normalizeStyleOptions
-};
+export { Composer, concatMiddleware, defaultStyleOptions, hooks, Localize, localize, normalizeStyleOptions };
 
 export type {
   ActivityComponentFactory,
@@ -44,6 +35,7 @@ export type {
   AvatarComponentFactory,
   AvatarMiddleware,
   CardActionMiddleware,
+  ComposerProps,
   GroupActivities,
   GroupActivitiesMiddleware,
   PerformCardAction,
