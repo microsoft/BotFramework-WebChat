@@ -4,10 +4,10 @@ import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
 
+import { StrictFullBundleStyleOptions } from '../../types/FullBundleStyleOptions';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import { StrictFullBundleStyleOptions } from '../../FullBundleStyleOptions';
 
 const { useDirection, useStyleOptions } = hooks;
 

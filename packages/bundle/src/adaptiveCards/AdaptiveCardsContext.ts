@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
 
 type AdaptiveCardsContext = {
-  adaptiveCardsPackage?: AdaptiveCardsPackage;
+  adaptiveCardsPackage: AdaptiveCardsPackage;
   hostConfigFromProps: any;
 };
 

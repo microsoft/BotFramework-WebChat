@@ -1,5 +1,3 @@
-// IMPORTANT: To export anything from this file, add it to index.tsx, which is the .d.ts for this file.
-
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
@@ -18,7 +16,7 @@ import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
-import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from './FullBundleStyleOptions';
+import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import FullComposer from './FullComposer';
 import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
 import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';

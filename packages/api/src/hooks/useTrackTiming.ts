@@ -6,7 +6,10 @@ import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useTrackException from './useTrackException';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function useTrackTiming(): (name: string, functionOrPromise: Function | Promise<any>) => Promise<void> {
+export default function useTrackTiming<T>(): (
+  name: string,
+  functionOrPromise: (() => T) | Promise<T>
+) => Promise<T | void> {
   const { onTelemetry } = useWebChatAPIContext();
   const readTelemetryDimensions = useReadTelemetryDimensions();
   const trackException = useTrackException();

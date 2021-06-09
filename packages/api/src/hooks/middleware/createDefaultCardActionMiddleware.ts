@@ -1,4 +1,5 @@
 import { sendMessage, sendMessageBack, sendPostBack } from 'botframework-webchat-core';
+
 import CardActionMiddleware from '../../types/CardActionMiddleware';
 
 export default function createDefaultCardActionMiddleware(): CardActionMiddleware {

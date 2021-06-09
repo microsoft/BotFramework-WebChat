@@ -1,4 +1,4 @@
-import FullBundleStyleOptions from '../../../FullBundleStyleOptions';
+import FullBundleStyleOptions from '../../../types/FullBundleStyleOptions';
 
 export default function ({
   cardPushButtonBackgroundColor,

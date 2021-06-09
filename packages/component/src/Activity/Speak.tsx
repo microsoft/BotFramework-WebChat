@@ -45,7 +45,7 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
         speak || text,
         ...attachments
           .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
-          .map(({ content: { speak } = {} }: { content: { speak?: string } }) => speak)
+          .map(attachment => attachment?.content?.speak)
       ]
         .filter(line => line)
         .join('\r\n')

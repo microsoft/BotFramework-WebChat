@@ -52,12 +52,10 @@ type BasicSendBoxProps = {
 const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
   const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
+  const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
-  const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const styleToEmotionObject = useStyleToEmotionObject();
-
-  const { SpeechRecognition } = webSpeechPonyfill || {};
 
   const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
 

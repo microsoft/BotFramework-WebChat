@@ -6,7 +6,7 @@ import useWebChatUIContext from './internal/useWebChatUIContext';
 const { useLocalizer, useStyleOptions } = hooks;
 
 export default function useRenderMarkdownAsHTML(): (
-  markdown: String,
+  markdown: string,
   styleOptions?: StrictStyleOptions,
   options?: { externalLinkAlt: string }
 ) => string {

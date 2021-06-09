@@ -1,4 +1,5 @@
 import * as ActivityClientState from './constants/ActivityClientState';
+import * as DictateState from './constants/DictateState';
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
@@ -25,12 +26,13 @@ import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
+import singleToArray from './utils/singleToArray';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
 import stopSpeakingActivity from './actions/stopSpeakingActivity';
 import submitSendBox from './actions/submitSendBox';
-import * as DictateState from './constants/DictateState';
+import warnOnce from './utils/warnOnce';
 
 const Constants = { ActivityClientState, DictateState };
 const version = process.env.npm_package_version;
@@ -58,12 +60,14 @@ export {
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
+  singleToArray,
   startDictate,
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  version
+  version,
+  warnOnce
 };
 
 export type {

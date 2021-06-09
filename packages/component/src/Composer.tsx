@@ -4,8 +4,8 @@ import {
   hooks,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-
 import { Composer as SayComposer } from 'react-say';
+import { singleToArray } from 'botframework-webchat-core';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
@@ -31,7 +31,6 @@ import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
-import singleToArray from './Utils/singleToArray';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 

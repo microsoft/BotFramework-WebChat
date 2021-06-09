@@ -24,7 +24,7 @@ const Tracker = () => {
     trackDimension('prop:speechSynthesis', !!speechSynthesisCapability + '');
   }, [trackDimension, speechRecognitionCapability, speechSynthesisCapability]);
 
-  return null;
+  return false;
 };
 
 export default Tracker;

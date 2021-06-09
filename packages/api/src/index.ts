@@ -1,13 +1,4 @@
-// IMPORTANT: To export anything from this file, add it to index.tsx, which is the .d.ts for this file.
-
 import * as hooks from './hooks';
-import Composer, { ComposerProps } from './hooks/Composer';
-import concatMiddleware from './hooks/middleware/concatMiddleware';
-import defaultStyleOptions from './defaultStyleOptions';
-import Localize, { localize } from './localization/Localize';
-import normalizeStyleOptions from './normalizeStyleOptions';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
-
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
 import ActivityStatusMiddleware, { RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
@@ -16,8 +7,14 @@ import AttachmentForScreenReaderMiddleware, {
 import AttachmentMiddleware, { RenderAttachment } from './types/AttachmentMiddleware';
 import AvatarMiddleware, { AvatarComponentFactory } from './types/AvatarMiddleware';
 import CardActionMiddleware, { PerformCardAction } from './types/CardActionMiddleware';
+import Composer, { ComposerProps } from './hooks/Composer';
+import concatMiddleware from './hooks/middleware/concatMiddleware';
+import defaultStyleOptions from './defaultStyleOptions';
 import GroupActivitiesMiddleware, { GroupActivities } from './types/GroupActivitiesMiddleware';
+import Localize, { localize } from './localization/Localize';
+import normalizeStyleOptions from './normalizeStyleOptions';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from './types/ScrollToEndButtonMiddleware';
+import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import ToastMiddleware, { RenderToast } from './types/ToastMiddleware';
 import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';

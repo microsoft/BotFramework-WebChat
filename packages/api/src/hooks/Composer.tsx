@@ -27,6 +27,7 @@ import {
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
+  singleToArray,
   startDictate,
   startSpeakingActivity,
   stopDictate,
@@ -57,7 +58,6 @@ import observableToPromise from './utils/observableToPromise';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
-import singleToArray from './utils/singleToArray';
 import StyleOptions from '../StyleOptions';
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 import ToastMiddleware from '../types/ToastMiddleware';
@@ -70,6 +70,7 @@ import applyMiddleware, {
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 
+// PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 

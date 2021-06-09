@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "files": ["index.ts", "index-minimal.ts", "index-es5.ts"]
+  "files": ["index.ts", "index-es5.ts", "index-minimal.ts"]
 }

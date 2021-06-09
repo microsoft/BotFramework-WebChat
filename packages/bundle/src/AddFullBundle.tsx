@@ -1,15 +1,13 @@
 import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware, StyleOptions } from 'botframework-webchat-api';
-import { OneOrMany } from 'botframework-webchat-core';
+import { OneOrMany, singleToArray, warnOnce } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { FC, ReactNode } from 'react';
 
-import { StrictFullBundleStyleOptions } from './FullBundleStyleOptions';
+import { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
-import singleToArray from './utils/singleToArray';
 import useComposerProps from './useComposerProps';
-import warnOnce from './utils/warnOnce';
 
 type AddFullBundleProps = {
   adaptiveCardsHostConfig?: any;
@@ -55,7 +53,7 @@ const AddFullBundle: FC<AddFullBundleProps> = ({
       adaptiveCardsHostConfig={adaptiveCardsHostConfig}
       adaptiveCardsPackage={adaptiveCardsPackage}
     >
-      {() => children(patchedProps)}
+      {children(patchedProps)}
     </AdaptiveCardsComposer>
   );
 };

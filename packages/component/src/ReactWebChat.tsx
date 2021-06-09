@@ -38,6 +38,7 @@ ReactWebChat.propTypes = {
   // @ts-ignore
   role: PropTypes.oneOf(ARIA_LANDMARK_ROLES),
   ...Composer.propTypes,
+  // Excluding "children" from ComposerProps.
   children: undefined
 };
 

@@ -1,5 +1,5 @@
+import { createContext } from 'react';
 import { DirectLineActivity, DirectLineJSBotConnection } from 'botframework-webchat-core';
-import React, { createContext } from 'react';
 
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
