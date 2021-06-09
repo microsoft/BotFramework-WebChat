@@ -11,6 +11,10 @@
     "4": {
       "redirects": [
         [
+          "feature:hosted",
+          "hosted"
+        ],
+        [
           "feature:nextminor",
           "4.12"
         ],
@@ -344,6 +348,16 @@
         [
           "https://cdn.botframework.com/botframework-webchat/4.13.0/webchat-es5.js",
           "sha384-wwdw+KudAKGhnGV4ewfJL1KE1dqx8DgQ6TrY3z4hIHXc1GHjuI/HwoEx4p5VOGx1"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "hosted": {
+      "assets": [
+        [
+          "/botframework-webchat/webchat-es5.js",
+          "sha384-YT//LqZJgkEXrmVxm6RZJKs4dSZJQo5kEX0tE9dP1XaOaVsC7NEvwnlP2gW2KWcl"
         ]
       ],
       "private": true,
