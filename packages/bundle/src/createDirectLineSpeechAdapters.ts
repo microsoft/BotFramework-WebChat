@@ -1,6 +1,6 @@
 import { createAdapters } from 'botframework-directlinespeech-sdk';
 import { DirectLineJSBotConnection } from 'botframework-webchat-core';
-import WebSpeechPonyfill from 'botframework-webchat-component/lib/types/WebSpeechPonyfill';
+import { WebSpeechPonyfill } from 'botframework-webchat-api';
 
 export default function createDirectLineSpeechAdapters(
   ...args
