@@ -32,14 +32,18 @@ ReactWebChat.defaultProps = {
   ...Composer.defaultProps
 };
 
+const {
+  // Excluding "children" from ComposerProps.
+  children: _,
+  ...composerPropTypesWithoutChildren
+} = Composer.propTypes;
+
 ReactWebChat.propTypes = {
   className: PropTypes.string,
   // Ignoring deficiencies with TypeScript/PropTypes inference.
   // @ts-ignore
   role: PropTypes.oneOf(ARIA_LANDMARK_ROLES),
-  ...Composer.propTypes,
-  // Excluding "children" from ComposerProps.
-  children: undefined
+  ...composerPropTypesWithoutChildren
 };
 
 export default ReactWebChat;
