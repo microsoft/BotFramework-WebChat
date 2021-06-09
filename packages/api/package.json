@@ -55,7 +55,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
-    "mkdirp": "^1.0.4",
     "node-dev": "^6.6.0",
     "prettier": "^2.2.1",
     "typescript": "^4.2.3"
