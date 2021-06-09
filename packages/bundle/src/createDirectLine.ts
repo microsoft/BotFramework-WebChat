@@ -1,5 +1,19 @@
 import { DirectLine } from 'botframework-directlinejs';
 
+type CreateDirectLineOptions = {
+  botAgent?: string;
+  conversationId?: string;
+  conversationStartProperties?: any;
+  domain?: string;
+  fetch?: typeof window.fetch;
+  pollingInterval?: number;
+  secret?: string;
+  streamUrl?: string;
+  token?: string;
+  watermark?: string;
+  webSocket?: typeof WebSocket;
+};
+
 export default function createDirectLine({
   botAgent,
   conversationId,
@@ -12,19 +26,7 @@ export default function createDirectLine({
   token,
   watermark,
   webSocket
-}: {
-  botAgent?: string;
-  conversationId?: string;
-  conversationStartProperties?: any;
-  domain?: string;
-  fetch?: typeof window.fetch;
-  pollingInterval?: number;
-  secret?: string;
-  streamUrl;
-  token;
-  watermark;
-  webSocket;
-}) {
+}: CreateDirectLineOptions) {
   // TODO: [P3] Checks if DLJS supports ponyfilling fetch.
   return new DirectLine({
     botAgent,
