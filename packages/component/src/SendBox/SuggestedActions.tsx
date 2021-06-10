@@ -229,7 +229,6 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
 
   const children = suggestedActions.map(({ displayText, image, imageAltText, text, title, type, value }, index) => (
     <SuggestedAction
-      aria-hidden={true}
       buttonText={suggestedActionText({ displayText, title, type, value })}
       className="webchat__suggested-actions__button"
       displayText={displayText}
