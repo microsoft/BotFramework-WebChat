@@ -427,20 +427,20 @@ const FullScreenTheme = (theme: Theme) => `
   }
 
   .wc-carousel button.scroll {
-    background-color: #1f357a !important;
+    background-color: ${theme.mainColor} !important;
     border-width: 0px !important;
   }
 
   .feedbot .wc-suggested-actions .wc-hscroll > ul > li button, .wc-app .wc-card button {
     color: white !important;
-    background-color: #1f357a !important;
-    border-color: #1f357a !important;
+    background-color: ${theme.mainColor} !important;
+    border-color: ${theme.mainColor} !important;
   }
 
   .feedbot .wc-suggested-actions .wc-hscroll > ul > li button:active, .wc-app .wc-card button:active {
-    color: #1f357a !important;
+    color: ${theme.mainColor} !important;
     background-color: white !important;
-    border-color: #1f357a !important;
+    border-color: ${theme.mainColor} !important;
   }
 
   ${BaseTheme(theme)}
