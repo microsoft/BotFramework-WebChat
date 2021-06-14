@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      function createActivity(text) {
+        return {
+          from: { role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text,
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        };
+      }
+
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            createActivity(
+              'Lorem culpa excepteur quis commodo qui mollit. Laboris laboris excepteur esse fugiat sunt id eu esse id fugiat sint. Veniam qui quis mollit ad magna elit ex laborum occaecat labore.'
+            ),
+            createActivity(
+              'Aute deserunt id ullamco excepteur excepteur sint magna deserunt quis. Pariatur excepteur minim aliquip laboris quis eiusmod elit ut. Commodo dolor eu enim sint ex ex voluptate. Consequat duis laboris ad tempor aliqua aliquip et elit dolore do ea. Deserunt aute sit magna dolor sit elit dolor anim. Et reprehenderit adipisicing ea aute et exercitation est excepteur tempor cupidatat occaecat eiusmod eu.'
+            ),
+            createActivity(
+              'Minim deserunt ut tempor minim eiusmod duis labore minim occaecat duis adipisicing proident cupidatat nisi. Aute aliquip qui culpa incididunt. Mollit consequat reprehenderit ex velit ipsum eu anim reprehenderit ad eiusmod veniam.'
+            ),
+            createActivity(
+              'Eiusmod magna eiusmod proident dolor mollit mollit sit cupidatat consectetur est exercitation labore do quis. Esse incididunt duis consectetur consequat aliquip. Exercitation proident ut reprehenderit irure minim incididunt in sint anim.'
+            ),
+            createActivity(
+              'Id cillum ut non quis commodo ex officia consequat duis mollit occaecat proident anim aliqua. Ex commodo anim adipisicing id fugiat adipisicing ut dolor nulla culpa aliquip adipisicing sit laboris. Esse non Lorem aute veniam quis esse quis ipsum reprehenderit deserunt ut do culpa ut. Laborum officia consectetur ad et non aute et nostrud reprehenderit deserunt elit sint.'
+            ),
+            {
+              attachments: [
+                {
+                  contentType: 'application/vnd.microsoft.card.adaptive',
+                  content: {
+                    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                    type: 'AdaptiveCard',
+                    version: '1.3',
+                    body: [
+                      {
+                        type: 'TextBlock',
+                        text: 'Adaptive Card design session',
+                        size: 'Large',
+                        weight: 'Bolder',
+                        wrap: true
+                      },
+                      {
+                        type: 'TextBlock',
+                        text: ' Conf Room 112/3377 (10) ',
+                        isSubtle: true,
+                        wrap: true
+                      },
+                      {
+                        type: 'TextBlock',
+                        text: '12:30 - 01:30',
+                        isSubtle: true,
+                        spacing: 'None',
+                        wrap: true
+                      },
+                      {
+                        type: 'TextBlock',
+                        text: 'Snooze for',
+                        wrap: true
+                      },
+                      {
+                        type: 'Input.ChoiceSet',
+                        id: 'snooze',
+                        value: '5',
+                        choices: [
+                          {
+                            title: '5 minutes',
+                            value: '5'
+                          },
+                          {
+                            title: '15 minutes',
+                            value: '15'
+                          },
+                          {
+                            title: '30 minutes',
+                            value: '30'
+                          }
+                        ]
+                      }
+                    ],
+                    actions: [
+                      {
+                        type: 'Action.Submit',
+                        title: 'Snooze'
+                      },
+                      {
+                        type: 'Action.Submit',
+                        title: "I'll be late"
+                      }
+                    ]
+                  }
+                }
+              ],
+              from: {
+                id: 'bot',
+                role: 'bot'
+              },
+              id: '1',
+              timestamp: new Date().toISOString(),
+              type: 'message'
+            }
+          ],
+          {
+            overridePostActivity: activity => {
+              // console.log(activity);
+
+              const id = Math.random().toString(36).substr(2, 5);
+
+              directLine.activityDeferredObservable.next({
+                ...activity,
+                id,
+                timestamp: new Date().toISOString()
+              });
+
+              return Observable.from([id]);
+            }
+          }
+        );
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore(),
+            styleOptions: {
+              autoScrollSnapOnActivity: 1
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(6);
+        await pageConditions.scrollToBottomCompleted();
+
+        // We need to send a message to mark all activities as read.
+        await host.click(document.getElementsByClassName('ac-pushButton')[0]);
+
+        directLine.activityDeferredObservable.next(
+          createActivity(
+            'Minim voluptate officia nisi excepteur pariatur tempor duis enim aute consectetur ex ipsum id. Exercitation voluptate proident sunt ad Lorem tempor ex dolore culpa aliquip ipsum eu. Sunt nisi esse esse consequat mollit exercitation incididunt incididunt deserunt culpa incididunt consectetur in. Magna proident aliquip sunt proident in velit cillum commodo minim proident cillum officia mollit consequat.'
+          )
+        );
+
+        await pageConditions.numActivitiesShown(7);
+
+        // EXPECT: Transcript should continue scroll to reveal "Minim voluptate" activity.
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: Transcript already reached snap point (1 activity), remember the "scrollTop", transcript should not scroll further anymore.
+        const { scrollTop } = pageElements.transcriptScrollable();
+
+        directLine.activityDeferredObservable.next(
+          createActivity(
+            'Voluptate occaecat sunt est incididunt qui duis in adipisicing. Eu exercitation duis labore reprehenderit. Consectetur elit quis exercitation Lorem quis velit sunt. Irure anim labore officia tempor anim veniam est quis. Cillum et fugiat amet eu. Et sunt non voluptate ea irure dolore elit non ex commodo aute veniam.'
+          )
+        );
+
+        await pageConditions.numActivitiesShown(8);
+
+        // EXPECT: Transcript already reached snap point (1 activity), it should not scroll further below.
+        await pageConditions.scrollStabilized(scrollTop);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
