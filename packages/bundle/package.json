@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -24,7 +25,7 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "eslint",
-    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "start": "concurrently --kill-others --names \"babel,tsc,webpack\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:typescript": "npm run build:typescript -- --watch",

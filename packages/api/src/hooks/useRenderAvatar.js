@@ -2,6 +2,7 @@ import useCreateAvatarRenderer from './useCreateAvatarRenderer';
 
 let showDeprecationNotes = true;
 
+/** @deprecated Please use "useRenderAvatar()" instead. */
 export default function useRenderAvatar({ activity }) {
   if (showDeprecationNotes) {
     console.warn(

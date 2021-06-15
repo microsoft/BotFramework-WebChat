@@ -1,8 +1,10 @@
-import ReactWebChat from './ReactWebChat';
+import { concatMiddleware, hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
 
-import Composer from './Composer';
+import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
-import BasicWebChat from './BasicWebChat';
+import Composer, { ComposerProps } from './Composer';
+
+import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
@@ -35,14 +37,6 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
-declare module 'botframework-webchat-api' {
-  export function concatMiddleware(): any;
-  export const hooks: any;
-  export function Localize(): any;
-  export function localize(): any;
-}
-
-import { concatMiddleware, hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
 import * as componentHooks from './hooks/index';
 
 const hooks = {
@@ -111,3 +105,5 @@ export {
   localize,
   version
 };
+
+export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };

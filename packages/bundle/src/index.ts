@@ -1,5 +1,3 @@
-// IMPORTANT: To export anything from this file, add it to index.tsx, which is the .d.ts for this file.
-
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
@@ -18,6 +16,7 @@ import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import createStyleSet from './createFullStyleSet';
 import defaultCreateDirectLine from './createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
+import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import FullComposer from './FullComposer';
 import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
 import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';
@@ -32,8 +31,8 @@ import VideoCardContent from './adaptiveCards/Attachment/VideoCardContent';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-export const createDirectLine = options => {
-  options.botAgent &&
+export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
+  (options as any).botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
@@ -41,8 +40,10 @@ export const createDirectLine = options => {
   return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
-export const createDirectLineAppServiceExtension = options => {
-  options.botAgent &&
+export const createDirectLineAppServiceExtension = (
+  options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>
+) => {
+  (options as any).botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
@@ -56,11 +57,10 @@ const patchedHooks = {
   useAdaptiveCardsPackage
 };
 
-const Components = {
-  ...MinimalComponents,
+const AdditionalComponents = {
   AdaptiveCardContent,
-  AudioCardContent,
   AnimationCardContent,
+  AudioCardContent,
   Composer: FullComposer,
   HeroCardContent,
   OAuthCardContent,
@@ -69,6 +69,14 @@ const Components = {
   ThumbnailCardContent,
   VideoCardContent
 };
+
+const Components: typeof MinimalComponents & typeof AdditionalComponents = {
+  ...MinimalComponents,
+  ...AdditionalComponents
+};
+
+type StyleOptions = FullBundleStyleOptions;
+type StrictStyleOptions = StrictFullBundleStyleOptions;
 
 export default ReactWebChat;
 
@@ -83,6 +91,8 @@ export {
   renderMarkdown,
   renderWebChat
 };
+
+export type { StyleOptions, StrictStyleOptions };
 
 window['WebChat'] = {
   ...window['WebChat'],

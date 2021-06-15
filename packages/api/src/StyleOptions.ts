@@ -1,3 +1,5 @@
+import { DirectLineActivity } from 'botframework-webchat-core';
+
 type StyleOptions = {
   /**
    * Basic styling
@@ -383,8 +385,16 @@ type StyleOptions = {
    * Timestamp
    */
 
-  groupTimestamp?: boolean;
-  sendTimeout?: number;
+  /**
+   * Specifies the time window for grouping related timestamps.
+   *
+   * `number` - time window for grouping related timestamps (in milliseconds)
+   * `false` - never group timestamps
+   * `true` - group all timestamps
+   */
+  groupTimestamp?: boolean | number;
+
+  sendTimeout?: number | ((activity: DirectLineActivity) => number);
   sendTimeoutForAttachments?: number;
 
   /**

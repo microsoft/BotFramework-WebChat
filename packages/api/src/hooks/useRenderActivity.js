@@ -17,6 +17,7 @@ import useCreateActivityRendererInternal from './internal/useCreateActivityRende
 
 let showDeprecationNotes = true;
 
+/** @deprecated Please use `useCreateActivityRenderer()` instead. */
 export default function useRenderActivity(renderAttachment) {
   if (showDeprecationNotes) {
     console.warn(

@@ -1,9 +1,8 @@
-// IMPORTANT: To export anything from this file, add it to index-minimal.tsx, which is the .d.ts for this file.
-
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
 import { Constants, createStore, createStoreWithDevTools, version } from 'botframework-webchat-core';
+import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import ReactWebChat, {
   Components,
@@ -54,6 +53,8 @@ export {
   renderWebChat,
   version
 };
+
+export type { StyleOptions, StrictStyleOptions };
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
 window['WebChat'] = {
