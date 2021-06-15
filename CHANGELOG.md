@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `"any"` will show when there are any offscreen messages;
       -  `false` will always hide the button.
    -  Added new [`scrollToEndButtonMiddleware`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/types/scrollToEndButtonMiddleware.ts) to customize the appearance of the scroll to end button.
--  Resolves [#3752](https://github.com/microsoft/BotFramework-WebChat/issues/3752). Added typings (`*.d.ts`) for all public interfaces, by [@compulim](https://github.com), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931)
+-  Resolves [#3752](https://github.com/microsoft/BotFramework-WebChat/issues/3752). Added typings (`*.d.ts`) for all public interfaces, by [@compulim](https://github.com), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931) and [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Fixed
 

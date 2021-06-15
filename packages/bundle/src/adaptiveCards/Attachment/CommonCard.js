@@ -6,8 +6,9 @@ import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import useStyleOptions from '../../hooks/useStyleOptions';
 
-const { useDirection, useStyleOptions } = hooks;
+const { useDirection } = hooks;
 
 const CommonCard = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();

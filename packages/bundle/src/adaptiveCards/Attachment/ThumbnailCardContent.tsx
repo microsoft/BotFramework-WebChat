@@ -1,28 +1,27 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
 
+import { DirectLineThumbnailCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
 
-import { StrictFullBundleStyleOptions } from '../../types/FullBundleStyleOptions';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import useStyleOptions from '../../hooks/useStyleOptions';
 
-const { useDirection, useStyleOptions } = hooks;
+const { useDirection } = hooks;
 
 type ThumbnailCardContentProps = {
   actionPerformedClassName?: string;
-  content: any;
+  content: DirectLineThumbnailCard;
   disabled?: boolean;
 };
 
 const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
-
-  // TODO: Create another useStyleOptions that natively export the correct type.
-  const [styleOptions] = useStyleOptions() as [StrictFullBundleStyleOptions];
+  const [styleOptions] = useStyleOptions();
 
   const builtCard = useMemo(() => {
     if (content) {

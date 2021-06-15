@@ -1,15 +1,16 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
+import { DirectLineReceiptCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
 
-import { StrictFullBundleStyleOptions } from '../../types/FullBundleStyleOptions';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import useStyleOptions from '../../hooks/useStyleOptions';
 
-const { useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useDirection, useLocalizer } = hooks;
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
@@ -17,16 +18,14 @@ function nullOrUndefined(obj) {
 
 type ReceiptCardContentProps = {
   actionPerformedClassName?: string;
-  content: any;
+  content: DirectLineReceiptCard;
   disabled?: boolean;
 };
 
 const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
-
-  // TODO: Create another useStyleOptions that natively export the correct type.
-  const [styleOptions] = useStyleOptions() as [StrictFullBundleStyleOptions];
+  const [styleOptions] = useStyleOptions();
   const localize = useLocalizer();
 
   const taxText = localize('RECEIPT_CARD_TAX');

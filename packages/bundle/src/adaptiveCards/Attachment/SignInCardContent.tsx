@@ -1,3 +1,4 @@
+import { DirectLineSignInCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
@@ -8,7 +9,7 @@ const { useStyleSet } = hooks;
 
 type SignInCardContentProps = {
   actionPerformedClassName?: string;
-  content: any;
+  content: DirectLineSignInCard;
   disabled?: boolean;
 };
 

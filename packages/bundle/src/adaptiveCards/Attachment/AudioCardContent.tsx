@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { DirectLineAudioCard } from 'botframework-webchat-core';
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
@@ -11,7 +12,7 @@ const { useStyleSet } = hooks;
 
 type AudioCardContentProps = {
   actionPerformedClassName?: string;
-  content: any;
+  content: DirectLineAudioCard;
   disabled?: boolean;
 };
 
