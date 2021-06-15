@@ -3,24 +3,17 @@ import PropTypes from 'prop-types';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 
-import { ScrollToEndButtonMiddleware } from '../types/scrollToEndButtonMiddleware';
-import createCustomEvent from '../utils/createCustomEvent';
-import ErrorBoundary from './utils/ErrorBoundary';
-import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
-import isObject from '../utils/isObject';
-import normalizeLanguage from '../utils/normalizeLanguage';
-// @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-import StyleOptions from '../StyleOptions';
-
 import {
   clearSuggestedActions,
   connect as createConnectAction,
   createStore,
+  DirectLineActivity,
+  DirectLineJSBotConnection,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
   markActivity,
+  OneOrMany,
   postActivity,
   sendEvent,
   sendFiles,
@@ -34,6 +27,7 @@ import {
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
+  singleToArray,
   startDictate,
   startSpeakingActivity,
   stopDictate,
@@ -41,23 +35,44 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
+import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import ActivityMiddleware from '../types/ActivityMiddleware';
+import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
+import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
+import AttachmentMiddleware from '../types/AttachmentMiddleware';
+import AvatarMiddleware from '../types/AvatarMiddleware';
+import CardActionMiddleware from '../types/CardActionMiddleware';
+import createCustomEvent from '../utils/createCustomEvent';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import defaultSelectVoice from './internal/defaultSelectVoice';
+import ErrorBoundary from './utils/ErrorBoundary';
+import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
+import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
+import isObject from '../utils/isObject';
+import LocalizedStrings from '../types/LocalizedStrings';
 import mapMap from '../utils/mapMap';
+import normalizeLanguage from '../utils/normalizeLanguage';
+import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
+import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
+import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
+import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
+import StyleOptions from '../StyleOptions';
+import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
+import ToastMiddleware from '../types/ToastMiddleware';
 import Tracker from './internal/Tracker';
+import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 
-import normalizeStyleOptions from '../normalizeStyleOptions';
-import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
-import singleToArray from './utils/singleToArray';
+// PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
+// @ts-ignore
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -152,45 +167,54 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-type ComposerProps = {
-  activityMiddleware: any;
-  activityRenderer: any;
-  activityStatusMiddleware: any;
-  activityStatusRenderer: any;
-  attachmentForScreenReaderMiddleware: any;
-  attachmentMiddleware: any;
-  attachmentRenderer: any;
-  avatarMiddleware: any;
-  avatarRenderer: any;
-  cardActionMiddleware: any;
-  children: ReactNode;
-  dir: string;
-  directLine: any;
-  disabled: boolean;
-  downscaleImageToDataURL: any;
-  grammars: any;
-  groupActivitiesMiddleware: any;
-  groupTimestamp: boolean | number;
-  internalErrorBoxClass: any;
-  internalRenderErrorBox: any;
-  locale: string;
-  onTelemetry: any;
-  overrideLocalizedStrings: any;
-  renderMarkdown: any;
-  scrollToEndButtonMiddleware: ScrollToEndButtonMiddleware | ScrollToEndButtonMiddleware[];
-  selectVoice: any;
-  sendTimeout: number;
-  sendTypingIndicator: any;
-  styleOptions: StyleOptions;
-  toastMiddleware: any;
-  toastRenderer: any;
-  typingIndicatorMiddleware: any;
-  typingIndicatorRenderer: any;
-  userID: string;
-  username: string;
+type ComposerCoreProps = {
+  activityMiddleware?: OneOrMany<ActivityMiddleware>;
+  activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
+  attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
+  attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
+  avatarMiddleware?: OneOrMany<AvatarMiddleware>;
+  cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
+  children?: ReactNode;
+  dir?: string;
+  directLine: DirectLineJSBotConnection;
+  disabled?: boolean;
+  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  grammars?: any;
+  groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
+  internalErrorBoxClass?: React.Component | Function;
+  internalRenderErrorBox?: any;
+  locale?: string;
+  onTelemetry?: (event: TelemetryMeasurementEvent) => void;
+  overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
+  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
+  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
+  sendTypingIndicator?: boolean;
+  styleOptions?: StyleOptions;
+  toastMiddleware?: OneOrMany<ToastMiddleware>;
+  typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
+  userID?: string;
+  username?: string;
+
+  /** @deprecated Please use "activityMiddleware" instead. */
+  activityRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "activityStatusMiddleware" instead. */
+  activityStatusRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "attachmentMiddleware" instead. */
+  attachmentRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "avatarMiddleware" instead. */
+  avatarRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "styleOptions.groupTimestamp" instead. */
+  groupTimestamp?: boolean | number; // TODO: [P4] Remove on or after 2022-01-01
+  /** @deprecated Please use "styleOptions.sendTimeout" instead. */
+  sendTimeout?: number; // TODO: [P4] Remove on or after 2022-01-01.
+  /** @deprecated Please use "toastMiddleware" instead. */
+  toastRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "typingIndicatorRenderer" instead. */
+  typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
 };
 
-const Composer: FC<ComposerProps> = ({
+const ComposerCore: FC<ComposerCoreProps> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
@@ -295,14 +319,14 @@ const Composer: FC<ComposerProps> = ({
     [locale, overrideLocalizedStrings]
   );
 
-  const localizedGlobalize = useMemo(() => {
+  const localizedGlobalize = useMemo<PrecompiledGlobalizeType>(() => {
     const { GLOBALIZE, GLOBALIZE_LANGUAGE } = patchedLocalizedStrings || {};
 
     return GLOBALIZE || (GLOBALIZE_LANGUAGE && PrecompiledGlobalize(GLOBALIZE_LANGUAGE)) || PrecompiledGlobalize('en');
   }, [patchedLocalizedStrings]);
 
   const trackDimension = useCallback(
-    (name, data) => {
+    (name: string, data: any) => {
       if (!name || typeof name !== 'string') {
         return console.warn('botframework-webchat: Telemetry dimension name must be a string.');
       }
@@ -462,7 +486,7 @@ const Composer: FC<ComposerProps> = ({
     );
   }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
 
-  const scrollToEndButtonRenderer: ScrollToEndButtonMiddleware = useMemo(
+  const scrollToEndButtonRenderer: ScrollToEndButtonComponentFactory = useMemo(
     () =>
       applyMiddlewareForRenderer(
         'scroll to end button',
@@ -470,7 +494,7 @@ const Composer: FC<ComposerProps> = ({
         ...singleToArray(scrollToEndButtonMiddleware),
         () => () => () => false
       )() as any,
-    [patchedStyleOptions, scrollToEndButtonMiddleware]
+    [scrollToEndButtonMiddleware]
   );
 
   /**
@@ -557,59 +581,13 @@ const Composer: FC<ComposerProps> = ({
   );
 };
 
-// We will create a Redux store if it was not passed in
-const ComposeWithStore: FC<ComposerProps & { store: any }> = ({
-  internalRenderErrorBox,
-  onTelemetry,
-  store,
-  ...props
-}) => {
-  const [error, setError] = useState();
-
-  const handleError = useCallback(
-    error => {
-      console.error('botframework-webchat: Uncaught exception', { error });
-
-      onTelemetry && onTelemetry(createCustomEvent('exception', { error, fatal: true }));
-      setError(error);
-    },
-    [onTelemetry, setError]
-  );
-
-  const memoizedStore = useMemo(() => store || createStore(), [store]);
-
-  return error ? (
-    !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
-  ) : (
-    <ErrorBoundary onError={handleError}>
-      <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <Composer internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
-      </Provider>
-    </ErrorBoundary>
-  );
-};
-
-ComposeWithStore.defaultProps = {
-  internalRenderErrorBox: undefined,
-  onTelemetry: undefined,
-  store: undefined
-};
-
-ComposeWithStore.propTypes = {
-  internalRenderErrorBox: PropTypes.any,
-  onTelemetry: PropTypes.func,
-  store: PropTypes.any
-};
-
-export default ComposeWithStore;
-
 /**
  * @todo TODO: [P3] We should consider moving some data from Redux store to props
  *       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
  *       we should clean up the responsibility between Context and Redux store
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
-Composer.defaultProps = {
+ComposerCore.defaultProps = {
   activityMiddleware: undefined,
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
@@ -645,7 +623,7 @@ Composer.defaultProps = {
   username: ''
 };
 
-Composer.propTypes = {
+ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
@@ -693,3 +671,49 @@ Composer.propTypes = {
   userID: PropTypes.string,
   username: PropTypes.string
 };
+
+type ComposerProps = ComposerCoreProps & { store?: any };
+
+// We will create a Redux store if it was not passed in
+const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, store, ...props }) => {
+  const [error, setError] = useState();
+
+  const handleError = useCallback(
+    error => {
+      console.error('botframework-webchat: Uncaught exception', { error });
+
+      onTelemetry &&
+        onTelemetry(createCustomEvent('exception', { error, fatal: true }) as TelemetryExceptionMeasurementEvent);
+      setError(error);
+    },
+    [onTelemetry, setError]
+  );
+
+  const memoizedStore = useMemo(() => store || createStore(), [store]);
+
+  return error ? (
+    !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
+  ) : (
+    <ErrorBoundary onError={handleError}>
+      <Provider context={WebChatReduxContext} store={memoizedStore}>
+        <ComposerCore internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
+      </Provider>
+    </ErrorBoundary>
+  );
+};
+
+Composer.defaultProps = {
+  internalRenderErrorBox: undefined,
+  onTelemetry: undefined,
+  store: undefined
+};
+
+Composer.propTypes = {
+  internalRenderErrorBox: PropTypes.any,
+  onTelemetry: PropTypes.func,
+  store: PropTypes.any
+};
+
+export default Composer;
+
+export type { ComposerProps };

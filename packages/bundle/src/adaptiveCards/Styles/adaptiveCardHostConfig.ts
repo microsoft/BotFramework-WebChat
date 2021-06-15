@@ -1,6 +1,6 @@
 import { normalizeStyleOptions } from 'botframework-webchat-api';
 
-import FullBundleStyleOptions from '../../FullBundleStyleOptions';
+import FullBundleStyleOptions from '../../types/FullBundleStyleOptions';
 import normalizeAdaptiveCardsStyleOptions from '../normalizeStyleOptions';
 
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config

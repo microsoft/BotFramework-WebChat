@@ -1,11 +1,11 @@
 import { defaultStyleOptions } from 'botframework-webchat-api';
 import adaptiveCardsDefaultStyleOptions from './adaptiveCards/defaultStyleOptions';
 
-import FullBundleStyleOptions from './FullBundleStyleOptions';
+import FullBundleStyleOptions from './types/FullBundleStyleOptions';
 
-const FULL_BUNDLE_DEFAULT_STYLE_OPTIONS: Required<FullBundleStyleOptions> = {
+const fullBundleDefaultStyleOptions: Required<FullBundleStyleOptions> = {
   ...defaultStyleOptions,
   ...adaptiveCardsDefaultStyleOptions
 };
 
-export default FULL_BUNDLE_DEFAULT_STYLE_OPTIONS;
+export default fullBundleDefaultStyleOptions;

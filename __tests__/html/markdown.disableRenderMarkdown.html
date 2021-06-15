@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                id: '00000',
+                text: 'echo Hello, [World](https://bing.com)!',
+                textFormat: 'markdown',
+                timestamp: '2000-01-23T12:34:56.12345Z',
+                type: 'message'
+              }
+            ]),
+            renderMarkdown: false,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(1);
+
+        // The snapshot should render the text as-is, without using Markdown renderer.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -59,6 +59,7 @@
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
     "@babel/runtime": "^7.13.10",
+    "@types/react-dom": "^16.9.13",
     "abort-controller": "^3.0.0",
     "babel-jest": "^26.6.3",
     "concurrently": "^6.0.1",

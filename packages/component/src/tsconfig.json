@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "sourceMap": true
   },
-  "files": ["index.tsx"]
+  "files": ["index.ts"]
 }

@@ -1,5 +1,3 @@
-// IMPORTANT: To export anything from this file, add it to index-es5.tsx, which is the .d.ts for this file.
-
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
