@@ -77,6 +77,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private gtmEventsSubscription: Subscription;
     private handoffSubscription: Subscription;
     private webchatCollapseSubscribtion: Subscription;
+    private redirectSubscribtion: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -320,6 +321,13 @@ export class Chat extends React.Component<ChatProps, {}> {
                 wrapper && wrapper.classList.add('collapsed')
             })
 
+        this.redirectSubscribtion = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "redirect")
+            .subscribe((activity: any) => {
+                // @ts-ignore do not redirect inside of Designer
+                activity.value && !window.API_URL && (location.href = activity.value)
+            })
+
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
         if (!this.props.directLine || !this.props.directLine.conversationId) {
@@ -453,6 +461,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.gtmEventsSubscription.unsubscribe();
         // this.handoffSubscription.unsubscribe();
         this.webchatCollapseSubscribtion.unsubscribe();
+        this.redirectSubscribtion.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
