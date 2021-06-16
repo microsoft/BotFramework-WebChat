@@ -324,8 +324,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.redirectSubscribtion = botConnection.activity$
             .filter((activity: any) => activity.type === "event" && activity.name === "redirect")
             .subscribe((activity: any) => {
-                // @ts-ignore do not redirect inside of Designer
-                activity.value && !window.API_URL && (location.href = activity.value)
+                // ignore redirect inside of Designer's Try panel
+                activity.value && !window.hasOwnProperty('API_URL') && (location.href = activity.value)
             })
 
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
