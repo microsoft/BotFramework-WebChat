@@ -2,28 +2,19 @@ import { DirectLineCardAction } from 'botframework-webchat-core';
 
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
-type PerformCardAction = CallFunction<
-  [
-    {
-      cardAction: DirectLineCardAction;
-      getSignInUrl?: () => string;
-      target: any;
-    }
-  ],
-  void
->;
+type PerformCardActionParameter = {
+  cardAction?: DirectLineCardAction;
+  displayText?: string;
+  getSignInUrl?: () => string;
+  target?: any;
+  text?: string;
+  type?: string;
+  value?: any;
+};
 
-type CardActionMiddleware = FunctionMiddleware<
-  [{ dispatch: (action: any) => void }],
-  [
-    {
-      cardAction: DirectLineCardAction;
-      getSignInUrl?: () => string;
-      target: any;
-    }
-  ],
-  {}
->;
+type PerformCardAction = CallFunction<[PerformCardActionParameter], void>;
+
+type CardActionMiddleware = FunctionMiddleware<[{ dispatch: (action: any) => void }], [PerformCardActionParameter], {}>;
 
 export default CardActionMiddleware;
 

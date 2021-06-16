@@ -131,7 +131,7 @@ function disableElementWithUndo(element) {
   return () => undoStack.forEach(undo => undo && undo());
 }
 
-function disableInputElementsWithUndo(element, observeSubtree = true) {
+function disableInputElementsWithUndo(element: HTMLElement, observeSubtree = true) {
   const undoStack = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
     disableElementWithUndo(element)
   );
@@ -145,7 +145,7 @@ function disableInputElementsWithUndo(element, observeSubtree = true) {
   if (observeSubtree) {
     const observer = new MutationObserver(mutations =>
       mutations.forEach(({ addedNodes }) =>
-        undoStack.push(...addedNodes.map(addedNode => disableInputElementsWithUndo(addedNode, false)))
+        undoStack.push(...[].map.call(addedNodes, addedNode => disableInputElementsWithUndo(addedNode, false)))
       )
     );
 
@@ -232,8 +232,8 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   const [errors, setErrors] = useState([]);
   const [lastRender, setLastRender] = useState(0);
   const activeElementIndexRef = useRef(-1);
-  const adaptiveCardElementRef = useRef();
-  const contentRef = useRef();
+  const adaptiveCardElementRef = useRef<HTMLElement>();
+  const contentRef = useRef<HTMLDivElement>();
   const inputValuesRef = useRef([]);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
