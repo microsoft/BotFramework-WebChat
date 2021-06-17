@@ -4,10 +4,18 @@ import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
 import DirectLineActivity from './types/external/DirectLineActivity';
+import DirectLineAnimationCard from './types/external/DirectLineAnimationCard';
 import DirectLineAttachment from './types/external/DirectLineAttachment';
+import DirectLineAudioCard from './types/external/DirectLineAudioCard';
 import DirectLineCardAction from './types/external/DirectLineCardAction';
+import DirectLineHeroCard from './types/external/DirectLineHeroCard';
 import DirectLineJSBotConnection from './types/external/DirectLineJSBotConnection';
+import DirectLineOAuthCard from './types/external/DirectLineOAuthCard';
+import DirectLineReceiptCard from './types/external/DirectLineReceiptCard';
+import DirectLineSignInCard from './types/external/DirectLineSignInCard';
 import DirectLineSuggestedAction from './types/external/DirectLineSuggestedAction';
+import DirectLineThumbnailCard from './types/external/DirectLineThumbnailCard';
+import DirectLineVideoCard from './types/external/DirectLineVideoCard';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
@@ -72,9 +80,17 @@ export {
 
 export type {
   DirectLineActivity,
+  DirectLineAnimationCard,
   DirectLineAttachment,
+  DirectLineAudioCard,
   DirectLineCardAction,
+  DirectLineHeroCard,
+  DirectLineOAuthCard,
   DirectLineJSBotConnection,
+  DirectLineReceiptCard,
+  DirectLineSignInCard,
   DirectLineSuggestedAction,
+  DirectLineThumbnailCard,
+  DirectLineVideoCard,
   OneOrMany
 };

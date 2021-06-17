@@ -27,6 +27,7 @@ import SignInCardContent from './adaptiveCards/Attachment/SignInCardContent';
 import ThumbnailCardContent from './adaptiveCards/Attachment/ThumbnailCardContent';
 import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from './adaptiveCards/hooks/useAdaptiveCardsPackage';
+import useStyleOptions from './hooks/useStyleOptions';
 import VideoCardContent from './adaptiveCards/Attachment/VideoCardContent';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
@@ -54,7 +55,8 @@ export const createDirectLineAppServiceExtension = (
 const patchedHooks = {
   ...hooks,
   useAdaptiveCardsHostConfig,
-  useAdaptiveCardsPackage
+  useAdaptiveCardsPackage,
+  useStyleOptions
 };
 
 const AdditionalComponents = {

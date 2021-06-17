@@ -17,6 +17,8 @@ import {
 } from 'adaptivecards';
 
 import { CardAction } from 'botframework-directlinejs';
+import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
+import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
 
 export interface BotFrameworkCardAction {
   __isBotFrameworkCardAction: boolean;
@@ -54,9 +56,13 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
 export default class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
-  styleOptions: any;
+  styleOptions: AdaptiveCardsStyleOptions;
 
-  constructor(adaptiveCards, styleOptions, direction = 'ltr') {
+  constructor(
+    adaptiveCards: AdaptiveCardsPackage,
+    styleOptions: AdaptiveCardsStyleOptions,
+    direction: 'ltr' | 'rtl' | 'auto' = 'ltr'
+  ) {
     this.card = new adaptiveCards.AdaptiveCard();
     this.container = new Container();
     this.container.rtl = direction === 'rtl';

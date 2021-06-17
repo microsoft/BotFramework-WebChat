@@ -1,7 +1,9 @@
+/**
+ * Adaptive Cards styling
+ */
 type AdaptiveCardsStyleOptions = {
-  /**
-   * Adaptive Cards styling
-   */
+  /** Adaptive Cards: Specify the maximum schema version supported by the Adaptive Card serializer. */
+  adaptiveCardsParserMaxVersion?: string;
 
   /**
    * Adaptive Cards styling for 'emphasis' container style

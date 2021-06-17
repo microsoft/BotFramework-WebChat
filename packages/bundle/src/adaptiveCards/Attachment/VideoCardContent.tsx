@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { DirectLineVideoCard } from 'botframework-webchat-core';
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
@@ -11,7 +12,7 @@ const { VideoContent } = Components;
 
 type VideoCardContentProps = {
   actionPerformedClassName?: string;
-  content: {
+  content: DirectLineVideoCard & {
     autoloop?: boolean;
     autostart?: boolean;
     image?: { url?: string };
@@ -21,7 +22,7 @@ type VideoCardContentProps = {
 };
 
 const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
-  const { autoloop, autostart, image: { url: imageURL } = {}, media } = content;
+  const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 
   return (

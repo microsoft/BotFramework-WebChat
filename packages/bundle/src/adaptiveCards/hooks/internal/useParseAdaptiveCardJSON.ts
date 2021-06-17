@@ -2,8 +2,9 @@ import { hooks } from 'botframework-webchat-component';
 import { useCallback, useMemo } from 'react';
 
 import useAdaptiveCardsPackage from '../useAdaptiveCardsPackage';
+import useStyleOptions from '../../../hooks/useStyleOptions';
 
-const { useDirection, useStyleOptions } = hooks;
+const { useDirection } = hooks;
 
 function updateRTLInline(element, rtl, adaptiveCardsPackage) {
   if (element instanceof adaptiveCardsPackage.Container) {
@@ -33,7 +34,9 @@ export default function useParseAdaptiveCardJSON() {
     const maxVersion = Version.parse(adaptiveCardsParserMaxVersion, new SerializationContext());
 
     if (maxVersion && !maxVersion.isValid) {
-      return console.warn('botframework-webchat: "adaptiveCardsParserMaxVersion" specified is not a valid version.');
+      console.warn('botframework-webchat: "adaptiveCardsParserMaxVersion" specified is not a valid version.');
+
+      return;
     }
 
     return maxVersion;

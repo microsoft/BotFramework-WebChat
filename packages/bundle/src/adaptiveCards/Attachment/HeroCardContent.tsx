@@ -1,3 +1,4 @@
+import { DirectLineHeroCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
@@ -5,12 +6,13 @@ import React, { FC, useMemo } from 'react';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import useStyleOptions from '../../hooks/useStyleOptions';
 
-const { useDirection, useStyleOptions } = hooks;
+const { useDirection } = hooks;
 
 type HeroCardContentProps = {
   actionPerformedClassName?: string;
-  content: any;
+  content: DirectLineHeroCard;
   disabled?: boolean;
 };
 
@@ -18,6 +20,7 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();
+
   const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
