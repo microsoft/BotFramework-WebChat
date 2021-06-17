@@ -504,6 +504,7 @@ const ExpandableKnobTheme = (theme: Theme) => `
     text-indent: 999%;
     white-space: nowrap;
     overflow: hidden;
+    font-size: 0px;
   }
 
   body .feedbot-wrapper {
@@ -572,12 +573,12 @@ const Sidebar = (theme: Theme) => `
     text-indent: 999%;
     white-space: nowrap;
     overflow: hidden;
+    font-size: 0px;
 
     background-image: url('https://feedyou.blob.core.windows.net/webchat/times-solid.svg');
     background-repeat: no-repeat;
     background-size: 15px;
     background-position: center center;    
-
   }
 
   .feedbot-wrapper.collapsed .feedbot-header {
