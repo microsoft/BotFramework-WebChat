@@ -157,6 +157,167 @@ function disableInputElementsWithUndo(element: HTMLElement, observeSubtree = tru
   return () => undoStack.forEach(undo => undo && undo());
 }
 
+/**
+ * Checks if an element contains a class.
+ *
+ * @param {HTMLElement} element - The element to check for the class.
+ * @param {string} className - The name of the class to check for.
+ * @returns {boolean} `true` if the element contains the class, otherwise, `false`.
+ */
+function containsClassName(element: HTMLElement, className: string): boolean {
+  return (element.className || '').split(' ').includes(className);
+}
+
+/**
+ * Gets the value of an attribute from an element.
+ *
+ * @returns {false | string} The value of the attribute. `false` if the attribute was not set.
+ */
+function getAttribute(element: HTMLElement, qualifiedName: string): false | string {
+  return element.hasAttribute(qualifiedName) && element.getAttribute(qualifiedName);
+}
+
+/**
+ * Sets or removes an attribute from an element.
+ *
+ * @param {HTMLElement} element - The element to set or remove attribute from.
+ * @param {string} qualifiedName - The name of the attribute.
+ * @param {false | string} value - The value of the attribute. When passing `false`, remove the attribute.
+ */
+function setOrRemoveAttribute(element: HTMLElement, qualifiedName: string, value: false | string): void {
+  if (value === false) {
+    element.removeAttribute(qualifiedName);
+  } else {
+    element.setAttribute(qualifiedName, value);
+  }
+}
+
+/**
+ * Sets or removes an attribute from an element with an undo function.
+ *
+ * @param {HTMLElement} element - The element to set or remove attribute from.
+ * @param {string} qualifiedName - The name of the attribute.
+ * @param {false | string} value - The value of the attribute. When passing `false`, remove the attribute.
+ *
+ * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
+ */
+function setOrRemoveAttributeWithUndo(element: HTMLElement, qualifiedName: string, value: false | string): () => void {
+  const prevValue = getAttribute(element, qualifiedName);
+
+  setOrRemoveAttribute(element, qualifiedName, value);
+
+  return () => setOrRemoveAttribute(element, qualifiedName, prevValue);
+}
+
+/**
+ * Finds the first ancestor that fulfill the predicate.
+ *
+ * @param {HTMLElement} element - The starting element. This element will not be checked against the predicate.
+ * @param {(ancestor: HTMLElement) => boolean} predicate - The predicate to fulfill.
+ *
+ * @returns {HTMLElement | undefined} The first ancestor that fulfill the predicate, otherwise, `undefined`.
+ */
+function findAncestor(element: HTMLElement, predicate: (ancestor: HTMLElement) => boolean): HTMLElement | undefined {
+  let current = element.parentElement;
+
+  while (current) {
+    if (predicate.call(element, current)) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+}
+
+/**
+ * Indicates the action selected by performing a series of manipulations, with undo:
+ *
+ * - Accessibility: set `aria-pressed` to `true`
+ * - Applies `styleOptions.actionPerformedClassName`
+ *
+ * @param {HTMLElement[]} selectedActionElements - An array of elements that are representing the action and is selected.
+ * @param {string?} actionPerformedClassName - The name of the class to apply to all elements.
+ *
+ * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
+ */
+function indicateActionSelectionWithUndo(
+  selectedActionElements: HTMLElement[],
+  actionPerformedClassName?: string
+): (() => void) | undefined {
+  if (!selectedActionElements.length) {
+    return;
+  }
+
+  // Verify all input elements are "ac-pushButton", could belongs to ActionSet or "card actions".
+  if (selectedActionElements.some(actionElement => !containsClassName(actionElement, 'ac-pushButton'))) {
+    console.warn(
+      'botframework-webchat: Cannot mark selected action in the card, some elements are not an "ac-pushButton".'
+    );
+
+    return;
+  }
+
+  // A distinct set of action set containers which has selections, excluding containers without actions.
+  // Multiple submission in an Adaptive Card is still a vague area and TBD.
+  // We might want to disable the whole card, just buttons in same container, or do nothing (today).
+  const actionSetElements = new Set<HTMLElement>();
+
+  selectedActionElements.forEach(selectedActionElement => {
+    const actionSetElement = findAncestor(
+      selectedActionElement,
+      ancestor => ancestor.getAttribute('role') === 'menubar'
+    );
+
+    actionSetElement && actionSetElements.add(actionSetElement);
+  });
+
+  const undoStack: (() => void)[] = [];
+
+  actionSetElements.forEach(actionSetElement => {
+    // Remove "role" from every "ac-actionSet" container.
+    undoStack.push(setOrRemoveAttributeWithUndo(actionSetElement, 'role', false));
+
+    // Modify "role" of every actions in the container.
+    Array.from(actionSetElement.querySelectorAll('.ac-pushButton') as NodeListOf<HTMLElement>).forEach(
+      actionElement => {
+        if (selectedActionElements.includes(actionElement)) {
+          // Add "aria-pressed" and set "role" attribute to "button" (which is required by "aria-pressed").
+          undoStack.push(setOrRemoveAttributeWithUndo(actionElement, 'aria-pressed', 'true'));
+          undoStack.push(setOrRemoveAttributeWithUndo(actionElement, 'role', 'button'));
+
+          // Highlight actions by applying `styleOptions.actionPerformedClassName`.
+          actionPerformedClassName &&
+            undoStack.push(addPersistentClassWithUndo(actionElement, actionPerformedClassName));
+        } else {
+          // We removed "role=menubar" from the container, we must remove "role=menuitem" from unselected actions.
+          undoStack.push(setOrRemoveAttributeWithUndo(actionElement, 'role', false));
+        }
+      }
+    );
+  });
+
+  return () => undoStack.forEach(undo => undo());
+}
+
+/**
+ * Fixes accessibility issues from Adaptive Card, with undo.
+ *
+ * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
+ */
+function fixAccessibilityIssuesWithUndo(element: HTMLElement): () => void {
+  // These hacks should be done in Adaptive Cards library instead.
+  const undoStack: (() => void)[] = [];
+
+  // Related to #3949: All action buttons inside role="menubar" should be role="menuitem".
+  undoStack.push(
+    ...Array.from(element.querySelectorAll('.ac-actionSet[role="menubar"] [role="button"]')).map(actionButton =>
+      setAttributeWithUndo(actionButton, 'role', 'menuitem')
+    )
+  );
+
+  return () => undoStack.forEach(undo => undo());
+}
+
 function getFocusableElements(element) {
   return [].filter.call(
     element.querySelectorAll(
@@ -421,41 +582,28 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     adaptiveCard.onExecuteAction = disabled ? undefined : handleExecuteAction;
   }, [adaptiveCard, disabled, handleExecuteAction]);
 
+  useEffect(() => fixAccessibilityIssuesWithUndo(adaptiveCardElementRef.current), [adaptiveCardElementRef, lastRender]);
+
   useEffect(() => {
     // If the Adaptive Card get re-rendered, re-disable elements as needed.
     if (disabled) {
       return disableInputElementsWithUndo(adaptiveCardElementRef.current);
     }
-  }, [disabled, lastRender]);
+  }, [adaptiveCardElementRef, disabled, lastRender]);
 
   useEffect(() => {
     // If the Adaptive Card changed, reset all actions performed.
     setActionsPerformed([]);
   }, [adaptiveCard]);
 
-  useEffect(() => {
-    // Add aria-pressed and role attribute to the AC action button selected by the user.
-    actionsPerformed.forEach(({ renderedElement }) => {
-      if (renderedElement && adaptiveCardElementRef.current.contains(renderedElement)) {
-        setAttributeWithUndo(renderedElement, 'aria-pressed', 'true');
-        setAttributeWithUndo(renderedElement, 'role', 'button');
-      }
-    });
-
-    // Add developers to highlight actions when they have been clicked.
-    if (!actionPerformedClassName) {
-      return;
-    }
-
-    const undoStack = actionsPerformed.map(
-      ({ renderedElement }) =>
-        renderedElement &&
-        adaptiveCardElementRef.current.contains(renderedElement) &&
-        addPersistentClassWithUndo(renderedElement, actionPerformedClassName)
-    );
-
-    return () => undoStack.forEach(undo => undo && undo());
-  }, [actionsPerformed, actionPerformedClassName, lastRender]);
+  useEffect(
+    () =>
+      indicateActionSelectionWithUndo(
+        actionsPerformed.map(({ renderedElement }) => renderedElement),
+        actionPerformedClassName
+      ),
+    [actionsPerformed, actionPerformedClassName, lastRender]
+  );
 
   return errors.length ? (
     node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
