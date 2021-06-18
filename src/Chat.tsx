@@ -258,7 +258,6 @@ export class Chat extends React.Component<ChatProps, {}> {
                         }
                     }
                 };
-                console.log('User data', newActivity.channelData.userData)
                 return botConnection.postActivityOriginal(newActivity);
             /*} else if (this.smartsupp && activity.type === "message") {
                 console.log('Smartsupp send', activity.text, activity)

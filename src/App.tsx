@@ -61,7 +61,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         }
       );
       const body = await response.json();
-      console.log("Token response", body);
+      console.log("WebChat init", body);
 
       props.botConnection = new DirectLine({
         ...(props.directLine || {}),
@@ -106,6 +106,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           props.disableInputWhenNotNeeded = true;
         }
 
+        if (config.locale && !props.hasOwnProperty("locale")) {
+          props.locale = config.locale
+        }
+
         if (config.template.autoExpandTimeout > 0 && !props.hasOwnProperty("autoExpandTimeout")) {
           props.autoExpandTimeout = config.template.autoExpandTimeout;
         }
@@ -115,7 +119,12 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         }
 
         if (config.userData) {
-          // TODO
+          props.userData = config.userData.reduce(
+            (data: {[key: string]: any}, row: {storage: string, value: string}) => {
+              if (row.storage && row.value && !data[row.storage]) {
+                data[row.storage] = row.value
+              }
+            }, props.userData || {})
         }
 
         if (config.customCss) {
@@ -137,7 +146,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         }
       }
     } catch (err) {
-      console.error("Token response error", err);
+      console.error("WebChat init error", err);
       return;
     }
   }
