@@ -1065,7 +1065,7 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
 
           if (~firstUnacknowledgedActivityElementIndex) {
             if (patchedAutoScrollSnapOnActivity) {
-              // Find the activity element which we should snap to.
+              // Gets the activity element which we should snap to.
               const { element: nthUnacknowledgedActivityElement } = activityElements[
                 firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1
               ];
