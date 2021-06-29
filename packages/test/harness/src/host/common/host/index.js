@@ -4,6 +4,7 @@ const click = require('./click');
 const done = require('./done');
 const error = require('./error');
 const getLogs = require('./getLogs');
+const hover = require('./hover');
 const ready = require('./ready');
 const sendAccessKey = require('./sendAccessKey');
 const sendDevToolsCommand = require('./sendDevToolsCommand');
@@ -25,6 +26,7 @@ module.exports = function createHost(webDriver) {
     donePromise: doneDeferred.promise,
     error: error(doneDeferred.reject),
     getLogs: getLogs(webDriver),
+    hover: hover(webDriver),
     ready: ready(readyDeferred.resolve),
     readyPromise: readyDeferred.promise,
     sendAccessKey: sendAccessKey(webDriver),
