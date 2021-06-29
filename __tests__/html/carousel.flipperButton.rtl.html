@@ -30,7 +30,12 @@
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
         // WHEN: Left flipper is clicked.
-        await host.click(carouselLayout.querySelector('[aria-label="Left"]'));
+        const leftFlipper = carouselLayout.querySelector('[aria-label="Left"]');
+
+        // Improve test reliability by hover before click on flipper button.
+        await host.hover(leftFlipper);
+        await testHelpers.sleep(500);
+        await host.click(leftFlipper);
 
         // THEN: It should scroll left.
         await pageConditions.became('Carousel should scroll left', () => carouselFilmstrip.scrollLeft < -100, 1000);
@@ -39,10 +44,19 @@
         await host.snapshot();
 
         // WHEN: Right flipper is clicked.
-        await host.click(carouselLayout.querySelector('[aria-label="Right"]'));
+        const rightFlipper = carouselLayout.querySelector('[aria-label="Right"]');
+
+        // Improve test reliability by hover before click on flipper button.
+        await host.hover(rightFlipper);
+        await testHelpers.sleep(500);
+        await host.click(rightFlipper);
 
         // THEN: It should scroll right.
-        await pageConditions.became('Carousel should scroll right', () => Math.abs(carouselFilmstrip.scrollLeft) < 1, 1000); // 1 pixel for tolerance.
+        await pageConditions.became(
+          'Carousel should scroll right',
+          () => Math.abs(carouselFilmstrip.scrollLeft) < 1,
+          1000
+        ); // 1 pixel for tolerance.
 
         await testHelpers.sleep(500); // Wait for right flipper to fade away.
         await host.snapshot();
