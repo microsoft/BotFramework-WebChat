@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3360](https://github.com/microsoft/BotFramework-WebChat/issues/3360) and [#3615](https://github.com/microsoft/BotFramework-WebChat/issues/3615). Use `channelData['webchat:fallback-text']` field for screen reader text, before stripping Markdown from [`activity.text` field](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#text), by [@compulim](https://github.com/compulim), in PR [#3917](https://github.com/microsoft/BotFramework-WebChat/pull/3917)
 -  Fixes [#3856](https://github.com/microsoft/BotFramework-WebChat/issues/3856). Fix missing typings, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931)
 -  Fixes [#3943](https://github.com/microsoft/BotFramework-WebChat/issues/3943). Auto-scroll should skip invisible activities, such as post back or event activity, by [@compulim](https://github.com/compulim), in PR [#3945](https://github.com/microsoft/BotFramework-WebChat/pull/3945)
+-  Fixes [#3947](https://github.com/microsoft/BotFramework-WebChat/issues/3947). Adaptive Cards: all action sets (which has `role="menubar"`) must have at least 1 or more `role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#3950](https://github.com/microsoft/BotFramework-WebChat/pull/3950)
 
 ### Changed
 

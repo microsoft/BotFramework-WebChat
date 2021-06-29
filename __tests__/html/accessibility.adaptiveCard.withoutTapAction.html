@@ -28,7 +28,11 @@
 
         await host.sendShiftTab();
 
-        expect(document.activeElement === pageElements.transcript()).toBe(true);
+        await pageConditions.became(
+          'focus is on the transcript',
+          () => document.activeElement === pageElements.transcript(),
+          1000
+        );
 
         // The card should be in white because it is not tappable, it should not be focused.
         // The transcript will become yellow because it is focused.
