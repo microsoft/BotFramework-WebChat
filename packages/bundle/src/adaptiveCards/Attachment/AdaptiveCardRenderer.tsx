@@ -599,7 +599,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   useEffect(
     () =>
       indicateActionSelectionWithUndo(
-        actionsPerformed.map(({ renderedElement }) => renderedElement),
+        // Actions that do not have "renderedElement" means it is the Adaptive Card itself, such as "selectAction" (AC) or "tapAction" (rich cards).
+        // We do not need to mark the whole card as performed.
+        actionsPerformed.map(({ renderedElement }) => renderedElement).filter(renderedElement => renderedElement),
         actionPerformedClassName
       ),
     [actionsPerformed, actionPerformedClassName, lastRender]
