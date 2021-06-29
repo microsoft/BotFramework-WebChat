@@ -1,12 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
+import { Action, OpenUrlAction, SubmitAction } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
+import { DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState, VFC } from 'react';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
 
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
@@ -384,7 +387,19 @@ function saveInputValues(element) {
   });
 }
 
-const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled: disabledFromProps, tapAction }) => {
+type AdaptiveCardRendererProps = {
+  actionPerformedClassName?: string;
+  adaptiveCard: any;
+  disabled?: boolean;
+  tapAction?: DirectLineCardAction;
+};
+
+const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
+  actionPerformedClassName,
+  adaptiveCard,
+  disabled: disabledFromProps,
+  tapAction
+}) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [actionsPerformed, setActionsPerformed] = useState([]);
@@ -456,7 +471,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   );
 
   const handleExecuteAction = useCallback(
-    action => {
+    (action: Action) => {
       // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
       if (disabled) {
         return;
@@ -465,25 +480,40 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       addActionsPerformed(action);
 
       const actionTypeName = action.getJsonTypeName();
+      const { iconUrl: image, title } = action;
 
+      // We cannot use "instanceof" check here, because web devs may bring their own version of Adaptive Cards package.
+      // We need to check using "getJsonTypeName()" instead.
       if (actionTypeName === 'Action.OpenUrl') {
+        const { url: value } = action as OpenUrlAction;
+
         performCardAction({
+          image,
+          title,
           type: 'openUrl',
-          value: action.url
+          value
         });
       } else if (actionTypeName === 'Action.Submit') {
-        if (typeof action.data !== 'undefined') {
-          const { data: actionData } = action;
+        const { data } = (action as SubmitAction) as {
+          data: string | BotFrameworkCardAction;
+        };
 
-          if (actionData && actionData.__isBotFrameworkCardAction) {
-            const { cardAction } = actionData;
-            const { displayText, text, type, value } = cardAction;
-
-            performCardAction({ displayText, text, type, value });
+        if (typeof data !== 'undefined') {
+          if (typeof data === 'string') {
+            performCardAction({
+              image,
+              title,
+              type: 'imBack',
+              value: data
+            });
+          } else if (data.__isBotFrameworkCardAction) {
+            performCardAction(data.cardAction);
           } else {
             performCardAction({
-              type: typeof action.data === 'string' ? 'imBack' : 'postBack',
-              value: action.data
+              image,
+              title,
+              type: 'postBack',
+              value: data
             });
           }
         }
@@ -629,7 +659,13 @@ AdaptiveCardRenderer.propTypes = {
   actionPerformedClassName: PropTypes.string,
   adaptiveCard: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
+
+  // TypeScript class is not mappable to PropTypes.func
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   tapAction: PropTypes.shape({
+    image: PropTypes.string,
+    title: PropTypes.string,
     type: PropTypes.string.isRequired,
     value: PropTypes.string
   })
