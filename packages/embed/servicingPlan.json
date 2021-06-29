@@ -356,8 +356,7 @@
     "hosted": {
       "assets": [
         [
-          "/botframework-webchat/webchat-es5.js",
-          "sha384-YT//LqZJgkEXrmVxm6RZJKs4dSZJQo5kEX0tE9dP1XaOaVsC7NEvwnlP2gW2KWcl"
+          "/botframework-webchat/webchat-es5.js"          
         ]
       ],
       "private": true,
