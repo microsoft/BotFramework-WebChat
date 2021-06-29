@@ -46,8 +46,8 @@ export default function CarouselFilmStripAttachment({
         }
       },
 
-      '&:not(.webchat__carousel-filmstrip-attachment--hide-avatar, .webchat__carousel-filmstrip-attachment--show-avatar)': {
-        '&:first-child': {
+      '&.webchat__carousel-filmstrip-attachment--hide-nub, &.webchat__carousel-filmstrip-attachment--show-nub': {
+        '&:not(.webchat__carousel-filmstrip-attachment--hide-avatar.webchat__carousel-filmstrip-attachment--show-avatar):first-child': {
           paddingLeft: paddingRegular * 2
         }
       }

@@ -81,7 +81,8 @@ describe('rtl UI', () => {
     await sendMessageAndMatchSnapshot(driver, pageObjects, 'صباح الخير');
   });
 
-  test('carousel with avatar initials should display user and bot in reversed positions', async () => {
+  // TODO: [P1] #3898 Un-skip this one after we bump to Chromium 85+.
+  test.skip('carousel with avatar initials should display user and bot in reversed positions', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         ...props,
@@ -95,7 +96,8 @@ describe('rtl UI', () => {
     await sendMessageAndMatchSnapshot(driver, pageObjects, 'arabic carousel');
   });
 
-  test('carousel should scroll to the left instead of right', async () => {
+  // TODO: [P1] #3898 Un-skip this one after we bump to Chromium 85+.
+  test.skip('carousel should scroll to the left instead of right', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         ...props
