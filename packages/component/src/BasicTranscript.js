@@ -1012,10 +1012,13 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
   const [
     { autoScrollSnapOnActivity, autoScrollSnapOnActivityOffset, autoScrollSnapOnPage, autoScrollSnapOnPageOffset }
   ] = useStyleOptions();
+  const [activities] = useActivities();
   const [lastAcknowledgedActivity] = useAcknowledgedActivity();
 
+  const activitiesRef = useRef(activities);
   const lastAcknowledgedActivityRef = useRef(lastAcknowledgedActivity);
 
+  activitiesRef.current = activities;
   lastAcknowledgedActivityRef.current = lastAcknowledgedActivity;
 
   scrollerRef.current = useCallback(
@@ -1038,41 +1041,58 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
         typeof autoScrollSnapOnPageOffset === 'number' ? autoScrollSnapOnPageOffset : 0;
 
       if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
+        const { current: activities } = activitiesRef;
+        const { current: activityElements } = activityElementsRef;
         const { current: lastAcknowledgedActivity } = lastAcknowledgedActivityRef;
-
         const values = [];
 
-        if (patchedAutoScrollSnapOnActivity) {
-          const { element: nthUnacknowledgedActivityElement } =
-            activityElementsRef.current[
-              activityElementsRef.current.findIndex(({ activity }) => activity === lastAcknowledgedActivity) +
-                patchedAutoScrollSnapOnActivity
-            ] || {};
+        const lastAcknowledgedActivityIndex = activities.indexOf(lastAcknowledgedActivity);
 
-          if (nthUnacknowledgedActivityElement) {
-            values.push(
-              nthUnacknowledgedActivityElement.offsetTop +
-                nthUnacknowledgedActivityElement.offsetHeight -
-                offsetHeight -
-                scrollTop +
-                patchedAutoScrollSnapOnActivityOffset
-            );
+        if (~lastAcknowledgedActivityIndex) {
+          // The activity that we acknowledged could be not rendered, such as post back activity.
+          // When calculating scroll snap, we can only base on the first unacknowledged-and-rendering activity.
+          let firstUnacknowledgedActivityElementIndex = -1;
+
+          for (let index = lastAcknowledgedActivityIndex + 1, { length } = activities; index < length; index++) {
+            const activity = activities[index];
+            const activityElementIndex = activityElements.findIndex(entry => entry.activity === activity);
+
+            if (~activityElementIndex) {
+              firstUnacknowledgedActivityElementIndex = activityElementIndex;
+              break;
+            }
           }
-        }
 
-        if (patchedAutoScrollSnapOnPage) {
-          const { element: firstUnacknowledgedActivityElement } =
-            activityElementsRef.current[
-              activityElementsRef.current.findIndex(({ activity }) => activity === lastAcknowledgedActivity) + 1
-            ] || {};
+          if (~firstUnacknowledgedActivityElementIndex) {
+            if (patchedAutoScrollSnapOnActivity) {
+              // Gets the activity element which we should snap to.
+              const { element: nthUnacknowledgedActivityElement } = activityElements[
+                firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1
+              ];
 
-          if (firstUnacknowledgedActivityElement) {
-            values.push(
-              firstUnacknowledgedActivityElement.offsetTop -
-                scrollTop -
-                offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
-                patchedAutoScrollSnapOnPageOffset
-            );
+              if (nthUnacknowledgedActivityElement) {
+                values.push(
+                  nthUnacknowledgedActivityElement.offsetTop +
+                    nthUnacknowledgedActivityElement.offsetHeight -
+                    offsetHeight -
+                    scrollTop +
+                    patchedAutoScrollSnapOnActivityOffset
+                );
+              }
+            }
+
+            if (patchedAutoScrollSnapOnPage) {
+              const { element: firstUnacknowledgedActivityElement } = activityElements[
+                firstUnacknowledgedActivityElementIndex
+              ];
+
+              values.push(
+                firstUnacknowledgedActivityElement.offsetTop -
+                  scrollTop -
+                  offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
+                  patchedAutoScrollSnapOnPageOffset
+              );
+            }
           }
         }
 
@@ -1082,6 +1102,7 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
       return Infinity;
     },
     [
+      activitiesRef,
       activityElementsRef,
       autoScrollSnapOnActivity,
       autoScrollSnapOnActivityOffset,
