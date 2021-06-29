@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831), PR [#3846](https://github.com/microsoft/BotFramework-WebChat/pull/3846), and PR [#3917](https://github.com/microsoft/BotFramework-WebChat/pull/3917)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3831](https://github.com/microsoft/BotFramework-WebChat/pull/3831), PR [#3846](https://github.com/microsoft/BotFramework-WebChat/pull/3846), PR [#3917](https://github.com/microsoft/BotFramework-WebChat/pull/3917), and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    -  Development dependencies
       -  [`@azure/storage-blob@12.5.0`](https://npmjs.com/package/@azure/storage-blob)
       -  [`@babel/cli@7.13.14`](https://npmjs.com/package/@babel/cli)
@@ -136,6 +136,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`classnames@2.3.1`](https://npmjs.com/package/classnames)
       -  [`core-js@3.10.0`](https://npmjs.com/package/core-js)
       -  [`react-dictate-button@2.0.1`](https://npmjs.com/package/react-dictate-button)
+      -  [`react-film@3.0.1`](https://npmjs.com/package/react-film)
       -  [`react-redux@7.2.3`](https://npmjs.com/package/react-redux)
       -  [`redux-devtools-extension@2.13.9`](https://npmjs.com/package/redux-devtools-extension)
       -  [`sanitize-html@2.4.0`](https://npmjs.com/package/sanitize-html)
