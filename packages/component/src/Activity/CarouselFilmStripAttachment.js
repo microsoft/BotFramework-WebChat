@@ -15,9 +15,11 @@ const CarouselFilmStripAttachment = ({
   className,
   fromUser,
   hasAvatar,
+  hideNub,
   index,
   renderAttachment,
-  showAvatar
+  showAvatar,
+  showNub
 }) => {
   const [direction] = useDirection();
   const localize = useLocalizer();
@@ -32,8 +34,10 @@ const CarouselFilmStripAttachment = ({
         'webchat__carousel-filmstrip-attachment',
         {
           'webchat__carousel-filmstrip-attachment--hide-avatar': hasAvatar && !showAvatar,
+          'webchat__carousel-filmstrip-attachment--hide-nub': hideNub,
           'webchat__carousel-filmstrip-attachment--rtl': direction === 'rtl',
-          'webchat__carousel-filmstrip-attachment--show-avatar': showAvatar
+          'webchat__carousel-filmstrip-attachment--show-avatar': showAvatar,
+          'webchat__carousel-filmstrip-attachment--show-nub': showNub
         },
         'react-film__filmstrip__item',
         carouselFilmStripAttachmentStyleSet + '',
@@ -78,9 +82,11 @@ CarouselFilmStripAttachment.propTypes = {
   className: PropTypes.string,
   fromUser: PropTypes.any.isRequired,
   hasAvatar: PropTypes.any.isRequired,
+  hideNub: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   renderAttachment: PropTypes.func.isRequired,
-  showAvatar: PropTypes.bool.isRequired
+  showAvatar: PropTypes.bool.isRequired,
+  showNub: PropTypes.bool.isRequired
 };
 
 export default CarouselFilmStripAttachment;

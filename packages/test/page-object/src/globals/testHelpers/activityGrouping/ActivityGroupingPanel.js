@@ -1,6 +1,10 @@
 import ActivityGroupingContext from './ActivityGroupingContext';
 import classNames from 'classnames';
 
+// ESLint is not able to detect usage of <Toggle> because we didn't import React but using UMD version instead.
+// eslint-disable-next-line no-unused-vars
+import Toggle from './Toggle';
+
 // Use React from window (UMD) instead of import.
 const { React: { useCallback, useContext, useState } = {} } = window;
 

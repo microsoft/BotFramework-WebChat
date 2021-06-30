@@ -167,6 +167,8 @@ const CarouselFilmStrip = ({
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
 
+  const hideNub = hasNub && !showNub;
+
   return (
     <div
       className={classNames(
@@ -174,7 +176,7 @@ const CarouselFilmStrip = ({
         {
           'webchat__carousel-filmstrip--extra-trailing': extraTrailing,
           'webchat__carousel-filmstrip--hide-avatar': hasAvatar && !showAvatar,
-          'webchat__carousel-filmstrip--hide-nub': hasNub && !showNub,
+          'webchat__carousel-filmstrip--hide-nub': hideNub,
           'webchat__carousel-filmstrip--no-message': !activityDisplayText,
           'webchat__carousel-filmstrip--rtl': direction === 'rtl',
           'webchat__carousel-filmstrip--show-avatar': showAvatar,
@@ -224,12 +226,14 @@ const CarouselFilmStrip = ({
                     attachment={attachment}
                     fromUser={fromUser}
                     hasAvatar={hasAvatar}
+                    hideNub={hideNub}
                     index={index}
                     /* Attachments do not have an ID; it is always indexed by number */
                     // eslint-disable-next-line react/no-array-index-key
                     key={index}
                     renderAttachment={renderAttachment}
                     showAvatar={showAvatar}
+                    showNub={showNub}
                   />
                 ))}
               </ul>
