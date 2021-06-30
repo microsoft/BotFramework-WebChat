@@ -9,6 +9,7 @@ export default function createHost() {
     done: () => {},
     error: () => {},
     getLogs: () => {},
+    hover: () => {},
     ready: () => {},
     sendAccessKey: () => {},
     sendDevToolsCommand: () => {},
