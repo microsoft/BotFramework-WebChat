@@ -1064,6 +1064,9 @@ const BaseTheme = (theme: Theme) => `
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-textBlock{
       padding: 0 20px;
+      white-space: unset !important;
+      text-overflow: unset !important;
+      overflow: unset !important;
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div .ac-actionSet{
