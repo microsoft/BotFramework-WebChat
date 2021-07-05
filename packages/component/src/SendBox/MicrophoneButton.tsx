@@ -12,7 +12,6 @@ import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 import useDictateAbortable from '../hooks/useDictateAbortable';
-import useResumeAudioContext from '../hooks/internal/useResumeAudioContext';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
@@ -100,7 +99,6 @@ function useMicrophoneButtonClick(): () => void {
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [webSpeechPonyfill] = useWebSpeechPonyfill();
-  const resumeAudioContext = useResumeAudioContext();
   const startDictate = useStartDictate();
   const stopDictate = useStopDictate();
 
@@ -120,8 +118,6 @@ function useMicrophoneButtonClick(): () => void {
   // TODO: [P2] We should revisit this function later
   //       The click() logic seems local to the component, but may not be generalized across all implementations.
   return useCallback(() => {
-    resumeAudioContext();
-
     if (dictateState === DictateState.WILL_START) {
       setShouldSpeakIncomingActivity(false);
     } else if (dictateState === DictateState.DICTATING) {
