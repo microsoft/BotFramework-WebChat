@@ -44,14 +44,6 @@ let config = {
     alias: {
       // It is smaller to use /lib/ instead of /es2015/.
       // Verifies if /es2015/ is better when moving to esbuild.
-      'microsoft-cognitiveservices-speech-sdk': resolve(
-        __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
-      ),
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
-        __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
-      ),
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports.js'
@@ -71,6 +63,16 @@ let config = {
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
+      ),
+
+      // This line must be placed after other specific imports.
+      'microsoft-cognitiveservices-speech-sdk': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
       ),
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
