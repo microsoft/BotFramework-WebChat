@@ -42,17 +42,35 @@ let config = {
   ],
   resolve: {
     alias: {
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig': resolve(
+      // It is smaller to use /lib/ instead of /es2015/.
+      // Verifies if /es2015/ is better when moving to esbuild.
+      'microsoft-cognitiveservices-speech-sdk': resolve(
         __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig.js'
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
       ),
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
       ),
-      'microsoft-cognitiveservices-speech-sdk': resolve(
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports': resolve(
         __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports.js'
       ),
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')

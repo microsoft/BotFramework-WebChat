@@ -1,7 +1,11 @@
 /* eslint complexity: ["error", 33] */
 
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
-import { BotFrameworkConfig, DialogServiceConnector, PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
+import {
+  AudioConfig,
+  BotFrameworkConfig,
+  DialogServiceConnector,
+  PropertyId
+} from 'microsoft-cognitiveservices-speech-sdk';
 
 import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';

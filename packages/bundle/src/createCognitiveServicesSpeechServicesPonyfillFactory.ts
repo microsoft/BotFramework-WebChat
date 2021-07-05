@@ -1,8 +1,11 @@
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig';
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
+// import createMicrophoneAudioConfig from './createMicrophoneAudioConfig';
+import MicrophoneAudioInputStream from './speech/MicrophoneAudioInputStream';
+import createAudioContext from './speech/createAudioContext';
 
 type CognitiveServicesAudioOutputFormat =
   | 'audio-16khz-128kbitrate-mono-mp3'
@@ -30,6 +33,16 @@ type CognitiveServicesAudioOutputFormat =
   | 'riff-8khz-8bit-mono-mulaw'
   | 'webm-16khz-16bit-mono-opus'
   | 'webm-24khz-16bit-mono-opus';
+
+function appendPrimeButton(onClick) {
+  const primeButton = document.createElement('button');
+
+  primeButton.addEventListener('click', onClick);
+  primeButton.setAttribute('style', 'position: absolute; left: 10px; top: 10px; z-index: 1;');
+  primeButton.textContent = 'Prime MicrophoneAudioInputStream';
+
+  document.body.appendChild(primeButton);
+}
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
@@ -66,13 +79,29 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     );
   }
 
+  audioContext || (audioContext = createAudioContext());
+
+  appendPrimeButton(async () => {
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+  });
+
   // WORKAROUND: We should prevent AudioContext object from being recreated because they may be blessed and UX-wise expensive to recreate.
   //             In Cognitive Services SDK, if they detect the "end" function is falsy, they will not call "end" but "suspend" instead.
   //             And on next recognition, they will re-use the AudioContext object.
   if (!audioConfig) {
-    audioConfig = audioInputDeviceId
-      ? AudioConfig.fromMicrophoneInput(audioInputDeviceId)
-      : AudioConfig.fromDefaultMicrophoneInput();
+    // audioConfig = audioInputDeviceId
+    //   ? AudioConfig.fromMicrophoneInput(audioInputDeviceId)
+    //   : AudioConfig.fromDefaultMicrophoneInput();
+    // audioConfig = createMicrophoneAudioConfig({ audioInputDeviceId });
+    audioConfig = AudioConfig.fromStreamInput(
+      new MicrophoneAudioInputStream({
+        audioConstraints: { deviceId: audioInputDeviceId },
+        audioContext,
+        telemetry: enableTelemetry ? true : undefined
+      })
+    );
   }
 
   return ({ referenceGrammarID } = {}) => {

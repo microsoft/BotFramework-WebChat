@@ -15,16 +15,7 @@ let config = {
       filename: 'stats.json',
       transform: (_, opts) => JSON.stringify(opts.compiler.getStats().toJson({ chunkModules: true }), null, 2)
     })
-  ],
-  resolve: {
-    alias: {
-      // TODO: [P1] #3575 Remove the following line when bumping to Speech SDK 1.14.0 or higher
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource': resolve(
-        __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/MicAudioSource.js'
-      )
-    }
-  }
+  ]
 };
 
 // VSTS always emits uppercase environment variables.
