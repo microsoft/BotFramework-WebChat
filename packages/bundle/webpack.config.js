@@ -42,8 +42,8 @@ let config = {
   ],
   resolve: {
     alias: {
-      // It is smaller to use /lib/ instead of /es2015/.
-      // Verifies if /es2015/ is better when moving to esbuild.
+      // TODO: [P1] #3914 It is smaller to use /lib/ instead of /es2015/ with Webpack.
+      //       Verifies if /es2015/ is better when moving to esbuild.
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports.js'
