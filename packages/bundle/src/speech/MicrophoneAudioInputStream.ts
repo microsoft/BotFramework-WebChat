@@ -63,46 +63,9 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
   [SYMBOL_AUDIO_CONSTRAINTS]: true | MediaTrackConstraints;
   [SYMBOL_AUDIO_CONTEXT]: AudioContext;
   [SYMBOL_BUFFER_DURATION_IN_MS]: number;
+  [SYMBOL_ENABLE_TELEMETRY]?: true;
   [SYMBOL_OUTPUT_STREAM]?: ChunkedArrayBufferStream;
   [SYMBOL_PCM_RECORDER]?: PcmRecorder;
-  [SYMBOL_ENABLE_TELEMETRY]?: true;
-
-  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
-  get audioConstraints(): true | MediaTrackConstraints {
-    return this[SYMBOL_AUDIO_CONSTRAINTS];
-  }
-
-  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
-  get audioContext(): AudioContext {
-    return this[SYMBOL_AUDIO_CONTEXT];
-  }
-
-  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
-  get bufferDurationInMS(): number {
-    return this[SYMBOL_BUFFER_DURATION_IN_MS];
-  }
-
-  // Speech SDK quirks: It is confused to have both "turnOff" and "detach". "turnOff" is called before "detach".
-  //                    Why don't we put all logics at "detach"?
-  // Speech SDK quirks: event "source off" is sent before event "node detached".
-  //                    Shouldn't source "bigger" (in terms of responsibilities) and include nodes?
-  //                    Why we "close the source" before "close the node"?
-  // Speech SDK quirks: Direct Line Speech never call "turnOff". Event "source off" need to be emitted during "detach".
-  //                    Also for ending and closing output streams.
-
-  // ESLint: We are not implementing this function because it is not called by Direct Line Speech.
-  // eslint-disable-next-line class-methods-use-this
-  performTurnOff(): Promise<void> {
-    // ESLint: "return" is required by TypeScript
-    // eslint-disable-next-line no-useless-return
-    return;
-  }
 
   async performAttach(
     audioNodeId: string
@@ -119,7 +82,7 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
 
     // We need to get new MediaStream on every attach().
     // This is because PcmRecorder.releaseMediaResources() disconnected/stopped them.
-    const mediaStream = await getUserMedia({ audio: this.audioConstraints, video: false });
+    const mediaStream = await getUserMedia({ audio: this[SYMBOL_AUDIO_CONSTRAINTS], video: false });
 
     const [firstAudioTrack] = mediaStream.getAudioTracks();
 
@@ -149,7 +112,7 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
 
           // PcmRecorder.releaseMediaResources() will disconnect/stop the MediaStream.
           // We cannot use MediaStream again after turned off.
-          this[SYMBOL_PCM_RECORDER].releaseMediaResources(this.audioContext);
+          this[SYMBOL_PCM_RECORDER].releaseMediaResources(this[SYMBOL_AUDIO_CONTEXT]);
 
           // MediaStream will become inactive after all tracks are removed.
           mediaStream.getTracks().forEach(track => mediaStream.removeTrack(track));

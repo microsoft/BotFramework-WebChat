@@ -1,9 +1,7 @@
-// TODO: We should export this type of AudioInputStream to allow web developers to bring in their own microphone.
+// TODO: [P2] #XXX We should export this type of AudioInputStream to allow web developers to bring in their own microphone.
 //       For example, it should enable React Native devs to bring in their microphone implementation and use Cognitive Services Speech Services.
 import { AudioInputStream } from 'microsoft-cognitiveservices-speech-sdk';
 
-// TODO: Revisit all imports from internals of Speech SDK.
-//       It should works with React TypeScript projects without modifying its internal Webpack configuration.
 import {
   AudioSourceErrorEvent,
   AudioSourceEvent,
@@ -28,11 +26,6 @@ import {
 
 import { v4 } from 'uuid';
 import createDeferred, { DeferredPromise } from 'p-defer';
-
-const SYMBOL_DEVICE_INFO_DEFERRED = Symbol('deviceInfoDeferred');
-const SYMBOL_EVENTS = Symbol('events');
-const SYMBOL_FORMAT_DEFERRED = Symbol('formatDeferred');
-const SYMBOL_OPTIONS = Symbol('options');
 
 type AudioStreamNode = {
   detach: () => Promise<void>;
@@ -79,6 +72,11 @@ type StreamChunk<T> = {
   buffer: T;
   timeReceived: number;
 };
+
+const SYMBOL_DEVICE_INFO_DEFERRED = Symbol('deviceInfoDeferred');
+const SYMBOL_EVENTS = Symbol('events');
+const SYMBOL_FORMAT_DEFERRED = Symbol('formatDeferred');
+const SYMBOL_OPTIONS = Symbol('options');
 
 // Speech SDK quirks: Only 2 lifecycle functions are actually used.
 //                    They are: attach() and turnOff().
@@ -129,8 +127,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     return this[SYMBOL_OPTIONS].id;
   }
 
-  // Speech SDK quirks: in JavaScript, onXxx means "listen to event XXX".
-  //                    instead, in Speech SDK, it means "emit event XXX".
+  // Speech SDK quirks: In JavaScript, onXxx means "listen to event XXX".
+  //                    Instead, in Speech SDK, it means "emit event XXX".
   protected onEvent(event: AudioSourceEvent): void {
     this[SYMBOL_EVENTS].onEvent(event);
     Events.instance.onEvent(event);
@@ -146,10 +144,13 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     this.onEvent(new AudioSourceReadyEvent(this.id()));
   }
 
-  // Speech SDK quirks: "error" is a string, instead of an Error object.
-  protected emitError(error: string): void {
+  // Speech SDK quirks: Since "turnOn" is never called and "turnOff" does not work in Direct Line Speech, the "source error" event is not emitted at all.
+  //                    Instead, we only emit "node error" event.
+  protected emitError(error: Error): void {
     this.debug('Emitting "AudioSourceErrorEvent".', { error });
-    this.onEvent(new AudioSourceErrorEvent(this.id(), error));
+
+    // Speech SDK quirks: "error" is a string, instead of object of type "Error".
+    this.onEvent(new AudioSourceErrorEvent(this.id(), error.message));
   }
 
   protected emitNodeAttaching(audioNodeId: string): void {
@@ -162,10 +163,11 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     this.onEvent(new AudioStreamNodeAttachedEvent(this.id(), audioNodeId));
   }
 
-  // Speech SDK quirks: "error" is a string, instead of an Error object.
-  protected emitNodeError(audioNodeId: string, error: string): void {
+  protected emitNodeError(audioNodeId: string, error: Error): void {
     this.debug(`Emitting "AudioStreamNodeErrorEvent" for node "${audioNodeId}".`, { error });
-    this.onEvent(new AudioStreamNodeErrorEvent(this.id(), audioNodeId, error));
+
+    // Speech SDK quirks: "error" is a string, instead of object of type "Error".
+    this.onEvent(new AudioStreamNodeErrorEvent(this.id(), audioNodeId, error.message));
   }
 
   protected emitNodeDetached(audioNodeId: string): void {
@@ -178,8 +180,9 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     this.onEvent(new AudioSourceOffEvent(this.id()));
   }
 
-  // Speech SDK quirks: It seems close() is never called, despite, it is marked as abstract.
-  // ESLint: Speech SDK requires this function.
+  // Speech SDK quirks: Although "close" is marked as abstract, it is never called in our observations.
+
+  // ESLint: Speech SDK requires this function, but we are not implementing it.
   // eslint-disable-next-line class-methods-use-this
   close(): void {
     this.debug('Callback for "close".');
@@ -187,14 +190,14 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     throw new Error('Not implemented');
   }
 
-  // Speech SDK quirks: Although "turnOn" is implemented in XxxAudioInputStream, they are never called.
+  // Speech SDK quirks: Although "turnOn" is implemented in XxxAudioInputStream, it is never called in our observations.
   turnOn(): void {
     this.debug('Callback for "turnOn".');
 
     throw new Error('Not implemented');
   }
 
-  // Speech SDK quirks: Although "detach" is implemented in XxxAudioInputStream, they are never called.
+  // Speech SDK quirks: Although "detach" is implemented in XxxAudioInputStream, it is never called in our observations.
   detach(): void {
     this.debug('Callback for "detach".');
 
@@ -243,7 +246,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
             await audioStreamNode.detach();
 
-            // Speech SDK quirks: Since "turnOff" is never called, we will emit event "source off" here instead.
+            // Speech SDK quirks: Since "turnOff" is not called in Direct Line Speech, we will emit event "source off" here instead.
             this.emitOff();
             this.emitNodeDetached(audioNodeId);
           },
@@ -267,9 +270,19 @@ abstract class CustomAudioInputStream extends AudioInputStream {
    *
    * Note: when using with Direct Line Speech, this function is never called.
    */
-  protected abstract performTurnOff(): Promise<void>;
 
-  // Speech SDK quirks: When using with Direct Line Speech, "turnOff" is never called.
+  // ESLint: We are not implementing this function because it is not called by Direct Line Speech.
+  // eslint-disable-next-line class-methods-use-this
+  protected performTurnOff(): Promise<void> {
+    // ESLint: "return" is required by TypeScript
+    // eslint-disable-next-line no-useless-return
+    return;
+  }
+
+  // Speech SDK quirks: It is confused to have both "turnOff" and "detach". "turnOff" is called before "detach".
+  //                    Why don't we put all logics at "detach"?
+  // Speech SDK quirks: Direct Line Speech never call "turnOff". "Source off" event need to be emitted during "detach" instead.
+  //                    Also, custom implementation should be done at "detach" instead, such as ending and closing output streams.
   async turnOff(): Promise<void> {
     this.debug(`Callback for "turnOff".`);
 
