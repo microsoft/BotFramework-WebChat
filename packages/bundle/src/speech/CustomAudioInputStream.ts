@@ -27,10 +27,11 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
 
 import { v4 } from 'uuid';
+import createDeferred, { DeferredPromise } from 'p-defer';
 
-const SYMBOL_DEVICE_INFO = Symbol('deviceInfo');
+const SYMBOL_DEVICE_INFO_DEFERRED = Symbol('deviceInfoDeferred');
 const SYMBOL_EVENTS = Symbol('events');
-const SYMBOL_FORMAT = Symbol('format');
+const SYMBOL_FORMAT_DEFERRED = Symbol('formatDeferred');
 const SYMBOL_OPTIONS = Symbol('options');
 
 type AudioStreamNode = {
@@ -91,16 +92,18 @@ abstract class CustomAudioInputStream extends AudioInputStream {
       id: options.id || v4().replace(/-/gu, '')
     };
 
+    this[SYMBOL_DEVICE_INFO_DEFERRED] = createDeferred<DeviceInfo>();
     this[SYMBOL_EVENTS] = new EventSource<AudioSourceEvent>();
     this[SYMBOL_OPTIONS] = normalizedOptions;
+    this[SYMBOL_FORMAT_DEFERRED] = createDeferred<AudioStreamFormatImpl>();
   }
 
-  [SYMBOL_DEVICE_INFO]: DeviceInfo;
+  [SYMBOL_DEVICE_INFO_DEFERRED]: DeferredPromise<DeviceInfo>;
   [SYMBOL_EVENTS]: EventSource<AudioSourceEvent>;
-  [SYMBOL_FORMAT]: Format;
+  [SYMBOL_FORMAT_DEFERRED]: DeferredPromise<AudioStreamFormatImpl>;
   [SYMBOL_OPTIONS]: NormalizedOptions;
 
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get events(): EventSource<AudioSourceEvent> {
@@ -111,17 +114,15 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   //                    It is weird to expose AudioStreamFormatImpl instead of AudioStreamFormat.
   // Speech SDK quirks: It is weird to return a Promise in a property.
   //                    Especially this is audio format. Setup options should be initialized synchronously.
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // Speech SDK quirks: In normal speech recognition, getter of "format" is called only after "attach".
+  //                    But in Direct Line Speech, it is called before "attach".
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get format(): Promise<AudioStreamFormatImpl> {
-    const format = this[SYMBOL_FORMAT];
+    this.debug('Getting "format".');
 
-    if (!format) {
-      throw new Error('"format" is not available until attach() is called.');
-    }
-
-    return Promise.resolve(new AudioStreamFormatImpl(format.samplesPerSec, format.bitsPerSample, format.channels));
+    return this[SYMBOL_FORMAT_DEFERRED].promise;
   }
 
   id(): string {
@@ -178,13 +179,30 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   }
 
   // Speech SDK quirks: It seems close() is never called, despite, it is marked as abstract.
-  // Speech SDK requires this function.
+  // ESLint: Speech SDK requires this function.
   // eslint-disable-next-line class-methods-use-this
   close(): void {
+    this.debug('Callback for "close".');
+
+    throw new Error('Not implemented');
+  }
+
+  // Speech SDK quirks: Although "turnOn" is implemented in XxxAudioInputStream, they are never called.
+  turnOn(): void {
+    this.debug('Callback for "turnOn".');
+
+    throw new Error('Not implemented');
+  }
+
+  // Speech SDK quirks: Although "detach" is implemented in XxxAudioInputStream, they are never called.
+  detach(): void {
+    this.debug('Callback for "detach".');
+
     throw new Error('Not implemented');
   }
 
   private debug(message, ...args) {
+    // ESLint: For debugging, will only log when "debug" is set to "true".
     // eslint-disable-next-line no-console
     this[SYMBOL_OPTIONS].debug && console.info(`CustomAudioInputStream: ${message}`, ...args);
   }
@@ -209,8 +227,12 @@ abstract class CustomAudioInputStream extends AudioInputStream {
       try {
         const { audioStreamNode, deviceInfo, format } = await this.performAttach(audioNodeId);
 
-        this[SYMBOL_DEVICE_INFO] = deviceInfo;
-        this[SYMBOL_FORMAT] = format;
+        // Although only getter of "format" is called before "attach" (in Direct Line Speech),
+        // we are handling both "deviceInfo" and "format" in similar way for uniformity.
+        this[SYMBOL_DEVICE_INFO_DEFERRED].resolve(deviceInfo);
+        this[SYMBOL_FORMAT_DEFERRED].resolve(
+          new AudioStreamFormatImpl(format.samplesPerSec, format.bitsPerSample, format.channels)
+        );
 
         this.emitReady();
         this.emitNodeAttached(audioNodeId);
@@ -221,6 +243,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
             await audioStreamNode.detach();
 
+            // Speech SDK quirks: Since "turnOff" is never called, we will emit event "source off" here instead.
+            this.emitOff();
             this.emitNodeDetached(audioNodeId);
           },
           id: () => audioStreamNode.id(),
@@ -238,42 +262,38 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     });
   }
 
-  /** Implements this function. When called, it should stop recording. This is called before the `IAudioStreamNode.detach` function. */
+  /**
+   * Implements this function. When called, it should stop recording. This is called before the `IAudioStreamNode.detach` function.
+   *
+   * Note: when using with Direct Line Speech, this function is never called.
+   */
   protected abstract performTurnOff(): Promise<void>;
 
+  // Speech SDK quirks: When using with Direct Line Speech, "turnOff" is never called.
   async turnOff(): Promise<void> {
     this.debug(`Callback for "turnOff".`);
 
     await this.performTurnOff();
-
-    this.emitOff();
   }
 
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get deviceInfo(): Promise<ISpeechConfigAudioDevice> {
     this.debug(`Getting "deviceInfo".`);
 
-    const deviceInfo = this[SYMBOL_DEVICE_INFO];
-
-    if (!deviceInfo) {
-      throw new Error('"deviceInfo" is not available until attach() is called.');
-    }
-
-    const { connectivity, manufacturer, model, type } = deviceInfo;
-    const { bitsPerSample, channels, samplesPerSec } = this[SYMBOL_FORMAT];
-
-    return Promise.resolve({
-      bitspersample: bitsPerSample,
-      channelcount: channels,
-      connectivity:
-        typeof connectivity === 'string' ? Connectivity[connectivity] : connectivity || Connectivity.Unknown,
-      manufacturer: manufacturer || '',
-      model: model || '',
-      samplerate: samplesPerSec,
-      type: typeof type === 'string' ? Type[type] : type || Type.Unknown
-    });
+    return Promise.all([this[SYMBOL_DEVICE_INFO_DEFERRED].promise, this[SYMBOL_FORMAT_DEFERRED].promise]).then(
+      ([{ connectivity, manufacturer, model, type }, { bitsPerSample, channels, samplesPerSec }]) => ({
+        bitspersample: bitsPerSample,
+        channelcount: channels,
+        connectivity:
+          typeof connectivity === 'string' ? Connectivity[connectivity] : connectivity || Connectivity.Unknown,
+        manufacturer: manufacturer || '',
+        model: model || '',
+        samplerate: samplesPerSec,
+        type: typeof type === 'string' ? Type[type] : type || Type.Unknown
+      })
+    );
   }
 }
 

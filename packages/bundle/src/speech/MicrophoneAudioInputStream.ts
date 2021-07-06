@@ -31,19 +31,19 @@ type MicrophoneAudioInputStreamOptions = {
   /** Specifies the buffering delay on how often to flush audio data to network. Increasing the value will increase audio latency. Default is 100 ms. */
   bufferDurationInMS?: number;
 
+  /** Specifies if telemetry data should be sent. If not specified, telemetry data will NOT be sent. */
+  enableTelemetry?: true;
+
   /** Specifies the `AudioWorklet` URL for `PcmRecorder`. If not specified, will use script processor on UI thread instead. */
   pcmRecorderWorkletUrl?: string;
-
-  /** Specifies if telemetry data should be sent. If not specified, telemetry data will NOT be sent. */
-  telemetry?: true;
 };
 
 const SYMBOL_AUDIO_CONSTRAINTS = Symbol('audioConstraints');
 const SYMBOL_AUDIO_CONTEXT = Symbol('audioContext');
 const SYMBOL_BUFFER_DURATION_IN_MS = Symbol('bufferDurationInMS');
+const SYMBOL_ENABLE_TELEMETRY = Symbol('enableTelemetry');
 const SYMBOL_OUTPUT_STREAM = Symbol('outputStream');
 const SYMBOL_PCM_RECORDER = Symbol('pcmRecorder');
-const SYMBOL_TELEMETRY = Symbol('telemetry');
 
 export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
   constructor(options: MicrophoneAudioInputStreamOptions) {
@@ -65,23 +65,23 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
   [SYMBOL_BUFFER_DURATION_IN_MS]: number;
   [SYMBOL_OUTPUT_STREAM]?: ChunkedArrayBufferStream;
   [SYMBOL_PCM_RECORDER]?: PcmRecorder;
-  [SYMBOL_TELEMETRY]?: true;
+  [SYMBOL_ENABLE_TELEMETRY]?: true;
 
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get audioConstraints(): true | MediaTrackConstraints {
     return this[SYMBOL_AUDIO_CONSTRAINTS];
   }
 
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get audioContext(): AudioContext {
     return this[SYMBOL_AUDIO_CONTEXT];
   }
 
-  // This code will only works in browsers other than IE11. Only works in ES5 is okay.
+  // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get bufferDurationInMS(): number {
@@ -93,17 +93,13 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
   // Speech SDK quirks: event "source off" is sent before event "node detached".
   //                    Shouldn't source "bigger" (in terms of responsibilities) and include nodes?
   //                    Why we "close the source" before "close the node"?
+  // Speech SDK quirks: Direct Line Speech never call "turnOff". Event "source off" need to be emitted during "detach".
+  //                    Also for ending and closing output streams.
+
+  // ESLint: We are not implementing this function because it is not called by Direct Line Speech.
+  // eslint-disable-next-line class-methods-use-this
   performTurnOff(): Promise<void> {
-    // Speech SDK quirks: in SDK, it call outputStream.close() in turnOff() before outputStream.readEnded() in detach().
-    //                    I think it make sense to call readEnded() before close().
-    this[SYMBOL_OUTPUT_STREAM].readEnded();
-    this[SYMBOL_OUTPUT_STREAM].close();
-
-    // PcmRecorder.releaseMediaResources() will disconnect/stop the MediaStream.
-    // We cannot use MediaStream again after turned off.
-    this[SYMBOL_PCM_RECORDER].releaseMediaResources(this.audioContext);
-
-    // Required by TypeScript
+    // ESLint: "return" is required by TypeScript
     // eslint-disable-next-line no-useless-return
     return;
   }
@@ -142,13 +138,23 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
 
     return {
       audioStreamNode: {
-        // Speech SDK quirks: in SDK's MicAudioSource, it call turnOff() during detach().
+        // Speech SDK quirks: In SDK's original MicAudioSource implementation, it call turnOff() during detach().
         //                    That means, it call turnOff(), then detach(), then turnOff() again. Seems redundant.
+        //                    When using with Direct Line Speech, turnOff() is never called.
         detach: (): Promise<void> => {
+          // Speech SDK quirks: In SDK, it call outputStream.close() in turnOff() before outputStream.readEnded() in detach().
+          //                    I think it make sense to call readEnded() before close().
+          this[SYMBOL_OUTPUT_STREAM].readEnded();
+          this[SYMBOL_OUTPUT_STREAM].close();
+
+          // PcmRecorder.releaseMediaResources() will disconnect/stop the MediaStream.
+          // We cannot use MediaStream again after turned off.
+          this[SYMBOL_PCM_RECORDER].releaseMediaResources(this.audioContext);
+
           // MediaStream will become inactive after all tracks are removed.
           mediaStream.getTracks().forEach(track => mediaStream.removeTrack(track));
 
-          // Required by TypeScript
+          // ESLint: "return" is required by TypeScript
           // eslint-disable-next-line no-useless-return
           return;
         },
@@ -157,8 +163,8 @@ export default class MicrophoneAudioInputStream extends CustomAudioInputStream {
       },
       deviceInfo: {
         manufacturer: 'Bot Framework Web Chat',
-        model: this[SYMBOL_TELEMETRY] ? firstAudioTrack.label : '',
-        type: this[SYMBOL_TELEMETRY] ? 'Microphones' : 'Unknown'
+        model: this[SYMBOL_ENABLE_TELEMETRY] ? firstAudioTrack.label : '',
+        type: this[SYMBOL_ENABLE_TELEMETRY] ? 'Microphones' : 'Unknown'
       },
       // Speech SDK quirks: PcmRecorder hardcoded sample rate of 16000 Hz.
       //                    We cannot obtain this number other than looking at their source code.
