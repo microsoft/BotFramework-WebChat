@@ -21,7 +21,25 @@ beforeEach(() => {
   createCognitiveServicesSpeechServicesPonyfillFactory = require('./createCognitiveServicesSpeechServicesPonyfillFactory')
     .default;
 
-  window.navigator.mediaDevices = {};
+  window.AudioContext = class MockAudioContext {
+    // eslint-disable-next-line class-methods-use-this
+    createMediaStreamSource() {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return { connect: () => {} };
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    createScriptProcessor() {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return { connect: () => {} };
+    }
+  };
+
+  window.navigator.mediaDevices = {
+    getUserMedia: jest.fn(() => ({
+      getAudioTracks: () => ['mock-media-stream-track']
+    }))
+  };
 });
 
 afterEach(() => {
@@ -60,7 +78,8 @@ test('not providing reference grammar ID', () => {
   expect(referenceGrammars).toEqual([]);
 });
 
-test('supplying audioInputDeviceId', () => {
+test('supplying audioInputDeviceId', async () => {
+  // GIVEN: Set up Web Speech with "audioInputDeviceId" of "audio-input-device-1".
   const ponyfillFactory = createCognitiveServicesSpeechServicesPonyfillFactory({
     audioInputDeviceId: 'audio-input-device-1',
     credentials: {
@@ -69,9 +88,20 @@ test('supplying audioInputDeviceId', () => {
     }
   });
 
+  // WHEN: Polyfill is created.
   ponyfillFactory({});
 
-  expect(createPonyfill.mock.calls[0][0]).toHaveProperty('audioConfig.privSource.deviceId', 'audio-input-device-1');
+  // WHEN: Audio source is attached and audio device is opened.
+  await createPonyfill.mock.calls[0][0].audioConfig.privSource.attach();
+
+  // THEN: It should call getUserMedia() with "audio" constraints of { deviceId: 'audio-input-device-1' }.
+  expect(window.navigator.mediaDevices.getUserMedia.mock.calls[0][0]).toHaveProperty(
+    'audio.deviceId',
+    'audio-input-device-1'
+  );
+
+  // THEN: It should call getUserMedia() with "video" constraint of false.
+  expect(window.navigator.mediaDevices.getUserMedia.mock.calls[0][0]).toHaveProperty('video', false);
 });
 
 test('supplying both audioConfig and audioInputDeviceId', () => {
