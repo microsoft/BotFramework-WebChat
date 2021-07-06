@@ -35,12 +35,12 @@ type CreateAudioConfigOptions = {
 
 class CreateAudioConfigAudioInputStream extends CustomAudioInputStream {
   constructor({ attach, debug, turnOff }: CreateAudioConfigOptions) {
-    if (typeof attach !== 'function') {
+    if (!attach || typeof attach !== 'function') {
       throw new Error('"attach" must be a function.');
     }
 
-    if (typeof turnOff !== 'function') {
-      throw new Error('"turnOff" must be a function.');
+    if (turnOff && typeof turnOff !== 'function') {
+      throw new Error('"turnOff", if defined, must be a function.');
     }
 
     super({ debug });
