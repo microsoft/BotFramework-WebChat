@@ -19,8 +19,17 @@ const SYMBOL_ATTACH = Symbol('attach');
 const SYMBOL_TURN_OFF = Symbol('turnOff');
 
 type CreateAudioConfigOptions = {
+  /** Callback function for attaching the device by returning an audio node. */
   attach: AttachFunction;
+
+  /** `true` to enable diagnostic information, otherwise, `false`. */
   debug?: true;
+
+  /**
+   * Callback function for turning off the device before detaching its node from an audio graph.
+   *
+   * Note: this is not called for Direct Line Speech.
+   */
   turnOff?: TurnOffFunction;
 };
 

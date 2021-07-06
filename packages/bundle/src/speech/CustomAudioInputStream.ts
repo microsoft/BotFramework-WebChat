@@ -99,6 +99,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   [SYMBOL_FORMAT_DEFERRED]: DeferredPromise<AudioStreamFormatImpl>;
   [SYMBOL_OPTIONS]: NormalizedOptions;
 
+  /** Gets the event source for listening to events. */
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
@@ -106,10 +107,10 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     return this[SYMBOL_EVENTS];
   }
 
+  /** Gets the format of the audio stream. */
   // Speech SDK quirks: AudioStreamFormatImpl is internal implementation while AudioStreamFormat is public.
   //                    It is weird to expose AudioStreamFormatImpl instead of AudioStreamFormat.
   // Speech SDK quirks: It is weird to return a Promise in a property.
-  //                    Especially this is audio format. Setup options should be initialized synchronously.
   // Speech SDK quirks: In normal speech recognition, getter of "format" is called only after "attach".
   //                    But in Direct Line Speech, it is called before "attach".
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
@@ -121,10 +122,12 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     return this[SYMBOL_FORMAT_DEFERRED].promise;
   }
 
+  /** Gets the ID of this audio stream. */
   id(): string {
     return this[SYMBOL_OPTIONS].id;
   }
 
+  /** Emits an event. */
   // Speech SDK quirks: In JavaScript, onXxx means "listen to event XXX".
   //                    Instead, in Speech SDK, it means "emit event XXX".
   protected onEvent(event: AudioSourceEvent): void {
@@ -132,16 +135,19 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     Events.instance.onEvent(event);
   }
 
+  /** Emits an `AudioSourceInitializingEvent`. */
   protected emitInitializing(): void {
     this.debug('Emitting "AudioSourceInitializingEvent".');
     this.onEvent(new AudioSourceInitializingEvent(this.id()));
   }
 
+  /** Emits an `AudioSourceReadyEvent`. */
   protected emitReady(): void {
     this.debug('Emitting "AudioSourceReadyEvent".');
     this.onEvent(new AudioSourceReadyEvent(this.id()));
   }
 
+  /** Emits an `AudioSourceErrorEvent`. */
   // Speech SDK quirks: Since "turnOn" is never called and "turnOff" does not work in Direct Line Speech, the "source error" event is not emitted at all.
   //                    Instead, we only emit "node error" event.
   protected emitError(error: Error): void {
@@ -151,16 +157,19 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     this.onEvent(new AudioSourceErrorEvent(this.id(), error.message));
   }
 
+  /** Emits an `AudioStreamNodeAttachingEvent`. */
   protected emitNodeAttaching(audioNodeId: string): void {
     this.debug(`Emitting "AudioStreamNodeAttachingEvent" for node "${audioNodeId}".`);
     this.onEvent(new AudioStreamNodeAttachingEvent(this.id(), audioNodeId));
   }
 
+  /** Emits an `AudioStreamNodeAttachedEvent`. */
   protected emitNodeAttached(audioNodeId: string): void {
     this.debug(`Emitting "AudioStreamNodeAttachedEvent" for node "${audioNodeId}".`);
     this.onEvent(new AudioStreamNodeAttachedEvent(this.id(), audioNodeId));
   }
 
+  /** Emits an `AudioStreamNodeErrorEvent`. */
   protected emitNodeError(audioNodeId: string, error: Error): void {
     this.debug(`Emitting "AudioStreamNodeErrorEvent" for node "${audioNodeId}".`, { error });
 
@@ -168,18 +177,19 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     this.onEvent(new AudioStreamNodeErrorEvent(this.id(), audioNodeId, error.message));
   }
 
+  /** Emits an `AudioStreamNodeDetachedEvent`. */
   protected emitNodeDetached(audioNodeId: string): void {
     this.debug('Emitting "AudioStreamNodeDetachedEvent".');
     this.onEvent(new AudioStreamNodeDetachedEvent(this.id(), audioNodeId));
   }
 
+  /** Emits an `AudioSourceOffEvent`. */
   protected emitOff(): void {
     this.debug('Emitting "AudioSourceOffEvent".');
     this.onEvent(new AudioSourceOffEvent(this.id()));
   }
 
   // Speech SDK quirks: Although "close" is marked as abstract, it is never called in our observations.
-
   // ESLint: Speech SDK requires this function, but we are not implementing it.
   // eslint-disable-next-line class-methods-use-this
   close(): void {
@@ -188,20 +198,21 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     throw new Error('Not implemented');
   }
 
-  // Speech SDK quirks: Although "turnOn" is implemented in XxxAudioInputStream, it is never called in our observations.
+  // Speech SDK quirks: Although "turnOn" is implemented in Speech SDK Push/PullAudioInputStream, it is never called in our observations.
   turnOn(): void {
     this.debug('Callback for "turnOn".');
 
     throw new Error('Not implemented');
   }
 
-  // Speech SDK quirks: Although "detach" is implemented in XxxAudioInputStream, it is never called in our observations.
+  // Speech SDK quirks: Although "detach" is implemented in Speech SDK Push/PullAudioInputStream, it is never called in our observations.
   detach(): void {
     this.debug('Callback for "detach".');
 
     throw new Error('Not implemented');
   }
 
+  /** Log the message to console if `debug` is set to `true`. */
   private debug(message, ...args) {
     // ESLint: For debugging, will only log when "debug" is set to "true".
     // eslint-disable-next-line no-console
@@ -217,6 +228,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     format: Format;
   }>;
 
+  /** Attaches the device by returning an audio node. */
   attach(audioNodeId: string): Promise<AudioStreamNode> {
     this.debug(`Callback for "attach" with "${audioNodeId}".`);
 
@@ -277,6 +289,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     return;
   }
 
+  /** Turn off the audio device. This is called before detaching from the graph. */
   // Speech SDK quirks: It is confused to have both "turnOff" and "detach". "turnOff" is called before "detach".
   //                    Why don't we put all logics at "detach"?
   // Speech SDK quirks: Direct Line Speech never call "turnOff". "Source off" event need to be emitted during "detach" instead.
@@ -287,6 +300,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
     await this.performTurnOff();
   }
 
+  /** Gets the device information. */
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
