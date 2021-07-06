@@ -5,7 +5,6 @@ export default function getUserMedia(constraints: MediaStreamConstraints): Promi
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
-  // TODO: Does it need vendor prefix?
   if (typeof navigator.getUserMedia !== 'undefined') {
     return new Promise((resolve, reject) => navigator.getUserMedia(constraints, resolve, reject));
   }

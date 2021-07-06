@@ -5,7 +5,7 @@ import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
 import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
-import createMicrophoneAudioConfig from './speech/createMicrophoneAudioConfig';
+import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
@@ -47,13 +47,11 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
         'botframework-webchat: "audioConfig" and "audioContext" cannot be set at the same time; ignoring "audioContext" for speech recognition.'
       );
   } else {
-    const result = createMicrophoneAudioConfig({
+    ({ audioConfig, audioContext } = createMicrophoneAudioConfigAndAudioContext({
       audioContext,
       audioInputDeviceId,
       enableTelemetry
-    });
-
-    ({ audioConfig, audioContext } = result);
+    }));
   }
 
   return ({ referenceGrammarID } = {}) => {
@@ -70,7 +68,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
     });
 
     return {
-      resumeAudioContext: () => audioContext.state === 'suspended' && audioContext.resume(),
+      resumeAudioContext: () => audioContext && audioContext.state === 'suspended' && audioContext.resume(),
       SpeechGrammarList,
       SpeechRecognition,
       speechSynthesis,

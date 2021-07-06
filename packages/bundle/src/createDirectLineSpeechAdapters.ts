@@ -6,7 +6,7 @@ import { WebSpeechPonyfill } from 'botframework-webchat-api';
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
 import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
-import createMicrophoneAudioConfig from './speech/createMicrophoneAudioConfig';
+import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
 
 const DEFAULT_LANGUAGE = 'en-US';
 
@@ -54,13 +54,11 @@ export default function createDirectLineSpeechAdapters({
         'botframework-webchat: "audioConfig" and "audioContext" cannot be set at the same time; ignoring "audioContext" for speech recognition.'
       );
   } else {
-    const result = createMicrophoneAudioConfig({
+    ({ audioConfig, audioContext } = createMicrophoneAudioConfigAndAudioContext({
       audioContext,
       audioInputDeviceId,
       enableTelemetry
-    });
-
-    ({ audioConfig, audioContext } = result);
+    }));
   }
 
   return createAdapters({

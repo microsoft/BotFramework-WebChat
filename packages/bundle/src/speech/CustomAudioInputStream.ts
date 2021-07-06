@@ -1,5 +1,3 @@
-// TODO: [P2] #XXX We should export this type of AudioInputStream to allow web developers to bring in their own microphone.
-//       For example, it should enable React Native devs to bring in their microphone implementation and use Cognitive Services Speech Services.
 import { AudioInputStream } from 'microsoft-cognitiveservices-speech-sdk';
 
 import {
@@ -82,7 +80,7 @@ const SYMBOL_OPTIONS = Symbol('options');
 //                    They are: attach() and turnOff().
 //                    Others are not used, including: blob(), close(), detach(), turnOn().
 abstract class CustomAudioInputStream extends AudioInputStream {
-  constructor(options: Options) {
+  constructor(options: Options = {}) {
     super();
 
     const normalizedOptions: NormalizedOptions = {
