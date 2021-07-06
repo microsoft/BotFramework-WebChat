@@ -90,8 +90,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
     this[SYMBOL_DEVICE_INFO_DEFERRED] = createDeferred<DeviceInfo>();
     this[SYMBOL_EVENTS] = new EventSource<AudioSourceEvent>();
-    this[SYMBOL_OPTIONS] = normalizedOptions;
     this[SYMBOL_FORMAT_DEFERRED] = createDeferred<AudioStreamFormatImpl>();
+    this[SYMBOL_OPTIONS] = normalizedOptions;
   }
 
   [SYMBOL_DEVICE_INFO_DEFERRED]: DeferredPromise<DeviceInfo>;
@@ -108,9 +108,9 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   }
 
   /** Gets the format of the audio stream. */
-  // Speech SDK quirks: AudioStreamFormatImpl is internal implementation while AudioStreamFormat is public.
-  //                    It is weird to expose AudioStreamFormatImpl instead of AudioStreamFormat.
-  // Speech SDK quirks: It is weird to return a Promise in a property.
+  // Speech SDK quirks: `AudioStreamFormatImpl` is internal implementation while `AudioStreamFormat` is public.
+  //                    It is weird to expose `AudioStreamFormatImpl` instead of `AudioStreamFormat`.
+  // Speech SDK quirks: It is weird to return a `Promise` in a property.
   // Speech SDK quirks: In normal speech recognition, getter of "format" is called only after "attach".
   //                    But in Direct Line Speech, it is called before "attach".
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
