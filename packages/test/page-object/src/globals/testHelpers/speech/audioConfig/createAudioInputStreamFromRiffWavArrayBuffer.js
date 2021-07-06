@@ -11,7 +11,7 @@ export default function fromRiffWavArrayBuffer(arrayBuffer) {
   const samplesPerSec = new Uint32Array(arrayBuffer.slice(24, 28))[0];
   const bitsPerSample = new Uint16Array(arrayBuffer.slice(34, 36))[0];
 
-  // Search the offset of "data" marker.
+  // Search the offset of "data" marker, earliest possible position is 36.
   // "data" === 64-61-74-61.
 
   let dataOffset;
