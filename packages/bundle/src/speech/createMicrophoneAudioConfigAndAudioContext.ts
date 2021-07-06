@@ -10,7 +10,7 @@ import getUserMedia from './getUserMedia';
 // This is how often we are flushing audio buffer to the network. Modify this value will affect latency.
 const DEFAULT_BUFFER_DURATION_IN_MS = 100;
 
-// TODO: [P2] #XXX We should consider building our own PcmRecorder:
+// TODO: [P2] #3975 We should consider building our own PcmRecorder:
 //       - Use Audio Worklet via blob URL
 //       - Not hardcoding the sample rate or other values
 // PcmRecorder always downscale to 16000 Hz. We cannot use the dynamic value from MediaConstraints or MediaTrackSettings.

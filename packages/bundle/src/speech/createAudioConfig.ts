@@ -1,4 +1,4 @@
-// TODO: [P2] #XXX We should export this to allow web developers to bring in their own microphone.
+// TODO: [P2] #3976 We should export this to allow web developers to bring in their own microphone.
 //       For example, it should enable React Native devs to bring in their microphone implementation and use Cognitive Services Speech Services.
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
