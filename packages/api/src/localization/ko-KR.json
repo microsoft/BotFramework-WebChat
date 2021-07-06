@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "알림",
   "TRANSCRIPT_ARIA_LABEL_ALT": "대화록, 아래쪽 화살표 키를 사용하여 탐색합니다.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "대화록",
+  "TRANSCRIPT_MORE_MESSAGES": "추가 메시지",
   "TRANSCRIPT_NEW_MESSAGES": "새 메시지",
   "TRANSCRIPT_TERMINATOR_TEXT": "대화록의 끝",
   "TYPING_INDICATOR_ALT": "입력 표시기 표시"

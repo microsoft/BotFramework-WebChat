@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "通知",
   "TRANSCRIPT_ARIA_LABEL_ALT": "トランスクリプトで矢印キーを押して移動します。",
   "TRANSCRIPT_ARIA_ROLE_ALT": "トランスクリプト",
+  "TRANSCRIPT_MORE_MESSAGES": "その他のメッセージ",
   "TRANSCRIPT_NEW_MESSAGES": "新しいメッセージ",
   "TRANSCRIPT_TERMINATOR_TEXT": "トランスクリプトの末尾",
   "TYPING_INDICATOR_ALT": "入力インジケーターを表示しています"

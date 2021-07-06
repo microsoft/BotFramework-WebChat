@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "Сповіщення",
   "TRANSCRIPT_ARIA_LABEL_ALT": "Стенограма (натискайте клавіші зі стрілками, щоб переходити між рядками).",
   "TRANSCRIPT_ARIA_ROLE_ALT": "стенограма",
+  "TRANSCRIPT_MORE_MESSAGES": "Інші повідомлення",
   "TRANSCRIPT_NEW_MESSAGES": "Нові повідомлення",
   "TRANSCRIPT_TERMINATOR_TEXT": "Кінець стенограми",
   "TYPING_INDICATOR_ALT": "Показує індикатор набору"

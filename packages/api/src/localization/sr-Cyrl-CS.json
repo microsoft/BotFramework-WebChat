@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "Обавештење",
   "TRANSCRIPT_ARIA_LABEL_ALT": "Преписка, користите тастере са стрелицом да бисте се кретали.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "преписка",
+  "TRANSCRIPT_MORE_MESSAGES": "Још порука",
   "TRANSCRIPT_NEW_MESSAGES": "Нове поруке",
   "TRANSCRIPT_TERMINATOR_TEXT": "Крај преписке",
   "TYPING_INDICATOR_ALT": "Приказује се индикатор куцања"

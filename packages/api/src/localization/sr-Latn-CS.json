@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "Obaveštenje",
   "TRANSCRIPT_ARIA_LABEL_ALT": "Prepiska, koristite tastere sa strelicom da biste se kretali.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "prepiska",
+  "TRANSCRIPT_MORE_MESSAGES": "Još poruka",
   "TRANSCRIPT_NEW_MESSAGES": "Nove poruke",
   "TRANSCRIPT_TERMINATOR_TEXT": "Kraj prepiske",
   "TYPING_INDICATOR_ALT": "Prikazuje se indikator kucanja"
