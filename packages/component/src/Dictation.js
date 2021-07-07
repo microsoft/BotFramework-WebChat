@@ -2,8 +2,9 @@ import { Composer as DictateComposer } from 'react-dictate-button';
 import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
+import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
@@ -40,6 +41,7 @@ const Dictation = ({ onError }) => {
   const [sendTypingIndicator] = useSendTypingIndicator();
   const [speechLanguage] = useLanguage('speech');
   const emitTypingIndicator = useEmitTypingIndicator();
+  const resumeAudioContext = useResumeAudioContext();
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
@@ -96,6 +98,12 @@ const Dictation = ({ onError }) => {
     },
     [dictateState, onError, setDictateState, stopDictate]
   );
+
+  useEffect(() => {
+    window.addEventListener('pointerdown', resumeAudioContext);
+
+    return () => window.removeEventListener('pointerdown', resumeAudioContext);
+  }, [resumeAudioContext]);
 
   return (
     <DictateComposer

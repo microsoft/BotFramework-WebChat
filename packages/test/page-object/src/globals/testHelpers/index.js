@@ -4,6 +4,7 @@ import * as speech from './speech/index';
 import * as token from './token/index';
 import * as transcriptNavigation from './transcriptNavigation';
 import arrayBufferToBase64 from './arrayBufferToBase64';
+import createAudioInputStreamFromRiffWavArrayBuffer from './speech/audioConfig/createAudioInputStreamFromRiffWavArrayBuffer';
 import createDirectLineWithTranscript from './createDirectLineWithTranscript';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
 import createStore from './createStore';
@@ -18,6 +19,7 @@ export {
   accessibility,
   activityGrouping,
   arrayBufferToBase64,
+  createAudioInputStreamFromRiffWavArrayBuffer,
   createDirectLineWithTranscript,
   createRunHookActivityMiddleware,
   createStore,

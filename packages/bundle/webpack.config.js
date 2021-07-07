@@ -42,14 +42,34 @@ let config = {
   ],
   resolve: {
     alias: {
-      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig': resolve(
+      // TODO: [P1] #3914 It is smaller to use /lib/ instead of /es2015/ with Webpack.
+      //       Verifies if /es2015/ is better when moving to esbuild.
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports': resolve(
         __dirname,
-        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioConfig.js'
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat.js'
+      ),
+      'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports': resolve(
+        __dirname,
+        'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports.js'
       ),
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'
       ),
+
+      // This line must be placed after other specific imports.
       'microsoft-cognitiveservices-speech-sdk': resolve(
         __dirname,
         'node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/microsoft.cognitiveservices.speech.sdk.js'

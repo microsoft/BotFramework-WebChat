@@ -40,7 +40,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `"any"` will show when there are any offscreen messages;
       -  `false` will always hide the button.
    -  Added new [`scrollToEndButtonMiddleware`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/types/scrollToEndButtonMiddleware.ts) to customize the appearance of the scroll to end button.
--  Resolves [#3752](https://github.com/microsoft/BotFramework-WebChat/issues/3752). Added typings (`*.d.ts`) for all public interfaces, by [@compulim](https://github.com), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931) and [#3946](https://github.com/microsoft/BotFramework-WebChat/pull/3946)
+-  Resolves [#3752](https://github.com/microsoft/BotFramework-WebChat/issues/3752). Added typings (`*.d.ts`) for all public interfaces, by [@compulim](https://github.com/compulim), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931) and [#3946](https://github.com/microsoft/BotFramework-WebChat/pull/3946)
+-  Resolves [#2316](https://github.com/microsoft/BotFramework-WebChat/issues/2316). Added blessing/priming of `AudioContext` when clicking on microphone button, by [@compulim](https://github.com/compulim), in PR [#3974](https://github.com/microsoft/BotFramework-WebChat/pull/3974)
 
 ### Fixed
 
@@ -57,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3856](https://github.com/microsoft/BotFramework-WebChat/issues/3856). Fix missing typings, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#3931](https://github.com/microsoft/BotFramework-WebChat/pull/3931)
 -  Fixes [#3943](https://github.com/microsoft/BotFramework-WebChat/issues/3943). Auto-scroll should skip invisible activities, such as post back or event activity, by [@compulim](https://github.com/compulim), in PR [#3945](https://github.com/microsoft/BotFramework-WebChat/pull/3945)
 -  Fixes [#3947](https://github.com/microsoft/BotFramework-WebChat/issues/3947). Adaptive Cards: all action sets (which has `role="menubar"`) must have at least 1 or more `role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#3950](https://github.com/microsoft/BotFramework-WebChat/pull/3950)
+-  Fixes [#3823](https://github.com/microsoft/BotFramework-WebChat/issues/3823) and [#3899](https://github.com/microsoft/BotFramework-WebChat/issues/3899). Fix speech recognition and synthesis on Safari, in PR [#3974](https://github.com/microsoft/BotFramework-WebChat/pull/3974)
 
 ### Changed
 
