@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3947](https://github.com/microsoft/BotFramework-WebChat/issues/3947). Adaptive Cards: all action sets (which has `role="menubar"`) must have at least 1 or more `role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#3950](https://github.com/microsoft/BotFramework-WebChat/pull/3950)
 -  Fixes [#3823](https://github.com/microsoft/BotFramework-WebChat/issues/3823) and [#3899](https://github.com/microsoft/BotFramework-WebChat/issues/3899). Fix speech recognition and synthesis on Safari, by [@compulim](https://github.com/compulim), in PR [#3974](https://github.com/microsoft/BotFramework-WebChat/pull/3974)
 -  Fixes [#3977](https://github.com/microsoft/BotFramework-WebChat/issues/3977). Fix bundle not work in Internet Explorer 11 due to `p-defer`, by [@compulim](https://github.com/compulim), in PR [#3978](https://github.com/microsoft/BotFramework-WebChat/pull/3978)
+-  Fixes [#3979](https://github.com/microsoft/BotFramework-WebChat/issues/3979). Fix Direct Line Speech in environments without Web Audio support, by [@compulim](https://github.com/compulim), in PR [#3980](https://github.com/microsoft/BotFramework-WebChat/pull/3980)
 
 ### Changed
 
