@@ -23,7 +23,7 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
 
 import { v4 } from 'uuid';
-import createDeferred, { DeferredPromise } from 'p-defer';
+import createDeferred, { DeferredPromise } from 'p-defer-es5';
 
 type AudioStreamNode = {
   detach: () => Promise<void>;
