@@ -54,10 +54,10 @@ export default function createDirectLineSpeechAdapters({
         'botframework-webchat: "audioConfig" and "audioContext" cannot be set at the same time; ignoring "audioContext" for speech recognition.'
       );
   } else if (!window.navigator.mediaDevices) {
-    // If the browser does not support Direct Line Speech, we will continue to create Direct Line Speech adapter without custom "audioConfig" and "audioContext".
-    // In Direct Line Speech, it will disable speech functionality, only leaving text chat available via the protocol.
+    // If the browser does not support or allow microphone access, we will continue to create Direct Line Speech adapter without custom "audioConfig" and "audioContext".
+    // In Direct Line Speech SDK, it will disable speech functionality, only leaving text chat available via the protocol.
     console.warn(
-      'botframework-webchat: Your browser does not support Web Audio or the page is not loaded via HTTPS or localhost. Speech is disabled for Direct Line Speech. However, you may pass a custom "audioConfig" to enable speech in this environment.'
+      'botframework-webchat: Your browser does not support or allow microphone access or the page is not loaded via HTTPS or localhost. Speech is disabled for Direct Line Speech. However, you may pass a custom "audioConfig" to enable speech in this environment.'
     );
   } else {
     ({ audioConfig, audioContext } = createMicrophoneAudioConfigAndAudioContext({
