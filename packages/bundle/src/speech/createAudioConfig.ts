@@ -63,7 +63,9 @@ class CreateAudioConfigAudioInputStream extends CustomAudioInputStream {
   }
 
   protected performTurnOff(): Promise<void> {
-    return this[SYMBOL_TURN_OFF]();
+    const { [SYMBOL_TURN_OFF]: turnOff } = this;
+
+    return turnOff && turnOff();
   }
 }
 
