@@ -86,6 +86,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 // FEEDYOU - show/disable imBack buttons only for the last activity
                 // TODO should be possible to enable/disable using <Chat> props
                 const tiles = activity.channelData ? activity.channelData.tiles : undefined
+                const stepType = activity.channelData ? activity.channelData.stepType : undefined
                 const attachments: Attachment[] = (activity.attachments || []).map((attachment: KnownMedia) => {
                     if (isLast || attachment.contentType !== 'application/vnd.microsoft.card.hero') {
                         return attachment
@@ -93,8 +94,8 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         const {content, ...attachmentWithoutContent} = attachment
                         const {tap, buttons, ...contentWithoutButtons} = content
                         
-                        // hide imBack buttons
-                        const buttonsWithoutImback = (buttons || []).filter((button: CardAction) => !button.type || button.type !== 'imBack' )
+                        // hide imBack buttons (keep them for message step type)
+                        const buttonsWithoutImback = (buttons || []).filter((button: CardAction) => !button.type || button.type !== 'imBack' || stepType === 'message')
 
                         // deactivate imBack buttons
                         //const buttonsWithoutImback = buttons.map(button => !button.type || button.type !== 'imBack' ? button : {...button, value: ""} )
