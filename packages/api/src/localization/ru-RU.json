@@ -72,6 +72,7 @@
   "TOAST_TITLE_ALT": "Уведомление",
   "TRANSCRIPT_ARIA_LABEL_ALT": "Расшифровка, используйте клавиши со стрелками для перемещения.",
   "TRANSCRIPT_ARIA_ROLE_ALT": "расшифровка",
+  "TRANSCRIPT_MORE_MESSAGES": "Другие сообщения",
   "TRANSCRIPT_NEW_MESSAGES": "Новые сообщения",
   "TRANSCRIPT_TERMINATOR_TEXT": "Конец расшифровки",
   "TYPING_INDICATOR_ALT": "Отображение индикатора ввода"
