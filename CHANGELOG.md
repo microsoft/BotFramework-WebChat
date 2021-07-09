@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.14.0] - 2021-07-09
+
 ### Breaking changes
 
 -  A new style option `scrollToEndButtonBehavior` is introduced to control when the scroll to end button should show (formerly "new messages" button):
