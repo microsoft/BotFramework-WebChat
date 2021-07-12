@@ -464,8 +464,8 @@ const FullScreenTheme = (theme: Theme) => `
 
 const ExpandableKnobTheme = (theme: Theme) => `
   body .feedbot-wrapper {
-    bottom: calc(10px + 1vw);
-    right: calc(10px + 1vw);
+    bottom: 24px;
+    right: 24px;
     border-radius: 15px;
   }
 
@@ -559,16 +559,21 @@ const ExpandableKnobTheme = (theme: Theme) => `
     color: black;
     text-decoration: none;
     margin: 0 4px;
+    display: flex;
+    align-items: center;
   }
 
   .feedbot-signature a:hover {
     cursor: pointer;
   }
+
   .feedbot-signature a img {
     height: 22px;
   }
+  
   .feedbot-signature-row{
-    display: flex; 
+    display: flex;
+    height: 100%;
   }
 
   ${ExpandableBarTheme(theme)}
