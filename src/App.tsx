@@ -694,6 +694,10 @@ const Sidebar = (theme: Theme) => `
   .feedbot-signature a img {
     height: 22px;
   }
+
+  .feedbot-signature-row {
+    justify-content: center;
+  }
   
 `;
 
