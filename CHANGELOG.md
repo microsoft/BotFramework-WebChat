@@ -77,7 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`sanitize-html@2.4.0`](https://npmjs.com/package/sanitize-html)
       -  [`selenium-webdriver@4.0.0-beta.4`](https://npmjs.com/package/selenium-webdriver)
       -  [`serve@12.0.0`](https://npmjs.com/package/serve)
-      -  [`strip-ansi@7.0.0`](https://npmjs.com/package/strip-ansi)
+      -  [`strip-ansi@6.0.0`](https://npmjs.com/package/strip-ansi)
       -  [`typescript@4.3.5`](https://npmjs.com/package/typescript)
       -  [`webpack@5.45.1`](https://npmjs.com/package/webpack)
 
