@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`nodemon@2.0.12`](https://npmjs.com/package/nodemon)
       -  [`p-defer@4.0.0`](https://npmjs.com/package/p-defer)
       -  [`prettier@2.3.2`](https://npmjs.com/package/prettier)
+      -  [`sanitize-html@2.4.0`](https://npmjs.com/package/sanitize-html)
       -  [`selenium-webdriver@4.0.0-beta.4`](https://npmjs.com/package/selenium-webdriver)
       -  [`serve@12.0.0`](https://npmjs.com/package/serve)
       -  [`strip-ansi@7.0.0`](https://npmjs.com/package/strip-ansi)
