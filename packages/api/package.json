@@ -61,8 +61,6 @@
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
-    "event-target-shim": "6.0.2",
-    "event-target-shim-es5": "1.2.0",
     "globalize": "1.6.0",
     "math-random": "2.0.1",
     "prop-types": "15.7.2",

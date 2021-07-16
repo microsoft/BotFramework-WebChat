@@ -57,17 +57,16 @@
   "dependencies": {
     "@babel/runtime": "7.14.6",
     "abort-controller": "3.0.0",
-    "abort-controller-es5": "1.2.0",
+    "abort-controller-es5": "2.0.0-master.b35490c",
     "base64-arraybuffer": "0.2.0",
     "core-js": "3.15.2",
     "event-as-promise": "1.0.5",
     "event-target-shim": "6.0.2",
-    "event-target-shim-es5": "1.2.0",
     "math-random": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "p-defer": "4.0.0",
-    "p-defer-es5": "1.2.1",
-    "web-speech-cognitive-services": "7.1.0"
+    "p-defer-es5": "2.0.0-master.10e6578",
+    "web-speech-cognitive-services": "7.1.1-master.cc1f3f9"
   },
   "engines": {
     "node": ">= 10.14.2"

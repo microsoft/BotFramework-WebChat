@@ -6,12 +6,12 @@ import AbortController from 'abort-controller-es5';
 import createCustomEvent from './createCustomEvent';
 import createErrorEvent from './createErrorEvent';
 import createTaskQueue from './createTaskQueue';
-import EventTargetShim, { defineEventAttribute } from 'event-target-shim-es5';
+import EventTarget, { getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 import playWhiteNoise from './playWhiteNoise';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
 
-export default function({
+export default function ({
   audioContext,
   enableTelemetry,
   ponyfill = {
@@ -42,7 +42,7 @@ export default function({
 
     const { cancelAll, push } = createTaskQueue();
 
-    class SpeechSynthesis extends EventTargetShim {
+    class SpeechSynthesis extends EventTarget {
       cancel() {
         cancelAll();
       }
@@ -88,9 +88,15 @@ export default function({
           }
         });
       }
-    }
 
-    defineEventAttribute(SpeechSynthesis, 'voiceschanged');
+      get onvoiceschanged() {
+        return getEventAttributeValue(this, 'voiceschanged');
+      }
+
+      set onvoiceschanged(value) {
+        setEventAttributeValue(this, 'voiceschanged', value);
+      }
+    }
 
     return {
       SpeechGrammarList,

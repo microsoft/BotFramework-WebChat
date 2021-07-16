@@ -43,7 +43,7 @@
     "core-js": "3.15.2",
     "markdown-it": "12.1.0",
     "markdown-it-attrs": "4.0.0",
-    "markdown-it-attrs-es5": "1.2.0",
+    "markdown-it-attrs-es5": "2.0.0-master.08a385b",
     "markdown-it-for-inline": "0.1.1",
     "math-random": "2.0.1",
     "memoize-one": "5.2.1",
@@ -52,7 +52,7 @@
     "sanitize-html": "1.27.5",
     "url-search-params-polyfill": "8.1.1",
     "uuid": "8.3.2",
-    "web-speech-cognitive-services": "7.1.0",
+    "web-speech-cognitive-services": "7.1.1-master.cc1f3f9",
     "whatwg-fetch": "3.6.2"
   },
   "devDependencies": {
