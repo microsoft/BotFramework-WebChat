@@ -72,6 +72,7 @@ class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {
     render() {
         konsole.log("rendering CarouselAttachments");
         const { attachments, ... props } = this.props;
+        
         return (
             <ul>{ this.props.attachments.map((attachment, index) =>
                 <li key={ index } className="wc-carousel-item">

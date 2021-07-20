@@ -329,7 +329,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
-        if (!this.props.directLine || !this.props.directLine.conversationId) {
+        if ((!this.props.directLine || !this.props.directLine.conversationId) && (!this.props.botConnection || !((this.props.botConnection as any).conversationId))) {
             let introDialogId = this.props.introDialog && this.props.introDialog.id ? this.props.introDialog.id : undefined
             if (window.location.hash.startsWith('#feedbot-intro-dialog=')) {
                 introDialogId = window.location.hash.substr(22)
@@ -386,6 +386,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
 
                 // FEEDYOU
+                botConnection.conversationId && sessionStorage.setItem("feedbotConversationId", botConnection.conversationId)
                 if (this.props.onConversationStarted && connectionStatus === ConnectionStatus.Online && botConnection.conversationId) {
                     this.props.onConversationStarted(botConnection.conversationId)
                 }
@@ -566,7 +567,7 @@ export const doCardAction = (
         case "postBack":
             sendPostBack(botConnection, text, value, from, locale);
             break;
-
+                
         case "call":
         case "openUrl":
         case "playAudio":

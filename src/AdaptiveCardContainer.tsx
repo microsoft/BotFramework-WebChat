@@ -9,6 +9,7 @@ import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';
 import { ChatState, AdaptiveCardsState } from './Store';
+import { getFeedyouParam } from "./FeedyouParams"
 
 export interface Props {
     className?: string,
@@ -100,7 +101,23 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
 
     private onExecuteAction(action: Action) {
         if (action instanceof OpenUrlAction) {
-            window.open(action.url);
+            const openUrlTarget = getFeedyouParam("openUrlTarget")
+            
+            if(openUrlTarget === "same-domain"){
+                const actionUrl = decodeActionUrl(action.url)    
+                const url = new URL(actionUrl)
+                console.log('openUrl same-domain', actionUrl, window.location.hostname, url.hostname)
+                if(window.location.hostname === url.hostname){
+                    window.location.href = action.url;
+                }else{
+                    window.open(action.url);
+                }
+            }
+            else if(openUrlTarget === "same"){
+                window.location.href = action.url
+            } else {
+                window.open(action.url);
+            }
         } else if (action instanceof SubmitAction) {
             if (action.data !== undefined) {
                 if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
@@ -241,3 +258,17 @@ export default connect(
         ...stateProps
     })
 )(AdaptiveCardContainer);
+
+function decodeActionUrl(actionUrl: string): string {
+    try {
+        if (actionUrl.includes('//feedbot-') && actionUrl.includes('/url/')) {
+            const parts = actionUrl.split('/')
+            if (parts[5]) {
+                const decodedUrl = atob(decodeURIComponent(parts[5]))
+                return decodedUrl || actionUrl
+            }
+        }    
+    } catch (err) {}
+    
+    return actionUrl
+}

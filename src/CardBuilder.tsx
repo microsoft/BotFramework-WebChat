@@ -5,7 +5,6 @@ import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 import { SizeAndUnit } from 'adaptivecards/lib/utils';
 import { Tile } from './Types';
 
-
 export class AdaptiveCardBuilder {
     private container: Container;
     public card: AdaptiveCard;
@@ -85,6 +84,7 @@ export class AdaptiveCardBuilder {
             action.title = cardAction.title;
 
             return action;
+            
         } else {
             const action = new OpenUrlAction();
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
