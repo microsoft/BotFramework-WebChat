@@ -27,14 +27,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    -  Production dependencies
       -  [`@babel/runtime@7.14.6`](https://npmjs.com/package/@babel/runtime)
-      -  [`@emotion/react@^11.4.0`](https://npmjs.com/package/@emotion/react)
-      -  [`@fluentui/react@^8.22.3`](https://npmjs.com/package/@fluentui/react)
+      -  [`abort-controller-es5@2.0.0`](https://npmjs.com/package/abort-controller-es5)
       -  [`core-js@3.15.2`](https://npmjs.com/package/core-js)
       -  [`event-target-shim@6.0.2`](https://npmjs.com/package/event-target-shim)
+      -  [`markdown-it-attrs-es5@2.0.0`](https://npmjs.com/package/markdown-it-attrs-es5)
       -  [`markdown-it@12.1.0`](https://npmjs.com/package/markdown-it)
       -  [`memoize-one@5.2.1`](https://npmjs.com/package/memoize-one)
+      -  [`p-defer-es5@2.0.0`](https://npmjs.com/package/p-defer-es5)
       -  [`p-defer@4.0.0`](https://npmjs.com/package/p-defer)
       -  [`react-redux@7.2.4`](https://npmjs.com/package/react-redux)
+      -  [`web-speech-cognitive-services@7.1.1-master.de7e625`](https://npmjs.com/package/web-speech-cognitive-services)
    -  Development dependencies
       -  [`@babel/cli@7.14.5`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.14.6`](https://npmjs.com/package/@babel/core)
@@ -45,6 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/preset-react@7.14.5`](https://npmjs.com/package/@babel/preset-react)
       -  [`@babel/preset-typescript@7.14.5`](https://npmjs.com/package/@babel/preset-typescript)
       -  [`@babel/runtime@7.14.6`](https://npmjs.com/package/@babel/runtime)
+      -  [`@emotion/react@11.4.0`](https://npmjs.com/package/@emotion/react)
+      -  [`@fluentui/react@8.22.3`](https://npmjs.com/package/@fluentui/react)
       -  [`@types/node@16.3.1`](https://npmjs.com/package/@types/node)
       -  [`@types/react-dom@17.0.9`](https://npmjs.com/package/@types/react-dom)
       -  [`@types/react@17.0.14`](https://npmjs.com/package/@types/react)
@@ -74,6 +78,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`serve@12.0.0`](https://npmjs.com/package/serve)
       -  [`strip-ansi@7.0.0`](https://npmjs.com/package/strip-ansi)
       -  [`typescript@4.3.5`](https://npmjs.com/package/typescript)
+      -  [`webpack@5.45.1`](https://npmjs.com/package/webpack)
 
 ## [4.14.0] - 2021-07-09
 

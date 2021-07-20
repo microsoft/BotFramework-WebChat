@@ -55,7 +55,7 @@
     "math-random": "2.0.1",
     "mime": "2.5.2",
     "p-defer": "4.0.0",
-    "p-defer-es5": "2.0.0-master.7c4e2ba",
+    "p-defer-es5": "2.0.0",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.9",
     "redux-saga": "1.1.3",
