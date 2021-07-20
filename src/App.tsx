@@ -73,13 +73,13 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
 
       setFeedyouParam("openUrlTarget", props.openUrlTarget || body.config.openUrlTarget)
       
-      const persist = props.persist || body.config.persist
-      if((persist === "user" || persist === "conversation") && localStorage.feedbotUserId){
+      props.persist = props.persist || body.config.persist
+      if((props.persist === "user" || props.persist === "conversation") && localStorage.feedbotUserId){
         props.user.id = localStorage.feedbotUserId
       }
     
       const directLine = props.directLine || {}
-      if(persist === "conversation"){
+      if(props.persist === "conversation"){
         const conversationExpiration = parseInt(sessionStorage.feedbotConversationExpiration)
         const isConversationExpired = !conversationExpiration || Date.now() >= conversationExpiration
         if (isConversationExpired) {
