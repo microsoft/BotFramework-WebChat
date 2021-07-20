@@ -27,7 +27,7 @@
     "eslint": "^7.30.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.2",
-    "webpack": "^4.46.0",
+    "webpack": "^5.45.1",
     "webpack-cli": "^4.6.0"
   }
 }

@@ -3,7 +3,7 @@
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 
 import { ConnectionStatus } from 'botframework-directlinejs';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 
 import { CONNECT } from '../actions/connect';
 import createPromiseQueue from '../createPromiseQueue';
@@ -39,7 +39,14 @@ function* observeAndPutConnectionStatusUpdate(directLine) {
 // TODO: [P2] We should move this check and rectification to DirectLineJS.
 function rectifyUserID(directLine, userIDFromAction) {
   const { token } = directLine;
-  const { user: userIDFromToken } = decode(token) || {};
+
+  let userIDFromToken;
+
+  // TODO: Add test to make sure "jwt-decode" work as expected.
+  try {
+    userIDFromToken = (decode(token) || {}).user;
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
 
   const result = {
     fromAction: userIDFromAction,
