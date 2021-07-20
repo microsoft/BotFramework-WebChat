@@ -3,8 +3,7 @@
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs-es5';
-
-import sanitizeHTML from './external/sanitize-html';
+import sanitizeHTML from 'sanitize-html';
 
 const SANITIZE_HTML_OPTIONS = {
   allowedAttributes: {
