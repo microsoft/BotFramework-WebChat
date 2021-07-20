@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`p-defer-es5@2.0.0`](https://npmjs.com/package/p-defer-es5)
       -  [`p-defer@4.0.0`](https://npmjs.com/package/p-defer)
       -  [`react-redux@7.2.4`](https://npmjs.com/package/react-redux)
-      -  [`web-speech-cognitive-services@7.1.1-master.de7e625`](https://npmjs.com/package/web-speech-cognitive-services)
+      -  [`web-speech-cognitive-services@7.1.1`](https://npmjs.com/package/web-speech-cognitive-services)
    -  Development dependencies
       -  [`@babel/cli@7.14.5`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@7.14.6`](https://npmjs.com/package/@babel/core)
