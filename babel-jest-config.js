@@ -1,4 +1,6 @@
-const { createTransformer } = require('babel-jest');
+const {
+  default: { createTransformer }
+} = require('babel-jest');
 const { join } = require('path');
 const { readFileSync } = require('fs');
 
