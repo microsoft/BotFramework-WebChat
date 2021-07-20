@@ -8,10 +8,10 @@ export default function useAdaptiveCardsHostConfig(): [any] {
   const { hostConfigFromProps } = useAdaptiveCardsContext();
   const [styleOptions] = useStyleOptions();
 
-  const patchedHostConfig = useMemo(() => hostConfigFromProps || createDefaultAdaptiveCardHostConfig(styleOptions), [
-    hostConfigFromProps,
-    styleOptions
-  ]);
+  const patchedHostConfig = useMemo(
+    () => hostConfigFromProps || createDefaultAdaptiveCardHostConfig(styleOptions),
+    [hostConfigFromProps, styleOptions]
+  );
 
   return [patchedHostConfig];
 }

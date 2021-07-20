@@ -8,11 +8,13 @@ const {
 } = Constants;
 
 export default function createSendStatusMiddleware() {
-  return () => next => ({ activity, sendState, ...args }) => {
-    if (sendState !== SENT) {
-      return <SendStatus activity={activity} sendState={sendState} />;
-    }
+  return () =>
+    next =>
+    ({ activity, sendState, ...args }) => {
+      if (sendState !== SENT) {
+        return <SendStatus activity={activity} sendState={sendState} />;
+      }
 
-    return next({ activity, sendState, ...args });
-  };
+      return next({ activity, sendState, ...args });
+    };
 }

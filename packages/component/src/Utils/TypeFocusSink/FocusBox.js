@@ -12,10 +12,10 @@ const DEFAULT_STYLE = { outline: 0 };
 
 const BaseFocusBox = ({ children, disabled, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
-  const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
-    sendFocusRefPersist,
-    sendFocusRefProp
-  ]);
+  const patchedSendFocusRef = useMemo(
+    () => sendFocusRefProp || sendFocusRefPersist,
+    [sendFocusRefPersist, sendFocusRefProp]
+  );
 
   const context = useMemo(
     () => ({

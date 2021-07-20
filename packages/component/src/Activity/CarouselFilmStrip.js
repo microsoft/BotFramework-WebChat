@@ -145,9 +145,8 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const greetingAlt = (fromUser
-    ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+  const greetingAlt = (
+    fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
   ).replace(/\s{2,}/gu, ' ');
 
   const initials = fromUser ? userInitials : botInitials;

@@ -55,9 +55,7 @@ function createMicrophoneAudioConfig(options: MicrophoneAudioInputStreamOptions)
   pcmRecorderWorkletUrl && pcmRecorder.setWorkletUrl(pcmRecorderWorkletUrl);
 
   return createAudioConfig({
-    async attach(
-      audioNodeId: string
-    ): Promise<{
+    async attach(audioNodeId: string): Promise<{
       audioStreamNode: AudioStreamNode;
       deviceInfo: DeviceInfo;
       format: Format;

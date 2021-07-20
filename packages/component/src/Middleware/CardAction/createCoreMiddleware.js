@@ -31,55 +31,57 @@ const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel']
 
 export default function createDefaultCardActionMiddleware() {
   return [
-    () => next => (...args) => {
-      const [
-        {
-          cardAction: { type, value },
-          getSignInUrl
-        }
-      ] = args;
+    () =>
+      next =>
+      (...args) => {
+        const [
+          {
+            cardAction: { type, value },
+            getSignInUrl
+          }
+        ] = args;
 
-      switch (type) {
-        case 'call':
-        case 'downloadFile':
-        case 'openUrl':
-        case 'playAudio':
-        case 'playVideo':
-        case 'showImage':
-          if (ALLOWED_SCHEMES.includes(getScheme(value))) {
-            if (ie11) {
-              const newWindow = window.open();
-              newWindow.opener = null;
-              newWindow.location = value;
+        switch (type) {
+          case 'call':
+          case 'downloadFile':
+          case 'openUrl':
+          case 'playAudio':
+          case 'playVideo':
+          case 'showImage':
+            if (ALLOWED_SCHEMES.includes(getScheme(value))) {
+              if (ie11) {
+                const newWindow = window.open();
+                newWindow.opener = null;
+                newWindow.location = value;
+              } else {
+                window.open(value, '_blank', 'noopener noreferrer');
+              }
             } else {
-              window.open(value, '_blank', 'noopener noreferrer');
+              console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
             }
-          } else {
-            console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
+
+            break;
+
+          case 'signin': {
+            /**
+             * @todo TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
+             *       This is to eliminate the delay between window.open() and location.href call
+             */
+
+            // eslint-disable-next-line wrap-iife
+            (async function () {
+              const popup = window.open();
+              const url = await getSignInUrl();
+
+              popup.location.href = url;
+            })();
+
+            break;
           }
 
-          break;
-
-        case 'signin': {
-          /**
-           * @todo TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
-           *       This is to eliminate the delay between window.open() and location.href call
-           */
-
-          // eslint-disable-next-line wrap-iife
-          (async function () {
-            const popup = window.open();
-            const url = await getSignInUrl();
-
-            popup.location.href = url;
-          })();
-
-          break;
+          default:
+            return next(...args);
         }
-
-        default:
-          return next(...args);
       }
-    }
   ];
 }

@@ -35,10 +35,10 @@ export default function useComposerProps({
   );
 
   // When styleSet is not specified, the styleOptions will be used to create Adaptive Cards styleSet and merged into useStyleSet.
-  const extraStyleSet = useMemo(() => (styleSet ? undefined : createAdaptiveCardsStyleSet(styleOptions)), [
-    styleOptions,
-    styleSet
-  ]);
+  const extraStyleSet = useMemo(
+    () => (styleSet ? undefined : createAdaptiveCardsStyleSet(styleOptions)),
+    [styleOptions, styleSet]
+  );
 
   const patchedRenderMarkdown = useMemo(
     () => (typeof renderMarkdown === 'undefined' ? defaultRenderMarkdown : renderMarkdown),

@@ -17,9 +17,9 @@ beforeEach(() => {
   };
 
   createPonyfill = require('web-speech-cognitive-services/lib/SpeechServices');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  createCognitiveServicesSpeechServicesPonyfillFactory = require('./createCognitiveServicesSpeechServicesPonyfillFactory')
-    .default;
+  createCognitiveServicesSpeechServicesPonyfillFactory =
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require('./createCognitiveServicesSpeechServicesPonyfillFactory').default;
 
   window.AudioContext = class MockAudioContext {
     // eslint-disable-next-line class-methods-use-this

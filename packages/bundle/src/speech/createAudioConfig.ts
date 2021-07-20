@@ -5,9 +5,7 @@ import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
 import CustomAudioInputStream, { AudioStreamNode, DeviceInfo, Format } from './CustomAudioInputStream';
 
-type AttachFunction = (
-  audioNodeId: string
-) => Promise<{
+type AttachFunction = (audioNodeId: string) => Promise<{
   audioStreamNode: AudioStreamNode;
   deviceInfo: DeviceInfo;
   format: Format;
@@ -52,9 +50,7 @@ class CreateAudioConfigAudioInputStream extends CustomAudioInputStream {
   [SYMBOL_ATTACH]: AttachFunction;
   [SYMBOL_TURN_OFF]: TurnOffFunction;
 
-  protected performAttach(
-    audioNodeId: string
-  ): Promise<{
+  protected performAttach(audioNodeId: string): Promise<{
     audioStreamNode: AudioStreamNode;
     deviceInfo: DeviceInfo;
     format: Format;

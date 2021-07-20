@@ -87,9 +87,8 @@ function validateAllActivitiesTagged(activities, bins) {
 
 const InternalTranscript = ({ activityElementsRef, className }) => {
   const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
-  const [
-    { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
-  ] = useStyleOptions();
+  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }] =
+    useStyleOptions();
   const [focusedActivityKey, setFocusedActivityKey] = useState();
   const [activities] = useActivities();
   const [direction] = useDirection();
@@ -151,9 +150,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [activities]
   );
 
-  const visibleActivities = useMemo(() => activitiesWithRenderer.map(({ activity }) => activity), [
-    activitiesWithRenderer
-  ]);
+  const visibleActivities = useMemo(
+    () => activitiesWithRenderer.map(({ activity }) => activity),
+    [activitiesWithRenderer]
+  );
 
   // Tag activities based on types.
   // The default implementation tag into 2 types: sender and status.
@@ -701,9 +701,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [focus]
   );
 
-  const focusTranscriptCallback = useCallback(() => rootElementRef.current && rootElementRef.current.focus(), [
-    rootElementRef
-  ]);
+  const focusTranscriptCallback = useCallback(
+    () => rootElementRef.current && rootElementRef.current.focus(),
+    [rootElementRef]
+  );
 
   useRegisterFocusTranscript(focusTranscriptCallback);
 
@@ -723,10 +724,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     return activity;
   }, [focusedActivityKey, renderingElements]);
 
-  useMemo(() => dispatchTranscriptFocus && dispatchTranscriptFocus({ activity: focusedActivity }), [
-    dispatchTranscriptFocus,
-    focusedActivity
-  ]);
+  useMemo(
+    () => dispatchTranscriptFocus && dispatchTranscriptFocus({ activity: focusedActivity }),
+    [dispatchTranscriptFocus, focusedActivity]
+  );
 
   // This is required by IE11.
   // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
@@ -1066,9 +1067,8 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
           if (~firstUnacknowledgedActivityElementIndex) {
             if (patchedAutoScrollSnapOnActivity) {
               // Gets the activity element which we should snap to.
-              const { element: nthUnacknowledgedActivityElement } = activityElements[
-                firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1
-              ];
+              const { element: nthUnacknowledgedActivityElement } =
+                activityElements[firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1];
 
               if (nthUnacknowledgedActivityElement) {
                 values.push(
@@ -1082,9 +1082,8 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
             }
 
             if (patchedAutoScrollSnapOnPage) {
-              const { element: firstUnacknowledgedActivityElement } = activityElements[
-                firstUnacknowledgedActivityElementIndex
-              ];
+              const { element: firstUnacknowledgedActivityElement } =
+                activityElements[firstUnacknowledgedActivityElementIndex];
 
               values.push(
                 firstUnacknowledgedActivityElement.offsetTop -

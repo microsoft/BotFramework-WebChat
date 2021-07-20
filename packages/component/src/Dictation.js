@@ -46,9 +46,10 @@ const Dictation = ({ onError }) => {
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
 
-  const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
-    activities
-  ]);
+  const numSpeakingActivities = useMemo(
+    () => activities.filter(({ channelData: { speak } = {} }) => speak).length,
+    [activities]
+  );
 
   const handleDictate = useCallback(
     ({ result: { confidence, transcript } = {} }) => {
