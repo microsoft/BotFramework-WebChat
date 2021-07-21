@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Forked [`cldr-data`](https://npmjs.com/package/cldr-data) and [`cldr-data-downloader`](https://npmjs.com/package/cldr-data-downloader), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   -  Moved source code to under `./src` folder
+   -  Moved to `fs.readFileSync()` from `require()` when reading JSON files
+   -  Moved to `node:fs.mkdir()` and removed `mkdirp`
+   -  Updated Unicode CLDR download folder to `/dist/` folder from project root
+   -  Moved from Grunt/JSHint to eslint
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
 -  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
    -  Production dependencies

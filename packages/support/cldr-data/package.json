@@ -1,0 +1,45 @@
+{
+  "name": "cldr-data",
+  "version": "36.0.0-0",
+  "keywords": [
+    "unicode",
+    "CLDR",
+    "JSON",
+    "data"
+  ],
+  "description": "Npm module for Unicode CLDR JSON data",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "author": {
+    "name": "Rafael Xavier de Souza",
+    "email": "rxaviers@gmail.com",
+    "url": "http://rafael.xavier.blog.br"
+  },
+  "contributors": [
+    "Microsoft Corporation"
+  ],
+  "main": "src/index.js",
+  "files": [
+    "src/index.js",
+    "src/install.js",
+    "urls.json"
+  ],
+  "scripts": {
+    "eslint": "npm run precommit",
+    "install": "node ./src/install.js",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "eslint",
+    "prettier": "prettier --check src/**/*.{js,ts,tsx}"
+  },
+  "dependencies": {
+    "cldr-data-downloader": "0.3.5-0",
+    "glob": "^7.1.7"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "prettier": "^2.3.2"
+  }
+}

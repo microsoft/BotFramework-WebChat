@@ -1,0 +1,49 @@
+{
+  "name": "cldr-data-downloader",
+  "version": "0.3.5-0",
+  "keywords": [
+    "unicode",
+    "CLDR",
+    "JSON",
+    "data",
+    "install",
+    "download",
+    "fetch"
+  ],
+  "description": "Download tool for Unicode CLDR JSON data",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "author": {
+    "name": "Rafael Xavier de Souza",
+    "email": "rxaviers@gmail.com",
+    "url": "http://rafael.xavier.blog.br"
+  },
+  "contributors": [
+    "Microsoft Corporation"
+  ],
+  "main": "./src/index.js",
+  "bin": {
+    "cldr-data-downloader": "./bin/download.sh"
+  },
+  "scripts": {
+    "eslint": "npm run precommit",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "eslint",
+    "prettier": "prettier --check src/**/*.{js,ts,tsx}"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.5",
+    "nopt": "^5.0.0",
+    "progress": "^2.0.3",
+    "q": "^1.5.1",
+    "request": "^2.88.2",
+    "request-progress": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "prettier": "^2.3.2"
+  }
+}

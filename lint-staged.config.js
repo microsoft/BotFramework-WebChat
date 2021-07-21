@@ -17,6 +17,10 @@ module.exports = {
   'packages/directlinespeech/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],
   'packages/isomorphic-react/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react'],
   'packages/isomorphic-react-dom/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react-dom'],
+  'packages/support/cldr-data/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:support-cldr-data'],
+  'packages/support/cldr-data-downloader/src/**/*.{js,ts,tsx}': [
+    'npm run precommit:eslint:support-cldr-data-downloader'
+  ],
   'packages/test/harness/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:test-harness'],
   'packages/test/page-object/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:test-page-object'],
   'packages/*/src/**/*.{ts,tsx}': [() => 'npm run precommit:typecheck']
