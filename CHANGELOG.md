@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Forked [`cldr-data`](https://npmjs.com/package/cldr-data) and [`cldr-data-downloader`](https://npmjs.com/package/cldr-data-downloader), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Forked [`cldr-data`](https://npmjs.com/package/cldr-data) and [`cldr-data-downloader`](https://npmjs.com/package/cldr-data-downloader), in PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
    -  Moved source code to under `./src` folder
    -  Moved to `fs.readFileSync()` from `require()` when reading JSON files
    -  Moved to `node:fs.mkdir()` and removed `mkdirp`
