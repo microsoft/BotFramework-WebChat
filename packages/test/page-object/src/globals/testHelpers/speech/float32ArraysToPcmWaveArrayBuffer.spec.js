@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import float32ArraysToPcmWaveArrayBuffer from './float32ArraysToPcmWaveArrayBuffer';
 
 beforeAll(() => {
