@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Moved source code to under `./src` folder
    -  Moved to `fs.readFileSync()` from `require()` when reading JSON files
    -  Moved to `node:fs.mkdir()` and removed `mkdirp`
+   -  Moved test from `node:assert` to Jest
    -  Updated Unicode CLDR download folder to `/dist/` folder from project root
    -  Moved from Grunt/JSHint to eslint
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
