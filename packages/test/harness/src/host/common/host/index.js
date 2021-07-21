@@ -1,4 +1,4 @@
-const createDeferred = require('p-defer');
+const createDeferred = require('p-defer-es5');
 
 const click = require('./click');
 const done = require('./done');

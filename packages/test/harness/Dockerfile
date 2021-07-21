@@ -1,4 +1,5 @@
-FROM node:alpine
+# NPM@7 is buggy with its "postinstall" script, going back to Node.js 14 with NPM@6 for now.
+FROM node:14-alpine
 
 RUN apk update && \
     apk upgrade && \

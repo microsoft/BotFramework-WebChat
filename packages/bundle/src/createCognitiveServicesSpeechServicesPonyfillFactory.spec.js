@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
 let consoleWarns;

@@ -57,6 +57,10 @@ test('video', async () => {
 
     chromeBottom && chromeBottom.setAttribute('hidden', 'hidden');
 
+    const doubleTapUI = document.querySelector('.ytp-doubletap-ui');
+
+    doubleTapUI && doubleTapUI.setAttribute('hidden', 'hidden');
+
     const tooltip = document.querySelector('.ytp-tooltip');
 
     tooltip && tooltip.setAttribute('hidden', 'hidden');

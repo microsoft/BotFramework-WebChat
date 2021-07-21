@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 jest.mock('botframework-directlinejs', () => {
   class DirectLine {
     constructor({ botAgent }) {

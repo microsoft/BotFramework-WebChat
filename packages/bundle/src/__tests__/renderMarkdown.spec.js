@@ -17,7 +17,7 @@ describe('renderMarkdown', () => {
     );
   });
 
-  it('should respect CRFL', () => {
+  it('should respect CRLF', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown('Same Line.\n\rSame Line.\r\n2nd line.', styleOptions)).toBe(
