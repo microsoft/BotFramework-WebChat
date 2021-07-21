@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import pcmWaveArrayBufferToRiffWaveArrayBuffer from './pcmWaveArrayBufferToRiffWaveArrayBuffer';
 
 beforeAll(() => {
