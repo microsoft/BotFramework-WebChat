@@ -71,9 +71,9 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       const body = await response.json();
       console.log("WebChat init", body);
 
-      setFeedyouParam("openUrlTarget", props.openUrlTarget || body.config.openUrlTarget)
+      setFeedyouParam("openUrlTarget", props.openUrlTarget || (body.config && body.config.openUrlTarget))
       
-      props.persist = props.persist || body.config.persist
+      props.persist = props.persist || (body.config && body.config.persist)
       if((props.persist === "user" || props.persist === "conversation") && localStorage.feedbotUserId){
         props.user.id = localStorage.feedbotUserId
       }
