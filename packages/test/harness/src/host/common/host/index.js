@@ -12,6 +12,7 @@ const sendKeys = require('./sendKeys');
 const sendShiftTab = require('./sendShiftTab');
 const sendTab = require('./sendTab');
 const snapshot = require('./snapshot');
+const upload = require('./upload');
 const windowSize = require('./windowSize');
 
 /** RPC object on the Jest side. */
@@ -35,6 +36,7 @@ module.exports = function createHost(webDriver) {
     sendShiftTab: sendShiftTab(webDriver),
     sendTab: sendTab(webDriver),
     snapshot: snapshot(webDriver),
+    upload: upload(webDriver),
     windowSize: windowSize(webDriver)
   };
 };
