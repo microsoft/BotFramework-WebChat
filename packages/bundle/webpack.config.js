@@ -17,8 +17,8 @@ let config = {
   module: {
     rules: [
       {
-        // To speed up bundling, we are limiting Babel to a number of packages which does not transpile to ES5.
-        test: /\/node_modules\/(nanoid|postcss|punycode|sanitize-html)\//iu,
+        // To speed up bundling, we are limiting Babel to a number of packages which does not publish ES5 bits.
+        test: /\/node_modules\/(botframework-streaming|buffer|nanoid|postcss|punycode|sanitize-html)\//iu,
         use: {
           loader: 'babel-loader',
           options: {
