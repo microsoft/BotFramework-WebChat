@@ -33,7 +33,6 @@
     "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.js",
     "start:typescript": "npm run build:typescript -- --watch"
   },
-  "cldr-data-coverage": "full",
   "devDependencies": {
     "@babel/cli": "^7.14.5",
     "@babel/core": "^7.14.6",
@@ -60,7 +59,6 @@
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
-    "cldr-data": "36.0.0-0",
     "globalize": "1.6.0",
     "math-random": "2.0.1",
     "prop-types": "15.7.2",

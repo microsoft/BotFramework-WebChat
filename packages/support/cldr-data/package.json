@@ -1,6 +1,7 @@
 {
   "name": "cldr-data",
   "version": "36.0.0-0",
+  "private": true,
   "keywords": [
     "unicode",
     "CLDR",

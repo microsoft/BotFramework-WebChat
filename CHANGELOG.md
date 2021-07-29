@@ -32,10 +32,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Updated Unicode CLDR download folder to `/dist/` folder from project root
    -  Moved from Grunt/JSHint to eslint
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    -  Production dependencies
       -  [`@babel/runtime@7.14.6`](https://npmjs.com/package/@babel/runtime)
       -  [`abort-controller-es5@2.0.0`](https://npmjs.com/package/abort-controller-es5)
+      -  [`botframework-directlinejs@0.15.0`](https://npmjs.com/package/botframework-directlinejs)
       -  [`core-js@3.15.2`](https://npmjs.com/package/core-js)
       -  [`event-target-shim@6.0.2`](https://npmjs.com/package/event-target-shim)
       -  [`markdown-it-attrs-es5@2.0.0`](https://npmjs.com/package/markdown-it-attrs-es5)
