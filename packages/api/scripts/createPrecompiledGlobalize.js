@@ -6,12 +6,12 @@ const globalizeCompiler = require('globalize-compiler');
 const languages = Object.values(require('../src/localization/overrides.json')).map(
   ({ GLOBALIZE_LANGUAGE }) => GLOBALIZE_LANGUAGE
 );
-const { sync: mkdirpSync } = require('mkdirp');
+const cldrData = require('../../support/cldr-data');
 
-Globalize.load(require('cldr-data').entireSupplemental());
+Globalize.load(cldrData.entireSupplemental());
 
 const formattersAndParsers = languages.reduce((formattersAndParsers, language) => {
-  Globalize.load(require('cldr-data').entireMainFor(language));
+  Globalize.load(cldrData.entireMainFor(language));
 
   const globalize = new Globalize(language);
 
