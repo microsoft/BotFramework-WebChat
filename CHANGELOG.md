@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Moved tests from `node:assert` to Jest
    -  Updated Unicode CLDR download folder to `/dist/` folder from project root
    -  Moved from Grunt/JSHint to eslint
+   -  Upgraded from CommonJS to ES Module
+   -  Use [`read-pkg-up`](https://npmjs.com/package/read-pkg-up) to determines parent `package.json`
+      -  In Web Chat, since we use `lerna` to run the `install` script, we need to relax how `cldr-data` read from parent `package.json`
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
 -  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996) and PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
    -  Production dependencies
