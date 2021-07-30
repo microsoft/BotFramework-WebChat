@@ -10,18 +10,18 @@ function prettierMarkdown(filenames) {
 module.exports = {
   '{docs,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
   '**/*.md': prettierMarkdown,
-  'packages/api/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:api'],
-  'packages/bundle/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:bundle'],
-  'packages/component/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:component'],
-  'packages/core/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:core'],
-  'packages/directlinespeech/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],
-  'packages/isomorphic-react/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react'],
-  'packages/isomorphic-react-dom/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react-dom'],
-  'packages/support/cldr-data/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:support-cldr-data'],
-  'packages/support/cldr-data-downloader/src/**/*.{js,ts,tsx}': [
+  'packages/api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:api'],
+  'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],
+  'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],
+  'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
+  'packages/directlinespeech/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],
+  'packages/isomorphic-react/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react'],
+  'packages/isomorphic-react-dom/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react-dom'],
+  'packages/support/cldr-data/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:support-cldr-data'],
+  'packages/support/cldr-data-downloader/src/**/*.{mjs,js,ts,tsx}': [
     'npm run precommit:eslint:support-cldr-data-downloader'
   ],
-  'packages/test/harness/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:test-harness'],
-  'packages/test/page-object/src/**/*.{js,ts,tsx}': ['npm run precommit:eslint:test-page-object'],
+  'packages/test/harness/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:test-harness'],
+  'packages/test/page-object/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:test-page-object'],
   'packages/*/src/**/*.{ts,tsx}': [() => 'npm run precommit:typecheck']
 };
