@@ -7,7 +7,7 @@ import getUploadButton from '../elements/getUploadButton';
 import minNumActivitiesShown from '../conditions/minNumActivitiesShown.js';
 
 function resolveDockerFile(filename) {
-  return posix.join('/~/Downloads', filename);
+  return posix.join('/home/seluser/Downloads', filename);
 }
 
 function resolveLocalFile(filename) {
