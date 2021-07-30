@@ -208,7 +208,7 @@ export const AttachmentView = (props: {
             heroCardBuilder.addCommon(attachment.content, props.tiles)
             
             return (
-                <AdaptiveCardContainer className="hero" nativeCard={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+                <AdaptiveCardContainer className="wc-hero" nativeCard={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
         case "application/vnd.microsoft.card.thumbnail":
