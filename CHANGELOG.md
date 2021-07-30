@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Moved to `node:fs.mkdir()` and removed `mkdirp`
    -  Moved tests from `node:assert` to Jest
    -  Updated Unicode CLDR download folder to `/dist/` folder from project root
-   -  Moved from Grunt/JSHint to eslint
+   -  Moved from Grunt/JSHint to [`eslint`](https://npmjs.com/package/eslint)
    -  Upgraded from CommonJS to ES Module
    -  Use [`read-pkg-up`](https://npmjs.com/package/read-pkg-up) to determines parent `package.json`
       -  In Web Chat, since we use `lerna` to run the `install` script, we need to relax how `cldr-data` read from parent `package.json`
