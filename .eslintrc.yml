@@ -17,7 +17,7 @@ overrides:
 parserOptions:
   ecmaFeatures:
     jsx: true
-  ecmaVersion: latest
+  ecmaVersion: 2020
   sourceType: module
 root: true
 rules:
