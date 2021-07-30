@@ -9,10 +9,10 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const { deepEqual, readJSON } = require('./util');
+import { deepEqual, readJSON } from './util.js';
 
 function State(srcUrl, destPath) {
   this.srcUrl = srcUrl;
@@ -53,4 +53,4 @@ proto.write = function () {
   fs.writeFileSync(this.filepath(), data);
 };
 
-module.exports = State;
+export default State;

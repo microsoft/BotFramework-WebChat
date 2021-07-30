@@ -9,17 +9,16 @@
 
 'use strict';
 
-const { mkdirSync } = require('fs');
-const { resolve } = require('path');
-const assert = require('assert');
+import { mkdirSync } from 'fs';
+import assert from 'assert';
 
-const { isUrl, readJSON } = require('./util');
-const AvailableLocales = require('./available_locales');
-const download = require('./download');
-const progress = require('./progress');
-const Q = require('q');
-const State = require('./state');
-const unpack = require('./unpack');
+import { isUrl, readJSON } from './util.js';
+import AvailableLocales from './available_locales.js';
+import download from './download.js';
+import progress from './progress.js';
+import Q from 'q';
+import State from './state.js';
+import unpack from './unpack.js';
 
 Q.longStackSupport = true;
 
@@ -30,7 +29,7 @@ function alwaysArray(arrayOrSomething) {
 /**
  * fn( srcUrl, destPath [, options], callback )
  */
-module.exports = function (srcUrl, destPath, options, callback) {
+export default function (srcUrl, destPath, options, callback) {
   let error, state;
 
   if (callback === undefined && typeof options === 'function') {
@@ -47,7 +46,7 @@ module.exports = function (srcUrl, destPath, options, callback) {
   assert(typeof callback === 'function', 'must include callback function');
 
   try {
-    mkdirSync(resolve(__dirname, destPath), { recursive: true });
+    mkdirSync(new URL(destPath, import.meta.url), { recursive: true });
   } catch (err) {
     if (err.code !== 'EEXIST') {
       throw err;
@@ -125,4 +124,4 @@ module.exports = function (srcUrl, destPath, options, callback) {
       // Done
     })
     .nodeify(callback);
-};
+}

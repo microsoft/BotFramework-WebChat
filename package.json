@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat#readme",
   "keywords": [],
+  "cldr-data-coverage": "full",
   "scripts": {
     "bootstrap": "lerna bootstrap --ci",
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",

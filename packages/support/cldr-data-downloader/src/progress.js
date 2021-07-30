@@ -1,5 +1,4 @@
-const extend = require('util')._extend;
-const progress = require('progress');
+import progress from 'progress';
 
 let bar, nDownloads;
 const states = [];
@@ -60,11 +59,11 @@ function reportProgress(state) {
   }
 }
 
-module.exports = function (_nDownloads) {
+export default function (_nDownloads) {
   nDownloads = _nDownloads;
 
   return function (notification) {
-    states[notification.index] = extend(extend({}, states[notification.index]), notification.value);
+    states[notification.index] = Object.assign({}, states[notification.index], notification.value);
     reportProgress(consolidatedState());
   };
-};
+}

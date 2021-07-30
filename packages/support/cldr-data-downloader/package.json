@@ -1,6 +1,9 @@
 {
   "name": "cldr-data-downloader",
   "version": "0.3.5-0",
+  "engines": {
+    "node": ">= 12"
+  },
   "private": true,
   "keywords": [
     "unicode",
@@ -25,7 +28,13 @@
   "contributors": [
     "Microsoft Corporation"
   ],
-  "main": "./src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "type": "module",
   "bin": {
     "cldr-data-downloader": "./bin/download.sh"
   },

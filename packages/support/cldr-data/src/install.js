@@ -11,10 +11,12 @@
 
 let coverage, parentPackage, peerPackages, srcUrl;
 
-const { sync: glob } = require('glob');
-const cldrDownloader = require('cldr-data-downloader');
-const path = require('path');
-const child_process = require('child_process');
+import { fileURLToPath } from 'url';
+import { readPackageUpSync } from 'read-pkg-up';
+import glob from 'glob';
+import cldrDownloader from 'cldr-data-downloader';
+import path from 'path';
+import child_process from 'child_process';
 
 const options = {};
 
@@ -38,13 +40,15 @@ try {
   }
 }
 
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
 try {
-  parentPackage = require('../../package.json');
+  parentPackage = readPackageUpSync({ cwd: path.join(__dirname, '../../..') }).packageJson;
   // eslint-disable-next-line no-empty
 } catch (error) {}
 
 try {
-  peerPackages = glob('../*/package.json').map(file => {
+  peerPackages = glob.sync('../*/package.json').map(file => {
     try {
       return require(path.resolve(file));
     } catch (error) {
@@ -90,9 +94,16 @@ if (process.env.CLDR_COVERAGE) {
   coverage = process.env.CLDR_COVERAGE;
 } else if (
   parentPackage &&
-  parentPackage['cldr-data-coverage'] &&
-  ((parentPackage.dependencies && parentPackage.dependencies['cldr-data']) ||
-    (parentPackage.devDependencies && parentPackage.devDependencies['cldr-data']))
+  parentPackage['cldr-data-coverage']
+
+  // Normally, when running under npm, it will run this install script under the dependents, i.e. /packages/api/.
+  // Since we are using lerna, lerna run this install script under CWD, i.e. /packages/support/cldr-data/.
+  // Thus, it cannot find its true dependents (/packages/api). Thus, the "cldr-data-coverage" field cannot be found.
+  // We will need put it the "cldr-data-coverage" field under root package.json, and relaxing the requirements a bit for lerna.
+
+  // parentPackage['cldr-data-coverage'] &&
+  // ((parentPackage.dependencies && parentPackage.dependencies['cldr-data']) ||
+  //   (parentPackage.devDependencies && parentPackage.devDependencies['cldr-data']))
 ) {
   coverage = parentPackage['cldr-data-coverage'];
 }

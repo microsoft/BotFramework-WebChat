@@ -9,18 +9,18 @@
 
 'use strict';
 
-const JSON_EXTENSION = /^(.*)\.json$/u;
+import assert from 'assert';
+import _fs from 'fs';
+import _path from 'path';
 
-const assert = require('assert');
-const _fs = require('fs');
-const _path = require('path');
+const JSON_EXTENSION = /^(.*)\.json$/u;
 
 function argsToArray(arg) {
   return [].slice.call(arg, 0);
 }
 
 function jsonFiles(dirName) {
-  const fileList = _fs.readdirSync(_path.join(__dirname, '../dist', dirName));
+  const fileList = _fs.readdirSync(new URL(_path.join('../dist', dirName), import.meta.url));
 
   return fileList.reduce((sum, file) => {
     if (JSON_EXTENSION.test(file)) {
@@ -41,7 +41,7 @@ function cldrData(...args) {
     }, []);
   }
 
-  return JSON.parse(_fs.readFileSync(_path.join(__dirname, '../dist/', path + '.json')));
+  return JSON.parse(_fs.readFileSync(new URL(_path.join('../dist/', path + '.json'), import.meta.url)));
 }
 
 function mainPathsFor(locales) {
@@ -86,4 +86,4 @@ cldrData.entireSupplemental = function () {
   return cldrData.apply({}, supplementalPaths());
 };
 
-module.exports = cldrData;
+export default cldrData;

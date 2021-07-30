@@ -9,16 +9,16 @@
 
 'use strict';
 
-const extend = require('util')._extend;
-const Q = require('q');
-const requestProgress = require('request-progress');
-const request = require('request');
-const path = require('path');
-const fs = require('fs');
+import Q from 'q';
+import requestProgress from 'request-progress';
+import request from 'request';
+import path from 'path';
+import fs from 'fs';
+
 const workingDir = process.cwd();
 
 function getRequestOptions(options) {
-  options = extend(extend({}, options), {
+  options = Object.assign({}, options, {
     // Get response as a buffer
     encoding: null,
 
@@ -165,4 +165,4 @@ function download(src) {
   return downloadDfd.promise;
 }
 
-module.exports = download;
+export default download;

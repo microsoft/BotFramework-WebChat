@@ -1,6 +1,9 @@
 {
   "name": "cldr-data",
   "version": "36.0.0-0",
+  "engines": {
+    "node": ">= 12"
+  },
   "private": true,
   "keywords": [
     "unicode",
@@ -22,7 +25,13 @@
   "contributors": [
     "Microsoft Corporation"
   ],
-  "main": "src/index.js",
+  "module": "./src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "type": "module",
   "files": [
     "src/index.js",
     "src/install.js",
@@ -37,7 +46,8 @@
   },
   "dependencies": {
     "cldr-data-downloader": "0.3.5-0",
-    "glob": "^7.1.7"
+    "glob": "^7.1.7",
+    "read-pkg-up": "8.0.0"
   },
   "devDependencies": {
     "eslint": "^7.31.0",

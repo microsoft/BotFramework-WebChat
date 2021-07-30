@@ -9,9 +9,9 @@
 
 'use strict';
 
-const { mkdirSync } = require('fs');
-const AdmZip = require('adm-zip');
-const path = require('path');
+import { mkdirSync } from 'fs';
+import AdmZip from 'adm-zip';
+import path from 'path';
 
 function bowerOrPackageJson(entry) {
   return /^(bower|package)\.json/u.test(entry.entryName);
@@ -82,8 +82,8 @@ function unpack(downloads, dest) {
   });
 }
 
-module.exports = function (dest) {
+export default function (dest) {
   return function (download) {
     unpack(download, dest);
   };
-};
+}

@@ -9,8 +9,8 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 function AvailableLocales(destPath) {
   const mainPath = path.join(destPath, 'main');
@@ -43,4 +43,4 @@ proto.write = function () {
   fs.writeFileSync(this.filepath(), data);
 };
 
-module.exports = AvailableLocales;
+export default AvailableLocales;
