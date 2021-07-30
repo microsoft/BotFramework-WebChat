@@ -11,7 +11,7 @@ overrides:
     - "*.js"
     - "*.jsx"
     - "*.mjs"
-    # TODO: [P1] #XXX Our eslint is not properly configured to lint TypeScript files.
+    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
     # - "*.ts"
     # - "*.tsx"
 parserOptions:
