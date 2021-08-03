@@ -78,6 +78,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private handoffSubscription: Subscription;
     private webchatCollapseSubscribtion: Subscription;
     private redirectSubscribtion: Subscription;
+    private logSubscribtion: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
@@ -327,6 +328,18 @@ export class Chat extends React.Component<ChatProps, {}> {
                 activity.value && !window.hasOwnProperty('API_URL') && (location.href = activity.value)
             })
 
+        this.logSubscribtion = botConnection.activity$
+            .filter((activity: any) => activity.type === "event" && activity.name === "log")
+            .subscribe((activity: any) => {
+                if (Array.isArray(activity.value)) {
+                    const logs: any[] = activity.value
+                    logs.unshift('Feedyou WebChat log')
+                    console.log.apply(this, logs)
+                } else {
+                    console.log('Feedyou WebChat log', activity.value)
+                }
+            })
+
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
         if ((!this.props.directLine || !this.props.directLine.conversationId) && (!this.props.botConnection || !((this.props.botConnection as any).conversationId))) {
@@ -462,6 +475,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         // this.handoffSubscription.unsubscribe();
         this.webchatCollapseSubscribtion.unsubscribe();
         this.redirectSubscribtion.unsubscribe();
+        this.logSubscribtion.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
