@@ -69,7 +69,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
         }
       );
       const body = await response.json();
-      console.log("WebChat init", body);
+      console.log("Feedyou WebChat init", body);
 
       setFeedyouParam("openUrlTarget", props.openUrlTarget || (body.config && body.config.openUrlTarget))
       
