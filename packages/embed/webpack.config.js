@@ -1,6 +1,6 @@
 const { resolve } = require('path');
+const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Visualizer = require('webpack-visualizer-plugin');
 
 let config = {
   entry: {
@@ -22,7 +22,10 @@ let config = {
       title: 'Web Chat',
       xhtml: true
     }),
-    new Visualizer()
+    new StatsWriterPlugin({
+      filename: 'stats.json',
+      transform: (_, opts) => JSON.stringify(opts.compiler.getStats().toJson({ chunkModules: true }), null, 2)
+    })
   ]
 };
 
