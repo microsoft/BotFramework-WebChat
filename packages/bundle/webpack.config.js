@@ -14,6 +14,27 @@ let config = {
     'webchat-minimal': './lib/index-minimal.js'
   },
   mode: 'production',
+  module: {
+    rules: [
+      {
+        // To speed up bundling, we are limiting Babel to a number of packages which does not transpile to ES5.
+        test: /\/node_modules\/(nanoid|postcss|punycode|sanitize-html)\//iu,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  modules: 'commonjs'
+                }
+              ]
+            ]
+          }
+        }
+      }
+    ]
+  },
   optimization: {
     minimizer: [
       // Webpack use terser for minification
@@ -30,9 +51,7 @@ let config = {
     ]
   },
   output: {
-    filename: '[name].js',
-    libraryTarget: 'umd',
-    path: resolve(__dirname, 'dist')
+    libraryTarget: 'umd'
   },
   plugins: [
     new StatsWriterPlugin({
@@ -77,7 +96,8 @@ let config = {
       react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
       'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
     }
-  }
+  },
+  target: ['web', 'es5']
 };
 
 // VSTS always emits uppercase environment variables.

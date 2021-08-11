@@ -17,6 +17,6 @@
     "restify": "^8.5.1"
   },
   "devDependencies": {
-    "node-dev": "^6.6.0"
+    "node-dev": "^7.0.0"
   }
 }

@@ -14,30 +14,32 @@ import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
 export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMiddleware {
   // This is not returning a React component, but a render function.
-  /* eslint-disable-next-line react/display-name */
-  return () => next => (...args) => {
-    const [{ attachment }] = args;
+  return () =>
+    next =>
+    /* eslint-disable-next-line react/display-name */
+    (...args) => {
+      const [{ attachment }] = args;
 
-    return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
-      <HeroCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
-      <AdaptiveCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
-      <AnimationCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
-      <AudioCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
-      <OAuthCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
-      <ReceiptCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
-      <SignInCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (
-      <ThumbnailCardAttachment attachment={attachment} />
-    ) : attachment.contentType === 'application/vnd.microsoft.card.video' ? (
-      <VideoCardAttachment attachment={attachment} />
-    ) : (
-      next(...args)
-    );
-  };
+      return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
+        <HeroCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
+        <AdaptiveCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
+        <AnimationCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
+        <AudioCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
+        <OAuthCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
+        <ReceiptCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
+        <SignInCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (
+        <ThumbnailCardAttachment attachment={attachment} />
+      ) : attachment.contentType === 'application/vnd.microsoft.card.video' ? (
+        <VideoCardAttachment attachment={attachment} />
+      ) : (
+        next(...args)
+      );
+    };
 }

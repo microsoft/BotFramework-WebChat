@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/h.clear-after-idle/",
   "dependencies": {
-    "botframework-webchat": "^4.13.0",
+    "botframework-webchat": "^4.14.0",
     "classnames": "^2.3.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import { logging } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';

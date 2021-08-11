@@ -220,9 +220,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   }
 
   /** Implements this function. When called, it should start recording and return an `IAudioStreamNode`. */
-  protected abstract performAttach(
-    audioNodeId: string
-  ): Promise<{
+  protected abstract performAttach(audioNodeId: string): Promise<{
     audioStreamNode: AudioStreamNode;
     deviceInfo: DeviceInfo;
     format: Format;

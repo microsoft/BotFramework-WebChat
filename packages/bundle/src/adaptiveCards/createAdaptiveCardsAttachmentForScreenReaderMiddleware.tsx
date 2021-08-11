@@ -16,17 +16,19 @@ const RICH_CARD_CONTENT_TYPES = [
 ];
 
 export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentForScreenReaderMiddleware {
-  return () => next => (...args) => {
-    const [
-      {
-        attachment: { content, contentType }
-      }
-    ] = args;
+  return () =>
+    next =>
+    (...args) => {
+      const [
+        {
+          attachment: { content, contentType }
+        }
+      ] = args;
 
-    return content && RICH_CARD_CONTENT_TYPES.includes(contentType)
-      ? () => <RichCardAttachment content={content} />
-      : content && contentType === 'application/vnd.microsoft.card.adaptive'
-      ? () => <AdaptiveCardAttachment content={content} />
-      : next(...args);
-  };
+      return content && RICH_CARD_CONTENT_TYPES.includes(contentType)
+        ? () => <RichCardAttachment content={content} />
+        : content && contentType === 'application/vnd.microsoft.card.adaptive'
+        ? () => <AdaptiveCardAttachment content={content} />
+        : next(...args);
+    };
 }

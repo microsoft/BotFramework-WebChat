@@ -9,16 +9,16 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@emotion/react": "^11.1.5",
-    "@fluentui/react": "^8.9.0",
+    "@emotion/react": "11.4.0",
+    "@fluentui/react": "8.22.3",
     "adaptivecards": "^2.5.0",
     "botframework-directlinejs": "^0.14.1",
     "botframework-webchat": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
-    "classnames": "^2.3.1",
-    "memoize-one": "^5.1.1",
-    "on-error-resume-next": "^1.1.0",
-    "react-scripts": "^4.0.3",
+    "classnames": "2.3.1",
+    "memoize-one": "5.2.1",
+    "on-error-resume-next": "1.1.0",
+    "react-scripts": "4.0.3",
     "rxjs": "5"
   },
   "scripts": {
@@ -28,6 +28,6 @@
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "prettier": "^2.3.2"
   }
 }

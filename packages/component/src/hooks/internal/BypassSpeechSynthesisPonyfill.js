@@ -6,11 +6,12 @@
 /* eslint max-classes-per-file: ["error", 4] */
 /* eslint no-empty-function: "off" */
 
-import EventTarget, { defineEventAttribute } from 'event-target-shim-es5';
+import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
 
-class SpeechSynthesisEvent {
+class SpeechSynthesisEvent extends Event {
   constructor(type, utterance) {
-    this._type = type;
+    super(type);
+
     this._utterance = utterance;
   }
 
@@ -23,10 +24,6 @@ class SpeechSynthesisEvent {
   }
 
   get name() {}
-
-  get type() {
-    return this._type;
-  }
 
   get utterance() {
     return this._utterance;
@@ -92,15 +89,63 @@ class SpeechSynthesisUtterance extends EventTarget {
   set volume(value) {
     this._volume = value;
   }
-}
 
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'boundary');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'end');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'error');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'mark');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'pause');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'resume');
-defineEventAttribute(SpeechSynthesisUtterance.prototype, 'start');
+  get onboundary() {
+    return getEventAttributeValue(this, 'boundary');
+  }
+
+  set onboundary(value) {
+    setEventAttributeValue(this, 'boundary', value);
+  }
+
+  get onend() {
+    return getEventAttributeValue(this, 'end');
+  }
+
+  set onend(value) {
+    setEventAttributeValue(this, 'end', value);
+  }
+
+  get onerror() {
+    return getEventAttributeValue(this, 'error');
+  }
+
+  set onerror(value) {
+    setEventAttributeValue(this, 'error', value);
+  }
+
+  get onmark() {
+    return getEventAttributeValue(this, 'mark');
+  }
+
+  set onmark(value) {
+    setEventAttributeValue(this, 'mark', value);
+  }
+
+  get onpause() {
+    return getEventAttributeValue(this, 'pause');
+  }
+
+  set onpause(value) {
+    setEventAttributeValue(this, 'pause', value);
+  }
+
+  get onresume() {
+    return getEventAttributeValue(this, 'resume');
+  }
+
+  set onresume(value) {
+    setEventAttributeValue(this, 'resume', value);
+  }
+
+  get onstart() {
+    return getEventAttributeValue(this, 'start');
+  }
+
+  set onstart(value) {
+    setEventAttributeValue(this, 'start', value);
+  }
+}
 
 class SpeechSynthesisVoice {
   get default() {
@@ -155,9 +200,15 @@ class SpeechSynthesis extends EventTarget {
     utterance.dispatchEvent(new SpeechSynthesisEvent('start', utterance));
     utterance.dispatchEvent(new SpeechSynthesisEvent('end', utterance));
   }
-}
 
-defineEventAttribute(SpeechSynthesis.prototype, 'voiceschanged');
+  get onvoiceschanged() {
+    return getEventAttributeValue(this, 'voiceschanged');
+  }
+
+  set onvoiceschanged(value) {
+    setEventAttributeValue(this, 'voiceschanged', value);
+  }
+}
 
 const speechSynthesis = new SpeechSynthesis();
 

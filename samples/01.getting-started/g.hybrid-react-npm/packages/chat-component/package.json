@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "botframework-webchat": "^4.12.0",
+    "botframework-webchat": "^4.14.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

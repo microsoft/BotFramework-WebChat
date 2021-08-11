@@ -94,10 +94,10 @@ const BasicToaster = () => {
     () => (!expandable || expanded ? `webchat__toaster__list__${instanceId}` : undefined),
     [expandable, expanded, instanceId]
   );
-  const headerElementId = useMemo(() => (expandable ? `webchat__toaster__header__${instanceId}` : undefined), [
-    expandable,
-    instanceId
-  ]);
+  const headerElementId = useMemo(
+    () => (expandable ? `webchat__toaster__header__${instanceId}` : undefined),
+    [expandable, instanceId]
+  );
 
   useEffect(() => {
     !expandable && setExpanded(false);

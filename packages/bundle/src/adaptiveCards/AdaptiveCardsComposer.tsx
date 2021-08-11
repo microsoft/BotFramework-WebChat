@@ -16,9 +16,10 @@ const AdaptiveCardsComposer: FC<AdaptiveCardsComposerProps> = ({
   adaptiveCardsPackage,
   children
 }) => {
-  const patchedAdaptiveCardsPackage = useMemo(() => adaptiveCardsPackage || defaultAdaptiveCardsPackage, [
-    adaptiveCardsPackage
-  ]);
+  const patchedAdaptiveCardsPackage = useMemo(
+    () => adaptiveCardsPackage || defaultAdaptiveCardsPackage,
+    [adaptiveCardsPackage]
+  );
 
   const adaptiveCardsContext = useMemo(
     () => ({

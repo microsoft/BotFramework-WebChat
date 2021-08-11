@@ -1,17 +1,15 @@
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["cancel", "getVoices", "speak"] }] */
 
+import { AbortController } from 'abort-controller-es5';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services/lib/SpeechServices/SpeechToText';
 
-import AbortController from 'abort-controller-es5';
-import createCustomEvent from './createCustomEvent';
-import createErrorEvent from './createErrorEvent';
 import createTaskQueue from './createTaskQueue';
-import EventTargetShim, { defineEventAttribute } from 'event-target-shim-es5';
+import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 import playWhiteNoise from './playWhiteNoise';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
 
-export default function({
+export default function ({
   audioContext,
   enableTelemetry,
   ponyfill = {
@@ -42,7 +40,7 @@ export default function({
 
     const { cancelAll, push } = createTaskQueue();
 
-    class SpeechSynthesis extends EventTargetShim {
+    class SpeechSynthesis extends EventTarget {
       cancel() {
         cancelAll();
       }
@@ -61,7 +59,7 @@ export default function({
           return {
             abort: controller.abort.bind(controller),
             result: (async () => {
-              utterance.dispatchEvent(createCustomEvent('start'));
+              utterance.dispatchEvent(new Event('start'));
 
               try {
                 if (utterance.audioStream) {
@@ -72,11 +70,11 @@ export default function({
               } catch (error) {
                 // Either dispatch "end" or "error" event, but not both
                 if (error.message !== 'aborted') {
-                  return utterance.dispatchEvent(createErrorEvent(error));
+                  return utterance.dispatchEvent(new ErrorEvent(error));
                 }
               }
 
-              utterance.dispatchEvent(createCustomEvent('end'));
+              utterance.dispatchEvent(new Event('end'));
             })()
           };
         });
@@ -88,9 +86,15 @@ export default function({
           }
         });
       }
-    }
 
-    defineEventAttribute(SpeechSynthesis, 'voiceschanged');
+      get onvoiceschanged() {
+        return getEventAttributeValue(this, 'voiceschanged');
+      }
+
+      set onvoiceschanged(value) {
+        setEventAttributeValue(this, 'voiceschanged', value);
+      }
+    }
 
     return {
       SpeechGrammarList,

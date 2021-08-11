@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import createStyleSet from './createAdaptiveCardsStyleSet';
 
 describe('createAdaptiveCardsStyleSet', () => {
