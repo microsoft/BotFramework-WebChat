@@ -17,6 +17,7 @@ export default function createHost() {
     sendShiftTab: () => {},
     sendTab: () => {},
     snapshot: () => {},
+    upload: () => {},
     windowSize: () => {}
   };
 }

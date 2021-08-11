@@ -24,11 +24,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Forked [`cldr-data`](https://npmjs.com/package/cldr-data) and [`cldr-data-downloader`](https://npmjs.com/package/cldr-data-downloader), in PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
+   -  Moved source code to under `./src` folder
+   -  Moved to `fs.readFileSync()` from `require()` when reading JSON files
+   -  Moved to `node:fs.mkdir()` and removed `mkdirp`
+   -  Moved tests from `node:assert` to Jest
+   -  Updated Unicode CLDR download folder to `/dist/` folder from project root
+   -  Moved from Grunt/JSHint to [`eslint`](https://npmjs.com/package/eslint)
+   -  Upgraded from CommonJS to ES Module
+   -  Use [`read-pkg-up`](https://npmjs.com/package/read-pkg-up) to determines parent `package.json`
+      -  In Web Chat, since we use `lerna` to run the `install` script, we need to relax how `cldr-data` read from parent `package.json`
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996) and PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
    -  Production dependencies
       -  [`@babel/runtime@7.14.6`](https://npmjs.com/package/@babel/runtime)
       -  [`abort-controller-es5@2.0.0`](https://npmjs.com/package/abort-controller-es5)
+      -  [`botframework-directlinejs@0.15.0`](https://npmjs.com/package/botframework-directlinejs)
       -  [`core-js@3.15.2`](https://npmjs.com/package/core-js)
       -  [`event-target-shim@6.0.2`](https://npmjs.com/package/event-target-shim)
       -  [`markdown-it-attrs-es5@2.0.0`](https://npmjs.com/package/markdown-it-attrs-es5)
@@ -77,7 +88,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`sanitize-html@2.4.0`](https://npmjs.com/package/sanitize-html)
       -  [`selenium-webdriver@4.0.0-beta.4`](https://npmjs.com/package/selenium-webdriver)
       -  [`serve@12.0.0`](https://npmjs.com/package/serve)
-      -  [`strip-ansi@7.0.0`](https://npmjs.com/package/strip-ansi)
+      -  [`strip-ansi@6.0.0`](https://npmjs.com/package/strip-ansi)
       -  [`typescript@4.3.5`](https://npmjs.com/package/typescript)
       -  [`webpack@5.45.1`](https://npmjs.com/package/webpack)
 

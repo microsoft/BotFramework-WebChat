@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^4.28.3",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "botframework-directlinejs": "^0.14.1",
+    "botframework-directlinejs": "0.15.0",
     "concurrently": "^6.2.0",
     "eslint": "^7.30.0",
     "eslint-plugin-node": "^11.1.0",

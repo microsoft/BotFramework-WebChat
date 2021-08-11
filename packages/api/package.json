@@ -20,7 +20,7 @@
   "scripts": {
     "build": "npm run build:globalize && npm run build:typescript && npm run build:babel",
     "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
-    "build:globalize": "node scripts/createPrecompiledGlobalize.js",
+    "build:globalize": "node scripts/createPrecompiledGlobalize.mjs",
     "build:typescript": "tsc --project src/tsconfig.json",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
@@ -33,7 +33,6 @@
     "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.js",
     "start:typescript": "npm run build:typescript -- --watch"
   },
-  "cldr-data-coverage": "full",
   "devDependencies": {
     "@babel/cli": "^7.14.5",
     "@babel/core": "^7.14.6",
@@ -46,7 +45,7 @@
     "@typescript-eslint/parser": "^4.28.3",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "cldr-data": "^36.0.0",
+    "cldr-data": "36.0.0-0",
     "concurrently": "^6.2.0",
     "core-js": "^3.15.2",
     "eslint": "^7.30.0",

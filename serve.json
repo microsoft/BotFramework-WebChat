@@ -2,6 +2,7 @@
   "cleanUrls": false,
   "redirects": [
     { "source": "/", "destination": "samples/index.html" },
+    { "source": "/directline.js", "destination": "packages/bundle/dist/directline.js" },
     { "source": "/directlinespeech.development.js", "destination": "packages/directlinespeech/dist/directlinespeech.development.js" },
     { "source": "/directlinespeech.production.min.js", "destination": "packages/directlinespeech/dist/directlinespeech.production.min.js" },
     { "source": "/webchat.js", "destination": "packages/bundle/dist/webchat.js" },

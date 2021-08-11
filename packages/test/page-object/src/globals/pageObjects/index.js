@@ -14,6 +14,7 @@ import scrollToTop from './scrollToTop';
 import sendMessageViaCode from './sendMessageViaCode';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import typeInSendBox from './typeInSendBox';
+import uploadFile from './uploadFile';
 import verifyDOMIntegrity from './verifyDOMIntegrity';
 
 export {
@@ -33,5 +34,6 @@ export {
   sendMessageViaCode,
   sendMessageViaSendBox,
   typeInSendBox,
+  uploadFile,
   verifyDOMIntegrity
 };
