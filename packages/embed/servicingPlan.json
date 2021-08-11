@@ -16,11 +16,11 @@
         ],
         [
           "feature:nextminor",
-          "4.12"
+          "4.13"
         ],
         [
           "*",
-          "4.11"
+          "4.12"
         ]
       ]
     },
@@ -332,6 +332,7 @@
           "sha384-YT//LqZJgkEXrmVxm6RZJKs4dSZJQo5kEX0tE9dP1XaOaVsC7NEvwnlP2gW2KWcl"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2022-04-16.",
       "private": true,
       "versionFamily": "4"
     },
