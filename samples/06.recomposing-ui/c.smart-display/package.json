@@ -10,8 +10,10 @@
     "react-dom": "^16.13.1",
     "react-film": "^3.0.1",
     "react-redux": "^7.2.3",
-    "react-scripts": "^4.0.3",
     "redux": "^4.0.5"
+  },
+  "devDependencies": {
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
