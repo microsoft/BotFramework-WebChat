@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Resolves [#4017](https://github.com/microsoft/BotFramework-WebChat/issues/4017). In samples, moved [`react-scripts`](https://npmjs.com/package/react-scripts`) to `devDependencies`, in PR [#4023](https://github.com/microsoft/BotFramework-WebChat/pull/4023)
 -  Forked [`cldr-data`](https://npmjs.com/package/cldr-data) and [`cldr-data-downloader`](https://npmjs.com/package/cldr-data-downloader), in PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
    -  Moved source code to under `./src` folder
    -  Moved to `fs.readFileSync()` from `require()` when reading JSON files
@@ -91,6 +92,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`strip-ansi@6.0.0`](https://npmjs.com/package/strip-ansi)
       -  [`typescript@4.3.5`](https://npmjs.com/package/typescript)
       -  [`webpack@5.45.1`](https://npmjs.com/package/webpack)
+   -  Dependencies used by samples
+      -  [`@azure/storage-blob@12.7.0`](https://npmjs.com/package/@azure/storage-blob)
+      -  [`base64-arraybuffer@1.0.1`](https://npmjs.com/package/base64-arraybuffer)
+      -  [`http-proxy-middleware@1.3.1`](https://npmjs.com/package/http-proxy-middleware)
+      -  [`restify@8.5.1`](https://npmjs.com/package/restify)
 
 ## [4.14.0] - 2021-07-09
 
