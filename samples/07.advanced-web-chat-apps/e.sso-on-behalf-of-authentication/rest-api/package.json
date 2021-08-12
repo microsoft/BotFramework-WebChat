@@ -10,13 +10,13 @@
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
     "node-fetch": "^2.6.1",
     "restify": "^8.5.1"
   },
   "devDependencies": {
-    "node-dev": "^6.6.0"
+    "node-dev": "^7.0.0"
   }
 }
