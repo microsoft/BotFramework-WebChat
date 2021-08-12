@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Use [`read-pkg-up`](https://npmjs.com/package/read-pkg-up) to determines parent `package.json`
       -  In Web Chat, since we use `lerna` to run the `install` script, we need to relax how `cldr-data` read from parent `package.json`
 -  Updated peer dependency of `react` to `>= 16.8.6`, in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996)
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996) and PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998)
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#3996](https://github.com/microsoft/BotFramework-WebChat/pull/3996), PR [#3998](https://github.com/microsoft/BotFramework-WebChat/pull/3998), and PR [#4023](https://github.com/microsoft/BotFramework-WebChat/pull/4023)
    -  Production dependencies
       -  [`@babel/runtime@7.14.6`](https://npmjs.com/package/@babel/runtime)
       -  [`abort-controller-es5@2.0.0`](https://npmjs.com/package/abort-controller-es5)
