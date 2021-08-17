@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#4018](https://github.com/microsoft/BotFramework-WebChat/issues/4018). When using <kbd>TAB</kbd> or <kbd>SHIFT</kbd> + <kbd>TAB</kbd> key to focus on the transcript, it should select the last activity, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#4018](https://github.com/microsoft/BotFramework-WebChat/issues/4018). When using <kbd>TAB</kbd> or <kbd>SHIFT</kbd> + <kbd>TAB</kbd> key to focus on the transcript, it should select the last activity, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
 
 ### Changed
 
