@@ -89,9 +89,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }] =
     useStyleOptions();
-  const [focusedActivityKey, setFocusedActivityKey] = useState();
   const [activities] = useActivities();
   const [direction] = useDirection();
+  // If "userFocusedActivityKey" is undefined, that means the user did not select any active descendant (a.k.a. focused activity).
+  // We should assume the last activity, if any, is the active descendant.
+  const [userFocusedActivityKey, setUserFocusedActivityKey] = useState();
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useCreateAvatarRenderer();
@@ -290,7 +292,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           }
 
           const focusActivity = () => {
-            setFocusedActivityKey(getActivityUniqueId(activity));
+            setUserFocusedActivityKey(getActivityUniqueId(activity));
 
             // IE11 need to manually focus on the transcript.
             const { current: rootElement } = rootElementRef;
@@ -371,7 +373,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
             handleFocus: () => {
-              setFocusedActivityKey(getActivityUniqueId(activity));
+              setUserFocusedActivityKey(getActivityUniqueId(activity));
             },
 
             handleKeyDown: event => {
@@ -379,7 +381,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 event.preventDefault();
                 event.stopPropagation();
 
-                setFocusedActivityKey(getActivityUniqueId(activity));
+                setUserFocusedActivityKey(getActivityUniqueId(activity));
 
                 const { current } = rootElementRef;
 
@@ -439,15 +441,6 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       };
     });
 
-    // There must be one focused (a.k.a. aria-activedescendant) designated. We default it to the last one.
-    if (!renderingElements.find(({ focused }) => focused)) {
-      const lastElement = renderingElements[renderingElements.length - 1];
-
-      if (lastElement) {
-        lastElement.focused = true;
-      }
-    }
-
     return renderingElements;
   }, [
     activitiesWithRenderer,
@@ -461,6 +454,17 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     rootElementRef,
     showAvatarInGroup
   ]);
+
+  // "focusedActivityKey" is a patched version of "userFocusedActivityKey":
+  // 1. If set, the activity must be rendered in the transcript, i.e. in "renderingElements"
+  // 2. If no activity is active descendant, assume the focus on the last rendered activity (if any)
+  const focusedActivityKey = useMemo(
+    () =>
+      userFocusedActivityKey && renderingElements.find(({ key }) => key === userFocusedActivityKey)
+        ? userFocusedActivityKey
+        : (renderingElements[renderingElements.length - 1] || {}).key,
+    [renderingElements, userFocusedActivityKey]
+  );
 
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
 
@@ -635,13 +639,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // We need to do the scrolling manually.
   useEffect(() => scrollActiveDescendantIntoView(), [scrollActiveDescendantIntoView]);
 
-  // If any activities has changed, reset the active descendant.
-  useEffect(() => setFocusedActivityKey(undefined), [activities, setFocusedActivityKey]);
+  // If any activities has changed, reset the user-selected active descendant.
+  // This will assume the last activity, if any, will be the active descendant.
+  useEffect(() => setUserFocusedActivityKey(undefined), [activities, setUserFocusedActivityKey]);
 
   const focusRelativeActivity = useCallback(
     delta => {
       if (isNaN(delta) || !renderingElements.length) {
-        return setFocusedActivityKey(undefined);
+        return setUserFocusedActivityKey(undefined);
       }
 
       const index = renderingElements.findIndex(({ key }) => key === focusedActivityKey);
@@ -650,10 +655,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         : renderingElements.length - 1;
       const nextFocusedActivity = renderingElements[nextIndex];
 
-      setFocusedActivityKey(nextFocusedActivity.key);
+      setUserFocusedActivityKey(nextFocusedActivity.key);
       rootElementRef.current && rootElementRef.current.focus();
     },
-    [focusedActivityKey, renderingElements, rootElementRef, setFocusedActivityKey]
+    [focusedActivityKey, renderingElements, rootElementRef, setUserFocusedActivityKey]
   );
 
   const handleTranscriptKeyDown = useCallback(
@@ -710,19 +715,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.stopPropagation();
       }
     },
-    [focusedActivityKey, focusRelativeActivity, focus, renderingElements, terminatorRef]
+    [activityElementsRef, focus, focusedActivityKey, focusRelativeActivity, renderingElements, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
-
-  // If SHIFT-TAB from "End of transcript" indicator, if focusedActivityKey is not set (or no longer exists), set it the the bottommost activity.
-  const setBottommostFocusedActivityKeyIfNeeded = useCallback(() => {
-    if (!~renderingElements.findIndex(({ key }) => key === focusedActivityKey)) {
-      const { key: lastActivityKey } = renderingElements[renderingElements.length - 1] || {};
-
-      setFocusedActivityKey(lastActivityKey);
-    }
-  }, [focusedActivityKey, renderingElements, setFocusedActivityKey]);
 
   const handleTranscriptKeyDownCapture = useCallback(
     event => {
@@ -754,10 +750,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   const handleFocusActivity = useCallback(
     key => {
-      setFocusedActivityKey(key);
+      setUserFocusedActivityKey(key);
       rootElementRef.current && rootElementRef.current.focus();
     },
-    [setFocusedActivityKey]
+    [rootElementRef, setUserFocusedActivityKey]
   );
 
   // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
@@ -920,11 +916,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       </InternalTranscriptScrollable>
       {!!renderingElements.length && (
         <React.Fragment>
-          <FocusRedirector
-            className="webchat__basic-transcript__sentinel"
-            onFocus={setBottommostFocusedActivityKeyIfNeeded}
-            redirectRef={rootElementRef}
-          />
+          <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={rootElementRef} />
           <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
             <div className="webchat__basic-transcript__terminator-body">
               <div className="webchat__basic-transcript__terminator-text">{terminatorText}</div>
