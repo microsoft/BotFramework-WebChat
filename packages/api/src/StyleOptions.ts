@@ -248,7 +248,7 @@ type StyleOptions = {
   /**
    * Specify number of pixels to overscroll or underscroll after pause
    */
-  autoScrollSnapOnPageoffset?: number;
+  autoScrollSnapOnPageOffset?: number;
 
   /**
    * Send box styling
