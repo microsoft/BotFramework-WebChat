@@ -88,7 +88,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
-  autoScrollSnapOnPageoffset: 0,
+  autoScrollSnapOnPageOffset: 0, // TODO: Rename from "autoScrollSnapOnPageoffset".
 
   // Send box
   hideSendBox: false,

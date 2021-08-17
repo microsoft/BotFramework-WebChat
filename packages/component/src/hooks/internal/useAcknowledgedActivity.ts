@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { DirectLineActivity } from 'botframework-webchat-core';
 import { useMemo, useRef } from 'react';
 import { useSticky } from 'react-scroll-to-bottom';
 
@@ -30,28 +31,28 @@ const { useActivities } = hooks;
 //       2. If "acknowledged" is "undefined", we set it to:
 //          a. true, if there are no egress activities yet
 //          b. Otherwise, false
-export default function useAcknowledgedActivity() {
+export default function useAcknowledgedActivity(): [DirectLineActivity] {
   const [activities] = useActivities();
-  const [sticky] = useSticky();
-  const lastStickyActivityIDRef = useRef();
+  const [sticky]: [boolean] = useSticky();
+  const lastStickyActivityIdRef = useRef<string>();
 
   const stickyChanged = useChanged(sticky);
   const stickyChangedToSticky = stickyChanged && sticky;
 
   const lastStickyActivityID = useMemo(() => {
     if (stickyChangedToSticky) {
-      lastStickyActivityIDRef.current = getActivityUniqueId(activities[activities.length - 1] || {});
+      lastStickyActivityIdRef.current = getActivityUniqueId(activities[activities.length - 1]);
     }
 
-    return lastStickyActivityIDRef.current;
-  }, [activities, lastStickyActivityIDRef, stickyChangedToSticky]);
+    return lastStickyActivityIdRef.current;
+  }, [activities, lastStickyActivityIdRef, stickyChangedToSticky]);
 
   return useMemo(() => {
     const lastStickyActivityIndex = activities.findIndex(
       activity => getActivityUniqueId(activity) === lastStickyActivityID
     );
 
-    const lastEgressActivityIndex = findLastIndex(activities, ({ from: { role } = {} }) => role === 'user');
+    const lastEgressActivityIndex = findLastIndex(activities, ({ from: { role = undefined } = {} }) => role === 'user');
 
     // As described above, if no activities were acknowledged through egress activity, we will assume everything is acknowledged.
     const lastAcknowledgedActivityIndex = !~lastEgressActivityIndex

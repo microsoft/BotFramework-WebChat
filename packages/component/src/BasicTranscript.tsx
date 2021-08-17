@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 5, 36] }] */
 
-import { hooks } from 'botframework-webchat-api';
+import { ActivityComponentFactory, AvatarComponentFactory, hooks } from 'botframework-webchat-api';
+import { DirectLineActivity } from 'botframework-webchat-core';
 import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
@@ -14,7 +15,20 @@ import {
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  FC,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  MutableRefObject,
+  ReactEventHandler,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  VFC
+} from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
@@ -85,7 +99,43 @@ function validateAllActivitiesTagged(activities, bins) {
   return activities.every(activity => bins.some(bin => bin.includes(activity)));
 }
 
-const InternalTranscript = ({ activityElementsRef, className }) => {
+type ActivityElement = {
+  activity: DirectLineActivity;
+  activityID: string;
+  ariaLabelID: string;
+  element: HTMLElement;
+  key: string;
+};
+
+type InternalTranscriptProps = {
+  activityElementsRef: MutableRefObject<ActivityElement[]>;
+  className?: string;
+};
+
+type RenderingElement = {
+  activity: DirectLineActivity;
+  callbackRef: (element: HTMLElement) => void;
+  focusActivity: () => void;
+  handleFocus: () => void;
+  handleKeyDown: KeyboardEventHandler<HTMLLIElement>;
+  handleMouseDownCapture: MouseEventHandler<HTMLLIElement>;
+  hideTimestamp: boolean;
+  key: string;
+  liveRegionKey: string;
+  renderActivity: ReturnType<ActivityComponentFactory>;
+  renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
+  renderAvatar: AvatarComponentFactory;
+  role: string;
+  shouldSpeak: boolean;
+  showCallout: boolean;
+  supportScreenReader: boolean;
+};
+
+type ScrollBehavior = 'auto' | 'smooth';
+type ScrollToOptions = { behavior?: ScrollBehavior };
+type ScrollToPosition = { activityID?: string; scrollTop?: number };
+
+const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef, className }) => {
   const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }] =
     useStyleOptions();
@@ -93,7 +143,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const [direction] = useDirection();
   // If "userFocusedActivityKey" is undefined, that means the user did not select any active descendant (a.k.a. focused activity).
   // We should assume the last activity, if any, is the active descendant.
-  const [userFocusedActivityKey, setUserFocusedActivityKey] = useState();
+  const [userFocusedActivityKey, setUserFocusedActivityKey] = useState<string>();
   const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useCreateAvatarRenderer();
@@ -101,8 +151,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const groupActivities = useGroupActivities();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-  const rootElementRef = useRef();
-  const terminatorRef = useRef();
+  const rootElementRef = useRef<HTMLDivElement>();
+  const terminatorRef = useRef<HTMLDivElement>();
 
   const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT');
   const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
@@ -117,7 +167,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // Converted from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
   // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
   const createActivityRendererWithLiteralArgs = useCallback(
-    (activity, nextVisibleActivity) => createActivityRenderer({ activity, nextVisibleActivity }),
+    (activity: DirectLineActivity, nextVisibleActivity: DirectLineActivity) =>
+      createActivityRenderer({ activity, nextVisibleActivity }),
     [createActivityRenderer]
   );
 
@@ -130,8 +181,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       // This is an improvement to React useMemo(), because it only allows 1 memoization.
       // useMemoize() allows any number of memoization.
 
-      const activitiesWithRenderer = [];
-      let nextVisibleActivity;
+      const activitiesWithRenderer: {
+        activity: DirectLineActivity;
+        renderActivity: ReturnType<ActivityComponentFactory>;
+      }[] = [];
+      let nextVisibleActivity: DirectLineActivity;
 
       for (let index = activities.length - 1; index >= 0; index--) {
         const activity = activities[index];
@@ -152,7 +206,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [activities]
   );
 
-  const visibleActivities = useMemo(
+  const visibleActivities = useMemo<DirectLineActivity[]>(
     () => activitiesWithRenderer.map(({ activity }) => activity),
     [activitiesWithRenderer]
   );
@@ -161,7 +215,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // The default implementation tag into 2 types: sender and status.
 
   const { activitiesGroupBySender, activitiesGroupByStatus } = useMemo(() => {
-    const { sender: activitiesGroupBySender, status: activitiesGroupByStatus } = groupActivities({
+    const {
+      sender: activitiesGroupBySender,
+      status: activitiesGroupByStatus
+    }: {
+      sender: DirectLineActivity[][];
+      status: DirectLineActivity[][];
+    } = groupActivities({
       activities: visibleActivities
     });
 
@@ -187,11 +247,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   const activityTree = useMemo(() => {
     const visibleActivitiesPendingGrouping = [...visibleActivities];
-    const activityTree = [];
+    const activityTree: DirectLineActivity[][][] = [];
 
     while (visibleActivitiesPendingGrouping.length) {
       const [activity] = visibleActivitiesPendingGrouping;
-      const senderTree = [];
+      const senderTree: DirectLineActivity[][] = [];
       const activitiesWithSameSender = activitiesGroupBySender.find(activities => activities.includes(activity));
 
       activityTree.push(senderTree);
@@ -234,7 +294,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // Flatten the tree back into an array with information related to rendering.
 
   const renderingElements = useMemo(() => {
-    const renderingElements = [];
+    const renderingElements: RenderingElement[] = [];
     const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
     const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
@@ -249,7 +309,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
           // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
           const renderActivityStatus = createActivityStatusRenderer({
-            activity
+            activity,
+            nextVisibleActivity: undefined // TODO: Check this
           });
 
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
@@ -257,8 +318,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
 
           const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
-          const key = getActivityUniqueId(activity) || renderingElements.length;
-          const baseAltText =
+          const key: string = getActivityUniqueId(activity) || renderingElements.length + '';
+          const baseAltText: string =
             typeof activity?.channelData?.['webchat:fallback-text'] === 'string'
               ? activity?.channelData?.['webchat:fallback-text']
               : activity?.channelData?.messageBack?.displayText || activity.text;
@@ -267,12 +328,14 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           const supportScreenReader = activity?.channelData?.['webchat:fallback-text'] !== '';
 
           const {
-            from: { role }
+            from: { role } = {}
+          }: {
+            from?: { role?: string };
           } = activity;
 
           const topSideNub = role === 'user' ? topSideUserNub : topSideBotNub;
 
-          let showCallout;
+          let showCallout: boolean;
 
           // Depending on the "showAvatarInGroup" setting, the avatar will render in different positions.
           if (showAvatarInGroup === 'sender') {
@@ -295,9 +358,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             setUserFocusedActivityKey(getActivityUniqueId(activity));
 
             // IE11 need to manually focus on the transcript.
-            const { current: rootElement } = rootElementRef;
-
-            rootElement && rootElement.focus();
+            rootElementRef.current?.focus();
           };
 
           // Focus on the first tabbable element inside the activity.
@@ -382,10 +443,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 event.stopPropagation();
 
                 setUserFocusedActivityKey(getActivityUniqueId(activity));
-
-                const { current } = rootElementRef;
-
-                current && current.focus();
+                rootElementRef.current?.focus();
               }
             },
 
@@ -393,9 +451,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // We should do the same for mouse, that is why we have the click handler here.
             // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
             handleMouseDownCapture: ({ target }) => {
-              const tabIndex = getTabIndex(target);
+              const element = target as HTMLLIElement;
+              const tabIndex = getTabIndex(element);
 
-              if (typeof tabIndex !== 'number' || tabIndex < 0 || target.getAttribute('aria-disabled') === 'true') {
+              if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
                 focusActivity();
               }
             },
@@ -415,7 +474,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             role,
 
             // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-            shouldSpeak: activity.channelData && activity.channelData.speak,
+            shouldSpeak: activity.channelData?.speak,
             showCallout,
             supportScreenReader
           });
@@ -426,7 +485,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     const { current: activityElements } = activityElementsRef;
 
     // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
-    activityElementsRef.current = renderingElements.map(({ activity, activity: { id }, elementId, key }) => {
+    activityElementsRef.current = renderingElements.map(({ activity, activity: { id }, key }) => {
       const existingEntry = activityElements.find(entry => entry.key === key);
 
       return {
@@ -435,8 +494,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         ariaLabelID: existingEntry
           ? existingEntry.ariaLabelID
           : `webchat__basic-transcript__activity-label-${random().toString(36).substr(2, 5)}`,
-        element: existingEntry && existingEntry.element,
-        elementId,
+        element: existingEntry?.element,
         key
       };
     });
@@ -468,11 +526,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
 
-  const scrollToBottomScrollTo = useScrollTo();
-  const scrollToBottomScrollToEnd = useScrollToEnd();
+  const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
+  const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
   const scrollTo = useCallback(
-    (position, { behavior = 'auto' } = {}) => {
+    (position: ScrollToPosition, { behavior = 'auto' }: ScrollToOptions = {}) => {
       if (!position) {
         throw new Error(
           'botframework-webchat: First argument passed to "useScrollTo" must be a ScrollPosition object.'
@@ -491,8 +549,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
 
         if (scrollableElement && activityElement) {
-          const [{ height: activityElementHeight, y: activityElementY }] = activityElement.getClientRects();
-          const [{ height: scrollableHeight }] = scrollableElement.getClientRects();
+          // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
+          // eslint-disable-next-line
+          const { height: activityElementHeight, y: activityElementY } = activityElement.getClientRects()[0];
+
+          // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
+          // eslint-disable-next-line
+          const { height: scrollableHeight } = scrollableElement.getClientRects()[0];
 
           const activityElementOffsetTop = activityElementY + scrollableElement.scrollTop;
 
@@ -511,15 +574,15 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   const scrollToEnd = useCallback(() => scrollToBottomScrollToEnd({ behavior: 'smooth' }), [scrollToBottomScrollToEnd]);
 
   const scrollRelative = useCallback(
-    (direction, { displacement } = {}) => {
+    (direction: 'down' | 'up', { displacement }: { displacement?: number } = {}) => {
       const { current: rootElement } = rootElementRef;
 
       if (!rootElement) {
         return;
       }
 
-      const scrollable = rootElement.querySelector('.webchat__basic-transcript__scrollable');
-      let nextScrollTop;
+      const scrollable: HTMLElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+      let nextScrollTop: number;
 
       if (typeof displacement === 'number') {
         nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * displacement;
@@ -543,13 +606,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   useRegisterScrollToEnd(scrollToEnd);
   useRegisterScrollRelative(scrollRelative);
 
-  const dispatchScrollPosition = useDispatchScrollPosition();
+  const dispatchScrollPosition: (scrollPosition: ScrollToPosition) => void = useDispatchScrollPosition();
   const patchedDispatchScrollPosition = useMemo(() => {
     if (!dispatchScrollPosition) {
       return;
     }
 
-    return ({ scrollTop }) => {
+    return ({ scrollTop }: { scrollTop: number }) => {
       const { current: rootElement } = rootElementRef;
 
       if (!rootElement) {
@@ -558,7 +621,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
       const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
 
-      const [{ height: offsetHeight } = {}] = scrollableElement.getClientRects();
+      const { height: offsetHeight } = scrollableElement.getClientRects()[0] || {};
 
       // Find the activity just above scroll view bottom.
       // If the scroll view is already on top, get the first activity.
@@ -568,7 +631,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               return false;
             }
 
-            const [{ y } = {}] = element.getClientRects();
+            const { y } = element.getClientRects()[0] || {};
 
             return y < offsetHeight;
           })
@@ -582,7 +645,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   useObserveScrollPosition(patchedDispatchScrollPosition);
 
-  const [lastInteractedActivity] = useAcknowledgedActivity();
+  const [lastInteractedActivity]: [DirectLineActivity] = useAcknowledgedActivity();
 
   const indexOfLastInteractedActivity = activities.indexOf(lastInteractedActivity);
 
@@ -611,7 +674,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         activeDescendant.scrollIntoView({ block: 'nearest' });
       } else {
         // This is for browser that does not support options passed to scrollIntoView(), possibly IE11.
-        const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
+        const scrollableElement: HTMLElement = rootElementRef.current.querySelector(
+          '.webchat__basic-transcript__scrollable'
+        );
         const scrollTopAtTopSide = activeDescendant.offsetTop;
         const scrollTopAtBottomSide = activeDescendant.offsetTop + activeDescendant.offsetHeight;
 
@@ -624,7 +689,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     }
   }, [activeDescendantElementId, rootElementRef]);
 
-  const handleTranscriptFocus = useCallback(
+  const handleTranscriptFocus = useCallback<ReactEventHandler<HTMLDivElement>>(
     event => {
       const { currentTarget, target } = event;
 
@@ -644,7 +709,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   useEffect(() => setUserFocusedActivityKey(undefined), [activities, setUserFocusedActivityKey]);
 
   const focusRelativeActivity = useCallback(
-    delta => {
+    (delta?: number) => {
       if (isNaN(delta) || !renderingElements.length) {
         return setUserFocusedActivityKey(undefined);
       }
@@ -656,12 +721,12 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
       const nextFocusedActivity = renderingElements[nextIndex];
 
       setUserFocusedActivityKey(nextFocusedActivity.key);
-      rootElementRef.current && rootElementRef.current.focus();
+      rootElementRef.current?.focus();
     },
     [focusedActivityKey, renderingElements, rootElementRef, setUserFocusedActivityKey]
   );
 
-  const handleTranscriptKeyDown = useCallback(
+  const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     event => {
       const { target } = event;
 
@@ -720,7 +785,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
 
-  const handleTranscriptKeyDownCapture = useCallback(
+  const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     event => {
       const { altKey, ctrlKey, key, metaKey, target } = event;
 
@@ -741,23 +806,21 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
     [focus]
   );
 
-  const focusTranscriptCallback = useCallback(
-    () => rootElementRef.current && rootElementRef.current.focus(),
-    [rootElementRef]
-  );
+  const focusTranscriptCallback = useCallback(() => rootElementRef.current?.focus(), [rootElementRef]);
 
   useRegisterFocusTranscript(focusTranscriptCallback);
 
   const handleFocusActivity = useCallback(
-    key => {
+    (key: string) => {
       setUserFocusedActivityKey(key);
-      rootElementRef.current && rootElementRef.current.focus();
+      rootElementRef.current?.focus();
     },
     [rootElementRef, setUserFocusedActivityKey]
   );
 
   // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
-  const dispatchTranscriptFocus = useDispatchTranscriptFocus();
+  const dispatchTranscriptFocus: ({ activity }: { activity: DirectLineActivity }) => void =
+    useDispatchTranscriptFocus();
   const focusedActivity = useMemo(() => {
     const { activity } = renderingElements.find(({ key }) => key === focusedActivityKey) || {};
 
@@ -773,11 +836,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
   // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
   // despite the fact there are no "tabIndex" attributes set on the filler.
   // We need to artificially send the focus back to the transcript.
-  const handleFocusFiller = useCallback(() => {
-    const { current } = rootElementRef;
-
-    current && current.focus();
-  }, [rootElementRef]);
+  const handleFocusFiller = useCallback(() => rootElementRef.current?.focus(), [rootElementRef]);
 
   return (
     <div
@@ -890,12 +949,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                   redirectRef={rootElementRef}
                 />
                 <div className="webchat__basic-transcript__activity-box">
-                  {renderActivity({
-                    hideTimestamp,
-                    renderActivityStatus,
-                    renderAvatar,
-                    showCallout
-                  })}
+                  {renderActivity &&
+                    renderActivity({
+                      hideTimestamp,
+                      renderActivityStatus,
+                      renderAvatar,
+                      showCallout
+                    })}
                 </div>
                 {shouldSpeak && <SpeakActivity activity={activity} />}
                 <FocusRedirector
@@ -934,13 +994,19 @@ InternalTranscript.defaultProps = {
 };
 
 InternalTranscript.propTypes = {
+  // PropTypes cannot validate precisely with its TypeScript counterpart.
+  // @ts-ignore
   activityElementsRef: PropTypes.shape({
     current: PropTypes.array.isRequired
   }).isRequired,
   className: PropTypes.string
 };
 
-const InternalScreenReaderTranscript = ({ renderingElements }) => {
+type InternalScreenReaderTranscriptProps = {
+  renderingElements: RenderingElement[];
+};
+
+const InternalScreenReaderTranscript: VFC<InternalScreenReaderTranscriptProps> = ({ renderingElements }) => {
   const localize = useLocalizer();
   const [internalLiveRegionFadeAfter] = useStyleOptions();
 
@@ -964,6 +1030,8 @@ const InternalScreenReaderTranscript = ({ renderingElements }) => {
 };
 
 InternalScreenReaderTranscript.propTypes = {
+  // PropTypes cannot validate precisely with its TypeScript counterpart.
+  // @ts-ignore
   renderingElements: PropTypes.arrayOf(
     PropTypes.shape({
       activity: PropTypes.any,
@@ -972,16 +1040,30 @@ InternalScreenReaderTranscript.propTypes = {
   ).isRequired
 };
 
+type InternalTranscriptScrollableProps = {
+  activities: DirectLineActivity[];
+  children?: ReactNode;
+  onFocusActivity: (activityId: string) => void;
+  onFocusFiller: () => void;
+  terminatorRef: MutableRefObject<HTMLDivElement>;
+};
+
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, onFocusFiller, terminatorRef }) => {
+const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
+  activities,
+  children,
+  onFocusActivity,
+  onFocusFiller,
+  terminatorRef
+}) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
-  const [animatingToEnd] = useAnimatingToEnd();
-  const [atEnd] = useAtEnd();
-  const [sticky] = useSticky();
+  const [animatingToEnd]: [boolean] = useAnimatingToEnd();
+  const [atEnd]: [boolean] = useAtEnd();
+  const [sticky]: [boolean] = useSticky();
   const [styleOptions] = useStyleOptions();
-  const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1] || {}); // Activity ID of the last visible activity in the list.
+  const lastVisibleActivityId = getActivityUniqueId(activities[activities.length - 1]); // Activity ID of the last visible activity in the list.
   const localize = useLocalizer();
-  const scrollToEnd = useScrollToEnd();
+  const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
   const lastReadActivityIdRef = useRef(lastVisibleActivityId);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
@@ -1000,9 +1082,7 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, o
       }
     }
 
-    const { current } = terminatorRef;
-
-    current && current.focus();
+    terminatorRef.current?.focus();
   }, [activities, lastReadActivityIdRef, onFocusActivity, scrollToEnd, terminatorRef]);
 
   if (atEnd || sticky) {
@@ -1011,7 +1091,7 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, o
     lastReadActivityIdRef.current = lastVisibleActivityId;
   }
 
-  const ScrollToEndButton = useCreateScrollToEndButtonRenderer()({
+  const renderScrollToEndButton = useCreateScrollToEndButtonRenderer()({
     atEnd: animatingToEnd || atEnd || sticky,
     styleOptions,
 
@@ -1025,7 +1105,7 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, o
 
   return (
     <React.Fragment>
-      {ScrollToEndButton && <ScrollToEndButton onClick={handleScrollToEndButtonClick} />}
+      {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
       {!!React.Children.count(children) && (
         <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
       )}
@@ -1044,15 +1124,26 @@ const InternalTranscriptScrollable = ({ activities, children, onFocusActivity, o
   );
 };
 
+InternalTranscriptScrollable.defaultProps = {
+  children: undefined
+};
+
 InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.any,
   onFocusActivity: PropTypes.func.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
 };
 
-const SetScroller = ({ activityElementsRef, scrollerRef }) => {
+type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop: number }) => number;
+
+type SetScrollProps = {
+  activityElementsRef: MutableRefObject<ActivityElement[]>;
+  scrollerRef: MutableRefObject<Scroller>;
+};
+
+const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) => {
   const [
     { autoScrollSnapOnActivity, autoScrollSnapOnActivityOffset, autoScrollSnapOnPage, autoScrollSnapOnPageOffset }
   ] = useStyleOptions();
@@ -1088,7 +1179,7 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
         const { current: activities } = activitiesRef;
         const { current: activityElements } = activityElementsRef;
         const { current: lastAcknowledgedActivity } = lastAcknowledgedActivityRef;
-        const values = [];
+        const values: number[] = [];
 
         const lastAcknowledgedActivityIndex = activities.indexOf(lastAcknowledgedActivity);
 
@@ -1154,14 +1245,18 @@ const SetScroller = ({ activityElementsRef, scrollerRef }) => {
     ]
   );
 
-  return false;
+  return null;
 };
 
-const BasicTranscript = ({ className }) => {
-  const activityElementsRef = useRef([]);
-  const scrollerRef = useRef(() => Infinity);
+type BasicTranscriptProps = {
+  className?: string;
+};
 
-  const scroller = useCallback((...args) => scrollerRef.current(...args), [scrollerRef]);
+const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
+  const activityElementsRef = useRef<ActivityElement[]>([]);
+  const scrollerRef = useRef<Scroller>(() => Infinity);
+
+  const scroller = useCallback<Scroller>((...args) => scrollerRef.current(...args), [scrollerRef]);
 
   return (
     <ReactScrollToBottomComposer scroller={scroller}>
