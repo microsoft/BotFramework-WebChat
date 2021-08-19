@@ -1,6 +1,7 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { ie11 } from '../../Utils/detectBrowser';
+import supportPseudoClass from '../../Utils/supportPseudoClass';
+import useNonce from './useNonce';
 import useValueRef from './useValueRef';
 
 const INPUT_TYPES_ALLOW_LIST = {
@@ -70,12 +71,14 @@ function createEventSubscription(
 //       1. Focus via keyboard vs. mouse
 //       2. Focus via keyboard, switch app, switch back (expect to get another focusVisible after switch back)
 //       3. Focus via mouse, switch app, switch back (do NOT expect to get another focusVisible after switch back)
-function useObserveFocusViaKeyboardForLegacyBrowsers(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
+function useObserveFocusViaKeyboardForLegacyBrowsers(
+  targetRef: RefObject<HTMLElement>,
+  onFocusVisibleRef: MutableRefObject<() => void>
+) {
   // This polyfill algorithm is adopted from https://github.com/WICG/focus-visible.
   const blurSinceRef = useRef(0);
   const hadKeyboardEventRef = useRef(true);
   const hasFocusVisibleRef = useRef(false);
-  const onFocusVisibleRef = useValueRef(onFocusVisible);
 
   const eventSubscription = useMemo(
     () =>
@@ -111,6 +114,8 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(targetRef: RefObject<HTMLEl
   const setHasFocusVisible = useCallback(
     nextHasFocusVisible => {
       if (hasFocusVisibleRef.current !== nextHasFocusVisible) {
+        document.title = `focus ${nextHasFocusVisible ? 'keyboard' : 'mouse'}: ${new Date().toISOString()}`;
+
         hasFocusVisibleRef.current = nextHasFocusVisible;
         nextHasFocusVisible && onFocusVisibleRef?.current();
       }
@@ -208,9 +213,10 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(targetRef: RefObject<HTMLEl
   }, [eventSubscription]);
 }
 
-function useObserveFocusViaKeyboardForModernBrowsers(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
-  const onFocusVisibleRef = useValueRef(onFocusVisible);
-
+function useObserveFocusViaKeyboardForModernBrowsers(
+  targetRef: RefObject<HTMLElement>,
+  onFocusVisibleRef: MutableRefObject<() => void>
+) {
   const handleFocus = useCallback(() => {
     if (targetRef.current.matches(':focus-visible')) {
       onFocusVisibleRef?.current();
@@ -230,13 +236,24 @@ function useObserveFocusViaKeyboardForModernBrowsers(targetRef: RefObject<HTMLEl
 }
 
 export default function useObserveFocusViaKeyboard(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
-  // "ie11" is a constant and will be kept the same across page lifetime.
-  // So running hooks conditionally is okay here.
-  if (ie11) {
+  const [nonce] = useNonce();
+  const onFocusVisibleRef = useValueRef(onFocusVisible);
+
+  // The nonce is use for browser capabilities. Just in case the "nonce" had changed unexpectedly, the capabilities of the browser should never change.
+  // Thus, we are using an initial version of "nonce". In case web devs changed the "nonce" to an invalid value, we won't break rules of hooks (as stated below).
+  const nonceRef = useRef(nonce);
+
+  // ":focus-visible" selector is supported from Chrome/Edge 86+ and not supported in IE11 or Safari.
+  // Doing a capability check on pseudo classes requires injecting a stylesheet, thus nonce is needed.
+  const supportFocusVisible = useMemo(() => supportPseudoClass(':focus-visible', nonceRef.current), [nonceRef]);
+
+  // Since "supportPseudoClass" is a browser capability, the result should be constant during the page lifetime.
+  // Thus, running hooks conditionally is okay here.
+  if (supportFocusVisible) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useObserveFocusViaKeyboardForLegacyBrowsers(targetRef, onFocusVisible);
+    useObserveFocusViaKeyboardForModernBrowsers(targetRef, onFocusVisibleRef);
   } else {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useObserveFocusViaKeyboardForModernBrowsers(targetRef, onFocusVisible);
+    useObserveFocusViaKeyboardForLegacyBrowsers(targetRef, onFocusVisibleRef);
   }
 }
