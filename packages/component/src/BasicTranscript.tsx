@@ -847,10 +847,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
     [renderingElements, userFocusedActivityKey]
   );
 
-  useMemo(
-    () => dispatchTranscriptFocus && dispatchTranscriptFocus({ activity: focusedActivity }),
-    [dispatchTranscriptFocus, focusedActivity]
-  );
+  useMemo(() => dispatchTranscriptFocus?.({ activity: focusedActivity }), [dispatchTranscriptFocus, focusedActivity]);
 
   // This is required by IE11.
   // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
