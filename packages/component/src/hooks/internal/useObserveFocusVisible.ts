@@ -5,19 +5,19 @@ import useNonce from './useNonce';
 import useValueRef from './useValueRef';
 
 const INPUT_TYPES_ALLOW_LIST = {
-  'datetime-local': true,
-  date: true,
-  datetime: true,
-  email: true,
-  month: true,
-  number: true,
-  password: true,
-  search: true,
-  tel: true,
-  text: true,
-  time: true,
-  url: true,
-  week: true
+  'datetime-local': 1,
+  date: 1,
+  datetime: 1,
+  email: 1,
+  month: 1,
+  number: 1,
+  password: 1,
+  search: 1,
+  tel: 1,
+  text: 1,
+  time: 1,
+  url: 1,
+  week: 1
 };
 
 /**
@@ -96,16 +96,10 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(
           'touchend'
         ],
         event => {
-          const { nodeName } = event.target as HTMLElement;
-
-          // Work around a Safari quirk that fires a mousemove on <html> whenever the
-          // window blurs, even if you're tabbing out of the page. ¯\_(ツ)_/¯
-          if (nodeName?.toLowerCase() === 'html') {
-            return;
+          if ((event.target as HTMLElement).nodeName?.toLowerCase() !== 'html') {
+            hadKeyboardEventRef.current = false;
+            eventSubscription.pause();
           }
-
-          hadKeyboardEventRef.current = false;
-          eventSubscription.pause();
         }
       ),
     [hadKeyboardEventRef]
