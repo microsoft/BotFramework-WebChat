@@ -1,0 +1,242 @@
+import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+
+import { ie11 } from '../../Utils/detectBrowser';
+import useValueRef from './useValueRef';
+
+const INPUT_TYPES_ALLOW_LIST = {
+  'datetime-local': true,
+  date: true,
+  datetime: true,
+  email: true,
+  month: true,
+  number: true,
+  password: true,
+  search: true,
+  tel: true,
+  text: true,
+  time: true,
+  url: true,
+  week: true
+};
+
+/**
+ * Computes whether the given element should automatically trigger the
+ * `focus-visible` class being added, i.e. whether it should always match
+ * `:focus-visible` when focused.
+ * @param {Element} el
+ * @return {boolean}
+ */
+function focusTriggersKeyboardModality(el: HTMLInputElement | HTMLTextAreaElement): boolean {
+  const { isContentEditable, readOnly, tagName, type } = el;
+
+  return (
+    (tagName === 'INPUT' && INPUT_TYPES_ALLOW_LIST[type] && !readOnly) ||
+    (tagName === 'TEXTAREA' && !readOnly) ||
+    isContentEditable
+  );
+}
+
+function createEventSubscription(
+  target: Element | Node,
+  types: string[],
+  handler: (event: Event) => void
+): {
+  pause: () => void;
+  resume: () => void;
+} {
+  let subscribed: true;
+
+  const subscribe = () => {
+    if (!subscribed) {
+      types.forEach(type => target.addEventListener(type, handler));
+      subscribed = true;
+    }
+  };
+
+  const unsubscribe = () => {
+    if (subscribed) {
+      types.forEach(type => target.removeEventListener(type, handler));
+      subscribed = undefined;
+    }
+  };
+
+  return {
+    pause: unsubscribe,
+    resume: subscribe
+  };
+}
+
+// TODO: Add tests
+//       1. Focus via keyboard vs. mouse
+//       2. Focus via keyboard, switch app, switch back (expect to get another focusVisible after switch back)
+//       3. Focus via mouse, switch app, switch back (do NOT expect to get another focusVisible after switch back)
+function useObserveFocusViaKeyboardForLegacyBrowsers(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
+  // This polyfill algorithm is adopted from https://github.com/WICG/focus-visible.
+  const blurSinceRef = useRef(0);
+  const hadKeyboardEventRef = useRef(true);
+  const hasFocusVisibleRef = useRef(false);
+  const onFocusVisibleRef = useValueRef(onFocusVisible);
+
+  const eventSubscription = useMemo(
+    () =>
+      createEventSubscription(
+        document,
+        [
+          'mousemove',
+          'mousedown',
+          'mouseup',
+          'pointermove',
+          'pointerdown',
+          'pointerup',
+          'touchmove',
+          'touchstart',
+          'touchend'
+        ],
+        event => {
+          const { nodeName } = event.target as HTMLElement;
+
+          // Work around a Safari quirk that fires a mousemove on <html> whenever the
+          // window blurs, even if you're tabbing out of the page. ¯\_(ツ)_/¯
+          if (nodeName?.toLowerCase() === 'html') {
+            return;
+          }
+
+          hadKeyboardEventRef.current = false;
+          eventSubscription.pause();
+        }
+      ),
+    [hadKeyboardEventRef]
+  );
+
+  const setHasFocusVisible = useCallback(
+    nextHasFocusVisible => {
+      if (hasFocusVisibleRef.current !== nextHasFocusVisible) {
+        hasFocusVisibleRef.current = nextHasFocusVisible;
+        nextHasFocusVisible && onFocusVisibleRef?.current();
+      }
+    },
+    [hasFocusVisibleRef, onFocusVisibleRef]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+
+      if (event.target === targetRef.current) {
+        setHasFocusVisible(true);
+      }
+
+      hadKeyboardEventRef.current = true;
+    },
+    [hadKeyboardEventRef, setHasFocusVisible, targetRef]
+  );
+
+  const handlePointerDown = useCallback(() => {
+    hadKeyboardEventRef.current = false;
+  }, [hadKeyboardEventRef]);
+
+  const handleFocus = useCallback(
+    ({ target }: Event) => {
+      target === targetRef.current &&
+        (hadKeyboardEventRef.current || focusTriggersKeyboardModality(target as HTMLInputElement)) &&
+        setHasFocusVisible(true);
+    },
+    [hadKeyboardEventRef, setHasFocusVisible, targetRef]
+  );
+
+  const handleBlur = useCallback(
+    (event: Event) => {
+      if (event.target === targetRef.current && hasFocusVisibleRef.current) {
+        blurSinceRef.current = Date.now();
+
+        setHasFocusVisible(false);
+      }
+    },
+    [blurSinceRef, hasFocusVisibleRef, setHasFocusVisible, targetRef]
+  );
+
+  const handleVisibilityChange = useCallback(() => {
+    if (document.visibilityState === 'hidden') {
+      // The element is blurred due to "visibilityState" set to "hidden".
+      // 100ms is referenced from the WICG polyfill.
+      // eslint-disable-next-line no-magic-numbers
+      if (Date.now() - blurSinceRef.current < 100) {
+        hadKeyboardEventRef.current = true;
+      }
+
+      eventSubscription.resume();
+    }
+  }, [blurSinceRef, eventSubscription, hadKeyboardEventRef]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown, true);
+    document.addEventListener('mousedown', handlePointerDown, true);
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    document.addEventListener('touchstart', handlePointerDown, true);
+    document.addEventListener('visibilitychange', handleVisibilityChange, true);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [handleKeyDown, handlePointerDown, handleVisibilityChange]);
+
+  useEffect(() => {
+    const { current: target } = targetRef;
+
+    target.addEventListener('blur', handleBlur, true);
+    target.addEventListener('focus', handleFocus, true);
+
+    return () => {
+      target.removeEventListener('blur', handleBlur);
+      target.removeEventListener('focus', handleFocus);
+    };
+
+    // We specifically add "targetRef.current" here.
+    // If the target element changed, we should reattach our event listeners.
+  }, [handleBlur, handleFocus, targetRef, targetRef.current]);
+
+  useEffect(() => {
+    eventSubscription.resume();
+
+    return () => eventSubscription.pause();
+  }, [eventSubscription]);
+}
+
+function useObserveFocusViaKeyboardForModernBrowsers(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
+  const onFocusVisibleRef = useValueRef(onFocusVisible);
+
+  const handleFocus = useCallback(() => {
+    if (targetRef.current.matches(':focus-visible')) {
+      onFocusVisibleRef?.current();
+    }
+  }, [onFocusVisibleRef, targetRef]);
+
+  useEffect(() => {
+    const { current: target } = targetRef;
+
+    target.addEventListener('focus', handleFocus);
+
+    return () => target.removeEventListener('focus', handleFocus);
+
+    // We specifically add "targetRef.current" here.
+    // If the target element changed, we should reattach our event listeners.
+  }, [handleFocus, targetRef, targetRef.current]);
+}
+
+export default function useObserveFocusViaKeyboard(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
+  // "ie11" is a constant and will be kept the same across page lifetime.
+  // So running hooks conditionally is okay here.
+  if (ie11) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useObserveFocusViaKeyboardForLegacyBrowsers(targetRef, onFocusVisible);
+  } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useObserveFocusViaKeyboardForModernBrowsers(targetRef, onFocusVisible);
+  }
+}
