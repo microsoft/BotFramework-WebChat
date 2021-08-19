@@ -827,7 +827,14 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
   // This is "onFocus" event handler for keyboard modality.
   // If the user focus on the transcript via mouse or gesture, this event handler will NOT be called.
-  useObserveFocusVisible(rootElementRef, scrollFocusedActivityIntoView);
+  // Even the user did not select any activity to focus, when they TAB/SHIFT-TAB into the transcript,
+  // the last activity will be focused. And TAB/SHIFT-TAB is considered an user-initiated focus.
+  const handleTranscriptFocusVisible = useCallback(
+    () => setUserFocusedActivityKeyWithScroll(focusedActivityKeyRef.current),
+    [focusedActivityKeyRef, setUserFocusedActivityKeyWithScroll]
+  );
+
+  useObserveFocusVisible(rootElementRef, handleTranscriptFocusVisible);
 
   // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
   const dispatchTranscriptFocus: ({ activity }: { activity: DirectLineActivity }) => void =
@@ -835,13 +842,15 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
   // Dispatch a "transcript focus" event based on user selection.
   // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
-  useMemo(() => {
-    if (dispatchTranscriptFocus) {
-      const focusedActivity = renderingElements.find(({ key }) => key === userFocusedActivityKey)?.activity;
+  const focusedActivity = useMemo(
+    () => renderingElements.find(({ key }) => key === userFocusedActivityKey)?.activity,
+    [renderingElements, userFocusedActivityKey]
+  );
 
-      dispatchTranscriptFocus({ activity: focusedActivity });
-    }
-  }, [dispatchTranscriptFocus, renderingElements, userFocusedActivityKey]);
+  useMemo(
+    () => dispatchTranscriptFocus && dispatchTranscriptFocus({ activity: focusedActivity }),
+    [dispatchTranscriptFocus, focusedActivity]
+  );
 
   // This is required by IE11.
   // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
