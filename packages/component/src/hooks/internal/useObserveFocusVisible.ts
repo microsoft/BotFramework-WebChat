@@ -114,8 +114,6 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(
   const setHasFocusVisible = useCallback(
     nextHasFocusVisible => {
       if (hasFocusVisibleRef.current !== nextHasFocusVisible) {
-        document.title = `focus ${nextHasFocusVisible ? 'keyboard' : 'mouse'}: ${new Date().toISOString()}`;
-
         hasFocusVisibleRef.current = nextHasFocusVisible;
         nextHasFocusVisible && onFocusVisibleRef?.current();
       }
