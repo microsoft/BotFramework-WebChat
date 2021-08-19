@@ -306,13 +306,9 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
     // Otherwise, given the focus is on the send box, clicking on any <input> inside the Adaptive Cards may cause the view to move.
     // This UX is not desirable because click should not cause scroll.
     if (activityElement && !activityElement.contains(document.activeElement)) {
-      scrollIntoViewWithBlockNearest(
-        activityElement,
-        // This is for browser that does not support options passed to scrollIntoView(), possibly IE11.
-        rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable')
-      );
+      scrollIntoViewWithBlockNearest(activityElement);
     }
-  }, [activityElementsRef, rootElementRef, userFocusedActivityKeyRef]);
+  }, [activityElementsRef, userFocusedActivityKeyRef]);
 
   // Set the focusing activity because the user want to.
   // Since this is user-initiated action, we want to scroll the activity into view as well.
@@ -709,10 +705,10 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   //       1. Focus on the transcript, set the 2nd last activity as focused. Receive a proactive message. Make sure the 2nd last activity is continue to be focused.
   //       2. Set the 2nd last activity as focused. Focus back to sendbox. Receive a proactive message. Make sure the new incoming activity is being selected.
 
-  // If any activities has changed, reset the user-selected active descendant if the user is not focusing on the transcript.
+  // If any activities has changed, reset the user-selected active descendant if the user is not focusing on the transcript or any descendants of transcript.
   // This will assume the last activity, if any, will be the active descendant.
   useEffect(() => {
-    document.activeElement === rootElementRef.current || setUserFocusedActivityKeyWithScroll();
+    rootElementRef.current.contains(document.activeElement) || setUserFocusedActivityKeyWithScroll();
   }, [activities, rootElementRef, setUserFocusedActivityKeyWithScroll]);
 
   const focusRelativeActivity = useCallback(

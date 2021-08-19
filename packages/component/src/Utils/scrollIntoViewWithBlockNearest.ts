@@ -1,12 +1,11 @@
+import findAncestor from './findAncestor';
+
 /**
  * Calls `targetElement.scrollIntoView({ block: 'nearest' })`.
  *
  * If browser do not support options for `scrollIntoView`, fallback to polyfill.
  */
-export default function scrollIntoViewWithBlockNearest(
-  targetElement: HTMLElement,
-  scrollableElement: HTMLElement
-): void {
+export default function scrollIntoViewWithBlockNearest(targetElement: HTMLElement): void {
   // Checks if `scrollIntoView` support options or not.
   // - https://github.com/Modernizr/Modernizr/issues/1568#issuecomment-419457972
   // - https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
@@ -14,19 +13,25 @@ export default function scrollIntoViewWithBlockNearest(
     return targetElement.scrollIntoView({ block: 'nearest' });
   }
 
-  // This is for browser that does not support options passed to scrollIntoView(), possibly IE11.
-  // IE11 does not support computedStyleMap(), thus, the scrollableElement must be specified.
+  const scrollableElement = findAncestor(targetElement, ancestor => {
+    const { overflowY } = window.getComputedStyle(ancestor);
 
-  if (!scrollableElement.contains(targetElement)) {
-    throw new Error('scrollableElement must be an ancestor of targetElement.');
+    return overflowY === 'auto' || overflowY === 'scroll';
+  });
+
+  if (!scrollableElement) {
+    throw new Error('"targetElement" must be contained by a scrollable container.');
   }
 
   const scrollTopAtTopSide = targetElement.offsetTop;
   const scrollTopAtBottomSide = targetElement.offsetTop + targetElement.offsetHeight;
 
-  if (scrollTopAtTopSide < scrollableElement.scrollTop) {
-    scrollableElement.scrollTop = scrollTopAtTopSide;
-  } else if (scrollTopAtBottomSide > scrollableElement.scrollTop + scrollableElement.offsetHeight) {
-    scrollableElement.scrollTop = scrollTopAtBottomSide - scrollableElement.offsetHeight;
+  const deltaToTop = scrollableElement.scrollTop - scrollTopAtTopSide;
+  const deltaToBottom = scrollTopAtBottomSide - scrollableElement.scrollTop - scrollableElement.offsetHeight;
+
+  if (deltaToTop < deltaToBottom) {
+    scrollableElement.scrollTop -= deltaToTop;
+  } else {
+    scrollableElement.scrollTop += deltaToBottom;
   }
 }
