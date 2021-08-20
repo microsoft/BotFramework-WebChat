@@ -1045,9 +1045,12 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     if (~index) {
       const firstUnreadActivity = activities[index + 1];
 
-      return firstUnreadActivity && onFocusActivity(getActivityUniqueId(firstUnreadActivity));
+      if (firstUnreadActivity) {
+        return onFocusActivity(getActivityUniqueId(firstUnreadActivity));
+      }
     }
 
+    // If no unread activity, send the focus to the terminator block.
     terminatorRef.current?.focus();
   }, [activities, lastReadActivityIdRef, onFocusActivity, scrollToEnd, terminatorRef]);
 
