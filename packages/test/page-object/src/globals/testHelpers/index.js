@@ -6,6 +6,7 @@ import * as transcriptNavigation from './transcriptNavigation';
 import arrayBufferToBase64 from './arrayBufferToBase64';
 import createAudioInputStreamFromRiffWavArrayBuffer from './speech/audioConfig/createAudioInputStreamFromRiffWavArrayBuffer';
 import createDirectLineWithTranscript from './createDirectLineWithTranscript';
+import createRenderWebChatWithHook from './createRenderWebChatWithHook';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
 import createStore from './createStore';
 import depthFirstWalk from './depthFirstWalk';
@@ -21,6 +22,7 @@ export {
   arrayBufferToBase64,
   createAudioInputStreamFromRiffWavArrayBuffer,
   createDirectLineWithTranscript,
+  createRenderWebChatWithHook,
   createRunHookActivityMiddleware,
   createStore,
   depthFirstWalk,
