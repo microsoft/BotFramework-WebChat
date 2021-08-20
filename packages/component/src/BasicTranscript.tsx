@@ -490,10 +490,14 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
   const renderingElementsRef = useValueRef(renderingElements);
 
-  // "focusedActivityKey" is a patched version of "userFocusedActivityKey":
+  // "getFocusedActivityKey" is a patched version of "userFocusedActivityKey":
   // 1. If set, the focused activity must be rendered in the transcript
   // 2. Otherwise, assume the focus on the last rendered activity (if any)
-  const focusedActivityKey = useMemo(() => {
+  // We are using a getter callback because this is a computed/derived value and we could get an updated version without re-rendering.
+  const getFocusedActivityKey = useCallback(() => {
+    const { current: renderingElements } = renderingElementsRef;
+    const { current: userFocusedActivityKey } = userFocusedActivityKeyRef;
+
     // Make sure the "userFocusedActivityKey" is pointing to an activity that is rendering in this current loop.
     if (userFocusedActivityKey && renderingElements.find(({ key }) => key === userFocusedActivityKey)) {
       return userFocusedActivityKey;
@@ -501,9 +505,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
     // Otherwise, assume the last rendered activity is focused.
     return renderingElements[renderingElements.length - 1]?.key;
-  }, [renderingElements, userFocusedActivityKey]);
-
-  const focusedActivityKeyRef = useValueRef(focusedActivityKey);
+  }, [renderingElementsRef, userFocusedActivityKeyRef]);
 
   const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
 
@@ -636,6 +638,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   // But browser usually do noop if the value of aria-activedescendant doesn't change.
   // That means, if we assign the same ID to another element, browser will do noop.
   // We need to generate a new ID so the browser see there is a change in aria-activedescendant value and perform accordingly.
+  const focusedActivityKey = getFocusedActivityKey();
   const activeDescendantElementId = useMemo(
     () => focusedActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
     [focusedActivityKey]
@@ -663,7 +666,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
         return setUserFocusedActivityKeyWithScroll(undefined);
       }
 
-      const { current: focusedActivityKey } = focusedActivityKeyRef;
+      const focusedActivityKey = getFocusedActivityKey();
 
       const index = renderingElements.findIndex(({ key }) => key === focusedActivityKey);
       const nextIndex = ~index
@@ -674,7 +677,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       setUserFocusedActivityKeyWithScroll(nextFocusedActivity.key);
       rootElementRef.current?.focus();
     },
-    [focusedActivityKeyRef, renderingElementsRef, rootElementRef, setUserFocusedActivityKeyWithScroll]
+    [getFocusedActivityKey, renderingElementsRef, rootElementRef, setUserFocusedActivityKeyWithScroll]
   );
 
   const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
@@ -705,7 +708,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
         case 'Enter':
           if (!fromEndOfTranscriptIndicator) {
-            const { current: focusedActivityKey } = focusedActivityKeyRef;
+            const focusedActivityKey = getFocusedActivityKey();
             const focusedActivityEntry = renderingElementsRef.current.find(({ key }) => key === focusedActivityKey);
 
             if (focusedActivityEntry) {
@@ -744,7 +747,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
         event.stopPropagation();
       }
     },
-    [activityElementsRef, focus, focusedActivityKeyRef, focusRelativeActivity, renderingElementsRef, terminatorRef]
+    [activityElementsRef, focus, focusRelativeActivity, getFocusedActivityKey, renderingElementsRef, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
@@ -779,7 +782,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       setUserFocusedActivityKeyWithScroll(key);
       rootElementRef.current?.focus();
     },
-    [rootElementRef, setUserFocusedActivityKeyWithScroll]
+    [activityElementsRef, rootElementRef, setUserFocusedActivityKeyWithScroll]
   );
 
   // This is "onFocus" event handler for keyboard modality.
@@ -787,8 +790,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   // Even the user did not select any activity to focus, when they TAB/SHIFT-TAB into the transcript,
   // the last activity will be focused. And TAB/SHIFT-TAB is considered an user-initiated focus.
   const handleTranscriptFocusVisible = useCallback(
-    () => setUserFocusedActivityKeyWithScroll(focusedActivityKeyRef.current),
-    [focusedActivityKeyRef, setUserFocusedActivityKeyWithScroll]
+    () => setUserFocusedActivityKeyWithScroll(getFocusedActivityKey()),
+    [getFocusedActivityKey, setUserFocusedActivityKeyWithScroll]
   );
 
   useObserveFocusVisible(rootElementRef, handleTranscriptFocusVisible);
@@ -882,7 +885,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
           ) => {
             const { ariaLabelID, element } =
               activityElementsRef.current.find(entry => entry.activity === activity) || {};
-            const isActiveDescendant = focusedActivityKey === key;
+            const isActiveDescendant = getFocusedActivityKey() === key;
             const isContentInteractive = !!(element
               ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
               : 0);
@@ -1042,9 +1045,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     if (~index) {
       const firstUnreadActivity = activities[index + 1];
 
-      if (firstUnreadActivity) {
-        return onFocusActivity(getActivityUniqueId(firstUnreadActivity));
-      }
+      return firstUnreadActivity && onFocusActivity(getActivityUniqueId(firstUnreadActivity));
     }
 
     terminatorRef.current?.focus();
