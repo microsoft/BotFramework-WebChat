@@ -340,7 +340,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
           // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
           const renderActivityStatus = createActivityStatusRenderer({
             activity,
-            nextVisibleActivity: undefined // TODO: Check this
+            nextVisibleActivity: undefined
           });
 
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
@@ -693,14 +693,6 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
     () => focusedActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
     [focusedActivityKey]
   );
-
-  // TODO: Add test:
-  //       1. ~When focused on an <input> in a card, receive a proactive message, verify the scroll position should not move.~
-  //       2. ~When focused on any activity, receive a proactive message. Make sure the current focusing activity is continue to be focused.~
-
-  // TODO: Add test:
-  //       1. ~Focus on the transcript, set the 2nd last activity as focused. Receive a proactive message. Make sure the 2nd last activity is continue to be focused.~
-  //       2. ~Set the 2nd last activity as focused. Focus back to sendbox. Receive a proactive message. Make sure the new incoming activity is being selected.~
 
   // If any activities has changed, reset the user-selected active descendant if the user is not focusing on the transcript or any descendants of transcript.
   // This will assume the last activity, if any, will be the active descendant.
