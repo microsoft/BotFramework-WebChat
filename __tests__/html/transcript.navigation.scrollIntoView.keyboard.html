@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      let counter = 0;
+
+      function createActivity() {
+        counter++;
+
+        return {
+          from: { role: 'bot' },
+          id: counter + '',
+          text: `Activity: ${counter}`,
+          timestamp: counter,
+          type: 'message'
+        };
+      }
+
+      function createActivities(count) {
+        const array = new Array(count);
+
+        return array.fill().map(() => createActivity());
+      }
+
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript(createActivities(20));
+        const store = testHelpers.createStore();
+
+        function addDummyActivitiesToDirectLine(count) {
+          for (let index = 0; index < count; index++) {
+            directLine.activityDeferredObservable.next(createActivity());
+          }
+        }
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
+
+        // GIVEN: A transcript with 20 activities, with the first activity focused.
+        await pageConditions.numActivitiesShown(20);
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab(3);
+        await host.sendKeys('HOME');
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await pageConditions.scrollStabilized(0);
+        await host.snapshot();
+
+        // GIVEN: Transcript is scrolled to the bottom.
+        await host.sendTab(3);
+        await host.sendKeys('END');
+        await host.snapshot();
+
+        // WHEN: Transcript is focused via keyboard (SHIFT-TAB).
+        await host.sendShiftTab(3);
+
+        // THEN: It should scroll to the top, with the first activity selected.
+        await pageConditions.scrollStabilized(0);
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
