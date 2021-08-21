@@ -589,11 +589,11 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
         if (scrollableElement && activityElement) {
           // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
-          // eslint-disable-next-line
+          // eslint-disable-next-line prefer-destructuring
           const { height: activityElementHeight, y: activityElementY } = activityElement.getClientRects()[0];
 
           // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
-          // eslint-disable-next-line
+          // eslint-disable-next-line prefer-destructuring
           const { height: scrollableHeight } = scrollableElement.getClientRects()[0];
 
           const activityElementOffsetTop = activityElementY + scrollableElement.scrollTop;
@@ -660,20 +660,14 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
       const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
 
-      const { height: offsetHeight } = scrollableElement.getClientRects()[0] || {};
+      const offsetHeight = scrollableElement.getClientRects()[0]?.height;
 
       // Find the activity just above scroll view bottom.
       // If the scroll view is already on top, get the first activity.
       const entry = scrollableElement.scrollTop
-        ? [...activityElementsRef.current].reverse().find(({ element }) => {
-            if (!element) {
-              return false;
-            }
-
-            const { y } = element.getClientRects()[0] || {};
-
-            return y < offsetHeight;
-          })
+        ? [...activityElementsRef.current]
+            .reverse()
+            .find(({ element }) => !!element && element.getClientRects()[0]?.y < offsetHeight)
         : activityElementsRef.current[0];
 
       const { activityID } = entry || {};
@@ -701,12 +695,12 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   );
 
   // TODO: Add test:
-  //       1. When focused on an <input> in a card, receive a proactive message, verify the scroll position should not move.
-  //       2. When focused on any activity, receive a proactive message. Make sure the current focusing activity is continue to be focused.
+  //       1. ~When focused on an <input> in a card, receive a proactive message, verify the scroll position should not move.~
+  //       2. ~When focused on any activity, receive a proactive message. Make sure the current focusing activity is continue to be focused.~
 
   // TODO: Add test:
-  //       1. Focus on the transcript, set the 2nd last activity as focused. Receive a proactive message. Make sure the 2nd last activity is continue to be focused.
-  //       2. Set the 2nd last activity as focused. Focus back to sendbox. Receive a proactive message. Make sure the new incoming activity is being selected.
+  //       1. ~Focus on the transcript, set the 2nd last activity as focused. Receive a proactive message. Make sure the 2nd last activity is continue to be focused.~
+  //       2. ~Set the 2nd last activity as focused. Focus back to sendbox. Receive a proactive message. Make sure the new incoming activity is being selected.~
 
   // If any activities has changed, reset the user-selected active descendant if the user is not focusing on the transcript or any descendants of transcript.
   // This will assume the last activity, if any, will be the active descendant.
@@ -825,7 +819,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       setUserFocusedActivityKeyWithScroll(key);
       rootElementRef.current?.focus();
     },
-    [activityElementsRef, rootElementRef, setUserFocusedActivityKeyWithScroll]
+    [rootElementRef, setUserFocusedActivityKeyWithScroll]
   );
 
   // This is "onFocus" event handler for keyboard modality.

@@ -6,6 +6,7 @@ export default function createHost() {
   // Since Jest does not need to call the browser, it can use executeScript() instead. All implementations here are dummy implementations.
   return {
     click: () => {},
+    clickAt: () => {},
     done: () => {},
     error: () => {},
     getLogs: () => {},
