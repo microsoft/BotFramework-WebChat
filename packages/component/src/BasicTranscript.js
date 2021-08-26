@@ -313,6 +313,33 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             // Calling this function will put the focus on the transcript and the activity.
             focusActivity,
 
+            handleClick: event => {
+              // (Related to #4020)
+              //
+              // This is called while screen reader is running:
+              //
+              // 1. When scan mode is on, ENTER key is pressed, or;
+              // 2. When scan mode is off, CAPSLOCK + ENTER is pressed
+              //
+              // Although `document.activeElement` (a.k.a. primary focus) is on the transcript,
+              // when ENTER key is pressed with screen reader in scan mode, screen reader will
+              // "do primary action", which ask the browser to send a `click` event to the
+              // active descendant (a.k.a. focused activity).
+              //
+              // While outside of scan mode, this will also capture CAPSLOCK + ENTER,
+              // which is a key combo for "do primary action".
+              //
+              // We cannot capture plain ENTER key outside of scan mode here.
+              // We can only capture it on `keydown` event fired to the transcript element.
+              if (event.target === event.currentTarget) {
+                const [firstTabbableElement] = tabbableElements(event.target).filter(
+                  ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
+                );
+
+                firstTabbableElement && firstTabbableElement.focus();
+              }
+            },
+
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
             handleFocus: () => {
               setFocusedActivityKey(getActivityUniqueId(activity));
@@ -627,6 +654,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           break;
 
         case 'Enter':
+          // This is capturing plain ENTER.
+          // When screen reader is running without scan mode, the ENTER key will be captured here.
           if (!fromEndOfTranscriptIndicator) {
             const focusedActivityEntry = renderingElements.find(({ key }) => key === focusedActivityKey);
 
@@ -635,6 +664,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 activityElementsRef.current.find(({ activity }) => activity === focusedActivityEntry.activity) || {};
 
               if (focusedActivityElement) {
+                // TODO: Refactor this into an utility function.
                 const [firstTabbableElement] = tabbableElements(focusedActivityElement).filter(
                   ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
                 );
@@ -793,6 +823,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               focusActivity,
+              handleClick,
               handleFocus,
               handleKeyDown,
               handleMouseDownCapture,
@@ -827,6 +858,11 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 /* eslint-disable-next-line react/forbid-dom-props */
                 id={activeDescendant ? activeDescendantElementId : undefined}
                 key={key}
+                // This is for capturing "do primary action" done by the screen reader.
+                // With screen reader, will narrate "Press ENTER to interact". But in scan mode, ENTER means "do primary action".
+                // If `onClick` is set, screen reader will send click event when "do primary action".
+                // Related to #4020.
+                onClick={handleClick}
                 onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
                 onMouseDownCapture={handleMouseDownCapture}
