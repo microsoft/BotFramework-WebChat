@@ -50,9 +50,12 @@ export default function createDirectLineWithTranscript(activitiesOrFilename, { o
       connectionStatusDeferredObservable.next(1);
       connectionStatusDeferredObservable.next(2);
 
-      const activities = (Array.isArray(activitiesOrFilename)
-        ? activitiesOrFilename
-        : await loadTranscriptAsset(activitiesOrFilename)
+      const activities = (
+        !activitiesOrFilename
+          ? []
+          : Array.isArray(activitiesOrFilename)
+          ? activitiesOrFilename
+          : await loadTranscriptAsset(activitiesOrFilename)
       ).map(patchActivity);
 
       setTimeout(() => {

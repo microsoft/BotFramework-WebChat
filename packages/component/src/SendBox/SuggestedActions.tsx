@@ -5,7 +5,7 @@ import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -215,6 +215,7 @@ type SuggestedActionsProps = {
 const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [accessKey] = useSuggestedActionsAccessKey();
+  const hideEmptyRef = useRef(true);
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey();
 
@@ -257,6 +258,21 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
       />
     );
   });
+
+  // (Related to #4021)
+  //
+  // To improve accessibility UX, if there are no suggested actions, and this container was never shown.
+  // Then, avoid rendering the alt-text "Suggested Actions Container: Is empty".
+  //
+  // This is to reduce the narration of "Is empty".
+  //
+  // After any suggested actions were shown during the lifetime of this container, then we will
+  // continue to start showing "Suggested Actions Container: Is empty" when the container is empty.
+  if (!children.length && hideEmptyRef.current) {
+    return null;
+  }
+
+  hideEmptyRef.current = false;
 
   if (suggestedActionLayout === 'flow') {
     return (
