@@ -494,7 +494,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
           value
         });
       } else if (actionTypeName === 'Action.Submit') {
-        const { data } = (action as SubmitAction) as {
+        const { data } = action as SubmitAction as {
           data: string | BotFrameworkCardAction;
         };
 
