@@ -6,11 +6,13 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
   return ({ dispatch }) => next => (...args) => {
     const [
       {
-        cardAction: { displayText, text, type, value }
+        cardAction,
+        cardAction: { value }
       }
     ] = args;
 
-    switch (type) {
+    // We cannot use destructured "type" here because TypeScript don't recognize "messageBack" is "MessageBackCardAction".
+    switch (cardAction.type) {
       case 'imBack':
         if (typeof value === 'string') {
           // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
@@ -22,7 +24,7 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
         break;
 
       case 'messageBack':
-        dispatch(sendMessageBack(value, text, displayText));
+        dispatch(sendMessageBack(value, cardAction.text, cardAction.displayText));
 
         break;
 

@@ -209,7 +209,7 @@ SuggestedActionStackedContainer.propTypes = {
 
 type SuggestedActionsProps = {
   className?: string;
-  suggestedActions?: DirectLineCardAction;
+  suggestedActions?: DirectLineCardAction[];
 };
 
 const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
@@ -227,24 +227,36 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
       : localize('SUGGESTED_ACTIONS_ALT_NO_CONTENT')
   );
 
-  const children = suggestedActions.map(({ displayText, image, imageAltText, text, title, type, value }, index) => (
-    <SuggestedAction
-      buttonText={suggestedActionText({ displayText, title, type, value })}
-      className="webchat__suggested-actions__button"
-      displayText={displayText}
-      image={image}
-      imageAlt={imageAltText}
-      key={index}
-      text={text}
-      textClassName={
-        suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
-          ? 'webchat__suggested-actions__button-text-stacked-text-wrap'
-          : 'webchat__suggested-actions__button-text'
-      }
-      type={type}
-      value={value}
-    />
-  ));
+  const children = suggestedActions.map((cardAction, index) => {
+    const { displayText, image, imageAltText, text, title, type, value } = cardAction as {
+      displayText?: string;
+      image?: string;
+      imageAltText?: string;
+      text?: string;
+      title?: string;
+      type: string;
+      value?: { [key: string]: any } | string;
+    };
+
+    return (
+      <SuggestedAction
+        buttonText={suggestedActionText({ displayText, title, type, value })}
+        className="webchat__suggested-actions__button"
+        displayText={displayText}
+        image={image}
+        imageAlt={imageAltText}
+        key={index}
+        text={text}
+        textClassName={
+          suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
+            ? 'webchat__suggested-actions__button-text-stacked-text-wrap'
+            : 'webchat__suggested-actions__button-text'
+        }
+        type={type}
+        value={value}
+      />
+    );
+  });
 
   if (suggestedActionLayout === 'flow') {
     return (
@@ -273,6 +285,10 @@ SuggestedActions.defaultProps = {
 
 SuggestedActions.propTypes = {
   className: PropTypes.string,
+
+  // TypeScript class is not mappable to PropTypes.func
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   suggestedActions: PropTypes.arrayOf(
     PropTypes.shape({
       displayText: PropTypes.string,

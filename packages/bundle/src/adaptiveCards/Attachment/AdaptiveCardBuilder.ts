@@ -16,16 +16,16 @@ import {
   TextWeight
 } from 'adaptivecards';
 
-import { CardAction } from 'botframework-directlinejs';
+import { DirectLineCardAction } from 'botframework-webchat-core';
 import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
 
 export interface BotFrameworkCardAction {
-  __isBotFrameworkCardAction: boolean;
-  cardAction: CardAction;
+  __isBotFrameworkCardAction: true;
+  cardAction: DirectLineCardAction;
 }
 
-function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
+function addCardAction(cardAction: DirectLineCardAction, includesOAuthButtons?: boolean) {
   const { type } = cardAction;
   let action;
 
@@ -42,11 +42,11 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
       cardAction
     };
 
-    action.title = cardAction.title;
+    action.title = (cardAction as { title: string }).title;
   } else {
     action = new OpenUrlAction();
 
-    action.title = cardAction.title;
+    action.title = (cardAction as { title: string }).title;
     action.url = cardAction.type === 'call' ? `tel:${cardAction.value}` : cardAction.value;
   }
 
@@ -71,7 +71,7 @@ export default class AdaptiveCardBuilder {
     this.card.addItem(this.container);
   }
 
-  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: CardAction) {
+  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: DirectLineCardAction) {
     const columnSet = new ColumnSet();
 
     columnSet.selectAction = selectAction && addCardAction(selectAction);
@@ -107,7 +107,7 @@ export default class AdaptiveCardBuilder {
     }
   }
 
-  addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
+  addButtons(cardActions: DirectLineCardAction[], includesOAuthButtons?: boolean) {
     cardActions &&
       cardActions.forEach(cardAction => {
         this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
@@ -131,7 +131,7 @@ export default class AdaptiveCardBuilder {
     this.addButtons(content.buttons);
   }
 
-  addImage(url: string, container?: Container, selectAction?: CardAction, altText?: string) {
+  addImage(url: string, container?: Container, selectAction?: DirectLineCardAction, altText?: string) {
     container = container || this.container;
 
     const image = new Image();
@@ -146,7 +146,7 @@ export default class AdaptiveCardBuilder {
 }
 
 export interface ICommonContent {
-  buttons?: CardAction[];
+  buttons?: DirectLineCardAction[];
   subtitle?: string;
   text?: string;
   title?: string;
