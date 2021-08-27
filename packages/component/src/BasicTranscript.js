@@ -298,6 +298,16 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             rootElement && rootElement.focus();
           };
 
+          // Focus on the first tabbable element inside the activity.
+          // This will be triggered by pressing ENTER while focusing on an interactive activity.
+          const focusInside = () => {
+            const [firstTabbableElement] = tabbableElements(
+              activityElementsRef.current.find(activityElement => activityElement.key === key)?.element
+            ).filter(({ className }) => className !== 'webchat__basic-transcript__activity-sentinel');
+
+            firstTabbableElement?.focus();
+          };
+
           renderingElements.push({
             activity,
 
@@ -312,6 +322,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
             // Calling this function will put the focus on the transcript and the activity.
             focusActivity,
+
+            // Calling this function will focus on the first tabbable element in the activity.
+            focusInside,
 
             handleClick: event => {
               // (Related to #4020)
@@ -331,13 +344,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               //
               // We cannot capture plain ENTER key outside of scan mode here.
               // We can only capture it on `keydown` event fired to the transcript element.
-              if (event.target === event.currentTarget) {
-                const [firstTabbableElement] = tabbableElements(event.target).filter(
-                  ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
-                );
-
-                firstTabbableElement && firstTabbableElement.focus();
-              }
+              event.target === event.currentTarget && focusInside();
             },
 
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
@@ -656,23 +663,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         case 'Enter':
           // This is capturing plain ENTER.
           // When screen reader is running without scan mode, the ENTER key will be captured here.
-          if (!fromEndOfTranscriptIndicator) {
-            const focusedActivityEntry = renderingElements.find(({ key }) => key === focusedActivityKey);
-
-            if (focusedActivityEntry) {
-              const { element: focusedActivityElement } =
-                activityElementsRef.current.find(({ activity }) => activity === focusedActivityEntry.activity) || {};
-
-              if (focusedActivityElement) {
-                // TODO: Refactor this into an utility function.
-                const [firstTabbableElement] = tabbableElements(focusedActivityElement).filter(
-                  ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
-                );
-
-                firstTabbableElement && firstTabbableElement.focus();
-              }
-            }
-          }
+          fromEndOfTranscriptIndicator ||
+            renderingElements.find(({ key }) => key === focusedActivityKey)?.focusInside();
 
           break;
 
@@ -696,7 +688,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.stopPropagation();
       }
     },
-    [focusedActivityKey, activityElementsRef, focusRelativeActivity, focus, terminatorRef, renderingElements]
+    [focusedActivityKey, activityElementsRef, focusRelativeActivity, focus, renderingElements, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
