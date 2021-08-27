@@ -14,34 +14,6 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('should stick to bottom if submitting an Adaptive Card while suggested actions is open', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-
-  await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
-  await driver.wait(suggestedActionsShown(), timeouts.directLine);
-  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
-
-  // To submit the input form, the number field is mandatory.
-  await driver.executeScript(() => {
-    document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
-  });
-
-  const submitButton = await driver.findElement(By.css('button.ac-pushButton:nth-of-type(2)'));
-
-  await submitButton.click();
-  await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
-  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
 test('should scroll to bottom on send', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 

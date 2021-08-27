@@ -1,10 +1,27 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
+import {
+  Action as AdaptiveCardAction,
+  AdaptiveCard,
+  IMarkdownProcessingResult,
+  OpenUrlAction,
+  SubmitAction
+} from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  VFC
+} from 'react';
 
+import { PerformCardAction } from '../../../../api/lib';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 
@@ -14,21 +31,35 @@ const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML
 // eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-function addClass(element, className) {
-  const classNames = new Set(element.className.split(' '));
+type UndoFunction = (() => void) | undefined;
 
-  if (!classNames.has(className)) {
-    classNames.add(className);
+function bunchUndos(...fns: UndoFunction[]): UndoFunction {
+  return () => fns.forEach(fn => fn?.());
+}
 
-    element.className = Array.from(classNames).join(' ');
+/**
+ * Adds a class to the `HTMLElement`. Returns `true` if the class is added, otherwise, `undefined`.
+ */
+function addClass(element: HTMLElement, className: string): true | undefined {
+  const { classList } = element;
+
+  if (!classList.contains(className)) {
+    classList.add(className);
 
     return true;
   }
-
-  return false;
 }
 
-function addPersistentClassWithUndo(element, className) {
+/**
+ * Adds a class to the `HTMLElement` and re-add on mutations.
+ *
+ * @returns {function} A function, when called, will restore to previous state.
+ */
+function addPersistentClassWithUndo(element: HTMLElement | undefined, className: string): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   if (addClass(element, className)) {
     // After we add the class, keep observing the element to make sure the class is not removed.
     const observer = new MutationObserver(() => addClass(element, className));
@@ -46,11 +77,27 @@ function addPersistentClassWithUndo(element, className) {
   }
 }
 
+/**
+ * Returns `true`, if the object is a plain object and not a class, otherwise, `false`.
+ */
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-function setAttributeWithUndo(element, qualifiedName, nextValue) {
+/**
+ * Sets an attribute.
+ *
+ * @returns {function} A function, when called, will restore to previous state.
+ */
+function setAttributeWithUndo(
+  element: HTMLElement | undefined,
+  qualifiedName: string,
+  nextValue: string
+): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   const value = element.getAttribute(qualifiedName);
 
   if (value !== nextValue) {
@@ -60,15 +107,29 @@ function setAttributeWithUndo(element, qualifiedName, nextValue) {
   }
 }
 
-const disabledHandler = event => {
+/**
+ * An event handler for disabling event bubbling and propagation.
+ */
+const disabledHandler = (event: Event) => {
   event.preventDefault();
   event.stopImmediatePropagation();
   event.stopPropagation();
 };
 
-function addEventListenerOnceWithUndo(element, name, handler) {
+/**
+ * Listens to event once. Returns a function, when called, will stop listening.
+ */
+function addEventListenerOnceWithUndo(
+  element: HTMLElement | undefined,
+  name: string,
+  handler: EventListener
+): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   /* eslint-disable-next-line prefer-const */
-  let detach;
+  let detach: () => void;
   const detachingHandler = event => {
     try {
       handler(event);
@@ -85,14 +146,34 @@ function addEventListenerOnceWithUndo(element, name, handler) {
   return detach;
 }
 
-function addEventListenerWithUndo(element, name, handler) {
+/**
+ * Listens to event. Returns a function, when called, will stop listening.
+ */
+function addEventListenerWithUndo(
+  element: HTMLElement | undefined,
+  name: string,
+  handler: EventListener
+): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   element.addEventListener(name, handler);
 
   return () => element.removeEventListener(name, handler);
 }
 
-function disableElementWithUndo(element) {
-  const undoStack = [];
+/**
+ * Disables an element with undo function.
+ *
+ * @returns {function} A function, when called, will restore to previous state.
+ */
+function disableElementWithUndo(element: HTMLElement | undefined): UndoFunction {
+  if (!element) {
+    return;
+  }
+
+  const undoStack: UndoFunction[] = [];
   const isActive = element === document.activeElement;
   const tag = element.nodeName.toLowerCase();
 
@@ -128,11 +209,23 @@ function disableElementWithUndo(element) {
       break;
   }
 
-  return () => undoStack.forEach(undo => undo && undo());
+  return bunchUndos(...undoStack);
 }
 
-function disableInputElementsWithUndo(element: HTMLElement, observeSubtree = true) {
-  const undoStack = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
+/**
+ * Disables all inputtable descendants.
+ *
+ * @param {HTMLElement | undefined} element Container element to start looking for inputtable descendants.
+ * @param {boolean} observeSubtree `true` to applies to all future inputtable descendants, otherwise, `false`.
+ *
+ * @returns {function} A function, when called, will restore to previous state.
+ */
+function disableInputElementsWithUndo(element: HTMLElement | undefined, observeSubtree = true): UndoFunction {
+  if (!element) {
+    return;
+  }
+
+  const undoStack: (() => void)[] = [].map.call(element.querySelectorAll('button, input, select, textarea'), element =>
     disableElementWithUndo(element)
   );
 
@@ -154,18 +247,7 @@ function disableInputElementsWithUndo(element: HTMLElement, observeSubtree = tru
     undoStack.push(() => observer.disconnect());
   }
 
-  return () => undoStack.forEach(undo => undo && undo());
-}
-
-/**
- * Checks if an element contains a class.
- *
- * @param {HTMLElement} element - The element to check for the class.
- * @param {string} className - The name of the class to check for.
- * @returns {boolean} `true` if the element contains the class, otherwise, `false`.
- */
-function containsClassName(element: HTMLElement, className: string): boolean {
-  return (element.className || '').split(' ').includes(className);
+  return bunchUndos(...undoStack);
 }
 
 /**
@@ -174,7 +256,7 @@ function containsClassName(element: HTMLElement, className: string): boolean {
  * @returns {false | string} The value of the attribute. `false` if the attribute was not set.
  */
 function getAttribute(element: HTMLElement, qualifiedName: string): false | string {
-  return element.hasAttribute(qualifiedName) && element.getAttribute(qualifiedName);
+  return !!element && element.hasAttribute(qualifiedName) && (element.getAttribute(qualifiedName) || '');
 }
 
 /**
@@ -184,11 +266,11 @@ function getAttribute(element: HTMLElement, qualifiedName: string): false | stri
  * @param {string} qualifiedName - The name of the attribute.
  * @param {false | string} value - The value of the attribute. When passing `false`, remove the attribute.
  */
-function setOrRemoveAttribute(element: HTMLElement, qualifiedName: string, value: false | string): void {
+function setOrRemoveAttribute(element: HTMLElement | undefined, qualifiedName: string, value: false | string): void {
   if (value === false) {
-    element.removeAttribute(qualifiedName);
+    element?.removeAttribute(qualifiedName);
   } else {
-    element.setAttribute(qualifiedName, value);
+    element?.setAttribute(qualifiedName, value);
   }
 }
 
@@ -201,7 +283,15 @@ function setOrRemoveAttribute(element: HTMLElement, qualifiedName: string, value
  *
  * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
  */
-function setOrRemoveAttributeWithUndo(element: HTMLElement, qualifiedName: string, value: false | string): () => void {
+function setOrRemoveAttributeWithUndo(
+  element: HTMLElement | undefined,
+  qualifiedName: string,
+  value: false | string
+): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   const prevValue = getAttribute(element, qualifiedName);
 
   setOrRemoveAttribute(element, qualifiedName, value);
@@ -218,14 +308,12 @@ function setOrRemoveAttributeWithUndo(element: HTMLElement, qualifiedName: strin
  * @returns {HTMLElement | undefined} The first ancestor that fulfill the predicate, otherwise, `undefined`.
  */
 function findAncestor(element: HTMLElement, predicate: (ancestor: HTMLElement) => boolean): HTMLElement | undefined {
-  let current = element.parentElement;
+  let current = element;
 
-  while (current) {
+  while ((current = current.parentElement)) {
     if (predicate.call(element, current)) {
       return current;
     }
-
-    current = current.parentElement;
   }
 }
 
@@ -241,15 +329,15 @@ function findAncestor(element: HTMLElement, predicate: (ancestor: HTMLElement) =
  * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
  */
 function indicateActionSelectionWithUndo(
-  selectedActionElements: HTMLElement[],
+  selectedActionElements: HTMLElement[] | undefined,
   actionPerformedClassName?: string
-): (() => void) | undefined {
-  if (!selectedActionElements.length) {
+): UndoFunction {
+  if (!selectedActionElements?.length) {
     return;
   }
 
   // Verify all input elements are "ac-pushButton", could belongs to ActionSet or "card actions".
-  if (selectedActionElements.some(actionElement => !containsClassName(actionElement, 'ac-pushButton'))) {
+  if (selectedActionElements.some(actionElement => !actionElement.classList.contains('ac-pushButton'))) {
     console.warn(
       'botframework-webchat: Cannot mark selected action in the card, some elements are not an "ac-pushButton".'
     );
@@ -296,7 +384,7 @@ function indicateActionSelectionWithUndo(
     );
   });
 
-  return () => undoStack.forEach(undo => undo());
+  return bunchUndos(...undoStack);
 }
 
 /**
@@ -304,21 +392,21 @@ function indicateActionSelectionWithUndo(
  *
  * @returns {() => void} The undo function, when called, will undo all manipulations by restoring values recorded at the time of the function call.
  */
-function fixAccessibilityIssuesWithUndo(element: HTMLElement): () => void {
+function fixAccessibilityIssuesWithUndo(element: HTMLElement): UndoFunction {
+  if (!element) {
+    return;
+  }
+
   // These hacks should be done in Adaptive Cards library instead.
-  const undoStack: (() => void)[] = [];
-
   // Related to #3949: All action buttons inside role="menubar" should be role="menuitem".
-  undoStack.push(
-    ...Array.from(element.querySelectorAll('.ac-actionSet[role="menubar"] [role="button"]')).map(actionButton =>
-      setAttributeWithUndo(actionButton, 'role', 'menuitem')
-    )
-  );
+  const undoStack: UndoFunction[] = Array.from(
+    element.querySelectorAll('.ac-actionSet[role="menubar"] [role="button"]') as NodeListOf<HTMLElement>
+  ).map(actionButton => setAttributeWithUndo(actionButton, 'role', 'menuitem'));
 
-  return () => undoStack.forEach(undo => undo());
+  return () => undoStack.forEach(undo => undo?.());
 }
 
-function getFocusableElements(element) {
+function getFocusableElements(element: HTMLElement) {
   return [].filter.call(
     element.querySelectorAll(
       [
@@ -335,7 +423,7 @@ function getFocusableElements(element) {
         'textarea',
         '[tabindex]'
       ].join(', ')
-    ),
+    ) as NodeListOf<HTMLElement>,
     element => {
       const tabIndex = getTabIndex(element);
 
@@ -344,50 +432,68 @@ function getFocusableElements(element) {
   );
 }
 
-function restoreActiveElementIndex(element, activeElementIndex) {
-  const focusable = getFocusableElements(element)[activeElementIndex];
-
-  focusable && focusable.focus();
+function restoreActiveElementIndex(element: HTMLElement, activeElementIndex: number) {
+  getFocusableElements(element)[activeElementIndex]?.focus();
 }
 
-function saveActiveElementIndex(element) {
+function saveActiveElementIndex(element: HTMLElement) {
   return getFocusableElements(element).indexOf(document.activeElement);
 }
 
-function restoreInputValues(element, inputValues) {
-  const inputs = element.querySelectorAll('input, select, textarea');
+function restoreInputValues(element: HTMLElement, inputValues: (boolean | string)[]) {
+  const inputs = element.querySelectorAll('input, select, textarea') as NodeListOf<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >;
 
-  [].forEach.call(inputs, (input, index) => {
+  [].forEach.call(inputs, (input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number) => {
     const value = inputValues[index];
 
     if (typeof value !== 'undefined') {
       const { tagName, type } = input;
 
       if (tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) {
-        input.checked = value;
-      } else {
+        if (typeof value === 'boolean') {
+          (input as HTMLInputElement).checked = value;
+        }
+      } else if (typeof value === 'string') {
         input.value = value;
       }
     }
   });
 }
 
-function saveInputValues(element) {
-  const inputs = element.querySelectorAll('input, select, textarea');
+function saveInputValues(element: HTMLElement): (boolean | string)[] {
+  const inputs = element.querySelectorAll('input, select, textarea') as NodeListOf<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >;
 
-  return [].map.call(inputs, ({ checked, tagName, type, value }) => {
-    if (tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) {
-      return checked;
+  return [].map.call(inputs, (input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
+    const { type } = input;
+
+    if (input.tagName === 'INPUT' && (type === 'checkbox' || type === 'radio')) {
+      return (input as HTMLInputElement).checked;
     }
 
-    return value;
+    return input.value;
   });
 }
 
-const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled: disabledFromProps, tapAction }) => {
+type AdaptiveCardRendererProps = {
+  actionPerformedClassName?: string;
+  adaptiveCard: AdaptiveCard;
+  disabled?: boolean;
+  tapAction?: Parameters<PerformCardAction>[0];
+};
+
+const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
+  actionPerformedClassName,
+  adaptiveCard,
+  disabled: disabledFromProps,
+  tapAction
+}) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
-  const [actionsPerformed, setActionsPerformed] = useState([]);
+  const [actionsPerformed, setActionsPerformed] = useState<AdaptiveCardAction[]>([]);
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [disabledFromComposer] = useDisabled();
   const [errors, setErrors] = useState([]);
@@ -395,7 +501,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   const activeElementIndexRef = useRef(-1);
   const adaptiveCardElementRef = useRef<HTMLElement>();
   const contentRef = useRef<HTMLDivElement>();
-  const inputValuesRef = useRef([]);
+  const inputValuesRef = useRef<(boolean | string)[]>([]);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
@@ -406,8 +512,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   // TODO: [P2] #3199 We should consider using `adaptiveCard.selectAction` instead.
   // The null check for "tapAction" is in "handleClickAndKeyPressForTapAction".
   const handleClickAndKeyPress = useCallback(
-    event => {
-      const { key, target, type } = event;
+    (event: KeyboardEvent | MouseEvent): void => {
+      const { key, type } = event as KeyboardEvent;
+      const target = event.target as HTMLDivElement;
 
       // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
       const { current } = contentRef;
@@ -451,12 +558,13 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
 
   const addActionsPerformed = useCallback(
-    action => !~actionsPerformed.indexOf(action) && setActionsPerformed([...actionsPerformed, action]),
+    (action: AdaptiveCardAction): void =>
+      !~actionsPerformed.indexOf(action) && setActionsPerformed([...actionsPerformed, action]),
     [actionsPerformed, setActionsPerformed]
   );
 
   const handleExecuteAction = useCallback(
-    action => {
+    (action: AdaptiveCardAction): void => {
       // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
       if (disabled) {
         return;
@@ -469,21 +577,25 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       if (actionTypeName === 'Action.OpenUrl') {
         performCardAction({
           type: 'openUrl',
-          value: action.url
+          value: (action as OpenUrlAction).url
         });
       } else if (actionTypeName === 'Action.Submit') {
-        if (typeof action.data !== 'undefined') {
-          const { data: actionData } = action;
+        const submitAction = action as SubmitAction;
 
-          if (actionData && actionData.__isBotFrameworkCardAction) {
-            const { cardAction } = actionData;
+        if (typeof submitAction.data !== 'undefined') {
+          const { data: actionData } = submitAction;
+
+          // "__isBotFrameworkCardAction" does not exists on the AdaptiveCardAction type.
+          // eslint-disable-next-line dot-notation
+          if (actionData && actionData['__isBotFrameworkCardAction']) {
+            const { cardAction } = actionData as any;
             const { displayText, text, type, value } = cardAction;
 
             performCardAction({ displayText, text, type, value });
           } else {
             performCardAction({
-              type: typeof action.data === 'string' ? 'imBack' : 'postBack',
-              value: action.data
+              type: typeof actionData === 'string' ? 'imBack' : 'postBack',
+              value: actionData
             });
           }
         }
@@ -511,7 +623,9 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
     //       This could be limitations from Adaptive Cards package (not supported as of 1.2.5)
     //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
 
-    adaptiveCard.constructor.onProcessMarkdown = (text, result) => {
+    // "onProcessMarkdown" is a static function but we are trying to scope it to the current object instead.
+    // eslint-disable-next-line dot-notation
+    adaptiveCard.constructor['onProcessMarkdown'] = (text: string, result: IMarkdownProcessingResult) => {
       if (renderMarkdownAsHTML) {
         result.outputHtml = renderMarkdownAsHTML(text);
         result.didProcess = true;
@@ -533,7 +647,7 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
       return setErrors(validationEvents.reduce((items, { message }) => [...items, new Error(message)], []));
     }
 
-    let element;
+    let element: HTMLElement;
 
     try {
       element = adaptiveCard.render();
@@ -612,8 +726,8 @@ const AdaptiveCardRenderer = ({ actionPerformedClassName, adaptiveCard, disabled
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
-      onClick={handleClickAndKeyPressForTapAction}
-      onKeyPress={handleClickAndKeyPressForTapAction}
+      onClick={handleClickAndKeyPressForTapAction as unknown as MouseEventHandler<HTMLDivElement>}
+      onKeyPress={handleClickAndKeyPressForTapAction as unknown as KeyboardEventHandler<HTMLDivElement>}
       ref={contentRef}
     />
   );
