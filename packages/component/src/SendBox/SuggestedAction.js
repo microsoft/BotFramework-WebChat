@@ -48,8 +48,8 @@ const SuggestedAction = ({ buttonText, className, displayText, image, imageAlt, 
   const focusRef = useRef();
   const localizeAccessKey = useLocalizeAccessKey();
   const performCardAction = usePerformCardAction();
-  const scrollToEnd = useScrollToEnd();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const scrollToEnd = useScrollToEnd();
 
   const handleClick = useCallback(
     ({ target }) => {
