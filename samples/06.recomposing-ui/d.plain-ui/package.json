@@ -7,7 +7,9 @@
     "botframework-webchat": "^4.14.0",
     "botframework-webchat-component": "^4.14.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
     "react-scripts": "^4.0.3"
   },
   "scripts": {
