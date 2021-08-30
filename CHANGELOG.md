@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#3968](https://github.com/microsoft/BotFramework-WebChat/issues/3968). Fix typing for `usePerformCardAction` hook, by [@compulim](https://github.com/compulim), in PR [#3969](https://github.com/microsoft/BotFramework-WebChat/pull/3969)
+
 ### Changed
 
 -  Resolves [#4017](https://github.com/microsoft/BotFramework-WebChat/issues/4017). In samples, moved [`react-scripts`](https://npmjs.com/package/react-scripts`) to `devDependencies`, in PR [#4023](https://github.com/microsoft/BotFramework-WebChat/pull/4023)
