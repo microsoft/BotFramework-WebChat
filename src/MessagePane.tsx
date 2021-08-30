@@ -57,8 +57,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
-                            { twemoji.parse(action.title) }
+                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title } dangerouslySetInnerHTML={{ __html: twemoji.parse(action.title)}}>
                         </button>
                     </li>
                 ) }</ul>
