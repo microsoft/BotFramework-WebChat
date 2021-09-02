@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.14.1] - 2021-09-07
+
 ### Fixed
 
 -  Fixes [#3968](https://github.com/microsoft/BotFramework-WebChat/issues/3968). Fix typing for `usePerformCardAction` hook, by [@compulim](https://github.com/compulim), in PR [#3969](https://github.com/microsoft/BotFramework-WebChat/pull/3969)
