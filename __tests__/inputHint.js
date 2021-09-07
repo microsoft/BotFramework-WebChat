@@ -29,7 +29,10 @@ describe('input hint', () => {
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+      // After synthesis completed, we will dispatch START_DICTATE action.
+      // The action will trigger a re-render and the useEffect() will kickoff speech recognition.
+      // There could be a slight time delay between "end of synthesis" and "kickoff recognition".
+      await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -45,7 +48,10 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
   });
 
@@ -67,7 +73,10 @@ describe('input hint', () => {
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -83,7 +92,10 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
   });
 
@@ -105,7 +117,10 @@ describe('input hint', () => {
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
 
     test('should turn off microphone if initiated via typing', async () => {
@@ -121,7 +136,10 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
   });
 
@@ -143,7 +161,10 @@ describe('input hint', () => {
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -159,7 +180,10 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+      // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+      await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+        'Waiting SpeechRecognition.start to be called'
+      );
     });
   });
 });

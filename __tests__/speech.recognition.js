@@ -221,6 +221,6 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toHaveProperty('lang', 'zh-HK');
+    await expect(driver.wait(speechRecognitionStartCalled(), timeouts.ui)).resolves.toHaveProperty('lang', 'zh-HK');
   });
 });
