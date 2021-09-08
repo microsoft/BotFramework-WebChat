@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "base64-arraybuffer": "^1.0.1",
-    "botframework-webchat": "^4.14.0",
+    "botframework-webchat": "^4.14.1",
     "math-random": "^2.0.1",
     "msal": "^1.4.9",
     "office-ui-fabric-react": "^7.165.2",

@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/g.chat-send-history/",
   "dependencies": {
-    "botframework-webchat": "^4.14.0",
+    "botframework-webchat": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
