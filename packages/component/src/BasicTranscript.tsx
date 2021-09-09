@@ -1136,13 +1136,9 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   );
 };
 
-InternalTranscriptScrollable.defaultProps = {
-  children: undefined
-};
-
 InternalTranscriptScrollable.propTypes = {
   activities: PropTypes.array.isRequired,
-  children: PropTypes.any,
+  children: PropTypes.any.isRequired,
   onFocusActivity: PropTypes.func.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
