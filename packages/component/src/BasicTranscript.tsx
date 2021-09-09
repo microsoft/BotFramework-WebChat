@@ -546,11 +546,14 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
   const renderingElementsRef = useValueRef(renderingElements);
 
-  // "getFocusedActivityKey" is a patched version of "userFocusedActivityKey":
-  // 1. If set, the focused activity must be rendered in the transcript
-  // 2. Otherwise, assume the focus on the last rendered activity (if any)
+  // `getFocusedActivityKey` is a getter function returning patched version of `userFocusedActivityKey`. The patch logic:
+  //
+  // 1. If `userFocusedActivityKey` is set and the activity is being rendered in the transcript, return the key;
+  // 2. Otherwise, if the transcript is not empty, return the key of the last rendering activity;
+  // 3. Otherwise, return falsy, indicating nothing is in the transcript and nothing can be selected.
+  //
   // We are using a getter callback because this is a computed/derived value and we could get an updated version without re-rendering.
-  const getFocusedActivityKey = useCallback(() => {
+  const getFocusedActivityKey = useCallback((): string | undefined => {
     const { current: renderingElements } = renderingElementsRef;
     const { current: userFocusedActivityKey } = userFocusedActivityKeyRef;
 
@@ -563,7 +566,10 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
     return renderingElements[renderingElements.length - 1]?.key;
   }, [renderingElementsRef, userFocusedActivityKeyRef]);
 
-  const renderingActivities = useMemo(() => renderingElements.map(({ activity }) => activity), [renderingElements]);
+  const renderingActivities = useMemo<DirectLineActivity[]>(
+    () => renderingElements.map(({ activity }) => activity),
+    [renderingElements]
+  );
 
   const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
   const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
@@ -690,7 +696,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   // We need to generate a new ID so the browser see there is a change in aria-activedescendant value and perform accordingly.
   const focusedActivityKey = getFocusedActivityKey();
   const activeDescendantElementId = useMemo(
-    () => focusedActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
+    (): string =>
+      focusedActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
     [focusedActivityKey]
   );
 
