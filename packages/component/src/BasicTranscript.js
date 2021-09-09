@@ -662,7 +662,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
         case 'Enter':
           // This is capturing plain ENTER.
-          // When screen reader is running without scan mode, the ENTER key will be captured here.
+          // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
           fromEndOfTranscriptIndicator ||
             renderingElements.find(({ key }) => key === focusedActivityKey)?.focusInside();
 
@@ -688,7 +688,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.stopPropagation();
       }
     },
-    [focusedActivityKey, activityElementsRef, focusRelativeActivity, focus, renderingElements, terminatorRef]
+    [focusedActivityKey, focusRelativeActivity, focus, renderingElements, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');

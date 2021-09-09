@@ -43,7 +43,7 @@
         await pageConditions.scrollStabilized();
 
         // WHEN: "click" event is fired, which mimic screen reader "do primary action", or CAPSLOCK + ENTER.
-        // We cannot fire "click" event via createEvent/dispatchEvent because React ignored it.
+        // Per React requirement, `ReactTestUtils` is required to fire artificial "click" event, instead of `createEvent`/`dispatchEvent`.
         ReactTestUtils.Simulate.click(pageElements.focusedActivity());
 
         // THEN: The first text box in the input card should be focused.

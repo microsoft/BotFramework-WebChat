@@ -272,6 +272,7 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
     return null;
   }
 
+  // Otherwise, if we have rendered once, we will continue to render "Is empty".
   hideEmptyRef.current = false;
 
   if (suggestedActionLayout === 'flow') {
