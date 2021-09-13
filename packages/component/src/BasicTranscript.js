@@ -365,6 +365,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               //   - NVDA has very limited documentation on browse mode, and no mention of this "click" behavior
               //   - This "click" event should be ignored, otherwise, we will be sending focus to the <input> and losing the ability to focus on the activity
               //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we already offered a full-fledge navigation experience
+
+              // TODO: Add tests.
               const {
                 target: { id }
               } = event;
@@ -886,6 +888,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 onClick={handleClick}
                 onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
+                // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
                 onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
