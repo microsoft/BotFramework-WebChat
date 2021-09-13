@@ -331,8 +331,8 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               //
               // This is called while screen reader is running:
               //
-              // 1. When scan mode is on, ENTER key is pressed, or;
-              // 2. When scan mode is off, CAPSLOCK + ENTER is pressed
+              // 1. When scan mode is on (Windows Narrator) or in browse mode (NVDA), ENTER key is pressed, or;
+              // 2. When scan mode is off (Windows Narrator) or in focus mode (NVDA), CAPSLOCK + ENTER is pressed
               //
               // Although `document.activeElement` (a.k.a. primary focus) is on the transcript,
               // when ENTER key is pressed with screen reader in scan mode, screen reader will
@@ -340,11 +340,40 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               // active descendant (a.k.a. focused activity).
               //
               // While outside of scan mode, this will also capture CAPSLOCK + ENTER,
-              // which is a key combo for "do primary action".
+              // which is a key combo for "do primary action" or "activates the current navigator object".
               //
               // We cannot capture plain ENTER key outside of scan mode here.
               // We can only capture it on `keydown` event fired to the transcript element.
-              event.target === event.currentTarget && focusInside();
+              //
+              // Also see https://github.com/nvaccess/nvda/issues/7898.
+
+              const { currentTarget, target } = event;
+
+              // The followings are for Windows Narrator:
+              // - When scan mode is on
+              //   - Press ENTER will dispatch "click" event to the <li> element
+              //   - This is called "Do primary action"
+              if (target === currentTarget) {
+                return focusInside();
+              }
+
+              // The followings are for NVDA:
+              // - When in browse mode, and the red box is around the <ScreenReaderActivity>
+              //   - Press ENTER will dispatch "click" event to the <p>Bot said: Showing inputs</p> element inside <ScreenReaderActivity> (a.k.a. <article>)
+              //   - This will "switch to focus mode"
+              // - When in browse mode, sometimes, pressing UP/DOWN arrow keys will dispatch "click" to the <article> element inside the <ScreenReaderActivity>
+              //   - NVDA has very limited documentation on browse mode, and no mention of this "click" behavior
+              //   - This "click" event should be ignored, otherwise, we will be sending focus to the <input> and losing the ability to focus on the activity
+              //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we already offered a full-fledge navigation experience
+              const {
+                target: { id }
+              } = event;
+
+              const ariaLabelledBy = currentTarget.getAttribute('aria-labelledby');
+
+              if (ariaLabelledBy !== id && document.getElementById(ariaLabelledBy).contains(target)) {
+                return focusInside();
+              }
             },
 
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.

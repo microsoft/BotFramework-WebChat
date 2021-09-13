@@ -11,7 +11,7 @@
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot attached:",
   "_ACTIVITY_BOT_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the bot.",
   "ACTIVITY_ERROR_BOX_TITLE": "Error message",
-  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Press ENTER to interact.",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Click to interact.",
   "_ACTIVITY_INTERACTIVE_LABEL_ALT.comment": "This is for screen reader. When the user is navigating on the transcript, it give hints if the current activity have interactive contents.",
   "ACTIVITY_YOU_ATTACHED_ALT": "You attached:",
   "_ACTIVITY_YOU_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the user.",
