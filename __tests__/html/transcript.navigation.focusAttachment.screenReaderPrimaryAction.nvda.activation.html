@@ -42,9 +42,9 @@
         );
         await pageConditions.scrollStabilized();
 
-        // WHEN: "click" event is fired, which mimic screen reader "do primary action", or CAPSLOCK + ENTER.
+        // WHEN: "click" event is fired, which mimic pressing ENTER key while NVDA is in browse mode.
         // Per React requirement, `ReactTestUtils` is required to fire artificial "click" event, instead of `createEvent`/`dispatchEvent`.
-        ReactTestUtils.Simulate.click(pageElements.focusedActivity());
+        ReactTestUtils.Simulate.click(pageElements.focusedActivity().querySelector('.webchat__screen-reader-activity :first-child'));
 
         // THEN: The first text box in the input card should be focused.
         await pageConditions.became(
