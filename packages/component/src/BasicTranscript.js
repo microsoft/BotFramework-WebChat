@@ -864,7 +864,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           ) => {
             const { ariaLabelID, element } =
               activityElementsRef.current.find(entry => entry.activity === activity) || {};
-            const activeDescendant = focusedActivityKey === key;
+            const isActiveDescendant = focusedActivityKey === key;
             const isContentInteractive = !!(element
               ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
               : 0);
@@ -877,9 +877,9 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                   'webchat__basic-transcript__activity--from-bot': role !== 'user',
                   'webchat__basic-transcript__activity--from-user': role === 'user'
                 })}
-                // Set "id" for valid for accessibility.
+                // Set "id" is required for accessibility active descendant feature.
                 /* eslint-disable-next-line react/forbid-dom-props */
-                id={activeDescendant ? activeDescendantElementId : undefined}
+                id={isActiveDescendant ? activeDescendantElementId : undefined}
                 key={key}
                 // This is for capturing "do primary action" done by the screen reader.
                 // With screen reader, will narrate "Press ENTER to interact". But in scan mode, ENTER means "do primary action".
@@ -919,7 +919,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 <div
                   className={classNames('webchat__basic-transcript__activity-indicator', {
                     'webchat__basic-transcript__activity-indicator--first': !index,
-                    'webchat__basic-transcript__activity-indicator--focus': activeDescendant
+                    'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
                   })}
                 />
               </li>
