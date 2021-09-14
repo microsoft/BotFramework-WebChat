@@ -358,22 +358,13 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               }
 
               // The followings are for NVDA:
-              // - When in browse mode, and the red box is around the <ScreenReaderActivity>
-              //   - Press ENTER will dispatch "click" event to the <p>Bot said: Showing inputs</p> element inside <ScreenReaderActivity> (a.k.a. <article>)
-              //   - This will "switch to focus mode"
-              // - When in browse mode, sometimes, pressing UP/DOWN arrow keys will dispatch "click" to the <article> element inside the <ScreenReaderActivity>
-              //   - NVDA has very limited documentation on browse mode, and no mention of this "click" behavior
-              //   - This "click" event should be ignored, otherwise, we will be sending focus to the <input> and losing the ability to focus on the activity
-              //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we already offered a full-fledge navigation experience
-
-              // TODO: Add tests.
-              const {
-                target: { id }
-              } = event;
-
-              const ariaLabelledBy = currentTarget.getAttribute('aria-labelledby');
-
-              if (ariaLabelledBy !== id && document.getElementById(ariaLabelledBy).contains(target)) {
+              // - When in browse mode (red border), and the red box is around the <ScreenReaderActivity>
+              //   - The much simplified DOM tree: <li><article><p>...</p></article></li>
+              //   - Press ENTER will dispatch `click` event
+              //      - NVDA 2020.2 (buggy): In additional to ENTER, when navigating using UP/DOWN arrow keys, it dispatch "click" event to the <article> element
+              //      - NVDA 2021.2: After press ENTER, it dispatch 2 `click` events. First to the <article> element, then to the element currently bordered in red (e.g. <p>)
+              //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we are not a web document and already offered a full-fledge navigation experience
+              if (document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target)) {
                 return focusInside();
               }
             },
