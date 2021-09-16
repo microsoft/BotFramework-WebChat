@@ -95,10 +95,31 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
+
   sendBoxButtonColor: undefined,
-  sendBoxButtonColorOnDisabled: '#CCC', // Fluent UI is #A19F9D
-  sendBoxButtonColorOnFocus: '#333', // Fluent UI is unchanged
-  sendBoxButtonColorOnHover: '#333', // Fluent UI is #106EBE, and when :active, it is #005A9E
+  sendBoxButtonShadeColor: undefined,
+
+  sendBoxButtonColorOnActive: undefined,
+  sendBoxButtonShadeColorOnActive: '#EDEBE9',
+
+  sendBoxButtonColorOnDisabled: undefined,
+  sendBoxButtonShadeColorOnDisabled: '#F3F2F1', // Fluent UI is #A19F9D
+
+  sendBoxButtonColorOnFocus: undefined,
+  sendBoxButtonShadeColorOnFocus: undefined,
+
+  sendBoxButtonColorOnHover: undefined,
+  sendBoxButtonShadeColorOnHover: '#F3F2F1', // Fluent UI is #106EBE, and when :active, it is #005A9E
+
+  sendBoxButtonShadeBorderRadius: 2,
+  sendBoxButtonShadeInset: 2,
+
+  sendBoxButtonFocusVisibleBorderColor: '#605E5C',
+  sendBoxButtonFocusVisibleBorderRadius: 0,
+  sendBoxButtonFocusVisibleBorderStyle: 'solid',
+  sendBoxButtonFocusVisibleBorderWidth: 1,
+  sendBoxButtonFocusVisibleInset: 4,
+
   sendBoxDisabledTextColor: undefined,
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,

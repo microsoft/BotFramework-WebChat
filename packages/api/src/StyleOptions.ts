@@ -259,14 +259,96 @@ type StyleOptions = {
   microphoneButtonColorOnDictate?: string;
   sendBoxBackground?: string;
 
-  /**
-   * Button color defaults to subtle
-   */
+  /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
 
+  /**
+   * Send box button: Shade border radius
+   *
+   * @default 2
+   */
+  sendBoxButtonShadeBorderRadius?: number;
+
+  /** Send box button: Shade color */
+  sendBoxButtonShadeColor?: string;
+
+  /**
+   * Send box button: Shade inset
+   *
+   * @default 2
+   */
+  sendBoxButtonShadeInset?: number;
+
+  /** Send box button (while `:active`): Icon color */
+  sendBoxButtonColorOnActive?: string;
+
+  /**
+   * Send box button (while `:active`): Shade color
+   *
+   * @default '#EDEBE9'
+   */
+  sendBoxButtonShadeColorOnActive?: string;
+
+  /** Send box button (while `:disabled`): Icon color */
   sendBoxButtonColorOnDisabled?: string;
+
+  /**
+   * Send box button (while `:disabled`): Shade color
+   *
+   * @default '#F3F2F1'
+   */
+  sendBoxButtonShadeColorOnDisabled?: string;
+
+  /** Send box button (while `:focus`): Icon color */
   sendBoxButtonColorOnFocus?: string;
+
+  /** Send box button (while `:focus`): Shade color */
+  sendBoxButtonShadeColorOnFocus?: string;
+
+  /** Send box button (while `:hover`): Icon color */
   sendBoxButtonColorOnHover?: string;
+
+  /**
+   * Send box button (while `:hover`): Shade color
+   *
+   * @default '#F3F2F1'
+   */
+  sendBoxButtonShadeColorOnHover?: string;
+
+  /**
+   * Send box button (while `:focus-visible`): Border color
+   *
+   * @default '#605E5C'
+   */
+  sendBoxButtonFocusVisibleBorderColor?: string;
+
+  /**
+   * Send box button (while `:focus-visible`): Inset
+   *
+   * @default 4
+   */
+  sendBoxButtonFocusVisibleInset?: number;
+
+  /**
+   * Send box button (while `:focus-visible`): Border radius
+   *
+   * @default 0
+   */
+  sendBoxButtonFocusVisibleBorderRadius?: number | string;
+
+  /**
+   * Send box button (while `:focus-visible`): Border style
+   *
+   * @default 'solid'
+   */
+  sendBoxButtonFocusVisibleBorderStyle?: string;
+
+  /**
+   * Send box button (while` :focus-visible`): Border width
+   *
+   * @default 4
+   */
+  sendBoxButtonFocusVisibleBorderWidth?: number;
 
   /**
    * Disabled text color defaults to subtle

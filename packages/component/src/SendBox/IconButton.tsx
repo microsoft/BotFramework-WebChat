@@ -43,7 +43,7 @@ const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, o
     >
       <div className="webchat__icon-button__shade" />
       {children}
-      <div className="webchat__icon-button__box" />
+      <div className="webchat__icon-button__focus-visible" />
     </AccessibleButton>
   );
 };
