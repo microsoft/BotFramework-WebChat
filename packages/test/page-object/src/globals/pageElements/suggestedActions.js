@@ -1,3 +1,3 @@
 export default function suggestedActions() {
-  return document.querySelectorAll('[role="form"] [role="status"] ul li button[type="button"]');
+  return document.querySelectorAll('.webchat__suggested-action');
 }

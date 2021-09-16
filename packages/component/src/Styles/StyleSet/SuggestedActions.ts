@@ -25,7 +25,7 @@ export default function createSuggestedActionsStyle({
           paddingBottom: paddingRegular / 2,
           paddingTop: paddingRegular / 2,
 
-          '& .webchat__suggested-actions__button': {
+          '& .webchat__suggested-actions__item-box': {
             paddingBottom: paddingRegular / 2,
             paddingLeft: paddingRegular / 2,
             paddingRight: paddingRegular / 2,
@@ -113,13 +113,16 @@ export default function createSuggestedActionsStyle({
           paddingTop: paddingRegular / 2
         },
 
-        '& .webchat__suggested-actions__item': {
+        '& .webchat__suggested-actions__flow-item-box': {
           maxWidth: '100%',
           overflow: 'hidden' // This is required in IE11
         },
 
-        '& .webchat__suggested-actions__button': {
-          padding: paddingRegular / 2
+        '& .webchat__suggested-actions__item-box': {
+          paddingBottom: paddingRegular / 2,
+          paddingLeft: paddingRegular / 2,
+          paddingRight: paddingRegular / 2,
+          paddingTop: paddingRegular / 2
         }
       },
 
@@ -133,7 +136,7 @@ export default function createSuggestedActionsStyle({
           paddingTop: paddingRegular / 2
         },
 
-        '& .webchat__suggested-actions__button': {
+        '& .webchat__suggested-actions__item-box': {
           paddingBottom: paddingRegular / 2,
           paddingLeft: paddingRegular / 2,
           paddingRight: paddingRegular / 2,
@@ -152,6 +155,11 @@ export default function createSuggestedActionsStyle({
           display: 'flex',
           whiteSpace: 'normal'
         }
+      },
+
+      '& .webchat__suggested-actions__item-box': {
+        display: 'flex',
+        maxWidth: '100%'
       }
     }
   };

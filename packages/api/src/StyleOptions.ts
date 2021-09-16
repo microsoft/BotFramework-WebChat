@@ -302,35 +302,98 @@ type StyleOptions = {
    * Suggested Actions
    */
 
+  /** Suggested action: border radius */
+  suggestedActionBorderRadius?: number | string;
+
+  /**
+   * Suggested action: background
+   *
+   * @default 'White'
+   */
   suggestedActionBackground?: string;
 
-  /**
-   * Border color defaults to accent.
-   */
+  /** Suggested action: foreground color, defaults to accent color */
+  suggestedActionTextColor?: string;
+
+  /** Suggested action: border color, defaults to accent color */
   suggestedActionBorderColor?: string;
 
-  suggestedActionBorderRadius?: number | string;
+  /** Suggested action: border style */
   suggestedActionBorderStyle?: string;
+
+  /** Suggested action: border width */
   suggestedActionBorderWidth?: number | string;
 
-  /**
-   * Disabled background defaults to suggestedActionBackground
-   */
+  /** Suggested action (while `:disabled`): background, defaults to suggestedActionBackground */
   suggestedActionDisabledBackground?: string;
 
+  /** Suggested action (while `:disabled`): border color */
   suggestedActionDisabledBorderColor?: string;
+
+  /** Suggested action (while `:disabled`): border style */
   suggestedActionDisabledBorderStyle?: string;
+
+  /** Suggested action (while `:disabled`): border width */
   suggestedActionDisabledBorderWidth?: number | string;
 
-  /**
-   * Disabled text color defaults to subtle
-   */
+  /** Suggested action (while `:disabled`): foreground color, defaults to subtle color */
   suggestedActionDisabledTextColor?: string;
 
+  /** Suggested action: height */
   suggestedActionHeight?: number | string;
+
+  /** Suggested action: image height */
   suggestedActionImageHeight?: number | string;
+
+  /** Suggested action: layout type */
   suggestedActionLayout?: 'carousel' | 'flow' | 'stacked';
-  suggestedActionTextColor?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): inset
+   *
+   * @default 2
+   */
+  suggestedActionFocusVisibleInset?: number;
+
+  /**
+   * Suggested action (while `:focus-visible`): border color
+   *
+   * @default '#605E5C'
+   */
+  suggestedActionFocusVisibleBorderColor?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): border style
+   *
+   * @default 'solid'
+   */
+  suggestedActionFocusVisibleBorderStyle?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): border width
+   *
+   * @default 1
+   */
+  suggestedActionFocusVisibleBorderWidth?: number;
+
+  /**
+   * Suggested action (while `:focus`): background
+   */
+  suggestedActionFocusBackground?: string;
+
+  /**
+   * Suggested action (while `:active`): background
+   *
+   * @default '#EDEBE9'
+   */
+  suggestedActionActiveBackground?: string;
+
+  /**
+   * Suggested action (while `:hover`): background
+   *
+   * @default '#F3F2F1'
+   */
+  suggestedActionHoverBackground?: string;
 
   /**
    * Suggested actions carousel layout

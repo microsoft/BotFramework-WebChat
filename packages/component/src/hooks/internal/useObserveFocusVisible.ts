@@ -71,7 +71,7 @@ function createEventSubscription(
 //       1. Focus via keyboard vs. mouse
 //       2. Focus via keyboard, switch app, switch back (expect to get another focusVisible after switch back)
 //       3. Focus via mouse, switch app, switch back (do NOT expect to get another focusVisible after switch back)
-function useObserveFocusViaKeyboardForLegacyBrowsers(
+function useObserveFocusVisibleForLegacyBrowsers(
   targetRef: RefObject<HTMLElement>,
   onFocusVisibleRef: MutableRefObject<() => void>
 ) {
@@ -196,7 +196,7 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(
 
     // We specifically add "targetRef.current" here.
     // If the target element changed, we should reattach our event listeners.
-  }, [handleBlur, handleFocus, targetRef, targetRef.current]);
+  }, [handleBlur, handleFocus, targetRef]);
 
   useEffect(() => {
     eventSubscription.resume();
@@ -205,7 +205,7 @@ function useObserveFocusViaKeyboardForLegacyBrowsers(
   }, [eventSubscription]);
 }
 
-function useObserveFocusViaKeyboardForModernBrowsers(
+function useObserveFocusVisibleForModernBrowsers(
   targetRef: RefObject<HTMLElement>,
   onFocusVisibleRef: MutableRefObject<() => void>
 ) {
@@ -227,7 +227,7 @@ function useObserveFocusViaKeyboardForModernBrowsers(
   }, [handleFocus, targetRef, targetRef.current]);
 }
 
-export default function useObserveFocusViaKeyboard(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
+export default function useObserveFocusVisible(targetRef: RefObject<HTMLElement>, onFocusVisible: () => void) {
   const [nonce] = useNonce();
   const onFocusVisibleRef = useValueRef(onFocusVisible);
 
@@ -243,9 +243,9 @@ export default function useObserveFocusViaKeyboard(targetRef: RefObject<HTMLElem
   // Thus, running hooks conditionally is okay here.
   if (supportFocusVisible) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useObserveFocusViaKeyboardForModernBrowsers(targetRef, onFocusVisibleRef);
+    useObserveFocusVisibleForModernBrowsers(targetRef, onFocusVisibleRef);
   } else {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useObserveFocusViaKeyboardForLegacyBrowsers(targetRef, onFocusVisibleRef);
+    useObserveFocusVisibleForLegacyBrowsers(targetRef, onFocusVisibleRef);
   }
 }

@@ -96,9 +96,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
   sendBoxButtonColor: undefined,
-  sendBoxButtonColorOnDisabled: '#CCC',
-  sendBoxButtonColorOnFocus: '#333',
-  sendBoxButtonColorOnHover: '#333',
+  sendBoxButtonColorOnDisabled: '#CCC', // Fluent UI is #A19F9D
+  sendBoxButtonColorOnFocus: '#333', // Fluent UI is unchanged
+  sendBoxButtonColorOnHover: '#333', // Fluent UI is #106EBE, and when :active, it is #005A9E
   sendBoxDisabledTextColor: undefined,
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
@@ -131,6 +131,13 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   suggestedActionDisabledBorderStyle: 'solid',
   suggestedActionDisabledBorderWidth: 2,
   suggestedActionDisabledTextColor: undefined,
+  suggestedActionFocusBackground: undefined,
+  suggestedActionFocusVisibleInset: 2,
+  suggestedActionFocusVisibleBorderColor: '#605E5C',
+  suggestedActionFocusVisibleBorderStyle: 'solid',
+  suggestedActionFocusVisibleBorderWidth: 1,
+  suggestedActionHoverBackground: '#F3F2F1',
+  suggestedActionActiveBackground: '#EDEBE9',
   suggestedActionHeight: 40,
   suggestedActionImageHeight: 20,
   suggestedActionLayout: 'carousel',
