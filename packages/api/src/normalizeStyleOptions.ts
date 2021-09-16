@@ -11,6 +11,18 @@ const newMessagesButtonFontSizeDeprecation = warnOnce(
   '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2023-06-02.'
 );
 
+const suggestedActionBackgroundDeprecation = warnOnce(
+  '"styleOptions.suggestedActionBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColor" instead. This deprecation migration will be removed on or after 2021-09-16.'
+);
+
+const suggestedActionXXXBackgroundDeprecation = warnOnce(
+  '"styleOptions.suggestedActionXXXBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColorOnXXX" instead. This deprecation migration will be removed on or after 2021-09-16.'
+);
+
+const suggestedActionDisabledDeprecation = warnOnce(
+  '"styleOptions.suggestedActionDisabledXXX" has been renamed to "styleOptions.suggestedActionXXXOnDisabled". This deprecation migration will be removed on or after 2021-09-16.'
+);
+
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
@@ -105,6 +117,64 @@ export default function normalizeStyleOptions({
 
     // Only set if the "scrollToEndButtonFontSize" is not set.
     filledOptions.scrollToEndButtonFontSize = options.scrollToEndButtonFontSize || newMessagesButtonFontSize;
+  }
+
+  options.suggestedActionBackground && suggestedActionBackgroundDeprecation();
+
+  if (options.suggestedActionActiveBackground) {
+    suggestedActionXXXBackgroundDeprecation();
+
+    filledOptions.suggestedActionBackgroundColorOnActive =
+      options.suggestedActionBackgroundColorOnActive || options.suggestedActionActiveBackground;
+  }
+
+  if (options.suggestedActionFocusBackground) {
+    suggestedActionXXXBackgroundDeprecation();
+
+    filledOptions.suggestedActionBackgroundColorOnFocus =
+      options.suggestedActionBackgroundColorOnFocus || options.suggestedActionFocusBackground;
+  }
+
+  if (options.suggestedActionHoverBackground) {
+    suggestedActionXXXBackgroundDeprecation();
+
+    filledOptions.suggestedActionBackgroundColorOnHover =
+      options.suggestedActionBackgroundColorOnHover || options.suggestedActionHoverBackground;
+  }
+
+  if (options.suggestedActionDisabledBackground) {
+    suggestedActionXXXBackgroundDeprecation();
+
+    filledOptions.suggestedActionBackgroundColorOnDisabled =
+      options.suggestedActionBackgroundColorOnDisabled || options.suggestedActionDisabledBackground;
+  }
+
+  if (options.suggestedActionDisabledBorderColor) {
+    suggestedActionDisabledDeprecation();
+
+    filledOptions.suggestedActionBorderColorOnDisabled =
+      options.suggestedActionBorderColorOnDisabled || options.suggestedActionDisabledBorderColor;
+  }
+
+  if (options.suggestedActionDisabledBorderStyle) {
+    suggestedActionDisabledDeprecation();
+
+    filledOptions.suggestedActionBorderStyleOnDisabled =
+      options.suggestedActionBorderStyleOnDisabled || options.suggestedActionDisabledBorderStyle;
+  }
+
+  if (options.suggestedActionDisabledBorderWidth) {
+    suggestedActionDisabledDeprecation();
+
+    filledOptions.suggestedActionBorderWidthOnDisabled =
+      options.suggestedActionBorderWidthOnDisabled || options.suggestedActionDisabledBorderWidth;
+  }
+
+  if (options.suggestedActionDisabledTextColor) {
+    suggestedActionDisabledDeprecation();
+
+    filledOptions.suggestedActionTextColorOnDisabled =
+      options.suggestedActionTextColorOnDisabled || options.suggestedActionDisabledTextColor;
   }
 
   return {

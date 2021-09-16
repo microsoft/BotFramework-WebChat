@@ -77,39 +77,97 @@
           }
         ]);
 
-        const params = new URLSearchParams(location.search);
+        const store = testHelpers.createStore();
+        const preset = new URLSearchParams(location.search).get('preset');
 
         function renderWebChat(props) {
           WebChat.renderWebChat(
             {
               directLine,
-              store: testHelpers.createStore(),
+              store,
               ...props,
               styleOptions: {
-                ...(params.get('default')
+                ...(preset === 'default'
                   ? {}
-                  : {
-                      suggestedActionBackground: 'rgba(255, 0, 0, .2)',
-                      suggestedActionBorderColor: '#F00',
+                  : preset === 'deprecated'
+                  ? {
                       suggestedActionBorderRadius: 5,
+
+                      suggestedActionKeyboardFocusIndicatorInset: 4,
+                      suggestedActionKeyboardFocusIndicatorBorderColor: '#00F',
+                      suggestedActionKeyboardFocusIndicatorBorderRadius: '100px',
+                      suggestedActionKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      suggestedActionKeyboardFocusIndicatorBorderWidth: 2,
+
+                      suggestedActionBackground: 'rgba(255, 0, 0, .4)',
+                      suggestedActionBorderColor: 'rgba(255, 0, 0, .8)',
                       suggestedActionBorderStyle: 'dashed',
                       suggestedActionBorderWidth: 1,
-                      suggestedActionDisabledBackground: 'rgba(0, 255, 0, .2)',
-                      suggestedActionDisabledBorderColor: '#0F0',
+                      suggestedActionTextColor: 'rgba(255, 0, 0, 1)',
+
+                      suggestedActionActiveBackground: 'rgba(255, 0, 255, .4)',
+                      suggestedActionBorderColorOnActive: 'rgba(255, 0, 255, .8)',
+                      suggestedActionBorderStyleOnActive: 'dotted',
+                      suggestedActionBorderWidthOnActive: 3,
+                      suggestedActionTextColorOnActive: 'rgba(255, 0, 255, 1)',
+
+                      suggestedActionDisabledBackground: 'rgba(255, 255, 0, .4)',
+                      suggestedActionDisabledBorderColor: 'rgba(255, 255, 0, .8)',
                       suggestedActionDisabledBorderStyle: 'dotted',
                       suggestedActionDisabledBorderWidth: 3,
-                      suggestedActionDisabledTextColor: '#0F0',
-                      suggestedActionTextColor: '#F00',
+                      suggestedActionDisabledTextColor: 'rgba(255, 255, 0, 1)',
 
-                      suggestedActionFocusVisibleInset: 4,
-                      suggestedActionFocusVisibleBorderColor: '#00F',
-                      suggestedActionFocusVisibleBorderStyle: 'dashed',
-                      suggestedActionFocusVisibleBorderWidth: 2,
-                      suggestedActionFocusBackground: 'rgba(255, 0, 0, .4)',
-                      suggestedActionActiveBackground: 'rgba(0, 255, 0, .4)',
-                      suggestedActionHoverBackground: 'rgba(0, 0, 255, .4)'
+                      suggestedActionFocusBackground: 'rgba(0, 255, 0, .4)',
+                      suggestedActionBorderColorOnFocus: 'rgba(0, 255, 0, .8)',
+                      suggestedActionBorderStyleOnFocus: 'dotted',
+                      suggestedActionBorderWidthOnFocus: 3,
+                      suggestedActionTextColorOnFocus: 'rgba(0, 255, 0, 1)',
+
+                      suggestedActionHoverBackground: 'rgba(0, 0, 255, .4)',
+                      suggestedActionBorderColorOnHover: 'rgba(0, 0, 255, .8)',
+                      suggestedActionBorderStyleOnHover: 'dotted',
+                      suggestedActionBorderWidthOnHover: 3,
+                      suggestedActionTextColorOnHover: 'rgba(0, 0, 255, 1)'
+                    }
+                  : {
+                      suggestedActionBorderRadius: 5,
+
+                      suggestedActionKeyboardFocusIndicatorInset: 4,
+                      suggestedActionKeyboardFocusIndicatorBorderColor: '#00F',
+                      suggestedActionKeyboardFocusIndicatorBorderRadius: '100px',
+                      suggestedActionKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      suggestedActionKeyboardFocusIndicatorBorderWidth: 2,
+
+                      suggestedActionBackgroundColor: 'rgba(255, 0, 0, .4)',
+                      suggestedActionBorderColor: 'rgba(255, 0, 0, .8)',
+                      suggestedActionBorderStyle: 'dashed',
+                      suggestedActionBorderWidth: 1,
+                      suggestedActionTextColor: 'rgba(255, 0, 0, 1)',
+
+                      suggestedActionBackgroundColorOnActive: 'rgba(255, 0, 255, .4)',
+                      suggestedActionBorderColorOnActive: 'rgba(255, 0, 255, .8)',
+                      suggestedActionBorderStyleOnActive: 'dotted',
+                      suggestedActionBorderWidthOnActive: 3,
+                      suggestedActionTextColorOnActive: 'rgba(255, 0, 255, 1)',
+
+                      suggestedActionBackgroundColorOnDisabled: 'rgba(255, 255, 0, .4)',
+                      suggestedActionBorderColorOnDisabled: 'rgba(255, 255, 0, .8)',
+                      suggestedActionBorderStyleOnDisabled: 'dotted',
+                      suggestedActionBorderWidthOnDisabled: 3,
+                      suggestedActionTextColorOnDisabled: 'rgba(255, 255, 0, 1)',
+
+                      suggestedActionBackgroundColorOnFocus: 'rgba(0, 255, 0, .4)',
+                      suggestedActionBorderColorOnFocus: 'rgba(0, 255, 0, .8)',
+                      suggestedActionBorderStyleOnFocus: 'dotted',
+                      suggestedActionBorderWidthOnFocus: 3,
+                      suggestedActionTextColorOnFocus: 'rgba(0, 255, 0, 1)',
+
+                      suggestedActionBackgroundColorOnHover: 'rgba(0, 0, 255, .4)',
+                      suggestedActionBorderColorOnHover: 'rgba(0, 0, 255, .8)',
+                      suggestedActionBorderStyleOnHover: 'dotted',
+                      suggestedActionBorderWidthOnHover: 3,
+                      suggestedActionTextColorOnHover: 'rgba(0, 0, 255, 1)'
                     }),
-
                 ...props?.styleOptions
               }
             },

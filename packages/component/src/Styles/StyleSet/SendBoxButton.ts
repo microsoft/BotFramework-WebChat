@@ -6,11 +6,11 @@ export default function createSendBoxButtonStyle({
   sendBoxButtonColorOnDisabled,
   sendBoxButtonColorOnFocus,
   sendBoxButtonColorOnHover,
-  sendBoxButtonFocusVisibleBorderColor,
-  sendBoxButtonFocusVisibleBorderRadius,
-  sendBoxButtonFocusVisibleBorderStyle,
-  sendBoxButtonFocusVisibleBorderWidth,
-  sendBoxButtonFocusVisibleInset,
+  sendBoxButtonKeyboardFocusIndicatorBorderColor,
+  sendBoxButtonKeyboardFocusIndicatorBorderRadius,
+  sendBoxButtonKeyboardFocusIndicatorBorderStyle,
+  sendBoxButtonKeyboardFocusIndicatorBorderWidth,
+  sendBoxButtonKeyboardFocusIndicatorInset,
   sendBoxButtonShadeBorderRadius,
   sendBoxButtonShadeColor,
   sendBoxButtonShadeColorOnActive,
@@ -27,6 +27,7 @@ export default function createSendBoxButtonStyle({
       backgroundColor: 'Transparent',
       border: 0,
       display: 'flex',
+      fill: sendBoxButtonColor || subtle,
       justifyContent: 'center',
       outline: 0,
       padding: 0,
@@ -35,6 +36,61 @@ export default function createSendBoxButtonStyle({
 
       '&:not(.webchat__icon-button--stretch)': {
         height: sendBoxHeight
+      },
+
+      // Order of style preferences (based on effort of user gesture): disabled > active > hover > focus.
+      // Keyboard focus indicator styles applied by :focus-visible do not conflict with :active/:hover/:focus, so it is not included here.
+      '&:disabled, &[aria-disabled="true"]': {
+        fill: sendBoxButtonColorOnDisabled,
+
+        '& .webchat__icon-button__shade': {
+          backgroundColor: sendBoxButtonShadeColorOnDisabled
+        }
+      },
+
+      '&:not(:disabled):not([aria-disabled="true"])': {
+        '&:active': {
+          fill: sendBoxButtonColorOnActive,
+
+          '& .webchat__icon-button__shade': {
+            backgroundColor: sendBoxButtonShadeColorOnActive
+          }
+        },
+
+        '&:not(:active)': {
+          '&:hover': {
+            fill: sendBoxButtonColorOnHover,
+
+            '& .webchat__icon-button__shade': {
+              backgroundColor: sendBoxButtonShadeColorOnHover
+            }
+          },
+
+          '&:not(:hover)': {
+            '&:focus': {
+              fill: sendBoxButtonColorOnFocus,
+
+              '& .webchat__icon-button__shade': {
+                backgroundColor: sendBoxButtonShadeColorOnFocus
+              }
+            }
+          }
+        }
+      },
+
+      // On unsupported browser, :focus-visible and :not(:focus-visible) is always false.
+      // And it will turn the whole CSS selector ":unsupported, .truthy" to false.
+      '&:not(:focus-visible) .webchat__icon-button__keyboard-focus-indicator': {
+        display: 'none'
+      },
+
+      '&:not(.webchat__icon-button--focus-visible) .webchat__icon-button__keyboard-focus-indicator': {
+        display: 'none'
+      },
+
+      // Make sure all contents are in the same stacking context.
+      '& > *': {
+        position: 'relative'
       },
 
       '& .webchat__icon-button__shade': {
@@ -47,80 +103,16 @@ export default function createSendBoxButtonStyle({
         top: sendBoxButtonShadeInset
       },
 
-      '& .webchat__icon-button__focus-visible': {
-        borderColor: sendBoxButtonFocusVisibleBorderColor,
-        borderRadius: sendBoxButtonFocusVisibleBorderRadius,
-        borderStyle: sendBoxButtonFocusVisibleBorderStyle,
-        borderWidth: sendBoxButtonFocusVisibleBorderWidth,
-        bottom: sendBoxButtonFocusVisibleInset,
-        left: sendBoxButtonFocusVisibleInset,
+      '& .webchat__icon-button__keyboard-focus-indicator': {
+        borderColor: sendBoxButtonKeyboardFocusIndicatorBorderColor,
+        borderRadius: sendBoxButtonKeyboardFocusIndicatorBorderRadius,
+        borderStyle: sendBoxButtonKeyboardFocusIndicatorBorderStyle,
+        borderWidth: sendBoxButtonKeyboardFocusIndicatorBorderWidth,
+        bottom: sendBoxButtonKeyboardFocusIndicatorInset,
+        left: sendBoxButtonKeyboardFocusIndicatorInset,
         position: 'absolute',
-        right: sendBoxButtonFocusVisibleInset,
-        top: sendBoxButtonFocusVisibleInset
-      },
-
-      '& svg': {
-        fill: sendBoxButtonColor || subtle,
-        position: 'relative'
-      },
-
-      // Order of preferences:
-      // :disabled > :active > :hover > :focus
-      '&:disabled, &[aria-disabled="true"]': {
-        '& .webchat__icon-button__shade': {
-          backgroundColor: sendBoxButtonShadeColorOnDisabled
-        },
-
-        // TODO: Add className for SVG.
-        '& svg': {
-          fill: sendBoxButtonColorOnDisabled
-        }
-      },
-
-      '&:not(:disabled):not([aria-disabled="true"])': {
-        '&:active': {
-          '& .webchat__icon-button__shade': {
-            backgroundColor: sendBoxButtonShadeColorOnActive
-          },
-
-          '& svg': {
-            fill: sendBoxButtonColorOnActive
-          }
-        },
-
-        '&:not(:active)': {
-          '&:hover': {
-            '& .webchat__icon-button__shade': {
-              backgroundColor: sendBoxButtonShadeColorOnHover
-            },
-
-            '& svg': {
-              fill: sendBoxButtonColorOnHover
-            }
-          },
-
-          '&:not(:hover)': {
-            '&:focus': {
-              '& .webchat__icon-button__shade': {
-                backgroundColor: sendBoxButtonShadeColorOnFocus
-              },
-
-              '& svg': {
-                fill: sendBoxButtonColorOnFocus
-              }
-            }
-          }
-        }
-      },
-
-      // On unsupported browser, :focus-visible and :not(:focus-visible) is always false.
-      // And it will turn the whole CSS selector ":unsupported, .truthy" to false.
-      '&:not(:focus-visible) .webchat__icon-button__focus-visible': {
-        display: 'none'
-      },
-
-      '&:not(.webchat__icon-button--focus-visible) .webchat__icon-button__focus-visible': {
-        display: 'none'
+        right: sendBoxButtonKeyboardFocusIndicatorInset,
+        top: sendBoxButtonKeyboardFocusIndicatorInset
       }
     }
   };

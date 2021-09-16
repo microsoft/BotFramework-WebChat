@@ -132,9 +132,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
         />
       )}
       <span className={classNames('webchat__suggested-action__text', (textClassName || '') + '')}>{buttonText}</span>
-      <div className="webchat__suggested-action__focus-inset">
-        <div className="webchat__suggested-action__focus" />
-      </div>
+      <div className="webchat__suggested-action__keyboard-focus-indicator" />
     </AccessibleButton>
   );
 };

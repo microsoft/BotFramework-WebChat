@@ -24,23 +24,29 @@
                 ...(useDefault
                   ? {}
                   : {
-                      sendBoxButtonColor: 'rgba(255, 0, 0, 1)',
-                      sendBoxButtonColorOnActive: 'rgba(255, 0, 255, 1)',
-                      sendBoxButtonColorOnDisabled: 'rgba(255, 0, 255, 1)',
-                      sendBoxButtonColorOnFocus: 'rgba(0, 255, 0, 1)',
-                      sendBoxButtonColorOnHover: 'rgba(0, 0, 255, 1)',
-                      sendBoxButtonFocusVisibleBorderColor: 'rgba(0, 255, 255, 1)',
-                      sendBoxButtonFocusVisibleBorderRadius: '100%',
-                      sendBoxButtonFocusVisibleBorderStyle: 'dashed',
-                      sendBoxButtonFocusVisibleBorderWidth: 2,
-                      sendBoxButtonFocusVisibleInset: 6,
                       sendBoxButtonShadeBorderRadius: 5,
+                      sendBoxButtonShadeInset: 3,
+
+                      sendBoxButtonKeyboardFocusIndicatorBorderColor: 'rgba(0, 255, 255, 1)',
+                      sendBoxButtonKeyboardFocusIndicatorBorderRadius: '100%',
+                      sendBoxButtonKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      sendBoxButtonKeyboardFocusIndicatorBorderWidth: 2,
+                      sendBoxButtonKeyboardFocusIndicatorInset: 6,
+
+                      sendBoxButtonColor: 'rgba(255, 0, 0, 1)',
                       sendBoxButtonShadeColor: 'rgba(255, 0, 0, .4)',
+
+                      sendBoxButtonColorOnActive: 'rgba(255, 0, 255, 1)',
                       sendBoxButtonShadeColorOnActive: 'rgba(255, 0, 255, .4)',
-                      sendBoxButtonShadeColorOnDisabled: 'rgba(255, 0, 255, .4)',
+
+                      sendBoxButtonColorOnDisabled: 'rgba(255, 255, 0, 1)',
+                      sendBoxButtonShadeColorOnDisabled: 'rgba(255, 255, 0, .4)',
+
+                      sendBoxButtonColorOnFocus: 'rgba(0, 255, 0, 1)',
                       sendBoxButtonShadeColorOnFocus: 'rgba(0, 255, 0, .4)',
-                      sendBoxButtonShadeColorOnHover: 'rgba(0, 0, 255, .4)',
-                      sendBoxButtonShadeInset: 3
+
+                      sendBoxButtonColorOnHover: 'rgba(0, 0, 255, 1)',
+                      sendBoxButtonShadeColorOnHover: 'rgba(0, 0, 255, .4)'
                     }),
                 ...overrideProps?.styleOptions
               }
