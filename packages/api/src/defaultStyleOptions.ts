@@ -103,7 +103,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxButtonColorOnActive: undefined,
   sendBoxButtonShadeColorOnActive: '#EDEBE9',
 
-  sendBoxButtonColorOnDisabled: undefined,
+  sendBoxButtonColorOnDisabled: '#A19F9D',
   sendBoxButtonShadeColorOnDisabled: '#F3F2F1',
 
   sendBoxButtonColorOnFocus: undefined,

@@ -289,7 +289,11 @@ type StyleOptions = {
    */
   sendBoxButtonShadeColorOnActive?: string;
 
-  /** Send box button (while `:disabled`): Icon color */
+  /**
+   * Send box button (while `:disabled`): Icon color
+   *
+   * @default '#A19F9D'
+   */
   sendBoxButtonColorOnDisabled?: string;
 
   /**
