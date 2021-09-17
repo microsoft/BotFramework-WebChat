@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Style options are introduced to send button for improved accessibility:
    -  `suggestedActionBackground` and `suggestedActionXXXBackground` are being deprecated in favor of `suggestedActionBackgroundColor` and `suggestedActionBackgroundColorOnXXX` respectively, for consistencies when porting to other platforms
-   -  `suggestedActionDisabledXXX` is being renamed to `suggestedActionXXXOnDisabled`, for consistencies with other similar style options
+   -  `suggestedActionDisabledXXX` is being renamed to `suggestedActionXXXOnDisabled`, for consistencies with other style options
    -  `suggestedActionXXXOnActive`, `suggestedActionXXXOnFocus`, `suggestedActionXXXOnHover` are introduced for styling per user gestures
    -  `suggestedActionKeyboardFocusIndicatorXXX` are introduced for styling the "focus ring" when [focused using a keyboard](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible)
 
