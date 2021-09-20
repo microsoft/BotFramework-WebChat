@@ -9,7 +9,6 @@ module.exports = webDriver => {
     await webDriver
       .actions()
       .move({ origin: Origin.VIEWPORT, x: ~~x, y: ~~y })
-      .click()
       .perform();
   };
 };

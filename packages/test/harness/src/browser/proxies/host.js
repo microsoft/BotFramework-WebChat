@@ -11,6 +11,7 @@ export default function createHost() {
     error: () => {},
     getLogs: () => {},
     hover: () => {},
+    moveTo: () => {},
     pressAndHold: () => {},
     ready: () => {},
     sendAccessKey: () => {},
