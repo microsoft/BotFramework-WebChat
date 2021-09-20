@@ -12,7 +12,7 @@ function isZeroOrPositive(value) {
  *
  * @return {({ x: number, y: number })} The page offset of the upper-left corner of the element.
  */
-module.exports = async function clientOffsetToViewportOffset(webDriver, x, y, element) {
+module.exports = async function clientOffsetToViewportOffset(webDriver, element, x, y) {
   if (element) {
     const { offsetHeight, offsetWidth, pageX, pageY } = await webDriver.executeScript(element => {
       const { offsetHeight, offsetWidth } = element;
