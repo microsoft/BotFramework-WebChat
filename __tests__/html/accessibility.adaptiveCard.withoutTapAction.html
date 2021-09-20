@@ -24,7 +24,7 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.scrollToBottomCompleted();
 
-        document.querySelector('select').focus();
+        document.querySelector('select.ac-input').focus();
 
         await host.sendShiftTab();
 
