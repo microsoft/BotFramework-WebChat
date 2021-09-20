@@ -18,47 +18,46 @@ beforeEach(() => {
   global.AudioContext = MockAudioContext;
 });
 
-describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
-  '%s',
-  (_, testHarnessOptions) => {
-    test('should echo back when saying "hello" and "world"', async () => {
-      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+// TODO: [P2] #4053 Temporarily disable "internal HTTP" test until service recovered.
+// describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
+describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions) => {
+  test('should echo back when saying "hello" and "world"', async () => {
+    const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
-      const connectedPromise = waitForConnected(directLine);
-      const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
+    const connectedPromise = waitForConnected(directLine);
+    const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
 
-      await connectedPromise;
+    await connectedPromise;
 
-      await sendTextAsSpeech('hello');
-      await sendTextAsSpeech('world');
+    await sendTextAsSpeech('hello');
+    await sendTextAsSpeech('world');
 
-      const activities = await activitiesPromise;
-      const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
-      );
+    const activities = await activitiesPromise;
+    const activityUtterances = Promise.all(
+      activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
+    );
 
-      await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
-    });
+    await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
+  });
 
-    test('should echo back "Bellevue" when saying "bellview"', async () => {
-      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+  test('should echo back "Bellevue" when saying "bellview"', async () => {
+    const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
-      const connectedPromise = waitForConnected(directLine);
-      const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
+    const connectedPromise = waitForConnected(directLine);
+    const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
 
-      await connectedPromise;
+    await connectedPromise;
 
-      await sendTextAsSpeech('bellview');
+    await sendTextAsSpeech('bellview');
 
-      const activities = await activitiesPromise;
-      const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
-      );
+    const activities = await activitiesPromise;
+    const activityUtterances = Promise.all(
+      activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
+    );
 
-      await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
-    });
-  }
-);
+    await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
+  });
+});
 
 // TODO: Re-enable this test for "enableInternalHttpSupport = true" once DLS bug fix is lit up in production.
 // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
