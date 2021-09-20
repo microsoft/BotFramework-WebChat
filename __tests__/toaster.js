@@ -225,5 +225,15 @@ test('move recently updated toast to the top', async () => {
     }
   });
 
+  // Wait for the DOM to reflect the change.
+  await driver.wait(
+    () =>
+      driver.executeScript(
+        () =>
+          ~document.querySelector(`.webchat__toaster__listItem`)?.innerText?.indexOf('Notification 1, placed to top.')
+      ),
+    timeouts.ui
+  );
+
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
