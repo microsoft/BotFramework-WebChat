@@ -298,6 +298,16 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
             rootElement && rootElement.focus();
           };
 
+          // Focus on the first tabbable element inside the activity.
+          // This will be triggered by pressing ENTER while focusing on an interactive activity.
+          const focusInside = () => {
+            const [firstTabbableElement] = tabbableElements(
+              activityElementsRef.current.find(activityElement => activityElement.key === key)?.element
+            ).filter(({ className }) => className !== 'webchat__basic-transcript__activity-sentinel');
+
+            firstTabbableElement?.focus();
+          };
+
           renderingElements.push({
             activity,
 
@@ -312,6 +322,52 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
 
             // Calling this function will put the focus on the transcript and the activity.
             focusActivity,
+
+            // Calling this function will focus on the first tabbable element in the activity.
+            focusInside,
+
+            handleClick: event => {
+              // (Related to #4020)
+              //
+              // This is called while screen reader is running:
+              //
+              // 1. When scan mode is on (Windows Narrator) or in browse mode (NVDA), ENTER key is pressed, or;
+              // 2. When scan mode is off (Windows Narrator) or in focus mode (NVDA), CAPSLOCK + ENTER is pressed
+              //
+              // Although `document.activeElement` (a.k.a. primary focus) is on the transcript,
+              // when ENTER key is pressed with screen reader in scan mode, screen reader will
+              // "do primary action", which ask the browser to send a `click` event to the
+              // active descendant (a.k.a. focused activity).
+              //
+              // While outside of scan mode, this will also capture CAPSLOCK + ENTER,
+              // which is a key combo for "do primary action" or "activates the current navigator object".
+              //
+              // We cannot capture plain ENTER key outside of scan mode here.
+              // We can only capture it on `keydown` event fired to the transcript element.
+              //
+              // Also see https://github.com/nvaccess/nvda/issues/7898.
+
+              const { currentTarget, target } = event;
+
+              // The followings are for Windows Narrator:
+              // - When scan mode is on
+              //   - Press ENTER will dispatch "click" event to the <li> element
+              //   - This is called "Do primary action"
+              if (target === currentTarget) {
+                return focusInside();
+              }
+
+              // The followings are for NVDA:
+              // - When in browse mode (red border), and the red box is around the <ScreenReaderActivity>
+              //   - The much simplified DOM tree: <li><article><p>...</p></article></li>
+              //   - Press ENTER will dispatch `click` event
+              //      - NVDA 2020.2 (buggy): In additional to ENTER, when navigating using UP/DOWN arrow keys, it dispatch "click" event to the <article> element
+              //      - NVDA 2021.2: After press ENTER, it dispatch 2 `click` events. First to the <article> element, then to the element currently bordered in red (e.g. <p>)
+              //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we are not a web document and already offered a full-fledge navigation experience
+              if (document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target)) {
+                return focusInside();
+              }
+            },
 
             // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
             handleFocus: () => {
@@ -627,22 +683,10 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           break;
 
         case 'Enter':
-          if (!fromEndOfTranscriptIndicator) {
-            const focusedActivityEntry = renderingElements.find(({ key }) => key === focusedActivityKey);
-
-            if (focusedActivityEntry) {
-              const { element: focusedActivityElement } =
-                activityElementsRef.current.find(({ activity }) => activity === focusedActivityEntry.activity) || {};
-
-              if (focusedActivityElement) {
-                const [firstTabbableElement] = tabbableElements(focusedActivityElement).filter(
-                  ({ className }) => className !== 'webchat__basic-transcript__activity-sentinel'
-                );
-
-                firstTabbableElement && firstTabbableElement.focus();
-              }
-            }
-          }
+          // This is capturing plain ENTER.
+          // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
+          fromEndOfTranscriptIndicator ||
+            renderingElements.find(({ key }) => key === focusedActivityKey)?.focusInside();
 
           break;
 
@@ -666,7 +710,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
         event.stopPropagation();
       }
     },
-    [focusedActivityKey, activityElementsRef, focusRelativeActivity, focus, terminatorRef, renderingElements]
+    [focusedActivityKey, focusRelativeActivity, focus, renderingElements, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
@@ -793,6 +837,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
               activity,
               callbackRef,
               focusActivity,
+              handleClick,
               handleFocus,
               handleKeyDown,
               handleMouseDownCapture,
@@ -810,7 +855,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
           ) => {
             const { ariaLabelID, element } =
               activityElementsRef.current.find(entry => entry.activity === activity) || {};
-            const activeDescendant = focusedActivityKey === key;
+            const isActiveDescendant = focusedActivityKey === key;
             const isContentInteractive = !!(element
               ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
               : 0);
@@ -823,12 +868,18 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                   'webchat__basic-transcript__activity--from-bot': role !== 'user',
                   'webchat__basic-transcript__activity--from-user': role === 'user'
                 })}
-                // Set "id" for valid for accessibility.
+                // Set "id" is required for accessibility active descendant feature.
                 /* eslint-disable-next-line react/forbid-dom-props */
-                id={activeDescendant ? activeDescendantElementId : undefined}
+                id={isActiveDescendant ? activeDescendantElementId : undefined}
                 key={key}
+                // This is for capturing "do primary action" done by the screen reader.
+                // With screen reader, will narrate "Press ENTER to interact". But in scan mode, ENTER means "do primary action".
+                // If `onClick` is set, screen reader will send click event when "do primary action".
+                // Related to #4020.
+                onClick={handleClick}
                 onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
+                // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
                 onMouseDownCapture={handleMouseDownCapture}
                 ref={callbackRef}
               >
@@ -859,7 +910,7 @@ const InternalTranscript = ({ activityElementsRef, className }) => {
                 <div
                   className={classNames('webchat__basic-transcript__activity-indicator', {
                     'webchat__basic-transcript__activity-indicator--first': !index,
-                    'webchat__basic-transcript__activity-indicator--focus': activeDescendant
+                    'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
                   })}
                 />
               </li>
