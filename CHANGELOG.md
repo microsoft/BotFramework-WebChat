@@ -22,10 +22,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  Style options are introduced to send button for improved accessibility:
+   -  `suggestedActionBackground` and `suggestedActionXXXBackground` are being deprecated in favor of `suggestedActionBackgroundColor` and `suggestedActionBackgroundColorOnXXX` respectively, for consistencies when porting to other platforms
+   -  `suggestedActionDisabledXXX` is being renamed to `suggestedActionXXXOnDisabled`, for consistencies with other style options
+   -  `suggestedActionXXXOnActive`, `suggestedActionXXXOnFocus`, `suggestedActionXXXOnHover` are introduced for styling per user gestures
+   -  `suggestedActionKeyboardFocusIndicatorXXX` are introduced for styling the "focus ring" when [focused using a keyboard](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible)
+
 ### Fixed
 
+-  Fixes [#4018](https://github.com/microsoft/BotFramework-WebChat/issues/4018). When using <kbd>TAB</kbd> or <kbd>SHIFT</kbd> + <kbd>TAB</kbd> key to focus on the transcript, it should select the last activity, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
 -  Fixes [#4020](https://github.com/microsoft/BotFramework-WebChat/issues/4020). With or without scan mode turned on, screen reader users should be able to press <kbd>ENTER</kbd> to focus on interactive activity, by [@compulim](https://github.com/compulim), in PR [#4041](https://github.com/microsoft/BotFramework-WebChat/pull/4041)
 -  Fixes [#4021](https://github.com/microsoft/BotFramework-WebChat/issues/4021). For screen reader usability, suggested actions container should not render "Is empty" alt text initially, by [@compulim](https://github.com/compulim), in PR [#4041](https://github.com/microsoft/BotFramework-WebChat/pull/4041)
+-  Fixes [#4029](https://github.com/microsoft/BotFramework-WebChat/issues/4029). Added new keyboard focus indicator for suggested actions, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
+   -  New style options are introduced: `suggestedActionXXXOnActive`, `suggestedActionXXXOnFocus`, `suggestedActionXXXOnHover`, `suggestedActionKeyboardFocusIndicatorXXX`
+   -  Style options are renamed: `suggestedActionDisabledXXX` become `suggestedActionXXXOnDisabled`
+-  Fixes [#4028](https://github.com/microsoft/BotFramework-WebChat/issues/4028). Added new keyboard focus indicator for send box buttons, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
+   -  New style options are introduced: `sendBoxButtonXXXOnActive`, `sendBoxButtonXXXOnFocus`, `sendBoxButtonXXXOnHover`, `sendBoxButtonKeyboardFocusIndicatorXXX`
 
 ## [4.14.1] - 2021-09-07
 

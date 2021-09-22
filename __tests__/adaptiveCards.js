@@ -135,6 +135,17 @@ test('disable card inputs', async () => {
 
   await pageObjects.updateProps({ disabled: false });
 
+  // Wait until render after update props
+  await driver.wait(
+    () =>
+      driver.executeScript(() => {
+        const button = document.querySelector('.ac-actionSet button:nth-of-type(2)');
+
+        return button && !button.disabled;
+      }),
+    timeouts.ui
+  );
+
   // Click "Submit" button should send values to the bot
   await driver.executeScript(() => {
     document.querySelector('.ac-actionSet button:nth-of-type(2)').click();

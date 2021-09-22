@@ -34,8 +34,7 @@ test('show 2 notifications, expand, close one, and add new', async () => {
     }
   });
 
-  // Pause between actions for reliability.
-  await new Promise(resolve => setTimeout(resolve, 0));
+  await driver.wait(toastShown(1), timeouts.ui);
 
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -64,7 +63,7 @@ test('show 2 notifications, expand, close one, and add new', async () => {
     }
   });
 
-  await driver.wait(toastShown(1), 60000);
+  await driver.wait(toastShown(1), timeouts.ui);
   await driver.wait(negationOf(toasterExpandable()), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -106,6 +105,8 @@ test('show 2 notifications, expand, and collapse', async () => {
       message: 'Notification 1.'
     }
   });
+
+  await driver.wait(toastShown(1), timeouts.ui);
 
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -201,6 +202,8 @@ test('move recently updated toast to the top', async () => {
     }
   });
 
+  await driver.wait(toastShown(1), timeouts.ui);
+
   await pageObjects.dispatchAction({
     type: 'WEB_CHAT/SET_NOTIFICATION',
     payload: {
@@ -224,6 +227,16 @@ test('move recently updated toast to the top', async () => {
       message: 'Notification 1, placed to top.'
     }
   });
+
+  // Wait for the DOM to reflect the change.
+  await driver.wait(
+    () =>
+      driver.executeScript(
+        () =>
+          ~document.querySelector(`.webchat__toaster__listItem`)?.innerText?.indexOf('Notification 1, placed to top.')
+      ),
+    timeouts.ui
+  );
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });

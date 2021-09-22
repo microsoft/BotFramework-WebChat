@@ -64,6 +64,7 @@ test('long URLs with keep-all', async () => {
 
   const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('箸より重いものを持ったことがない箸より重いものを持ったことがない', {
     waitForSend: true
   });

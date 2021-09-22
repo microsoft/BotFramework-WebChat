@@ -248,7 +248,7 @@ type StyleOptions = {
   /**
    * Specify number of pixels to overscroll or underscroll after pause
    */
-  autoScrollSnapOnPageoffset?: number;
+  autoScrollSnapOnPageOffset?: number;
 
   /**
    * Send box styling
@@ -259,14 +259,100 @@ type StyleOptions = {
   microphoneButtonColorOnDictate?: string;
   sendBoxBackground?: string;
 
-  /**
-   * Button color defaults to subtle
-   */
+  /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
 
+  /**
+   * Send box button: Shade border radius
+   *
+   * @default 2
+   */
+  sendBoxButtonShadeBorderRadius?: number;
+
+  /** Send box button: Shade color */
+  sendBoxButtonShadeColor?: string;
+
+  /**
+   * Send box button: Shade inset
+   *
+   * @default 2
+   */
+  sendBoxButtonShadeInset?: number;
+
+  /** Send box button (while `:active`): Icon color */
+  sendBoxButtonColorOnActive?: string;
+
+  /**
+   * Send box button (while `:active`): Shade color
+   *
+   * @default '#EDEBE9'
+   */
+  sendBoxButtonShadeColorOnActive?: string;
+
+  /**
+   * Send box button (while `:disabled`): Icon color
+   *
+   * @default '#A19F9D'
+   */
   sendBoxButtonColorOnDisabled?: string;
+
+  /**
+   * Send box button (while `:disabled`): Shade color
+   *
+   * @default '#F3F2F1'
+   */
+  sendBoxButtonShadeColorOnDisabled?: string;
+
+  /** Send box button (while `:focus`): Icon color */
   sendBoxButtonColorOnFocus?: string;
+
+  /** Send box button (while `:focus`): Shade color */
+  sendBoxButtonShadeColorOnFocus?: string;
+
+  /** Send box button (while `:hover`): Icon color */
   sendBoxButtonColorOnHover?: string;
+
+  /**
+   * Send box button (while `:hover`): Shade color
+   *
+   * @default '#F3F2F1'
+   */
+  sendBoxButtonShadeColorOnHover?: string;
+
+  /**
+   * Send box button (while `:focus-visible`): Keyboard focus indicator border color
+   *
+   * @default '#605E5C'
+   */
+  sendBoxButtonKeyboardFocusIndicatorBorderColor?: string;
+
+  /**
+   * Send box button (while `:focus-visible`): Keyboard focus indicator border radius
+   *
+   * @default 0
+   */
+  sendBoxButtonKeyboardFocusIndicatorBorderRadius?: number | string;
+
+  /**
+   * Send box button (while `:focus-visible`): Keyboard focus indicator border style
+   *
+   * @default 'solid'
+   */
+  sendBoxButtonKeyboardFocusIndicatorBorderStyle?: string;
+
+  /**
+   * Send box button (while` :focus-visible`): Keyboard focus indicator border width
+   *
+   * @default 4
+   */
+  sendBoxButtonKeyboardFocusIndicatorBorderWidth?: number;
+
+  /**
+   * Send box button (while `:focus-visible`): Keyboard focus indicator inset
+   *
+   * @default 4
+   */
+  sendBoxButtonKeyboardFocusIndicatorInset?: number;
 
   /**
    * Disabled text color defaults to subtle
@@ -302,35 +388,230 @@ type StyleOptions = {
    * Suggested Actions
    */
 
+  /**
+   * Suggested action: border radius
+   *
+   * @default 0
+   */
+  suggestedActionBorderRadius?: number | string;
+
+  /**
+   * Suggested action: Background
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColor` instead. This option will be removed on or after 2023-09-16.
+   */
   suggestedActionBackground?: string;
 
   /**
-   * Border color defaults to accent.
+   * Suggested action: Background color
+   *
+   * @default 'White'
    */
+  suggestedActionBackgroundColor?: string;
+
+  /** Suggested action: Border color, defaults to accent color */
   suggestedActionBorderColor?: string;
 
-  suggestedActionBorderRadius?: number | string;
+  /**
+   * Suggested action: Border style
+   *
+   * @default 'solid'
+   */
   suggestedActionBorderStyle?: string;
-  suggestedActionBorderWidth?: number | string;
 
   /**
-   * Disabled background defaults to suggestedActionBackground
+   * Suggested action: Border width
+   *
+   * @default 2
+   */
+  suggestedActionBorderWidth?: number;
+
+  /** Suggested action: Text color, defaults to accent color */
+  suggestedActionTextColor?: string;
+
+  /** Suggested action (while `:disabled`): Background color, defaults to suggestedActionBackground */
+  suggestedActionBackgroundColorOnDisabled?: string;
+
+  /**
+   * Suggested action (while `:disabled`): Border color
+   *
+   * @default '#E6E6E6'
+   */
+  suggestedActionBorderColorOnDisabled?: string;
+
+  /** Suggested action (while `:disabled`): Border style */
+  suggestedActionBorderStyleOnDisabled?: string;
+
+  /** Suggested action (while `:disabled`): Border width */
+  suggestedActionBorderWidthOnDisabled?: number;
+
+  /** Suggested action (while `:disabled`): Foreground color, defaults to subtle color */
+  suggestedActionTextColorOnDisabled?: string;
+
+  /**
+   * Suggested action (while `:active`): Background color
+   *
+   * @default '#EDEBE9'
+   */
+  suggestedActionBackgroundColorOnActive?: string;
+
+  /** Suggested action (while `:active`): Border color */
+  suggestedActionBorderColorOnActive?: string;
+
+  /** Suggested action (while `:active`): Border style */
+  suggestedActionBorderStyleOnActive?: string;
+
+  /** Suggested action (while `:active`): Border width */
+  suggestedActionBorderWidthOnActive?: number;
+
+  /** Suggested action (while `:active`): Text color */
+  suggestedActionTextColorOnActive?: string;
+
+  /** Suggested action (while `:focus`): Background color */
+  suggestedActionBackgroundColorOnFocus?: string;
+
+  /** Suggested action (while `:focus`): Border color */
+  suggestedActionBorderColorOnFocus?: string;
+
+  /** Suggested action (while `:focus`): Border style */
+  suggestedActionBorderStyleOnFocus?: string;
+
+  /** Suggested action (while `:focus`): Border width */
+  suggestedActionBorderWidthOnFocus?: number;
+
+  /** Suggested action (while `:focus`): Text color */
+  suggestedActionTextColorOnFocus?: string;
+
+  /**
+   * Suggested action (while `:hover`): Background color
+   *
+   * @default '#F3F2F1'
+   */
+  suggestedActionBackgroundColorOnHover?: string;
+
+  /** Suggested action (while `:hover`): Border color */
+  suggestedActionBorderColorOnHover?: string;
+
+  /** Suggested action (while `:hover`): Border style */
+  suggestedActionBorderStyleOnHover?: string;
+
+  /** Suggested action (while `:hover`): Border width */
+  suggestedActionBorderWidthOnHover?: number;
+
+  /** Suggested action (while `:hover`): Text color */
+  suggestedActionTextColorOnHover?: string;
+
+  /**
+   * Suggested action (while `:disabled`): Background, defaults to suggestedActionBackground.
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
   suggestedActionDisabledBackground?: string;
 
+  /**
+   * Suggested action (while `:disabled`): Border color
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBorderColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
+   */
   suggestedActionDisabledBorderColor?: string;
-  suggestedActionDisabledBorderStyle?: string;
-  suggestedActionDisabledBorderWidth?: number | string;
 
   /**
-   * Disabled text color defaults to subtle
+   * Suggested action (while `:disabled`): Border style
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBorderStyleOnDisabled` instead. This option will be removed on or after 2023-09-16.
+   */
+  suggestedActionDisabledBorderStyle?: string;
+
+  /**
+   * Suggested action (while `:disabled`): Border width
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBorderWidthOnDisabled` instead. This option will be removed on or after 2023-09-16.
+   */
+  suggestedActionDisabledBorderWidth?: number;
+
+  /**
+   * Suggested action (while `:disabled`): Foreground color, defaults to subtle color
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionTextColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
   suggestedActionDisabledTextColor?: string;
 
+  /**
+   * Suggested action: Height
+   *
+   * @default 40
+   */
   suggestedActionHeight?: number | string;
+
+  /**
+   * Suggested action: Image height
+   *
+   * @default 20
+   */
   suggestedActionImageHeight?: number | string;
+
+  /**
+   * Suggested action: Layout type
+   *
+   * @default 'carousel'
+   */
   suggestedActionLayout?: 'carousel' | 'flow' | 'stacked';
-  suggestedActionTextColor?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): Keyboard focus indicator border color
+   *
+   * @default '#605E5C'
+   */
+  suggestedActionKeyboardFocusIndicatorBorderColor?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): Keyboard focus indicator border radius
+   *
+   * @default 0
+   */
+  suggestedActionKeyboardFocusIndicatorBorderRadius?: number | string;
+
+  /**
+   * Suggested action (while `:focus-visible`): Keyboard focus indicator border style
+   *
+   * @default 'solid'
+   */
+  suggestedActionKeyboardFocusIndicatorBorderStyle?: string;
+
+  /**
+   * Suggested action (while `:focus-visible`): Keyboard focus indicator border width
+   *
+   * @default 1
+   */
+  suggestedActionKeyboardFocusIndicatorBorderWidth?: number;
+
+  /**
+   * Suggested action (while `:focus-visible`): Keyboard focus indicator inset
+   *
+   * @default 2
+   */
+  suggestedActionKeyboardFocusIndicatorInset?: number;
+
+  /**
+   * Suggested action (while `:active`): background
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnActive` instead. This option will be removed on or after 2023-09-16.
+   */
+  suggestedActionActiveBackground?: string;
+
+  /**
+   * Suggested action (while `:focus`): background
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnFocus` instead. This option will be removed on or after 2023-09-16.
+   */
+  suggestedActionFocusBackground?: string;
+
+  /**
+   * Suggested action (while `:hover`): background
+   *
+   * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnHover` instead. This option will be removed on or after 2023-09-16.
+   */
+  suggestedActionHoverBackground?: string;
 
   /**
    * Suggested actions carousel layout

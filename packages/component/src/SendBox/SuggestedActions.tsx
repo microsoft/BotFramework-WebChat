@@ -151,7 +151,7 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
       {!!children && !!React.Children.count(children) && (
         <div className="webchat__suggested-actions__flow-box">
           {React.Children.map(children, child => (
-            <div className="webchat__suggested-actions__item">{child}</div>
+            <div className="webchat__suggested-actions__flow-item-box">{child}</div>
           ))}
         </div>
       )}
@@ -235,27 +235,38 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
       imageAltText?: string;
       text?: string;
       title?: string;
-      type: string;
+      type:
+        | 'call'
+        | 'downloadFile'
+        | 'imBack'
+        | 'messageBack'
+        | 'openUrl'
+        | 'playAudio'
+        | 'playVideo'
+        | 'postBack'
+        | 'showImage'
+        | 'signin';
       value?: { [key: string]: any } | string;
     };
 
     return (
-      <SuggestedAction
-        buttonText={suggestedActionText({ displayText, title, type, value })}
-        className="webchat__suggested-actions__button"
-        displayText={displayText}
-        image={image}
-        imageAlt={imageAltText}
-        key={index}
-        text={text}
-        textClassName={
-          suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
-            ? 'webchat__suggested-actions__button-text-stacked-text-wrap'
-            : 'webchat__suggested-actions__button-text'
-        }
-        type={type}
-        value={value}
-      />
+      <div className="webchat__suggested-actions__item-box" key={index}>
+        <SuggestedAction
+          buttonText={suggestedActionText({ displayText, title, type, value })}
+          className="webchat__suggested-actions__button"
+          displayText={displayText}
+          image={image}
+          imageAlt={imageAltText}
+          text={text}
+          textClassName={
+            suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
+              ? 'webchat__suggested-actions__button-text-stacked-text-wrap'
+              : 'webchat__suggested-actions__button-text'
+          }
+          type={type}
+          value={value}
+        />
+      </div>
     );
   });
 

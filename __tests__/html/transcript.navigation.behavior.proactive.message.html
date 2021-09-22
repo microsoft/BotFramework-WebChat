@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            from: { role: 'bot' },
+            id: '1',
+            text: 'Good day!',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'bot' },
+            id: '2',
+            text: "It is a great day, isn't it?",
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'bot' },
+            id: '3',
+            text: 'Let me open your inbox. Hold on.',
+            timestamp: 0,
+            type: 'message'
+          }
+        ]);
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(3);
+
+        // GIVEN: Focus on the second activity.
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab(3);
+        await host.sendKeys('ARROW_UP');
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+        await host.snapshot();
+
+        // WHEN: A new message come.
+        directLine.activityDeferredObservable.next({
+          from: {
+            role: 'bot'
+          },
+          id: '4',
+          text: 'There are no new messages.',
+          timestamp: 1,
+          type: 'message'
+        });
+        await pageConditions.numActivitiesShown(4);
+
+        // THEN: The active descendant should still on the second activity.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+        await host.snapshot();
+
+        // GIVEN: Focus on the send box.
+        await host.sendTab(3);
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+        await host.snapshot();
+
+        // WHEN: Another new message come.
+        directLine.activityDeferredObservable.next({
+          from: {
+            role: 'bot'
+          },
+          id: '5',
+          text: 'Have a great day!',
+          timestamp: 1,
+          type: 'message'
+        });
+        await pageConditions.numActivitiesShown(5);
+        await host.snapshot();
+
+        // THEN: The active descendant should be on the last/new message.
+        await host.sendShiftTab(3);
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[4]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

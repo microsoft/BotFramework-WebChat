@@ -88,17 +88,39 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
-  autoScrollSnapOnPageoffset: 0,
+  autoScrollSnapOnPageOffset: 0, // TODO: Rename from "autoScrollSnapOnPageoffset".
 
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
+
+  // Send box buttons
   sendBoxButtonColor: undefined,
-  sendBoxButtonColorOnDisabled: '#CCC',
-  sendBoxButtonColorOnFocus: '#333',
-  sendBoxButtonColorOnHover: '#333',
+  sendBoxButtonShadeColor: undefined,
+
+  sendBoxButtonColorOnActive: undefined,
+  sendBoxButtonShadeColorOnActive: '#EDEBE9',
+
+  sendBoxButtonColorOnDisabled: '#A19F9D',
+  sendBoxButtonShadeColorOnDisabled: '#F3F2F1',
+
+  sendBoxButtonColorOnFocus: undefined,
+  sendBoxButtonShadeColorOnFocus: undefined,
+
+  sendBoxButtonColorOnHover: undefined,
+  sendBoxButtonShadeColorOnHover: '#F3F2F1',
+
+  sendBoxButtonShadeBorderRadius: 2,
+  sendBoxButtonShadeInset: 2,
+
+  sendBoxButtonKeyboardFocusIndicatorBorderColor: '#605E5C',
+  sendBoxButtonKeyboardFocusIndicatorBorderRadius: 0,
+  sendBoxButtonKeyboardFocusIndicatorBorderStyle: 'solid',
+  sendBoxButtonKeyboardFocusIndicatorBorderWidth: 1,
+  sendBoxButtonKeyboardFocusIndicatorInset: 4,
+
   sendBoxDisabledTextColor: undefined,
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
@@ -121,20 +143,56 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   spinnerAnimationPadding: 12,
 
   // Suggested actions
-  suggestedActionBackground: 'White',
-  suggestedActionBorderColor: undefined,
   suggestedActionBorderRadius: 0,
-  suggestedActionBorderStyle: 'solid',
-  suggestedActionBorderWidth: 2,
-  suggestedActionDisabledBackground: undefined,
-  suggestedActionDisabledBorderColor: '#E6E6E6',
-  suggestedActionDisabledBorderStyle: 'solid',
-  suggestedActionDisabledBorderWidth: 2,
-  suggestedActionDisabledTextColor: undefined,
   suggestedActionHeight: 40,
   suggestedActionImageHeight: 20,
   suggestedActionLayout: 'carousel',
+
+  suggestedActionBackgroundColor: 'White',
+  suggestedActionBorderColor: undefined,
+  suggestedActionBorderStyle: 'solid',
+  suggestedActionBorderWidth: 2,
   suggestedActionTextColor: undefined,
+
+  suggestedActionBackgroundColorOnActive: '#EDEBE9',
+  suggestedActionBorderColorOnActive: undefined,
+  suggestedActionBorderStyleOnActive: undefined,
+  suggestedActionBorderWidthOnActive: undefined,
+  suggestedActionTextColorOnActive: undefined,
+
+  suggestedActionBackgroundColorOnDisabled: undefined,
+  suggestedActionBorderColorOnDisabled: '#E6E6E6',
+  suggestedActionBorderStyleOnDisabled: undefined,
+  suggestedActionBorderWidthOnDisabled: undefined,
+  suggestedActionTextColorOnDisabled: undefined,
+
+  suggestedActionBackgroundColorOnFocus: undefined,
+  suggestedActionBorderColorOnFocus: undefined,
+  suggestedActionBorderStyleOnFocus: undefined,
+  suggestedActionBorderWidthOnFocus: undefined,
+  suggestedActionTextColorOnFocus: undefined,
+
+  suggestedActionBackgroundColorOnHover: '#F3F2F1',
+  suggestedActionBorderColorOnHover: undefined,
+  suggestedActionBorderStyleOnHover: undefined,
+  suggestedActionBorderWidthOnHover: undefined,
+  suggestedActionTextColorOnHover: undefined,
+
+  suggestedActionKeyboardFocusIndicatorBorderColor: '#605E5C',
+  suggestedActionKeyboardFocusIndicatorBorderRadius: 0,
+  suggestedActionKeyboardFocusIndicatorBorderStyle: 'solid',
+  suggestedActionKeyboardFocusIndicatorBorderWidth: 1,
+  suggestedActionKeyboardFocusIndicatorInset: 2,
+
+  suggestedActionActiveBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionDisabledBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionDisabledBorderColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionDisabledBorderStyle: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionDisabledBorderWidth: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionDisabledTextColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionFocusBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
+  suggestedActionHoverBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
 
   // Suggested actions carousel layout
   suggestedActionsCarouselFlipperCursor: undefined,

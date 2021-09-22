@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            text: `Showing suggested actions.`,
+            type: 'message',
+            id: 'CONVERSATION_ID-o|00000',
+            timestamp: '2000-01-23T12:34:56.12345Z',
+            channelId: 'directline',
+            from: {
+              id: 'webchat-mockbot',
+              name: 'webchat-mockbot'
+            },
+            conversation: {
+              id: 'CONVERSATION_ID-o'
+            },
+            locale: 'en-US',
+            suggestedActions: {
+              to: [],
+              actions: [
+                {
+                  type: 'imBack',
+                  title: 'A',
+                  value: 'postback imback-string'
+                },
+                {
+                  type: 'postBack',
+                  title: 'B',
+                  image:
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2P8z8Dwn4GKgHHUQIpDczQMKQ5ChtEwHA1DMkJgNNmQEWhoWgBMAiftPRtHngAAAABJRU5ErkJggg==',
+                  value: 'postback postback-string'
+                },
+                {
+                  type: 'postBack',
+                  title: 'C',
+                  image:
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAYAAAD/Rn+7AAAAPElEQVRIS+3SsQkAAAgDwbi5m+sQ34i8fUAuqXQmh698ELajIASMggpSAZp3gwpSAZp3gwpSAZp3g+8FF89vHgEqUcfjAAAAAElFTkSuQmCC',
+                  text: 'Some text',
+                  value: { hello: 'World!' }
+                },
+                {
+                  type: 'messageBack',
+                  title: 'Et cillum pariatur cillum exercitation anim voluptate.',
+                  image:
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAYAAAD+MdrbAAAAPElEQVRIS+3TMRIAAAQDweT/j6ZXhs7pKXaOpSodjjm41sRwTSgMMQwEyCZAGysYYhgIkE2AxuuRzYdsGviIT9lh+SGAAAAAAElFTkSuQmCC',
+                  text: 'Some text',
+                  displayText: 'say Hello World!',
+                  value: { hello: 'World!' }
+                },
+                {
+                  type: 'messageBack',
+                  title: 'Consequat aute non exercitation do irure in adipisicing id dolor irure.',
+                  image:
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2NsYGj4z0BFwDhqIMWhORqGFAchw2gYjoYhGSEwmmzICDQ0LQB6YCgBVqMpPAAAAABJRU5ErkJggg==',
+                  value: { hello: 'World!' }
+                },
+                {
+                  type: 'messageBack',
+                  title: 'Aliquip et eiusmod aute ut dolor.',
+                  image:
+                    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAWklEQVRYR+3SwQkAIBAEsbP/OqxTi5iPSPwPSG7X2XPm4bd8MF6HYAQcggSrQO1tkGAVqL0NEqwCtbdBglWg9jZIsArU3gYJVoHa2yDBKlB7GyRYBWpvg98LXjVvaaHfJTJKAAAAAElFTkSuQmCC',
+                  text: 'echo Hello',
+                  displayText: 'Aloha'
+                }
+              ]
+            }
+          }
+        ]);
+
+        const store = testHelpers.createStore();
+        const preset = new URLSearchParams(location.search).get('preset');
+
+        function renderWebChat(props) {
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              ...props,
+              styleOptions: {
+                ...(preset === 'default'
+                  ? {}
+                  : preset === 'deprecated'
+                  ? {
+                      suggestedActionBorderRadius: 5,
+
+                      suggestedActionKeyboardFocusIndicatorInset: 4,
+                      suggestedActionKeyboardFocusIndicatorBorderColor: '#00F',
+                      suggestedActionKeyboardFocusIndicatorBorderRadius: '100px',
+                      suggestedActionKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      suggestedActionKeyboardFocusIndicatorBorderWidth: 2,
+
+                      suggestedActionBackground: 'rgba(255, 0, 0, .4)',
+                      suggestedActionBorderColor: 'rgba(255, 0, 0, .8)',
+                      suggestedActionBorderStyle: 'dashed',
+                      suggestedActionBorderWidth: 1,
+                      suggestedActionTextColor: 'rgba(255, 0, 0, 1)',
+
+                      suggestedActionActiveBackground: 'rgba(255, 0, 255, .4)',
+                      suggestedActionBorderColorOnActive: 'rgba(255, 0, 255, .8)',
+                      suggestedActionBorderStyleOnActive: 'dotted',
+                      suggestedActionBorderWidthOnActive: 3,
+                      suggestedActionTextColorOnActive: 'rgba(255, 0, 255, 1)',
+
+                      suggestedActionDisabledBackground: 'rgba(255, 255, 0, .4)',
+                      suggestedActionDisabledBorderColor: 'rgba(255, 255, 0, .8)',
+                      suggestedActionDisabledBorderStyle: 'dotted',
+                      suggestedActionDisabledBorderWidth: 3,
+                      suggestedActionDisabledTextColor: 'rgba(255, 255, 0, 1)',
+
+                      suggestedActionFocusBackground: 'rgba(0, 255, 0, .4)',
+                      suggestedActionBorderColorOnFocus: 'rgba(0, 255, 0, .8)',
+                      suggestedActionBorderStyleOnFocus: 'dotted',
+                      suggestedActionBorderWidthOnFocus: 3,
+                      suggestedActionTextColorOnFocus: 'rgba(0, 255, 0, 1)',
+
+                      suggestedActionHoverBackground: 'rgba(0, 0, 255, .4)',
+                      suggestedActionBorderColorOnHover: 'rgba(0, 0, 255, .8)',
+                      suggestedActionBorderStyleOnHover: 'dotted',
+                      suggestedActionBorderWidthOnHover: 3,
+                      suggestedActionTextColorOnHover: 'rgba(0, 0, 255, 1)'
+                    }
+                  : {
+                      suggestedActionBorderRadius: 5,
+
+                      suggestedActionKeyboardFocusIndicatorInset: 4,
+                      suggestedActionKeyboardFocusIndicatorBorderColor: '#00F',
+                      suggestedActionKeyboardFocusIndicatorBorderRadius: '100px',
+                      suggestedActionKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      suggestedActionKeyboardFocusIndicatorBorderWidth: 2,
+
+                      suggestedActionBackgroundColor: 'rgba(255, 0, 0, .4)',
+                      suggestedActionBorderColor: 'rgba(255, 0, 0, .8)',
+                      suggestedActionBorderStyle: 'dashed',
+                      suggestedActionBorderWidth: 1,
+                      suggestedActionTextColor: 'rgba(255, 0, 0, 1)',
+
+                      suggestedActionBackgroundColorOnActive: 'rgba(255, 0, 255, .4)',
+                      suggestedActionBorderColorOnActive: 'rgba(255, 0, 255, .8)',
+                      suggestedActionBorderStyleOnActive: 'dotted',
+                      suggestedActionBorderWidthOnActive: 3,
+                      suggestedActionTextColorOnActive: 'rgba(255, 0, 255, 1)',
+
+                      suggestedActionBackgroundColorOnDisabled: 'rgba(255, 255, 0, .4)',
+                      suggestedActionBorderColorOnDisabled: 'rgba(255, 255, 0, .8)',
+                      suggestedActionBorderStyleOnDisabled: 'dotted',
+                      suggestedActionBorderWidthOnDisabled: 3,
+                      suggestedActionTextColorOnDisabled: 'rgba(255, 255, 0, 1)',
+
+                      suggestedActionBackgroundColorOnFocus: 'rgba(0, 255, 0, .4)',
+                      suggestedActionBorderColorOnFocus: 'rgba(0, 255, 0, .8)',
+                      suggestedActionBorderStyleOnFocus: 'dotted',
+                      suggestedActionBorderWidthOnFocus: 3,
+                      suggestedActionTextColorOnFocus: 'rgba(0, 255, 0, 1)',
+
+                      suggestedActionBackgroundColorOnHover: 'rgba(0, 0, 255, .4)',
+                      suggestedActionBorderColorOnHover: 'rgba(0, 0, 255, .8)',
+                      suggestedActionBorderStyleOnHover: 'dotted',
+                      suggestedActionBorderWidthOnHover: 3,
+                      suggestedActionTextColorOnHover: 'rgba(0, 0, 255, 1)'
+                    }),
+                ...props?.styleOptions
+              }
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        await renderWebChat();
+
+        // GIVEN: Suggested actions is shown.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should shown suggested actions.
+        await host.snapshot();
+
+        // WHEN: Web Chat is disabled.
+        await renderWebChat({ disabled: true });
+        await pageConditions.uiConnected();
+
+        // THEN: It should gray out all suggested actions.
+        await host.snapshot();
+
+        // WHEN: Using TAB key to focus on the first suggested action button.
+        await renderWebChat();
+        await pageConditions.uiConnected();
+        await pageObjects.focusTranscript();
+        await host.sendTab(3);
+
+        // THEN: It should show an inset border on the first suggested action button (:focus-visible).
+        await host.snapshot();
+
+        // WHEN: Hovering on a :focus-visible.
+        await host.hover(pageElements.suggestedActions()[0]);
+
+        // THEN: It should show both an inset border and shaded background.
+        await host.snapshot();
+
+        // WHEN: Hovering on a button without :focus-visible.
+        await host.hover(pageElements.suggestedActions()[1]);
+
+        // THEN: It should show a shaded background.
+        await host.snapshot();
+
+        // WHEN: Press-and-hold a button.
+        await host.pressAndHold(pageElements.suggestedActions()[1]);
+
+        // THEN: It should show a darker shaded background and focus should change to second button.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

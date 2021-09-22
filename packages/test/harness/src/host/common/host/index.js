@@ -1,10 +1,13 @@
 const createDeferred = require('p-defer-es5');
 
 const click = require('./click');
+const clickAt = require('./clickAt');
 const done = require('./done');
 const error = require('./error');
 const getLogs = require('./getLogs');
 const hover = require('./hover');
+const moveTo = require('./moveTo');
+const pressAndHold = require('./pressAndHold');
 const ready = require('./ready');
 const sendAccessKey = require('./sendAccessKey');
 const sendDevToolsCommand = require('./sendDevToolsCommand');
@@ -23,11 +26,14 @@ module.exports = function createHost(webDriver) {
   // Modifying this map will also requires modifying the corresponding RPC dummy at /src/browser/proxies/host.js
   return {
     click: click(),
+    clickAt: clickAt(webDriver),
     done: done(webDriver, doneDeferred.resolve),
     donePromise: doneDeferred.promise,
     error: error(doneDeferred.reject),
     getLogs: getLogs(webDriver),
     hover: hover(webDriver),
+    moveTo: moveTo(webDriver),
+    pressAndHold: pressAndHold(webDriver),
     ready: ready(readyDeferred.resolve),
     readyPromise: readyDeferred.promise,
     sendAccessKey: sendAccessKey(webDriver),

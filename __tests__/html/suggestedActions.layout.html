@@ -55,6 +55,8 @@
       const initialFewerItems = !!params.get('fewer');
       const initialPreset = params.get('preset');
 
+      const initialDisabled = params.get('disabled') === 'true' || /-disabled$/.test(initialPreset);
+
       const RadioRow = ({ checked, onChange, label, value }) => (
         <div className="test-harness__form-row">
           <label>
@@ -69,11 +71,13 @@
         flow: { suggestedActionLayout: 'flow' },
         'flow-maxheight': { suggestedActionLayout: 'flow', suggestedActionsFlowMaxHeight: 120 },
         stacked: { suggestedActionLayout: 'stacked' },
+        'stacked-disabled': { disabled: true, suggestedActionLayout: 'stacked' },
         'stacked-maxheight': { suggestedActionLayout: 'stacked', suggestedActionsStackedHeight: 120 }
       };
 
       const TestHarness = () => {
         const [direction, setDirection] = useState(() => initialDirection);
+        const [disabled, setDisabled] = useState(() => initialDisabled || false);
         const [fewerItems, setFewerItems] = useState(() => initialFewerItems || false);
         const [preset, setPreset] = useState(() => initialPreset || 'carousel');
 
@@ -154,14 +158,17 @@
           [fewerItems]
         );
 
+        const handleDisabledChange = useCallback(({ target: { checked } }) => setDisabled(checked), [setDisabled]);
+
         const handleDirectionChange = useCallback(
           ({ target: { checked } }) => setDirection(checked ? 'rtl' : undefined),
           [setDirection]
         );
 
-        const handleFewerItemsChange = useCallback(({ target: { checked } }) => setFewerItems(checked), [
-          setFewerItems
-        ]);
+        const handleFewerItemsChange = useCallback(
+          ({ target: { checked } }) => setFewerItems(checked),
+          [setFewerItems]
+        );
 
         const handlePresetChange = useCallback(
           ({ target: { value } }) => {
@@ -174,10 +181,11 @@
           const hashParams = new URLSearchParams({ preset });
 
           direction === 'rtl' && hashParams.set('dir', 'rtl');
+          disabled && hashParams.set('disabled', 'true');
           fewerItems && hashParams.set('fewer', '1');
 
           window.history.replaceState(undefined, undefined, `#${hashParams}`);
-        }, [direction, fewerItems, preset]);
+        }, [direction, disabled, fewerItems, preset]);
 
         return (
           <div className="test-harness">
@@ -196,6 +204,12 @@
                 value="flow-maxheight"
               />
               <RadioRow checked={preset === 'stacked'} onChange={handlePresetChange} label="Stacked" value="stacked" />
+              <RadioRow
+                checked={preset === 'stacked-disabled'}
+                onChange={handlePresetChange}
+                label="Stacked and disabled"
+                value="stacked-disabled"
+              />
               <RadioRow
                 checked={preset === 'stacked-maxheight'}
                 onChange={handlePresetChange}
@@ -225,11 +239,23 @@
                   Right-to-left
                 </label>
               </div>
+              <div className="test-harness__form-row">
+                <label>
+                  <input
+                    checked={disabled}
+                    className="test_harness__input"
+                    onChange={handleDisabledChange}
+                    type="checkbox"
+                  />
+                  Disabled
+                </label>
+              </div>
             </form>
             <ReactWebChat
               className="test-harness__webchat"
               directLine={directLine}
               dir={direction === 'rtl' ? 'rtl' : undefined}
+              disabled={disabled}
               store={testHelpers.createStore()}
               styleOptions={STYLE_OPTIONS_PRESETS[preset]}
             />
@@ -276,10 +302,12 @@
           await host.snapshot();
         }
 
-        await host.click(document.querySelector('.webchat__suggested-action__button'));
-
-        await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        // Test clicking the button only if they are not disabled.
+        if (!/-disabled$/iu.test(initialPreset)) {
+          await pageObjects.clickNthSuggestedAction(1);
+          await pageConditions.numActivitiesShown(2);
+          await host.snapshot();
+        }
       });
     </script>
   </body>
