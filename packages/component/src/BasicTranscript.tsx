@@ -763,7 +763,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
           // This is capturing plain ENTER.
           // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
           fromEndOfTranscriptIndicator ||
-            renderingElementsRef.current.find(({ key }) => key === focusedActivityKey)?.focusInside();
+            renderingElementsRef.current.find(({ key }) => key === getFocusedActivityKey())?.focusInside();
 
           break;
 
