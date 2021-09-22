@@ -119,6 +119,8 @@ type RenderingElement = {
   activity: DirectLineActivity;
   callbackRef: (element: HTMLElement) => void;
   focusActivity: () => void;
+  focusInside: () => void;
+  handleClick: MouseEventHandler<HTMLLIElement & Node>;
   handleFocus: () => void;
   handleKeyDown: KeyboardEventHandler<HTMLLIElement>;
   handleMouseDownCapture: MouseEventHandler<HTMLLIElement>;
@@ -457,7 +459,9 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
               //      - NVDA 2020.2 (buggy): In additional to ENTER, when navigating using UP/DOWN arrow keys, it dispatch "click" event to the <article> element
               //      - NVDA 2021.2: After press ENTER, it dispatch 2 `click` events. First to the <article> element, then to the element currently bordered in red (e.g. <p>)
               //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we are not a web document and already offered a full-fledge navigation experience
-              if (document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target)) {
+              if (
+                document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target as HTMLElement)
+              ) {
                 return focusInside();
               }
             },
