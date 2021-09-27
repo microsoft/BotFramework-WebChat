@@ -6,7 +6,7 @@
   "ACTIVITY_YOU_SAID_ALT": "あなたの発言:",
   "ACTIVITY_BOT_ATTACHED_ALT": "ボットの添付:",
   "ACTIVITY_ERROR_BOX_TITLE": "エラー メッセージ",
-  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Enter キーを押して対話します。",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "クリックして対話します。",
   "ACTIVITY_YOU_ATTACHED_ALT": "あなたの添付:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 個の添付ファイル。",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 添付ファイル。",
