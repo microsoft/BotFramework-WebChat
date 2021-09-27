@@ -331,11 +331,6 @@ const FullScreenTheme = (theme: Theme) => `
     }
   }
 
-  .wc-adaptive-card {
-    border-radius: 8px;
-    padding: 2px 6px;
-  }
-
   .feedbot-wrapper {
     background-color: transparent;
     width: 95%;
@@ -975,7 +970,7 @@ const BaseTheme = (theme: Theme) => `
     .feedbot-wrapper .wc-app .wc-card {
         background-color: transparent;
         border-width: 0px;
-        border-radius: 5px;
+        border-radius: 8px;
     }
 
     .feedbot-wrapper .wc-app .wc-carousel .wc-card {
@@ -1127,6 +1122,15 @@ const BaseTheme = (theme: Theme) => `
       white-space: unset !important;
       text-overflow: unset !important;
       overflow: unset !important;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card > div > .ac-container > .ac-container .ac-textBlock:last-child{
+      padding-bottom: 8px;
+    }
+
+    .wc-carousel .wc-hscroll > ul > li > .wc-card {
+      height: 100%;
+
     }
 
     .wc-carousel .wc-hscroll > ul > li > .wc-card > div .ac-actionSet{
