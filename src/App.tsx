@@ -356,6 +356,12 @@ const FullScreenTheme = (theme: Theme) => `
     bottom: 0;
   }
 
+  @media screen and (min-width: 950px) {
+    .feedbot-wrapper {
+      left: calc(50% - 450px);
+    }
+  }
+
   .feedbot-wrapper .feedbot {
     position: relative;
     height: 90%;
@@ -493,6 +499,8 @@ const FullScreenTheme = (theme: Theme) => `
     background-color: white !important;
     border-color: ${theme.mainColor} !important;
   }
+
+  
 
   ${BaseTheme(theme)}
 `;
