@@ -30,6 +30,7 @@ export type AppProps = ChatProps & {
   header?: { textWhenCollapsed?: string; text: string };
   channel?: { index?: number, id?: string };
   autoExpandTimeout?: number;
+  enableScreenshotUpload?: boolean;
   openUrlTarget: "new" | "same" | "same-domain";
   persist?: "user" | "conversation" | "none";
 };
@@ -199,6 +200,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
     : false;
   props.resize = props.hasOwnProperty("resize") ? props.resize : "detect";
   props.locale = props.hasOwnProperty("locale") ? props.locale : "cs-cz";
+  props.theme.enableScreenshotUpload = !!props.enableScreenshotUpload
 
   // FEEDYOU configurable theming
   if (props.theme || !container) {
