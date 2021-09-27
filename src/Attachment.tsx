@@ -101,7 +101,7 @@ const Video = (props: VideoProps) => {
             />
 
         default:
-            return <video controls { ... props } />
+            return <video onLoadedData={props.onLoad} controls { ... props } />
     }
 }
 
