@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4028](https://github.com/microsoft/BotFramework-WebChat/issues/4028). Added new keyboard focus indicator for send box buttons, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
    -  New style options are introduced: `sendBoxButtonXXXOnActive`, `sendBoxButtonXXXOnFocus`, `sendBoxButtonXXXOnHover`, `sendBoxButtonKeyboardFocusIndicatorXXX`
 
+### Samples
+
+-  Fixes [#4031](https://github.com/microsoft/BotFramework-WebChat/issues/4031). Updated [`05.custom-components/b.send-typing-indicator`](../../samples/05.custom-components/b.send-typing-indicator) to reply with `message` activity, instead of `typing` activity, in PR [#4063](https://github.com/microsoft/BotFramework-WebChat/pull/4063), by [@compulim](https://github.com/compulim)
+
 ## [4.14.1] - 2021-09-07
 
 ### Fixed
