@@ -6,7 +6,7 @@
   "ACTIVITY_YOU_SAID_ALT": "Вы сказали:",
   "ACTIVITY_BOT_ATTACHED_ALT": "Прикреплено ботом:",
   "ACTIVITY_ERROR_BOX_TITLE": "Сообщение об ошибке",
-  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Нажмите клавишу ВВОД, чтобы начать взаимодействие.",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "Щелкните, чтобы взаимодействовать.",
   "ACTIVITY_YOU_ATTACHED_ALT": "Прикреплено вами:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 вложение.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 вложений.",

@@ -6,7 +6,7 @@
   "ACTIVITY_YOU_SAID_ALT": "คุณพูดว่า:",
   "ACTIVITY_BOT_ATTACHED_ALT": "บอทแนบ:",
   "ACTIVITY_ERROR_BOX_TITLE": "ข้อความแสดงข้อผิดพลาด",
-  "ACTIVITY_INTERACTIVE_LABEL_ALT": "กด ENTER เพื่อโต้ตอบ",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "คลิกเพื่อโต้ตอบ",
   "ACTIVITY_YOU_ATTACHED_ALT": "คุณแนบ:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "สิ่งที่แนบ 1 รายการ",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "สิ่งที่แนบ $1 รายการ",

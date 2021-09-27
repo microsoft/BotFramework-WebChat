@@ -6,7 +6,7 @@
   "ACTIVITY_YOU_SAID_ALT": "나의 말:",
   "ACTIVITY_BOT_ATTACHED_ALT": "봇이 첨부함:",
   "ACTIVITY_ERROR_BOX_TITLE": "오류 메시지",
-  "ACTIVITY_INTERACTIVE_LABEL_ALT": "상호작용하려면 Enter 키를 누르세요.",
+  "ACTIVITY_INTERACTIVE_LABEL_ALT": "상호 작용하려면 클릭하세요.",
   "ACTIVITY_YOU_ATTACHED_ALT": "내가 첨부함:",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "첨부 파일 1개.",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "첨부 파일 $1개.",
