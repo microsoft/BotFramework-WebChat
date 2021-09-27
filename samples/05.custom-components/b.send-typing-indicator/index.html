@@ -40,7 +40,7 @@
         // When "echo-typing" is enabled on MockBot, it will echo back all typing indicator send from the user.
         const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing' } });
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing-as-message' } });
           }
 
           return next(action);
