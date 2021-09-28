@@ -1,6 +1,6 @@
 # Sample - Enable Typing Indicator
 
-This sample shows Web Chat users how to enable the typing indicator activity from the user, which on Mock Bot is displayed as an animated gif. This is a helpful feature in multi-user chats.
+This sample shows how to send `typing` activity when the user type. When the Mock Bot receive the `typing` activity, it will display a message with a timestamp.
 
 # Test out the hosted sample
 
@@ -15,7 +15,9 @@ This sample shows Web Chat users how to enable the typing indicator activity fro
 
 # Things to try out
 
--  Note that when you as the user type, there is a typing indicator gif in the transcript. This is activated by the `sendTypingIndicator`.
+> Note: when the sample start, it will send a message `echo-typing-as-message` to the Mock Bot. After the bot received this command, it will reply to all `typing` activities sent from the user.
+
+-  When you type, the bot will send a message indicate the time it received the `typing` activity
 
 # Code
 
@@ -72,7 +74,7 @@ Here is the finished `index.html`:
 
         const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing' } });
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing-as-message' } });
           }
 
           return next(action);
