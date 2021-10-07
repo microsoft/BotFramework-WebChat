@@ -1,6 +1,6 @@
 import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
-
 import { AdaptiveCard, CardElement, Column, ColumnSet, ColumnWidth, Container, Image, OpenUrlAction, Size, SizeUnit, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
+
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 import { SizeAndUnit } from 'adaptivecards/lib/utils';
 import { Tile } from './Types';

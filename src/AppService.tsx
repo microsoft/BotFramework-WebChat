@@ -8,6 +8,9 @@ export function renderExpandableTemplate(props: AppProps) {
   let container = document.createElement("div");
   container.className = "feedbot";
 
+  const reset = document.createElement("div");
+  reset.classList.add("feedbot-reset")
+
   const wrapper = document.createElement("div");
   wrapper.className = "feedbot-wrapper collapsed";
   wrapper.setAttribute("data-html2canvas-ignore", "")
@@ -53,7 +56,10 @@ export function renderExpandableTemplate(props: AppProps) {
   wrapper.appendChild(container);
   props.theme && props.theme.showSignature && wrapper.appendChild(signature);
   
-  document.body.appendChild(wrapper);
+  reset.appendChild(wrapper)
+  
+  document.body.appendChild(location.hash.includes('#feedbot-css-reset') ? reset : wrapper);
+
 
   const autoExpandTimeout = getAutoExpandTimeout(props.autoExpandTimeout, props.persist)
   if (autoExpandTimeout > 0) {
