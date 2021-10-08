@@ -616,7 +616,8 @@ export const sendPostBack = (botConnection: IBotConnection, text: string, value:
         text,
         value,
         from,
-        locale
+        locale,
+        timestamp: new Date().toISOString()
     })
     .subscribe(id => {
         konsole.log("success sending postBack", id)
