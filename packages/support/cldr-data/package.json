@@ -50,7 +50,7 @@
     "read-pkg-up": "8.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.31.0",
-    "prettier": "^2.3.2"
+    "eslint": "^7.32.0",
+    "prettier": "^2.4.1"
   }
 }

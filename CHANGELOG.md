@@ -41,6 +41,46 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4028](https://github.com/microsoft/BotFramework-WebChat/issues/4028). Added new keyboard focus indicator for send box buttons, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
    -  New style options are introduced: `sendBoxButtonXXXOnActive`, `sendBoxButtonXXXOnFocus`, `sendBoxButtonXXXOnHover`, `sendBoxButtonKeyboardFocusIndicatorXXX`
 
+### Changed
+
+-  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   -  Production dependencies
+      -  [`@babel/runtime@7.15.4`](https://npmjs.com/package/@babel/runtime)
+      -  [`adaptivecards@2.10.0`](https://npmjs.com/package/adaptivecards)
+      -  [`base64-arraybuffer@1.0.1`](https://npmjs.com/package/base64-arraybuffer)
+      -  [`core-js@3.18.3`](https://npmjs.com/package/core-js)
+   -  Development dependencies
+      -  [`@babel/cli@^7.15.7`](https://npmjs.com/package/@babel/cli)
+      -  [`@babel/core@^7.15.8`](https://npmjs.com/package/@babel/core)
+      -  [`@babel/plugin-proposal-object-rest-spread@^7.15.6`](https://npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+      -  [`@babel/plugin-transform-runtime@^7.15.8`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+      -  [`@babel/preset-env@^7.15.8`](https://npmjs.com/package/@babel/preset-env)
+      -  [`@babel/preset-typescript@^7.15.0`](https://npmjs.com/package/@babel/preset-typescript)
+      -  [`@types/node@^16.10.9`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@^17.0.29`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@^4.33.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@^4.33.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`babel-jest@^27.2.5`](https://npmjs.com/package/babel-jest)
+      -  [`concurrently@^6.3.0`](https://npmjs.com/package/concurrently)
+      -  [`core-js@^3.18.3`](https://npmjs.com/package/core-js)
+      -  [`esbuild@^0.12.29`](https://npmjs.com/package/esbuild)
+      -  [`eslint-plugin-prettier@^3.4.1`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint-plugin-react@^7.26.1`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint@^7.32.0`](https://npmjs.com/package/eslint)
+      -  [`istanbul-lib-coverage@^3.0.2`](https://npmjs.com/package/istanbul-lib-coverage)
+      -  [`jest-environment-node@^27.2.5`](https://npmjs.com/package/jest-environment-node)
+      -  [`jest@^27.2.5`](https://npmjs.com/package/jest)
+      -  [`node-fetch@^2.6.5`](https://npmjs.com/package/node-fetch)
+      -  [`prettier@^2.4.1`](https://npmjs.com/package/prettier)
+      -  [`restify@^8.6.0`](https://npmjs.com/package/restify)
+      -  [`selenium-webdriver@^4.0.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`serve@^12.0.1`](https://npmjs.com/package/serve)
+      -  [`strip-ansi@^6.0.1`](https://npmjs.com/package/strip-ansi)
+      -  [`terser-webpack-plugin@^5.2.4`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`typescript@^4.4.4`](https://npmjs.com/package/typescript)
+      -  [`webpack-cli@^4.9.0`](https://npmjs.com/package/webpack-cli)
+      -  [`webpack@^5.58.2`](https://npmjs.com/package/webpack)
+
 ### Samples
 
 -  Fixes [#4031](https://github.com/microsoft/BotFramework-WebChat/issues/4031). Updated [`05.custom-components/b.send-typing-indicator`](../../samples/05.custom-components/b.send-typing-indicator) to reply with `message` activity, instead of `typing` activity, in PR [#4063](https://github.com/microsoft/BotFramework-WebChat/pull/4063), by [@compulim](https://github.com/compulim)
