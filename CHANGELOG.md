@@ -77,7 +77,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`serve@^12.0.1`](https://npmjs.com/package/serve)
       -  [`strip-ansi@^6.0.1`](https://npmjs.com/package/strip-ansi)
       -  [`terser-webpack-plugin@^5.2.4`](https://npmjs.com/package/terser-webpack-plugin)
-      -  [`typescript@^4.4.4`](https://npmjs.com/package/typescript)
       -  [`webpack-cli@^4.9.0`](https://npmjs.com/package/webpack-cli)
       -  [`webpack@^5.58.2`](https://npmjs.com/package/webpack)
 
