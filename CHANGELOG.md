@@ -40,15 +40,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Style options are renamed: `suggestedActionDisabledXXX` become `suggestedActionXXXOnDisabled`
 -  Fixes [#4028](https://github.com/microsoft/BotFramework-WebChat/issues/4028). Added new keyboard focus indicator for send box buttons, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
    -  New style options are introduced: `sendBoxButtonXXXOnActive`, `sendBoxButtonXXXOnFocus`, `sendBoxButtonXXXOnHover`, `sendBoxButtonKeyboardFocusIndicatorXXX`
+-  Fixes [#4015](https://github.com/microsoft/BotFramework-WebChat/issues/4015). Added `role="heading"` to titles of rich card, by [@compulim](https://github.com/compulim), in PR [#4074](https://github.com/microsoft/BotFramework-WebChat/pull/4074)
 
 ### Changed
 
--  Bumped all dependencies to the latest versions and sample bumps, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4074](https://github.com/microsoft/BotFramework-WebChat/pull/4074)
    -  Production dependencies
       -  [`@babel/runtime@7.15.4`](https://npmjs.com/package/@babel/runtime)
       -  [`adaptivecards@2.10.0`](https://npmjs.com/package/adaptivecards)
       -  [`base64-arraybuffer@1.0.1`](https://npmjs.com/package/base64-arraybuffer)
       -  [`core-js@3.18.3`](https://npmjs.com/package/core-js)
+      -  [`markdown-it-attrs-es5@2.0.1`](https://npmjs.com/package/markdown-it-attrs-es5)
+      -  [`react-film@3.1.0`](https://npmjs.com/package/react-film)
+      -  [`react-say@2.1.0`](https://npmjs.com/package/react-say)
+      -  [`react-scroll-to-bottom@4.2.0`](https://npmjs.com/package/react-scroll-to-bottom)
    -  Development dependencies
       -  [`@babel/cli@^7.15.7`](https://npmjs.com/package/@babel/cli)
       -  [`@babel/core@^7.15.8`](https://npmjs.com/package/@babel/core)
