@@ -65,10 +65,10 @@
     "memoize-one": "5.2.1",
     "prop-types": "15.7.2",
     "react-dictate-button": "2.0.1",
-    "react-film": "3.0.1",
+    "react-film": "3.1.0",
     "react-redux": "7.2.4",
-    "react-say": "2.0.2-master.ee7cd76",
-    "react-scroll-to-bottom": "4.1.1",
+    "react-say": "2.1.0",
+    "react-scroll-to-bottom": "4.2.0",
     "redux": "4.0.5",
     "simple-update-in": "2.2.0"
   },
