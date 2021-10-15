@@ -10,6 +10,8 @@ const {
 export default function createSendStatusMiddleware() {
   return () =>
     next =>
+    // This is not a React component.
+    // eslint-disable-next-line react/prop-types
     ({ activity, sendState, ...args }) => {
       if (sendState !== SENT) {
         return <SendStatus activity={activity} sendState={sendState} />;
