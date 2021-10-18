@@ -163,6 +163,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
             (data: {[key: string]: any}, row: {storage: string, value: string}) => {
               if (row.storage && row.value && !data[row.storage]) {
                 data[row.storage] = row.value
+                return data
               }
             }, props.userData || {})
         }
