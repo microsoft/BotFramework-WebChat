@@ -1167,6 +1167,15 @@ const BaseTheme = (theme: Theme) => `
     body .feedbot-wrapper.collapsed .feedbot-header .feedbot-extra-html {
       display: none
     }
+
+    .wc-hscroll {
+      margin-bottom: 5px !important;
+    }
+
+    .wc-hscroll::-webkit-scrollbar{
+      width: 0;
+      height: 0;
+    }
   
     ${theme.enableScreenshotUpload && !isSafari() ? `
       .wc-upload-screenshot {
