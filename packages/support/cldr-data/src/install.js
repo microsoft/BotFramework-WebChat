@@ -12,11 +12,12 @@
 let coverage, parentPackage, peerPackages, srcUrl;
 
 import { fileURLToPath } from 'url';
+import { readPackageSync } from 'read-pkg';
 import { readPackageUpSync } from 'read-pkg-up';
-import glob from 'glob';
-import cldrDownloader from 'cldr-data-downloader';
-import path from 'path';
 import child_process from 'child_process';
+import cldrDownloader from 'cldr-data-downloader';
+import glob from 'glob';
+import path from 'path';
 
 const options = {};
 
@@ -50,7 +51,7 @@ try {
 try {
   peerPackages = glob.sync('../*/package.json').map(file => {
     try {
-      return require(path.resolve(file));
+      return readPackageSync({ cwd: path.dirname(path.resolve(file)) });
     } catch (error) {
       return {};
     }

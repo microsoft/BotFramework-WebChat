@@ -38,6 +38,8 @@ function isUrl(urlOrPath) {
 }
 
 function readJSON(filepath) {
+  // TODO: Consider using in-memory file system.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   return JSON.parse(fs.readFileSync(filepath));
 }
 

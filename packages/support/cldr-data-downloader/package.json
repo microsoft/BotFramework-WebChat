@@ -41,8 +41,7 @@
   "scripts": {
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint",
-    "prettier": "prettier --check src/**/*.{js,ts,tsx}"
+    "precommit:eslint": "eslint"
   },
   "dependencies": {
     "adm-zip": "^0.5.5",

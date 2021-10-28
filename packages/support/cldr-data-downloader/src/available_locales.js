@@ -9,13 +9,20 @@
 
 'use strict';
 
+import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 
 function AvailableLocales(destPath) {
+  assert(!/\.\./u.test(destPath), '"destPath" must not contains ".."');
+
   const mainPath = path.join(destPath, 'main');
 
+  // Mitigated by asserting "destPath" does not contains "..".
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   this.availableLocales = fs.readdirSync(mainPath).filter(filepath => {
+    // Mitigated by asserting "destPath" does not contains "..".
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     const stats = fs.statSync(path.join(mainPath, filepath));
 
     return stats.isDirectory();
@@ -40,6 +47,8 @@ proto.write = function () {
   // eslint-disable-next-line no-magic-numbers
   const data = JSON.stringify(this.toJson(), null, 2);
 
+  // filepath() is clean.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   fs.writeFileSync(this.filepath(), data);
 };
 

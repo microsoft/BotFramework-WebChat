@@ -64,6 +64,8 @@ function fetchFromFilesystem(src) {
   let totalSize = 0;
 
   try {
+    // TODO: Consider in-memory file system.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     const stats = fs.statSync(filePath);
 
     totalSize = stats.size;
@@ -76,6 +78,8 @@ function fetchFromFilesystem(src) {
   notify({ total: totalSize, received: 0, percent: 0 });
 
   // Async request the file
+  // TODO: Consider in-memory file system.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   fs.readFile(filePath, (error, fileBody) => {
     if (error) {
       error.message =

@@ -20,6 +20,10 @@ function argsToArray(arg) {
 }
 
 function jsonFiles(dirName) {
+  assert(!/\.\./u.test(dirName), '"dirname" must not contains ".."');
+
+  // Mitigated by denying "dirName" to contains "..".
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   const fileList = _fs.readdirSync(new URL(_path.join('../dist', dirName), import.meta.url));
 
   return fileList.reduce((sum, file) => {
@@ -33,6 +37,7 @@ function cldrData(...args) {
   const [path] = args;
 
   assert(typeof path === 'string', 'must include path (e.g., "main/en/numbers" or "supplemental/likelySubtags")');
+  assert(!/\.\./u.test(path), 'path must not contains ".."');
 
   if (args.length > 1) {
     return argsToArray(args).reduce((sum, path) => {
@@ -41,6 +46,8 @@ function cldrData(...args) {
     }, []);
   }
 
+  // Mitigated by denying "path" to contains "..".
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   return JSON.parse(_fs.readFileSync(new URL(_path.join('../dist/', path + '.json'), import.meta.url)));
 }
 
