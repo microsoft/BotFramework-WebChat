@@ -1,3 +1,4 @@
+// eslint-disable-next-line security/detect-child-process
 const { spawn } = require('child_process');
 const isWSL2 = require('./isWSL2');
 

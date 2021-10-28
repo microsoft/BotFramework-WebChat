@@ -80,8 +80,10 @@ module.exports = function rpc(rpcName, fns, [receivePort, sendPort]) {
         ? (...args) =>
             new Promise((resolve, reject) => {
               // eslint-disable-next-line no-magic-numbers
-              const invocationID = random().toString(36).substr(2, 5);
+              const invocationID = 'id-' + random().toString(36).substr(2, 5);
 
+              // Mitigated through prefixing.
+              // eslint-disable-next-line security/detect-object-injection
               invocations[invocationID] = { reject, resolve };
 
               sendPort.postMessage(marshal({ args, fn, invocationID, rpcName, type: 'rpc:call' }));
