@@ -9,7 +9,8 @@ export default function stringToArrayBuffer(value) {
       throw new Error('Only characters up to 16-bit are supported.');
     }
 
-    view[i] = charCode;
+    // "0 + index" to prevent object injection attack.
+    view[0 + i] = charCode;
   }
 
   return buffer;

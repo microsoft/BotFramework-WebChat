@@ -54,6 +54,19 @@ function createProducerConsumer() {
 const speechRecognitionBroker = createProducerConsumer();
 const speechSynthesisBroker = createProducerConsumer();
 
+const SCENARIOS = [
+  'abortAfterAudioStart',
+  'accessDenied',
+  'airplaneMode',
+  'birdTweet',
+  'microphoneMuted',
+  'recognize',
+  'recognizeButAborted',
+  'recognizeButNotConfident',
+  'recognizing',
+  'unrecognizableSpeech'
+];
+
 class SpeechRecognition extends EventTarget {
   constructor() {
     super();
@@ -70,9 +83,11 @@ class SpeechRecognition extends EventTarget {
 
   start() {
     speechRecognitionBroker.consume((scenario, ...args) => {
-      if (!this[scenario]) {
+      if (!SCENARIOS.includes(scenario)) {
         throw new Error(`Cannot find speech scenario named "${scenario}" in mockWebSpeech.js`);
       } else {
+        // Mitigated through allowlisting.
+        // eslint-disable-next-line security/detect-object-injection
         this[scenario](...args);
       }
     }, this);
