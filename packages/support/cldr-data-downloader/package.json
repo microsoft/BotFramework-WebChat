@@ -51,9 +51,5 @@
     "q": "^1.5.1",
     "request": "^2.88.2",
     "request-progress": "^3.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "prettier": "^2.4.1"
   }
 }

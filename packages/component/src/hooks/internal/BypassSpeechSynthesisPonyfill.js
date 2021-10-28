@@ -23,6 +23,8 @@ class SpeechSynthesisEvent extends Event {
     return 0;
   }
 
+  // It is expected to return `undefined`, keeping the function empty to reduce footprint.
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   get name() {}
 
   get utterance() {
@@ -182,6 +184,8 @@ class SpeechSynthesis extends EventTarget {
     return false;
   }
 
+  // It is expected to return `undefined`, keeping the function empty to reduce footprint.
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   cancel() {}
 
   getVoices() {

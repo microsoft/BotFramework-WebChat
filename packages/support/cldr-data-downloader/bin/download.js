@@ -14,8 +14,6 @@ const nopt = require('nopt');
 const path = require('path');
 const pkg = require('../package.json');
 
-// ESLint conflict with Prettier on IIFE style.
-// eslint-disable-next-line wrap-iife
 (function () {
   function help() {
     const out = [

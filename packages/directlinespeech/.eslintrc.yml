@@ -1,18 +1,38 @@
+root: true
+
 env:
   browser: true
   es6: true
-  jest: true
+
+parser: '@typescript-eslint/parser'
+
+plugins:
+- prettier
+- '@typescript-eslint'
+
 extends:
 - eslint:recommended
-- plugin:node/recommended-module
-globals:
-  React: readonly
+- '@typescript-eslint/recommended'
+
+overrides:
+  - files:
+    - "*.js"
+    - "*.jsx"
+    - "*.mjs"
+    rules:
+      "@typescript-eslint/explicit-function-return-type": off
+      "@typescript-eslint/explicit-module-boundary-type": off
+      "@typescript-eslint/explicit-module-boundary-types": off
+      "@typescript-eslint/no-unused-vars": off
+
+    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
+    # - "*.ts"
+    # - "*.tsx"
+
 parserOptions:
-  ecmaFeatures:
-    jsx: true
-  ecmaVersion: 10
+  ecmaVersion: 2020
   sourceType: module
-root: true
+
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
@@ -94,7 +114,10 @@ rules:
   radix: error
   require-await: error
   require-unicode-regexp: error
-  wrap-iife: error
+
+  # ESLint conflict with Prettier on IIFE style.
+  # wrap-iife: error
+
   yoda: error
 
   # Group - Variables
@@ -117,16 +140,6 @@ rules:
   - argsIgnorePattern: ^_$
     varsIgnorePattern: ^_
   no-use-before-define: error
-
-  # Group - Node.js and CommonJS eslint-plugin-node
-  node/callback-return: error
-  node/global-require: error
-  node/handle-callback-err: error
-  node/no-mixed-requires: error
-  node/no-new-require: error
-  node/no-path-concat: error
-  node/no-sync: error
-  node/prefer-global/buffer: error
 
   # Group - ECMAScript 6
   arrow-body-style:
@@ -178,6 +191,28 @@ rules:
   yield-star-spacing:
   - error
   - after
-settings:
-  react:
-    version: detect
+
+  # Prettier
+  prettier/prettier: error
+
+  # TypeScript
+
+  # The correct way to use with typescript-eslint is to disable the core version.
+  # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+  no-use-before-define: off
+  '@typescript-eslint/no-use-before-define':
+    - error
+
+  no-unused-vars: off
+  '@typescript-eslint/no-unused-vars':
+    - error
+    - argsIgnorePattern: ^_$
+      varsIgnorePattern: ^_
+
+  # We will rework on these rules
+  "@typescript-eslint/explicit-member-accessibility": off
+  "@typescript-eslint/explicit-function-return-type": off
+  "@typescript-eslint/explicit-module-boundary-types": off
+  "@typescript-eslint/indent": off
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/interface-name-prefix": off

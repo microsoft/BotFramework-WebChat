@@ -1,5 +1,5 @@
-module.exports = webDriver => {
-  return async function windowSize(width, height, element) {
+module.exports = webDriver =>
+  async function windowSize(width, height, element) {
     const rect = await webDriver.manage().window().getRect();
 
     height = +height || rect.height;
@@ -24,4 +24,3 @@ module.exports = webDriver => {
         height
       ));
   };
-};

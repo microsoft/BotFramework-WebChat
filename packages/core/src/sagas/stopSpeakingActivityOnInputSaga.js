@@ -14,7 +14,7 @@ function* stopSpeakingActivityOnInput() {
       // So, right now, we are using best-effort by listening to POST_ACTIVITY_PENDING with a "message" event
       // We filter out speech because we will call startSpeakingActivity() for POST_ACTIVITY_PENDING dispatched by speech
       (type === POST_ACTIVITY_PENDING && meta.method !== 'speech' && payload.activity.type === 'message'),
-    function*() {
+    function* () {
       yield put(stopSpeakingActivity());
     }
   );

@@ -6,8 +6,8 @@ function isDeprecation(message) {
   return message.includes('deprecat');
 }
 
-module.exports = (webDriver, resolve) => {
-  return async function done({ expectDeprecations = false, ignoreErrors = false } = {}) {
+module.exports = (webDriver, resolve) =>
+  async function done({ expectDeprecations = false, ignoreErrors = false } = {}) {
     const entries = await getBrowserLogs(webDriver);
 
     if (expectDeprecations) {
@@ -21,4 +21,3 @@ module.exports = (webDriver, resolve) => {
 
     resolve();
   };
-};

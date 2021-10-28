@@ -16,7 +16,7 @@ module.exports = async function clientOffsetToViewportOffset(webDriver, element,
   if (element) {
     const { offsetHeight, offsetWidth, pageX, pageY } = await webDriver.executeScript(element => {
       const { offsetHeight, offsetWidth } = element;
-      const { x: pageX, y: pageY } = element.getClientRects()[0];
+      const [{ x: pageX, y: pageY }] = element.getClientRects();
 
       return { offsetHeight, offsetWidth, pageX, pageY };
     }, element);

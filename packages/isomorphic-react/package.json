@@ -10,7 +10,6 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint",
-    "prettier": "prettier --check src/**/*.{js,ts,tsx}",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
     "start:babel": "npm run build:babel",
     "start:note": "echo \"isomorphic-react is not under active development; running in non-watch mode.\"",
@@ -23,9 +22,6 @@
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "concurrently": "^6.3.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "prettier": "^2.4.1",
     "webpack": "^5.58.2",
     "webpack-cli": "^4.9.0"
   }

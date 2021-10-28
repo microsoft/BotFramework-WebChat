@@ -6,7 +6,10 @@ import React from 'react';
 import BasicToast from '../BasicToast';
 
 function createToastMiddleware(): ToastMiddleware {
-  return () => () => ({ notification }) => <BasicToast notification={notification} />;
+  return () =>
+    () =>
+    ({ notification }) =>
+      <BasicToast notification={notification} />;
 }
 
 export default createToastMiddleware;

@@ -3,6 +3,10 @@
 // - Instead of clearAsyncInterval, we will use AbortController instead.
 
 module.exports = function setAsyncInterval(fn, interval, signal) {
+  // This conflicts with "@typescript-eslint/no-use-before-define".
+  // eslint-disable-next-line prefer-const
+  let schedule;
+
   const once = async () => {
     if (signal.aborted) {
       return;
@@ -13,7 +17,7 @@ module.exports = function setAsyncInterval(fn, interval, signal) {
     schedule();
   };
 
-  const schedule = () => {
+  schedule = () => {
     if (!signal.aborted) {
       setTimeout(once, interval);
     }

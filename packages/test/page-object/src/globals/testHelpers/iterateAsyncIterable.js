@@ -4,6 +4,8 @@ export default function iterateAsyncIterable(target) {
   return {
     async *[Symbol.asyncIterator]() {
       for (;;) {
+        // This is intentional.
+        // eslint-disable-next-line no-await-in-loop
         const { done, value } = await iteration.next();
 
         if (done) {

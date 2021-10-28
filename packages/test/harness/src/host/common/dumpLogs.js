@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 2, 1000] }] */
+
 const getBrowserLogs = require('./getBrowserLogs');
 
 function formatLogEntries(entries) {

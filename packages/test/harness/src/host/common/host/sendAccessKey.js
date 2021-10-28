@@ -1,7 +1,7 @@
 const { Key } = require('selenium-webdriver');
 
-module.exports = webDriver => {
-  return function sendAccessKey(key) {
+module.exports = webDriver =>
+  function sendAccessKey(key) {
     return webDriver
       .actions()
       .keyDown(Key.ALT)
@@ -11,4 +11,3 @@ module.exports = webDriver => {
       .keyUp(Key.ALT)
       .perform();
   };
-};

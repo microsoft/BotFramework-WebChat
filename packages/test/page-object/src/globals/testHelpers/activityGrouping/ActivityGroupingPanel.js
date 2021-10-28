@@ -93,19 +93,20 @@ const ActivityGroupingPanel = () => {
   const styleComboNumber = getComboNumber(styleValues);
   const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
 
-  const handleStyleComboNumberChange = useCallback(({ target: { value } }) => setStyleComboNumber(value), [
-    setStyleComboNumber
-  ]);
+  const handleStyleComboNumberChange = useCallback(
+    ({ target: { value } }) => setStyleComboNumber(value),
+    [setStyleComboNumber]
+  );
 
-  const handlePlusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber + 1), [
-    styleComboNumber,
-    setStyleComboNumber
-  ]);
+  const handlePlusOneStyleComboNumber = useCallback(
+    () => setStyleComboNumber(styleComboNumber + 1),
+    [styleComboNumber, setStyleComboNumber]
+  );
 
-  const handleMinusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber - 1), [
-    styleComboNumber,
-    setStyleComboNumber
-  ]);
+  const handleMinusOneStyleComboNumber = useCallback(
+    () => setStyleComboNumber(styleComboNumber - 1),
+    [styleComboNumber, setStyleComboNumber]
+  );
 
   const viewValueAndSetters = [
     [wide, setWide],
@@ -118,19 +119,20 @@ const ActivityGroupingPanel = () => {
   const viewComboNumber = getComboNumber(viewValues);
   const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
 
-  const handleViewComboNumberChange = useCallback(({ target: { value } }) => setViewComboNumber(value), [
-    setViewComboNumber
-  ]);
+  const handleViewComboNumberChange = useCallback(
+    ({ target: { value } }) => setViewComboNumber(value),
+    [setViewComboNumber]
+  );
 
-  const handlePlusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber + 1), [
-    viewComboNumber,
-    setViewComboNumber
-  ]);
+  const handlePlusOneViewComboNumber = useCallback(
+    () => setViewComboNumber(viewComboNumber + 1),
+    [viewComboNumber, setViewComboNumber]
+  );
 
-  const handleMinusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber - 1), [
-    viewComboNumber,
-    setViewComboNumber
-  ]);
+  const handleMinusOneViewComboNumber = useCallback(
+    () => setViewComboNumber(viewComboNumber - 1),
+    [viewComboNumber, setViewComboNumber]
+  );
 
   const setShowAvatarInSenderGroup = useCallback(() => {
     setShowAvatarForEveryActivity(false);
@@ -142,9 +144,10 @@ const ActivityGroupingPanel = () => {
     setShowAvatarInGroup('status');
   }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
 
-  const setShowAvatarInGroupType = useCallback(value => setShowAvatarInGroup(value ? 'status' : 'sender'), [
-    setShowAvatarInGroup
-  ]);
+  const setShowAvatarInGroupType = useCallback(
+    value => setShowAvatarInGroup(value ? 'status' : 'sender'),
+    [setShowAvatarInGroup]
+  );
 
   const groupingValueAndSetters = [
     // [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
@@ -158,19 +161,20 @@ const ActivityGroupingPanel = () => {
   const groupingComboNumber = getComboNumber(groupingValues);
   const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [...groupingSetters]);
 
-  const handleGroupingComboNumberChange = useCallback(({ target: { value } }) => setGroupingComboNumber(value), [
-    setGroupingComboNumber
-  ]);
+  const handleGroupingComboNumberChange = useCallback(
+    ({ target: { value } }) => setGroupingComboNumber(value),
+    [setGroupingComboNumber]
+  );
 
-  const handlePlusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber + 1), [
-    groupingComboNumber,
-    setGroupingComboNumber
-  ]);
+  const handlePlusOneGroupingComboNumber = useCallback(
+    () => setGroupingComboNumber(groupingComboNumber + 1),
+    [groupingComboNumber, setGroupingComboNumber]
+  );
 
-  const handleMinusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber - 1), [
-    groupingComboNumber,
-    setGroupingComboNumber
-  ]);
+  const handleMinusOneGroupingComboNumber = useCallback(
+    () => setGroupingComboNumber(groupingComboNumber - 1),
+    [groupingComboNumber, setGroupingComboNumber]
+  );
 
   const handleTranscriptChange = useCallback(({ target: { value } }) => setTranscriptName(value), [setTranscriptName]);
 

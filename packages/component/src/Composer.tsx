@@ -225,6 +225,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 };
 
 ComposerCore.defaultProps = {
+  children: undefined,
   extraStyleSet: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
@@ -301,9 +302,10 @@ const Composer: FC<ComposerProps> = ({
     [cardActionMiddleware]
   );
 
-  const patchedToastMiddleware = useMemo(() => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()], [
-    toastMiddleware
-  ]);
+  const patchedToastMiddleware = useMemo(
+    () => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()],
+    [toastMiddleware]
+  );
 
   const patchedTypingIndicatorMiddleware = useMemo(
     () => [...singleToArray(typingIndicatorMiddleware), ...createDefaultTypingIndicatorMiddleware()],

@@ -12,6 +12,7 @@
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --out-dir lib/ src/",
     "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",
+    "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint",
     "prestart": "npm run build",
@@ -35,10 +36,6 @@
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
     "concurrently": "^6.3.0",
-    "esbuild": "^0.12.29",
-    "eslint": "^7.32.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "prettier": "^2.4.1"
+    "esbuild": "^0.12.29"
   }
 }

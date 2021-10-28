@@ -2,24 +2,10 @@ import concatArrayBuffer from './concatArrayBuffer';
 
 const RIFF_WAVE_HEADER_SIZE = 44;
 
-export default function pcmWaveArrayBufferToRiffWaveArrayBuffer(pcmWaveArrayBuffer, { bitsPerSample = 16, channels = 1, samplesPerSec = 16000 } = {}) {
-  if (!(pcmWaveArrayBuffer instanceof ArrayBuffer)) {
-    throw new Error('pcmWaveArrayBuffer must be an ArrayBuffer');
+function setASCIIString(view, offset, value) {
+  for (let i = 0; i < value.length; i++) {
+    view.setUint8(offset + i, value.charCodeAt(i));
   }
-
-  const { byteLength: pcmWaveDataLength } = pcmWaveArrayBuffer;
-
-  return concatArrayBuffer(
-    createRIFFWaveHeaderArray(
-      {
-        bitsPerSample,
-        channels,
-        samplesPerSec
-      },
-      pcmWaveDataLength
-    ).buffer,
-    pcmWaveArrayBuffer
-  );
 }
 
 function createRIFFWaveHeaderArray({ bitsPerSample, channels, samplesPerSec }, waveDataLength) {
@@ -66,8 +52,25 @@ function createRIFFWaveHeaderArray({ bitsPerSample, channels, samplesPerSec }, w
   return array;
 }
 
-function setASCIIString(view, offset, value) {
-  for (let i = 0; i < value.length; i++) {
-    view.setUint8(offset + i, value.charCodeAt(i));
+export default function pcmWaveArrayBufferToRiffWaveArrayBuffer(
+  pcmWaveArrayBuffer,
+  { bitsPerSample = 16, channels = 1, samplesPerSec = 16000 } = {}
+) {
+  if (!(pcmWaveArrayBuffer instanceof ArrayBuffer)) {
+    throw new Error('pcmWaveArrayBuffer must be an ArrayBuffer');
   }
+
+  const { byteLength: pcmWaveDataLength } = pcmWaveArrayBuffer;
+
+  return concatArrayBuffer(
+    createRIFFWaveHeaderArray(
+      {
+        bitsPerSample,
+        channels,
+        samplesPerSec
+      },
+      pcmWaveDataLength
+    ).buffer,
+    pcmWaveArrayBuffer
+  );
 }

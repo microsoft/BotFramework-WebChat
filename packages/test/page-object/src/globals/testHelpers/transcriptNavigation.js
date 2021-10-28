@@ -80,8 +80,7 @@ function createInputCardActivity(index = 0) {
                   items: [
                     {
                       type: 'Image',
-                      url:
-                        'https://upload.wikimedia.org/wikipedia/commons/b/b2/Diver_Silhouette%2C_Great_Barrier_Reef.jpg',
+                      url: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Diver_Silhouette%2C_Great_Barrier_Reef.jpg',
                       size: 'auto'
                     }
                   ]
@@ -168,7 +167,4 @@ function generateTranscript() {
   });
 }
 
-export {
-  createInputCardActivity,
-  generateTranscript
-};
+export { createInputCardActivity, generateTranscript };

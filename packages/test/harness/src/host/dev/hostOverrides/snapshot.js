@@ -14,7 +14,7 @@ module.exports = webDriver =>
       (message, base64, callback) => {
         (async function () {
           // "imageAsLog" is from /src/browser/globals/imageAsLog.
-          // eslint-disable-next-line no-undef
+          // eslint-disable-next-line no-undef, no-magic-numbers
           const log = await imageAsLog(base64, 0.5);
 
           console.group(message);

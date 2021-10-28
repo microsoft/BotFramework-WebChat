@@ -13,11 +13,13 @@ export default function concatMiddleware<Setup, Result>(
 
     return last => {
       const stack = setup.slice();
-      const work = index => (...runArgs) => {
-        const next = stack[index];
+      const work =
+        index =>
+        (...runArgs) => {
+          const next = stack[index];
 
-        return (next ? next(work(index + 1)) : last)(...runArgs);
-      };
+          return (next ? next(work(index + 1)) : last)(...runArgs);
+        };
 
       return work(0);
     };

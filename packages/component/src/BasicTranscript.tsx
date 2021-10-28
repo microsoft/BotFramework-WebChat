@@ -787,7 +787,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
         event.stopPropagation();
       }
     },
-    [activityElementsRef, focus, focusRelativeActivity, getFocusedActivityKey, renderingElementsRef, terminatorRef]
+    [focus, focusRelativeActivity, getFocusedActivityKey, renderingElementsRef, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');

@@ -1,5 +1,4 @@
-module.exports = webDriver => {
-  return function sendDevToolsCommand(command, options) {
+module.exports = webDriver =>
+  function sendDevToolsCommand(command, options) {
     return webDriver.sendDevToolsCommand(command, options);
   };
-};

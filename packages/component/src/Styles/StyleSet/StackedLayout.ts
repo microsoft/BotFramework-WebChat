@@ -42,9 +42,10 @@ export default function createStackedLayoutStyle({
         width: '100%'
       },
 
-      '&.webchat__stacked-layout--no-message .webchat__stacked-layout__attachment-row.webchat__stacked-layout__attachment-row--first': {
-        marginTop: 0
-      },
+      '&.webchat__stacked-layout--no-message .webchat__stacked-layout__attachment-row.webchat__stacked-layout__attachment-row--first':
+        {
+          marginTop: 0
+        },
 
       '& .webchat__stacked-layout__message': {
         maxWidth: bubbleMaxWidth,
@@ -65,15 +66,16 @@ export default function createStackedLayoutStyle({
         }
       },
 
-      '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub': {
-        '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
-          maxWidth: bubbleMaxWidth + paddingRegular
-        },
+      '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub':
+        {
+          '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
+            maxWidth: bubbleMaxWidth + paddingRegular
+          },
 
-        '& .webchat__stacked-layout__nub-pad': {
-          width: paddingRegular
-        }
-      },
+          '& .webchat__stacked-layout__nub-pad': {
+            width: paddingRegular
+          }
+        },
 
       '&:not(.webchat__stacked-layout--top-callout)': {
         '& .webchat__stacked-layout__avatar-gutter, & .webchat__stacked-layout__content': {

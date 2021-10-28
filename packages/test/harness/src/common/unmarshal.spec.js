@@ -40,6 +40,7 @@ describe('Unmarshalling value of', () => {
     expect(
       unmarshal([
         true,
+        // eslint-disable-next-line no-magic-numbers
         123,
         null,
         'string',

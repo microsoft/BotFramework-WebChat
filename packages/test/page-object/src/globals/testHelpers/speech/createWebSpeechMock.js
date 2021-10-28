@@ -1,3 +1,9 @@
+// This is a family of mocks.
+/* eslint-disable max-classes-per-file */
+
+// A lot of mock functions are empty and do not reference `this`.
+/* eslint-disable class-methods-use-this */
+
 import EventTarget, { defineEventAttribute } from 'event-target-shim';
 
 const NULL_FN = () => 0;
@@ -284,11 +290,13 @@ class SpeechSynthesisUtterance extends EventTarget {
   constructor(text) {
     super();
 
-    this.lang = SPEECH_SYNTHESIS_VOICES[0].lang;
+    const [firstVoice] = SPEECH_SYNTHESIS_VOICES;
+
+    this.lang = firstVoice.lang;
     this.pitch = 1;
     this.rate = 1;
     this.text = text;
-    this.voice = SPEECH_SYNTHESIS_VOICES[0];
+    this.voice = firstVoice;
     this.volume = 1;
   }
 }
@@ -355,9 +363,9 @@ export default function createWebSpeechMock() {
           maxAlternatives,
           serviceURI
         };
-      } else {
-        return false;
       }
+
+      return false;
     },
 
     speechSynthesisUtterancePended() {

@@ -59,6 +59,8 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     /* istanbul ignore next */
     await webDriver.executeScript(() => {
+      // This code will ship to browser VM where "document" is available.
+      // eslint-disable-next-line no-undef
       document.body.className = 'jest';
     });
 
@@ -78,7 +80,12 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = 'retrieving code coverage';
 
-    const postCoverage = await webDriver.executeScript(() => window.__coverage__);
+    const postCoverage = await webDriver.executeScript(
+      () =>
+        // This code will ship to browser VM where "window" is available.
+        // eslint-disable-next-line no-undef
+        window.__coverage__
+    );
 
     // Merge code coverage result.
     global.__coverage__ = mergeCoverageMap(global.__coverage__, postCoverage);

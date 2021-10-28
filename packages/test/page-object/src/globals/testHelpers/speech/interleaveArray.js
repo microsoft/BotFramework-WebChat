@@ -7,7 +7,7 @@ export default function interleaveArray(...arrays) {
     return [...arrays[0]];
   }
 
-  const { length: numItems } = arrays[0];
+  const [{ length: numItems }] = arrays;
 
   arrays.forEach(array => {
     if (array.length !== numItems) {

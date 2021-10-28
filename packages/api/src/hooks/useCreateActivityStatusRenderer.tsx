@@ -58,19 +58,16 @@ export default function useCreateActivityStatusRenderer(): (renderOptions: {
   nextVisibleActivity: DirectLineActivity;
 }) => (props: { hideTimestamp?: boolean }) => ReactNode {
   return useMemo(
-    () => ({
-      activity,
-      nextVisibleActivity
-    }: {
-      activity: DirectLineActivity;
-      nextVisibleActivity: DirectLineActivity;
-    }) => ({ hideTimestamp }: { hideTimestamp?: boolean } = {}) => (
-      <ActivityStatusContainer
-        activity={activity}
-        hideTimestamp={hideTimestamp}
-        nextVisibleActivity={nextVisibleActivity}
-      />
-    ),
+    () =>
+      ({ activity, nextVisibleActivity }: { activity: DirectLineActivity; nextVisibleActivity: DirectLineActivity }) =>
+      ({ hideTimestamp }: { hideTimestamp?: boolean } = {}) =>
+        (
+          <ActivityStatusContainer
+            activity={activity}
+            hideTimestamp={hideTimestamp}
+            nextVisibleActivity={nextVisibleActivity}
+          />
+        ),
     []
   );
 }

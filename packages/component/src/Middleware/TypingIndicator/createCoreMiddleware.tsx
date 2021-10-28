@@ -21,6 +21,12 @@ const DotIndicator = () => {
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware(): TypingIndicatorMiddleware[] {
-  /* eslint-disable-next-line react/prop-types */
-  return [() => () => ({ visible }) => visible && <DotIndicator />];
+  return [
+    () =>
+      () =>
+      // This is not a React component.
+      // eslint-disable-next-line react/prop-types
+      ({ visible }) =>
+        visible && <DotIndicator />
+  ];
 }

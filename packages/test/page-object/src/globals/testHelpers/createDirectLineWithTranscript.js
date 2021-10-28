@@ -75,6 +75,8 @@ export default function createDirectLineWithTranscript(activitiesOrFilename, { o
     },
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
     connectionStatusDeferredObservable,
+    // This is a mock and will no-op on dispatch().
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     end: () => {},
     postActivity: activity => {
       if (overridePostActivity) {

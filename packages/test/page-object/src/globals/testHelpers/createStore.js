@@ -7,18 +7,20 @@ function concatMiddleware(...middlewares) {
 
     return last => {
       const stack = setup.slice();
-      const work = index => (...args) => {
-        const next = stack[index];
+      const work =
+        index =>
+        (...args) => {
+          const next = stack[index];
 
-        return (next ? next(work(index + 1)) : last)(...args);
-      };
+          return (next ? next(work(index + 1)) : last)(...args);
+        };
 
       return work(0);
     };
   };
 }
 
-export default function(initialState = {}, ...middleware) {
+export default function (initialState = {}, ...middleware) {
   return window.WebChat.createStore(
     initialState,
     concatMiddleware(store => {

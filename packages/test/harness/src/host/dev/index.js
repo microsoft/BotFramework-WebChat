@@ -29,6 +29,7 @@ async function main() {
     .setStdio(['ignore', 'ignore', 'ignore'])
     .build();
 
+  // eslint-disable-next-line no-magic-numbers
   const webDriverURL = await service.start(10000);
 
   try {
@@ -64,6 +65,7 @@ async function main() {
 
     try {
       await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' });
+      // eslint-disable-next-line no-magic-numbers
       await webDriver.get(process.argv[2] || 'http://localhost:5080/');
 
       registerProxies(webDriver, createDevProxies(webDriver));
@@ -76,6 +78,7 @@ async function main() {
             abortController.abort();
           }
         },
+        // eslint-disable-next-line no-magic-numbers
         2000,
         abortController.signal
       );

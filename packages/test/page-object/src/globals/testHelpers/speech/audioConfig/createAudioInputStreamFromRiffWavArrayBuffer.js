@@ -7,9 +7,9 @@ const QUORUM_SIZE = 9600;
 
 /** Creates a Speech SDK AudioConfig for audio input based from an ArrayBuffer of RIFF WAV. */
 export default function fromRiffWavArrayBuffer(arrayBuffer) {
-  const channels = new Uint16Array(arrayBuffer.slice(22, 24))[0];
-  const samplesPerSec = new Uint32Array(arrayBuffer.slice(24, 28))[0];
-  const bitsPerSample = new Uint16Array(arrayBuffer.slice(34, 36))[0];
+  const [channels] = new Uint16Array(arrayBuffer.slice(22, 24));
+  const [samplesPerSec] = new Uint32Array(arrayBuffer.slice(24, 28));
+  const [bitsPerSample] = new Uint16Array(arrayBuffer.slice(34, 36));
 
   // Search the offset of "data" marker, earliest possible position is 36.
   // "data" === 64-61-74-61.
@@ -38,6 +38,8 @@ export default function fromRiffWavArrayBuffer(arrayBuffer) {
 
       return Promise.resolve({
         audioStreamNode: {
+          // This is a mock and will no-op on dispatch().
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           detach: () => {},
           id: () => audioNodeId,
           read: () => {

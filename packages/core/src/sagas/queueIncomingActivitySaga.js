@@ -50,51 +50,52 @@ function* waitForActivityId(replyToId, initialActivities) {
 }
 
 function* queueIncomingActivity({ userID }) {
-  yield takeEveryAndSelect(QUEUE_INCOMING_ACTIVITY, activitiesSelector, function* queueIncomingActivity(
-    { payload: { activity } },
-    initialActivities
-  ) {
-    // This is for resolving an accessibility issue.
-    // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then release this one.
-    const { replyToId } = activity;
-    const initialBotActivities = initialActivities.filter(({ from: { role } }) => role === 'bot');
+  yield takeEveryAndSelect(
+    QUEUE_INCOMING_ACTIVITY,
+    activitiesSelector,
+    function* queueIncomingActivity({ payload: { activity } }, initialActivities) {
+      // This is for resolving an accessibility issue.
+      // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then release this one.
+      const { replyToId } = activity;
+      const initialBotActivities = initialActivities.filter(({ from: { role } }) => role === 'bot');
 
-    // To speed up the first activity render time, we do not delay the first activity from the bot.
-    // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
-    // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
-    if (replyToId && initialBotActivities.length) {
-      // Either the activity replied to is in the transcript or after timeout.
-      const result = yield race({
-        _: waitForActivityId(replyToId, initialActivities),
-        timeout: call(sleep, REPLY_TIMEOUT)
-      });
+      // To speed up the first activity render time, we do not delay the first activity from the bot.
+      // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
+      // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
+      if (replyToId && initialBotActivities.length) {
+        // Either the activity replied to is in the transcript or after timeout.
+        const result = yield race({
+          _: waitForActivityId(replyToId, initialActivities),
+          timeout: call(sleep, REPLY_TIMEOUT)
+        });
 
-      if ('timeout' in result) {
-        console.warn(
-          `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${activity.id}" is replying to.`,
-          {
-            activity,
-            replyToId
-          }
-        );
+        if ('timeout' in result) {
+          console.warn(
+            `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${activity.id}" is replying to.`,
+            {
+              activity,
+              replyToId
+            }
+          );
+        }
+      }
+
+      yield put(incomingActivity(activity));
+
+      // Update suggested actions
+      // TODO: [P3] We could put this logic inside reducer to minimize number of actions dispatched.
+      const messageActivities = yield select(activitiesOfType('message'));
+      const lastMessageActivity = messageActivities[messageActivities.length - 1];
+
+      if (activityFromBot(lastMessageActivity)) {
+        const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
+
+        // If suggested actions is not destined to anyone, or is destined to the user, show it.
+        // In other words, if suggested actions is destined to someone else, don't show it.
+        yield put(setSuggestedActions(to && to.length && !to.includes(userID) ? null : actions));
       }
     }
-
-    yield put(incomingActivity(activity));
-
-    // Update suggested actions
-    // TODO: [P3] We could put this logic inside reducer to minimize number of actions dispatched.
-    const messageActivities = yield select(activitiesOfType('message'));
-    const lastMessageActivity = messageActivities[messageActivities.length - 1];
-
-    if (activityFromBot(lastMessageActivity)) {
-      const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
-
-      // If suggested actions is not destined to anyone, or is destined to the user, show it.
-      // In other words, if suggested actions is destined to someone else, don't show it.
-      yield put(setSuggestedActions(to && to.length && !to.includes(userID) ? null : actions));
-    }
-  });
+  );
 }
 
 export default function* queueIncomingActivitySaga() {

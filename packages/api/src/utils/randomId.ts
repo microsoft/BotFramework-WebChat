@@ -2,6 +2,6 @@
 
 import random from 'math-random';
 
-export default function randomId(maxLength: number = 5): string {
+export default function randomId(maxLength = 5): string {
   return random().toString(36).substr(2, maxLength);
 }

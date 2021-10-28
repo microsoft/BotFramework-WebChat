@@ -224,6 +224,7 @@ function useObserveFocusVisibleForModernBrowsers(
 
     // We specifically add "targetRef.current" here.
     // If the target element changed, we should reattach our event listeners.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleFocus, targetRef, targetRef.current]);
 }
 

@@ -1,5 +1,4 @@
-/* eslint no-undef: "off"*/
-/* eslint node/global-require: "off"*/
+/* eslint no-undef: "off" */
 
 // We adopted the work from mime-wrapper, at https://github.com/marlon360/mime-wrapper.
 
@@ -37,4 +36,6 @@
 
 import Mime from 'mime/Mime';
 
+// This is from `mime-wrapper`.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 export default new Mime(require('mime/types/standard'), require('mime/types/other'));

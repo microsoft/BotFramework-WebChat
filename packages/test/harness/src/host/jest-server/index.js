@@ -97,10 +97,11 @@ async function checkGridCapacity() {
 
   for (const start = Date.now(); Date.now() - start < MAX_WAIT_FOR_CAPACITY; ) {
     try {
+      // This is process loop and intentionally await inside loops.
+      // eslint-disable-next-line no-await-in-loop
       const { value } = await sendWebDriverCommand(undefined, 'status');
 
-      message = value.message;
-      ready = value.ready;
+      ({ message, ready } = value);
 
       if (ready) {
         break;
@@ -109,6 +110,8 @@ async function checkGridCapacity() {
       throw new Error(`Grid does not respond: ${err.message}`);
     }
 
+    // This is process loop and intentionally await inside loops.
+    // eslint-disable-next-line no-await-in-loop
     await sleep(100);
   }
 
@@ -139,7 +142,9 @@ async function prepareSession(sessionId) {
   });
 }
 
-(async function () {
+// ESLint conflict with Prettier on IIFE style.
+// eslint-disable-next-line wrap-iife
+(function () {
   const app = express();
   const pool = [];
 

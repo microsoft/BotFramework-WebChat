@@ -12,33 +12,35 @@ export default function createCoreMiddleware(): AttachmentMiddleware[] {
   return [
     // This is not returning a React component, but a render function.
     /* eslint-disable-next-line react/display-name */
-    () => next => (...args) => {
-      const [
-        {
-          activity = {},
-          activity: { from: { role = undefined } = {} } = {},
-          attachment,
-          attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
-        }
-      ] = args;
+    () =>
+      next =>
+      (...args) => {
+        const [
+          {
+            activity = {},
+            activity: { from: { role = undefined } = {} } = {},
+            attachment,
+            attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
+          }
+        ] = args;
 
-      const isText = /^text\//u.test(contentType);
+        const isText = /^text\//u.test(contentType);
 
-      return (isText ? !attachment.content : role === 'user' && !thumbnailUrl) ? (
-        <FileAttachment activity={activity} attachment={attachment} />
-      ) : /^audio\//u.test(contentType) ? (
-        <AudioAttachment attachment={attachment} />
-      ) : /^image\//u.test(contentType) ? (
-        <ImageAttachment attachment={attachment} />
-      ) : /^video\//u.test(contentType) ? (
-        <VideoAttachment attachment={attachment} />
-      ) : contentUrl || contentType === 'application/octet-stream' ? (
-        <FileAttachment activity={activity} attachment={attachment} />
-      ) : isText ? (
-        <TextAttachment attachment={attachment} />
-      ) : (
-        next(...args)
-      );
-    }
+        return (isText ? !attachment.content : role === 'user' && !thumbnailUrl) ? (
+          <FileAttachment activity={activity} attachment={attachment} />
+        ) : /^audio\//u.test(contentType) ? (
+          <AudioAttachment attachment={attachment} />
+        ) : /^image\//u.test(contentType) ? (
+          <ImageAttachment attachment={attachment} />
+        ) : /^video\//u.test(contentType) ? (
+          <VideoAttachment attachment={attachment} />
+        ) : contentUrl || contentType === 'application/octet-stream' ? (
+          <FileAttachment activity={activity} attachment={attachment} />
+        ) : isText ? (
+          <TextAttachment attachment={attachment} />
+        ) : (
+          next(...args)
+        );
+      }
   ];
 }

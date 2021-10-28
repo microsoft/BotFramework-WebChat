@@ -23,7 +23,7 @@ describe('Marshalling value of', () => {
         number: 123,
         null: null,
         string: 'string',
-        undefined: undefined
+        undef: undefined
       })
     ).toMatchInlineSnapshot(`
       Object {
@@ -36,7 +36,7 @@ describe('Marshalling value of', () => {
         "null": null,
         "number": 123,
         "string": "string",
-        "undefined": Object {
+        "undef": Object {
           "__type": "undefined",
         },
       }
@@ -44,6 +44,7 @@ describe('Marshalling value of', () => {
   });
 
   test('array', () => {
+    // eslint-disable-next-line no-magic-numbers
     expect(marshal([true, ERROR, 123, null, 'string', undefined])).toMatchInlineSnapshot(`
       Array [
         true,

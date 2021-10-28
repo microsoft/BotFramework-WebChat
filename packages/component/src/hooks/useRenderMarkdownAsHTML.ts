@@ -16,9 +16,8 @@ export default function useRenderMarkdownAsHTML(): (
 
   const externalLinkAlt = localize('MARKDOWN_EXTERNAL_LINK_ALT');
 
-  return useMemo(() => renderMarkdown && (markdown => renderMarkdown(markdown, styleOptions, { externalLinkAlt })), [
-    externalLinkAlt,
-    renderMarkdown,
-    styleOptions
-  ]);
+  return useMemo(
+    () => renderMarkdown && (markdown => renderMarkdown(markdown, styleOptions, { externalLinkAlt })),
+    [externalLinkAlt, renderMarkdown, styleOptions]
+  );
 }

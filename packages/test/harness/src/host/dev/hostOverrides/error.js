@@ -21,6 +21,8 @@ module.exports = webDriver =>
           ''
         );
 
+        // This code is running in browser VM where "document" is available.
+        // eslint-disable-next-line no-undef
         const div = document.createElement('div');
 
         div.setAttribute(
@@ -30,6 +32,8 @@ module.exports = webDriver =>
 
         div.textContent = '❌';
 
+        // This code is running in browser VM where "document" is available.
+        // eslint-disable-next-line no-undef
         document.body.appendChild(div);
       },
       stripANSI(error.message),

@@ -1,6 +1,6 @@
 const { join, win32 } = require('path');
 
-module.exports = webDriver => async (element, filename) => {
+module.exports = webDriver => (element, filename) => {
   let path = join(process.env.PWD, '__tests__/html/assets/uploads/', filename);
 
   const { WSL_DISTRO_NAME } = process.env;
@@ -14,5 +14,5 @@ module.exports = webDriver => async (element, filename) => {
     console.log(`Uploading file "${path}".`);
   }, path);
 
-  return await element.sendKeys(path);
+  return element.sendKeys(path);
 };

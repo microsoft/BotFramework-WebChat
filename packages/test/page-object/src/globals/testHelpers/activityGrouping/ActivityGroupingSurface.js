@@ -1,3 +1,4 @@
+import ActivityGroupingContext from './ActivityGroupingContext';
 import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
 
 // Use React from window (UMD) instead of import.
@@ -19,17 +20,19 @@ const URL_QUERY_MAPPING = {
 };
 
 function createCustomActivityMiddleware(attachmentLayout) {
-  return () => next => (arg0, ...args) =>
-    next(
-      {
-        ...arg0,
-        activity: {
-          ...arg0.activity,
-          ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
-        }
-      },
-      ...args
-    );
+  return () =>
+    next =>
+    (arg0, ...args) =>
+      next(
+        {
+          ...arg0,
+          activity: {
+            ...arg0.activity,
+            ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
+          }
+        },
+        ...args
+      );
 }
 
 function generateURL(state) {

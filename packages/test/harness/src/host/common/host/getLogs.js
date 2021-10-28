@@ -1,7 +1,6 @@
 const getBrowserLogs = require('../getBrowserLogs');
 
-module.exports = webDriver => {
-  return function getLogs() {
+module.exports = webDriver =>
+  function getLogs() {
     return getBrowserLogs(webDriver);
   };
-};

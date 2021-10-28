@@ -9,7 +9,8 @@ export default function useScrollTo(): (
 ) => void {
   const { scrollToCallbacksRef } = useWebChatUIContext();
 
-  return useCallback((...args) => scrollToCallbacksRef.current.forEach(callback => callback(...args)), [
-    scrollToCallbacksRef
-  ]);
+  return useCallback(
+    (...args) => scrollToCallbacksRef.current.forEach(callback => callback(...args)),
+    [scrollToCallbacksRef]
+  );
 }

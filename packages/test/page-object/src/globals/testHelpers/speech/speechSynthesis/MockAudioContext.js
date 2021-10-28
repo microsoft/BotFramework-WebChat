@@ -1,3 +1,9 @@
+// This will mock multiple classes.
+/* eslint-disable max-classes-per-file */
+
+// A lot of mock functions are empty and do not reference `this`.
+/* eslint-disable class-methods-use-this */
+
 import EventTarget, { defineEventAttribute } from 'event-target-shim';
 
 import pcmWaveArrayBufferToFloat32Arrays from '../pcmWaveArrayBufferToFloat32Arrays';
@@ -134,26 +140,27 @@ export default class MockAudioContext extends EventTarget {
     }
   }
 
-  async decodeAudioData(arrayBuffer) {
+  decodeAudioData(arrayBuffer) {
     if (this._audioDataDecoder) {
-      return await this._audioDataDecoder(arrayBuffer);
-    } else {
-      const header = [...new Uint8Array(arrayBuffer.slice(0, 3))];
-
-      if (header[0] === 73 && header[1] === 68 && header[2] === 51) {
-        // MP3 starts with "ID3" tag
-        console.log('MP3 is not supported; ignoring this audio data.');
-
-        return this.createBuffer(1, 0, 16000);
-      }
-
-      // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
-      const buffer = this.createBuffer(1, arrayBuffer.byteLength / 2, 16000);
-
-      new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
-
-      return buffer;
+      return this._audioDataDecoder(arrayBuffer);
     }
+
+    const header = [...new Uint8Array(arrayBuffer.slice(0, 3))];
+
+    if (header[0] === 73 && header[1] === 68 && header[2] === 51) {
+      // MP3 starts with "ID3" tag
+      // eslint-disable-next-line no-console
+      console.log('MP3 is not supported; ignoring this audio data.');
+
+      return this.createBuffer(1, 0, 16000);
+    }
+
+    // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
+    const buffer = this.createBuffer(1, arrayBuffer.byteLength / 2, 16000);
+
+    new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
+
+    return buffer;
   }
 }
 

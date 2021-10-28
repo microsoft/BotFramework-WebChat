@@ -68,7 +68,6 @@ export default function createDefaultCardActionMiddleware() {
              *       This is to eliminate the delay between window.open() and location.href call
              */
 
-            // eslint-disable-next-line wrap-iife
             (async function () {
               const popup = window.open();
               const url = await getSignInUrl();

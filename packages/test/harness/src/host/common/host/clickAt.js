@@ -2,8 +2,8 @@ const { Origin } = require('selenium-webdriver');
 
 const clientOffsetToViewportOffset = require('./util/clientOffsetToViewportOffset');
 
-module.exports = webDriver => {
-  return async function click(x, y, element) {
+module.exports = webDriver =>
+  async function click(x, y, element) {
     ({ x, y } = await clientOffsetToViewportOffset(webDriver, element, x, y));
 
     await webDriver
@@ -12,4 +12,3 @@ module.exports = webDriver => {
       .click()
       .perform();
   };
-};

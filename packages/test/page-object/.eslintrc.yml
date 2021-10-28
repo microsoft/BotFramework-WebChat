@@ -1,15 +1,17 @@
+extends:
+  - ../../../.eslintrc.yml
+
 env:
   browser: true
   es2021: true
   jest: true
-extends:
-  - eslint:recommended
+
 globals:
   global: true
   host: true
   Observable: true
-parserOptions:
-  ecmaFeatures:
-    jsx: true
-  sourceType: module
-root: true
+  React: true
+
+rules:
+  # This package contains lots of timeout values.
+  no-magic-numbers: off

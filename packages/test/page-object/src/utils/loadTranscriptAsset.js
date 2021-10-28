@@ -1,4 +1,4 @@
-export default async function loadTranscript(filename) {
+export default function loadTranscript(filename) {
   const path = `/assets/transcripts/${encodeURI(filename)}`;
   const res = await fetch(path);
 
@@ -6,5 +6,5 @@ export default async function loadTranscript(filename) {
     throw new Error(`Failed to load transcript "${path}".`);
   }
 
-  return await res.json();
+  return res.json();
 }

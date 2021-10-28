@@ -1,2 +1,15 @@
 env:
-  node: true
+  browser: true
+
+overrides:
+  # This is loader for Jest to support ESM.
+  - files:
+      - '*.spec.js'
+    env:
+      node: true
+
+  # This is run during "postinstall", and is for Node.js
+  - files:
+      - 'src/install.js'
+    env:
+      node: true

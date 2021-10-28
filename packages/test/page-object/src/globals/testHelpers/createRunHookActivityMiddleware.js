@@ -5,13 +5,15 @@ const RunHook = ({ fn, resolve }) => {
 };
 
 function createRunHookActivityMiddleware() {
-  return () => next => ({ activity, ...others }) => {
-    if (activity.type === 'event' && activity.name === '__RUN_HOOK') {
-      return () => !activity.ref.count++ && window.React.createElement(RunHook, activity.value);
-    }
+  return () =>
+    next =>
+    ({ activity, ...others }) => {
+      if (activity.type === 'event' && activity.name === '__RUN_HOOK') {
+        return () => !activity.ref.count++ && window.React.createElement(RunHook, activity.value);
+      }
 
-    return next({ activity, ...others });
-  };
+      return next({ activity, ...others });
+    };
 }
 
 export default createRunHookActivityMiddleware;

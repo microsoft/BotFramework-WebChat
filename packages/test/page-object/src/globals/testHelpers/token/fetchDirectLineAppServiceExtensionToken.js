@@ -1,4 +1,4 @@
-export default async function(url = 'https://webchat-mockbot2.azurewebsites.net/api/token/directlinease') {
+export default async function (url = 'https://webchat-mockbot2.azurewebsites.net/api/token/directlinease') {
   const res = await fetch(url, { method: 'POST' });
 
   if (!res.ok) {
