@@ -1,3 +1,4 @@
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
@@ -36,6 +37,8 @@ export default function useLocalizer({ plural }: { plural?: keyof Plural } = {})
         }
 
         for (const pluralForm of ['zero', 'one', 'two', 'few', 'many']) {
+          // Mitigation through allowlisting.
+          // eslint-disable-next-line security/detect-object-injection
           const type = typeof id[pluralForm];
 
           if (type !== 'string' && type !== 'undefined') {
@@ -62,7 +65,9 @@ export default function useLocalizer({ plural }: { plural?: keyof Plural } = {})
 
       return Object.entries(args).reduce(
         (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
-        localizedStrings[stringId] || DEFAULT_STRINGS[stringId] || ''
+        // Mitigation through allowlisting.
+        // eslint-disable-next-line security/detect-object-injection
+        isForbiddenPropertyName(stringId) ? '' : localizedStrings[stringId] || DEFAULT_STRINGS[stringId] || ''
       );
     },
     [globalize, localizedStrings, plural]

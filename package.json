@@ -76,6 +76,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-security": "^1.4.0",
     "get-port": "^5.1.1",
     "global-agent": "^2.2.0",
     "husky": "^7.0.2",

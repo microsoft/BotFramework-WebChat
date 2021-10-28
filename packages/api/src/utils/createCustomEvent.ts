@@ -1,3 +1,5 @@
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
+
 export default function createCustomEvent<T>(
   name: string,
   eventInitDict: T
@@ -15,7 +17,11 @@ export default function createCustomEvent<T>(
   }
 
   Object.entries(eventInitDict).forEach(([key, value]) => {
-    event[key] = value;
+    if (!isForbiddenPropertyName(key)) {
+      // Mitigation through denylisting.
+      // eslint-disable-next-line security/detect-object-injection
+      event[key] = value;
+    }
   });
 
   return event as any;

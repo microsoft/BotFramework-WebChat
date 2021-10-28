@@ -14,8 +14,10 @@ export default function concatMiddleware<Setup, Result>(
     return last => {
       const stack = setup.slice();
       const work =
-        index =>
+        (index: number) =>
         (...runArgs) => {
+          // "index" must be a number.
+          // eslint-disable-next-line security/detect-object-injection
           const next = stack[index];
 
           return (next ? next(work(index + 1)) : last)(...runArgs);
