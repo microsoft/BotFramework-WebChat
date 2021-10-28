@@ -43,7 +43,12 @@ class CreateAudioConfigAudioInputStream extends CustomAudioInputStream {
 
     super({ debug });
 
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_ATTACH] = attach;
+
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_TURN_OFF] = turnOff;
   }
 
@@ -55,6 +60,8 @@ class CreateAudioConfigAudioInputStream extends CustomAudioInputStream {
     deviceInfo: DeviceInfo;
     format: Format;
   }> {
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     return this[SYMBOL_ATTACH](audioNodeId);
   }
 

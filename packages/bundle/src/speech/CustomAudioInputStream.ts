@@ -22,6 +22,7 @@ import {
   type as Type
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
 
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { v4 } from 'uuid';
 import createDeferred, { DeferredPromise } from 'p-defer-es5';
 
@@ -88,9 +89,20 @@ abstract class CustomAudioInputStream extends AudioInputStream {
       id: options.id || v4().replace(/-/gu, '')
     };
 
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_DEVICE_INFO_DEFERRED] = createDeferred<DeviceInfo>();
+
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_EVENTS] = new EventSource<AudioSourceEvent>();
+
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_FORMAT_DEFERRED] = createDeferred<AudioStreamFormatImpl>();
+
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_OPTIONS] = normalizedOptions;
   }
 
@@ -104,6 +116,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get events(): EventSource<AudioSourceEvent> {
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     return this[SYMBOL_EVENTS];
   }
 
@@ -119,11 +133,15 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   get format(): Promise<AudioStreamFormatImpl> {
     this.debug('Getting "format".');
 
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     return this[SYMBOL_FORMAT_DEFERRED].promise;
   }
 
   /** Gets the ID of this audio stream. */
   id(): string {
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     return this[SYMBOL_OPTIONS].id;
   }
 
@@ -131,6 +149,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   // Speech SDK quirks: In JavaScript, onXxx means "listen to event XXX".
   //                    Instead, in Speech SDK, it means "emit event XXX".
   protected onEvent(event: AudioSourceEvent): void {
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_EVENTS].onEvent(event);
     Events.instance.onEvent(event);
   }
@@ -215,7 +235,8 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   /** Log the message to console if `debug` is set to `true`. */
   private debug(message, ...args) {
     // ESLint: For debugging, will only log when "debug" is set to "true".
-    // eslint-disable-next-line no-console
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line no-console, security/detect-object-injection
     this[SYMBOL_OPTIONS].debug && console.info(`CustomAudioInputStream: ${message}`, ...args);
   }
 
@@ -240,7 +261,13 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
         // Although only getter of "format" is called before "attach" (in Direct Line Speech),
         // we are handling both "deviceInfo" and "format" in similar way for uniformity.
+
+        // False alarm: indexer is a constant of type Symbol.
+        // eslint-disable-next-line security/detect-object-injection
         this[SYMBOL_DEVICE_INFO_DEFERRED].resolve(deviceInfo);
+
+        // False alarm: indexer is a constant of type Symbol.
+        // eslint-disable-next-line security/detect-object-injection
         this[SYMBOL_FORMAT_DEFERRED].resolve(
           new AudioStreamFormatImpl(format.samplesPerSec, format.bitsPerSample, format.channels)
         );
@@ -305,16 +332,24 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   get deviceInfo(): Promise<ISpeechConfigAudioDevice> {
     this.debug(`Getting "deviceInfo".`);
 
+    // False alarm: indexer is a constant of type Symbol.
+    // eslint-disable-next-line security/detect-object-injection
     return Promise.all([this[SYMBOL_DEVICE_INFO_DEFERRED].promise, this[SYMBOL_FORMAT_DEFERRED].promise]).then(
       ([{ connectivity, manufacturer, model, type }, { bitsPerSample, channels, samplesPerSec }]) => ({
         bitspersample: bitsPerSample,
         channelcount: channels,
         connectivity:
-          typeof connectivity === 'string' ? Connectivity[connectivity] : connectivity || Connectivity.Unknown,
+          typeof connectivity === 'string' && !isForbiddenPropertyName(connectivity)
+            ? // Mitigated through denylisting.
+              // eslint-disable-next-line security/detect-object-injection
+              Connectivity[connectivity]
+            : connectivity || Connectivity.Unknown,
         manufacturer: manufacturer || '',
         model: model || '',
         samplerate: samplesPerSec,
-        type: typeof type === 'string' ? Type[type] : type || Type.Unknown
+        // Mitigated through denylisting.
+        // eslint-disable-next-line security/detect-object-injection
+        type: typeof type === 'string' && !isForbiddenPropertyName(type) ? Type[type] : type || Type.Unknown
       })
     );
   }
