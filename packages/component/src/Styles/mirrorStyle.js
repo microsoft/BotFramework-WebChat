@@ -1,3 +1,5 @@
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
+
 export default function mirrorStyle(mirrorSelector, styles) {
   const mirrored = {};
 
@@ -7,8 +9,14 @@ export default function mirrorStyle(mirrorSelector, styles) {
         match === 'Left' ? 'Right' : match === 'left' ? 'right' : match === 'Right' ? 'Left' : 'left'
       );
 
-      mirrored[patchedKey] = value;
-    } else {
+      if (!isForbiddenPropertyName(patchedKey)) {
+        // Mitigated through denylisting.
+        // eslint-disable-next-line security/detect-object-injection
+        mirrored[patchedKey] = value;
+      }
+    } else if (!isForbiddenPropertyName(key)) {
+      // Mitigated through denylisting.
+      // eslint-disable-next-line security/detect-object-injection
       mirrored[key] = mirrorStyle('', value);
     }
   }

@@ -1,3 +1,5 @@
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
+
 export default function shallowEquals(x, y) {
   if (x === y) {
     return true;
@@ -6,5 +8,10 @@ export default function shallowEquals(x, y) {
   const xKeys = Object.keys(x);
   const yKeys = Object.keys(y);
 
-  return xKeys.length === yKeys.length && xKeys.every(key => yKeys.includes(key) && x[key] === y[key]);
+  return (
+    xKeys.length === yKeys.length &&
+    // Mitigated through denylisting.
+    // eslint-disable-next-line security/detect-object-injection
+    xKeys.every(key => !isForbiddenPropertyName(key) && yKeys.includes(key) && x[key] === y[key])
+  );
 }

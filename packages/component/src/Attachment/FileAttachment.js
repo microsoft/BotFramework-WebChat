@@ -8,7 +8,8 @@ const FileAttachment = ({
   attachment
 }) => {
   const attachmentIndex = attachments.indexOf(attachment);
-  const size = attachmentSizes[attachmentIndex];
+  // "0 + index" to prevent object injection attack.
+  const size = attachmentSizes[0 + attachmentIndex];
 
   return <FileContent fileName={attachment.name} href={attachment.contentUrl} size={size} />;
 };

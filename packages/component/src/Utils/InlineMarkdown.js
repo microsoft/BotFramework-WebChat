@@ -1,6 +1,7 @@
 /* eslint react/no-danger: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
@@ -89,7 +90,13 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
   const html = useMemo(() => {
     const tree = markdownIt.parseInline(children, {
-      references: references.reduce((references, key) => ({ ...references, [key]: { href: `#${refToHref[key]}` } }), {})
+      references: references.reduce(
+        (references, key) =>
+          // Mitigated through denylisting.
+          // eslint-disable-next-line security/detect-object-injection
+          isForbiddenPropertyName(key) ? references : { ...references, [key]: { href: `#${refToHref[key]}` } },
+        {}
+      )
     });
 
     // Turn "<a href="#retry">Retry</a>" into "<button data-ref="retry" type="button">Retry</button>"
@@ -104,7 +111,16 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
       const href = event.target.getAttribute('data-markdown-href');
 
-      href && onReference && onReference(createCustomEvent('reference', { data: hrefToRef[href] }));
+      href &&
+        onReference &&
+        onReference(
+          createCustomEvent(
+            'reference',
+            // Mitigated through denylisting.
+            // eslint-disable-next-line security/detect-object-injection
+            isForbiddenPropertyName(href) ? {} : { data: hrefToRef[href] }
+          )
+        );
     },
     [hrefToRef, onReference]
   );

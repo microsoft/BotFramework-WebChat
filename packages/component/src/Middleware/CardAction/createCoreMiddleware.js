@@ -54,6 +54,8 @@ export default function createDefaultCardActionMiddleware() {
                 newWindow.opener = null;
                 newWindow.location = value;
               } else {
+                // False alarm: this is "window.open", and not "fs.open".
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
                 window.open(value, '_blank', 'noopener noreferrer');
               }
             } else {

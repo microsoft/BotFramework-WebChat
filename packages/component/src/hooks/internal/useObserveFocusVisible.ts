@@ -1,3 +1,4 @@
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import supportPseudoClass from '../../Utils/supportPseudoClass';
@@ -31,7 +32,9 @@ function focusTriggersKeyboardModality(el: HTMLInputElement | HTMLTextAreaElemen
   const { isContentEditable, readOnly, tagName, type } = el;
 
   return (
-    (tagName === 'INPUT' && INPUT_TYPES_ALLOW_LIST[type] && !readOnly) ||
+    // Mitigated through denylisting.
+    // eslint-disable-next-line security/detect-object-injection
+    (tagName === 'INPUT' && !isForbiddenPropertyName(type) && INPUT_TYPES_ALLOW_LIST[type] && !readOnly) ||
     (tagName === 'TEXTAREA' && !readOnly) ||
     isContentEditable
   );
