@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import ActivityGroupingContext from './ActivityGroupingContext';
 import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
 
@@ -200,20 +202,18 @@ const ActivityGroupingSurface = ({ children }) => {
       wide
     }),
     [
-      {
-        attachmentLayout,
-        botAvatarInitials,
-        botNub,
-        botOnTop,
-        hide,
-        rtl,
-        showAvatarInGroup,
-        transcriptName,
-        userAvatarInitials,
-        userNub,
-        userOnTop,
-        wide
-      }
+      attachmentLayout,
+      botAvatarInitials,
+      botNub,
+      botOnTop,
+      hide,
+      rtl,
+      showAvatarInGroup,
+      transcriptName,
+      userAvatarInitials,
+      userNub,
+      userOnTop,
+      wide
     ]
   );
 
@@ -263,6 +263,14 @@ const ActivityGroupingSurface = ({ children }) => {
   );
 
   return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
+};
+
+ActivityGroupingSurface.defaultProps = {
+  children: undefined
+};
+
+ActivityGroupingSurface.propTypes = {
+  children: PropTypes.any
 };
 
 export default ActivityGroupingSurface;

@@ -95,5 +95,5 @@ async function main() {
 main().catch(err => {
   err.message === 'aborted' || console.error(err);
 
-  process.exit();
+  throw err;
 });

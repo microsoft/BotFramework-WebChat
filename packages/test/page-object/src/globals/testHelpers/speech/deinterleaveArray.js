@@ -13,8 +13,8 @@ export default function deinterleaveArray(array, numInterleave) {
 
   for (let interleaveIndex = 0; interleaveIndex < numInterleave; interleaveIndex++) {
     for (let offset = 0; offset < numBytes; offset++) {
-      // "0 + index" to prevent object injection attack.
-      final[0 + interleaveIndex][0 + offset] = array[offset * numInterleave + interleaveIndex];
+      // "+index" to prevent object injection attack.
+      final[+interleaveIndex][0 + offset] = array[offset * numInterleave + interleaveIndex];
     }
   }
 

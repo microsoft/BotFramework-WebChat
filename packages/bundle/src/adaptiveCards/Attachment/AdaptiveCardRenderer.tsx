@@ -434,8 +434,8 @@ function getFocusableElements(element: HTMLElement) {
 }
 
 function restoreActiveElementIndex(element: HTMLElement, activeElementIndex: number) {
-  // "0 + index" to prevent object injection attack.
-  getFocusableElements(element)[0 + activeElementIndex]?.focus();
+  // "+index" to prevent object injection attack.
+  getFocusableElements(element)[+activeElementIndex]?.focus();
 }
 
 function saveActiveElementIndex(element: HTMLElement) {
@@ -448,8 +448,8 @@ function restoreInputValues(element: HTMLElement, inputValues: (boolean | string
   >;
 
   [].forEach.call(inputs, (input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number) => {
-    // "0 + index" to prevent object injection attack.
-    const value = inputValues[0 + index];
+    // "+index" to prevent object injection attack.
+    const value = inputValues[+index];
 
     if (typeof value !== 'undefined') {
       const { tagName, type } = input;

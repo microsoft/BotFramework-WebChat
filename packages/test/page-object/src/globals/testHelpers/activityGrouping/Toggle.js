@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 // Use React from window (UMD) instead of import.
 const { React: { useCallback, useMemo } = {} } = window;
 
@@ -11,6 +13,20 @@ const Toggle = ({ checked, children, disabled, onChange, type }) => {
       {children}
     </label>
   );
+};
+
+Toggle.defaultProps = {
+  children: undefined,
+  disabled: false,
+  type: 'checkbox'
+};
+
+Toggle.propTypes = {
+  checked: PropTypes.bool.isRequired,
+  children: PropTypes.any,
+  disabled: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string
 };
 
 export default Toggle;

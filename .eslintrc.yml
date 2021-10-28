@@ -3,47 +3,167 @@ root: true
 env:
   es6: true
 
-parser: '@typescript-eslint/parser'
-
 plugins:
   - prettier
   - '@typescript-eslint'
 
 extends:
   - eslint:recommended
-  - 'plugin:@typescript-eslint/recommended'
   - 'plugin:security/recommended'
-
-overrides:
-  - files:
-      - '*.spec.js'
-      - '*.test.js'
-    env:
-      jest: true
-    rules:
-      # We cannot use "import" statement in Jest tests yet.
-      '@typescript-eslint/no-var-requires': off
-  - files:
-      - '*.js'
-      - '*.jsx'
-      - '*.mjs'
-    # rules:
-    #   '@typescript-eslint/explicit-function-return-type': off
-    #   '@typescript-eslint/explicit-module-boundary-type': off
-    #   '@typescript-eslint/explicit-module-boundary-types': off
-    #   '@typescript-eslint/no-unused-vars': off
-
-    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
-    # - "*.ts"
-    # - "*.tsx"
 
 parserOptions:
   ecmaVersion: 2020
   sourceType: module
 
+overrides:
+  - files:
+      - '__tests__/**/*.js'
+      - '*.spec.js'
+      - '*.test.js'
+    env:
+      jest: true
+
+  - files:
+      - '*.ts'
+      - '*.tsx'
+    extends:
+      - plugin:@typescript-eslint/recommended
+    parser: '@typescript-eslint/parser'
+    rules:
+      # The correct way to use with typescript-eslint is to disable the core version.
+      # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+
+      no-use-before-define: off
+      '@typescript-eslint/no-use-before-define':
+        - error
+
+      no-unused-vars: off
+      '@typescript-eslint/no-unused-vars':
+        - error
+        - argsIgnorePattern: ^_$
+          varsIgnorePattern: ^_
+
+      no-empty-function: off
+      '@typescript-eslint/no-empty-function': error
+
+      # TODO #4003: We will rework on these rules
+      '@typescript-eslint/explicit-member-accessibility': off
+      '@typescript-eslint/explicit-function-return-type': off
+      '@typescript-eslint/explicit-module-boundary-types': off
+      '@typescript-eslint/indent': off
+      '@typescript-eslint/no-explicit-any': off
+      '@typescript-eslint/interface-name-prefix': off
+
+      '@typescript-eslint/ban-ts-comment': off
+      '@typescript-eslint/ban-types': off
+
+    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
+    # - "*.ts"
+    # - "*.tsx"
+
+  - files:
+      # TODO: We should use `.jsx` extension only for React files.
+      - '*.js'
+      - '*.jsx'
+      - '*.tsx'
+    extends:
+      - plugin:react/recommended
+      - plugin:react-hooks/recommended
+    parserOptions:
+      ecmaFeatures:
+        jsx: true
+    settings:
+      react:
+        version: detect
+    rules:
+      react/button-has-type: error
+      react/default-props-match-prop-types: error
+      react/destructuring-assignment: error
+      react/display-name: off
+      react/forbid-component-props:
+        - error
+        - forbid:
+            - style
+      react/forbid-dom-props:
+        - error
+        - forbid:
+            - id
+      # react/forbid-prop-types: error // How to deal with Adaptive Card schema?
+      react/no-access-state-in-setstate: error
+      react/no-array-index-key: error
+      react/no-danger: error
+      react/no-did-mount-set-state: error
+      react/no-did-update-set-state: error
+      react/no-redundant-should-component-update: error
+      react/no-typos: error
+      react/no-this-in-sfc: error
+      react/no-unescaped-entities: error
+      react/no-unsafe: error
+      react/no-unused-prop-types: error
+      react/no-unused-state: error
+      react/no-will-update-set-state: error
+      react/prefer-es6-class: error
+      react/prefer-read-only-props: error
+      react/require-default-props: error
+      react/self-closing-comp: error
+      react/sort-prop-types: error
+      react/state-in-constructor: error
+      react/static-property-placement:
+        - error
+        - property assignment
+      react/style-prop-object: error
+      react/void-dom-elements-no-children: error
+      react/jsx-boolean-value:
+        - error
+        - always
+      react/jsx-closing-bracket-location:
+        - error
+        - tag-aligned
+      react/jsx-closing-tag-location: error
+      react/jsx-equals-spacing:
+        - error
+        - never
+      react/jsx-first-prop-new-line:
+        - error
+        - multiline-multiprop
+      react/jsx-handler-names: error
+      react/jsx-indent:
+        - error
+        - 2
+      react/jsx-indent-props:
+        - error
+        - 2
+      react/jsx-max-props-per-line:
+        - error
+        - maximum: 1
+          when: multiline
+      react/jsx-no-bind: error
+      react/jsx-no-literals: error
+      # react/jsx-one-expression-per-line: #conflicts with prettier
+      # - error
+      # - allow: literal
+      react/jsx-fragments:
+        - error
+        - element
+      react/jsx-pascal-case: error
+      react/jsx-props-no-multi-spaces: error
+      react/jsx-sort-default-props: error
+      react/jsx-sort-props: error
+      react/jsx-tag-spacing:
+        - error
+        - afterOpening: never
+          beforeClosing: never
+          beforeSelfClosing: always
+          closingSlash: never
+      react/jsx-wrap-multilines: error # Conflict with no-extra-parens
+      react-hooks/rules-of-hooks: error
+      react-hooks/exhaustive-deps: warn
+
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
+
+  # TODO: Sort rules.
 
   # Group - Best Practices
   no-async-promise-executor: error
@@ -136,6 +256,12 @@ rules:
   # - builtinGlobals: true
   #   hoist: all
 
+  no-unused-vars:
+    - error
+    - argsIgnorePattern: ^_$
+      varsIgnorePattern: ^_
+
+  no-use-before-define: error
   no-shadow-restricted-names: error
   no-undef-init: error
 
@@ -195,31 +321,3 @@ rules:
 
   # Prettier
   prettier/prettier: error
-
-  # TypeScript
-
-  # The correct way to use with typescript-eslint is to disable the core version.
-  # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
-  no-use-before-define: off
-  '@typescript-eslint/no-use-before-define':
-    - error
-
-  no-unused-vars: off
-  '@typescript-eslint/no-unused-vars':
-    - error
-    - argsIgnorePattern: ^_$
-      varsIgnorePattern: ^_
-
-  no-empty-function: off
-  '@typescript-eslint/no-empty-function': error
-
-  # TODO #4003: We will rework on these rules
-  '@typescript-eslint/explicit-member-accessibility': off
-  '@typescript-eslint/explicit-function-return-type': off
-  '@typescript-eslint/explicit-module-boundary-types': off
-  '@typescript-eslint/indent': off
-  '@typescript-eslint/no-explicit-any': off
-  '@typescript-eslint/interface-name-prefix': off
-
-  '@typescript-eslint/ban-ts-comment': off
-  '@typescript-eslint/ban-types': off

@@ -11,7 +11,6 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint",
-    "prettier": "prettier --check src/**/*.{js,ts,tsx}",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
     "start:babel": "npm run build:babel",
     "start:note": "echo \"isomorphic-react-dom is not under active development; running in non-watch mode.\"",

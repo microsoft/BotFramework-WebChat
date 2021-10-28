@@ -1,4 +1,4 @@
-export default function loadTranscript(filename) {
+export default async function loadTranscript(filename) {
   const path = `/assets/transcripts/${encodeURI(filename)}`;
   const res = await fetch(path);
 

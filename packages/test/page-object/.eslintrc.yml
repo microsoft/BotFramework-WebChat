@@ -1,15 +1,14 @@
-extends:
-  - ../../../.eslintrc.yml
-
 env:
+  # This package is expected to run under <script>.
   browser: true
-  es2021: true
   jest: true
 
 globals:
   global: true
   host: true
   Observable: true
+
+  # We are using React from UMD.
   React: true
 
 rules:

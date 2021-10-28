@@ -193,8 +193,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       let nextVisibleActivity: DirectLineActivity;
 
       for (let index = activities.length - 1; index >= 0; index--) {
-        // "0 + index" to prevent object injection attack.
-        const activity = activities[0 + index];
+        // "+index" to prevent object injection attack.
+        const activity = activities[+index];
         const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
 
         if (renderActivity) {
@@ -726,8 +726,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       const nextIndex = ~index
         ? Math.max(0, Math.min(renderingElements.length - 1, index + delta))
         : renderingElements.length - 1;
-      // "0 + index" to prevent object injection attack.
-      const nextFocusedActivity = renderingElements[0 + nextIndex];
+      // "+index" to prevent object injection attack.
+      const nextFocusedActivity = renderingElements[+nextIndex];
 
       setUserFocusedActivityKeyWithScroll(nextFocusedActivity.key);
       rootElementRef.current?.focus();
@@ -1203,8 +1203,8 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
           let firstUnacknowledgedActivityElementIndex = -1;
 
           for (let index = lastAcknowledgedActivityIndex + 1, { length } = activities; index < length; index++) {
-            // "0 + index" to prevent object injection attack.
-            const activity = activities[0 + index];
+            // "+index" to prevent object injection attack.
+            const activity = activities[+index];
             const activityElementIndex = activityElements.findIndex(entry => entry.activity === activity);
 
             if (~activityElementIndex) {
@@ -1232,8 +1232,8 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
             if (patchedAutoScrollSnapOnPage) {
               const { element: firstUnacknowledgedActivityElement } =
-                // "0 + index" to prevent object injection attack.
-                activityElements[0 + firstUnacknowledgedActivityElementIndex];
+                // "+index" to prevent object injection attack.
+                activityElements[+firstUnacknowledgedActivityElementIndex];
 
               values.push(
                 firstUnacknowledgedActivityElement.offsetTop -

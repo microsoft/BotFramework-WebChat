@@ -1,50 +1,184 @@
+# This is copied from <rootDir>/.eslintrc.yml because Direct Line Speech SDK is potentially a separate package living outside of this mono-repo.
+
+# Diffs between root and this .eslintrc.yml
+# - Add `env.browser: true`
+
 root: true
 
 env:
   browser: true
   es6: true
 
-parser: '@typescript-eslint/parser'
-
 plugins:
-- prettier
-- '@typescript-eslint'
+  - prettier
+  - '@typescript-eslint'
 
 extends:
-- eslint:recommended
-- '@typescript-eslint/recommended'
-
-overrides:
-  - files:
-    - "*.js"
-    - "*.jsx"
-    - "*.mjs"
-    rules:
-      "@typescript-eslint/explicit-function-return-type": off
-      "@typescript-eslint/explicit-module-boundary-type": off
-      "@typescript-eslint/explicit-module-boundary-types": off
-      "@typescript-eslint/no-unused-vars": off
-
-    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
-    # - "*.ts"
-    # - "*.tsx"
+  - eslint:recommended
+  - 'plugin:security/recommended'
 
 parserOptions:
   ecmaVersion: 2020
   sourceType: module
 
+overrides:
+  - files:
+      - '__tests__/**/*.js'
+      - '*.spec.js'
+      - '*.test.js'
+    env:
+      jest: true
+
+  - files:
+      - '*.ts'
+      - '*.tsx'
+    extends:
+      - plugin:@typescript-eslint/recommended
+    parser: '@typescript-eslint/parser'
+    rules:
+      # The correct way to use with typescript-eslint is to disable the core version.
+      # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+
+      no-use-before-define: off
+      '@typescript-eslint/no-use-before-define':
+        - error
+
+      no-unused-vars: off
+      '@typescript-eslint/no-unused-vars':
+        - error
+        - argsIgnorePattern: ^_$
+          varsIgnorePattern: ^_
+
+      no-empty-function: off
+      '@typescript-eslint/no-empty-function': error
+
+      # TODO #4003: We will rework on these rules
+      '@typescript-eslint/explicit-member-accessibility': off
+      '@typescript-eslint/explicit-function-return-type': off
+      '@typescript-eslint/explicit-module-boundary-types': off
+      '@typescript-eslint/indent': off
+      '@typescript-eslint/no-explicit-any': off
+      '@typescript-eslint/interface-name-prefix': off
+
+      '@typescript-eslint/ban-ts-comment': off
+      '@typescript-eslint/ban-types': off
+
+    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
+    # - "*.ts"
+    # - "*.tsx"
+
+  - files:
+      # TODO: We should use `.jsx` extension only for React files.
+      - '*.js'
+      - '*.jsx'
+      - '*.tsx'
+    extends:
+      - plugin:react/recommended
+      - plugin:react-hooks/recommended
+    parserOptions:
+      ecmaFeatures:
+        jsx: true
+    settings:
+      react:
+        version: detect
+    rules:
+      react/button-has-type: error
+      react/default-props-match-prop-types: error
+      react/destructuring-assignment: error
+      react/display-name: off
+      react/forbid-component-props:
+        - error
+        - forbid:
+            - style
+      react/forbid-dom-props:
+        - error
+        - forbid:
+            - id
+      # react/forbid-prop-types: error // How to deal with Adaptive Card schema?
+      react/no-access-state-in-setstate: error
+      react/no-array-index-key: error
+      react/no-danger: error
+      react/no-did-mount-set-state: error
+      react/no-did-update-set-state: error
+      react/no-redundant-should-component-update: error
+      react/no-typos: error
+      react/no-this-in-sfc: error
+      react/no-unescaped-entities: error
+      react/no-unsafe: error
+      react/no-unused-prop-types: error
+      react/no-unused-state: error
+      react/no-will-update-set-state: error
+      react/prefer-es6-class: error
+      react/prefer-read-only-props: error
+      react/require-default-props: error
+      react/self-closing-comp: error
+      react/sort-prop-types: error
+      react/state-in-constructor: error
+      react/static-property-placement:
+        - error
+        - property assignment
+      react/style-prop-object: error
+      react/void-dom-elements-no-children: error
+      react/jsx-boolean-value:
+        - error
+        - always
+      react/jsx-closing-bracket-location:
+        - error
+        - tag-aligned
+      react/jsx-closing-tag-location: error
+      react/jsx-equals-spacing:
+        - error
+        - never
+      react/jsx-first-prop-new-line:
+        - error
+        - multiline-multiprop
+      react/jsx-handler-names: error
+      react/jsx-indent:
+        - error
+        - 2
+      react/jsx-indent-props:
+        - error
+        - 2
+      react/jsx-max-props-per-line:
+        - error
+        - maximum: 1
+          when: multiline
+      react/jsx-no-bind: error
+      react/jsx-no-literals: error
+      # react/jsx-one-expression-per-line: #conflicts with prettier
+      # - error
+      # - allow: literal
+      react/jsx-fragments:
+        - error
+        - element
+      react/jsx-pascal-case: error
+      react/jsx-props-no-multi-spaces: error
+      react/jsx-sort-default-props: error
+      react/jsx-sort-props: error
+      react/jsx-tag-spacing:
+        - error
+        - afterOpening: never
+          beforeClosing: never
+          beforeSelfClosing: always
+          closingSlash: never
+      react/jsx-wrap-multilines: error # Conflict with no-extra-parens
+      react-hooks/rules-of-hooks: error
+      react-hooks/exhaustive-deps: warn
+
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
+
+  # TODO: Sort rules.
 
   # Group - Best Practices
   no-async-promise-executor: error
   no-await-in-loop: error
   no-console:
-  - error
-  - allow:
     - error
-    - warn
+    - allow:
+        - error
+        - warn
   # no-extra-parens: error # conflicts with prettier
   no-misleading-character-class: error
   no-template-curly-in-string: error
@@ -52,22 +186,21 @@ rules:
   accessor-pairs: error
   block-scoped-var: error
   class-methods-use-this:
-  - error
-  - exceptMethods:
-    - render
+    - error
+    - exceptMethods:
+        - render
   complexity: error
   curly: error
   default-case: error
   dot-notation: error
   eqeqeq: error
   max-classes-per-file:
-  - error
-  - 2
+    - error
+    - 2
   no-alert: error
   no-caller: error
   no-div-regex: error
   no-else-return: error
-  no-empty-function: error
   no-eq-null: error
   no-eval: error
   no-extend-native: error
@@ -80,13 +213,13 @@ rules:
   no-labels: error
   no-lone-blocks: error
   no-magic-numbers:
-  - error
-  - ignore:
-    - 0
-    - 1
+    - error
+    - ignore:
+        - 0
+        - 1
   no-multi-spaces:
-  - error
-  - ignoreEOLComments: true
+    - error
+    - ignoreEOLComments: true
   no-multi-str: error
   no-new: error
   no-new-func: error
@@ -101,9 +234,9 @@ rules:
   no-throw-literal: error
   no-unmodified-loop-condition: error
   no-unused-expressions:
-  - error
-  - allowShortCircuit: true
-    allowTernary: true
+    - error
+    - allowShortCircuit: true
+      allowTernary: true
   no-useless-call: error
   no-useless-catch: error
   no-useless-concat: error
@@ -129,29 +262,29 @@ rules:
   # - builtinGlobals: true
   #   hoist: all
 
+  no-unused-vars:
+    - error
+    - argsIgnorePattern: ^_$
+      varsIgnorePattern: ^_
+
+  no-use-before-define: error
   no-shadow-restricted-names: error
   no-undef-init: error
 
   # "undefined" is commonly used for defaults
   # no-undefined: off
 
-  no-unused-vars:
-  - error
-  - argsIgnorePattern: ^_$
-    varsIgnorePattern: ^_
-  no-use-before-define: error
-
   # Group - ECMAScript 6
   arrow-body-style:
-  - error
-  - as-needed
+    - error
+    - as-needed
   arrow-parens:
-  - error
-  - as-needed
+    - error
+    - as-needed
   arrow-spacing:
-  - error
-  - after: true
-    before: true
+    - error
+    - after: true
+      before: true
   # generator-star-spacing: # conflicts with prettier
   # - error
   # - after
@@ -177,8 +310,8 @@ rules:
   # prefer-template: error
 
   rest-spread-spacing:
-  - error
-  - never
+    - error
+    - never
 
   # Cannot group global or local imports and sort in differently
   # sort-imports:
@@ -186,33 +319,11 @@ rules:
   # - ignoreCase: true
 
   template-curly-spacing:
-  - error
-  - never
+    - error
+    - never
   yield-star-spacing:
-  - error
-  - after
+    - error
+    - after
 
   # Prettier
   prettier/prettier: error
-
-  # TypeScript
-
-  # The correct way to use with typescript-eslint is to disable the core version.
-  # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
-  no-use-before-define: off
-  '@typescript-eslint/no-use-before-define':
-    - error
-
-  no-unused-vars: off
-  '@typescript-eslint/no-unused-vars':
-    - error
-    - argsIgnorePattern: ^_$
-      varsIgnorePattern: ^_
-
-  # We will rework on these rules
-  "@typescript-eslint/explicit-member-accessibility": off
-  "@typescript-eslint/explicit-function-return-type": off
-  "@typescript-eslint/explicit-module-boundary-types": off
-  "@typescript-eslint/indent": off
-  "@typescript-eslint/no-explicit-any": off
-  "@typescript-eslint/interface-name-prefix": off

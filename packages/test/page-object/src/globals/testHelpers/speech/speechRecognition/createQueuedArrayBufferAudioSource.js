@@ -79,8 +79,8 @@ class QueuedArrayBufferAudioSource {
       detach: () => {
         stream.readEnded();
 
-        // "0 + index" to prevent object injection attack.
-        delete this._streams[0 + audioNodeId];
+        // "+index" to prevent object injection attack.
+        delete this._streams[+audioNodeId];
 
         this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
 
@@ -92,9 +92,9 @@ class QueuedArrayBufferAudioSource {
   }
 
   detach(audioNodeId) {
-    // "0 + index" to prevent object injection attack.
+    // "+index" to prevent object injection attack.
     if (audioNodeId && this._streams[0 + audioNodeId]) {
-      this._streams[0 + audioNodeId].close();
+      this._streams[+audioNodeId].close();
 
       delete this._streams[0 + audioNodeId];
 
@@ -115,8 +115,8 @@ class QueuedArrayBufferAudioSource {
 
     const stream = new ChunkedArrayBufferStream(this.format.avgBytesPerSec / 10, audioNodeId);
 
-    // "0 + index" to prevent object injection attack.
-    this._streams[0 + audioNodeId] = stream;
+    // "+index" to prevent object injection attack.
+    this._streams[+audioNodeId] = stream;
 
     const arrayBuffer = this._queue.shift();
     const { byteLength } = arrayBuffer;

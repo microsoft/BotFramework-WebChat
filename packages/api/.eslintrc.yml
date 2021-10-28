@@ -1,5 +1,3 @@
-extends:
-  - ../../.eslintrc.react.yml
-
+# TODO: #3212 When we move to React Native, we should disable this.
 env:
   browser: true

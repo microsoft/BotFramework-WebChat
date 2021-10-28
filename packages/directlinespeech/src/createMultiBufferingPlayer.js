@@ -15,7 +15,7 @@ function copyBuffer(buffer, multiChannelArray) {
   const channels = buffer.numberOfChannels;
 
   for (let channel = 0; channel < channels; channel++) {
-    const float32Array = multiChannelArray[channel];
+    const float32Array = multiChannelArray[+channel];
 
     // Note that Safari does not support AudioBuffer.copyToChannel yet.
     if (buffer.copyToChannel) {
@@ -25,7 +25,7 @@ function copyBuffer(buffer, multiChannelArray) {
       const perChannelBuffer = buffer.getChannelData(channel);
 
       for (let offset = 0; offset < float32ArrayLength; offset++) {
-        perChannelBuffer[offset] = float32Array[offset];
+        perChannelBuffer[+offset] = float32Array[+offset];
       }
     }
   }

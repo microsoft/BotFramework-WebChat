@@ -10,8 +10,8 @@ function concatMiddleware(...middlewares) {
       const work =
         index =>
         (...args) => {
-          // "0 + index" to prevent object injection attack.
-          const next = stack[0 + index];
+          // "+index" to prevent object injection attack.
+          const next = stack[+index];
 
           return (next ? next(work(index + 1)) : last)(...args);
         };

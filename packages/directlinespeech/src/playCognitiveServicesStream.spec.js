@@ -16,7 +16,7 @@ function createMockAudioContext(autoEndCount = Infinity) {
         channelData,
         duration: 1,
         getChannelData(channel) {
-          return channelData[channel];
+          return channelData[+channel];
         },
         numberOfChannels: channels,
         samplesPerSec

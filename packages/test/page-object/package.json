@@ -28,6 +28,7 @@
     "event-target-shim": "6.0.2",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "p-defer": "4.0.0",
+    "prop-types": "15.7.2",
     "simple-update-in": "2.2.0"
   },
   "devDependencies": {
