@@ -113,7 +113,6 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
   /** Gets the event source for listening to events. */
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get events(): EventSource<AudioSourceEvent> {
     // False alarm: indexer is a constant of type Symbol.
@@ -128,7 +127,6 @@ abstract class CustomAudioInputStream extends AudioInputStream {
   // Speech SDK quirks: In normal speech recognition, getter of "format" is called only after "attach".
   //                    But in Direct Line Speech, it is called before "attach".
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get format(): Promise<AudioStreamFormatImpl> {
     this.debug('Getting "format".');
@@ -211,7 +209,6 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
   // Speech SDK quirks: Although "close" is marked as abstract, it is never called in our observations.
   // ESLint: Speech SDK requires this function, but we are not implementing it.
-  // eslint-disable-next-line class-methods-use-this
   close(): void {
     this.debug('Callback for "close".');
 
@@ -327,7 +324,6 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
   /** Gets the device information. */
   // ESLint: This code will only works in browsers other than IE11. Only works in ES5 is okay.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore Accessors are only available when targeting ECMAScript 5 and higher.ts(1056)
   get deviceInfo(): Promise<ISpeechConfigAudioDevice> {
     this.debug(`Getting "deviceInfo".`);

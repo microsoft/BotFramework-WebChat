@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/no-empty-function: "off" */
+/* eslint no-empty-function: "off" */
 
 import createAudioConfig from './createAudioConfig';
 

@@ -14,7 +14,7 @@
     "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint",
+    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prestart": "npm run build",
     "start": "concurrently --kill-others \"npm run start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",

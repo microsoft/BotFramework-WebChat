@@ -5,11 +5,12 @@ env:
 
 plugins:
   - prettier
-  - '@typescript-eslint'
+  - security
 
 extends:
   - eslint:recommended
-  - 'plugin:security/recommended'
+  - plugin:prettier/recommended
+  - plugin:security/recommended
 
 parserOptions:
   ecmaVersion: 2020
@@ -20,15 +21,22 @@ overrides:
       - '__tests__/**/*.js'
       - '*.spec.js'
       - '*.test.js'
+
     env:
       jest: true
 
   - files:
       - '*.ts'
       - '*.tsx'
+
     extends:
       - plugin:@typescript-eslint/recommended
+
+    plugins:
+      - '@typescript-eslint'
+
     parser: '@typescript-eslint/parser'
+
     rules:
       # The correct way to use with typescript-eslint is to disable the core version.
       # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
@@ -47,137 +55,30 @@ overrides:
       '@typescript-eslint/no-empty-function': error
 
       # TODO #4003: We will rework on these rules
-      '@typescript-eslint/explicit-member-accessibility': off
-      '@typescript-eslint/explicit-function-return-type': off
-      '@typescript-eslint/explicit-module-boundary-types': off
-      '@typescript-eslint/indent': off
-      '@typescript-eslint/no-explicit-any': off
-      '@typescript-eslint/interface-name-prefix': off
-
       '@typescript-eslint/ban-ts-comment': off
       '@typescript-eslint/ban-types': off
-
-    # TODO: [P1] #4003 Our eslint is not properly configured to lint TypeScript files.
-    # - "*.ts"
-    # - "*.tsx"
-
-  - files:
-      # TODO: We should use `.jsx` extension only for React files.
-      - '*.js'
-      - '*.jsx'
-      - '*.tsx'
-    extends:
-      - plugin:react/recommended
-      - plugin:react-hooks/recommended
-    parserOptions:
-      ecmaFeatures:
-        jsx: true
-    settings:
-      react:
-        version: detect
-    rules:
-      react/button-has-type: error
-      react/default-props-match-prop-types: error
-      react/destructuring-assignment: error
-      react/display-name: off
-      react/forbid-component-props:
-        - error
-        - forbid:
-            - style
-      react/forbid-dom-props:
-        - error
-        - forbid:
-            - id
-      # react/forbid-prop-types: error // How to deal with Adaptive Card schema?
-      react/no-access-state-in-setstate: error
-      react/no-array-index-key: error
-      react/no-danger: error
-      react/no-did-mount-set-state: error
-      react/no-did-update-set-state: error
-      react/no-redundant-should-component-update: error
-      react/no-typos: error
-      react/no-this-in-sfc: error
-      react/no-unescaped-entities: error
-      react/no-unsafe: error
-      react/no-unused-prop-types: error
-      react/no-unused-state: error
-      react/no-will-update-set-state: error
-      react/prefer-es6-class: error
-      react/prefer-read-only-props: error
-      react/require-default-props: error
-      react/self-closing-comp: error
-      react/sort-prop-types: error
-      react/state-in-constructor: error
-      react/static-property-placement:
-        - error
-        - property assignment
-      react/style-prop-object: error
-      react/void-dom-elements-no-children: error
-      react/jsx-boolean-value:
-        - error
-        - always
-      react/jsx-closing-bracket-location:
-        - error
-        - tag-aligned
-      react/jsx-closing-tag-location: error
-      react/jsx-equals-spacing:
-        - error
-        - never
-      react/jsx-first-prop-new-line:
-        - error
-        - multiline-multiprop
-      react/jsx-handler-names: error
-      react/jsx-indent:
-        - error
-        - 2
-      react/jsx-indent-props:
-        - error
-        - 2
-      react/jsx-max-props-per-line:
-        - error
-        - maximum: 1
-          when: multiline
-      react/jsx-no-bind: error
-      react/jsx-no-literals: error
-      # react/jsx-one-expression-per-line: #conflicts with prettier
-      # - error
-      # - allow: literal
-      react/jsx-fragments:
-        - error
-        - element
-      react/jsx-pascal-case: error
-      react/jsx-props-no-multi-spaces: error
-      react/jsx-sort-default-props: error
-      react/jsx-sort-props: error
-      react/jsx-tag-spacing:
-        - error
-        - afterOpening: never
-          beforeClosing: never
-          beforeSelfClosing: always
-          closingSlash: never
-      react/jsx-wrap-multilines: error # Conflict with no-extra-parens
-      react-hooks/rules-of-hooks: error
-      react-hooks/exhaustive-deps: warn
+      '@typescript-eslint/explicit-function-return-type': off
+      '@typescript-eslint/explicit-member-accessibility': off
+      '@typescript-eslint/explicit-module-boundary-types': off
+      '@typescript-eslint/indent': off
+      '@typescript-eslint/interface-name-prefix': off
+      '@typescript-eslint/no-explicit-any': off
 
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
 
-  # TODO: Sort rules.
-
-  # Group - Best Practices
-  no-async-promise-executor: error
-  no-await-in-loop: error
-  no-console:
-    - error
-    - allow:
-        - error
-        - warn
-  # no-extra-parens: error # conflicts with prettier
-  no-misleading-character-class: error
-  no-template-curly-in-string: error
-  require-atomic-updates: error
   accessor-pairs: error
+  arrow-body-style:
+    - error
+    - as-needed
+  arrow-parens:
+    - error
+    - as-needed
+  arrow-spacing:
+    - error
+    - after: true
+      before: true
   block-scoped-var: error
   class-methods-use-this:
     - error
@@ -192,9 +93,18 @@ rules:
     - error
     - 2
   no-alert: error
+  no-async-promise-executor: error
+  no-await-in-loop: error
+  no-console:
+    - error
+    - allow:
+        - error
+        - warn
   no-caller: error
   no-div-regex: error
+  no-duplicate-imports: error
   no-else-return: error
+  no-empty-function: error
   no-eq-null: error
   no-eval: error
   no-extend-native: error
@@ -204,6 +114,7 @@ rules:
   no-implied-eval: error
   no-invalid-this: error
   no-iterator: error
+  no-label-var: error
   no-labels: error
   no-lone-blocks: error
   no-magic-numbers:
@@ -211,13 +122,14 @@ rules:
     - ignore:
         - 0
         - 1
+  no-misleading-character-class: error
   no-multi-spaces:
     - error
     - ignoreEOLComments: true
   no-multi-str: error
-  no-new: error
   no-new-func: error
   no-new-wrappers: error
+  no-new: error
   no-octal-escape: error
   no-proto: error
   no-return-assign: error
@@ -225,99 +137,81 @@ rules:
   no-script-url: error
   no-self-compare: error
   no-sequences: error
+  no-shadow-restricted-names: error
+  no-template-curly-in-string: error
   no-throw-literal: error
+  no-undef-init: error
   no-unmodified-loop-condition: error
   no-unused-expressions:
     - error
     - allowShortCircuit: true
       allowTernary: true
-  no-useless-call: error
-  no-useless-catch: error
-  no-useless-concat: error
-  no-useless-return: error
-  no-void: error
-  no-with: error
-  prefer-promise-reject-errors: error
-  radix: error
-  require-await: error
-  require-unicode-regexp: error
-
-  # ESLint conflict with Prettier on IIFE style.
-  # wrap-iife: error
-
-  yoda: error
-
-  # Group - Variables
-  no-label-var: error
-
-  # Re-enable later
-  # no-shadow:
-  # - error
-  # - builtinGlobals: true
-  #   hoist: all
-
   no-unused-vars:
     - error
     - argsIgnorePattern: ^_$
       varsIgnorePattern: ^_
-
   no-use-before-define: error
-  no-shadow-restricted-names: error
-  no-undef-init: error
-
-  # "undefined" is commonly used for defaults
-  # no-undefined: off
-
-  # Group - ECMAScript 6
-  arrow-body-style:
-    - error
-    - as-needed
-  arrow-parens:
-    - error
-    - as-needed
-  arrow-spacing:
-    - error
-    - after: true
-      before: true
-  # generator-star-spacing: # conflicts with prettier
-  # - error
-  # - after
-
-  # Will produce shorter code if "off"
-  # no-confusing-arrow:
-  # - error
-  # - allowParens: true # This will conflict with no-extra-parens
-
-  no-duplicate-imports: error
+  no-useless-call: error
+  no-useless-catch: error
   no-useless-computed-key: error
+  no-useless-concat: error
   no-useless-constructor: error
   no-useless-rename: error
+  no-useless-return: error
   no-var: error
+  no-void: error
+  no-with: error
   object-shorthand: error
   prefer-arrow-callback: error
   prefer-const: error
   prefer-destructuring: error
+  prefer-promise-reject-errors: error
   prefer-rest-params: error
   prefer-spread: error
-
-  # This will force, a + '', into, `${ a }`, which increase code length
-  # prefer-template: error
-
+  radix: error
+  require-atomic-updates: error
+  require-await: error
+  require-unicode-regexp: error
   rest-spread-spacing:
     - error
     - never
-
-  # Cannot group global or local imports and sort in differently
-  # sort-imports:
-  # - error
-  # - ignoreCase: true
-
   template-curly-spacing:
     - error
     - never
   yield-star-spacing:
     - error
     - after
+  yoda: error
 
-  # Prettier
-  prettier/prettier: error
+  # Re-enable later
+  # no-shadow:
+  #   - error
+  #   - builtinGlobals: true
+  #     hoist: all
+
+  # Cannot group global or local imports and sort in differently
+  # sort-imports:
+  #   - error
+  #   - ignoreCase: true
+
+  # This will force, a + '', into, `${ a }`, which increase code length
+  # prefer-template: error
+
+  # Will produce shorter code if "off"
+  # no-confusing-arrow:
+  #   - error
+  #   - allowParens: true # This will conflict with no-extra-parens
+
+  # "undefined" is commonly used for defaults
+  # no-undefined: off
+
+  # Conflicts with "prettier/recommended"
+  # generator-star-spacing:
+  #   - error
+  #   - after
+
+  # Conflicts with "prettier/recommended"
+  # wrap-iife: error
+
+  # Conflicts with "react/jsx-wrap-multilines"
+  # no-extra-parens: error

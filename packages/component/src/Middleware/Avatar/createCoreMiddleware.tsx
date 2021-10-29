@@ -65,7 +65,6 @@ export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
         const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
 
         if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
-          // eslint-disable-next-line react/display-name
           return () => <DefaultAvatar fromUser={fromUser} />;
         }
 

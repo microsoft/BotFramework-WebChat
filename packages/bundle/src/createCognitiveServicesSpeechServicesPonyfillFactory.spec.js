@@ -19,19 +19,18 @@ beforeEach(() => {
 
   createPonyfill = require('web-speech-cognitive-services/lib/SpeechServices');
   createCognitiveServicesSpeechServicesPonyfillFactory =
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('./createCognitiveServicesSpeechServicesPonyfillFactory').default;
 
   window.AudioContext = class MockAudioContext {
     // eslint-disable-next-line class-methods-use-this
     createMediaStreamSource() {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // eslint-disable-next-line no-empty-function
       return { connect: () => {} };
     }
 
     // eslint-disable-next-line class-methods-use-this
     createScriptProcessor() {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // eslint-disable-next-line no-empty-function
       return { connect: () => {} };
     }
   };

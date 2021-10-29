@@ -39,7 +39,7 @@ export default function fromRiffWavArrayBuffer(arrayBuffer) {
       return Promise.resolve({
         audioStreamNode: {
           // This is a mock and will no-op on dispatch().
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          // eslint-disable-next-line no-empty-function
           detach: () => {},
           id: () => audioNodeId,
           read: () => {

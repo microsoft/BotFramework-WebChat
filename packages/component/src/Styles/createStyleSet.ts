@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import createActivitiesStyle from './StyleSet/Activities';

@@ -71,7 +71,6 @@ AccessibleButton.propTypes = {
   onClick: PropTypes.func,
   tabIndex: PropTypes.number,
   // TypeScript class is not mappable to PropTypes.oneOf(['button'])
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   type: PropTypes.oneOf(['button']).isRequired
 };

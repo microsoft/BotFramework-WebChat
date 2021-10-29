@@ -172,8 +172,12 @@ test('should stop when abort is called before first buffer is queued', async () 
   const audioContext = createMockAudioContext();
   const abortController = new AbortController();
 
-  // eslint-disable-next-line no-empty-function
-  const read = jest.fn(() => new Promise(() => {}));
+  const read = jest.fn(
+    () =>
+      new Promise(() => {
+        // Never resolve read().
+      })
+  );
 
   const playPromise = playCognitiveServicesStream(
     audioContext,

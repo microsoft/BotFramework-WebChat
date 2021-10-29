@@ -45,7 +45,6 @@ type MessageBackCardAction = CardActionWithImageAndTitle & {
   displayText?: string;
   text?: string;
   type: 'messageBack';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: { [key: string]: any };
 };
 
@@ -86,7 +85,6 @@ type PlayVideoCardAction = CardActionWithImageAndTitle & {
  */
 type PostBackCardAction = CardActionWithImageAndTitle & {
   type: 'postBack';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any; // For legacy reason, postBack support any.
 };
 

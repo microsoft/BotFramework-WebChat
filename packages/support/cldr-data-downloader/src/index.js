@@ -47,8 +47,6 @@ export default function (srcUrl, destPath, options, callback) {
   assert(typeof callback === 'function', 'must include callback function');
 
   try {
-    // Mitigated by asserting "destPath" does not contains "..".
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
     mkdirSync(new URL(destPath, import.meta.url), { recursive: true });
   } catch (err) {
     if (err.code !== 'EEXIST') {

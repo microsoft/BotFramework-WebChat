@@ -29,7 +29,6 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
-// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 type UndoFunction = (() => void) | undefined;
@@ -759,7 +758,6 @@ AdaptiveCardRenderer.propTypes = {
   disabled: PropTypes.bool,
 
   // TypeScript class is not mappable to PropTypes.func
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   tapAction: PropTypes.shape({
     image: PropTypes.string,

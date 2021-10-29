@@ -36,6 +36,4 @@
 
 import Mime from 'mime/Mime';
 
-// This is from `mime-wrapper`.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 export default new Mime(require('mime/types/standard'), require('mime/types/other'));

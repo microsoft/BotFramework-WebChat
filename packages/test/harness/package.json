@@ -17,7 +17,7 @@
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint",
+    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prestart": "concurrently \"npm run build:babel\" && npm run build:esbuild",
     "start": "concurrently --kill-others \"npm run start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",

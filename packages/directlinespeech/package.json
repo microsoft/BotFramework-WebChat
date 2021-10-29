@@ -15,7 +15,7 @@
     "build:webpack:production": "cross-env node_env=production webpack-cli",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint",
+    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check src/**/*.{js,ts}",
     "prestart": "npm run build:babel",
     "start": "npm run start:babel && concurrently --kill-others --names \"babel,serve,webpack\" \"npm run start:babel:watch\" \"npm run start:serve\" \"npm run start:webpack\"",

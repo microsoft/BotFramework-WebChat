@@ -44,7 +44,6 @@ const hooks = {
   ...componentHooks
 };
 
-// eslint-disable-next-line no-undef
 const version = process.env.npm_package_version;
 
 const Components = {

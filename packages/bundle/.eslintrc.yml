@@ -1,3 +1,6 @@
+extends:
+  - ../../.eslintrc.react.yml
+
 # This package is expected to run inside a web browser.
 # When React Native work land, this package will be consumed by both web browser and React Native, via entrypoints.
 env:

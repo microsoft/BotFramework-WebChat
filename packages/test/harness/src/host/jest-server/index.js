@@ -142,8 +142,6 @@ async function prepareSession(sessionId) {
   });
 }
 
-// ESLint conflict with Prettier on IIFE style.
-// eslint-disable-next-line wrap-iife
 (function () {
   const app = express();
   const pool = [];

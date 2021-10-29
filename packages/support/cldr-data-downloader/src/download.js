@@ -159,7 +159,6 @@ function download(src) {
         throw error;
       }
 
-      // eslint-disable-next-line no-magic-numbers
       notify({ received: body.length, percent: 100 });
 
       downloadDfd.resolve(body);

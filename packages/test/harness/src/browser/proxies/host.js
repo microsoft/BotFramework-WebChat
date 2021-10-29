@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/no-empty-function: "off" */
+/* eslint no-empty-function: "off" */
 
 /** RPC object on the browser side. */
 export default function createHost() {

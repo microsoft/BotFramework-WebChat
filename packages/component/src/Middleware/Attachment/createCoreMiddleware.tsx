@@ -10,8 +10,6 @@ import VideoAttachment from '../../Attachment/VideoAttachment';
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware(): AttachmentMiddleware[] {
   return [
-    // This is not returning a React component, but a render function.
-    /* eslint-disable-next-line react/display-name */
     () =>
       next =>
       (...args) => {

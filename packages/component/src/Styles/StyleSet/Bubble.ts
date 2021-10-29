@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
