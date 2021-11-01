@@ -59,9 +59,7 @@ export default function useAcknowledgedActivity(): [DirectLineActivity] {
       ? activities.length - 1
       : Math.max(lastStickyActivityIndex, lastEgressActivityIndex);
 
-    // False alarm: "lastAcknowledgedActivityIndex" must be a number.
-    // eslint-disable-next-line security/detect-object-injection
-    const lastAcknowledgedActivity = activities[lastAcknowledgedActivityIndex];
+    const lastAcknowledgedActivity = activities[+lastAcknowledgedActivityIndex];
 
     return [lastAcknowledgedActivity];
   }, [activities, lastStickyActivityID]);

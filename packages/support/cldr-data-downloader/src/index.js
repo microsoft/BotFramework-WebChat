@@ -79,7 +79,7 @@ export default function (srcUrl, destPath, options, callback) {
         let { filterRe } = options;
 
         if (typeof filterRe === 'string') {
-          // REDOS attack should only be carried out by the user themselves.
+          // ReDOS attack should only be carried out by the user themselves.
           // eslint-disable-next-line security/detect-non-literal-regexp
           filterRe = new RegExp(filterRe, 'u');
         }

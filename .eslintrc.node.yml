@@ -1,11 +1,14 @@
+plugins:
+  - node
+
 extends:
   - plugin:node/recommended
 
 env:
   node: true
 
-plugins:
-  - node
+parserOptions:
+  ecmaVersion: 2020
 
 rules:
   node/callback-return: error

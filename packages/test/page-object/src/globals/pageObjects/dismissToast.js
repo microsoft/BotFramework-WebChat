@@ -4,7 +4,6 @@ import getToastDismissButtons from '../pageElements/toastDismissButtons';
 export default async function dismissToast(index) {
   const toastDismissButtons = getToastDismissButtons();
 
-  // "+index" to prevent object injection attack.
   const toastDismissButton = toastDismissButtons[+index];
 
   if (!toastDismissButton) {

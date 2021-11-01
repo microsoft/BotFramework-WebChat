@@ -10,7 +10,6 @@ function concatMiddleware(...middlewares) {
       const work =
         index =>
         (...args) => {
-          // "+index" to prevent object injection attack.
           const next = stack[+index];
 
           return (next ? next(work(index + 1)) : last)(...args);
@@ -21,7 +20,7 @@ function concatMiddleware(...middlewares) {
   };
 }
 
-export default function (initialState = {}, ...middleware) {
+export default function createStore(initialState = {}, ...middleware) {
   return window.WebChat.createStore(
     initialState,
     concatMiddleware(store => {

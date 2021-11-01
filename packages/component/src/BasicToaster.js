@@ -2,7 +2,6 @@
 /* eslint react/forbid-dom-props: "off" */
 
 import { hooks } from 'botframework-webchat-api';
-import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -41,10 +40,12 @@ const LEVEL_AS_NUMBER = {
   success: 4
 };
 
+const LEVEL_AS_NUMBER_KEYS = Object.keys(LEVEL_AS_NUMBER);
+
 function getLevelAsNumber(level) {
-  // Mitigated through denylisting.
+  // Mitigated through allowlisting.
   // eslint-disable-next-line security/detect-object-injection
-  return (!isForbiddenPropertyName(level) && LEVEL_AS_NUMBER[level]) || 5;
+  return LEVEL_AS_NUMBER_KEYS.includes(level) ? LEVEL_AS_NUMBER[level] : 5;
 }
 
 function compareLevel(x, y) {

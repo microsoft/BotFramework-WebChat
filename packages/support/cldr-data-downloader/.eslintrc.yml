@@ -1,3 +1,7 @@
 # This is a package to run under Node.js as "postinstall" script.
-env:
-  node: true
+extends:
+  - '../../../.eslintrc.node.yml'
+
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module

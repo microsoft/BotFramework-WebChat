@@ -15,6 +15,8 @@ import { fileURLToPath } from 'url';
 import { readPackageSync } from 'read-pkg';
 import { readPackageUpSync } from 'read-pkg-up';
 import child_process from 'child_process';
+// False alarm.
+// eslint-disable-next-line node/no-missing-import
 import cldrDownloader from 'cldr-data-downloader';
 import glob from 'glob';
 import path from 'path';
@@ -24,6 +26,8 @@ const options = {};
 let isNpm3;
 
 try {
+  // TODO: Wrap the work in async function and use async instead.
+  // eslint-disable-next-line node/no-sync
   const npmv = child_process.execSync('npm -v').toString('utf8');
   isNpm3 = npmv.split('.')[0] === '3';
 } catch (error) {
@@ -75,6 +79,8 @@ if (
       'of your application.'
   );
 
+  // TODO: Use `throw error` instead.
+  // eslint-disable-next-line no-process-exit
   process.exit(0);
 }
 
@@ -129,6 +135,9 @@ cldrDownloader(srcUrl, path.join(__dirname, '../dist'), options, error => {
     }
 
     console.error('Whops', error.message);
+
+    // TODO: Use `throw error` instead.
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
 });

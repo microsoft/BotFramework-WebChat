@@ -7,9 +7,7 @@ jest.mock('react', () => {
   let lastResult;
 
   function arrayEquals(x, y) {
-    // False alarm: "index" must be a number.
-    // eslint-disable-next-line security/detect-object-injection
-    return x.length === y.length && [].every.call(x, (item, index) => Object.is(item, y[index]));
+    return x.length === y.length && [].every.call(x, (item, index) => Object.is(item, y[+index]));
   }
 
   return {

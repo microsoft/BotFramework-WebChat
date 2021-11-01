@@ -1,6 +1,3 @@
-// This is process loop and await inside loops are intentional.
-/* eslint-disable no-await-in-loop */
-
 const { EventTarget, Event } = require('event-target-shim');
 const AbortController = require('abort-controller');
 
@@ -50,6 +47,7 @@ class HostBridge extends EventTarget {
 
   async start(driver) {
     try {
+      /* eslint-disable no-await-in-loop */
       for (; !this.abortController.signal.aborted; ) {
         /* istanbul ignore next */
         const result = await driver.executeScript(
@@ -75,6 +73,7 @@ class HostBridge extends EventTarget {
           this.dispatchEvent(event);
         }
       }
+      /* eslint-enable no-await-in-loop */
     } catch (err) {
       if (err.name !== 'NoSuchSessionError' && err.name !== 'NoSuchWindowError' && err.name !== 'WebDriverError') {
         throw err;

@@ -65,7 +65,8 @@ function fetchFromFilesystem(src) {
 
   try {
     // TODO: Consider in-memory file system.
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    // TODO: Turn this into async.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
     const stats = fs.statSync(filePath);
 
     totalSize = stats.size;

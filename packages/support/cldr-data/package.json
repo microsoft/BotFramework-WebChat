@@ -34,12 +34,12 @@
   "type": "module",
   "files": [
     "src/index.js",
-    "src/install.js",
+    "src/install.mjs",
     "urls.json"
   ],
   "scripts": {
     "eslint": "npm run precommit",
-    "install": "node ./src/install.js",
+    "install": "node ./src/install.mjs",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0"
   },

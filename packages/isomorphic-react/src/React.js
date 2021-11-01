@@ -1,4 +1,3 @@
-/* eslint-env browser */
 /* global module */
 
 // We intentionally use require() here.

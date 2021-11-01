@@ -43,7 +43,6 @@ class MockAudioBuffer {
   }
 
   getChannelData(channel) {
-    // "+index" to prevent object injection attack.
     return this._channelData[+channel];
   }
 

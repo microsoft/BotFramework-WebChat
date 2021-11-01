@@ -75,7 +75,6 @@ export default function render(
   })
     .use(markdownItAttrs)
     .use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-      // "+index" to prevent object injection attack.
       const token = tokens[+index];
 
       token.attrSet('rel', 'noopener noreferrer');
