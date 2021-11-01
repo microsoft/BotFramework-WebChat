@@ -16,13 +16,14 @@ const Toggle = ({ checked, children, disabled, onChange, type }) => {
 };
 
 Toggle.defaultProps = {
+  checked: false,
   children: undefined,
   disabled: false,
   type: 'checkbox'
 };
 
 Toggle.propTypes = {
-  checked: PropTypes.bool.isRequired,
+  checked: PropTypes.bool,
   children: PropTypes.any,
   disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
