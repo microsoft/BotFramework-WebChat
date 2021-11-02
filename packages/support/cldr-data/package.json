@@ -41,7 +41,7 @@
     "eslint": "npm run precommit",
     "install": "node ./src/install.mjs",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0"
+    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "cldr-data-downloader": "0.3.5-0",

@@ -10,7 +10,7 @@
     "build:webpack": "webpack-cli",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "start": "npm run start:note && npm run start:babel && npm run start:webpack",
     "start:babel": "npm run build:babel",
     "start:note": "echo \"isomorphic-react-dom is not under active development; running in non-watch mode.\"",
