@@ -152,7 +152,8 @@ export default class MockAudioContext extends EventTarget {
       // eslint-disable-next-line no-console
       console.log('MP3 is not supported; ignoring this audio data.');
 
-      return this.createBuffer(1, 0, 16000);
+      // Speech SDK requires Promise and would fail silently if it is a resolved result.
+      return Promise.resolve(this.createBuffer(1, 0, 16000));
     }
 
     // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
@@ -160,7 +161,8 @@ export default class MockAudioContext extends EventTarget {
 
     new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
 
-    return buffer;
+    // Speech SDK requires Promise and would fail silently if it is a resolved result.
+    return Promise.resolve(buffer);
   }
 }
 
