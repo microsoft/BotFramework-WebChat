@@ -28,6 +28,6 @@ function getForbiddenPropertyNames() {
   );
 }
 
-export default function isForbiddenPropertyName(propertyName) {
+module.exports = function isForbiddenPropertyName(propertyName) {
   return getForbiddenPropertyNames().includes(propertyName);
-}
+};
