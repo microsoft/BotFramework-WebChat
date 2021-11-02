@@ -97,7 +97,7 @@ async function checkGridCapacity() {
 
   for (const start = Date.now(); Date.now() - start < MAX_WAIT_FOR_CAPACITY; ) {
     try {
-      // This is process loop and intentionally await inside loops.
+      // This is a process loop and intentionally await inside loops.
       // eslint-disable-next-line no-await-in-loop
       const { value } = await sendWebDriverCommand(undefined, 'status');
 
@@ -110,7 +110,7 @@ async function checkGridCapacity() {
       throw new Error(`Grid does not respond: ${err.message}`);
     }
 
-    // This is process loop and intentionally await inside loops.
+    // This is a process loop and intentionally await inside loops.
     // eslint-disable-next-line no-await-in-loop
     await sleep(100);
   }

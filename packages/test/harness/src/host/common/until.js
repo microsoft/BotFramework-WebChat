@@ -6,7 +6,7 @@ module.exports = async function until(fn, timeout) {
   let result;
 
   for (const start = Date.now(); Date.now() - start < timeout; ) {
-    // This is process loop and await inside loops are intentional.
+    // This is a process loop and await inside loops are intentional.
     // eslint-disable-next-line no-await-in-loop
     result = await fn();
 
@@ -14,7 +14,7 @@ module.exports = async function until(fn, timeout) {
       break;
     }
 
-    // This is process loop and await inside loops are intentional.
+    // This is a process loop and await inside loops are intentional.
     // eslint-disable-next-line no-await-in-loop
     await sleep(SINGLE_FRAME_TIME);
   }

@@ -21,7 +21,7 @@ class HostBridgePort {
       event.data = data;
       event.origin = 'wd://';
 
-      // This code is running in browser VM where "document" is available.
+      // This code is running in browser VM where "window" is available.
       // eslint-disable-next-line no-undef
       window.dispatchEvent(event);
     }, data);
@@ -52,7 +52,7 @@ class HostBridge extends EventTarget {
         /* istanbul ignore next */
         const result = await driver.executeScript(
           () =>
-            // This code is running in browser VM where "document" is available.
+            // This code is running in browser VM where "window" is available.
             // eslint-disable-next-line no-undef
             window.webDriverPort && window.webDriverPort.__queue.shift()
         );

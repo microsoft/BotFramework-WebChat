@@ -4,7 +4,7 @@
 // A lot of mock functions are empty and do not reference `this`.
 /* eslint-disable class-methods-use-this */
 
-import EventTarget, { defineEventAttribute } from 'event-target-shim';
+import EventTarget, { getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
 
 import pcmWaveArrayBufferToFloat32Arrays from '../pcmWaveArrayBufferToFloat32Arrays';
 
@@ -67,6 +67,14 @@ class MockAudioBufferSource extends EventTarget {
     this._startHandler = startHandler;
   }
 
+  get onended() {
+    return getEventAttributeValue(this, 'ended');
+  }
+
+  set onended(value) {
+    setEventAttributeValue(this, 'ended', value);
+  }
+
   connect(node) {
     this._nextNode = node;
   }
@@ -100,8 +108,6 @@ class MockAudioDestinationNode {
   }
 }
 
-defineEventAttribute(MockAudioBufferSource.prototype, 'ended');
-
 export default class MockAudioContext extends EventTarget {
   constructor({ audioDataDecoder, bufferSourceStartHandler } = {}) {
     super();
@@ -111,6 +117,14 @@ export default class MockAudioContext extends EventTarget {
     this._audioDataDecoder = audioDataDecoder;
     this._bufferSourceStartHandler = bufferSourceStartHandler;
     this.state = 'running';
+  }
+
+  get onstatechange() {
+    return getEventAttributeValue(this, 'statechange');
+  }
+
+  set onstatechange(value) {
+    setEventAttributeValue(this, 'statechange', value);
   }
 
   close() {
@@ -165,5 +179,3 @@ export default class MockAudioContext extends EventTarget {
     return Promise.resolve(buffer);
   }
 }
-
-defineEventAttribute(MockAudioContext.prototype, 'statechange');

@@ -8,13 +8,13 @@ export default async function became(message, fn, timeout) {
   }
 
   for (const start = Date.now(); Date.now() < start + timeout; ) {
-    // This is process loop and await inside loops are intentional.
+    // This is a process loop and await inside loops are intentional.
     // eslint-disable-next-line no-await-in-loop
     if (await fn()) {
       return;
     }
 
-    // This is process loop and await inside loops are intentional.
+    // This is a process loop and await inside loops are intentional.
     // eslint-disable-next-line no-await-in-loop
     await sleep(CHECK_INTERVAL);
   }

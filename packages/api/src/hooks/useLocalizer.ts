@@ -65,7 +65,7 @@ export default function useLocalizer({ plural }: { plural?: keyof Plural } = {})
 
       return Object.entries(args).reduce(
         (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
-        // Mitigation through allowlisting.
+        // Mitigation through denylisting.
         // eslint-disable-next-line security/detect-object-injection
         isForbiddenPropertyName(stringId) ? '' : localizedStrings[stringId] || DEFAULT_STRINGS[stringId] || ''
       );

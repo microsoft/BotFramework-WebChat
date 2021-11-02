@@ -13,7 +13,7 @@ const INPUTTABLE_KEY = {
 const INPUTTABLE_KEY_KEYS = Object.keys(INPUTTABLE_KEY);
 
 export default function inputtableKey(key) {
-  // Mitigated through denylisting.
+  // Mitigated through allowlisting.
   // eslint-disable-next-line security/detect-object-injection
   return key.length === 1 ? key : INPUTTABLE_KEY_KEYS.includes(key) ? INPUTTABLE_KEY[key] : undefined;
 }

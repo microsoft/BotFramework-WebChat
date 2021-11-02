@@ -6,7 +6,8 @@ import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
 // Use React from window (UMD) instead of import.
 const { React: { useEffect, useMemo, useState } = {} } = window;
 
-// Make sure both side of this list does not contains forbidden property names, e.g. `__proto__`, `constructor`, or `prototype`.
+// When modifying this list, make sure both side of this list does not contains
+// forbidden property names, e.g. `__proto__`, `constructor`, or `prototype`.
 const URL_QUERY_MAPPING = {
   bi: 'botAvatarInitials',
   bn: 'botNub',
