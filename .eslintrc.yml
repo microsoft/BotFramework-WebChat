@@ -141,6 +141,7 @@ rules:
   no-template-curly-in-string: error
   no-throw-literal: error
   no-undef-init: error
+  no-undefined: off
   no-unmodified-loop-condition: error
   no-unused-expressions:
     - error
@@ -183,6 +184,10 @@ rules:
     - after
   yoda: error
 
+  # We should review the rules below from time to time. Rules below are:
+  # - From "recommended" ruleset but disabled for some reasons
+  # - Rules that we considered to enable, but for some reasons, we did not enable them
+
   # Re-enable later
   # no-shadow:
   #   - error
@@ -194,23 +199,29 @@ rules:
   #   - error
   #   - ignoreCase: true
 
-  # This will force, a + '', into, `${ a }`, which increase code length
+  # Consider enable this rule while working on #4003
   # prefer-template: error
 
-  # Will produce shorter code if "off"
+  # Conflict with "prettier/recommended"
+  # Prettier: array.map(([name, value]) => name === value ? 'Yes' : 'No'
+  # ESLint: array.map(([name, value]) => (name === value ? 'Yes' : 'No')
   # no-confusing-arrow:
   #   - error
   #   - allowParens: true # This will conflict with no-extra-parens
 
-  # "undefined" is commonly used for defaults
-  # no-undefined: off
-
   # Conflicts with "prettier/recommended"
+  # Prettier will format it before/after depends on usage.
+  # Before: async *[Symbol.asyncIterator]() { ... }
+  # After: function* name() { ... }
+
   # generator-star-spacing:
   #   - error
   #   - after
 
   # Conflicts with "prettier/recommended"
+  # Prettier: (function () { ... })()
+  # ESLint: (function () { ... }())
+
   # wrap-iife: error
 
   # Conflicts with "react/jsx-wrap-multilines"
