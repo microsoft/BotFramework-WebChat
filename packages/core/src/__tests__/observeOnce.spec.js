@@ -36,7 +36,7 @@ describe('observeOnce', () => {
 
   test('should unsubscribe after first next', () =>
     new Promise((resolve, reject) => {
-      runSaga(inputOutput, function*() {
+      runSaga(inputOutput, function* () {
         try {
           const [result] = yield all([observeOnce(observable), call(() => onNext('Hello, World!'))]);
 
@@ -53,7 +53,7 @@ describe('observeOnce', () => {
 
   test('should unsubscribe and throw after first error', () =>
     new Promise((resolve, reject) => {
-      runSaga(inputOutput, function*() {
+      runSaga(inputOutput, function* () {
         try {
           try {
             yield all([observeOnce(observable), call(() => onError(new Error('Hello, World!')))]);
@@ -75,7 +75,7 @@ describe('observeOnce', () => {
 
   test('should unsubscribe after complete', () =>
     new Promise((resolve, reject) => {
-      runSaga(inputOutput, function*() {
+      runSaga(inputOutput, function* () {
         try {
           const [result] = yield all([observeOnce(observable), call(() => onComplete())]);
 
