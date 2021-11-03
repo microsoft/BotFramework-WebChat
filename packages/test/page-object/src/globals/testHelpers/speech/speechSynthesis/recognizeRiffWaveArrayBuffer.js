@@ -4,7 +4,7 @@ export default async function recognizeRiffWaveArrayBuffer({
   arrayBuffer,
   audioFormat = AudioStreamFormat.getDefaultInputFormat(),
   credentials: { authorizationToken, region, speechRecognitionHostname, subscriptionKey },
-  lang = 'en-US',
+  lang = 'en-US'
 }) {
   const hostname = speechRecognitionHostname || `${region}.stt.speech.microsoft.com`;
   const search = new URLSearchParams({ format: 'detailed', language: lang });
@@ -37,7 +37,7 @@ export default async function recognizeRiffWaveArrayBuffer({
 
   if (json.RecognitionStatus === 'Success') {
     return json.NBest[0].Display;
-  } else {
-    throw new Error(`Failed to recognize the WAV file due to ${json.RecognitionStatus}.`);
   }
+
+  throw new Error(`Failed to recognize the WAV file due to ${json.RecognitionStatus}.`);
 }

@@ -33,6 +33,9 @@ proto.isInstalled = function () {
 proto.read = function () {
   const filepath = this.filepath();
 
+  // TODO: Consider using in-memory file system.
+  // TODO: Turn this into async.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
   if (fs.existsSync(filepath)) {
     return readJSON(filepath);
   }
@@ -50,6 +53,9 @@ proto.write = function () {
   // eslint-disable-next-line no-magic-numbers
   const data = JSON.stringify(this.toJson(), null, 2);
 
+  // TODO: Consider using in-memory file system.
+  // TODO: Turn this into async.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
   fs.writeFileSync(this.filepath(), data);
 };
 

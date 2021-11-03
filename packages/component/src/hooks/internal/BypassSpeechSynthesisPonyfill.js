@@ -23,7 +23,9 @@ class SpeechSynthesisEvent extends Event {
     return 0;
   }
 
-  get name() {}
+  get name() {
+    // It is expected to return `undefined`, keeping the function empty to reduce footprint.
+  }
 
   get utterance() {
     return this._utterance;

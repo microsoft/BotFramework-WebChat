@@ -8,7 +8,7 @@ const FileAttachment = ({
   attachment
 }) => {
   const attachmentIndex = attachments.indexOf(attachment);
-  const size = attachmentSizes[attachmentIndex];
+  const size = attachmentSizes[+attachmentIndex];
 
   return <FileContent fileName={attachment.name} href={attachment.contentUrl} size={size} />;
 };

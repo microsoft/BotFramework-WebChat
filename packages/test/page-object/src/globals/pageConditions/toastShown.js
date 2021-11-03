@@ -20,9 +20,9 @@ export default function toastShown(message) {
       if (typeof message === 'number') {
         if (message === 0) {
           return !targetMessages.length && !getToasterHeader();
-        } else {
-          return targetMessages.length === message;
         }
+
+        return targetMessages.length === message;
       } else if (!message) {
         // For any number of toasts to show, it can be collapsed (toaster header), or singular (only one toast is shown).
         return targetMessages.length || getToasterHeader();

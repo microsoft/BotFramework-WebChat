@@ -59,7 +59,7 @@ export default function useAcknowledgedActivity(): [DirectLineActivity] {
       ? activities.length - 1
       : Math.max(lastStickyActivityIndex, lastEgressActivityIndex);
 
-    const lastAcknowledgedActivity = activities[lastAcknowledgedActivityIndex];
+    const lastAcknowledgedActivity = activities[+lastAcknowledgedActivityIndex];
 
     return [lastAcknowledgedActivity];
   }, [activities, lastStickyActivityID]);

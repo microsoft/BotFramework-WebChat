@@ -157,7 +157,6 @@ SuggestedAction.propTypes = {
   text: PropTypes.string,
   textClassName: PropTypes.string,
   // TypeScript class is not mappable to PropTypes.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   type: PropTypes.string,
   value: PropTypes.any

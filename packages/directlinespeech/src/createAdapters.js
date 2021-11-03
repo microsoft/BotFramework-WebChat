@@ -39,13 +39,8 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
-  const {
-    authorizationToken,
-    directLineToken,
-    directLineSpeechHostname,
-    region,
-    subscriptionKey
-  } = await resolveFunctionOrReturnValue(fetchCredentials);
+  const { authorizationToken, directLineToken, directLineSpeechHostname, region, subscriptionKey } =
+    await resolveFunctionOrReturnValue(fetchCredentials);
 
   if (
     (!authorizationToken && !subscriptionKey) ||

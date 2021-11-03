@@ -58,7 +58,7 @@ beforeEach(() => {
     applyMiddleware(sagaMiddleware)
   );
 
-  sagaMiddleware.run(function*() {
+  sagaMiddleware.run(function* () {
     yield fork(connectSaga);
     yield fork(connectionStatusUpdateSaga);
     yield fork(detectSlowConnectionSaga);

@@ -1,51 +1,114 @@
+# This is copied from <rootDir>/.eslintrc.yml because Direct Line Speech SDK is potentially a separate package living outside of this mono-repo.
+
+# Diffs between root and this .eslintrc.yml
+# - Add `env.browser: true`
+
+root: true
+
 env:
   browser: true
   es6: true
-  jest: true
+
+plugins:
+  - prettier
+  - security
+
 extends:
-- eslint:recommended
-- plugin:node/recommended-module
-globals:
-  React: readonly
+  - eslint:recommended
+  - plugin:prettier/recommended
+  - plugin:security/recommended
+
 parserOptions:
-  ecmaFeatures:
-    jsx: true
-  ecmaVersion: 10
+  ecmaVersion: 2020
   sourceType: module
-root: true
+
+overrides:
+  - files:
+      - '__tests__/**/*.js'
+      - '*.spec.js'
+      - '*.test.js'
+
+    env:
+      jest: true
+
+  - files:
+      - '*.ts'
+      - '*.tsx'
+
+    extends:
+      - plugin:@typescript-eslint/recommended
+
+    plugins:
+      - '@typescript-eslint'
+
+    parser: '@typescript-eslint/parser'
+
+    rules:
+      # The correct way to use with typescript-eslint is to disable the core version.
+      # https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+
+      no-use-before-define: off
+      '@typescript-eslint/no-use-before-define':
+        - error
+
+      no-unused-vars: off
+      '@typescript-eslint/no-unused-vars':
+        - error
+        - argsIgnorePattern: ^_$
+          varsIgnorePattern: ^_
+
+      no-empty-function: off
+      '@typescript-eslint/no-empty-function': error
+
+      # TODO #4003: We will rework on these rules
+      '@typescript-eslint/ban-ts-comment': off
+      '@typescript-eslint/ban-types': off
+      '@typescript-eslint/explicit-function-return-type': off
+      '@typescript-eslint/explicit-member-accessibility': off
+      '@typescript-eslint/explicit-module-boundary-types': off
+      '@typescript-eslint/indent': off
+      '@typescript-eslint/interface-name-prefix': off
+      '@typescript-eslint/no-explicit-any': off
+
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
 
-  # Group - Best Practices
-  no-async-promise-executor: error
-  no-await-in-loop: error
-  no-console:
-  - error
-  - allow:
-    - error
-    - warn
-  # no-extra-parens: error # conflicts with prettier
-  no-misleading-character-class: error
-  no-template-curly-in-string: error
-  require-atomic-updates: error
   accessor-pairs: error
+  arrow-body-style:
+    - error
+    - as-needed
+  arrow-parens:
+    - error
+    - as-needed
+  arrow-spacing:
+    - error
+    - after: true
+      before: true
   block-scoped-var: error
   class-methods-use-this:
-  - error
-  - exceptMethods:
-    - render
+    - error
+    - exceptMethods:
+        - render
   complexity: error
   curly: error
   default-case: error
   dot-notation: error
   eqeqeq: error
   max-classes-per-file:
-  - error
-  - 2
+    - error
+    - 2
   no-alert: error
+  no-async-promise-executor: error
+  no-await-in-loop: error
+  no-console:
+    - error
+    - allow:
+        - error
+        - warn
   no-caller: error
   no-div-regex: error
+  no-duplicate-imports: error
   no-else-return: error
   no-empty-function: error
   no-eq-null: error
@@ -57,20 +120,22 @@ rules:
   no-implied-eval: error
   no-invalid-this: error
   no-iterator: error
+  no-label-var: error
   no-labels: error
   no-lone-blocks: error
   no-magic-numbers:
-  - error
-  - ignore:
-    - 0
-    - 1
+    - error
+    - ignore:
+        - 0
+        - 1
+  no-misleading-character-class: error
   no-multi-spaces:
-  - error
-  - ignoreEOLComments: true
+    - error
+    - ignoreEOLComments: true
   no-multi-str: error
-  no-new: error
   no-new-func: error
   no-new-wrappers: error
+  no-new: error
   no-octal-escape: error
   no-proto: error
   no-return-assign: error
@@ -78,106 +143,81 @@ rules:
   no-script-url: error
   no-self-compare: error
   no-sequences: error
+  no-shadow-restricted-names: error
+  no-template-curly-in-string: error
   no-throw-literal: error
+  no-undef-init: error
   no-unmodified-loop-condition: error
   no-unused-expressions:
-  - error
-  - allowShortCircuit: true
-    allowTernary: true
+    - error
+    - allowShortCircuit: true
+      allowTernary: true
+  no-unused-vars:
+    - error
+    - argsIgnorePattern: ^_$
+      varsIgnorePattern: ^_
+  no-use-before-define: error
   no-useless-call: error
   no-useless-catch: error
-  no-useless-concat: error
-  no-useless-return: error
-  no-void: error
-  no-with: error
-  prefer-promise-reject-errors: error
-  radix: error
-  require-await: error
-  require-unicode-regexp: error
-  wrap-iife: error
-  yoda: error
-
-  # Group - Variables
-  no-label-var: error
-
-  # Re-enable later
-  # no-shadow:
-  # - error
-  # - builtinGlobals: true
-  #   hoist: all
-
-  no-shadow-restricted-names: error
-  no-undef-init: error
-
-  # "undefined" is commonly used for defaults
-  # no-undefined: off
-
-  no-unused-vars:
-  - error
-  - argsIgnorePattern: ^_$
-    varsIgnorePattern: ^_
-  no-use-before-define: error
-
-  # Group - Node.js and CommonJS eslint-plugin-node
-  node/callback-return: error
-  node/global-require: error
-  node/handle-callback-err: error
-  node/no-mixed-requires: error
-  node/no-new-require: error
-  node/no-path-concat: error
-  node/no-sync: error
-  node/prefer-global/buffer: error
-
-  # Group - ECMAScript 6
-  arrow-body-style:
-  - error
-  - as-needed
-  arrow-parens:
-  - error
-  - as-needed
-  arrow-spacing:
-  - error
-  - after: true
-    before: true
-  # generator-star-spacing: # conflicts with prettier
-  # - error
-  # - after
-
-  # Will produce shorter code if "off"
-  # no-confusing-arrow:
-  # - error
-  # - allowParens: true # This will conflict with no-extra-parens
-
-  no-duplicate-imports: error
   no-useless-computed-key: error
+  no-useless-concat: error
   no-useless-constructor: error
   no-useless-rename: error
+  no-useless-return: error
   no-var: error
+  no-void: error
+  no-with: error
   object-shorthand: error
   prefer-arrow-callback: error
   prefer-const: error
   prefer-destructuring: error
+  prefer-promise-reject-errors: error
   prefer-rest-params: error
   prefer-spread: error
+  radix: error
+  require-atomic-updates: error
+  require-await: error
+  require-unicode-regexp: error
+  rest-spread-spacing:
+    - error
+    - never
+  template-curly-spacing:
+    - error
+    - never
+  yield-star-spacing:
+    - error
+    - after
+  yoda: error
+
+  # Re-enable later
+  # no-shadow:
+  #   - error
+  #   - builtinGlobals: true
+  #     hoist: all
+
+  # Cannot group global or local imports and sort in differently
+  # sort-imports:
+  #   - error
+  #   - ignoreCase: true
 
   # This will force, a + '', into, `${ a }`, which increase code length
   # prefer-template: error
 
-  rest-spread-spacing:
-  - error
-  - never
+  # Will produce shorter code if "off"
+  # no-confusing-arrow:
+  #   - error
+  #   - allowParens: true # This will conflict with no-extra-parens
 
-  # Cannot group global or local imports and sort in differently
-  # sort-imports:
-  # - error
-  # - ignoreCase: true
+  # "undefined" is commonly used for defaults
+  # no-undefined: off
 
-  template-curly-spacing:
-  - error
-  - never
-  yield-star-spacing:
-  - error
-  - after
-settings:
-  react:
-    version: detect
+  # Conflicts with "prettier/recommended"
+  # generator-star-spacing:
+  #   - error
+  #   - after
+
+  # Conflicts with "prettier/recommended"
+  # wrap-iife: error
+
+  # Conflicts with "react/jsx-wrap-multilines"
+  # no-extra-parens: error

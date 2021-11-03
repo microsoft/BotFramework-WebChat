@@ -36,17 +36,18 @@ export default function createBasicTranscriptStyleSet({
         }
       },
 
-      '&:focus .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator': {
-        height: '100%',
-        borderColor: transcriptVisualKeyboardIndicatorColor,
-        borderStyle: transcriptVisualKeyboardIndicatorStyle,
-        borderWidth: transcriptVisualKeyboardIndicatorWidth,
-        boxSizing: 'border-box',
-        pointerEvents: 'none',
-        position: 'absolute',
-        top: 0,
-        width: '100%'
-      },
+      '&:focus .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator':
+        {
+          height: '100%',
+          borderColor: transcriptVisualKeyboardIndicatorColor,
+          borderStyle: transcriptVisualKeyboardIndicatorStyle,
+          borderWidth: transcriptVisualKeyboardIndicatorWidth,
+          boxSizing: 'border-box',
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: 0,
+          width: '100%'
+        },
 
       '& .webchat__basic-transcript__activity': {
         paddingTop: paddingRegular,

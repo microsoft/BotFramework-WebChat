@@ -3,7 +3,8 @@ import getToastDismissButtons from '../pageElements/toastDismissButtons';
 
 export default async function dismissToast(index) {
   const toastDismissButtons = getToastDismissButtons();
-  const toastDismissButton = toastDismissButtons[index];
+
+  const toastDismissButton = toastDismissButtons[+index];
 
   if (!toastDismissButton) {
     throw new Error(

@@ -36,7 +36,6 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
 
-// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const emotionPool = {};
@@ -98,7 +97,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     // 1. If 2 instances use different nonce, they should result in different hash;
     // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
     const emotion =
-      emotionPool[nonce] || (emotionPool[nonce] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
+      // Prefix "id-" to prevent object injection attack.
+      emotionPool[`id-${nonce}`] ||
+      (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
     return style => emotion.css(style);
   }, [nonce]);
@@ -225,6 +226,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 };
 
 ComposerCore.defaultProps = {
+  children: undefined,
   extraStyleSet: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
@@ -301,9 +303,10 @@ const Composer: FC<ComposerProps> = ({
     [cardActionMiddleware]
   );
 
-  const patchedToastMiddleware = useMemo(() => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()], [
-    toastMiddleware
-  ]);
+  const patchedToastMiddleware = useMemo(
+    () => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()],
+    [toastMiddleware]
+  );
 
   const patchedTypingIndicatorMiddleware = useMemo(
     () => [...singleToArray(typingIndicatorMiddleware), ...createDefaultTypingIndicatorMiddleware()],

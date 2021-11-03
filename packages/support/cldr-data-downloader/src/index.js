@@ -40,6 +40,7 @@ export default function (srcUrl, destPath, options, callback) {
   assert(typeof srcUrl === 'string', 'must include srcUrl (e.g., "http://www.unicode.org/Public/cldr/26/json.zip")');
 
   assert(typeof destPath === 'string', 'must include destPath (e.g., "./cldr")');
+  assert(!/\.\./u.test(destPath), '"destPath" must not contains "..".');
 
   assert(typeof options === 'object', 'invalid options');
 
@@ -78,6 +79,8 @@ export default function (srcUrl, destPath, options, callback) {
         let { filterRe } = options;
 
         if (typeof filterRe === 'string') {
+          // ReDOS attack should only be carried out by the user themselves.
+          // eslint-disable-next-line security/detect-non-literal-regexp
           filterRe = new RegExp(filterRe, 'u');
         }
 

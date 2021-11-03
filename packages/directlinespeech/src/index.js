@@ -8,6 +8,9 @@ if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && do
   const meta = document.createElement('meta');
 
   meta.setAttribute('name', 'botframework-directlinespeech:version');
+
+  // We injected "process.env.npm_package_version" during compilation.
+  // eslint-disable-next-line no-undef
   meta.setAttribute('content', process.env.npm_package_version);
 
   document.head.appendChild(meta);

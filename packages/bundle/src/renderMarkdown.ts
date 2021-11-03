@@ -75,7 +75,7 @@ export default function render(
   })
     .use(markdownItAttrs)
     .use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-      const token = tokens[index];
+      const token = tokens[+index];
 
       token.attrSet('rel', 'noopener noreferrer');
       token.attrSet('target', '_blank');
@@ -98,7 +98,6 @@ export default function render(
     .render(markdown);
 
   // The signature from "sanitize-html" module is not correct.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
 }

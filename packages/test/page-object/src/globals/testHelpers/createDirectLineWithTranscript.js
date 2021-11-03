@@ -75,7 +75,9 @@ export default function createDirectLineWithTranscript(activitiesOrFilename, { o
     },
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
     connectionStatusDeferredObservable,
-    end: () => {},
+    end: () => {
+      // This is a mock and will no-op on dispatch().
+    },
     postActivity: activity => {
       if (overridePostActivity) {
         return overridePostActivity(activity);

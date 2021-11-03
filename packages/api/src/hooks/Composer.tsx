@@ -167,6 +167,12 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
+// It seems "react/require-default-props" did not pick up `ComposerCore.defaultProps`.
+// And it falsely complaint `optional?: string` must have a corresponding `ComposerCore.defaultProps.optional = undefined`, even we already set it below.
+// Since we set both TypeScript `Props` class and `ComposerCore.propTypes`, this check will be done there as well.
+// Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
+
+/* eslint-disable react/require-default-props */
 type ComposerCoreProps = {
   activityMiddleware?: OneOrMany<ActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
@@ -182,7 +188,6 @@ type ComposerCoreProps = {
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
   internalErrorBoxClass?: React.Component | Function;
-  internalRenderErrorBox?: any;
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
@@ -213,6 +218,7 @@ type ComposerCoreProps = {
   /** @deprecated Please use "typingIndicatorRenderer" instead. */
   typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
 };
+/* eslint-enable react/require-default-props */
 
 const ComposerCore: FC<ComposerCoreProps> = ({
   activityMiddleware,
@@ -289,16 +295,15 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     };
   }, [dispatch, directLine, userID, username]);
 
-  const cardActionContext = useMemo(() => createCardActionContext({ cardActionMiddleware, directLine, dispatch }), [
-    cardActionMiddleware,
-    directLine,
-    dispatch
-  ]);
+  const cardActionContext = useMemo(
+    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch }),
+    [cardActionMiddleware, directLine, dispatch]
+  );
 
-  const patchedSelectVoice = useMemo(() => selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
-    locale,
-    selectVoice
-  ]);
+  const patchedSelectVoice = useMemo(
+    () => selectVoice || defaultSelectVoice.bind(null, { language: locale }),
+    [locale, selectVoice]
+  );
 
   const groupActivitiesContext = useMemo(
     () =>
@@ -310,7 +315,13 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   );
 
   const hoistedDispatchers = useMemo(
-    () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher(...args))),
+    () =>
+      mapMap(
+        DISPATCHERS,
+        dispatcher =>
+          (...args) =>
+            dispatch(dispatcher(...args))
+      ),
     [dispatch]
   );
 
@@ -358,13 +369,15 @@ const ComposerCore: FC<ComposerCoreProps> = ({
         'activity',
         { strict: false },
         ...singleToArray(activityMiddleware),
-        () => () => ({ activity }) => {
-          if (activity) {
-            throw new Error(`No renderer for activity of type "${activity.type}"`);
-          } else {
-            throw new Error('No activity to render');
+        () =>
+          () =>
+          ({ activity }) => {
+            if (activity) {
+              throw new Error(`No renderer for activity of type "${activity.type}"`);
+            } else {
+              throw new Error('No activity to render');
+            }
           }
-        }
       )({})
     );
   }, [activityMiddleware, activityRenderer]);
@@ -392,19 +405,21 @@ const ComposerCore: FC<ComposerCoreProps> = ({
         'attachment for screen reader',
         { strict: true },
         ...singleToArray(attachmentForScreenReaderMiddleware),
-        () => () => ({ attachment }) => {
-          if (attachment) {
-            console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
-            return false;
-          }
+        () =>
+          () =>
+          ({ attachment }) => {
+            if (attachment) {
+              console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
+              return false;
+            }
 
-          return () => {
-            /**
-             * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix
-             */
-            throw new Error('No attachment to render');
-          };
-        }
+            return () => {
+              /**
+               * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix
+               */
+              throw new Error('No attachment to render');
+            };
+          }
       )({}),
     [attachmentForScreenReaderMiddleware]
   );
@@ -422,13 +437,15 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     return applyMiddlewareForLegacyRenderer(
       'attachment',
       ...singleToArray(attachmentMiddleware),
-      () => () => ({ attachment }) => {
-        if (attachment) {
-          throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-        } else {
-          throw new Error('No attachment to render');
+      () =>
+        () =>
+        ({ attachment }) => {
+          if (attachment) {
+            throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+          } else {
+            throw new Error('No attachment to render');
+          }
         }
-      }
     )({});
   }, [attachmentMiddleware, attachmentRenderer]);
 
@@ -440,8 +457,11 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 
     return (
       avatarRenderer ||
-      applyMiddlewareForRenderer('avatar', { strict: false }, ...singleToArray(avatarMiddleware), () => () => () =>
-        false
+      applyMiddlewareForRenderer(
+        'avatar',
+        { strict: false },
+        ...singleToArray(avatarMiddleware),
+        () => () => () => false
       )({})
     );
   }, [avatarMiddleware, avatarRenderer]);
@@ -458,13 +478,15 @@ const ComposerCore: FC<ComposerCoreProps> = ({
         'toast',
         { strict: false },
         ...singleToArray(toastMiddleware),
-        () => () => ({ notification }) => {
-          if (notification) {
-            throw new Error(`No renderer for notification of type "${notification.contentType}"`);
-          } else {
-            throw new Error('No notification to render');
+        () =>
+          () =>
+          ({ notification }) => {
+            if (notification) {
+              throw new Error(`No renderer for notification of type "${notification.contentType}"`);
+            } else {
+              throw new Error('No notification to render');
+            }
           }
-        }
       )({})
     );
   }, [toastMiddleware, toastRenderer]);
@@ -672,7 +694,10 @@ ComposerCore.propTypes = {
   username: PropTypes.string
 };
 
-type ComposerProps = ComposerCoreProps & { store?: any };
+type ComposerProps = ComposerCoreProps & {
+  internalRenderErrorBox?: any;
+  store?: any;
+};
 
 // We will create a Redux store if it was not passed in
 const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, store, ...props }) => {
@@ -696,7 +721,7 @@ const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, stor
   ) : (
     <ErrorBoundary onError={handleError}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <ComposerCore internalRenderErrorBox={internalRenderErrorBox} onTelemetry={onTelemetry} {...props} />
+        <ComposerCore onTelemetry={onTelemetry} {...props} />
       </Provider>
     </ErrorBoundary>
   );

@@ -1,6 +1,6 @@
 import ActivityGroupingContext from './ActivityGroupingContext';
 
-const { React: { useContext, useMemo } = {} } = window;
+const { React: { Fragment, useContext, useMemo } = {} } = window;
 
 const ActivityGroupingBadges = () => {
   const {
@@ -63,11 +63,11 @@ const ActivityGroupingBadges = () => {
   return (
     <div className="badges" dir="ltr">
       {badges.map(badge => (
-        <React.Fragment key={badge}>
+        <Fragment key={badge}>
           <nobr className="badges__badge">{badge}</nobr>
           {/* Using zero-width space to break separate <nobr> into another line if needed. */}
           {'\u200B'}
-        </React.Fragment>
+        </Fragment>
       ))}
     </div>
   );

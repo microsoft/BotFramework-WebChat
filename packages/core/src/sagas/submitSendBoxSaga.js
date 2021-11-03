@@ -7,7 +7,7 @@ import setSendBox from '../actions/setSendBox';
 import whileConnected from './effects/whileConnected';
 
 function* submitSendBox() {
-  yield takeEvery(SUBMIT_SEND_BOX, function*({ payload: { channelData, method } }) {
+  yield takeEvery(SUBMIT_SEND_BOX, function* ({ payload: { channelData, method } }) {
     const sendBoxValue = yield select(sendBoxValueSelector);
 
     if (sendBoxValue) {

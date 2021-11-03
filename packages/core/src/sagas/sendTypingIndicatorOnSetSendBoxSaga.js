@@ -34,7 +34,7 @@ function* sendTypingIndicatorOnSetSendBox() {
         // When the user type, and then post the activity at t = 1500, we still have a pending typing indicator at t = 3000.
         // This code is to cancel the typing indicator at t = 3000.
         (type === POST_ACTIVITY && payload.activity.type !== 'typing'),
-      function*({ payload, type }) {
+      function* ({ payload, type }) {
         if (type === SET_SEND_BOX) {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 

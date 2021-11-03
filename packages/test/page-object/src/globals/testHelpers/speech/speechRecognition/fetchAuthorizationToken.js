@@ -18,5 +18,5 @@ export default async function fetchAuthorizationToken({ region, subscriptionKey,
     throw new Error(`Failed to fetch authorization token, server returned ${res.status}`);
   }
 
-  return await res.text();
+  return res.text();
 }

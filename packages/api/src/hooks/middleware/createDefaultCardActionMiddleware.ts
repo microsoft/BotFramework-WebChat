@@ -3,38 +3,40 @@ import { sendMessage, sendMessageBack, sendPostBack } from 'botframework-webchat
 import CardActionMiddleware from '../../types/CardActionMiddleware';
 
 export default function createDefaultCardActionMiddleware(): CardActionMiddleware {
-  return ({ dispatch }) => next => (...args) => {
-    const [
-      {
-        cardAction,
-        cardAction: { value }
-      }
-    ] = args;
-
-    // We cannot use destructured "type" here because TypeScript don't recognize "messageBack" is "MessageBackCardAction".
-    switch (cardAction.type) {
-      case 'imBack':
-        if (typeof value === 'string') {
-          // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-          dispatch(sendMessage(value, 'imBack'));
-        } else {
-          throw new Error('cannot send "imBack" with a non-string value');
+  return ({ dispatch }) =>
+    next =>
+    (...args) => {
+      const [
+        {
+          cardAction,
+          cardAction: { value }
         }
+      ] = args;
 
-        break;
+      // We cannot use destructured "type" here because TypeScript don't recognize "messageBack" is "MessageBackCardAction".
+      switch (cardAction.type) {
+        case 'imBack':
+          if (typeof value === 'string') {
+            // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
+            dispatch(sendMessage(value, 'imBack'));
+          } else {
+            throw new Error('cannot send "imBack" with a non-string value');
+          }
 
-      case 'messageBack':
-        dispatch(sendMessageBack(value, cardAction.text, cardAction.displayText));
+          break;
 
-        break;
+        case 'messageBack':
+          dispatch(sendMessageBack(value, cardAction.text, cardAction.displayText));
 
-      case 'postBack':
-        dispatch(sendPostBack(value));
+          break;
 
-        break;
+        case 'postBack':
+          dispatch(sendPostBack(value));
 
-      default:
-        return next(...args);
-    }
-  };
+          break;
+
+        default:
+          return next(...args);
+      }
+    };
 }

@@ -1,5 +1,4 @@
-module.exports = () => {
-  return function click(element) {
+module.exports = () =>
+  function click(element) {
     return element.click();
   };
-};

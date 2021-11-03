@@ -4,21 +4,21 @@ import supportPseudoClass from '../../Utils/supportPseudoClass';
 import useNonce from './useNonce';
 import useValueRef from './useValueRef';
 
-const INPUT_TYPES_ALLOW_LIST = {
-  'datetime-local': 1,
-  date: 1,
-  datetime: 1,
-  email: 1,
-  month: 1,
-  number: 1,
-  password: 1,
-  search: 1,
-  tel: 1,
-  text: 1,
-  time: 1,
-  url: 1,
-  week: 1
-};
+const INPUT_TYPES_ALLOW_LIST = [
+  'date',
+  'datetime-local',
+  'datetime',
+  'email',
+  'month',
+  'number',
+  'password',
+  'search',
+  'tel',
+  'text',
+  'time',
+  'url',
+  'week'
+];
 
 /**
  * Computes whether the given element should automatically trigger the
@@ -31,7 +31,7 @@ function focusTriggersKeyboardModality(el: HTMLInputElement | HTMLTextAreaElemen
   const { isContentEditable, readOnly, tagName, type } = el;
 
   return (
-    (tagName === 'INPUT' && INPUT_TYPES_ALLOW_LIST[type] && !readOnly) ||
+    (tagName === 'INPUT' && INPUT_TYPES_ALLOW_LIST.includes(type) && !readOnly) ||
     (tagName === 'TEXTAREA' && !readOnly) ||
     isContentEditable
   );
@@ -224,6 +224,7 @@ function useObserveFocusVisibleForModernBrowsers(
 
     // We specifically add "targetRef.current" here.
     // If the target element changed, we should reattach our event listeners.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleFocus, targetRef, targetRef.current]);
 }
 

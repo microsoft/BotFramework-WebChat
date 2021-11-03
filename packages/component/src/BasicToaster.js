@@ -40,8 +40,12 @@ const LEVEL_AS_NUMBER = {
   success: 4
 };
 
+const LEVEL_AS_NUMBER_KEYS = Object.keys(LEVEL_AS_NUMBER);
+
 function getLevelAsNumber(level) {
-  return LEVEL_AS_NUMBER[level] || 5;
+  // Mitigated through allowlisting.
+  // eslint-disable-next-line security/detect-object-injection
+  return LEVEL_AS_NUMBER_KEYS.includes(level) ? LEVEL_AS_NUMBER[level] : 5;
 }
 
 function compareLevel(x, y) {

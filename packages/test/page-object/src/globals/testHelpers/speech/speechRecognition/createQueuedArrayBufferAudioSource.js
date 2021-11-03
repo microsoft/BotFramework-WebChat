@@ -79,7 +79,7 @@ class QueuedArrayBufferAudioSource {
       detach: () => {
         stream.readEnded();
 
-        delete this._streams[audioNodeId];
+        delete this._streams[+audioNodeId];
 
         this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
 
@@ -91,10 +91,10 @@ class QueuedArrayBufferAudioSource {
   }
 
   detach(audioNodeId) {
-    if (audioNodeId && this._streams[audioNodeId]) {
-      this._streams[audioNodeId].close();
+    if (audioNodeId && this._streams[+audioNodeId]) {
+      this._streams[+audioNodeId].close();
 
-      delete this._streams[audioNodeId];
+      delete this._streams[+audioNodeId];
 
       this.onEvent(new AudioStreamNodeDetachedEvent(this._id, audioNodeId));
     }
@@ -113,7 +113,7 @@ class QueuedArrayBufferAudioSource {
 
     const stream = new ChunkedArrayBufferStream(this.format.avgBytesPerSec / 10, audioNodeId);
 
-    this._streams[audioNodeId] = stream;
+    this._streams[+audioNodeId] = stream;
 
     const arrayBuffer = this._queue.shift();
     const { byteLength } = arrayBuffer;

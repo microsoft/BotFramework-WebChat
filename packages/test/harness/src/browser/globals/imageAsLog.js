@@ -5,7 +5,7 @@ async function getBlobURL(base64) {
   return URL.createObjectURL(blob);
 }
 
-async function getImageSize(url) {
+function getImageSize(url) {
   return new Promise((resolve, reject) => {
     const imageElement = document.createElement('img');
 
@@ -31,6 +31,6 @@ async function imageAsLog(base64, scale = 1) {
   ];
 }
 
-export default async function () {
+export default function () {
   return window.imageAsLog || (window.imageAsLog = imageAsLog);
 }

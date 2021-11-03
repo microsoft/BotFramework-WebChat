@@ -41,8 +41,7 @@
   "scripts": {
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "eslint",
-    "prettier": "prettier --check src/**/*.{js,ts,tsx}"
+    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "adm-zip": "^0.5.5",
@@ -51,9 +50,5 @@
     "q": "^1.5.1",
     "request": "^2.88.2",
     "request-progress": "^3.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "prettier": "^2.4.1"
   }
 }

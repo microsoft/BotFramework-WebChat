@@ -193,7 +193,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       let nextVisibleActivity: DirectLineActivity;
 
       for (let index = activities.length - 1; index >= 0; index--) {
-        const activity = activities[index];
+        const activity = activities[+index];
         const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
 
         if (renderActivity) {
@@ -725,7 +725,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
       const nextIndex = ~index
         ? Math.max(0, Math.min(renderingElements.length - 1, index + delta))
         : renderingElements.length - 1;
-      const nextFocusedActivity = renderingElements[nextIndex];
+      const nextFocusedActivity = renderingElements[+nextIndex];
 
       setUserFocusedActivityKeyWithScroll(nextFocusedActivity.key);
       rootElementRef.current?.focus();
@@ -787,7 +787,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
         event.stopPropagation();
       }
     },
-    [activityElementsRef, focus, focusRelativeActivity, getFocusedActivityKey, renderingElementsRef, terminatorRef]
+    [focus, focusRelativeActivity, getFocusedActivityKey, renderingElementsRef, terminatorRef]
   );
 
   const labelId = useUniqueId('webchat__basic-transcript__label');
@@ -1201,7 +1201,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
           let firstUnacknowledgedActivityElementIndex = -1;
 
           for (let index = lastAcknowledgedActivityIndex + 1, { length } = activities; index < length; index++) {
-            const activity = activities[index];
+            const activity = activities[+index];
             const activityElementIndex = activityElements.findIndex(entry => entry.activity === activity);
 
             if (~activityElementIndex) {
@@ -1229,7 +1229,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
             if (patchedAutoScrollSnapOnPage) {
               const { element: firstUnacknowledgedActivityElement } =
-                activityElements[firstUnacknowledgedActivityElementIndex];
+                activityElements[+firstUnacknowledgedActivityElementIndex];
 
               values.push(
                 firstUnacknowledgedActivityElement.offsetTop -

@@ -10,19 +10,13 @@ function defined(sum, i) {
   return sum;
 }
 
-function get(attribute) {
-  return function (obj) {
-    return obj[attribute];
-  };
-}
-
 function summation(sum, i) {
   return sum + (i || 0);
 }
 
 function consolidatedState() {
-  const totals = states.map(get('total')).reduce(defined, []);
-  const received = states.map(get('received')).reduce(summation, 0);
+  const totals = states.map(({ total }) => total).reduce(defined, []);
+  const received = states.map(({ received }) => received).reduce(summation, 0);
 
   if (totals.length < nDownloads) {
     return {
@@ -34,9 +28,9 @@ function consolidatedState() {
 
   return {
     // eslint-disable-next-line no-magic-numbers
-    completed: states.map(get('percent')).every(state => state === 100),
+    completed: states.map(({ percent }) => percent).every(state => state === 100),
     received,
-    total: states.map(get('total')).reduce(summation, 0)
+    total: states.map(({ total }) => total).reduce(summation, 0)
   };
 }
 

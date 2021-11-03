@@ -9,13 +9,22 @@
 
 'use strict';
 
+import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 
 function AvailableLocales(destPath) {
+  assert(!/\.\./u.test(destPath), '"destPath" must not contains ".."');
+
   const mainPath = path.join(destPath, 'main');
 
+  // Mitigated by asserting "destPath" does not contains "..".
+  // TODO: Turn this into async.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
   this.availableLocales = fs.readdirSync(mainPath).filter(filepath => {
+    // Mitigated by asserting "destPath" does not contains "..".
+    // TODO: Turn this into async.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
     const stats = fs.statSync(path.join(mainPath, filepath));
 
     return stats.isDirectory();
@@ -39,8 +48,14 @@ proto.toJson = function () {
 proto.write = function () {
   // eslint-disable-next-line no-magic-numbers
   const data = JSON.stringify(this.toJson(), null, 2);
+  const filepath = this.filepath();
 
-  fs.writeFileSync(this.filepath(), data);
+  assert(!/\.\./u.test(filepath), '"filepath" must not contains ".."');
+
+  // "filepath" is clean.
+  // TODO: Turn this into async.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename, node/no-sync
+  fs.writeFileSync(filepath, data);
 };
 
 export default AvailableLocales;

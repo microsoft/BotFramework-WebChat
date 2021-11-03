@@ -1,15 +1,19 @@
-env:
-  browser: true
-  es2021: true
-  jest: true
 extends:
-  - eslint:recommended
+  - ../../../.eslintrc.react.yml
+
+env:
+  # This package is expected to run under <script>.
+  browser: true
+  jest: true
+
 globals:
   global: true
   host: true
   Observable: true
-parserOptions:
-  ecmaFeatures:
-    jsx: true
-  sourceType: module
-root: true
+
+  # We are using React from UMD.
+  React: true
+
+rules:
+  # This package contains lots of timeout values.
+  no-magic-numbers: off

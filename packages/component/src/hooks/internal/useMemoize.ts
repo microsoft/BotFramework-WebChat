@@ -33,7 +33,7 @@ export default function useMemoize<TArgs extends [], TIntermediate, TFinal>(
       const result = run((...args) => {
         const { result } = [...cache, ...nextCache].find(
           ({ args: cachedArgs }) =>
-            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[index]))
+            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]))
         ) || { result: fn(...args) };
 
         nextCache.push({ args, result });

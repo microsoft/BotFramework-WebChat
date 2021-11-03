@@ -1,4 +1,10 @@
-import EventTarget, { defineEventAttribute } from 'event-target-shim';
+// This will mock multiple classes.
+/* eslint-disable max-classes-per-file */
+
+// A lot of mock functions are empty and do not reference `this`.
+/* eslint-disable class-methods-use-this */
+
+import EventTarget, { getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
 
 import pcmWaveArrayBufferToFloat32Arrays from '../pcmWaveArrayBufferToFloat32Arrays';
 
@@ -37,7 +43,7 @@ class MockAudioBuffer {
   }
 
   getChannelData(channel) {
-    return this._channelData[channel];
+    return this._channelData[+channel];
   }
 
   get length() {
@@ -59,6 +65,14 @@ class MockAudioBufferSource extends EventTarget {
 
     this.buffer = null;
     this._startHandler = startHandler;
+  }
+
+  get onended() {
+    return getEventAttributeValue(this, 'ended');
+  }
+
+  set onended(value) {
+    setEventAttributeValue(this, 'ended', value);
   }
 
   connect(node) {
@@ -94,8 +108,6 @@ class MockAudioDestinationNode {
   }
 }
 
-defineEventAttribute(MockAudioBufferSource.prototype, 'ended');
-
 export default class MockAudioContext extends EventTarget {
   constructor({ audioDataDecoder, bufferSourceStartHandler } = {}) {
     super();
@@ -105,6 +117,14 @@ export default class MockAudioContext extends EventTarget {
     this._audioDataDecoder = audioDataDecoder;
     this._bufferSourceStartHandler = bufferSourceStartHandler;
     this.state = 'running';
+  }
+
+  get onstatechange() {
+    return getEventAttributeValue(this, 'statechange');
+  }
+
+  set onstatechange(value) {
+    setEventAttributeValue(this, 'statechange', value);
   }
 
   close() {
@@ -134,27 +154,28 @@ export default class MockAudioContext extends EventTarget {
     }
   }
 
-  async decodeAudioData(arrayBuffer) {
+  decodeAudioData(arrayBuffer) {
     if (this._audioDataDecoder) {
-      return await this._audioDataDecoder(arrayBuffer);
-    } else {
-      const header = [...new Uint8Array(arrayBuffer.slice(0, 3))];
-
-      if (header[0] === 73 && header[1] === 68 && header[2] === 51) {
-        // MP3 starts with "ID3" tag
-        console.log('MP3 is not supported; ignoring this audio data.');
-
-        return this.createBuffer(1, 0, 16000);
-      }
-
-      // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
-      const buffer = this.createBuffer(1, arrayBuffer.byteLength / 2, 16000);
-
-      new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
-
-      return buffer;
+      return this._audioDataDecoder(arrayBuffer);
     }
+
+    const header = [...new Uint8Array(arrayBuffer.slice(0, 3))];
+
+    if (header[0] === 73 && header[1] === 68 && header[2] === 51) {
+      // MP3 starts with "ID3" tag
+      // eslint-disable-next-line no-console
+      console.log('MP3 is not supported; ignoring this audio data.');
+
+      // Speech SDK requires Promise and would fail silently if it is a resolved result.
+      return Promise.resolve(this.createBuffer(1, 0, 16000));
+    }
+
+    // We assume the audio data is PCM raw 16-bit 16000 Hz mono.
+    const buffer = this.createBuffer(1, arrayBuffer.byteLength / 2, 16000);
+
+    new Float32Array(buffer.getChannelData(0)).set(pcmWaveArrayBufferToFloat32Arrays(arrayBuffer, 1)[0]);
+
+    // Speech SDK requires Promise and would fail silently if it is a resolved result.
+    return Promise.resolve(buffer);
   }
 }
-
-defineEventAttribute(MockAudioContext.prototype, 'statechange');

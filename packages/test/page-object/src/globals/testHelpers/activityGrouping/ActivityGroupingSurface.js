@@ -1,8 +1,13 @@
+import PropTypes from 'prop-types';
+
+import ActivityGroupingContext from './ActivityGroupingContext';
 import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
 
 // Use React from window (UMD) instead of import.
 const { React: { useEffect, useMemo, useState } = {} } = window;
 
+// When modifying this list, make sure both side of this list does not contains
+// forbidden property names, e.g. `__proto__`, `constructor`, or `prototype`.
 const URL_QUERY_MAPPING = {
   bi: 'botAvatarInitials',
   bn: 'botNub',
@@ -19,23 +24,27 @@ const URL_QUERY_MAPPING = {
 };
 
 function createCustomActivityMiddleware(attachmentLayout) {
-  return () => next => (arg0, ...args) =>
-    next(
-      {
-        ...arg0,
-        activity: {
-          ...arg0.activity,
-          ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
-        }
-      },
-      ...args
-    );
+  return () =>
+    next =>
+    (arg0, ...args) =>
+      next(
+        {
+          ...arg0,
+          activity: {
+            ...arg0.activity,
+            ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
+          }
+        },
+        ...args
+      );
 }
 
 function generateURL(state) {
   const params = {};
 
   Object.entries(URL_QUERY_MAPPING).forEach(([short, long]) => {
+    // Both "long" and "short" should not contains forbidden property names.
+    // eslint-disable-next-line security/detect-object-injection
     const value = state[long];
 
     // Do not set "wd=0" for easier copy and paste.
@@ -44,6 +53,8 @@ function generateURL(state) {
     }
 
     if (typeof value !== 'undefined') {
+      // Both "long" and "short" should not contains forbidden property names.
+      // eslint-disable-next-line security/detect-object-injection
       params[short] = value === true ? '1' : value === false ? '0' : value + '';
     }
   });
@@ -74,12 +85,20 @@ function getInitialState(defaultValues = {}) {
     const value = params.get(short);
 
     if (typeof value === 'undefined') {
+      // Both "long" and "short" should not contains forbidden property names.
+      // eslint-disable-next-line security/detect-object-injection
       initialState[long] = defaultValues[long];
     } else if (value === '1') {
+      // Both "long" and "short" should not contains forbidden property names.
+      // eslint-disable-next-line security/detect-object-injection
       initialState[long] = true;
     } else if (value === '0') {
+      // Both "long" and "short" should not contains forbidden property names.
+      // eslint-disable-next-line security/detect-object-injection
       initialState[long] = false;
     } else {
+      // Both "long" and "short" should not contains forbidden property names.
+      // eslint-disable-next-line security/detect-object-injection
       initialState[long] = value;
     }
   });
@@ -184,20 +203,18 @@ const ActivityGroupingSurface = ({ children }) => {
       wide
     }),
     [
-      {
-        attachmentLayout,
-        botAvatarInitials,
-        botNub,
-        botOnTop,
-        hide,
-        rtl,
-        showAvatarInGroup,
-        transcriptName,
-        userAvatarInitials,
-        userNub,
-        userOnTop,
-        wide
-      }
+      attachmentLayout,
+      botAvatarInitials,
+      botNub,
+      botOnTop,
+      hide,
+      rtl,
+      showAvatarInGroup,
+      transcriptName,
+      userAvatarInitials,
+      userNub,
+      userOnTop,
+      wide
     ]
   );
 
@@ -247,6 +264,14 @@ const ActivityGroupingSurface = ({ children }) => {
   );
 
   return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
+};
+
+ActivityGroupingSurface.defaultProps = {
+  children: undefined
+};
+
+ActivityGroupingSurface.propTypes = {
+  children: PropTypes.any
 };
 
 export default ActivityGroupingSurface;

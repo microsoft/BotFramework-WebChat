@@ -14,32 +14,33 @@ export default function useCreateActivityRendererInternal(
   const renderAttachment: RenderAttachment = renderAttachmentOverride || defaultRenderAttachment;
 
   return useMemo(
-    () => (...createActivityRendererOptions) => {
-      const renderActivity = createActivityRenderer(...createActivityRendererOptions);
+    () =>
+      (...createActivityRendererOptions) => {
+        const renderActivity = createActivityRenderer(...createActivityRendererOptions);
 
-      if (!renderActivity) {
-        return false;
-      }
-
-      return renderActivityOptions => {
-        if (isValidElement(renderActivity)) {
-          return renderActivity;
+        if (!renderActivity) {
+          return false;
         }
 
-        const activityElement = renderActivity(
-          (...renderAttachmentArgs) => renderAttachment(...renderAttachmentArgs),
-          renderActivityOptions
-        );
+        return renderActivityOptions => {
+          if (isValidElement(renderActivity)) {
+            return renderActivity;
+          }
 
-        // "activityElement" cannot be false. If the middleware want to hide the "activityElement", it should return "false" when we call createActivityRenderer().
-        activityElement ||
-          console.warn(
-            'botframework-webchat: To hide an activity, the activity renderer should return false. It should not return a function that will return false when called.'
+          const activityElement = renderActivity(
+            (...renderAttachmentArgs) => renderAttachment(...renderAttachmentArgs),
+            renderActivityOptions
           );
 
-        return activityElement;
-      };
-    },
+          // "activityElement" cannot be false. If the middleware want to hide the "activityElement", it should return "false" when we call createActivityRenderer().
+          activityElement ||
+            console.warn(
+              'botframework-webchat: To hide an activity, the activity renderer should return false. It should not return a function that will return false when called.'
+            );
+
+          return activityElement;
+        };
+      },
     [createActivityRenderer, renderAttachment]
   );
 }

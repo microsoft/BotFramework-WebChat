@@ -5,7 +5,7 @@ const override = require('../utils/override');
 
 // Send the completion back to the browser console.
 module.exports = (webDriver, done) =>
-  override(done, undefined, async function done() {
+  override(done, undefined, async () => {
     /* istanbul ignore next */
     await webDriver.executeScript(() => {
       console.log(
@@ -14,6 +14,8 @@ module.exports = (webDriver, done) =>
         ''
       );
 
+      // This code is running in browser VM where "document" is available.
+      // eslint-disable-next-line no-undef
       const div = document.createElement('div');
 
       div.setAttribute(
@@ -23,6 +25,8 @@ module.exports = (webDriver, done) =>
 
       div.textContent = '✔️';
 
+      // This code is running in browser VM where "document" is available.
+      // eslint-disable-next-line no-undef
       document.body.appendChild(div);
     });
 

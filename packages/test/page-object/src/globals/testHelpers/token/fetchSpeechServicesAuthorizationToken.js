@@ -18,5 +18,5 @@ export default async function fetchSpeechServicesAuthorizationToken({ region, su
     throw new Error(`Failed to fetch authorization token, server returned ${res.status}`);
   }
 
-  return await res.text();
+  return res.text();
 }

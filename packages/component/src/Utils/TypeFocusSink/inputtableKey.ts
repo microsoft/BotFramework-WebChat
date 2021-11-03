@@ -10,6 +10,10 @@ const INPUTTABLE_KEY = {
   Subtract: '-' // Numpad subtract key
 };
 
+const INPUTTABLE_KEY_KEYS = Object.keys(INPUTTABLE_KEY);
+
 export default function inputtableKey(key) {
-  return key.length === 1 ? key : INPUTTABLE_KEY[key];
+  // Mitigated through allowlisting.
+  // eslint-disable-next-line security/detect-object-injection
+  return key.length === 1 ? key : INPUTTABLE_KEY_KEYS.includes(key) ? INPUTTABLE_KEY[key] : undefined;
 }

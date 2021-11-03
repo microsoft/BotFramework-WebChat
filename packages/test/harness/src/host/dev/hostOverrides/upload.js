@@ -14,5 +14,5 @@ module.exports = webDriver => async (element, filename) => {
     console.log(`Uploading file "${path}".`);
   }, path);
 
-  return await element.sendKeys(path);
+  return element.sendKeys(path);
 };

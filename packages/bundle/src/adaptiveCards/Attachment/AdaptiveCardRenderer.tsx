@@ -29,7 +29,6 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
 
-// eslint-disable-next-line no-undef
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 type UndoFunction = (() => void) | undefined;
@@ -434,7 +433,7 @@ function getFocusableElements(element: HTMLElement) {
 }
 
 function restoreActiveElementIndex(element: HTMLElement, activeElementIndex: number) {
-  getFocusableElements(element)[activeElementIndex]?.focus();
+  getFocusableElements(element)[+activeElementIndex]?.focus();
 }
 
 function saveActiveElementIndex(element: HTMLElement) {
@@ -447,7 +446,7 @@ function restoreInputValues(element: HTMLElement, inputValues: (boolean | string
   >;
 
   [].forEach.call(inputs, (input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, index: number) => {
-    const value = inputValues[index];
+    const value = inputValues[+index];
 
     if (typeof value !== 'undefined') {
       const { tagName, type } = input;
@@ -757,7 +756,6 @@ AdaptiveCardRenderer.propTypes = {
   disabled: PropTypes.bool,
 
   // TypeScript class is not mappable to PropTypes.func
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   tapAction: PropTypes.shape({
     image: PropTypes.string,

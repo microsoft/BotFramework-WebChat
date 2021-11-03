@@ -6,5 +6,5 @@ export default async function loadTranscript(filename) {
     throw new Error(`Failed to load transcript "${path}".`);
   }
 
-  return await res.json();
+  return res.json();
 }

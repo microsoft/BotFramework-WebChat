@@ -1,5 +1,4 @@
-module.exports = reject => {
-  return function error(error) {
+module.exports = reject =>
+  function error(error) {
     reject(error);
   };
-};

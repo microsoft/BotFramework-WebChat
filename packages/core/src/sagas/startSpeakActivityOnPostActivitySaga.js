@@ -8,7 +8,7 @@ function* startSpeakActivityOnPostActivity() {
   yield takeEvery(
     ({ meta, payload, type }) =>
       type === POST_ACTIVITY_PENDING && meta.method === 'speech' && payload.activity.type === 'message',
-    function*() {
+    function* () {
       yield put(startSpeakingActivity());
     }
   );

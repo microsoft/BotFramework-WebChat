@@ -59,16 +59,17 @@ DefaultAvatar.propTypes = {
 
 export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
   return [
-    () => () => ({ fromUser, styleOptions }) => {
-      const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
+    () =>
+      () =>
+      ({ fromUser, styleOptions }) => {
+        const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
 
-      if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
-        // eslint-disable-next-line react/display-name
-        return () => <DefaultAvatar fromUser={fromUser} />;
+        if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
+          return () => <DefaultAvatar fromUser={fromUser} />;
+        }
+
+        return false;
       }
-
-      return false;
-    }
   ];
 }
 

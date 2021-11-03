@@ -29,7 +29,7 @@ function formatTypedBitArrayToFloatArray(audioData, maxValue) {
   const float32Data = new Float32Array(audioData.length);
 
   for (let i = 0; i < audioData.length; i++) {
-    float32Data[i] = audioData[i] / maxValue;
+    float32Data[+i] = audioData[+i] / maxValue;
   }
 
   return float32Data;
@@ -66,10 +66,10 @@ function deinterleave(channelInterleavedAudioData, { channels }) {
   for (let channel = 0; channel < channels; channel++) {
     const audioData = new Float32Array(frameSize);
 
-    multiChannelArrayBuffer[channel] = audioData;
+    multiChannelArrayBuffer[+channel] = audioData;
 
     for (let offset = 0; offset < frameSize; offset++) {
-      audioData[offset] = channelInterleavedAudioData[offset * channels + channel];
+      audioData[+offset] = channelInterleavedAudioData[offset * channels + channel];
     }
   }
 
@@ -87,7 +87,7 @@ function multiplySampleRate(source, sampleRateMultiplier) {
   const target = new Float32Array(source.length * sampleRateMultiplier);
 
   for (let sourceOffset = 0; sourceOffset < source.length; sourceOffset++) {
-    const value = source[sourceOffset];
+    const value = source[+sourceOffset];
     const targetOffset = sourceOffset * sampleRateMultiplier;
 
     for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
@@ -120,9 +120,9 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
 
     const read = () =>
       Promise.race([
-        // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
-        // eslint-disable-next-line no-empty-function
-        abortPromise.catch(() => {}),
+        abortPromise.catch(() => {
+          // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
+        }),
         stream
           .read(array.buffer)
           .then(numBytes => (numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined))

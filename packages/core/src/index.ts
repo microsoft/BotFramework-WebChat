@@ -19,6 +19,7 @@ import DirectLineVideoCard from './types/external/DirectLineVideoCard';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
+import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import markActivity from './actions/markActivity';
 import OneOrMany from './types/OneOrMany';
 import postActivity from './actions/postActivity';
@@ -54,6 +55,7 @@ export {
   disconnect,
   dismissNotification,
   emitTypingIndicator,
+  isForbiddenPropertyName,
   markActivity,
   postActivity,
   sendEvent,

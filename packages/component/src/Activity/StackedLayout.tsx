@@ -22,9 +22,10 @@ const ROOT_STYLE = {
   '&.webchat__stacked-layout': {
     position: 'relative', // This is to keep screen reader text in the destinated area.
 
-    '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
-      display: 'flex'
-    },
+    '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status':
+      {
+        display: 'flex'
+      },
 
     '& .webchat__stacked-layout__alignment-pad': {
       flexShrink: 0
@@ -41,9 +42,10 @@ const ROOT_STYLE = {
     },
 
     '&.webchat__stacked-layout--from-user': {
-      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status': {
-        flexDirection: 'row-reverse'
-      }
+      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status':
+        {
+          flexDirection: 'row-reverse'
+        }
     },
 
     '& .webchat__stacked-layout__content': {
@@ -131,9 +133,8 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   const fromUser = role === 'user';
 
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
-  const greetingAlt = (fromUser
-    ? localize('ACTIVITY_YOU_SAID_ALT')
-    : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+  const greetingAlt = (
+    fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
   ).replace(/\s{2,}/gu, ' ');
 
   const initials = fromUser ? userInitials : botInitials;

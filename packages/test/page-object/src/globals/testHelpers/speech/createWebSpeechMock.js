@@ -1,3 +1,9 @@
+// This is a family of mocks.
+/* eslint-disable max-classes-per-file */
+
+// A lot of mock functions are empty and do not reference `this`.
+/* eslint-disable class-methods-use-this */
+
 import EventTarget, { defineEventAttribute } from 'event-target-shim';
 
 const NULL_FN = () => 0;
@@ -48,6 +54,19 @@ function createProducerConsumer() {
 const speechRecognitionBroker = createProducerConsumer();
 const speechSynthesisBroker = createProducerConsumer();
 
+const SCENARIOS = [
+  'abortAfterAudioStart',
+  'accessDenied',
+  'airplaneMode',
+  'birdTweet',
+  'microphoneMuted',
+  'recognize',
+  'recognizeButAborted',
+  'recognizeButNotConfident',
+  'recognizing',
+  'unrecognizableSpeech'
+];
+
 class SpeechRecognition extends EventTarget {
   constructor() {
     super();
@@ -64,9 +83,11 @@ class SpeechRecognition extends EventTarget {
 
   start() {
     speechRecognitionBroker.consume((scenario, ...args) => {
-      if (!this[scenario]) {
+      if (!SCENARIOS.includes(scenario)) {
         throw new Error(`Cannot find speech scenario named "${scenario}" in mockWebSpeech.js`);
       } else {
+        // Mitigated through allowlisting.
+        // eslint-disable-next-line security/detect-object-injection
         this[scenario](...args);
       }
     }, this);
@@ -284,11 +305,13 @@ class SpeechSynthesisUtterance extends EventTarget {
   constructor(text) {
     super();
 
-    this.lang = SPEECH_SYNTHESIS_VOICES[0].lang;
+    const [firstVoice] = SPEECH_SYNTHESIS_VOICES;
+
+    this.lang = firstVoice.lang;
     this.pitch = 1;
     this.rate = 1;
     this.text = text;
-    this.voice = SPEECH_SYNTHESIS_VOICES[0];
+    this.voice = firstVoice;
     this.volume = 1;
   }
 }
@@ -355,9 +378,9 @@ export default function createWebSpeechMock() {
           maxAlternatives,
           serviceURI
         };
-      } else {
-        return false;
       }
+
+      return false;
     },
 
     speechSynthesisUtterancePended() {

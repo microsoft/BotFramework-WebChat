@@ -315,7 +315,6 @@ SuggestedActions.propTypes = {
   className: PropTypes.string,
 
   // TypeScript class is not mappable to PropTypes.func
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   suggestedActions: PropTypes.arrayOf(
     PropTypes.shape({

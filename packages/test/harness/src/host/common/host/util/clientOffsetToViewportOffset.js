@@ -16,6 +16,9 @@ module.exports = async function clientOffsetToViewportOffset(webDriver, element,
   if (element) {
     const { offsetHeight, offsetWidth, pageX, pageY } = await webDriver.executeScript(element => {
       const { offsetHeight, offsetWidth } = element;
+      // We cannot destructure the array as Babel would translate it using Babel helpers.
+      // This code is running under a VM and helpers are not available.
+      // eslint-disable-next-line prefer-destructuring
       const { x: pageX, y: pageY } = element.getClientRects()[0];
 
       return { offsetHeight, offsetWidth, pageX, pageY };

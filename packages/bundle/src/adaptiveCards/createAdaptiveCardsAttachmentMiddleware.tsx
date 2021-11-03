@@ -16,7 +16,6 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
   // This is not returning a React component, but a render function.
   return () =>
     next =>
-    /* eslint-disable-next-line react/display-name */
     (...args) => {
       const [{ attachment }] = args;
 

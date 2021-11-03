@@ -1,5 +1,4 @@
-/* eslint no-undef: "off"*/
-/* eslint node/global-require: "off"*/
+/* eslint no-undef: "off" */
 
 // We adopted the work from mime-wrapper, at https://github.com/marlon360/mime-wrapper.
 

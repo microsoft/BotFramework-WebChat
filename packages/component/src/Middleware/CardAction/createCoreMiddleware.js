@@ -54,6 +54,8 @@ export default function createDefaultCardActionMiddleware() {
                 newWindow.opener = null;
                 newWindow.location = value;
               } else {
+                // False alarm: this is "window.open", and not "fs.open".
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
                 window.open(value, '_blank', 'noopener noreferrer');
               }
             } else {
@@ -68,7 +70,6 @@ export default function createDefaultCardActionMiddleware() {
              *       This is to eliminate the delay between window.open() and location.href call
              */
 
-            // eslint-disable-next-line wrap-iife
             (async function () {
               const popup = window.open();
               const url = await getSignInUrl();

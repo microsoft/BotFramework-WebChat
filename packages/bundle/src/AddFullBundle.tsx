@@ -73,7 +73,6 @@ AddFullBundle.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
   adaptiveCardsHostConfig: PropTypes.any,
   // TypeScript class is not mappable to PropTypes.func
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   adaptiveCardsPackage: PropTypes.shape({
     AdaptiveCard: PropTypes.func.isRequired,

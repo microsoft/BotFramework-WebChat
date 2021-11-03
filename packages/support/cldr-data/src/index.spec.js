@@ -14,6 +14,9 @@
 // we will fork() a child process and run it as native ESM.
 
 const { join } = require('path');
+
+// This is for using Jest to load ESM.
+// eslint-disable-next-line security/detect-child-process
 const childProcess = require('child_process');
 
 test('should load CLDR data', () =>

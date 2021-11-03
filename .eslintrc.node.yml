@@ -1,0 +1,43 @@
+plugins:
+  - node
+
+extends:
+  - plugin:node/recommended
+
+env:
+  node: true
+
+parserOptions:
+  ecmaVersion: 2020
+
+rules:
+  node/callback-return: error
+  node/global-require: error
+  node/handle-callback-err: error
+  node/no-missing-import:
+    - error
+    - tryExtensions:
+        - '.js'
+        - '.json'
+        - '.node'
+        - '.ts'
+  node/no-mixed-requires: error
+  node/no-new-require: error
+  node/no-path-concat: error
+  node/no-sync: error
+  node/no-unpublished-import: error
+  node/no-unpublished-require:
+    - error
+    # The following packages did not publish any exports.
+    - allowModules:
+        - express
+        - global-agent
+        - http-proxy-middleware
+        - istanbul-lib-coverage
+        - jest-environment-node
+        - jest-image-snapshot
+        - node-fetch
+        - p-defer-es5
+        - selenium-webdriver
+        - strip-ansi
+  node/prefer-global/buffer: error

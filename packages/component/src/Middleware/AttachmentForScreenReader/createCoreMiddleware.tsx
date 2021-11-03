@@ -9,30 +9,32 @@ import VideoAttachment from './VideoAttachment';
 
 export default function createCoreMiddleware(): AttachmentForScreenReaderMiddleware[] {
   return [
-    () => next => (...args) => {
-      const [
-        {
-          activity: { from: { role = undefined } = {} } = {},
-          attachment,
-          attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
-        }
-      ] = args;
+    () =>
+      next =>
+      (...args) => {
+        const [
+          {
+            activity: { from: { role = undefined } = {} } = {},
+            attachment,
+            attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
+          }
+        ] = args;
 
-      const isText = /^text\//u.test(contentType);
+        const isText = /^text\//u.test(contentType);
 
-      return (isText ? !attachment.content : role === 'user' && !thumbnailUrl)
-        ? () => <FileAttachment attachment={attachment} />
-        : /^audio\//u.test(contentType)
-        ? () => <AudioAttachment />
-        : /^image\//u.test(contentType)
-        ? () => <ImageAttachment />
-        : /^video\//u.test(contentType)
-        ? () => <VideoAttachment />
-        : contentUrl || contentType === 'application/octet-stream'
-        ? () => <FileAttachment attachment={attachment} />
-        : isText
-        ? () => <TextAttachment attachment={attachment} />
-        : next(...args);
-    }
+        return (isText ? !attachment.content : role === 'user' && !thumbnailUrl)
+          ? () => <FileAttachment attachment={attachment} />
+          : /^audio\//u.test(contentType)
+          ? () => <AudioAttachment />
+          : /^image\//u.test(contentType)
+          ? () => <ImageAttachment />
+          : /^video\//u.test(contentType)
+          ? () => <VideoAttachment />
+          : contentUrl || contentType === 'application/octet-stream'
+          ? () => <FileAttachment attachment={attachment} />
+          : isText
+          ? () => <TextAttachment attachment={attachment} />
+          : next(...args);
+      }
   ];
 }

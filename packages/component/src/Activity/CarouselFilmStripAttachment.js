@@ -47,7 +47,6 @@ const CarouselFilmStripAttachment = ({
       tabIndex={0}
     >
       <ScreenReaderText text={attachedAlt} />
-      {/* eslint-disable-next-line react/no-array-index-key */}
       <Bubble fromUser={fromUser} key={index} nub={false}>
         {renderAttachment({ activity, attachment })}
         <div className="webchat__carousel-filmstrip-attachment--focus" />

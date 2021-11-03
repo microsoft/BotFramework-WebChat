@@ -1,17 +1,33 @@
 env:
-  browser: true
-  es2021: true
-  jest: true
-  node: true
-extends:
-  - eslint:recommended
-root: true
+  commonjs: true
+  shared-node-browser: true # To support `setTimeout()`
 
 overrides:
-- files:
-  - src/browser/**
-  parserOptions:
-    sourceType: module
-  env:
-    jest: false
-    node: false
+  # Files under ./src/browser are running under browser.
+  # Files outside, are running under Jest or Node.js.
+  - files:
+      - ./src/browser/**
+
+    env:
+      browser: true
+
+  - files:
+      - ./src/host/**
+
+    extends:
+      - ../../../.eslintrc.node.yml
+
+    env:
+      jest: true
+
+  - files:
+      - '*.ts'
+      - '*.tsx'
+
+    rules:
+      # Jest does not support ESM yet.
+      '@typescript-eslint/no-var-requires': off
+
+rules:
+  # We might dump test result to console.
+  no-console: off

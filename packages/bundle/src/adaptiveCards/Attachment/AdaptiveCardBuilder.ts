@@ -16,7 +16,7 @@ import {
   TextWeight
 } from 'adaptivecards';
 
-import { DirectLineCardAction } from 'botframework-webchat-core';
+import { DirectLineCardAction, isForbiddenPropertyName } from 'botframework-webchat-core';
 import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
 
@@ -96,9 +96,12 @@ export default class AdaptiveCardBuilder {
     if (typeof text !== 'undefined') {
       const textblock = new TextBlock();
 
-      // tslint:disable-next-line:forin
       for (const prop in template) {
-        textblock[prop] = template[prop];
+        if (!isForbiddenPropertyName(prop)) {
+          // Mitigated through denylisting.
+          // eslint-disable-next-line security/detect-object-injection
+          textblock[prop] = template[prop];
+        }
       }
 
       textblock.text = text;

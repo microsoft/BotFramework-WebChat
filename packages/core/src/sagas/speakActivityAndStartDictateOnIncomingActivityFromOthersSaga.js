@@ -16,7 +16,7 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
       // In Direct Line Speech, we do not know the user ID, but "role" is filled with "bot" or "user".
       // Here, we do two checks: the speakable activity must not have user ID, and must not have role === 'user'
       type === INCOMING_ACTIVITY && payload.activity.from.id !== userID && payload.activity.from.role !== 'user',
-    function*({ payload: { activity } }) {
+    function* ({ payload: { activity } }) {
       const shouldSpeakIncomingActivity = yield select(shouldSpeakIncomingActivitySelector);
       const shouldSpeak = speakableActivity(activity) && shouldSpeakIncomingActivity;
 

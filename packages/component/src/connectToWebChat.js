@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import React from 'react';
 
 import WebChatAPIContext from 'botframework-webchat-api/lib/hooks/internal/WebChatAPIContext';
@@ -6,10 +7,16 @@ import WebChatReduxContext from 'botframework-webchat-api/lib/hooks/internal/Web
 
 function removeUndefinedValues(map) {
   return Object.keys(map).reduce((result, key) => {
-    const value = map[key];
+    if (!isForbiddenPropertyName(key)) {
+      // Mitigated through denylisting.
+      // eslint-disable-next-line security/detect-object-injection
+      const value = map[key];
 
-    if (typeof value !== 'undefined') {
-      result[key] = value;
+      if (typeof value !== 'undefined') {
+        // Mitigated through denylisting.
+        // eslint-disable-next-line security/detect-object-injection
+        result[key] = value;
+      }
     }
 
     return result;

@@ -1,8 +1,5 @@
 import ActivityGroupingContext from './ActivityGroupingContext';
 import classNames from 'classnames';
-
-// ESLint is not able to detect usage of <Toggle> because we didn't import React but using UMD version instead.
-// eslint-disable-next-line no-unused-vars
 import Toggle from './Toggle';
 
 // Use React from window (UMD) instead of import.
@@ -73,7 +70,7 @@ const ActivityGroupingPanel = () => {
       setAttachmentLayout(
         (value & 192) === 192 && value !== -1 ? false : value & 128 ? 'carousel' : value & 64 ? 'stacked' : false
       ),
-    [attachmentLayout, setAttachmentLayout]
+    [setAttachmentLayout]
   );
 
   const styleValueAndSetters = [
@@ -91,21 +88,22 @@ const ActivityGroupingPanel = () => {
   const styleSetters = styleValueAndSetters.map(([, setter]) => setter);
 
   const styleComboNumber = getComboNumber(styleValues);
-  const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
+  const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [styleSetters]);
 
-  const handleStyleComboNumberChange = useCallback(({ target: { value } }) => setStyleComboNumber(value), [
-    setStyleComboNumber
-  ]);
+  const handleStyleComboNumberChange = useCallback(
+    ({ target: { value } }) => setStyleComboNumber(value),
+    [setStyleComboNumber]
+  );
 
-  const handlePlusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber + 1), [
-    styleComboNumber,
-    setStyleComboNumber
-  ]);
+  const handlePlusOneStyleComboNumber = useCallback(
+    () => setStyleComboNumber(styleComboNumber + 1),
+    [styleComboNumber, setStyleComboNumber]
+  );
 
-  const handleMinusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber - 1), [
-    styleComboNumber,
-    setStyleComboNumber
-  ]);
+  const handleMinusOneStyleComboNumber = useCallback(
+    () => setStyleComboNumber(styleComboNumber - 1),
+    [styleComboNumber, setStyleComboNumber]
+  );
 
   const viewValueAndSetters = [
     [wide, setWide],
@@ -116,21 +114,22 @@ const ActivityGroupingPanel = () => {
   const viewSetters = viewValueAndSetters.map(([, setter]) => setter);
 
   const viewComboNumber = getComboNumber(viewValues);
-  const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
+  const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [viewSetters]);
 
-  const handleViewComboNumberChange = useCallback(({ target: { value } }) => setViewComboNumber(value), [
-    setViewComboNumber
-  ]);
+  const handleViewComboNumberChange = useCallback(
+    ({ target: { value } }) => setViewComboNumber(value),
+    [setViewComboNumber]
+  );
 
-  const handlePlusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber + 1), [
-    viewComboNumber,
-    setViewComboNumber
-  ]);
+  const handlePlusOneViewComboNumber = useCallback(
+    () => setViewComboNumber(viewComboNumber + 1),
+    [viewComboNumber, setViewComboNumber]
+  );
 
-  const handleMinusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber - 1), [
-    viewComboNumber,
-    setViewComboNumber
-  ]);
+  const handleMinusOneViewComboNumber = useCallback(
+    () => setViewComboNumber(viewComboNumber - 1),
+    [viewComboNumber, setViewComboNumber]
+  );
 
   const setShowAvatarInSenderGroup = useCallback(() => {
     setShowAvatarForEveryActivity(false);
@@ -142,9 +141,10 @@ const ActivityGroupingPanel = () => {
     setShowAvatarInGroup('status');
   }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
 
-  const setShowAvatarInGroupType = useCallback(value => setShowAvatarInGroup(value ? 'status' : 'sender'), [
-    setShowAvatarInGroup
-  ]);
+  const setShowAvatarInGroupType = useCallback(
+    value => setShowAvatarInGroup(value ? 'status' : 'sender'),
+    [setShowAvatarInGroup]
+  );
 
   const groupingValueAndSetters = [
     // [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
@@ -156,21 +156,22 @@ const ActivityGroupingPanel = () => {
   const groupingSetters = groupingValueAndSetters.map(([, setter]) => setter);
 
   const groupingComboNumber = getComboNumber(groupingValues);
-  const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [...groupingSetters]);
+  const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [groupingSetters]);
 
-  const handleGroupingComboNumberChange = useCallback(({ target: { value } }) => setGroupingComboNumber(value), [
-    setGroupingComboNumber
-  ]);
+  const handleGroupingComboNumberChange = useCallback(
+    ({ target: { value } }) => setGroupingComboNumber(value),
+    [setGroupingComboNumber]
+  );
 
-  const handlePlusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber + 1), [
-    groupingComboNumber,
-    setGroupingComboNumber
-  ]);
+  const handlePlusOneGroupingComboNumber = useCallback(
+    () => setGroupingComboNumber(groupingComboNumber + 1),
+    [groupingComboNumber, setGroupingComboNumber]
+  );
 
-  const handleMinusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber - 1), [
-    groupingComboNumber,
-    setGroupingComboNumber
-  ]);
+  const handleMinusOneGroupingComboNumber = useCallback(
+    () => setGroupingComboNumber(groupingComboNumber - 1),
+    [groupingComboNumber, setGroupingComboNumber]
+  );
 
   const handleTranscriptChange = useCallback(({ target: { value } }) => setTranscriptName(value), [setTranscriptName]);
 
@@ -186,15 +187,15 @@ const ActivityGroupingPanel = () => {
         dir="ltr"
       >
         <header className="activity-grouping-panel__header">
-          <span className="activity-grouping-panel__header-title">Activity grouping</span>
-          <button className="activity-grouping-panel__minimize-button" onClick={handleMinimizeClick}>
+          <span className="activity-grouping-panel__header-title">{'Activity grouping'}</span>
+          <button className="activity-grouping-panel__minimize-button" onClick={handleMinimizeClick} type="button">
             {minimized ? 'Restore' : 'Minimize'}
           </button>
         </header>
         <section className="activity-grouping-panel__body">
           <div>
             <label>
-              Transcript:{' '}
+              {'Transcript: '}
               <select onChange={handleTranscriptChange} value={transcriptName || ''}>
                 {transcriptNames.map(name => (
                   <option key={name} value={name}>
@@ -207,12 +208,12 @@ const ActivityGroupingPanel = () => {
           <hr />
           <div>
             <Toggle checked={wide} onChange={setWide}>
-              View: Wide
+              {'View: Wide'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={rtl} onChange={setRTL}>
-              View: Right-to-left
+              {'View: Right-to-left'}
             </Toggle>
           </div>
           <hr />
@@ -224,11 +225,19 @@ const ActivityGroupingPanel = () => {
               type="number"
               value={viewComboNumber}
             />
-            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneViewComboNumber}>
-              +
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handlePlusOneViewComboNumber}
+              type="button"
+            >
+              {'+'}
             </button>
-            <button className="activity-grouping-panel__combo-number-button" onClick={handleMinusOneViewComboNumber}>
-              -
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handleMinusOneViewComboNumber}
+              type="button"
+            >
+              {'-'}
             </button>
           </div>
           <hr />
@@ -238,7 +247,7 @@ const ActivityGroupingPanel = () => {
               onChange={setShowAvatarInSenderGroup}
               type="radio"
             >
-              Show avatar: On sender
+              {'Show avatar: On sender'}
             </Toggle>
           </div>
           <div>
@@ -247,12 +256,12 @@ const ActivityGroupingPanel = () => {
               onChange={setShowAvatarInStatusGroup}
               type="radio"
             >
-              Show avatar: On status
+              {'Show avatar: On status'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={showAvatarForEveryActivity} onChange={setShowAvatarForEveryActivity} type="radio">
-              Show avatar: On every activity
+              {'Show avatar: On every activity'}
             </Toggle>
           </div>
           <hr />
@@ -264,46 +273,51 @@ const ActivityGroupingPanel = () => {
               type="number"
               value={groupingComboNumber}
             />
-            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneGroupingComboNumber}>
-              +
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handlePlusOneGroupingComboNumber}
+              type="button"
+            >
+              {'+'}
             </button>
             <button
               className="activity-grouping-panel__combo-number-button"
               onClick={handleMinusOneGroupingComboNumber}
+              type="button"
             >
-              -
+              {'-'}
             </button>
           </div>
           <hr />
           <div>
             <Toggle checked={botAvatarInitials} onChange={setBotAvatarInitials}>
-              Bot: Avatar
+              {'Bot: Avatar'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={botNub} onChange={setBotNub}>
-              Bot: Nub
+              {'Bot: Nub'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnTop2} type="radio">
-              Bot: On top
+              {'Bot: On top'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={!botOnTop} disabled={!botAvatarInitials && !botNub} onChange={setBotOnBottom} type="radio">
-              Bot: On bottom
+              {'Bot: On bottom'}
             </Toggle>
           </div>
           <hr />
           <div>
             <Toggle checked={userAvatarInitials} onChange={setUserAvatarInitials}>
-              User: Avatar
+              {'User: Avatar'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={userNub} onChange={setUserNub}>
-              User: Nub
+              {'User: Nub'}
             </Toggle>
           </div>
           <div>
@@ -313,7 +327,7 @@ const ActivityGroupingPanel = () => {
               onChange={setUserOnTop2}
               type="radio"
             >
-              User: On top
+              {'User: On top'}
             </Toggle>
           </div>
           <div>
@@ -323,13 +337,13 @@ const ActivityGroupingPanel = () => {
               onChange={setUserOnBottom}
               type="radio"
             >
-              User: On bottom
+              {'User: On bottom'}
             </Toggle>
           </div>
           <hr />
           <div>
             <Toggle checked={!attachmentLayout} onChange={setAttachmentLayoutDefault} type="radio">
-              Layout: Default
+              {'Layout: Default'}
             </Toggle>
           </div>
           <div>
@@ -338,12 +352,12 @@ const ActivityGroupingPanel = () => {
               onChange={setAttachmentLayoutStacked}
               type="radio"
             >
-              Layout: Force stacked
+              {'Layout: Force stacked'}
             </Toggle>
           </div>
           <div>
             <Toggle checked={attachmentLayout === 'carousel'} onChange={setAttachmentLayoutCarousel} type="radio">
-              Layout: Force carousel
+              {'Layout: Force carousel'}
             </Toggle>
           </div>
           <hr />
@@ -355,17 +369,25 @@ const ActivityGroupingPanel = () => {
               type="number"
               value={styleComboNumber}
             />
-            <button className="activity-grouping-panel__combo-number-button" onClick={handlePlusOneStyleComboNumber}>
-              +
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handlePlusOneStyleComboNumber}
+              type="button"
+            >
+              {'+'}
             </button>
-            <button className="activity-grouping-panel__combo-number-button" onClick={handleMinusOneStyleComboNumber}>
-              -
+            <button
+              className="activity-grouping-panel__combo-number-button"
+              onClick={handleMinusOneStyleComboNumber}
+              type="button"
+            >
+              {'-'}
             </button>
           </div>
           <hr />
           <div>
             <a href={url} rel="noopener noreferrer" target="_blank">
-              Open in new window
+              {'Open in new window'}
             </a>
           </div>
         </section>

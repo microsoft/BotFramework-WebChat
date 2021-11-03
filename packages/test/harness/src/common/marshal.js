@@ -1,3 +1,6 @@
+// This file will run in both browser and host (Jest or Node.js).
+/* eslint-env browser */
+
 const SeleniumWebDriver = require('selenium-webdriver');
 
 // "selenium-webdriver" is undefined if running under browser.

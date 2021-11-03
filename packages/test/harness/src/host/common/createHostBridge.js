@@ -21,6 +21,8 @@ class HostBridgePort {
       event.data = data;
       event.origin = 'wd://';
 
+      // This code is running in browser VM where "window" is available.
+      // eslint-disable-next-line no-undef
       window.dispatchEvent(event);
     }, data);
   }
@@ -45,15 +47,22 @@ class HostBridge extends EventTarget {
 
   async start(driver) {
     try {
+      /* eslint-disable no-await-in-loop */
       for (; !this.abortController.signal.aborted; ) {
         /* istanbul ignore next */
-        const result = await driver.executeScript(() => window.webDriverPort && window.webDriverPort.__queue.shift());
+        const result = await driver.executeScript(
+          () =>
+            // This code is running in browser VM where "window" is available.
+            // eslint-disable-next-line no-undef
+            window.webDriverPort && window.webDriverPort.__queue.shift()
+        );
 
         if (this.abortController.signal.aborted) {
           break;
         }
 
         if (!result) {
+          // eslint-disable-next-line no-magic-numbers
           await sleep(100);
         } else {
           const event = new Event('message');
@@ -64,6 +73,7 @@ class HostBridge extends EventTarget {
           this.dispatchEvent(event);
         }
       }
+      /* eslint-enable no-await-in-loop */
     } catch (err) {
       if (err.name !== 'NoSuchSessionError' && err.name !== 'NoSuchWindowError' && err.name !== 'WebDriverError') {
         throw err;

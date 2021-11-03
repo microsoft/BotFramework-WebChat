@@ -17,8 +17,6 @@ RunHook.propTypes = {
 export default function createRenderWebChatWithHook(props, element) {
   const {
     WebChat: {
-      // ESLint is complaining BasicWebChat and Composer is never used. But they are used in JSX below.
-      // eslint-disable-next-line no-unused-vars
       Components: { BasicWebChat, Composer }
     }
   } = window;
