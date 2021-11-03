@@ -648,9 +648,9 @@ type StyleOptions = {
   suggestedActionsStackedHeight?: number | 'auto';
 
   /**
-   * Stacked overflow default value is 'auto
+   * Stacked overflow default value is 'auto'
    */
-  suggestedActionsStackedOverflow?: 'string';
+  suggestedActionsStackedOverflow?: 'auto' | 'hidden' | 'scroll' | 'visible';
 
   /**
    * Button max height default value is 100% if suggestedActionsStackedLayoutButtonTextWrap is true
