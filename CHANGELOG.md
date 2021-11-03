@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4028](https://github.com/microsoft/BotFramework-WebChat/issues/4028). Added new keyboard focus indicator for send box buttons, by [@compulim](https://github.com/compulim), in PR [#4035](https://github.com/microsoft/BotFramework-WebChat/pull/4035)
    -  New style options are introduced: `sendBoxButtonXXXOnActive`, `sendBoxButtonXXXOnFocus`, `sendBoxButtonXXXOnHover`, `sendBoxButtonKeyboardFocusIndicatorXXX`
 -  Fixes [#4015](https://github.com/microsoft/BotFramework-WebChat/issues/4015). Added `role="heading"` to titles of rich card, by [@compulim](https://github.com/compulim), in PR [#4074](https://github.com/microsoft/BotFramework-WebChat/pull/4074)
--  Fixes [#4081](https://github.com/microsoft/BotFramework-WebChat/issues/4081). Updated typing for `StyleOptions.suggestedActionsStackedOverflow`, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#4081](https://github.com/microsoft/BotFramework-WebChat/issues/4081). Updated typing for `StyleOptions.suggestedActionsStackedOverflow`, by [@compulim](https://github.com/compulim), in PR [#4083](https://github.com/microsoft/BotFramework-WebChat/pull/4083)
 
 ### Changed
 
