@@ -9,6 +9,14 @@ export default function ({
 }: FullBundleStyleOptions) {
   return {
     '&.webchat__adaptive-card-renderer': {
+      // Related to #4075.
+      // Adaptive Cards assume its host is in "forced border-box" mode.
+      // In CSS, the default is "content-box" mode.
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#values
+      '& *': {
+        boxSizing: 'border-box'
+      },
+
       '& .ac-input, & .ac-inlineActionButton, & .ac-quickActionButton': {
         fontFamily: primaryFont
       },

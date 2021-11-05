@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      // Adaptive Card assume it is always hosted in "border-box" mode.
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  type: 'AdaptiveCard',
+                  version: '1.2',
+                  body: [
+                    {
+                      text: 'The following texts should not be clipped.',
+                      type: 'TextBlock'
+                    },
+                    {
+                      text: '- The is a very long text, one two three four five six seven eight nine ten, eleven twelve thirteen fourteen.',
+                      type: 'TextBlock',
+                      wrap: true
+                    }
+                  ]
+                }
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
