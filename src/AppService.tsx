@@ -62,7 +62,6 @@ export function renderExpandableTemplate(props: AppProps) {
   
   document.body.appendChild(location.hash.includes('#feedbot-css-reset') ? reset : wrapper);
 
-
   const autoExpandTimeout = getAutoExpandTimeout(props.autoExpandTimeout, props.persist)
   if (autoExpandTimeout > 0) {
     setTimeout(() => {

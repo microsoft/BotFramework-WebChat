@@ -172,6 +172,12 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           props.theme.customCss = config.customCss;
         }
 
+        if(config.customScript && !props.hasOwnProperty("customScript")) {
+          const customScriptTag = document.createElement("script");
+          customScriptTag.appendChild(document.createTextNode(config.customScript))
+          document.body.appendChild(customScriptTag);
+        }
+
         if (config.template.headerText) {
           props.header = {
             ...(props.header || {}),
