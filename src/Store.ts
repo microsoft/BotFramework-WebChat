@@ -196,6 +196,10 @@ export type FormatAction = {
 } | {
     type: 'Toggle_Disable_Input_When_Not_Needed',
     disableInputWhenNotNeeded: boolean
+} | {
+    type: 'Set_Console_Placeholder',
+    locale: string,
+    consolePlaceholder: string
 }
 
 export const format: Reducer<FormatState> = (
@@ -241,6 +245,11 @@ export const format: Reducer<FormatState> = (
             return {
                 ...state,
                 disableInputWhenNotNeeded: action.disableInputWhenNotNeeded
+            };
+        case 'Set_Console_Placeholder':
+            return {
+                ...state,
+                strings: {...strings(action.locale), consolePlaceholder: action.consolePlaceholder}
             };
         default:
             return state;

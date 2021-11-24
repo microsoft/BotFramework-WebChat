@@ -185,6 +185,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           };
         }
 
+        if(config.consolePlaceholder){
+          props.consolePlaceholder = config.consolePlaceholder
+        }
+
         if (config.template.collapsedHeaderText) {
           props.header = {
             ...(props.header || { text: "Chatbot" }),
