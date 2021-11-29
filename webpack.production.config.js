@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const webpackDevConfig = require('./webpack.config');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = webpackDevConfig.map(config => ({
     ...config,
@@ -9,12 +10,10 @@ module.exports = webpackDevConfig.map(config => ({
                 'NODE_ENV': JSON.stringify('production')
             }
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false
-            },
-            sourceMap: true
-        }),
+		new UglifyJsPlugin({
+			sourceMap: true,
+			parallel: true
+		}),
         new webpack.optimize.OccurrenceOrderPlugin(),
-    ]
+    ],
 }));

@@ -16,17 +16,22 @@ import { getTabIndex } from './getTabIndex';
 import { ConnectionStatus } from 'botframework-directlinejs';
 //import { createVisitorClient, VisitorClient, MessageSubType } from 'smartsupp-websocket'
 
+import { History } from './History';
+import { MessagePane } from './MessagePane';
+import { Shell, ShellFunctions } from './Shell';
+import getDeviceData from './utils/getDeviceData'
+
 declare const fbq: Function;
 declare const dataLayer: Array<Object>;
 
-interface GaEvent {    
+interface GaEvent {
     eventCategory: string
     eventAction:string
     eventLabel?: string
     eventValue?: string
 }
 
-interface GtmEvent {    
+interface GtmEvent {
     event: string
     variables?: Array<{name: string, value: string}>
 }
@@ -62,9 +67,7 @@ export interface ChatProps {
     onConversationStarted?: (callback: (conversationId: string) => void) => void
 }
 
-import { History } from './History';
-import { MessagePane } from './MessagePane';
-import { Shell, ShellFunctions } from './Shell';
+
 
 export class Chat extends React.Component<ChatProps, {}> {
 
@@ -252,7 +255,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
 
         botConnection.postActivityOriginal = botConnection.postActivity
-            
+        
         botConnection.postActivity = (activity: any) => {
             // send userData only once during initial event
             if (activity.name === 'beginIntroDialog') {
@@ -264,7 +267,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                             ...(this.props.userData || {}),
                             ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {}),
                             ...getLocaleUserData(this.props.locale),
-                            ...getReferrerUserData()
+                            ...getReferrerUserData(),
+							"user-device": getDeviceData()
                         }
                     }
                 };
@@ -355,7 +359,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             let introDialogId = this.props.introDialog && this.props.introDialog.id ? this.props.introDialog.id : undefined
             if (window.location.hash.startsWith('#feedbot-intro-dialog=')) {
                 introDialogId = window.location.hash.substr(22)
-            } 
+            }
             
             botConnection.postActivity({
                 from: this.props.user,
@@ -378,7 +382,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             let mode: string
             if (typeof event.detail === 'string') {
                 dialogId = event.detail
-                eventName = 'beginIntroDialog' 
+                eventName = 'beginIntroDialog'
             } else if (typeof event.detail === 'object' && typeof event.detail.id === 'string') {
                 dialogId = event.detail.id
                 userData = event.detail.userData || {}
@@ -460,7 +464,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 },
             })
         }).catch((err) => {
-            console.error(err) 
+            console.error(err)
         })
         
         this.smartsupp.on('chat.message_received', (data) => {
@@ -472,8 +476,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                     type: "message",
                     text: data.message.content.text,
                     id: data.message.id
-                } });      
-            }  
+                } });
+            }
         })
     }*/
 
@@ -590,7 +594,7 @@ export const doCardAction = (
         case "postBack":
             sendPostBack(botConnection, text, value, from, locale);
             break;
-                
+            
         case "call":
         case "openUrl":
         case "playAudio":
