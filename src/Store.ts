@@ -530,8 +530,35 @@ export const adaptiveCards: Reducer<AdaptiveCardsState> = (
     }
 }
 
+export type TypingDelayAction = {
+    type: 'Set_TypingDelay',
+    payload: number
+}
 
-export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
+export interface TypingDelayState {
+    delay: number
+}
+
+export const typingDelay: Reducer<TypingDelayState> = (
+    state: TypingDelayState = {
+        delay: 20000
+    },
+    action: TypingDelayAction
+) => {
+    switch (action.type) {
+        case 'Set_TypingDelay':
+            return {
+                ...state,
+                typingDelay: action.payload
+            };
+
+        default:
+            return state;
+    }
+}
+
+
+export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction | TypingDelayAction;
 
 const nullAction = { type: null } as ChatActions;
 
@@ -541,7 +568,8 @@ export interface ChatState {
     format: FormatState,
     history: HistoryState,
     shell: ShellState,
-    size: SizeState
+    size: SizeState,
+    typingDelay: TypingDelayState
 }
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
@@ -740,9 +768,9 @@ const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store
         return nullAction;
     });
 
-const showTypingEpic: Epic<ChatActions, ChatState> = (action$) =>
+const showTypingEpic: Epic<ChatActions, ChatState> = (action$, store) => 
     action$.ofType('Show_Typing')
-    .delay(20000)
+    .delay(store.getState().typingDelay.delay)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
 
 const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
@@ -773,7 +801,8 @@ export const createStore = () =>
             format,
             history,
             shell,
-            size
+            size,
+            typingDelay
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,

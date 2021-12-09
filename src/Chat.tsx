@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions, sendMessage } from './Store';
+import { createStore, ChatActions, sendMessage, typingDelay } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
@@ -64,7 +64,8 @@ export interface ChatProps {
     userData?: {},
     introDialog?: {id?: string},
     startOverTrigger?: (trigger: () => void) => void,
-    onConversationStarted?: (callback: (conversationId: string) => void) => void
+    onConversationStarted?: (callback: (conversationId: string) => void) => void,
+    typingDelay?: number
 }
 
 
@@ -117,6 +118,12 @@ export class Chat extends React.Component<ChatProps, {}> {
             consolePlaceholder: props.consolePlaceholder
         });
     }
+        if(props.typingDelay) {
+            this.store.dispatch<ChatActions>({
+                type: "Set_TypingDelay",
+                payload: props.typingDelay
+            })
+        }
 
         if (props.adaptiveCardsHostConfig) {
             this.store.dispatch<ChatActions>({
