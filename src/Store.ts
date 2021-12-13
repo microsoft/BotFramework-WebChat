@@ -549,7 +549,7 @@ export const typingDelay: Reducer<TypingDelayState> = (
         case 'Set_TypingDelay':
             return {
                 ...state,
-                typingDelay: action.payload
+                delay: action.payload
             };
 
         default:
@@ -768,10 +768,11 @@ const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store
         return nullAction;
     });
 
-const showTypingEpic: Epic<ChatActions, ChatState> = (action$, store) => 
-    action$.ofType('Show_Typing')
-    .delay(store.getState().typingDelay.delay)
+const showTypingEpic: Epic<ChatActions, ChatState> = (action$) => {
+    return action$.ofType('Show_Typing')
+    .delay(parseInt(getFeedyouParam("typingDelay") || 20000))
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+}
 
 const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Update_Input')
@@ -792,6 +793,7 @@ const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 
 import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
+import { getFeedyouParam } from './FeedyouParams';
 
 export const createStore = () =>
     reduxCreateStore(

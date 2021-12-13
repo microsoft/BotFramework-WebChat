@@ -73,6 +73,10 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       console.log("Feedyou WebChat init", body);
 
       setFeedyouParam("openUrlTarget", props.openUrlTarget || (body.config && body.config.openUrlTarget))
+
+      if(props.typingDelay) {
+        setFeedyouParam("typingDelay", props.typingDelay.toString())
+      }
       
       props.persist = props.persist || (body.config && body.config.persist)
       if((props.persist === "user" || props.persist === "conversation") && localStorage.feedbotUserId){
