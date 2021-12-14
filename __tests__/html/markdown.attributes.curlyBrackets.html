@@ -10,6 +10,8 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
+        await host.windowSize(undefined, 1440, document.getElementById('webchat'));
+
         expect.extend({
           toHaveAttributes(received, attributes) {
             for (const [name, value] of Object.entries(attributes)) {
