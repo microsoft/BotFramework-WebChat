@@ -14,7 +14,7 @@ const coreConfig = {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             {
-                test: /\.tsx?$/,
+                test: /\.(tsx|ts)?$/,
                 loader: "awesome-typescript-loader"
             },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
@@ -30,7 +30,7 @@ const coreConfig = {
             },
             {
                 test: /\.js$/,
-                include: /(node_modules\/engine.io-client|node_modules\/socket.io-client|node_modules\/smartsupp-websocket)/,
+                include: /(node_modules\/engine.io-client|node_modules\/socket.io-client|node_modules\/smartsupp-websocket|node_modules\/device-detector-js)/,
                 loader: 'babel-loader',
                 options: {
                     presets: ["es2015"]
