@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Chat } from "./Chat";
 import { AppProps } from "./App";
+import isSmallScreen from './utils/isSmallScreen'
 
 export function renderExpandableTemplate(props: AppProps) {
   let rendered = false;
@@ -50,8 +51,14 @@ export function renderExpandableTemplate(props: AppProps) {
     }
 
     // when closed manually, store flag to do not open automatically after reload
-    localStorage &&
-      (localStorage.feedbotClosed = wrapper.classList.contains("collapsed"));
+	if(localStorage) {
+		const isChatClosed = wrapper.classList.contains("collapsed");
+		if(!isChatClosed) {
+			localStorage.feedbotClosed = false
+		} else {
+			localStorage.feedbotClosed = Date.now()
+		}
+  	}
   };
 
   wrapper.appendChild(header);
@@ -62,7 +69,12 @@ export function renderExpandableTemplate(props: AppProps) {
   
   document.body.appendChild(location.hash.includes('#feedbot-css-reset') ? reset : wrapper);
 
-  const autoExpandTimeout = getAutoExpandTimeout(props.autoExpandTimeout, props.persist)
+  const autoExpandTimeout = getAutoExpandTimeout(
+	  props.autoExpandTimeout,
+	  props.persist,
+	  props.manualCloseExpireInMinutes || 60 * 24,
+  )
+	
   if (autoExpandTimeout > 0) {
     setTimeout(() => {
       if (wrapper.className.indexOf("collapsed") >= 0) {
@@ -112,16 +124,38 @@ const AppContainer = (props: AppProps) => (
   </div>
 );
 
-function getAutoExpandTimeout(defaultTimeout: number, persist: string): number {
+function getMinutesBetweenTimestamps (t1: number, t2: number)  {
+	const milisDelta = Math.abs(t2-t1)
+	return milisDelta/1000/60
+}
+
+function shouldPreventExpandDueToManualClose(expirationIntervalInMinutes: number) {
+	if(!localStorage || !localStorage.feedbotClosed) return false;
+	if(localStorage.feedbotClosed === "false") return false
+	
+	const closedTimestamp = Number(localStorage.feedbotClosed)
+	const minutesSinceClosed = getMinutesBetweenTimestamps(closedTimestamp, Date.now())
+	if(minutesSinceClosed <= expirationIntervalInMinutes) return true
+	
+	return false
+}
+
+function getAutoExpandTimeout(
+	defaultTimeout: number,
+	persist: string,
+	manualCloseExpireInMinutes: number
+): number {
   if (window.location.href.includes('utm_source=Feedbot') && (persist === 'user' || persist === 'conversation')) {
     return 1
   }
-
-  const wasManuallyClosed = localStorage && localStorage.feedbotClosed === "true"
-  const isSmallScreen = window.matchMedia && !window.matchMedia("(min-width: 1024px)").matches
-  if (wasManuallyClosed || isSmallScreen) {
-    return 0
+  
+  if(shouldPreventExpandDueToManualClose(manualCloseExpireInMinutes)) {
+	return 0
   }
-
+	
+  if(isSmallScreen()){
+  	return 0
+  }
+	
   return defaultTimeout
 }

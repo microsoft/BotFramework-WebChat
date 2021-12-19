@@ -33,6 +33,7 @@ export type AppProps = ChatProps & {
   enableScreenshotUpload?: boolean;
   openUrlTarget: "new" | "same" | "same-domain";
   persist?: "user" | "conversation" | "none";
+  manualCloseExpireInMinutes?: number
 };
 
 export const App = async (props: AppProps, container?: HTMLElement) => {
@@ -344,7 +345,7 @@ const FullScreenTheme = (theme: Theme) => `
   
   @media (min-width: 768px) {
     .wc-adaptive-card {
-      width: 398px;  
+      width: 398px;
     }
   }
 
@@ -546,11 +547,11 @@ const ExpandableKnobTheme = (theme: Theme) => `
     background-color: white;
     border-width: 0px;
     border-top: 1px solid #dbdee1;
-  } 
+  }
 
   .wc-app .wc-console .wc-textbox {
     left: 20px;
-  } 
+  }
 
   .wc-app .wc-console.has-upload-button .wc-textbox {
     left: 48px;
@@ -663,7 +664,7 @@ const Sidebar = (theme: Theme) => `
     background-image: url('https://feedyou.blob.core.windows.net/webchat/times-solid.svg');
     background-repeat: no-repeat;
     background-size: 15px;
-    background-position: center center;    
+    background-position: center center;
   }
 
   .feedbot-wrapper.collapsed .feedbot-header {
@@ -691,7 +692,7 @@ const Sidebar = (theme: Theme) => `
     border-radius: 16px;
     margin: 0 12px 10px;
     border: 1px solid #dbdee1;
-  } 
+  }
 
 
   body .feedbot-wrapper.collapsed {
@@ -882,7 +883,7 @@ const BaseTheme = (theme: Theme) => `
 
     .wc-app .wc-console {
         background-color: white;
-    } 
+    }
 
     .wc-suggested-actions .wc-hscroll > ul > li button {
         color: white !important;
@@ -1075,19 +1076,19 @@ const BaseTheme = (theme: Theme) => `
     }
 
     .wc-list.tiles .ac-pushButton div {
-      overflow: unset !important; 
-      text-overflow: unset !important; 
+      overflow: unset !important;
+      text-overflow: unset !important;
       white-space: unset !important;
     }
 
     @media (max-width: 450px) {
       .feedbot-wrapper .wc-card {
         border: 1px solid #d2dde5;
-        width: 198px; 
+        width: 198px;
       }
       .feedbot-wrapper .wc-list.tiles .wc-card {
         border: none;
-        width: 100%; 
+        width: 100%;
       }
 
       .wc-list.tiles .ac-pushButton {
@@ -1100,8 +1101,8 @@ const BaseTheme = (theme: Theme) => `
       }
 
       .feedbot-wrapper .wc-adaptive-card {
-        width: 214px; 
-      } 
+        width: 214px;
+      }
     }
 
     .wc-message-from.wc-message-from-bot {
