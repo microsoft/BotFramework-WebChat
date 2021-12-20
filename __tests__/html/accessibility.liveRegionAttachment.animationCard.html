@@ -58,8 +58,9 @@
             'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
           );
 
-        await pageConditions.scrollToBottomCompleted();
         await pageConditions.allImagesLoaded();
+        await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.scrollToBottomCompleted();
 
         await pageObjects.focusSendBoxTextBox();
 
