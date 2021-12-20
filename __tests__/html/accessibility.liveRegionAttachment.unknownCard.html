@@ -50,6 +50,9 @@
 
           await pageConditions.uiConnected();
           await pageConditions.minNumActivitiesShown(2);
+          await pageConditions.allImagesLoaded();
+          await pageConditions.allOutgoingActivitiesSent();
+          await pageConditions.scrollToBottomCompleted();
 
           await pageObjects.focusSendBoxTextBox();
 
