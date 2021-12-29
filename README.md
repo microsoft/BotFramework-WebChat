@@ -15,7 +15,7 @@ This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/
 
 # Version notes
 
-> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md
+> This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 
 ### 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
 
