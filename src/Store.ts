@@ -361,6 +361,8 @@ export type HistoryAction = {
 } | {
     type: 'Clear_Typing',
     id: string
+} | {
+    type: 'Clear_History'
 }
 
 const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
@@ -469,6 +471,12 @@ export const history: Reducer<HistoryState> = (
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
                     action.activity
                 ]
+            };
+        
+        case 'Clear_History':
+            return {
+                ... state,
+                activities: []
             };
 
         case 'Clear_Typing':
