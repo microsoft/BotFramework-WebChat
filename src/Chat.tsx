@@ -646,6 +646,8 @@ export const startOver = (botConnection: IBotConnection, store: ChatStore, props
 
     store.dispatch<HistoryAction>({ type: 'Clear_History' });
     
+    store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: { name: "Chatbot", ...props.bot }, timestamp: new Date().toISOString()}});
+
     const introDialogId = getIntroDialogId(props)
     botConnection.postActivity({
         from: props.user,
