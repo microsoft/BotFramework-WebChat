@@ -654,9 +654,9 @@ export const startOver = (botConnection: IBotConnection, store: ChatStore, props
         value: '',
         channelData: introDialogId ? {id: introDialogId} : undefined
     }).subscribe(() => {
-        console.log("success sending startOver")
+        konsole.log("success sending startOver")
     }, error => {
-        console.log("failed to send startOver", error);
+        konsole.log("failed to send startOver", error);
     });
 }
 
