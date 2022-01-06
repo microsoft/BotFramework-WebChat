@@ -1,6 +1,6 @@
+import "core-js/es6"
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Chat, ChatProps } from "./Chat";
+import { ChatProps } from "./Chat";
 import {
   render,
   renderExpandableTemplate,
@@ -8,7 +8,6 @@ import {
 } from "./AppService";
 import { DirectLine } from "botframework-directlinejs";
 import * as konsole from "./Konsole";
-import * as rgb2hex from "rgb2hex"
 import { getFeedyouParam, setFeedyouParam } from "./FeedyouParams"
 
 export type Theme = {
@@ -208,7 +207,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
   }
 
   props.user.id = props.user.id ? String(props.user.id) : MakeId()
-  localStorage.feedbotUserId = props.user.id
+  // localStorage is undefined in IE for file:// testing: https://stackoverflow.com/a/3392301/10467064
+  if(localStorage) localStorage.feedbotUserId = props.user.id
 
   // FEEDYOU props defaults
   props.showUploadButton = props.hasOwnProperty("showUploadButton")

@@ -30,7 +30,7 @@ const coreConfig = {
             },
             {
                 test: /\.js$/,
-                include: /(node_modules\/engine.io-client|node_modules\/socket.io-client|node_modules\/smartsupp-websocket|node_modules\/device-detector-js)/,
+                include: /(node_modules\/engine.io-client|node_modules\/socket.io-client|node_modules\/smartsupp-websocket|device-detector-js)/,
                 loader: 'babel-loader',
                 options: {
                     presets: ["es2015"]

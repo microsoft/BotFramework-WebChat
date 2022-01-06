@@ -38,7 +38,7 @@
     "adaptivecards": "^1.1.0",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",
-    "core-js": "2.4.1",
+    "core-js": "^2.4.1",
     "device-detector-js": "^3.0.0",
     "html2canvas": "^1.0.0-rc.7",
     "isomorphic-fetch": "^3.0.0",
