@@ -1,4 +1,4 @@
-import "core-js/es6"
+import "core-js"
 import * as React from "react";
 import { ChatProps } from "./Chat";
 import {

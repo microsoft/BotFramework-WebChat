@@ -5,6 +5,7 @@
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
   "scripts": {
+    "analyze-bundle": "source-map-explorer 'botchat-es5.js'",
     "build-test": "cd test && npm run build",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
     "build-css": "node-sass ./src/scss/ -o . && rimraf ./includes/",
@@ -79,6 +80,7 @@
     "prettier": "^2.4.1",
     "rimraf": "2.6.1",
     "semver": "^5.5.0",
+    "source-map-explorer": "^2.5.2",
     "source-map-loader": "0.2.1",
     "typescript": "2.3",
     "webpack": "2.3.3"
