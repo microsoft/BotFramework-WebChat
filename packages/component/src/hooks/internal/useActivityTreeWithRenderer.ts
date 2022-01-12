@@ -47,8 +47,8 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
   // Both arrays should contains all activities.
 
   const { entriesBySender, entriesByStatus } = useMemo<{
-    entriesBySender: DirectLineActivity[];
-    entriesByStatus: DirectLineActivity[];
+    entriesBySender: DirectLineActivity[][];
+    entriesByStatus: DirectLineActivity[][];
   }>(() => {
     const visibleActivities = entries.map(({ activity }) => activity);
 
@@ -62,8 +62,9 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
       activities: visibleActivities
     });
 
-    const entriesBySender = activitiesBySender.map(activity => entries.find(entry => entry.activity === activity));
-    const entriesByStatus = activitiesByStatus.map(activity => entries.find(entry => entry.activity === activity));
+    const [entriesBySender, entriesByStatus] = [activitiesBySender, activitiesByStatus].map(bins =>
+      bins.map(bin => bin.map(activity => entries.find(entry => entry.activity === activity)))
+    );
 
     if (!validateAllEntriesTagged(visibleActivities, activitiesBySender)) {
       console.warn(
