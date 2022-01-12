@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import type { FC, MutableRefObject } from 'react';
+
 // This is an element, when focused, will send the focus to the ref specified in "redirectRef".
 // Although the focus is being redirected, browser will scroll this redirector element into view.
 
@@ -10,11 +12,15 @@ import React, { useCallback } from 'react';
 // When this focus redirector is put inside a scrollable container, you may want to resize or reposition
 // it to prevent unintentional scroll done by the browser default behavior.
 
-const FocusRedirector = ({ className, onFocus, redirectRef }) => {
-  const handleFocus = useCallback(() => {
-    const { current } = redirectRef;
+type FocusRedirectorProps = {
+  className?: string;
+  onFocus?: () => void;
+  redirectRef?: MutableRefObject<HTMLElement>;
+};
 
-    current && current.focus();
+const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
+  const handleFocus = useCallback(() => {
+    redirectRef?.current?.focus();
     onFocus && onFocus();
   }, [onFocus, redirectRef]);
 
@@ -27,15 +33,18 @@ const FocusRedirector = ({ className, onFocus, redirectRef }) => {
 
 FocusRedirector.defaultProps = {
   className: undefined,
-  onFocus: undefined
+  onFocus: undefined,
+  redirectRef: undefined
 };
 
 FocusRedirector.propTypes = {
   className: PropTypes.string,
   onFocus: PropTypes.func,
+  // PropTypes is not fully compatible with TypeScript.
+  // @ts-ignore
   redirectRef: PropTypes.shape({
-    current: PropTypes.any
-  }).isRequired
+    current: PropTypes.instanceOf(HTMLElement)
+  })
 };
 
 export default FocusRedirector;
