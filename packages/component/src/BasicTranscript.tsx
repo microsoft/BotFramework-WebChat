@@ -132,6 +132,10 @@ type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
+function uniqueID(): string {
+  return Date.now() + random().toString(36).substr(2);
+}
+
 // TODO: [P*] Add telemetry for computing how many re-render done so far.
 const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef, className }) => {
   const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
@@ -388,7 +392,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
         activityID: id,
         ariaLabelID: existingEntry
           ? existingEntry.ariaLabelID
-          : `webchat__basic-transcript__activity-label-${random().toString(36).substr(2, 5)}`,
+          : `webchat__basic-transcript__activity-label-${uniqueID()}`,
         element: existingEntry?.element,
         key
       };
@@ -560,8 +564,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   // We need to generate a new ID so the browser see there is a change in aria-activedescendant value and perform accordingly.
   const focusedActivityKey = getFocusedActivityKey();
   const activeDescendantElementId = useMemo(
-    (): string =>
-      focusedActivityKey && `webchat__basic-transcript__active-descendant-${random().toString(36).substr(2, 5)}`,
+    (): string => focusedActivityKey && `webchat__basic-transcript__active-descendant-${uniqueID()}`,
     [focusedActivityKey]
   );
 
