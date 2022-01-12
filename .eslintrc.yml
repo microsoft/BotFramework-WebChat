@@ -54,6 +54,9 @@ overrides:
       no-empty-function: off
       '@typescript-eslint/no-empty-function': error
 
+      no-duplicate-imports: off
+      '@typescript-eslint/no-duplicate-imports': error
+
       # TODO #4003: We will rework on these rules
       '@typescript-eslint/ban-ts-comment': off
       '@typescript-eslint/ban-types': off

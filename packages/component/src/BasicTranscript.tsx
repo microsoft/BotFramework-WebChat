@@ -35,19 +35,17 @@ import FocusRedirector from './Utils/FocusRedirector';
 import getActivityUniqueId from './Utils/getActivityUniqueId';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
-import intersectionOf from './Utils/intersectionOf';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
-import removeInline from './Utils/removeInline';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScreenReaderText from './ScreenReaderText';
 import scrollIntoViewWithBlockNearest from './Utils/scrollIntoViewWithBlockNearest';
 import SpeakActivity from './Activity/Speak';
 import tabbableElements from './Utils/tabbableElements';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
+import useActivityTreeWithRenderer from './hooks/internal/useActivityTreeWithRenderer';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFocus';
 import useFocus from './hooks/useFocus';
-import useMemoize from './hooks/internal/useMemoize';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
@@ -61,12 +59,10 @@ import useValueRef from './hooks/internal/useValueRef';
 
 const {
   useActivities,
-  useCreateActivityRenderer,
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
   useDirection,
-  useGroupActivities,
   useLocalizer,
   useStyleOptions
 } = hooks;
@@ -97,10 +93,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-function validateAllActivitiesTagged(activities, bins) {
-  return activities.every(activity => bins.some(bin => bin.includes(activity)));
-}
 
 type ActivityElement = {
   activity: DirectLineActivity;
@@ -140,20 +132,20 @@ type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
+// TODO: [P*] Add telemetry for computing how many re-render done so far.
 const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef, className }) => {
   const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }] =
     useStyleOptions();
   const [activities] = useActivities();
+  const [activityWithRendererTree] = useActivityTreeWithRenderer();
   const [direction] = useDirection();
   // If "userFocusedActivityKey" is undefined, that means the user did not select any active descendant (a.k.a. focused activity).
   // We should assume the last activity, if any, is the active descendant.
   const [userFocusedActivityKey, setUserFocusedActivityKey, userFocusedActivityKeyRef] = useStateRef<string>();
-  const createActivityRenderer = useCreateActivityRenderer();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const createAvatarRenderer = useCreateAvatarRenderer();
   const focus = useFocus();
-  const groupActivities = useGroupActivities();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootElementRef = useRef<HTMLDivElement>();
@@ -165,136 +157,6 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   const hideAllTimestamps = groupTimestamp === false;
-
-  // Gets renderer for every activity.
-  // Activities that are not visible will return a falsy renderer.
-
-  // Converted from createActivityRenderer({ activity, nextVisibleActivity }) to createActivityRenderer(activity, nextVisibleActivity).
-  // This is for the memoization function to cache the arguments. Memoizer can only cache literal arguments.
-  const createActivityRendererWithLiteralArgs = useCallback(
-    (activity: DirectLineActivity, nextVisibleActivity: DirectLineActivity) =>
-      createActivityRenderer({ activity, nextVisibleActivity }),
-    [createActivityRenderer]
-  );
-
-  // Create a memoized context of the createActivityRenderer function.
-  const activitiesWithRenderer = useMemoize(
-    createActivityRendererWithLiteralArgs,
-    createActivityRendererWithLiteralArgsMemoized => {
-      // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
-      // In the next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return the memoized result instead.
-      // This is an improvement to React useMemo(), because it only allows 1 memoization.
-      // useMemoize() allows any number of memoization.
-
-      const activitiesWithRenderer: {
-        activity: DirectLineActivity;
-        renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-      }[] = [];
-      let nextVisibleActivity: DirectLineActivity;
-
-      for (let index = activities.length - 1; index >= 0; index--) {
-        const activity = activities[+index];
-        const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
-
-        if (renderActivity) {
-          activitiesWithRenderer.splice(0, 0, {
-            activity,
-            renderActivity
-          });
-
-          nextVisibleActivity = activity;
-        }
-      }
-
-      return activitiesWithRenderer;
-    },
-    [activities]
-  );
-
-  const visibleActivities = useMemo<DirectLineActivity[]>(
-    () => activitiesWithRenderer.map(({ activity }) => activity),
-    [activitiesWithRenderer]
-  );
-
-  // Tag activities based on types.
-  // The default implementation tag into 2 types: sender and status.
-
-  const { activitiesGroupBySender, activitiesGroupByStatus } = useMemo(() => {
-    const {
-      sender: activitiesGroupBySender,
-      status: activitiesGroupByStatus
-    }: {
-      sender: DirectLineActivity[][];
-      status: DirectLineActivity[][];
-    } = groupActivities({
-      activities: visibleActivities
-    });
-
-    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupBySender)) {
-      console.warn(
-        'botframework-webchat: Not every activities are grouped in the "sender" property. Please fix "groupActivitiesMiddleware" and group every activities.'
-      );
-    }
-
-    if (!validateAllActivitiesTagged(visibleActivities, activitiesGroupByStatus)) {
-      console.warn(
-        'botframework-webchat: Not every activities are grouped in the "status" property. Please fix "groupActivitiesMiddleware" and group every activities.'
-      );
-    }
-
-    return {
-      activitiesGroupBySender,
-      activitiesGroupByStatus
-    };
-  }, [groupActivities, visibleActivities]);
-
-  // Create a tree of activities with 2 dimensions: sender, followed by status.
-
-  const activityTree = useMemo(() => {
-    const visibleActivitiesPendingGrouping = [...visibleActivities];
-    const activityTree: DirectLineActivity[][][] = [];
-
-    while (visibleActivitiesPendingGrouping.length) {
-      const [activity] = visibleActivitiesPendingGrouping;
-      const senderTree: DirectLineActivity[][] = [];
-      const activitiesWithSameSender = activitiesGroupBySender.find(activities => activities.includes(activity));
-
-      activityTree.push(senderTree);
-
-      activitiesWithSameSender.forEach(activity => {
-        const activitiesWithSameStatus = activitiesGroupByStatus.find(activities => activities.includes(activity));
-
-        const activitiesWithSameSenderAndStatus = intersectionOf(
-          visibleActivitiesPendingGrouping,
-          activitiesWithSameSender,
-          activitiesWithSameStatus
-        );
-
-        if (activitiesWithSameSenderAndStatus.length) {
-          senderTree.push(activitiesWithSameSenderAndStatus);
-          removeInline(visibleActivitiesPendingGrouping, ...activitiesWithSameSenderAndStatus);
-        }
-      });
-    }
-
-    // Assertion: All activities in visibleActivities, must be assigned to the activityTree
-    if (
-      !visibleActivities.every(activity =>
-        activityTree.some(activitiesWithSameSender =>
-          activitiesWithSameSender.some(activitiesWithSameSenderAndStatus =>
-            activitiesWithSameSenderAndStatus.includes(activity)
-          )
-        )
-      )
-    ) {
-      console.warn('botframework-webchat internal: Not all visible activities are grouped in the activityTree.', {
-        visibleActivities,
-        activityTree
-      });
-    }
-
-    return activityTree;
-  }, [activitiesGroupBySender, activitiesGroupByStatus, visibleActivities]);
 
   const scrollFocusedActivityIntoView = useCallback(() => {
     const { current: userFocusedActivityKey } = userFocusedActivityKeyRef;
@@ -330,15 +192,15 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
     const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
     const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
-    activityTree.forEach(activitiesWithSameSender => {
-      const [[firstActivity]] = activitiesWithSameSender;
+    activityWithRendererTree.forEach(entriesWithSameSender => {
+      const [[{ activity: firstActivity }]] = entriesWithSameSender;
       const renderAvatar = createAvatarRenderer({ activity: firstActivity });
 
-      activitiesWithSameSender.forEach((activitiesWithSameSenderAndStatus, indexWithinSenderGroup) => {
+      entriesWithSameSender.forEach((entriesWithSameSenderAndStatus, indexWithinSenderGroup) => {
         const firstInSenderGroup = !indexWithinSenderGroup;
-        const lastInSenderGroup = indexWithinSenderGroup === activitiesWithSameSender.length - 1;
+        const lastInSenderGroup = indexWithinSenderGroup === entriesWithSameSender.length - 1;
 
-        activitiesWithSameSenderAndStatus.forEach((activity, indexWithinSenderAndStatusGroup) => {
+        entriesWithSameSenderAndStatus.forEach(({ activity, renderActivity }, indexWithinSenderAndStatusGroup) => {
           // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
           const renderActivityStatus = createActivityStatusRenderer({
             activity,
@@ -347,9 +209,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
           const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
           const lastInSenderAndStatusGroup =
-            indexWithinSenderAndStatusGroup === activitiesWithSameSenderAndStatus.length - 1;
+            indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
 
-          const { renderActivity } = activitiesWithRenderer.find(entry => entry.activity === activity);
           const key: string = getActivityUniqueId(activity) || renderingElements.length + '';
           const baseAltText: string =
             typeof activity?.channelData?.['webchat:fallback-text'] === 'string'
@@ -497,7 +358,7 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
             // If true, it will hide the timestamp, but it will continue to show the
             // retry prompt. And show the screen reader version of the timestamp.
             hideTimestamp:
-              hideAllTimestamps || indexWithinSenderAndStatusGroup !== activitiesWithSameSenderAndStatus.length - 1,
+              hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1,
             key,
 
             // When "liveRegionKey" changes or contents that made up the alt text changed, it will show up in the live region momentarily.
@@ -535,9 +396,8 @@ const InternalTranscript: VFC<InternalTranscriptProps> = ({ activityElementsRef,
 
     return renderingElements;
   }, [
-    activitiesWithRenderer,
     activityElementsRef,
-    activityTree,
+    activityWithRendererTree,
     bubbleFromUserNubOffset,
     bubbleNubOffset,
     createActivityStatusRenderer,
