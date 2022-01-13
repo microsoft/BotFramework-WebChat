@@ -26,22 +26,34 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        // After clicking on an activity, should show a focus indicator around the transcript, and an active indicator around the activated activity.
+        // WHEN: After clicking on activity #27.
         const activityElements = pageElements.transcript().querySelectorAll('li');
-        const activityToClick = activityElements[activityElements.length - 5];
 
-        // // A real mouseDown would focus on the transcript, but Simulate.mouseDown does not focus on the transcript, we need to manually set the focus.
-        // pageElements.transcript().focus();
-        // Simulate.mouseDown(activityToClick);
+        await host.click(activityElements[activityElements.length - 2]);
 
-        await host.click(activityToClick);
+        // THEN: It should set activity #27 as active descendant.
+        expect(activityElements[activityElements.length - 2]).toBe(
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
+        );
+
+        // THEN: It should scroll #27 into view.
         await pageConditions.focusedActivityInView();
 
+        // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #27.
         await host.snapshot();
 
-        // Should activate the next activity.
+        // WHEN: Down arrow key is pressed.
         await host.sendKeys('ARROW_DOWN');
+
+        // THEN: It should set activity #27 as active descendant.
+        expect(activityElements[activityElements.length - 1]).toBe(
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
+        );
+
+        // THEN: It should scroll #28 into view.
         await pageConditions.focusedActivityInView();
+
+        // THEN: It should activate the activity #28.
         await host.snapshot();
       });
     </script>
