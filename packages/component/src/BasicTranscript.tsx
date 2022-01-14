@@ -28,35 +28,30 @@ import type {
   VFC
 } from 'react';
 
-import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
-import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
-import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
-import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
-import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
-import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import ActivityKeyerComposer from './providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
-// import useActiveDescendantId from './providers/ActiveDescendant/useActiveDescendantId';
-// import useFocusActiveDescendant from './providers/ActiveDescendant/useFocusActiveDescendant';
-// import useFocusContainer from './providers/ActiveDescendant/useFocusContainer';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import FocusRedirector from './Utils/FocusRedirector';
-// import getActivityUniqueId from './Utils/getActivityUniqueId';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import ScreenReaderActivity from './ScreenReaderActivity';
 import ScreenReaderText from './ScreenReaderText';
-// import scrollIntoViewWithBlockNearest from './Utils/scrollIntoViewWithBlockNearest';
 import SpeakActivity from './Activity/Speak';
 // TODO: [P*] Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
+import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
+import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
+import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFocus';
 import useFocus from './hooks/useFocus';
+import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
+import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
+import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -146,23 +141,12 @@ type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
-// function uniqueID(): string {
-//   return Date.now() + random().toString(36).substr(2);
-// }
-
 type ActivityRowProps = PropsWithChildren<{
   acknowledged: boolean;
   activity: DirectLineActivity;
   activityKey: string;
-  // id: string;
-  // onFocusInner: ({ activityKey: string }) => void;
-  // onFocusSelf: ({ activityKey: string }) => void;
   shouldSpeak: boolean;
 }>;
-
-// function activityKeyToActivityElementId(key?: string): string {
-//   return key && `webchat__basic-transcript__activity-rowid--${key}`;
-// }
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
   (
@@ -178,25 +162,21 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
     },
     ref
   ) => {
-    const activityKeyRef = useValueRef<string>(activityKey);
     const [activeDescendantId] = useActiveDescendantId();
+    const activityKeyRef = useValueRef<string>(activityKey);
     const ariaLabelId = useMemo(() => `webchat__basic-transcript__activity-label--${activityKey}`, [activityKey]);
     const bodyRef = useRef<HTMLDivElement>();
-    // const focusActiveDescendant = useFocusActiveDescendant();
     const focusByActivityKey = useFocusByActivityKey();
     const id = useComputeElementIdFromActivityKey()(activityKey);
-    // const focusContainer = useFocusContainer();
     const localize = useLocalizer();
-    // const onFocusInnerRef = useValueRef(onFocusInner);
-    // const onFocusSelfRef = useValueRef(onFocusSelf);
-
-    const focus = useCallback<(withFocus?: boolean) => void>(
-      (withFocus?: boolean) => focusByActivityKey(activityKeyRef.current, withFocus),
-      [activityKeyRef, focusByActivityKey]
-    );
 
     const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
     const isActiveDescendant = id === activeDescendantId;
+
+    const focusSelf = useCallback<(withFocus?: boolean) => void>(
+      (withFocus?: boolean) => focusByActivityKey(activityKeyRef.current, withFocus),
+      [activityKeyRef, focusByActivityKey]
+    );
 
     const handleClick: MouseEventHandler = useCallback(
       ({ currentTarget, target }) => {
@@ -242,9 +222,8 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
       [bodyRef]
     );
 
-    // Some inputs inside the activity is focused.
-    // We don't need to set the focus on the transcript, just set the active descendant is fine.
-    const handleFocus: FocusEventHandler = useCallback(() => focus(false), [focus]);
+    // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
+    const handleFocus: FocusEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
 
     const handleKeyDown: KeyboardEventHandler = useCallback(
       event => {
@@ -252,10 +231,10 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
           event.preventDefault();
           event.stopPropagation();
 
-          focus();
+          focusSelf();
         }
       },
-      [focus]
+      [focusSelf]
     );
 
     // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
@@ -268,10 +247,10 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
 
         // If mouse down on an element which is not tabbable, then, focus-self.
         if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
-          focus(false);
+          focusSelf(false);
         }
       },
-      [focus]
+      [focusSelf]
     );
 
     // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
@@ -281,7 +260,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
     // TODO: [P*] Fix this.
     const isContentInteractive = false;
 
-    const handleSentinelFocus: () => void = useCallback(() => focus(), [focus]);
+    const handleSentinelFocus: () => void = useCallback(() => focusSelf(), [focusSelf]);
 
     return (
       <li
@@ -349,33 +328,27 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const [
       { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
     ] = useStyleOptions();
+    const [activeDescendantId] = useActiveDescendantId();
     const [activities] = useActivities();
     const [activityWithRendererTree] = useActivityTreeWithRenderer();
     const [direction] = useDirection();
-    // If "rawFocusedActivityKey" is undefined, that means the user did not select any active descendant (a.k.a. focused activity).
-    // We should assume the last activity, if any, is the active descendant.
-    // const [rawActiveDescendantId, setRawActiveDescendantId] = useActiveDescendantId();
-    // const [rawFocusedActivityKey, setRawFocusedActivityKey] = useState<string>();
-    // const focusActiveDescendant = useFocusActiveDescendant();
-    // const focusContainer = useFocusContainer();
-    const [activeDescendantId] = useActiveDescendantId();
     const [focusedActivityKey] = useFocusedActivityKey();
-    const focusByActivityKey = useFocusByActivityKey();
-    const focusRelativeActivity = useFocusRelativeActivity();
     const createActivityStatusRenderer = useCreateActivityStatusRenderer();
     const createAvatarRenderer = useCreateAvatarRenderer();
     const focus = useFocus();
+    const focusByActivityKey = useFocusByActivityKey();
+    const focusRelativeActivity = useFocusRelativeActivity();
     const getKeyByActivity = useGetKeyByActivity();
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>();
     const terminatorRef = useRef<HTMLDivElement>();
-    // const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT');
+
+    const focusedActivityKeyRef = useValueRef(focusedActivityKey);
+    const hideAllTimestamps = groupTimestamp === false;
     const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
     const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
     const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
-
-    const focusedActivityKeyRef = useValueRef(focusedActivityKey);
 
     const callbackRef = useCallback(
       (element: HTMLDivElement) => {
@@ -390,39 +363,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
-    // const activitiesRef = useValueRef(activities);
-    const hideAllTimestamps = groupTimestamp === false;
-
-    // const scrollFocusedActivityIntoView = useCallback(() => {
-    //   const { current: activityElements } = activityElementsRef;
-    //   const { current: userFocusedActivityKey } = userFocusedActivityKeyRef;
-
-    //   const activityElement = (
-    //     activityElements.find(({ key }) => key === userFocusedActivityKey) ||
-    //     activityElements[activityElements.length - 1]
-    //   )?.element;
-
-    //   // Don't scroll active descendant into view if the focus is already inside it.
-    //   // Otherwise, given the focus is on the send box, clicking on any <input> inside the Adaptive Cards may cause the view to move.
-    //   // This UX is not desirable because click should not cause scroll.
-    //   if (activityElement && !activityElement.contains(document.activeElement)) {
-    //     scrollIntoViewWithBlockNearest(activityElement);
-    //   }
-    // }, [activityElementsRef, userFocusedActivityKeyRef]);
-
-    // Set the focusing activity because the user want to.
-    // Since this is user-initiated action, we want to scroll the activity into view as well.
-    // If we are blurring the focus (set it to `undefined`), then do not scroll to the bottom.
-    // const setFocusedActivityKey = useCallback(
-    //   (nextFocusedActivityKey?: string, shouldFocus: boolean = true) => {
-    //     // TODO: [P*] This is being called too many times.
-    //     focusByActivityKey(nextFocusedActivityKey, shouldFocus);
-    //   },
-    //   [focusByActivityKey]
-    // );
-
     // Flatten the tree back into an array with information related to rendering.
-
     const renderingElements = useMemo(() => {
       const renderingElements: RenderingElement[] = [];
       const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
@@ -483,24 +424,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               showCallout = true;
             }
 
-            // const focusActivity = () => {
-            //   setUserFocusedActivityKeyWithScroll(getKeyByActivity(activity));
-
-            //   // IE11 need to manually focus on the transcript.
-            //   rootElementRef.current?.focus();
-            // };
-
-            // Focus on the first tabbable element inside the activity.
-            // This will be triggered by pressing ENTER while focusing on an interactive activity.
-            // TODO: [P*] Can we remove this?
-            // const focusInside = () => {
-            //   const [firstTabbableElement] = tabbableElements(
-            //     activityElementsRef.current.find(activityElement => activityElement.key === key)?.element
-            //   ).filter(({ className }) => className !== 'webchat__basic-transcript__activity-sentinel');
-
-            //   firstTabbableElement?.focus();
-            // };
-
             renderingElements.push({
               activity,
 
@@ -512,84 +435,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
                   entry.element = activityElement;
                 }
               },
-
-              // Calling this function will put the focus on the transcript and the activity.
-              // focusActivity,
-
-              // Calling this function will focus on the first tabbable element in the activity.
-              // focusInside,
-
-              // handleClick: event => {
-              //   // (Related to #4020)
-              //   //
-              //   // This is called while screen reader is running:
-              //   //
-              //   // 1. When scan mode is on (Windows Narrator) or in browse mode (NVDA), ENTER key is pressed, or;
-              //   // 2. When scan mode is off (Windows Narrator) or in focus mode (NVDA), CAPSLOCK + ENTER is pressed
-              //   //
-              //   // Although `document.activeElement` (a.k.a. primary focus) is on the transcript,
-              //   // when ENTER key is pressed with screen reader in scan mode, screen reader will
-              //   // "do primary action", which ask the browser to send a `click` event to the
-              //   // active descendant (a.k.a. focused activity).
-              //   //
-              //   // While outside of scan mode, this will also capture CAPSLOCK + ENTER,
-              //   // which is a key combo for "do primary action" or "activates the current navigator object".
-              //   //
-              //   // We cannot capture plain ENTER key outside of scan mode here.
-              //   // We can only capture it on `keydown` event fired to the transcript element.
-              //   //
-              //   // Also see https://github.com/nvaccess/nvda/issues/7898.
-
-              //   const { currentTarget, target } = event;
-
-              //   // The followings are for Windows Narrator:
-              //   // - When scan mode is on
-              //   //   - Press ENTER will dispatch "click" event to the <li> element
-              //   //   - This is called "Do primary action"
-              //   if (target === currentTarget) {
-              //     return focusInside();
-              //   }
-
-              //   // The followings are for NVDA:
-              //   // - When in browse mode (red border), and the red box is around the <ScreenReaderActivity>
-              //   //   - The much simplified DOM tree: <li><article><p>...</p></article></li>
-              //   //   - Press ENTER will dispatch `click` event
-              //   //      - NVDA 2020.2 (buggy): In additional to ENTER, when navigating using UP/DOWN arrow keys, it dispatch "click" event to the <article> element
-              //   //      - NVDA 2021.2: After press ENTER, it dispatch 2 `click` events. First to the <article> element, then to the element currently bordered in red (e.g. <p>)
-              //   //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we are not a web document and already offered a full-fledge navigation experience
-              //   if (
-              //     document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target as HTMLElement)
-              //   ) {
-              //     return focusInside();
-              //   }
-              // },
-
-              // // When a child of the activity receives focus, notify the transcript to set the aria-activedescendant to this activity.
-              // handleFocus: () => {
-              //   setUserFocusedActivityKeyWithScroll(getKeyByActivity(activity));
-              // },
-
-              // handleKeyDown: event => {
-              //   if (event.key === 'Escape') {
-              //     event.preventDefault();
-              //     event.stopPropagation();
-
-              //     setUserFocusedActivityKeyWithScroll(getKeyByActivity(activity));
-              //     rootElementRef.current?.focus();
-              //   }
-              // },
-
-              // // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
-              // // We should do the same for mouse, that is why we have the click handler here.
-              // // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-              // handleMouseDownCapture: ({ target }) => {
-              //   const element = target as HTMLLIElement;
-              //   const tabIndex = getTabIndex(element);
-
-              //   if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
-              //     focusActivity();
-              //   }
-              // },
 
               // "hideTimestamp" is a render-time parameter for renderActivityStatus().
               // If true, it will hide the timestamp, but it will continue to show the
@@ -624,12 +469,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       createAvatarRenderer,
       getKeyByActivity,
       hideAllTimestamps,
-      // rootElementRef,
-      // setUserFocusedActivityKeyWithScroll,
       showAvatarInGroup
     ]);
-
-    // const renderingElementsRef = useValueRef(renderingElements);
 
     // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
     useMemo(() => {
@@ -652,36 +493,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
       activityElementsRef.current = nextActivityElements;
     }, [activityElementsRef, activityWithRendererTree, getKeyByActivity]);
-
-    // const activeDescendantId =
-    //   rawActiveDescendantId || activityKeyToActivityElementId(renderingElements[renderingElements.length - 1]?.key);
-
-    // const focusedActivityKeyRef = useValueRef<string | undefined>(
-    //   renderingElements.find(({ key }) => key === rawFocusedActivityKey)
-    //     ? rawFocusedActivityKey
-    //     : renderingElements[renderingElements.length - 1]?.key
-    // );
-
-    // TODO: [P*] Why should we want a getter function instead of the value?
-    // `getFocusedActivityKey` is a getter function returning patched version of `userFocusedActivityKey`. The patch logic:
-    //
-    // 1. If `userFocusedActivityKey` is set and the activity is being rendered in the transcript, return the key;
-    // 2. Otherwise, if the transcript is not empty, return the key of the last rendering activity;
-    // 3. Otherwise, return falsy, indicating nothing is in the transcript and nothing can be selected.
-    //
-    // We are using a getter callback because this is a computed/derived value and we could get an updated version without re-rendering.
-    // const getFocusedActivityKey = useCallback((): string | undefined => {
-    //   const { current: renderingElements } = renderingElementsRef;
-    //   const { current: userFocusedActivityKey } = rawUserFocusedActivityKeyRef;
-
-    //   // Make sure the "userFocusedActivityKey" is pointing to an activity that is rendering in this current loop.
-    //   if (userFocusedActivityKey && renderingElements.find(({ key }) => key === userFocusedActivityKey)) {
-    //     return userFocusedActivityKey;
-    //   }
-
-    //   // Otherwise, assume the last rendered activity is focused.
-    //   return renderingElements[renderingElements.length - 1]?.key;
-    // }, [renderingElementsRef, rawUserFocusedActivityKeyRef]);
 
     const renderingActivities: DirectLineActivity[] = useMemo(
       () => renderingElements.map(({ activity }) => activity),
@@ -810,29 +621,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     const indexOfLastInteractedActivity = activities.indexOf(lastInteractedActivity);
 
-    // const focusRelativeActivity = useCallback(
-    //   (delta?: number) => {
-    //     const { current: renderingElements } = renderingElementsRef;
-
-    //     if (isNaN(delta) || !renderingElements.length) {
-    //       return focusByActivityKey(false);
-    //     }
-
-    //     const { current: focusedActivityKey } = focusedActivityKeyRef;
-    //     // const focusedActivityKey = getFocusedActivityKey();
-
-    //     const index = renderingElements.findIndex(({ key }) => key === focusedActivityKey);
-    //     const nextIndex = ~index
-    //       ? Math.max(0, Math.min(renderingElements.length - 1, index + delta))
-    //       : renderingElements.length - 1;
-    //     const nextFocusedActivity = renderingElements[+nextIndex];
-
-    //     focusByActivityKey(nextFocusedActivity.key);
-    //   },
-    //   // [getFocusedActivityKey, renderingElementsRef, setUserFocusedActivityKeyWithScroll]
-    //   [focusedActivityKeyRef, renderingElementsRef, focusByActivityKey]
-    // );
-
     const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
       event => {
         const { target } = event;
@@ -864,7 +652,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
               const { current: focusedActivityKey } = focusedActivityKeyRef;
-              // const focusedActivityKey = getFocusedActivityKey();
 
               // TODO: [P*] We could do better.
               const body: HTMLElement = activityElementsRef.current
@@ -896,11 +683,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           event.stopPropagation();
         }
       },
-      // [focus, focusRelativeActivity, getFocusedActivityKey, terminatorRef]
       [activityElementsRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
     );
 
-    // TODO: [P*] Do we need this?
+    // TODO: [P*] Do we need this `labelId`? Or just use `aria-label`?
     const labelId = useUniqueId('webchat__basic-transcript__label');
 
     const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
@@ -924,9 +710,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [focus]
     );
 
-    const focusContainer = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
-
-    useRegisterFocusTranscript(focusContainer);
+    useRegisterFocusTranscript(useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]));
 
     const handleScrollToEnd = useCallback(
       ({ firstUnreadActivityKey }: { firstUnreadActivityKey?: string }) =>
@@ -956,9 +740,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const handleFocusFiller = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
 
     // When focus into the transcript using TAB/SHIFT-TAB, scroll the focused activity into view.
-    const handleFocusVisible = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
-
-    useObserveFocusVisible(rootElementRef, handleFocusVisible);
+    useObserveFocusVisible(
+      rootElementRef,
+      useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
+    );
 
     return (
       <div
@@ -1013,21 +798,12 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               {
                 activity,
                 callbackRef,
-                // focusActivity,
-                // handleClick,
-                // handleFocus,
-                // handleKeyDown,
-                // handleMouseDownCapture,
                 hideTimestamp,
-                // id,
                 key,
                 renderActivity,
                 renderActivityStatus,
                 renderAvatar,
-                // role,
-                // shouldSpeak,
                 showCallout
-                // supportScreenReader
               },
               index
               // TODO: [P*] Fix this.
@@ -1045,10 +821,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
                   acknowledged={index <= indexOfLastInteractedActivity}
                   activity={activity}
                   activityKey={key}
-                  // id={`webchat__basic-transcript__activity--${key}`}
                   key={key}
-                  // onFocusInner={handleActivityFocusInner}
-                  // onFocusSelf={handleActivityFocusSelf}
                   ref={callbackRef}
                   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
                   shouldSpeak={activity.channelData?.speak}
@@ -1061,62 +834,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
                   })}
                 </ActivityRow>
               );
-
-              // return (
-              //   <li
-              //     aria-labelledby={ariaLabelID}
-              //     className={classNames('webchat__basic-transcript__activity', {
-              //       'webchat__basic-transcript__activity--acknowledged': index <= indexOfLastInteractedActivity,
-              //       'webchat__basic-transcript__activity--from-bot': role !== 'user',
-              //       'webchat__basic-transcript__activity--from-user': role === 'user'
-              //     })}
-              //     // Set "id" is required for accessibility active descendant feature.
-              //     /* eslint-disable-next-line react/forbid-dom-props */
-              //     id={isActiveDescendant ? activeDescendantElementId : undefined}
-              //     key={key}
-              //     // This is for capturing "do primary action" done by the screen reader.
-              //     // With screen reader, will narrate "Press ENTER to interact". But in scan mode, ENTER means "do primary action".
-              //     // If `onClick` is set, screen reader will send click event when "do primary action".
-              //     // Related to #4020.
-              //     onClick={handleClick}
-              //     onFocus={handleFocus}
-              //     onKeyDown={handleKeyDown}
-              //     // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
-              //     onMouseDownCapture={handleMouseDownCapture}
-              //     ref={callbackRef}
-              //   >
-              //     {supportScreenReader && (
-              //       <ScreenReaderActivity activity={activity} id={ariaLabelID} renderAttachments={false}>
-              //         {!!isContentInteractive && <p>{activityInteractiveAlt}</p>}
-              //       </ScreenReaderActivity>
-              //     )}
-              //     <FocusRedirector
-              //       className="webchat__basic-transcript__activity-sentinel"
-              //       onFocus={focusActivity}
-              //       redirectRef={rootElementRef}
-              //     />
-              //     <div className="webchat__basic-transcript__activity-box">
-              //       {renderActivity({
-              //         hideTimestamp,
-              //         renderActivityStatus,
-              //         renderAvatar,
-              //         showCallout
-              //       })}
-              //     </div>
-              //     {shouldSpeak && <SpeakActivity activity={activity} />}
-              //     <FocusRedirector
-              //       className="webchat__basic-transcript__activity-sentinel"
-              //       onFocus={focusActivity}
-              //       redirectRef={rootElementRef}
-              //     />
-              //     <div
-              //       className={classNames('webchat__basic-transcript__activity-indicator', {
-              //         'webchat__basic-transcript__activity-indicator--first': !index,
-              //         'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
-              //       })}
-              //     />
-              //   </li>
-              // );
             }
           )}
         </InternalTranscriptScrollable>
