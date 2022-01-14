@@ -1,21 +1,28 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useRef, useState } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useCallback, useRef, useState } from 'react';
 
-export default function useStateRef<T>(initialState?: T): [T, Dispatch<SetStateAction<T>>, RefObject<T>] {
-  const [value, setValue] = useState(initialState);
-  const valueRef = useRef<T>();
+export default function useStateRef<T>(initialValue?: T): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
+  const [_, forceRender] = useState<{}>();
+  const valueRef: MutableRefObject<T> = useRef<T>(initialValue);
 
-  valueRef.current = value;
+  const setter: Dispatch<SetStateAction<T>> = useCallback(
+    (value: SetStateAction<T>) => {
+      const { current } = valueRef;
+      let nextValue: T;
 
-  const setValueWithRef = useCallback(
-    nextState => {
-      const nextValue = typeof nextState === 'function' ? (nextState as Function)(valueRef.current) : nextState;
+      if (value instanceof Function) {
+        nextValue = value(current);
+      } else {
+        nextValue = value;
+      }
 
-      valueRef.current = nextValue;
+      if (current !== nextValue) {
+        valueRef.current = nextValue;
 
-      setValue(nextValue);
+        forceRender({});
+      }
     },
-    [setValue, valueRef]
+    [forceRender, valueRef]
   );
 
-  return [value, setValueWithRef, valueRef];
+  return [valueRef.current, setter, valueRef];
 }
