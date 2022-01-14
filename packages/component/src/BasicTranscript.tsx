@@ -58,7 +58,7 @@ import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPositio
 import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFocus';
 import useFocus from './hooks/useFocus';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
-// import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
+import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
@@ -268,7 +268,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
 
         // If mouse down on an element which is not tabbable, then, focus-self.
         if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
-          focus();
+          focus(false);
         }
       },
       [focus]
@@ -954,6 +954,11 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     // despite the fact there are no "tabIndex" attributes set on the filler.
     // We need to artificially send the focus back to the transcript.
     const handleFocusFiller = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
+
+    // When focus into the transcript using TAB/SHIFT-TAB, scroll the focused activity into view.
+    const handleFocusVisible = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
+
+    useObserveFocusVisible(rootElementRef, handleFocusVisible);
 
     return (
       <div
