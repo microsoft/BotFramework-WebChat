@@ -7,16 +7,11 @@ export default function useStateRef<T>(initialValue?: T): [T, Dispatch<SetStateA
   const setter: Dispatch<SetStateAction<T>> = useCallback(
     (value: SetStateAction<T>) => {
       const { current } = valueRef;
-      let nextValue: T;
 
-      if (value instanceof Function) {
-        nextValue = value(current);
-      } else {
-        nextValue = value;
-      }
+      value = value instanceof Function ? value(current) : value;
 
-      if (current !== nextValue) {
-        valueRef.current = nextValue;
+      if (current !== value) {
+        valueRef.current = value;
 
         forceRender({});
       }
