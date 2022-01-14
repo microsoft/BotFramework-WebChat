@@ -3,8 +3,8 @@
  */
 export default function intersectionOf<T>(arg0: T[], ...args: T[][]): T[] {
   return args.reduce(
-    (interim, arg) =>
-      interim.reduce((intersection, item) => {
+    (interim: T[], arg: T[]) =>
+      interim.reduce((intersection: T[], item: T) => {
         arg.includes(item) && intersection.push(item);
 
         return intersection;
