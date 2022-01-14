@@ -27,15 +27,9 @@
         await pageObjects.focusSendBoxTextBox();
 
         // WHEN: After clicking on activity #29.
-        const activityElements = pageElements.transcript().querySelectorAll('li');
+        const activityElements = pageElements.activities();
 
         await host.click(activityElements[activityElements.length - 3]);
-
-        console.log({
-          minus3: activityElements[activityElements.length - 3],
-          activeDescendant: document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant')),
-          activeDescendantId: pageElements.transcript().getAttribute('aria-activedescendant')
-        });
 
         // THEN: It should set activity #29 as active descendant.
         expect(activityElements[activityElements.length - 3]).toBe(
@@ -60,6 +54,27 @@
         await pageConditions.focusedActivityInView();
 
         // THEN: It should activate the activity #30.
+        await host.snapshot();
+
+        // WHEN: Click on <input> inside activity #29.
+        await host.click(activityElements[activityElements.length - 3].querySelector('input'));
+
+        // THEN: It should set activity #29 as the active descendant.
+        expect(activityElements[activityElements.length - 3]).toBe(
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
+        );
+
+        // WHEN: After SHIFT-TAB x 3 from the send box.
+        await host.click(pageElements.sendBoxTextBox());
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #29.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(activityElements[activityElements.length - 3]).toBe(
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
+        );
         await host.snapshot();
       });
     </script>
