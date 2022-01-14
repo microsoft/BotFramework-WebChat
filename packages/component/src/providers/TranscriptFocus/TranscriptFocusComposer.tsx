@@ -106,7 +106,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
 
         const activeDescendantId = computeElementIdFromActivityKey(
           activityKey === false
-            ? // If "activityKey" is false, it means "reset focus to the last activity".
+            ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
               last(orderedActivityKeysRef.current)
             : activityKey
             ? activityKey

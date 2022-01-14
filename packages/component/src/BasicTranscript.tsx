@@ -118,12 +118,6 @@ type RenderingElement = {
     };
   };
   callbackRef: (element: HTMLElement) => void;
-  // focusActivity: () => void;
-  // focusInside: () => void;
-  // handleClick: MouseEventHandler<HTMLLIElement & Node>;
-  // handleFocus: () => void;
-  // handleKeyDown: KeyboardEventHandler<HTMLLIElement>;
-  // handleMouseDownCapture: MouseEventHandler<HTMLLIElement>;
   hideTimestamp: boolean;
   key: string;
   liveRegionKey: string;
@@ -149,19 +143,7 @@ type ActivityRowProps = PropsWithChildren<{
 }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
-  (
-    {
-      acknowledged,
-      activity,
-      activityKey,
-      children,
-      // id,
-      // onFocusInner, // Set active descendant only.
-      // onFocusSelf, // Set active descendant and focus on transcript.
-      shouldSpeak
-    },
-    ref
-  ) => {
+  ({ acknowledged, activity, activityKey, children, shouldSpeak }, ref) => {
     const [activeDescendantId] = useActiveDescendantId();
     const activityKeyRef = useValueRef<string>(activityKey);
     const ariaLabelId = useMemo(() => `webchat__basic-transcript__activity-label--${activityKey}`, [activityKey]);
