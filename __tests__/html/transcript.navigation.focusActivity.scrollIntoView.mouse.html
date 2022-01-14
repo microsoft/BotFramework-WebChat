@@ -59,6 +59,20 @@
 
         // THEN: It should no longer have a visual indicator around activity #29.
         await host.snapshot();
+
+        // WHEN: Clicking on the top left of the transcript.
+        await host.clickAt(0, 0, pageElements.transcriptScrollable());
+
+        // THEN: It should not scroll activity #29 into view.
+        await pageConditions.scrollStabilized(
+          pageElements.transcriptScrollable().scrollHeight - pageElements.transcriptScrollable().offsetHeight
+        );
+
+        // THEN: It should show a visual indicator around activity #29.
+        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
+          [...pageElements.activities()].reverse()[2]
+        );
+        await host.snapshot();
       });
     </script>
   </body>
