@@ -71,13 +71,13 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
     keyToActivityMapRef.current = nextKeyToActivityMap;
   }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
 
-  const getActivityByKey: (key: string) => DirectLineActivity = useCallback(
-    (key: string) => keyToActivityMapRef.current.get(key),
+  const getActivityByKey: (key?: string) => DirectLineActivity | undefined = useCallback(
+    (key?: string): DirectLineActivity | undefined => key && keyToActivityMapRef.current.get(key),
     [keyToActivityMapRef]
   );
 
-  const getKeyByActivity: (activity: DirectLineActivity) => string = useCallback(
-    (activity: DirectLineActivity) => activityToKeyMapRef.current.get(activity),
+  const getKeyByActivity: (activity?: DirectLineActivity) => string | undefined = useCallback(
+    (activity?: DirectLineActivity) => activity && activityToKeyMapRef.current.get(activity),
     [activityToKeyMapRef]
   );
 

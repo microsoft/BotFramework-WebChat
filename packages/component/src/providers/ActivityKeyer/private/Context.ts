@@ -3,8 +3,8 @@ import { createContext } from 'react';
 import type { DirectLineActivity } from 'botframework-webchat-core';
 
 type ActivityKeyerContextType = {
-  getActivityByKey: (key: string) => DirectLineActivity;
-  getKeyByActivity: (activity: DirectLineActivity) => string;
+  getActivityByKey: (key?: string) => DirectLineActivity | undefined;
+  getKeyByActivity: (activity?: DirectLineActivity) => string | undefined;
 };
 
 export default createContext<ActivityKeyerContextType>(undefined);
