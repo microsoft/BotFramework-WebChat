@@ -3,15 +3,17 @@ import { useMemo } from 'react';
 
 import type { DirectLineActivity } from 'botframework-webchat-core';
 
-import intersectionOf from '../../Utils/intersectionOf';
-import removeInline from '../../Utils/removeInline';
-import useActivitiesWithRenderer from './useActivitiesWithRenderer';
+import intersectionOf from '../../../Utils/intersectionOf';
+import removeInline from '../../../Utils/removeInline';
 
-import type { ActivityWithRenderer } from './useActivitiesWithRenderer';
+import type { ActivityWithRenderer, ReadonlyActivityTree } from './types';
 
 const { useGroupActivities } = hooks;
 
-function validateAllEntriesTagged(entries: ActivityWithRenderer[], bins: ActivityWithRenderer[][]): boolean {
+function validateAllEntriesTagged(
+  entries: readonly ActivityWithRenderer[],
+  bins: readonly (readonly ActivityWithRenderer[])[]
+): boolean {
   return entries.every(entry => bins.some(bin => bin.includes(entry)));
 }
 
@@ -37,8 +39,7 @@ function validateAllEntriesTagged(entries: ActivityWithRenderer[], bins: Activit
 //   ]
 // ]
 
-function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
-  const [entries] = useActivitiesWithRenderer();
+function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): ReadonlyActivityTree {
   const groupActivities = useGroupActivities();
 
   // We bin activities in 2 different ways:
@@ -47,8 +48,8 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
   // Both arrays should contains all activities.
 
   const { entriesBySender, entriesByStatus } = useMemo<{
-    entriesBySender: DirectLineActivity[][];
-    entriesByStatus: DirectLineActivity[][];
+    entriesBySender: readonly (readonly DirectLineActivity[])[];
+    entriesByStatus: readonly (readonly DirectLineActivity[])[];
   }>(() => {
     const visibleActivities = entries.map(({ activity }) => activity);
 
@@ -56,8 +57,8 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
       sender: activitiesBySender,
       status: activitiesByStatus
     }: {
-      sender: DirectLineActivity[][];
-      status: DirectLineActivity[][];
+      sender: readonly (readonly DirectLineActivity[])[];
+      status: readonly (readonly DirectLineActivity[])[];
     } = groupActivities({
       activities: visibleActivities
     });
@@ -86,30 +87,30 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
 
   // Create a tree of activities with 2 dimensions: sender, followed by status.
 
-  const activityTree = useMemo<ActivityWithRenderer[][][]>(() => {
+  const activityTree: ReadonlyActivityTree = useMemo(() => {
     const entriesPendingGrouping = [...entries];
-    const activityTree: ActivityWithRenderer[][][] = [];
+    const activityTree: (readonly (readonly ActivityWithRenderer[])[])[] = [];
 
     while (entriesPendingGrouping.length) {
       const entriesWithSameSender = entriesBySender.find(bin => bin.includes(entriesPendingGrouping[0]));
-      const senderTree: ActivityWithRenderer[][] = [];
-
-      activityTree.push(senderTree);
+      const senderTree: (readonly ActivityWithRenderer[])[] = [];
 
       entriesWithSameSender.forEach(entry => {
         const entriesWithSameStatus = entriesByStatus.find(bin => bin.includes(entry));
 
-        const entriesWithSameSenderAndStatus = intersectionOf(
+        const entriesWithSameSenderAndStatus = intersectionOf<ActivityWithRenderer>(
           entriesPendingGrouping,
           entriesWithSameSender,
           entriesWithSameStatus
         );
 
         if (entriesWithSameSenderAndStatus.length) {
-          senderTree.push(entriesWithSameSenderAndStatus);
+          senderTree.push(Object.freeze(entriesWithSameSenderAndStatus));
           removeInline(entriesPendingGrouping, ...entriesWithSameSenderAndStatus);
         }
       });
+
+      activityTree.push(Object.freeze(senderTree));
     }
 
     // Assertion: All entries must be assigned to the activityTree.
@@ -128,10 +129,10 @@ function useActivityTreeWithRenderer(): [ActivityWithRenderer[][][]] {
       });
     }
 
-    return activityTree;
+    return Object.freeze(activityTree);
   }, [entriesBySender, entriesByStatus, entries]);
 
-  return [activityTree];
+  return activityTree;
 }
 
 export type { ActivityWithRenderer };
