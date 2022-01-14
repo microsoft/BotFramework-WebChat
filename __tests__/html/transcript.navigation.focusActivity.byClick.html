@@ -26,34 +26,40 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        // WHEN: After clicking on activity #27.
+        // WHEN: After clicking on activity #29.
         const activityElements = pageElements.transcript().querySelectorAll('li');
 
-        await host.click(activityElements[activityElements.length - 2]);
+        await host.click(activityElements[activityElements.length - 3]);
 
-        // THEN: It should set activity #27 as active descendant.
-        expect(activityElements[activityElements.length - 2]).toBe(
+        console.log({
+          minus3: activityElements[activityElements.length - 3],
+          activeDescendant: document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant')),
+          activeDescendantId: pageElements.transcript().getAttribute('aria-activedescendant')
+        });
+
+        // THEN: It should set activity #29 as active descendant.
+        expect(activityElements[activityElements.length - 3]).toBe(
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
 
-        // THEN: It should scroll #27 into view.
+        // THEN: It should scroll #29 into view.
         await pageConditions.focusedActivityInView();
 
-        // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #27.
+        // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #29.
         await host.snapshot();
 
         // WHEN: Down arrow key is pressed.
         await host.sendKeys('ARROW_DOWN');
 
-        // THEN: It should set activity #27 as active descendant.
-        expect(activityElements[activityElements.length - 1]).toBe(
+        // THEN: It should set activity #30 as active descendant.
+        expect(activityElements[activityElements.length - 2]).toBe(
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
 
-        // THEN: It should scroll #28 into view.
+        // THEN: It should scroll #30 into view.
         await pageConditions.focusedActivityInView();
 
-        // THEN: It should activate the activity #28.
+        // THEN: It should activate the activity #30.
         await host.snapshot();
       });
     </script>
