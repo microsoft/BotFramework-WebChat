@@ -1,4 +1,4 @@
-export default function findLastIndex<T>(array: T[], predicate: (value: T, index: number) => boolean): number {
+export default function findLastIndex<T>(array: readonly T[], predicate: (value: T, index: number) => boolean): number {
   const index = [...array].reverse().findIndex(predicate);
 
   if (~index) {

@@ -127,8 +127,8 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 3 });
 
-        const activityElementAtTopOfView = document.querySelectorAll('.webchat__basic-transcript__activity')[4];
-        const scrollable = document.querySelector('.webchat__basic-transcript__scrollable');
+        const activityElementAtTopOfView = pageElements.activities()[4];
+        const scrollable = pageElements.transcriptScrollable();
 
         expect(scrollable.scrollTop).toBe(activityElementAtTopOfView.offsetTop);
 
@@ -160,9 +160,7 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 9, unacknowledged: 3 });
 
-        expect(scrollable.scrollTop).toBe(
-          document.querySelectorAll('.webchat__basic-transcript__activity')[9].offsetTop
-        );
+        expect(scrollable.scrollTop).toBe(pageElements.activities()[9].offsetTop);
 
         // Scroll to bottom
         scrollable.scrollTop = scrollable.scrollHeight;

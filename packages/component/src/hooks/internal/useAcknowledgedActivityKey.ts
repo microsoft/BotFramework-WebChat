@@ -1,13 +1,10 @@
-import { hooks } from 'botframework-webchat-api';
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useMemo, useRef } from 'react';
 import { useSticky } from 'react-scroll-to-bottom';
 
 import findLastIndex from '../../Utils/findLastIndex';
-import getActivityUniqueId from '../../Utils/getActivityUniqueId';
 import useChanged from './useChanged';
-
-const { useActivities } = hooks;
+import useGetActivityByKey from '../../providers/ActivityKeyer/useGetActivityByKey';
+import useOrderedActivityKeys from '../../providers/ActivityTree/useOrderedActivityKeys';
 
 // Acknowledged means either:
 // 1. The user sent a message
@@ -31,36 +28,35 @@ const { useActivities } = hooks;
 //       2. If "acknowledged" is "undefined", we set it to:
 //          a. true, if there are no egress activities yet
 //          b. Otherwise, false
-export default function useAcknowledgedActivity(): [DirectLineActivity] {
-  const [activities] = useActivities();
+export default function useAcknowledgedActivityKey(): readonly [string] {
+  const [orderedActivityKeys] = useOrderedActivityKeys();
   const [sticky]: [boolean] = useSticky();
-  const lastStickyActivityIdRef = useRef<string>();
+  const getActivityByKey = useGetActivityByKey();
+  const lastStickyActivityKeyRef = useRef<string>();
 
   const stickyChanged = useChanged(sticky);
   const stickyChangedToSticky = stickyChanged && sticky;
 
-  const lastStickyActivityID = useMemo(() => {
+  const lastStickyActivityKey = useMemo(() => {
     if (stickyChangedToSticky) {
-      lastStickyActivityIdRef.current = getActivityUniqueId(activities[activities.length - 1]);
+      lastStickyActivityKeyRef.current = orderedActivityKeys[orderedActivityKeys.length - 1];
     }
 
-    return lastStickyActivityIdRef.current;
-  }, [activities, lastStickyActivityIdRef, stickyChangedToSticky]);
+    return lastStickyActivityKeyRef.current;
+  }, [orderedActivityKeys, lastStickyActivityKeyRef, stickyChangedToSticky]);
 
-  return useMemo(() => {
-    const lastStickyActivityIndex = activities.findIndex(
-      activity => getActivityUniqueId(activity) === lastStickyActivityID
+  return useMemo<readonly [string]>(() => {
+    const lastStickyActivityIndex = orderedActivityKeys.indexOf(lastStickyActivityKey);
+    const lastEgressActivityIndex = findLastIndex(
+      orderedActivityKeys,
+      key => getActivityByKey(key)?.from?.role === 'user'
     );
-
-    const lastEgressActivityIndex = findLastIndex(activities, ({ from: { role = undefined } = {} }) => role === 'user');
 
     // As described above, if no activities were acknowledged through egress activity, we will assume everything is acknowledged.
     const lastAcknowledgedActivityIndex = !~lastEgressActivityIndex
-      ? activities.length - 1
+      ? orderedActivityKeys.length - 1
       : Math.max(lastStickyActivityIndex, lastEgressActivityIndex);
 
-    const lastAcknowledgedActivity = activities[+lastAcknowledgedActivityIndex];
-
-    return [lastAcknowledgedActivity];
-  }, [activities, lastStickyActivityID]);
+    return Object.freeze([orderedActivityKeys[+lastAcknowledgedActivityIndex]]) as readonly [string];
+  }, [getActivityByKey, lastStickyActivityKey, orderedActivityKeys]);
 }

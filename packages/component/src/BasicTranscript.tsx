@@ -42,7 +42,7 @@ import SpeakActivity from './Activity/Speak';
 // TODO: [P*] Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
-import useAcknowledgedActivity from './hooks/internal/useAcknowledgedActivity';
+import useAcknowledgedActivityKey from './hooks/internal/useAcknowledgedActivityKey';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
 import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
@@ -54,6 +54,7 @@ import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivit
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
+import useOrderedActivityKeys from './providers/ActivityTree/useOrderedActivityKeys';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
@@ -64,7 +65,6 @@ import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 
 const {
-  useActivities,
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
@@ -311,7 +311,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
     ] = useStyleOptions();
     const [activeDescendantId] = useActiveDescendantId();
-    const [activities] = useActivities();
     const [activityWithRendererTree] = useActivityTreeWithRenderer();
     const [direction] = useDirection();
     const [focusedActivityKey] = useFocusedActivityKey();
@@ -599,9 +598,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     useObserveScrollPosition(dispatchScrollPosition);
 
-    const [lastInteractedActivity]: [DirectLineActivity] = useAcknowledgedActivity();
+    const [lastInteractedActivityKey] = useAcknowledgedActivityKey();
 
-    const indexOfLastInteractedActivity = activities.indexOf(lastInteractedActivity);
+    const indexOfLastInteractedActivity = renderingElements.findIndex(({ key }) => key === lastInteractedActivityKey);
 
     const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
       event => {
@@ -986,20 +985,27 @@ type SetScrollProps = {
 };
 
 const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) => {
-  const [
-    { autoScrollSnapOnActivity, autoScrollSnapOnActivityOffset, autoScrollSnapOnPage, autoScrollSnapOnPageOffset }
-  ] = useStyleOptions();
-  const [activities] = useActivities();
-  const [lastAcknowledgedActivity] = useAcknowledgedActivity();
+  const [lastAcknowledgedActivityKey] = useAcknowledgedActivityKey();
+  const [orderedActivityKeys] = useOrderedActivityKeys();
+  const styleOptionsRef = useValueRef(useStyleOptions()[0]);
 
-  const activitiesRef = useValueRef(activities);
-  const lastAcknowledgedActivityRef = useValueRef(lastAcknowledgedActivity);
+  const lastAcknowledgedActivityKeyRef = useValueRef(lastAcknowledgedActivityKey);
+  const orderedActivityKeysRef = useValueRef(orderedActivityKeys);
 
   // TODO: What is the difference between "scroller" vs. "useObserveScrollPosition"?
   //       If they serve same purpose, should we combine them?
 
   scrollerRef.current = useCallback(
     ({ offsetHeight, scrollTop }) => {
+      const {
+        current: {
+          autoScrollSnapOnActivity,
+          autoScrollSnapOnActivityOffset,
+          autoScrollSnapOnPage,
+          autoScrollSnapOnPageOffset
+        }
+      } = styleOptionsRef;
+
       const patchedAutoScrollSnapOnActivity =
         typeof autoScrollSnapOnActivity === 'number'
           ? Math.max(0, autoScrollSnapOnActivity)
@@ -1018,21 +1024,25 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
         typeof autoScrollSnapOnPageOffset === 'number' ? autoScrollSnapOnPageOffset : 0;
 
       if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
-        const { current: activities } = activitiesRef;
+        const { current: orderedActivityKeys } = orderedActivityKeysRef;
         const { current: activityElements } = activityElementsRef;
-        const { current: lastAcknowledgedActivity } = lastAcknowledgedActivityRef;
+        const { current: lastAcknowledgedActivityKey } = lastAcknowledgedActivityKeyRef;
         const values: number[] = [];
 
-        const lastAcknowledgedActivityIndex = activities.indexOf(lastAcknowledgedActivity);
+        const lastAcknowledgedActivityKeyIndex = orderedActivityKeys.indexOf(lastAcknowledgedActivityKey);
 
-        if (~lastAcknowledgedActivityIndex) {
+        if (~lastAcknowledgedActivityKeyIndex) {
           // The activity that we acknowledged could be not rendered, such as post back activity.
           // When calculating scroll snap, we can only base on the first unacknowledged-and-rendering activity.
           let firstUnacknowledgedActivityElementIndex = -1;
 
-          for (let index = lastAcknowledgedActivityIndex + 1, { length } = activities; index < length; index++) {
-            const activity = activities[+index];
-            const activityElementIndex = activityElements.findIndex(entry => entry.activity === activity);
+          for (
+            let index = lastAcknowledgedActivityKeyIndex + 1, { length } = orderedActivityKeys;
+            index < length;
+            index++
+          ) {
+            const activityKey = orderedActivityKeys[+index];
+            const activityElementIndex = activityElements.findIndex(entry => entry.key === activityKey);
 
             if (~activityElementIndex) {
               firstUnacknowledgedActivityElementIndex = activityElementIndex;
@@ -1076,15 +1086,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
       return Infinity;
     },
-    [
-      activitiesRef,
-      activityElementsRef,
-      autoScrollSnapOnActivity,
-      autoScrollSnapOnActivityOffset,
-      autoScrollSnapOnPage,
-      autoScrollSnapOnPageOffset,
-      lastAcknowledgedActivityRef
-    ]
+    [activityElementsRef, lastAcknowledgedActivityKeyRef, orderedActivityKeysRef, styleOptionsRef]
   );
 
   return null;
@@ -1102,16 +1104,16 @@ const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
   const scroller = useCallback<Scroller>((...args) => scrollerRef.current(...args), [scrollerRef]);
 
   return (
-    <ReactScrollToBottomComposer scroller={scroller}>
-      <SetScroller activityElementsRef={activityElementsRef} scrollerRef={scrollerRef} />
-      <ActivityKeyerComposer>
-        <ActivityTreeComposer>
-          <TranscriptFocusComposer containerRef={containerRef}>
+    <ActivityKeyerComposer>
+      <ActivityTreeComposer>
+        <TranscriptFocusComposer containerRef={containerRef}>
+          <ReactScrollToBottomComposer scroller={scroller}>
+            <SetScroller activityElementsRef={activityElementsRef} scrollerRef={scrollerRef} />
             <InternalTranscript activityElementsRef={activityElementsRef} className={className} ref={containerRef} />
-          </TranscriptFocusComposer>
-        </ActivityTreeComposer>
-      </ActivityKeyerComposer>
-    </ReactScrollToBottomComposer>
+          </ReactScrollToBottomComposer>
+        </TranscriptFocusComposer>
+      </ActivityTreeComposer>
+    </ActivityKeyerComposer>
   );
 };
 
