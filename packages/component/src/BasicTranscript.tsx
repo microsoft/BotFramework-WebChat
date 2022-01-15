@@ -1079,7 +1079,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
           }
         }
 
-        return values.reduce((minValue, value) => Math.min(minValue, value), Infinity);
+        return Math.min(...values);
       }
 
       return Infinity;
