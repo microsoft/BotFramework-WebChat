@@ -53,6 +53,7 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
+import useGetKeyByActivityId from './providers/ActivityKeyer/useGetKeyByActivityId';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useOrderedActivityKeys from './providers/ActivityTree/useOrderedActivityKeys';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -63,6 +64,7 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
+import useGetActivityByKey from './providers/ActivityKeyer/useGetActivityByKey';
 
 const {
   useCreateActivityStatusRenderer,
@@ -100,16 +102,7 @@ const ROOT_STYLE = {
   }
 };
 
-type ActivityElement = {
-  activity: DirectLineActivity;
-  element: HTMLElement;
-  key: string;
-};
-
-type InternalTranscriptProps = {
-  activityElementsRef: MutableRefObject<ActivityElement[]>;
-  className?: string;
-};
+type ActivityElementMap = Map<string, HTMLElement>;
 
 type RenderingElement = {
   activity: DirectLineActivity & {
@@ -139,7 +132,7 @@ type ActivityRowProps = PropsWithChildren<{
   acknowledged: boolean;
   activity: DirectLineActivity;
   activityKey: string;
-  shouldSpeak: boolean;
+  shouldSpeak?: boolean;
 }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
@@ -288,7 +281,8 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
 );
 
 ActivityRow.defaultProps = {
-  children: undefined
+  children: undefined,
+  shouldSpeak: false
 };
 
 ActivityRow.propTypes = {
@@ -300,12 +294,17 @@ ActivityRow.propTypes = {
   }).isRequired,
   activityKey: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
-  shouldSpeak: PropTypes.bool.isRequired
+  shouldSpeak: PropTypes.bool
+};
+
+type InternalTranscriptProps = {
+  activityElementMapRef: MutableRefObject<ActivityElementMap>;
+  className?: string;
 };
 
 // TODO: [P*] Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ activityElementsRef, className }, ref) => {
+  ({ activityElementMapRef, className }, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
     const [
       { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
@@ -319,7 +318,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const focus = useFocus();
     const focusByActivityKey = useFocusByActivityKey();
     const focusRelativeActivity = useFocusRelativeActivity();
+    const getActivityByKey = useGetActivityByKey();
     const getKeyByActivity = useGetKeyByActivity();
+    const getKeyByActivityId = useGetKeyByActivityId();
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>();
@@ -410,11 +411,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
               // After the element is mounted, set it to activityElementsRef.
               callbackRef: activityElement => {
-                const entry = activityElementsRef.current.find(entry => entry.key === key);
-
-                if (entry) {
-                  entry.element = activityElement;
-                }
+                activityElement
+                  ? activityElementMapRef.current.set(key, activityElement)
+                  : activityElementMapRef.current.delete(key);
               },
 
               // "hideTimestamp" is a render-time parameter for renderActivityStatus().
@@ -442,7 +441,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
       return renderingElements;
     }, [
-      activityElementsRef,
+      activityElementMapRef,
       activityWithRendererTree,
       bubbleFromUserNubOffset,
       bubbleNubOffset,
@@ -452,33 +451,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       hideAllTimestamps,
       showAvatarInGroup
     ]);
-
-    // Update activityElementRef with new sets of activity, while retaining the existing referencing element if exists.
-    useMemo(() => {
-      const { current: activityElements } = activityElementsRef;
-      const nextActivityElements = [];
-
-      activityWithRendererTree.forEach(entriesWithSameSender => {
-        entriesWithSameSender.forEach(entriesWithSameSenderAndStatus => {
-          entriesWithSameSenderAndStatus.forEach(({ activity }) => {
-            const key = getKeyByActivity(activity);
-
-            nextActivityElements.push({
-              activity,
-              element: activityElements.find(entry => entry.key === key)?.element,
-              key
-            });
-          });
-        });
-      });
-
-      activityElementsRef.current = nextActivityElements;
-    }, [activityElementsRef, activityWithRendererTree, getKeyByActivity]);
-
-    const renderingActivities: DirectLineActivity[] = useMemo(
-      () => renderingElements.map(({ activity }) => activity),
-      [renderingElements]
-    );
 
     const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
     const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
@@ -496,11 +468,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         if (typeof scrollTop !== 'undefined') {
           scrollToBottomScrollTo(scrollTop, { behavior });
         } else if (typeof activityId !== 'undefined') {
-          const { current: rootElement } = rootElementRef;
-          const { element: activityElement } =
-            activityElementsRef.current.find(entry => entry.activity.id === activityId) || {};
+          const activityElement = activityElementMapRef.current.get(getKeyByActivityId(activityId));
 
-          const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+          const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
 
           if (scrollableElement && activityElement) {
             // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
@@ -522,7 +492,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           }
         }
       },
-      [activityElementsRef, rootElementRef, scrollToBottomScrollTo]
+      [activityElementMapRef, getKeyByActivityId, rootElementRef, scrollToBottomScrollTo]
     );
 
     const scrollToEnd = useCallback(
@@ -584,17 +554,17 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
-        const entry = scrollableElement.scrollTop
-          ? [...activityElementsRef.current]
+        const activityElements = Array.from(activityElementMapRef.current.entries());
+        const key = scrollableElement.scrollTop
+          ? activityElements
               .reverse()
-              .find(({ element }) => !!element && element.getClientRects()[0]?.y < offsetHeight)
-          : activityElementsRef.current[0];
-
-        const { activity } = entry || {};
+              .find(([, element]) => !!element && element.getClientRects()[0]?.y < offsetHeight)?.[0]
+          : activityElements[0]?.[0];
+        const activity = getActivityByKey(key);
 
         dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
       };
-    }, [activityElementsRef, dispatchScrollPositionWithActivityId, rootElementRef]);
+    }, [activityElementMapRef, dispatchScrollPositionWithActivityId, getActivityByKey, rootElementRef]);
 
     useObserveScrollPosition(dispatchScrollPosition);
 
@@ -635,9 +605,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               const { current: focusedActivityKey } = focusedActivityKeyRef;
 
               // TODO: [P*] We could do better.
-              const body: HTMLElement = activityElementsRef.current
-                .find(({ key }) => key === focusedActivityKey)
-                ?.element.querySelector('.webchat__basic-transcript__activity-box');
+              const body: HTMLElement = activityElementMapRef.current
+                .get(focusedActivityKey)
+                ?.querySelector('.webchat__basic-transcript__activity-box');
 
               tabbableElements(body)[0]?.focus();
             }
@@ -664,7 +634,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           event.stopPropagation();
         }
       },
-      [activityElementsRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
+      [activityElementMapRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
     );
 
     // TODO: [P*] Do we need this `labelId`? Or just use `aria-label`?
@@ -769,7 +739,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable
-          activities={renderingActivities}
           onFocusFiller={handleFocusFiller}
           onScrollToEnd={handleScrollToEnd}
           terminatorRef={terminatorRef}
@@ -841,8 +810,8 @@ InternalTranscript.defaultProps = {
 InternalTranscript.propTypes = {
   // PropTypes cannot validate precisely with its TypeScript counterpart.
   // @ts-ignore
-  activityElementsRef: PropTypes.shape({
-    current: PropTypes.array.isRequired
+  activityElementMapRef: PropTypes.shape({
+    current: PropTypes.instanceOf(Map)
   }).isRequired,
   className: PropTypes.string
 };
@@ -886,7 +855,6 @@ InternalScreenReaderTranscript.propTypes = {
 };
 
 type InternalTranscriptScrollableProps = {
-  activities: DirectLineActivity[];
   children?: ReactNode;
   onFocusFiller: () => void;
   onScrollToEnd: (event: { firstUnreadActivityKey?: string }) => void;
@@ -895,40 +863,44 @@ type InternalTranscriptScrollableProps = {
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
-  activities,
   children,
   onFocusFiller,
   onScrollToEnd,
   terminatorRef
 }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
+  const [activityKeys] = useOrderedActivityKeys();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
   const [atEnd]: [boolean] = useAtEnd();
   const [sticky]: [boolean] = useSticky();
   const [styleOptions] = useStyleOptions();
-  const getKeyByActivity = useGetKeyByActivity();
-  const lastVisibleActivityKey = getKeyByActivity(activities[activities.length - 1]); // Activity ID of the last visible activity in the list.
   const localize = useLocalizer();
   const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
-  const lastReadActivityKeyRef = useRef(lastVisibleActivityKey);
+  const activityKeysRef = useValueRef(activityKeys);
+  const lastVisibleActivityKey = activityKeys[activityKeys.length - 1]; // Activity ID of the last visible activity in the list.
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
+  const lastReadActivityKeyRef = useRef(lastVisibleActivityKey);
+
   const handleScrollToEndButtonClick = useCallback(() => {
+    const { current: activityKeys } = activityKeysRef;
+
     scrollToEnd({ behavior: 'smooth' });
 
     // After the "New message" button is clicked, focus on the first unread activity.
-    const index = activities.findIndex(({ id }) => id === lastReadActivityKeyRef.current);
+    const index = activityKeys.indexOf(lastReadActivityKeyRef.current);
 
-    if (~index) {
-      const firstUnreadActivity = activities[index + 1];
+    const firstUnreadActivityKey = ~index ? activityKeys[index + 1] : undefined;
 
-      return onScrollToEnd({ firstUnreadActivityKey: firstUnreadActivity && getKeyByActivity(firstUnreadActivity) });
+    if (firstUnreadActivityKey) {
+      // TODO: [P*] We could call transcriptFocus.useFocusActivity() directly.
+      onScrollToEnd({ firstUnreadActivityKey });
+    } else {
+      // If no unread activity, send the focus to the terminator block.
+      terminatorRef.current?.focus();
     }
-
-    // If no unread activity, send the focus to the terminator block.
-    terminatorRef.current?.focus();
-  }, [activities, getKeyByActivity, lastReadActivityKeyRef, onScrollToEnd, scrollToEnd, terminatorRef]);
+  }, [activityKeysRef, lastReadActivityKeyRef, onScrollToEnd, scrollToEnd, terminatorRef]);
 
   if (atEnd || sticky) {
     // If it is sticky or at the end, the user is at the bottom of the transcript, everything is read.
@@ -945,7 +917,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     // 2. Last read is still in the transcript.
     unread:
       lastVisibleActivityKey !== lastReadActivityKeyRef.current &&
-      !!~activities.findIndex(activity => getKeyByActivity(activity) === lastReadActivityKeyRef.current)
+      !!~activityKeys.indexOf(lastReadActivityKeyRef.current)
   });
 
   return (
@@ -970,7 +942,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 };
 
 InternalTranscriptScrollable.propTypes = {
-  activities: PropTypes.array.isRequired,
   children: PropTypes.any.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   onScrollToEnd: PropTypes.func.isRequired,
@@ -980,12 +951,12 @@ InternalTranscriptScrollable.propTypes = {
 type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop: number }) => number;
 
 type SetScrollProps = {
-  activityElementsRef: MutableRefObject<ActivityElement[]>;
+  activityElementMapRef: MutableRefObject<ActivityElementMap>;
   scrollerRef: MutableRefObject<Scroller>;
 };
 
 // "scroller" is the auto-scroll limiter, a.k.a. auto scroll snap.
-const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) => {
+const SetScroller: VFC<SetScrollProps> = ({ activityElementMapRef, scrollerRef }) => {
   const [lastAcknowledgedActivityKey] = useAcknowledgedActivityKey();
   const [orderedActivityKeys] = useOrderedActivityKeys();
   const [styleOptions] = useStyleOptions();
@@ -1024,7 +995,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
       if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
         const { current: orderedActivityKeys } = orderedActivityKeysRef;
-        const { current: activityElements } = activityElementsRef;
+        const { current: activityElementMap } = activityElementMapRef;
         const { current: lastAcknowledgedActivityKey } = lastAcknowledgedActivityKeyRef;
         const values: number[] = [];
 
@@ -1041,7 +1012,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
             index++
           ) {
             const activityKey = orderedActivityKeys[+index];
-            const activityElementIndex = activityElements.findIndex(entry => entry.key === activityKey);
+            const activityElementIndex = Array.from(activityElementMap.keys()).indexOf(activityKey);
 
             if (~activityElementIndex) {
               firstUnacknowledgedActivityElementIndex = activityElementIndex;
@@ -1050,9 +1021,11 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
           }
 
           if (~firstUnacknowledgedActivityElementIndex) {
+            const activityElements = Array.from(activityElementMap.values());
+
             if (patchedAutoScrollSnapOnActivity) {
               // Gets the activity element which we should snap to.
-              const { element: nthUnacknowledgedActivityElement } =
+              const nthUnacknowledgedActivityElement =
                 activityElements[firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1];
 
               if (nthUnacknowledgedActivityElement) {
@@ -1067,8 +1040,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
             }
 
             if (patchedAutoScrollSnapOnPage) {
-              const { element: firstUnacknowledgedActivityElement } =
-                activityElements[+firstUnacknowledgedActivityElementIndex];
+              const firstUnacknowledgedActivityElement = activityElements[+firstUnacknowledgedActivityElementIndex];
 
               values.push(
                 firstUnacknowledgedActivityElement.offsetTop -
@@ -1085,7 +1057,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
       return Infinity;
     },
-    [activityElementsRef, lastAcknowledgedActivityKeyRef, orderedActivityKeysRef, styleOptionsRef]
+    [activityElementMapRef, lastAcknowledgedActivityKeyRef, orderedActivityKeysRef, styleOptionsRef]
   );
 
   return null;
@@ -1096,7 +1068,7 @@ type BasicTranscriptProps = {
 };
 
 const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
-  const activityElementsRef = useRef<ActivityElement[]>([]);
+  const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
   const scrollerRef = useRef<Scroller>(() => Infinity);
 
@@ -1111,8 +1083,12 @@ const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
       <ActivityTreeComposer>
         <TranscriptFocusComposer containerRef={containerRef}>
           <ReactScrollToBottomComposer scroller={scroller}>
-            <SetScroller activityElementsRef={activityElementsRef} scrollerRef={scrollerRef} />
-            <InternalTranscript activityElementsRef={activityElementsRef} className={className} ref={containerRef} />
+            <SetScroller activityElementMapRef={activityElementMapRef} scrollerRef={scrollerRef} />
+            <InternalTranscript
+              activityElementMapRef={activityElementMapRef}
+              className={className}
+              ref={containerRef}
+            />
           </ReactScrollToBottomComposer>
         </TranscriptFocusComposer>
       </ActivityTreeComposer>
