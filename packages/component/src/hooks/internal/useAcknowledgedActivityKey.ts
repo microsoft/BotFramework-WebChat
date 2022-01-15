@@ -53,9 +53,9 @@ export default function useAcknowledgedActivityKey(): readonly [string] {
     );
 
     // As described above, if no activities were acknowledged through egress activity, we will assume everything is acknowledged.
-    const lastAcknowledgedActivityIndex = !~lastEgressActivityIndex
-      ? orderedActivityKeys.length - 1
-      : Math.max(lastStickyActivityIndex, lastEgressActivityIndex);
+    const lastAcknowledgedActivityIndex = ~lastEgressActivityIndex
+      ? Math.max(lastStickyActivityIndex, lastEgressActivityIndex)
+      : orderedActivityKeys.length - 1;
 
     return Object.freeze([orderedActivityKeys[+lastAcknowledgedActivityIndex]]) as readonly [string];
   }, [getActivityByKey, lastStickyActivityKey, orderedActivityKeys]);

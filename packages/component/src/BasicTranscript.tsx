@@ -988,10 +988,11 @@ type SetScrollProps = {
 const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) => {
   const [lastAcknowledgedActivityKey] = useAcknowledgedActivityKey();
   const [orderedActivityKeys] = useOrderedActivityKeys();
-  const styleOptionsRef = useValueRef(useStyleOptions()[0]);
+  const [styleOptions] = useStyleOptions();
 
   const lastAcknowledgedActivityKeyRef = useValueRef(lastAcknowledgedActivityKey);
   const orderedActivityKeysRef = useValueRef(orderedActivityKeys);
+  const styleOptionsRef = useValueRef(styleOptions);
 
   scrollerRef.current = useCallback(
     ({ offsetHeight, scrollTop }) => {
@@ -1099,6 +1100,10 @@ const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
   const containerRef = useRef<HTMLDivElement>();
   const scrollerRef = useRef<Scroller>(() => Infinity);
 
+  // We need to use a <SetScroller> here because we have a chicken-and-egg problem.
+  // The scroller need to call `useAcknowledgedActivityKey`, then `useSticky`.
+  // The `useSticky` hooks requires the `ReactScrollToBottomComposer`, so the scroller need to put inside.
+  // But the `scroller` will also need to pass as a props to `ReactScrollToBottomComposer`.
   const scroller = useCallback<Scroller>((...args) => scrollerRef.current(...args), [scrollerRef]);
 
   return (
