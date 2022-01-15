@@ -81,12 +81,18 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
     [activityToKeyMapRef]
   );
 
+  const getKeyByActivityId: (activityId?: string) => string | undefined = useCallback(
+    (activityId?: string) => activityId && activityIdToKeyMapRef.current.get(activityId),
+    [activityIdToKeyMapRef]
+  );
+
   const contextValue = useMemo(
     () => ({
       getActivityByKey,
-      getKeyByActivity
+      getKeyByActivity,
+      getKeyByActivityId
     }),
-    [getActivityByKey, getKeyByActivity]
+    [getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
   return <ActivityKeyerContext.Provider value={contextValue}>{children}</ActivityKeyerContext.Provider>;
