@@ -31,7 +31,7 @@
         // Mouse: Clicking on activity should not scroll activity into view.
 
         // WHEN: Clicking on top left of the transcript.
-        await host.clickAt(0, 0, pageElements.transcriptScrollable());
+        await host.clickAt(1, 1, pageElements.transcriptScrollable());
 
         // THEN: It should not scroll activity #29 into view.
         await pageConditions.scrollStabilized(
@@ -61,7 +61,7 @@
         await host.snapshot();
 
         // WHEN: Clicking on the top left of the transcript.
-        await host.clickAt(0, 0, pageElements.transcriptScrollable());
+        await host.clickAt(1, 1, pageElements.transcriptScrollable());
 
         // THEN: It should not scroll activity #29 into view.
         await pageConditions.scrollStabilized(

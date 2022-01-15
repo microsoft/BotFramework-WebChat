@@ -47,7 +47,7 @@
         await host.snapshot();
 
         // WHEN: Click on the upper left corner of the <input>.
-        await host.clickAt(0, 0, input);
+        await host.clickAt(1, 1, input);
 
         // THEN: It should focus on the <input>.
         expect(document.activeElement).toBe(input);
