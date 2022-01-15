@@ -984,6 +984,7 @@ type SetScrollProps = {
   scrollerRef: MutableRefObject<Scroller>;
 };
 
+// "scroller" is the auto-scroll limiter, a.k.a. auto scroll snap.
 const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) => {
   const [lastAcknowledgedActivityKey] = useAcknowledgedActivityKey();
   const [orderedActivityKeys] = useOrderedActivityKeys();
@@ -991,9 +992,6 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementsRef, scrollerRef }) 
 
   const lastAcknowledgedActivityKeyRef = useValueRef(lastAcknowledgedActivityKey);
   const orderedActivityKeysRef = useValueRef(orderedActivityKeys);
-
-  // TODO: What is the difference between "scroller" vs. "useObserveScrollPosition"?
-  //       If they serve same purpose, should we combine them?
 
   scrollerRef.current = useCallback(
     ({ offsetHeight, scrollTop }) => {
