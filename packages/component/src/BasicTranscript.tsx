@@ -116,8 +116,6 @@ type RenderingElement = {
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
   renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
   renderAvatar: AvatarComponentFactory;
-  role: string;
-  // shouldSpeak: boolean;
   showCallout: boolean;
   // TODO: Consider rename this or remove this.
   supportScreenReader: boolean;
@@ -378,14 +376,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
             // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
             const supportScreenReader = activity?.channelData?.['webchat:fallback-text'] !== '';
-
-            const {
-              from: { role } = {}
-            }: {
-              from?: { role?: string };
-            } = activity;
-
-            const topSideNub = role === 'user' ? topSideUserNub : topSideBotNub;
+            const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
 
             let showCallout: boolean;
 
@@ -428,10 +419,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               renderActivity,
               renderActivityStatus,
               renderAvatar,
-              role,
-
-              // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-              // shouldSpeak: activity.channelData?.speak,
               showCallout,
               supportScreenReader
             });
