@@ -28,8 +28,6 @@ import type {
   VFC
 } from 'react';
 
-import ActivityKeyerComposer from './providers/ActivityKeyer/ActivityKeyerComposer';
-import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import Fade from './Utils/Fade';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -47,7 +45,7 @@ import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescenda
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
 import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
-import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFocus';
+import useDispatchTranscriptFocusByActivityKey from './hooks/internal/useDispatchTranscriptFocusByActivityKey';
 import useFocus from './hooks/useFocus';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
 import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
@@ -672,30 +670,16 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     );
 
     // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
-    const dispatchTranscriptFocus: ({ activity }: { activity: DirectLineActivity }) => void =
-      useDispatchTranscriptFocus();
-
-    // Dedupe calls to "transcriptfocus" event handler, based on activity key.
-    const dispatchTranscriptFocusWithoutDuplicates = useMemo(() => {
-      let prevActivityKey: string | Symbol | undefined = Symbol();
-
-      return (activityKey?: string) => {
-        if (activityKey !== prevActivityKey) {
-          prevActivityKey = activityKey;
-
-          dispatchTranscriptFocus?.({ activity: getActivityByKey(activityKey) });
-        }
-      };
-    }, [dispatchTranscriptFocus, getActivityByKey]);
+    const dispatchTranscriptFocusByActivityKey = useDispatchTranscriptFocusByActivityKey();
 
     // Dispatch a "transcript focus" event based on user selection.
     // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
     useMemo(
-      () => dispatchTranscriptFocusWithoutDuplicates(focusedExplicitly ? focusedActivityKey : undefined),
-      [dispatchTranscriptFocusWithoutDuplicates, focusedActivityKey, focusedExplicitly]
+      () => dispatchTranscriptFocusByActivityKey(focusedExplicitly ? focusedActivityKey : undefined),
+      [dispatchTranscriptFocusByActivityKey, focusedActivityKey, focusedExplicitly]
     );
 
-    // When the transcript is being focused on, we should dispatch an event to observers of "useObserveTranscriptFocus".
+    // When the transcript is being focused on, we should dispatch a "transcriptfocus" event.
     const handleFocus = useCallback(
       ({ currentTarget, target }) =>
         target === currentTarget && focusByActivityKey(focusedActivityKeyRef.current, false),
@@ -1098,20 +1082,12 @@ const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
   const scroller = useCallback<Scroller>((...args) => scrollerRef.current(...args), [scrollerRef]);
 
   return (
-    <ActivityKeyerComposer>
-      <ActivityTreeComposer>
-        <TranscriptFocusComposer containerRef={containerRef}>
-          <ReactScrollToBottomComposer scroller={scroller}>
-            <SetScroller activityElementMapRef={activityElementMapRef} scrollerRef={scrollerRef} />
-            <InternalTranscript
-              activityElementMapRef={activityElementMapRef}
-              className={className}
-              ref={containerRef}
-            />
-          </ReactScrollToBottomComposer>
-        </TranscriptFocusComposer>
-      </ActivityTreeComposer>
-    </ActivityKeyerComposer>
+    <TranscriptFocusComposer containerRef={containerRef}>
+      <ReactScrollToBottomComposer scroller={scroller}>
+        <SetScroller activityElementMapRef={activityElementMapRef} scrollerRef={scrollerRef} />
+        <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
+      </ReactScrollToBottomComposer>
+    </TranscriptFocusComposer>
   );
 };
 

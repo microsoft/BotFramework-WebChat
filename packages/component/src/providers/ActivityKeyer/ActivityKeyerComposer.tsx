@@ -10,6 +10,7 @@ import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import uniqueId from './private/uniqueId';
+import useActivityKeyerContext from './private/useContext';
 
 type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<DirectLineActivity, string>;
@@ -34,6 +35,12 @@ const { useActivities } = hooks;
  */
 // TODO: [P*] Add telemetry to see how many new keys are generated.
 const ActivityKeyerComposer: FC<{}> = ({ children }) => {
+  const existingContext = useActivityKeyerContext(false);
+
+  if (existingContext) {
+    throw new Error('botframework-webchat internal: <ActivityKeyerComposer> should not be nested.');
+  }
+
   const [activities] = useActivities();
   const activityToKeyMapRef = useRef<ActivityToKeyMap>(new Map());
   const activityIdToKeyMapRef = useRef<ActivityIdToKeyMap>(new Map());

@@ -22,7 +22,7 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {
-    throw new Error('botframework-webchat internal: <ActivityTreeComposer> can only be defined once and not nested.');
+    throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
   }
 
   const [activities]: [DirectLineActivity[]] = useActivities();

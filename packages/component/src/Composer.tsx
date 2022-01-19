@@ -16,6 +16,8 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import ActivityKeyerComposer from './providers/ActivityKeyer/ActivityKeyerComposer';
+import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -32,6 +34,7 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
+import useGetActivityByKey from './providers/ActivityKeyer/useGetActivityByKey';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 const { useReferenceGrammarID, useStyleOptions } = hooks;
@@ -148,11 +151,21 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const transcriptFocusObserversRef = useRef([]);
   const [numTranscriptFocusObservers, setNumTranscriptFocusObservers] = useState(0);
 
-  // TODO: [P*] We could change this to accept "activityKey" and do automatic-dedupe.
-  const dispatchTranscriptFocus = useCallback(
-    event => transcriptFocusObserversRef.current.forEach(observer => observer(event)),
-    [transcriptFocusObserversRef]
-  );
+  const getActivityByKey = useGetActivityByKey();
+
+  const dispatchTranscriptFocusByActivityKey = useMemo(() => {
+    let prevActivityKey: string | Symbol | undefined = Symbol();
+
+    return activityKey => {
+      if (activityKey !== prevActivityKey) {
+        prevActivityKey = activityKey;
+
+        const event = { activity: getActivityByKey(activityKey) };
+
+        transcriptFocusObserversRef.current.forEach(observer => observer(event));
+      }
+    };
+  }, [getActivityByKey, transcriptFocusObserversRef]);
 
   const observeTranscriptFocus = useCallback(
     observer => {
@@ -171,7 +184,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     () => ({
       dictateAbortable,
       dispatchScrollPosition,
-      dispatchTranscriptFocus,
+      dispatchTranscriptFocusByActivityKey,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
@@ -194,7 +207,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [
       dictateAbortable,
       dispatchScrollPosition,
-      dispatchTranscriptFocus,
+      dispatchTranscriptFocusByActivityKey,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownIt,
@@ -339,17 +352,21 @@ const Composer: FC<ComposerProps> = ({
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
         {...composerProps}
       >
-        <ComposerCore
-          extraStyleSet={extraStyleSet}
-          nonce={nonce}
-          renderMarkdown={renderMarkdown}
-          styleSet={styleSet}
-          suggestedActionsAccessKey={suggestedActionsAccessKey}
-          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-        >
-          {children}
-          {onTelemetry && <UITracker />}
-        </ComposerCore>
+        <ActivityKeyerComposer>
+          <ActivityTreeComposer>
+            <ComposerCore
+              extraStyleSet={extraStyleSet}
+              nonce={nonce}
+              renderMarkdown={renderMarkdown}
+              styleSet={styleSet}
+              suggestedActionsAccessKey={suggestedActionsAccessKey}
+              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            >
+              {children}
+              {onTelemetry && <UITracker />}
+            </ComposerCore>
+          </ActivityTreeComposer>
+        </ActivityKeyerComposer>
       </APIComposer>
     </React.Fragment>
   );
