@@ -5,6 +5,7 @@ type TranscriptFocusContextType = {
   computeElementIdFromActivityKey: (activityKey?: string) => string | undefined;
   focusByActivityKey: (activityKey: false | string | undefined, withFocus: boolean | undefined) => void;
   focusedActivityKeyState: readonly [string];
+  focusedExplicitlyState: readonly [boolean];
   focusRelativeActivity: (delta: number) => void;
 };
 

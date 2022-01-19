@@ -51,6 +51,7 @@ import useDispatchTranscriptFocus from './hooks/internal/useDispatchTranscriptFo
 import useFocus from './hooks/useFocus';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
 import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
+import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
 import useGetKeyByActivityId from './providers/ActivityKeyer/useGetKeyByActivityId';
@@ -313,6 +314,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const [activityWithRendererTree] = useActivityTreeWithRenderer();
     const [direction] = useDirection();
     const [focusedActivityKey] = useFocusedActivityKey();
+    const [focusedExplicitly] = useFocusedExplicitly();
     const createActivityStatusRenderer = useCreateActivityStatusRenderer();
     const createAvatarRenderer = useCreateAvatarRenderer();
     const focus = useFocus();
@@ -673,16 +675,32 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const dispatchTranscriptFocus: ({ activity }: { activity: DirectLineActivity }) => void =
       useDispatchTranscriptFocus();
 
+    // Dedupe calls to "transcriptfocus" event handler, based on activity key.
+    const dispatchTranscriptFocusWithoutDuplicates = useMemo(() => {
+      let prevActivityKey: string | Symbol | undefined = Symbol();
+
+      return (activityKey?: string) => {
+        if (activityKey !== prevActivityKey) {
+          prevActivityKey = activityKey;
+
+          dispatchTranscriptFocus?.({ activity: getActivityByKey(activityKey) });
+        }
+      };
+    }, [dispatchTranscriptFocus, getActivityByKey]);
+
     // Dispatch a "transcript focus" event based on user selection.
     // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
-    const focusedActivity = useMemo(
-      () => renderingElements.find(({ key }) => key === focusedActivityKey)?.activity,
-      [focusedActivityKey, renderingElements]
+    useMemo(
+      () => dispatchTranscriptFocusWithoutDuplicates(focusedExplicitly ? focusedActivityKey : undefined),
+      [dispatchTranscriptFocusWithoutDuplicates, focusedActivityKey, focusedExplicitly]
     );
 
-    // TODO: [P*] Today, it will dispatch "transcript focus" if the activity object changed, but the focus does not.
-    //       Should we only dispatch if the focused activity change?
-    useMemo(() => dispatchTranscriptFocus?.({ activity: focusedActivity }), [dispatchTranscriptFocus, focusedActivity]);
+    // When the transcript is being focused on, we should dispatch an event to observers of "useObserveTranscriptFocus".
+    const handleFocus = useCallback(
+      ({ currentTarget, target }) =>
+        target === currentTarget && focusByActivityKey(focusedActivityKeyRef.current, false),
+      [focusByActivityKey, focusedActivityKeyRef]
+    );
 
     // This is required by IE11.
     // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
@@ -708,6 +726,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           (className || '') + ''
         )}
         dir={direction}
+        onFocus={handleFocus}
         onKeyDown={handleTranscriptKeyDown}
         onKeyDownCapture={handleTranscriptKeyDownCapture}
         ref={callbackRef}

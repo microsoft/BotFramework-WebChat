@@ -148,6 +148,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const transcriptFocusObserversRef = useRef([]);
   const [numTranscriptFocusObservers, setNumTranscriptFocusObservers] = useState(0);
 
+  // TODO: [P*] We could change this to accept "activityKey" and do automatic-dedupe.
   const dispatchTranscriptFocus = useCallback(
     event => transcriptFocusObserversRef.current.forEach(observer => observer(event)),
     [transcriptFocusObserversRef]

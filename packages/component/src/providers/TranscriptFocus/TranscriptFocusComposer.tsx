@@ -159,9 +159,17 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
       computeElementIdFromActivityKey,
       focusByActivityKey,
       focusedActivityKeyState: Object.freeze([focusedActivityKey]) as readonly [string],
+      focusedExplicitlyState: Object.freeze([!!rawFocusedActivityKey]) as readonly [boolean],
       focusRelativeActivity
     }),
-    [activeDescendantId, computeElementIdFromActivityKey, focusByActivityKey, focusedActivityKey, focusRelativeActivity]
+    [
+      activeDescendantId,
+      computeElementIdFromActivityKey,
+      focusByActivityKey,
+      focusedActivityKey,
+      focusRelativeActivity,
+      rawFocusedActivityKey
+    ]
   );
 
   return <TranscriptFocusContext.Provider value={contextValue}>{children}</TranscriptFocusContext.Provider>;
