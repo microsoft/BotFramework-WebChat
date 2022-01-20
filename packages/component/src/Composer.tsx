@@ -16,6 +16,7 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import ActivityAcknowledgementComposer from './providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from './providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
@@ -354,17 +355,19 @@ const Composer: FC<ComposerProps> = ({
       >
         <ActivityKeyerComposer>
           <ActivityTreeComposer>
-            <ComposerCore
-              extraStyleSet={extraStyleSet}
-              nonce={nonce}
-              renderMarkdown={renderMarkdown}
-              styleSet={styleSet}
-              suggestedActionsAccessKey={suggestedActionsAccessKey}
-              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-            >
-              {children}
-              {onTelemetry && <UITracker />}
-            </ComposerCore>
+            <ActivityAcknowledgementComposer>
+              <ComposerCore
+                extraStyleSet={extraStyleSet}
+                nonce={nonce}
+                renderMarkdown={renderMarkdown}
+                styleSet={styleSet}
+                suggestedActionsAccessKey={suggestedActionsAccessKey}
+                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+              >
+                {children}
+                {onTelemetry && <UITracker />}
+              </ComposerCore>
+            </ActivityAcknowledgementComposer>
           </ActivityTreeComposer>
         </ActivityKeyerComposer>
       </APIComposer>

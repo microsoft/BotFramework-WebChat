@@ -40,8 +40,8 @@ import SpeakActivity from './Activity/Speak';
 // TODO: [P*] Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
-import useAcknowledgedActivityKey from './hooks/internal/useAcknowledgedActivityKey';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
+import useActivityAcknowledgements from './providers/ActivityAcknowledgement/useActivityAcknowledgements';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
 import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
@@ -53,6 +53,11 @@ import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicit
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
 import useGetKeyByActivityId from './providers/ActivityKeyer/useGetKeyByActivityId';
+import useHasUnread from './providers/ActivityAcknowledgement/useHasUnread';
+import useLastReadActivityKey from './providers/ActivityAcknowledgement/useLastReadActivityKey';
+import useLastAcknowledgedActivityKey from './providers/ActivityAcknowledgement/useLastAcknowledgedActivityKey';
+import useMarkAllAsAcknowledged from './providers/ActivityAcknowledgement/useMarkAllAsAcknowledged';
+import useMarkAsRead from './providers/ActivityAcknowledgement/useMarkAsRead';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useOrderedActivityKeys from './providers/ActivityTree/useOrderedActivityKeys';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -64,6 +69,7 @@ import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 import useGetActivityByKey from './providers/ActivityKeyer/useGetActivityByKey';
+import usePrevious from './hooks/internal/usePrevious';
 
 const {
   useCreateActivityStatusRenderer,
@@ -126,15 +132,15 @@ type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
 type ActivityRowProps = PropsWithChildren<{
-  acknowledged: boolean;
   activity: DirectLineActivity;
   activityKey: string;
   shouldSpeak?: boolean;
 }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
-  ({ acknowledged, activity, activityKey, children, shouldSpeak }, ref) => {
+  ({ activity, activityKey, children, shouldSpeak }, ref) => {
     const [activeDescendantId] = useActiveDescendantId();
+    const { acknowledged, read } = useActivityAcknowledgements()[0].get(activityKey) || {};
     const activityKeyRef = useValueRef<string>(activityKey);
     const ariaLabelId = useMemo(() => `webchat__basic-transcript__activity-label--${activityKey}`, [activityKey]);
     const bodyRef = useRef<HTMLDivElement>();
@@ -238,7 +244,8 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
       <li
         aria-labelledby={supportScreenReader ? ariaLabelId : undefined}
         className={classNames('webchat__basic-transcript__activity', {
-          'webchat__basic-transcript__activity--acknowledged': acknowledged
+          'webchat__basic-transcript__activity--acknowledged': acknowledged,
+          'webchat__basic-transcript__activity--read': read
         })}
         // "id" is required for aria-activedescendant.
         // eslint-disable-next-line react/forbid-dom-props
@@ -283,7 +290,6 @@ ActivityRow.defaultProps = {
 };
 
 ActivityRow.propTypes = {
-  acknowledged: PropTypes.bool.isRequired,
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
       'webchat:fallback-text': PropTypes.string
@@ -374,8 +380,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
                 ? activity?.channelData?.['webchat:fallback-text']
                 : activity?.channelData?.messageBack?.displayText || activity.text;
 
-            // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
-            const supportScreenReader = activity?.channelData?.['webchat:fallback-text'] !== '';
             const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
 
             let showCallout: boolean;
@@ -420,7 +424,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               renderActivityStatus,
               renderAvatar,
               showCallout,
-              supportScreenReader
+
+              // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
+              supportScreenReader: activity?.channelData?.['webchat:fallback-text'] !== ''
             });
           });
         });
@@ -520,15 +526,13 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     useRegisterScrollToEnd(scrollToEnd);
     useRegisterScrollRelative(scrollRelative);
 
+    const markAsRead = useMarkAsRead();
+
     const dispatchScrollPositionWithActivityId: (scrollPosition: ScrollToPosition) => void =
       useDispatchScrollPosition();
 
-    const dispatchScrollPosition = useMemo(() => {
-      if (!dispatchScrollPositionWithActivityId) {
-        return;
-      }
-
-      return ({ scrollTop }: { scrollTop: number }) => {
+    const handleScrollPosition = useCallback(
+      ({ scrollTop }: { scrollTop: number }) => {
         const { current: rootElement } = rootElementRef;
 
         if (!rootElement) {
@@ -537,27 +541,29 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
         const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
 
-        const offsetHeight = scrollableElement.getClientRects()[0]?.height;
+        const scrollableOffsetHeight = scrollableElement.getClientRects()[0]?.height;
 
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
         const activityElements = Array.from(activityElementMapRef.current.entries());
-        const key = scrollableElement.scrollTop
-          ? activityElements
-              .reverse()
-              .find(([, element]) => !!element && element.getClientRects()[0]?.y < offsetHeight)?.[0]
-          : activityElements[0]?.[0];
-        const activity = getActivityByKey(key);
+        const activityKeyJustAboveScrollBottom: string | undefined = (
+          scrollableElement.scrollTop
+            ? activityElements.reverse().find(([, element]) => element?.getClientRects()[0]?.y < scrollableOffsetHeight)
+            : activityElements[0]
+        )?.[0];
 
-        dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
-      };
-    }, [activityElementMapRef, dispatchScrollPositionWithActivityId, getActivityByKey, rootElementRef]);
+        markAsRead(activityKeyJustAboveScrollBottom);
 
-    useObserveScrollPosition(dispatchScrollPosition);
+        if (dispatchScrollPositionWithActivityId) {
+          const activity = getActivityByKey(activityKeyJustAboveScrollBottom);
 
-    const [lastInteractedActivityKey] = useAcknowledgedActivityKey();
+          dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
+        }
+      },
+      [activityElementMapRef, dispatchScrollPositionWithActivityId, getActivityByKey, markAsRead, rootElementRef]
+    );
 
-    const indexOfLastInteractedActivity = renderingElements.findIndex(({ key }) => key === lastInteractedActivityKey);
+    useObserveScrollPosition(handleScrollPosition);
 
     const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
       event => {
@@ -650,12 +656,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     useRegisterFocusTranscript(useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]));
 
-    const handleScrollToEnd = useCallback(
-      ({ firstUnreadActivityKey }: { firstUnreadActivityKey?: string }) =>
-        firstUnreadActivityKey && focusByActivityKey(firstUnreadActivityKey),
-      [focusByActivityKey]
-    );
-
     // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
     const dispatchTranscriptFocusByActivityKey = useDispatchTranscriptFocusByActivityKey();
 
@@ -668,9 +668,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     // When the transcript is being focused on, we should dispatch a "transcriptfocus" event.
     const handleFocus = useCallback(
-      ({ currentTarget, target }) =>
-        target === currentTarget && focusByActivityKey(focusedActivityKeyRef.current, false),
-      [focusByActivityKey, focusedActivityKeyRef]
+      // We call "focusByActivityKey" with activity key of "true".
+      // It means, tries to focus on anything.
+      ({ currentTarget, target }) => target === currentTarget && focusByActivityKey(true, false),
+      [focusByActivityKey]
     );
 
     // This is required by IE11.
@@ -728,53 +729,46 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         </section>
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
-        <InternalTranscriptScrollable
-          onFocusFiller={handleFocusFiller}
-          onScrollToEnd={handleScrollToEnd}
-          terminatorRef={terminatorRef}
-        >
+        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
           {renderingElements.map(
-            (
-              {
-                activity,
-                callbackRef,
-                hideTimestamp,
-                key,
-                renderActivity,
-                renderActivityStatus,
-                renderAvatar,
-                showCallout
-              },
-              index
+            ({
+              activity,
+              callbackRef,
+              hideTimestamp,
+              key,
+              renderActivity,
+              renderActivityStatus,
+              renderAvatar,
+              showCallout
+            }) =>
               // TODO: [P*] Fix this.
               // eslint-disable-next-line arrow-body-style
-            ) => {
-              // const { element } = activityElementsRef.current.find(entry => entry.activity === activity) || {};
+              {
+                // const { element } = activityElementsRef.current.find(entry => entry.activity === activity) || {};
 
-              // TODO: [P*] Fix this.
-              // const isContentInteractive = !!(element
-              //   ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
-              //   : 0);
+                // TODO: [P*] Fix this.
+                // const isContentInteractive = !!(element
+                //   ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
+                //   : 0);
 
-              return (
-                <ActivityRow
-                  acknowledged={index <= indexOfLastInteractedActivity}
-                  activity={activity}
-                  activityKey={key}
-                  key={key}
-                  ref={callbackRef}
-                  // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-                  shouldSpeak={activity.channelData?.speak}
-                >
-                  {renderActivity({
-                    hideTimestamp,
-                    renderActivityStatus,
-                    renderAvatar,
-                    showCallout
-                  })}
-                </ActivityRow>
-              );
-            }
+                return (
+                  <ActivityRow
+                    activity={activity}
+                    activityKey={key}
+                    key={key}
+                    ref={callbackRef}
+                    // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
+                    shouldSpeak={activity.channelData?.speak}
+                  >
+                    {renderActivity({
+                      hideTimestamp,
+                      renderActivityStatus,
+                      renderAvatar,
+                      showCallout
+                    })}
+                  </ActivityRow>
+                );
+              }
           )}
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
@@ -847,7 +841,6 @@ InternalScreenReaderTranscript.propTypes = {
 type InternalTranscriptScrollableProps = {
   children?: ReactNode;
   onFocusFiller: () => void;
-  onScrollToEnd: (event: { firstUnreadActivityKey?: string }) => void;
   terminatorRef: MutableRefObject<HTMLDivElement>;
 };
 
@@ -855,23 +848,23 @@ type InternalTranscriptScrollableProps = {
 const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   children,
   onFocusFiller,
-  onScrollToEnd,
   terminatorRef
 }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [activityKeys] = useOrderedActivityKeys();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
   const [atEnd]: [boolean] = useAtEnd();
+  const [lastReadActivityKey] = useLastReadActivityKey();
   const [sticky]: [boolean] = useSticky();
   const [styleOptions] = useStyleOptions();
+  const [unread] = useHasUnread();
+  const focusByActivityKey = useFocusByActivityKey();
   const localize = useLocalizer();
   const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
   const activityKeysRef = useValueRef(activityKeys);
-  const lastVisibleActivityKey = activityKeys[activityKeys.length - 1]; // Activity ID of the last visible activity in the list.
+  const lastReadActivityKeyRef = useValueRef(lastReadActivityKey);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
-
-  const lastReadActivityKeyRef = useRef(lastVisibleActivityKey);
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current: activityKeys } = activityKeysRef;
@@ -884,31 +877,46 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     const firstUnreadActivityKey = ~index ? activityKeys[index + 1] : undefined;
 
     if (firstUnreadActivityKey) {
-      // TODO: [P*] We could call transcriptFocus.useFocusActivity() directly.
-      onScrollToEnd({ firstUnreadActivityKey });
+      focusByActivityKey(firstUnreadActivityKey);
     } else {
       // If no unread activity, send the focus to the terminator block.
       terminatorRef.current?.focus();
     }
-  }, [activityKeysRef, lastReadActivityKeyRef, onScrollToEnd, scrollToEnd, terminatorRef]);
-
-  if (atEnd || sticky) {
-    // If it is sticky or at the end, the user is at the bottom of the transcript, everything is read.
-    // So mark the activity ID as read.
-    lastReadActivityKeyRef.current = lastVisibleActivityKey;
-  }
+  }, [activityKeysRef, focusByActivityKey, lastReadActivityKeyRef, scrollToEnd, terminatorRef]);
 
   const renderScrollToEndButton = useCreateScrollToEndButtonRenderer()({
     atEnd: animatingToEnd || atEnd || sticky,
     styleOptions,
-
-    // Unread means:
-    // 1. Last read is not the last one in the transcript, and;
-    // 2. Last read is still in the transcript.
-    unread:
-      lastVisibleActivityKey !== lastReadActivityKeyRef.current &&
-      !!~activityKeys.indexOf(lastReadActivityKeyRef.current)
+    unread
   });
+
+  // Acknowledged means either:
+  // 1. The user sent a message
+  //    - We don't need a condition here. When Web Chat sends the user's message, it will scroll to bottom, and it will trigger condition 2 below.
+  // 2. The user scroll to the bottom of the transcript, from a non-bottom scroll position
+  //    - If the transcript is already at the bottom, the user needs to scroll up and then go back down
+  //    - What happens if we are relaxing "scrolled from a non-bottom scroll position":
+  //      1. The condition will become solely "at the bottom of the transcript"
+  //      2. Auto-scroll will always scroll the transcript to the bottom
+  //      3. Web Chat will always acknowledge all activities as it is at the bottom
+  //      4. Acknowledge flag become useless
+  //      5. Therefore, even the developer set "pause after 3 activities", if activities are coming in at a slow pace (not batched in a single render)
+  //         Web Chat will keep scrolling and not snapped/paused
+
+  // Note: When Web Chat is loaded, there are no activities acknowledged. We need to assume all arriving activities are acknowledged until end-user sends their first activity.
+  //       Activities loaded initially could be from conversation history. Without assuming acknowledgement, Web Chat will not scroll initially (as everything is not acknowledged).
+  //       It would be better if the chat adapter should let Web Chat know if the activity is loaded from history or not.
+
+  // TODO: [P2] #3670 Move the "conversation history acknowledgement" logic mentioned above to polyfill of chat adapters.
+  //       1. Chat adapter should send "acknowledged" as part of "channelData"
+  //       2. If "acknowledged" is "undefined", we set it to:
+  //          a. true, if there are no egress activities yet
+  //          b. Otherwise, false
+  const markAllAsAcknowledged = useMarkAllAsAcknowledged();
+  const prevSticky = usePrevious(sticky);
+
+  // When becoming sticky, mark all activities as acknowledged.
+  prevSticky !== sticky && sticky && markAllAsAcknowledged();
 
   return (
     <React.Fragment>
@@ -934,20 +942,14 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 InternalTranscriptScrollable.propTypes = {
   children: PropTypes.any.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
-  onScrollToEnd: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
 };
 
 type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop: number }) => number;
 
-type SetScrollProps = {
-  activityElementMapRef: MutableRefObject<ActivityElementMap>;
-  scrollerRef: MutableRefObject<Scroller>;
-};
-
 // "scroller" is the auto-scroll limiter, a.k.a. auto scroll snap.
-const SetScroller: VFC<SetScrollProps> = ({ activityElementMapRef, scrollerRef }) => {
-  const [lastAcknowledgedActivityKey] = useAcknowledgedActivityKey();
+const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>): Scroller => {
+  const [lastAcknowledgedActivityKey] = useLastAcknowledgedActivityKey();
   const [orderedActivityKeys] = useOrderedActivityKeys();
   const [styleOptions] = useStyleOptions();
 
@@ -955,7 +957,7 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementMapRef, scrollerRef }
   const orderedActivityKeysRef = useValueRef(orderedActivityKeys);
   const styleOptionsRef = useValueRef(styleOptions);
 
-  scrollerRef.current = useCallback(
+  return useCallback(
     ({ offsetHeight, scrollTop }) => {
       const {
         current: {
@@ -1049,8 +1051,6 @@ const SetScroller: VFC<SetScrollProps> = ({ activityElementMapRef, scrollerRef }
     },
     [activityElementMapRef, lastAcknowledgedActivityKeyRef, orderedActivityKeysRef, styleOptionsRef]
   );
-
-  return null;
 };
 
 type BasicTranscriptProps = {
@@ -1060,18 +1060,12 @@ type BasicTranscriptProps = {
 const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
-  const scrollerRef = useRef<Scroller>(() => Infinity);
 
-  // We need to use a <SetScroller> here because we have a chicken-and-egg problem.
-  // The scroller need to call `useAcknowledgedActivityKey`, then `useSticky`.
-  // The `useSticky` hooks requires the `ReactScrollToBottomComposer`, so the scroller need to put inside.
-  // But the `scroller` will also need to pass as a props to `ReactScrollToBottomComposer`.
-  const scroller = useCallback<Scroller>((...args) => scrollerRef.current(...args), [scrollerRef]);
+  const scroller = useScroller(activityElementMapRef);
 
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
       <ReactScrollToBottomComposer scroller={scroller}>
-        <SetScroller activityElementMapRef={activityElementMapRef} scrollerRef={scrollerRef} />
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>

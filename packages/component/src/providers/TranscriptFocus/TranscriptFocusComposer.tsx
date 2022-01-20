@@ -92,11 +92,15 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   );
 
   const focusByActivityKey = useCallback<
-    (activityKey: false | string | undefined, withFocus: boolean | undefined) => void
+    (activityKey: boolean | string | undefined, withFocus: boolean | undefined) => void
   >(
-    (activityKey: false | string | undefined, withFocus: boolean | undefined = true) => {
+    (activityKey: boolean | string | undefined, withFocus: boolean | undefined = true) => {
       if (activityKey === false) {
+        // `false` means set it to nothing.
         setRawFocusedActivityKey(undefined);
+      } else if (activityKey === true) {
+        // `true` means set to something if it is not set.
+        setRawFocusedActivityKey(key => key || focusedActivityKeyRef.current);
       } else if (activityKey) {
         setRawFocusedActivityKey(activityKey);
       }
@@ -108,9 +112,10 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
           activityKey === false
             ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
               last(orderedActivityKeysRef.current)
-            : activityKey
+            : activityKey !== true
             ? activityKey
             : // If "activityKey" is "undefined", it means "don't modify the focus".
+              // If "activityKey" is "true", it means "try to focus on anything".
               rawFocusedActivityKeyRef.current
         );
 
@@ -127,6 +132,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
     [
       computeElementIdFromActivityKey,
       containerRef,
+      focusedActivityKeyRef,
       orderedActivityKeysRef,
       rawFocusedActivityKeyRef,
       setRawFocusedActivityKey
