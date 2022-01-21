@@ -36,6 +36,8 @@ import {
 } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
+import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
@@ -63,6 +65,7 @@ import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '.
 import ToastMiddleware from '../types/ToastMiddleware';
 import Tracker from './internal/Tracker';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
+import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 
 import applyMiddleware, {
@@ -98,7 +101,7 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-function createCardActionContext({ cardActionMiddleware, directLine, dispatch }) {
+function createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged }) {
   const runMiddleware = applyMiddleware(
     'card action',
     ...singleToArray(cardActionMiddleware),
@@ -106,8 +109,10 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
   )({ dispatch });
 
   return {
-    onCardAction: (cardAction, { target }: { target?: any } = {}) =>
-      runMiddleware({
+    onCardAction: (cardAction, { target }: { target?: any } = {}) => {
+      markAllAsAcknowledged();
+
+      return runMiddleware({
         cardAction,
         getSignInUrl:
           cardAction.type === 'signin'
@@ -131,7 +136,8 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch })
               }
             : null,
         target
-      })
+      });
+    }
   };
 }
 
@@ -295,9 +301,11 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     };
   }, [dispatch, directLine, userID, username]);
 
+  const markAllAsAcknowledged = useMarkAllAsAcknowledged();
+
   const cardActionContext = useMemo(
-    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch }),
-    [cardActionMiddleware, directLine, dispatch]
+    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged }),
+    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged]
   );
 
   const patchedSelectVoice = useMemo(
@@ -721,7 +729,11 @@ const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, stor
   ) : (
     <ErrorBoundary onError={handleError}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <ComposerCore onTelemetry={onTelemetry} {...props} />
+        <ActivityKeyerComposer>
+          <ActivityAcknowledgementComposer>
+            <ComposerCore onTelemetry={onTelemetry} {...props} />
+          </ActivityAcknowledgementComposer>
+        </ActivityKeyerComposer>
       </Provider>
     </ErrorBoundary>
   );

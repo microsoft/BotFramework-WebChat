@@ -1,5 +1,6 @@
 import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
+import useActivityKeys from './useActivityKeys';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useByteFormatter from './useByteFormatter';
@@ -17,16 +18,25 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
+import useGetActivityByKey from './useGetActivityByKey';
+import useGetHasAcknowledgedByActivityKey from './useGetHasAcknowledgedByActivityKey';
+import useGetHasReadByActivityKey from './useGetHasReadByActivityKey';
+import useGetKeyByActivity from './useGetKeyByActivity';
+import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
 import useGroupActivities from './useGroupActivities';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
+import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
+import useLastReadActivityKey from './useLastReadActivityKey';
 import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
 import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
+import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
+import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
@@ -64,6 +74,7 @@ import useVoiceSelector from './useVoiceSelector';
 export {
   useActiveTyping,
   useActivities,
+  useActivityKeys,
   useAvatarForBot,
   useAvatarForUser,
   useByteFormatter,
@@ -81,16 +92,25 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useGetActivityByKey,
+  useGetHasAcknowledgedByActivityKey,
+  useGetHasReadByActivityKey,
+  useGetKeyByActivity,
+  useGetKeyByActivityId,
   useGetSendTimeoutForActivity,
   useGrammars,
   useGroupActivities,
   useGroupTimestamp,
   useLanguage,
+  useLastAcknowledgedActivityKey,
+  useLastReadActivityKey,
   useLastTypingAt,
   useLocalize,
   useLocalizeDate,
   useLocalizer,
   useMarkActivityAsSpoken,
+  useMarkActivityKeyAsRead,
+  useMarkAllAsAcknowledged,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,

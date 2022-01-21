@@ -1,0 +1,3 @@
+import useGetHasAcknowledgedByActivityKey from '../providers/ActivityAcknowledgement/useGetHasAcknowledgedByActivityKey';
+
+export default useGetHasAcknowledgedByActivityKey;

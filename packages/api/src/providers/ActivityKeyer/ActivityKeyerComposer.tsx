@@ -1,23 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 
-import { hooks } from 'botframework-webchat-api';
-
 import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC } from 'react';
 
-import ActivityKeyerContext from './private/Context';
+import ActivityKeyerContext, { ActivityKeyerContextType } from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import uniqueId from './private/uniqueId';
+import useActivities from '../../hooks/useActivities';
 import useActivityKeyerContext from './private/useContext';
 
 type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<DirectLineActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
 type KeyToActivityMap = Map<string, DirectLineActivity>;
-
-const { useActivities } = hooks;
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -42,16 +39,17 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
   }
 
   const [activities] = useActivities();
-  const activityToKeyMapRef = useRef<ActivityToKeyMap>(new Map());
-  const activityIdToKeyMapRef = useRef<ActivityIdToKeyMap>(new Map());
-  const clientActivityIdToKeyMapRef = useRef<ClientActivityIdToKeyMap>(new Map());
-  const keyToActivityMapRef = useRef<KeyToActivityMap>(new Map());
+  const activityIdToKeyMapRef = useRef<Readonly<ActivityIdToKeyMap>>(Object.freeze(new Map()));
+  const activityToKeyMapRef = useRef<Readonly<ActivityToKeyMap>>(Object.freeze(new Map()));
+  const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
+  const keyToActivityMapRef = useRef<Readonly<KeyToActivityMap>>(Object.freeze(new Map()));
 
-  useMemo(() => {
+  const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
     const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
     const { current: activityToKeyMap } = activityToKeyMapRef;
     const { current: clientActivityIdToKeyMap } = clientActivityIdToKeyMapRef;
     const nextActivityIdToKeyMap: ActivityIdToKeyMap = new Map();
+    const nextActivityKeys: string[] = [];
     const nextActivityToKeyMap: ActivityToKeyMap = new Map();
     const nextClientActivityIdToKeyMap: ClientActivityIdToKeyMap = new Map();
     const nextKeyToActivityMap: KeyToActivityMap = new Map();
@@ -70,12 +68,15 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
       clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
       nextActivityToKeyMap.set(activity, key);
       nextKeyToActivityMap.set(key, activity);
+      nextActivityKeys.push(key);
     });
 
-    activityIdToKeyMapRef.current = nextActivityIdToKeyMap;
-    activityToKeyMapRef.current = nextActivityToKeyMap;
-    clientActivityIdToKeyMapRef.current = nextClientActivityIdToKeyMap;
-    keyToActivityMapRef.current = nextKeyToActivityMap;
+    activityIdToKeyMapRef.current = Object.freeze(nextActivityIdToKeyMap);
+    activityToKeyMapRef.current = Object.freeze(nextActivityToKeyMap);
+    clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
+    keyToActivityMapRef.current = Object.freeze(nextKeyToActivityMap);
+
+    return Object.freeze([Object.freeze(nextActivityKeys)]) as readonly [readonly string[]];
   }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
 
   const getActivityByKey: (key?: string) => DirectLineActivity | undefined = useCallback(
@@ -93,14 +94,47 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
     [activityIdToKeyMapRef]
   );
 
-  const contextValue = useMemo(
+  const contextValue = useMemo<ActivityKeyerContextType>(
     () => ({
+      activityKeysState,
       getActivityByKey,
       getKeyByActivity,
       getKeyByActivityId
     }),
-    [getActivityByKey, getKeyByActivity, getKeyByActivityId]
+    [activityKeysState, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
+
+  const { length: numActivities } = activities;
+
+  if (activityIdToKeyMapRef.current.size > numActivities) {
+    console.warn(
+      'botframework-webchat internal assertion: "activityIdToKeyMap.size" should be equal or less than "activities.length".'
+    );
+  }
+
+  if (activityToKeyMapRef.current.size !== numActivities) {
+    console.warn(
+      'botframework-webchat internal assertion: "activityToKeyMap.size" should be same as "activities.length".'
+    );
+  }
+
+  if (clientActivityIdToKeyMapRef.current.size > numActivities) {
+    console.warn(
+      'botframework-webchat internal assertion: "clientActivityIdToKeyMap.size" should be equal or less than "activities.length".'
+    );
+  }
+
+  if (keyToActivityMapRef.current.size !== numActivities) {
+    console.warn(
+      'botframework-webchat internal assertion: "keyToActivityMap.size" should be same as "activities.length".'
+    );
+  }
+
+  if (activityKeysState[0].length !== numActivities) {
+    console.warn(
+      'botframework-webchat internal assertion: "activityKeys.length" should be same as "activities.length".'
+    );
+  }
 
   return <ActivityKeyerContext.Provider value={contextValue}>{children}</ActivityKeyerContext.Provider>;
 };

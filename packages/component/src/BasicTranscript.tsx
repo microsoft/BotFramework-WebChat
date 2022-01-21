@@ -41,7 +41,6 @@ import SpeakActivity from './Activity/Speak';
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
-import useActivityAcknowledgements from './providers/ActivityAcknowledgement/useActivityAcknowledgements';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
 import useComputeElementIdFromActivityKey from './providers/TranscriptFocus/useComputeElementIdFromActivityKey';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
@@ -51,13 +50,6 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
-import useGetKeyByActivity from './providers/ActivityKeyer/useGetKeyByActivity';
-import useGetKeyByActivityId from './providers/ActivityKeyer/useGetKeyByActivityId';
-import useHasUnread from './providers/ActivityAcknowledgement/useHasUnread';
-import useLastReadActivityKey from './providers/ActivityAcknowledgement/useLastReadActivityKey';
-import useLastAcknowledgedActivityKey from './providers/ActivityAcknowledgement/useLastAcknowledgedActivityKey';
-import useMarkAllAsAcknowledged from './providers/ActivityAcknowledgement/useMarkAllAsAcknowledged';
-import useMarkAsRead from './providers/ActivityAcknowledgement/useMarkAsRead';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import useOrderedActivityKeys from './providers/ActivityTree/useOrderedActivityKeys';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -68,15 +60,24 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
-import useGetActivityByKey from './providers/ActivityKeyer/useGetActivityByKey';
 import usePrevious from './hooks/internal/usePrevious';
 
 const {
+  useActivityKeys,
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
   useDirection,
+  useGetActivityByKey,
+  useGetHasAcknowledgedByActivityKey,
+  useGetHasReadByActivityKey,
+  useGetKeyByActivity,
+  useGetKeyByActivityId,
+  useLastAcknowledgedActivityKey,
+  useLastReadActivityKey,
   useLocalizer,
+  useMarkActivityKeyAsRead,
+  useMarkAllAsAcknowledged,
   useStyleOptions
 } = hooks;
 
@@ -140,13 +141,14 @@ type ActivityRowProps = PropsWithChildren<{
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
   ({ activity, activityKey, children, shouldSpeak }, ref) => {
     const [activeDescendantId] = useActiveDescendantId();
-    const { acknowledged, read } = useActivityAcknowledgements()[0].get(activityKey) || {};
+    const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
     const activityKeyRef = useValueRef<string>(activityKey);
     const ariaLabelId = useMemo(() => `webchat__basic-transcript__activity-label--${activityKey}`, [activityKey]);
     const bodyRef = useRef<HTMLDivElement>();
     const focusByActivityKey = useFocusByActivityKey();
     const id = useComputeElementIdFromActivityKey()(activityKey);
     const localize = useLocalizer();
+    const read = useGetHasReadByActivityKey()(activityKey);
 
     const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
     const isActiveDescendant = id === activeDescendantId;
@@ -526,7 +528,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     useRegisterScrollToEnd(scrollToEnd);
     useRegisterScrollRelative(scrollRelative);
 
-    const markAsRead = useMarkAsRead();
+    const markActivityKeyAsRead = useMarkActivityKeyAsRead();
 
     const dispatchScrollPositionWithActivityId: (scrollPosition: ScrollToPosition) => void =
       useDispatchScrollPosition();
@@ -552,7 +554,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             : activityElements[0]
         )?.[0];
 
-        markAsRead(activityKeyJustAboveScrollBottom);
+        activityKeyJustAboveScrollBottom && markActivityKeyAsRead(activityKeyJustAboveScrollBottom);
 
         if (dispatchScrollPositionWithActivityId) {
           const activity = getActivityByKey(activityKeyJustAboveScrollBottom);
@@ -560,7 +562,13 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
         }
       },
-      [activityElementMapRef, dispatchScrollPositionWithActivityId, getActivityByKey, markAsRead, rootElementRef]
+      [
+        activityElementMapRef,
+        dispatchScrollPositionWithActivityId,
+        getActivityByKey,
+        markActivityKeyAsRead,
+        rootElementRef
+      ]
     );
 
     useObserveScrollPosition(handleScrollPosition);
@@ -857,7 +865,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   const [lastReadActivityKey] = useLastReadActivityKey();
   const [sticky]: [boolean] = useSticky();
   const [styleOptions] = useStyleOptions();
-  const [unread] = useHasUnread();
   const focusByActivityKey = useFocusByActivityKey();
   const localize = useLocalizer();
   const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
@@ -865,6 +872,13 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   const activityKeysRef = useValueRef(activityKeys);
   const lastReadActivityKeyRef = useValueRef(lastReadActivityKey);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
+
+  // If the "last read activity key" is the last one in the transcript, that means everything is read.
+  // If transcript is empty, everything is read.
+  const unread = useMemo(
+    () => activityKeys[activityKeys.length - 1] !== lastReadActivityKey,
+    [activityKeys, lastReadActivityKey]
+  );
 
   const handleScrollToEndButtonClick = useCallback(() => {
     const { current: activityKeys } = activityKeysRef;
@@ -949,12 +963,12 @@ type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop:
 
 // "scroller" is the auto-scroll limiter, a.k.a. auto scroll snap.
 const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>): Scroller => {
+  const [activityKeys] = useActivityKeys();
   const [lastAcknowledgedActivityKey] = useLastAcknowledgedActivityKey();
-  const [orderedActivityKeys] = useOrderedActivityKeys();
   const [styleOptions] = useStyleOptions();
 
+  const activityKeysRef = useValueRef(activityKeys);
   const lastAcknowledgedActivityKeyRef = useValueRef(lastAcknowledgedActivityKey);
-  const orderedActivityKeysRef = useValueRef(orderedActivityKeys);
   const styleOptionsRef = useValueRef(styleOptions);
 
   return useCallback(
@@ -986,28 +1000,27 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
         typeof autoScrollSnapOnPageOffset === 'number' ? autoScrollSnapOnPageOffset : 0;
 
       if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
-        const { current: orderedActivityKeys } = orderedActivityKeysRef;
         const { current: activityElementMap } = activityElementMapRef;
+        const { current: activityKeys } = activityKeysRef;
         const { current: lastAcknowledgedActivityKey } = lastAcknowledgedActivityKeyRef;
         const values: number[] = [];
 
-        const lastAcknowledgedActivityKeyIndex = orderedActivityKeys.indexOf(lastAcknowledgedActivityKey);
+        const lastAcknowledgedActivityKeyIndex = activityKeys.indexOf(lastAcknowledgedActivityKey);
 
         if (~lastAcknowledgedActivityKeyIndex) {
           // The activity that we acknowledged could be not rendered, such as post back activity.
           // When calculating scroll snap, we can only base on the first unacknowledged-and-rendering activity.
+          const renderingActivityKeys = Array.from(activityElementMap.keys());
           let firstUnacknowledgedActivityElementIndex = -1;
 
-          for (
-            let index = lastAcknowledgedActivityKeyIndex + 1, { length } = orderedActivityKeys;
-            index < length;
-            index++
-          ) {
-            const activityKey = orderedActivityKeys[+index];
-            const activityElementIndex = Array.from(activityElementMap.keys()).indexOf(activityKey);
+          for (const acknowledgedActivityKey of activityKeys.slice(0, lastAcknowledgedActivityKeyIndex + 1).reverse()) {
+            const index = renderingActivityKeys.indexOf(acknowledgedActivityKey);
 
-            if (~activityElementIndex) {
-              firstUnacknowledgedActivityElementIndex = activityElementIndex;
+            if (~index) {
+              if (index !== renderingActivityKeys.length - 1) {
+                firstUnacknowledgedActivityElementIndex = index + 1;
+              }
+
               break;
             }
           }
@@ -1049,7 +1062,7 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
 
       return Infinity;
     },
-    [activityElementMapRef, lastAcknowledgedActivityKeyRef, orderedActivityKeysRef, styleOptionsRef]
+    [activityElementMapRef, activityKeysRef, lastAcknowledgedActivityKeyRef, styleOptionsRef]
   );
 };
 

@@ -1,4 +1,3 @@
-// TODO: [P*] Don't copy.
 import { useEffect, useRef } from 'react';
 
 export default function usePrevious<T>(value: T): T {

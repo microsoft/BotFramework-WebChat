@@ -16,8 +16,6 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
-import ActivityAcknowledgementComposer from './providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
-import ActivityKeyerComposer from './providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
@@ -35,10 +33,9 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
-import useGetActivityByKey from './providers/ActivityKeyer/useGetActivityByKey';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
-const { useReferenceGrammarID, useStyleOptions } = hooks;
+const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
@@ -353,23 +350,19 @@ const Composer: FC<ComposerProps> = ({
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
         {...composerProps}
       >
-        <ActivityKeyerComposer>
-          <ActivityTreeComposer>
-            <ActivityAcknowledgementComposer>
-              <ComposerCore
-                extraStyleSet={extraStyleSet}
-                nonce={nonce}
-                renderMarkdown={renderMarkdown}
-                styleSet={styleSet}
-                suggestedActionsAccessKey={suggestedActionsAccessKey}
-                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-              >
-                {children}
-                {onTelemetry && <UITracker />}
-              </ComposerCore>
-            </ActivityAcknowledgementComposer>
-          </ActivityTreeComposer>
-        </ActivityKeyerComposer>
+        <ActivityTreeComposer>
+          <ComposerCore
+            extraStyleSet={extraStyleSet}
+            nonce={nonce}
+            renderMarkdown={renderMarkdown}
+            styleSet={styleSet}
+            suggestedActionsAccessKey={suggestedActionsAccessKey}
+            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+          >
+            {children}
+            {onTelemetry && <UITracker />}
+          </ComposerCore>
+        </ActivityTreeComposer>
       </APIComposer>
     </React.Fragment>
   );

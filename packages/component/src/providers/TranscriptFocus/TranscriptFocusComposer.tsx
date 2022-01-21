@@ -1,3 +1,4 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
 import React, { useCallback, useMemo } from 'react';
@@ -8,12 +9,13 @@ import type { FC, MutableRefObject } from 'react';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
 import useActivityTreeWithRenderer from '../ActivityTree/useActivityTreeWithRenderer';
-import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 
 import type { TranscriptFocusContextType } from './private/Context';
+
+const { useGetKeyByActivity } = hooks;
 
 type TranscriptFocusComposerProps = {
   containerRef: MutableRefObject<HTMLElement>;

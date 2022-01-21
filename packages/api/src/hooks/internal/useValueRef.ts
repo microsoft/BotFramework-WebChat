@@ -1,4 +1,3 @@
-// TODO: [P*] Don't copy.
 import { RefObject, useMemo, useRef } from 'react';
 
 export default function useValueRef<T>(value: T): RefObject<T> {

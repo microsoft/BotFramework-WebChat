@@ -1,6 +1,10 @@
-import { Dispatch, MutableRefObject, SetStateAction, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-export default function useStateRef<T>(initialValue?: T): [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
+import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+
+export default function useStateRef<T>(
+  initialValue?: T
+): readonly [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
   const [_, forceRender] = useState<{}>();
   const valueRef: MutableRefObject<T> = useRef<T>(initialValue);
 
@@ -19,5 +23,9 @@ export default function useStateRef<T>(initialValue?: T): [T, Dispatch<SetStateA
     [forceRender, valueRef]
   );
 
-  return [valueRef.current, setter, valueRef];
+  return Object.freeze([valueRef.current, setter, valueRef]) as readonly [
+    T,
+    Dispatch<SetStateAction<T>>,
+    MutableRefObject<T>
+  ];
 }

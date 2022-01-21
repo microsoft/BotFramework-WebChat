@@ -10,13 +10,12 @@ import ActivityTreeContext from './private/Context';
 import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
 import useActivityTreeContext from './private/useContext';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
-import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 
 import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = PropsWithChildren<{}>;
 
-const { useActivities, useCreateActivityRenderer } = hooks;
+const { useActivities, useCreateActivityRenderer, useGetKeyByActivity } = hooks;
 
 const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const existingContext = useActivityTreeContext(false);
