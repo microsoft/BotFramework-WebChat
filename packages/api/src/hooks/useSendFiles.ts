@@ -2,19 +2,15 @@
 
 import { useCallback } from 'react';
 
-import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import useTrackEvent from './useTrackEvent';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useSendFiles(): (files: File[]) => void {
   const { sendFiles } = useWebChatAPIContext();
-  const markAllAsAcknowledged = useMarkAllAsAcknowledged();
   const trackEvent = useTrackEvent();
 
   return useCallback(
     files => {
-      markAllAsAcknowledged();
-
       if (files && files.length) {
         sendFiles(files);
 
@@ -24,6 +20,6 @@ export default function useSendFiles(): (files: File[]) => void {
         });
       }
     },
-    [markAllAsAcknowledged, sendFiles, trackEvent]
+    [sendFiles, trackEvent]
   );
 }
