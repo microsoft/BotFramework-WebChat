@@ -114,8 +114,9 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
           activityKey === false
             ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
               last(orderedActivityKeysRef.current)
-            : activityKey !== true
-            ? activityKey
+            : activityKey && activityKey !== true
+            ? // If "activity" is not "undefined" and not "true", it means "focus on this activity".
+              activityKey
             : // If "activityKey" is "undefined", it means "don't modify the focus".
               // If "activityKey" is "true", it means "try to focus on anything".
               rawFocusedActivityKeyRef.current

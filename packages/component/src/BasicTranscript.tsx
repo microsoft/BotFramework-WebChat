@@ -533,6 +533,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const dispatchScrollPositionWithActivityId: (scrollPosition: ScrollToPosition) => void =
       useDispatchScrollPosition();
 
+    // TODO: [P2] We should use IntersectionObserver to track what activity is in the scrollable.
+    //            However, IntersectionObserver is not available on IE11, we need to make a limited polyfill in React style.
     const handleScrollPosition = useCallback(
       ({ scrollTop }: { scrollTop: number }) => {
         const { current: rootElement } = rootElementRef;
@@ -543,14 +545,18 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
         const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
 
-        const scrollableOffsetHeight = scrollableElement.getClientRects()[0]?.height;
+        // "getClientRects()" is not returning an array, thus, it is not destructurable.
+        // eslint-disable-next-line prefer-destructuring
+        const { bottom: scrollableClientBottom } = scrollableElement.getClientRects()[0];
 
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
         const activityElements = Array.from(activityElementMapRef.current.entries());
         const activityKeyJustAboveScrollBottom: string | undefined = (
           scrollableElement.scrollTop
-            ? activityElements.reverse().find(([, element]) => element?.getClientRects()[0]?.y < scrollableOffsetHeight)
+            ? activityElements
+                .reverse()
+                .find(([, element]) => element.getClientRects()[0].bottom <= scrollableClientBottom)
             : activityElements[0]
         )?.[0];
 

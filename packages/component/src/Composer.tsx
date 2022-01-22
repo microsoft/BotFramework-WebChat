@@ -126,7 +126,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
   const scrollPositionObserversRef = useRef([]);
-  const [numScrollPositionObservers, setNumScrollPositionObservers] = useState(0);
 
   const dispatchScrollPosition = useCallback(
     event => scrollPositionObserversRef.current.forEach(observer => observer(event)),
@@ -136,14 +135,12 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const observeScrollPosition = useCallback(
     observer => {
       scrollPositionObserversRef.current = [...scrollPositionObserversRef.current, observer];
-      setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
 
       return () => {
         scrollPositionObserversRef.current = scrollPositionObserversRef.current.filter(target => target !== observer);
-        setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
       };
     },
-    [scrollPositionObserversRef, setNumScrollPositionObservers]
+    [scrollPositionObserversRef]
   );
 
   const transcriptFocusObserversRef = useRef([]);
@@ -188,7 +185,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
-      numScrollPositionObservers,
       numTranscriptFocusObservers,
       observeScrollPosition,
       observeTranscriptFocus,
@@ -211,7 +207,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
       internalMarkdownIt,
       internalRenderMarkdownInline,
       nonce,
-      numScrollPositionObservers,
       numTranscriptFocusObservers,
       observeScrollPosition,
       observeTranscriptFocus,
