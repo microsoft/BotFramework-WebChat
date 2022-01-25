@@ -762,7 +762,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     // - View is at bottom when the new activity arrives;
     // - User clicked on the "New messages" button.
 
-    if (sticky) {
+    if (sticky && lastActivityKey) {
       // TODO: [P2] Both `markActivityKeyAsRead` and `markAllAsAcknowledged` hook are setters of useState.
       //       This means, in a render loop, we will be calling setter and will cause another re-render.
       //       This is not trivial but we should think if there is a way to avoid this.
