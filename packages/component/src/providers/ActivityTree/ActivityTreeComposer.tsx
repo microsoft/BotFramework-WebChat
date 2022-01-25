@@ -15,7 +15,7 @@ import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = PropsWithChildren<{}>;
 
-const { useActivities, useCreateActivityRenderer, useGetKeyByActivity } = hooks;
+const { useActivities, useCreateActivityRenderer } = hooks;
 
 const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const existingContext = useActivityTreeContext(false);
@@ -26,32 +26,16 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
 
   const [activities]: [DirectLineActivity[]] = useActivities();
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
-  const getKeyByActivity = useGetKeyByActivity();
 
   const activitiesWithRenderer = useActivitiesWithRenderer(activities, createActivityRenderer);
 
   const activityTreeWithRenderer = useActivityTreeWithRenderer(activitiesWithRenderer);
 
-  const orderedActivityKeys = useMemo<readonly string[]>(() => {
-    const intermediate: string[] = [];
-
-    activityTreeWithRenderer.forEach(entriesWithSameSender => {
-      entriesWithSameSender.forEach(entriesWithSameSenderAndStatus => {
-        entriesWithSameSenderAndStatus.forEach(({ activity }) => {
-          intermediate.push(getKeyByActivity(activity));
-        });
-      });
-    });
-
-    return Object.freeze(intermediate);
-  }, [activityTreeWithRenderer, getKeyByActivity]);
-
   const contextValue: ActivityTreeContextType = useMemo(
     () => ({
-      activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree],
-      orderedActivityKeys: Object.freeze([orderedActivityKeys]) as readonly [readonly string[]]
+      activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree]
     }),
-    [activityTreeWithRenderer, orderedActivityKeys]
+    [activityTreeWithRenderer]
   );
 
   return <ActivityTreeContext.Provider value={contextValue}>{children}</ActivityTreeContext.Provider>;
