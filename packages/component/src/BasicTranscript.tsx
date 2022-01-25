@@ -282,11 +282,11 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
 
           if (scrollableElement && activityElement) {
-            // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
+            // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
             const { height: activityElementHeight, y: activityElementY } = activityElement.getClientRects()[0];
 
-            // ESLint conflict with TypeScript. The result of getClientRects() is not an array and should not be destructured.
+            // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
             const { height: scrollableHeight } = scrollableElement.getClientRects()[0];
 
@@ -735,27 +735,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
       markAllAsAcknowledged(),
     [markAllAsAcknowledged, stickyChangedToTrue]
   );
-
-  // TODO: [P*] We probably could remove "atEndOrSticky" and just use "sticky".
-  //       Make sure our tests are fine, then we can remove this section.
-  // const atEndOrSticky = atEnd || sticky;
-
-  // useMemo(() => {
-  //   if (atEndOrSticky) {
-  //     // If the view is sticky, or the user is at the end of the transcript, everything is read.
-  //     // For example:
-  //     // - Sticky: view is at bottom before a new activity arrives.
-  //     // - At end: user recently clicked on the "New messages" button;
-  //     // So mark the activity key as read.
-  //     const lastActivityKey = activityKeys[activityKeys.length - 1];
-
-  //     // TODO: [P2] Both `markActivityKeyAsRead` and `markAllAsAcknowledged` hook are setters of useState.
-  //     //       This means, in a render loop, we will be calling setter and will cause another re-render.
-  //     //       This is not trivial but we should think if there is a way to avoid this.
-  //     markActivityKeyAsRead(lastActivityKey);
-  //     lastReadActivityKey = lastActivityKey;
-  //   }
-  // }, [activityKeys, atEndOrSticky, markActivityKeyAsRead]);
 
   const nextLastReadActivityKey = useMemo(() => {
     // If the view is sticky, mark the last activity as read. For example:
