@@ -26,18 +26,19 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        // WHEN: After clicking on activity #29.
+        // WHEN: After clicking on bottom-right corner of activity #29.
         const activityElements = pageElements.activities();
 
-        await host.click(activityElements[activityElements.length - 3]);
+        await host.clickAt(-20, -20, activityElements[activityElements.length - 3]);
 
         // THEN: It should set activity #29 as active descendant.
         expect(activityElements[activityElements.length - 3]).toBe(
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
 
-        // THEN: It should scroll #29 into view.
-        await pageConditions.focusedActivityInView();
+        // THEN: It should keep scroll view at the bottom.
+        //       This is because clicking on an activity should not scroll it into view. Only focusing via TAB will scroll it into view.
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #29.
         await host.snapshot();
@@ -50,8 +51,11 @@
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
 
-        // THEN: It should scroll #30 into view.
+        // THEN: Activity #30 should be in the view.
         await pageConditions.focusedActivityInView();
+
+        // THEN: It should keep scroll view at the bottom.
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should activate the activity #30.
         await host.snapshot();
@@ -64,8 +68,11 @@
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
 
-        // WHEN: After SHIFT-TAB x 3 from the send box.
-        await host.click(pageElements.sendBoxTextBox());
+        // THEN: It should keep scroll view at the bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: After SHIFT-TAB x 3 from the send box to the transcript.
+        await pageObjects.focusSendBoxTextBox();
         await host.sendShiftTab();
         await host.sendShiftTab();
         await host.sendShiftTab();
@@ -75,6 +82,9 @@
         expect(activityElements[activityElements.length - 3]).toBe(
           document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))
         );
+
+        // THEN: It should scroll #29 into view.
+        await pageConditions.focusedActivityInView();
         await host.snapshot();
       });
     </script>
