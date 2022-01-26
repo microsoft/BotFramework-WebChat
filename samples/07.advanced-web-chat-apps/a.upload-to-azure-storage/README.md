@@ -47,7 +47,7 @@ This will create a new Azure Storage for temporary storage of user uploads.
    1. Copy "Storage account name" and save it to both `/bot/.env` and `/web/.env`
       -  `AZURE_STORAGE_ACCOUNT_NAME=youraccountname`
    1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/web/.env`
-      -  `AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d`
+      -  `AZURE_STORAGE_ACCOUNT_KEY=1234567890`
 1. Create a new blob container named "userupload"
    1. Select "Blobs"
    1. Click "+ Container"
@@ -73,9 +73,9 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
-   -  `MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6`
+   -  `MICROSOFT_APP_PASSWORD=abcdefghijklmnopqrstuvwxyz`
 1. Save the Web Chat secret to `/web/.env`
-   -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
+   -  `DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz`
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer the documentation on [Direct Line token generation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and the [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -164,17 +164,17 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 AZURE_STORAGE_ACCOUNT_NAME=youraccountname
-AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d
+AZURE_STORAGE_ACCOUNT_KEY=1234567890
 MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
+MICROSOFT_APP_PASSWORD=abcdefghijklmnopqrstuvwxyz
 ```
 
 ### `/web/.env`
 
 ```
 AZURE_STORAGE_ACCOUNT_NAME=youraccountname
-AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d
-DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+AZURE_STORAGE_ACCOUNT_KEY=1234567890
+DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
 ```
 
 # Frequently asked questions
