@@ -10,10 +10,10 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^4.14.1",
-    "botbuilder-dialogs": "^4.14.1",
+    "botbuilder": "^4.15.0",
+    "botbuilder-dialogs": "^4.15.0",
     "dotenv": "^10.0.0",
-    "restify": "^8.5.1"
+    "restify": "^8.6.0"
   },
   "devDependencies": {
     "node-dev": "^7.0.0"

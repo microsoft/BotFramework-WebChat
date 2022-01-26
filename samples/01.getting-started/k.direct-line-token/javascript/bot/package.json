@@ -10,11 +10,11 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^4.11.1",
+    "botbuilder": "^4.15.0",
     "dotenv": "^8.2.0",
-    "restify": "^8.5.1"
+    "restify": "^8.6.0"
   },
   "devDependencies": {
-    "node-dev": "^6.4.0"
+    "node-dev": "^7.1.0"
   }
 }

@@ -47,11 +47,11 @@
     "jest-environment-node": "^27.2.5",
     "jest-image-snapshot": "^4.5.1",
     "node-dev": "^7.0.0",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^2.6.7",
     "p-defer": "^4.0.0",
     "p-defer-es5": "^2.0.0",
     "selenium-webdriver": "^4.0.0",
-    "serve": "^12.0.1",
+    "serve": "^13.0.2",
     "strip-ansi": "^6.0.1"
   }
 }
