@@ -50,26 +50,26 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
     [prefix]
   );
 
-  const orderedActivities = useMemo<readonly DirectLineActivity[]>(() => {
-    const intermediate = [];
-
-    activityTree.forEach(entriesWithSameSender => {
-      entriesWithSameSender.forEach(entriesWithSameSenderAndStatus => {
-        entriesWithSameSenderAndStatus.forEach(({ activity }) => {
-          intermediate.push(activity);
-        });
-      });
-    });
-
-    return Object.freeze(intermediate);
-  }, [activityTree]);
-
-  const orderedActivityKeys = useMemo<readonly string[]>(
-    () => Object.freeze(orderedActivities.map(getKeyByActivity)),
-    [getKeyByActivity, orderedActivities]
+  const renderingActivityKeys = useMemo<readonly string[]>(
+    () =>
+      Object.freeze(
+        activityTree.reduce<DirectLineActivity>(
+          (intermediate, entriesWithSameSender) =>
+            entriesWithSameSender.reduce(
+              (intermediate, entriesWithSameSenderAndStatus) =>
+                entriesWithSameSenderAndStatus.reduce(
+                  (intermediate, { activity }) => intermediate.push(getKeyByActivity(activity)),
+                  intermediate
+                ),
+              intermediate
+            ),
+          []
+        )
+      ),
+    [activityTree, getKeyByActivity]
   );
 
-  const orderedActivityKeysRef = useValueRef<readonly string[]>(orderedActivityKeys);
+  const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
 
   // While the transcript or any descendants are not focused, if the transcript is updated, reset the user-selected active descendant.
   // This will assume the last activity, if any, will be the active descendant.
@@ -82,8 +82,8 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const { current: rawFocusedActivityKey } = rawFocusedActivityKeyRef;
 
   const focusedActivityKey = useMemo<string>(
-    () => (orderedActivityKeys.includes(rawFocusedActivityKey) ? rawFocusedActivityKey : last(orderedActivityKeys)),
-    [orderedActivityKeys, rawFocusedActivityKey]
+    () => (renderingActivityKeys.includes(rawFocusedActivityKey) ? rawFocusedActivityKey : last(renderingActivityKeys)),
+    [renderingActivityKeys, rawFocusedActivityKey]
   );
 
   const focusedActivityKeyRef = useValueRef(focusedActivityKey);
@@ -113,7 +113,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
         const activeDescendantId = computeElementIdFromActivityKey(
           activityKey === false
             ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
-              last(orderedActivityKeysRef.current)
+              last(renderingActivityKeysRef.current)
             : activityKey && activityKey !== true
             ? // If "activity" is not "undefined" and not "true", it means "focus on this activity".
               activityKey
@@ -136,7 +136,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
       computeElementIdFromActivityKey,
       containerRef,
       focusedActivityKeyRef,
-      orderedActivityKeysRef,
+      renderingActivityKeysRef,
       rawFocusedActivityKeyRef,
       setRawFocusedActivityKey
     ]
@@ -144,7 +144,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
 
   const focusRelativeActivity = useCallback(
     (delta: number) => {
-      const { current: orderedActivityKeys } = orderedActivityKeysRef;
+      const { current: orderedActivityKeys } = renderingActivityKeysRef;
 
       if (isNaN(delta) || !orderedActivityKeys.length) {
         return focusByActivityKey(false, true);
@@ -159,7 +159,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
 
       focusByActivityKey(orderedActivityKeys[+nextIndex], true);
     },
-    [focusedActivityKeyRef, orderedActivityKeysRef, focusByActivityKey]
+    [focusedActivityKeyRef, renderingActivityKeysRef, focusByActivityKey]
   );
 
   const contextValue = useMemo<TranscriptFocusContextType>(

@@ -633,6 +633,7 @@ InternalTranscript.propTypes = {
   className: PropTypes.string
 };
 
+// TODO: [P*] Move <InternalScreenReaderTranscript> to a separate file.
 type InternalScreenReaderTranscriptProps = {
   renderingElements: RenderingElement[];
 };
