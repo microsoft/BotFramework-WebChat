@@ -57,8 +57,10 @@ If you want to authenticate on GitHub, follow the steps below.
    1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
    1. Click "Register application"
 1. Save the "Client ID" and "Client Secret" to `/rest-api/.env`
-   -  `GITHUB_OAUTH_CLIENT_ID=1234567890abcd`
-   -  `GITHUB_OAUTH_CLIENT_SECRET=12345678`
+   -  ```
+      GITHUB_OAUTH_CLIENT_ID=1234567890abcd
+      GITHUB_OAUTH_CLIENT_SECRET=<your-github-oauth-client-secret>
+      ```
 
 ## Setup OAuth via Azure Active Directory
 
@@ -88,12 +90,12 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  ```
-      MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=1234567890
+      MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
       ```
 1. Save the Web Chat secret to `/rest-api/.env`
    -  ```
-      DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
+      DIRECT_LINE_SECRET=<your-direct-line-secret>
       ```
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
@@ -195,8 +197,8 @@ To ease the setup of this sample, here is the template of `.env` files.
 ### `/bot/.env`
 
 ```
-MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=1234567890
+MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
 ```
 
 ### `/rest-api/.env`
@@ -204,9 +206,9 @@ MICROSOFT_APP_PASSWORD=1234567890
 ```
 AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
 AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
-DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
+DIRECT_LINE_SECRET=<your-direct-line-secret>
 GITHUB_OAUTH_CLIENT_ID=1234567890abcd
-GITHUB_OAUTH_CLIENT_SECRET=abcdefghijklmnopqrstuvwxyz
+GITHUB_OAUTH_CLIENT_SECRET=<your-github-oauth-client-secret>
 GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback
 ```
 

@@ -46,12 +46,12 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  ```
-      MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=<your-app-password>
+      MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
       ```
 1. Save the Web Chat secret to `/web/.env`
    -  ```
-      DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
+      DIRECT_LINE_SECRET=<your-direct-line-secret>
       ```
 
 </details>
@@ -60,12 +60,12 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/appsettings.json`
    -  ```
-      "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd"
-      "MicrosoftAppPassword": "<your-app-password>"
+      "MicrosoftAppId": "12345678abcd-1234-5678-abcd-12345678abcd"
+      "MicrosoftAppPassword": "<your-microsoft-app-password>"
       ```
 1. Save the Web Chat secret to `/web/appsettings.json`
    -  ```
-      "DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"
+      "DirectLineSecret": "<your-direct-line-secret>"
       ```
 
 </details>
@@ -279,14 +279,14 @@ To ease the setup of this sample, here is the template of the local environment 
 ### `/bot/.env`
 
 ```
-MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=<your-app-password>
+MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
 ```
 
 ### `/web/.env`
 
 ```
-DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
+DIRECT_LINE_SECRET=<your-direct-line-secret>
 ```
 
 </details>
@@ -305,8 +305,8 @@ DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
       }
    },
    "AllowedHosts": "*",
-   "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd",
-   "MicrosoftAppPassword": "<your-app-password>"
+   "MicrosoftAppId": "12345678abcd-1234-5678-abcd-12345678abcd",
+   "MicrosoftAppPassword": "<your-microsoft-app-password>"
 }
 ```
 
@@ -322,7 +322,7 @@ DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
       }
    },
    "AllowedHosts": "*",
-   "DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"
+   "DirectLineSecret": "<your-direct-line-secret>"
 }
 ```
 
