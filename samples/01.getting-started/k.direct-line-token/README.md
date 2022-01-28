@@ -47,7 +47,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  ```
       MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=1234567890
+      MICROSOFT_APP_PASSWORD=<your-app-password>
       ```
 1. Save the Web Chat secret to `/web/.env`
    -  ```
@@ -61,7 +61,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. Save the Microsoft App ID and password to `/bot/appsettings.json`
    -  ```
       "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd"
-      "MicrosoftAppPassword": "1234567890"
+      "MicrosoftAppPassword": "<your-app-password>"
       ```
 1. Save the Web Chat secret to `/web/appsettings.json`
    -  ```
