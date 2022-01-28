@@ -46,7 +46,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
-   -  `MICROSOFT_APP_PASSWORD=1234567890`
+   -  `MICROSOFT_APP_PASSWORD=12345678`
 1. Save the Web Chat secret to `/web/.env`
    -  `DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz`
 
@@ -55,10 +55,10 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 <details><summary>C#</summary>
 
 1. Save the Microsoft App ID and password to `/bot/appsettings.json`
-   - `"MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd"`
-   - `"MicrosoftAppPassword": "1234567890"`
+   -  `"MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd"`
+   -  `"MicrosoftAppPassword": "12345678"`
 1. Save the Web Chat secret to `/web/appsettings.json`
-   - `"DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"`
+   -  `"DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"`
 
 </details>
 
@@ -77,19 +77,19 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 1. Under each of `bot`, and `web` folder, run the following commands, depending on your language:
 
-    <details><summary>JavaScript</summary>
+   <details><summary>JavaScript</summary>
 
-    1. `npm install`
-    1. `npm start`
+   1. `npm install`
+   1. `npm start`
 
-    </details>
+   </details>
 
-    <details><summary>C#</summary>
+   <details><summary>C#</summary>
 
-    1. `dotnet build`
-    1. `dotnet run`
+   1. `dotnet build`
+   1. `dotnet run`
 
-    </details>
+   </details>
 
 1. Browse to http://localhost:5000/ to start the demo
 
@@ -118,8 +118,8 @@ In this sample, the user is anonymous, so the API randomly generates a user ID:
 // web/src/routes/directLine/token.js
 
 async function generateRandomUserId() {
-    const buffer = await randomBytesAsync(16);
-    return `dl_${buffer.toString('hex')}`;
+   const buffer = await randomBytesAsync(16);
+   return `dl_${buffer.toString('hex')}`;
 }
 ```
 
@@ -142,7 +142,7 @@ private static string GenerateRandomUserId()
 
 </details>
 
-The user ID is prefixed with "dl_" as required by the [Direct Line token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token).
+The user ID is prefixed with "dl\_" as required by the [Direct Line token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token).
 
 ## Retrieving a user-specific Direct Line token
 
@@ -154,21 +154,21 @@ The backend API calls the Direct Line API to retrieve a Direct Line token. Notic
 // web/src/generateDirectLineToken.js
 
 async function generateDirectLineToken(secret, userId) {
-    const { token } = await fetchJSON('https://directline.botframework.com/v3/directline/tokens/generate', {
-        headers: {
-            authorization: `Bearer ${secret}`,
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({
-            user: {
-                id: userId
-            }
-        })
-    });
+   const { token } = await fetchJSON('https://directline.botframework.com/v3/directline/tokens/generate', {
+      headers: {
+         authorization: `Bearer ${secret}`,
+         'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+         user: {
+            id: userId
+         }
+      })
+   });
 
-    return token;
-};
+   return token;
+}
 ```
 
 </details>
@@ -224,17 +224,17 @@ The client-side page calls the API and uses the resulting Direct Line token to r
 const { token } = await fetchJSON('/api/directline/token');
 
 WebChat.renderWebChat(
-    {
-        directLine: WebChat.createDirectLine({ token }),
-        styleOptions: {
-            backgroundColor: 'rgba(255, 255, 255, .8)'
-        }
-    },
-    document.getElementById('webchat')
+   {
+      directLine: WebChat.createDirectLine({ token }),
+      styleOptions: {
+         backgroundColor: 'rgba(255, 255, 255, .8)'
+      }
+   },
+   document.getElementById('webchat')
 );
 ```
 
-Note that we do *not* specify a user ID when initiating Web Chat. Direct Line will handle sending the user ID to the bot based on the token.
+Note that we do _not_ specify a user ID when initiating Web Chat. Direct Line will handle sending the user ID to the bot based on the token.
 
 # Overview
 
@@ -272,7 +272,7 @@ To ease the setup of this sample, here is the template of the local environment 
 
 ```
 MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=1234567890
+MICROSOFT_APP_PASSWORD=12345678
 ```
 
 ### `/web/.env`
@@ -289,16 +289,16 @@ DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
 
 ```json
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
-  },
-  "AllowedHosts": "*",
-  "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd",
-  "MicrosoftAppPassword": "1234567890"
+   "Logging": {
+      "LogLevel": {
+         "Default": "Information",
+         "Microsoft": "Warning",
+         "Microsoft.Hosting.Lifetime": "Information"
+      }
+   },
+   "AllowedHosts": "*",
+   "MicrosoftAppId": "12345678-1234-5678-abcd-12345678abcd",
+   "MicrosoftAppPassword": "12345678"
 }
 ```
 
@@ -306,15 +306,15 @@ DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
 
 ```json
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
-  },
-  "AllowedHosts": "*",
-  "DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"
+   "Logging": {
+      "LogLevel": {
+         "Default": "Information",
+         "Microsoft": "Warning",
+         "Microsoft.Hosting.Lifetime": "Information"
+      }
+   },
+   "AllowedHosts": "*",
+   "DirectLineSecret": "abcdefghijk.abcdefghijklmnopqrstuvwxyz"
 }
 ```
 

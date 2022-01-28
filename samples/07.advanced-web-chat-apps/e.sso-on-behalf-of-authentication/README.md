@@ -114,7 +114,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
          5. Set the "Scopes" field to the scopes you want the bot to have permission to access (ie. user.read)
 2. Save the Microsoft App ID, password, and OAuth connection name to `/bot/.env`
    -  `MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd`
-   -  `MicrosoftAppPassword=abcdefghijklmnopqrstuvwxyz`
+   -  `MicrosoftAppPassword=12345678`
    -  `connectionName=botOAuthConnection`
 3. Save the Web Chat secret to `/rest-api/.env`
    -  `DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz`
@@ -188,7 +188,7 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd
-MicrosoftAppPassword=abcdefghijklmnopqrstuvwxyz
+MicrosoftAppPassword=12345678
 connectionName=botOAuthConnection
 ```
 

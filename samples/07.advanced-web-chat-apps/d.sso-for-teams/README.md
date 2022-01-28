@@ -90,7 +90,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
-   -  `MICROSOFT_APP_PASSWORD=abcdefghijklmnopqrstuvwxyz`
+   -  `MICROSOFT_APP_PASSWORD=12345678`
 1. Save the Web Chat secret to `/web/.env`
    -  `DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz`
 
@@ -193,7 +193,7 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=abcdefghijklmnopqrstuvwxyz
+MICROSOFT_APP_PASSWORD=12345678
 ```
 
 ### `/web/.env`
