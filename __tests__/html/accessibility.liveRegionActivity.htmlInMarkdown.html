@@ -28,8 +28,7 @@
             directLine: testHelpers.createDirectLineWithTranscript([
               {
                 ...baseActivity,
-                text:
-                  '![Exclamation mark](data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==) Warning.'
+                text: '![Exclamation mark](data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==) Warning.'
               },
               {
                 ...baseActivity,
@@ -64,9 +63,8 @@
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(6);
 
-        const screenReaderTexts = [].map.call(
-          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => testHelpers.getAllTextContents(child).join('\n')
+        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
         );
 
         expect(screenReaderTexts).toHaveLength(6);

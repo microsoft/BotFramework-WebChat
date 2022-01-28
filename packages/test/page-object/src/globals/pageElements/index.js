@@ -10,6 +10,7 @@ import toastDismissButtons from './toastDismissButtons';
 import toasterHeader from './toasterHeader';
 import toasts from './toasts';
 import transcript from './transcript';
+import transcriptLiveRegion from './transcriptLiveRegion';
 import transcriptScrollable from './transcriptScrollable';
 import transcriptTerminator from './transcriptTerminator';
 
@@ -26,6 +27,7 @@ export {
   toasterHeader,
   toasts,
   transcript,
+  transcriptLiveRegion,
   transcriptScrollable,
   transcriptTerminator
 };
