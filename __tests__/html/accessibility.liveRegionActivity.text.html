@@ -89,9 +89,8 @@
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(7);
 
-        const screenReaderTexts = [].map.call(
-          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => testHelpers.getAllTextContents(child).join('\n')
+        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
         );
 
         // One of the activity contains a fallback text of empty string. It become presentational and not rendered.

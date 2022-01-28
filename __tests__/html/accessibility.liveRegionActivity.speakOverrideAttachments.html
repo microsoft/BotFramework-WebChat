@@ -64,9 +64,8 @@
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(4);
 
-        const screenReaderTexts = [].map.call(
-          document.querySelector('[aria-roledescription="transcript"][role="log"]').children,
-          child => testHelpers.getAllTextContents(child).join('\n')
+        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
         );
 
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
@@ -78,7 +77,9 @@
         );
 
         // No attachments should be narrated.
-        expect(screenReaderTexts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[1]).toBe(
+          'Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM'
+        );
         expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM');
 
         const activityAlts = [].map.call(
@@ -92,7 +93,9 @@
         expect(screenReaderTexts).toHaveLength(3);
 
         // In interactive transcript, this is narrated as "2 attachments".
-        expect(activityAlts[0]).toBe('Bot said:\nNo “webchat:fallback-text” field.\n2 attachments.\nSent at January 1 at 12:34 PM');
+        expect(activityAlts[0]).toBe(
+          'Bot said:\nNo “webchat:fallback-text” field.\n2 attachments.\nSent at January 1 at 12:34 PM'
+        );
 
         expect(activityAlts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM');
         expect(activityAlts[2]).toBe('Bot said:\n2 attachments.\nSent at January 1 at 12:34 PM');
