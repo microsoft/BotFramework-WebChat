@@ -57,10 +57,11 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
           (intermediate, entriesWithSameSender) =>
             entriesWithSameSender.reduce(
               (intermediate, entriesWithSameSenderAndStatus) =>
-                entriesWithSameSenderAndStatus.reduce(
-                  (intermediate, { activity }) => intermediate.push(getKeyByActivity(activity)),
-                  intermediate
-                ),
+                entriesWithSameSenderAndStatus.reduce((intermediate, { activity }) => {
+                  intermediate.push(getKeyByActivity(activity));
+
+                  return intermediate;
+                }, intermediate),
               intermediate
             ),
           []
