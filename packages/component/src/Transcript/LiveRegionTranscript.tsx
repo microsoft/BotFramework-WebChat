@@ -7,6 +7,7 @@ import type { FC, RefObject, VFC } from 'react';
 
 import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
 import ScreenReaderActivity from '../ScreenReaderActivity';
+import ScreenReaderText from '../ScreenReaderText';
 import tabbableElements from '../Utils/tabbableElements';
 import useActivityTreeWithRenderer from '../providers/ActivityTree/useActivityTreeWithRenderer';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
@@ -101,10 +102,14 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
         ).length
     );
 
-    if (hasNewLink) {
-      queueStaticElement(<div aria-atomic="true" aria-label={liveRegionInteractiveWithLinkLabelAlt} role="note" />);
-    } else if (hasNewWidget) {
-      queueStaticElement(<div aria-atomic="true" aria-label={liveRegionInteractiveLabelAlt} role="note" />);
+    if (hasNewLink || hasNewWidget) {
+      // VoiceOver did not narrate empty self-closing tag, such as <div aria-label="Something" />.
+      // Thus, <ScreenReaderText> is needed.
+      queueStaticElement(
+        <div aria-atomic="true" role="note">
+          <ScreenReaderText text={hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt} />
+        </div>
+      );
     }
 
     prevRenderingActivitiesRef.current = renderingActivities;
