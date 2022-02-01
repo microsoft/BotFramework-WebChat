@@ -14,16 +14,16 @@ import PropTypes from 'prop-types';
 import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react';
 
 import type { ActivityComponentFactory, AvatarComponentFactory } from 'botframework-webchat-api';
+import type { ActivityElementMap } from './Transcript/types';
 import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
 
 import ActivityRow from './Transcript/ActivityRow';
 import BasicTypingIndicator from './BasicTypingIndicator';
-import Fade from './Utils/Fade';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
-import ScreenReaderActivity from './ScreenReaderActivity';
+import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import ScreenReaderText from './ScreenReaderText';
 // TODO: [P*] Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
@@ -92,8 +92,6 @@ const ROOT_STYLE = {
   }
 };
 
-type ActivityElementMap = Map<string, HTMLElement>;
-
 type RenderingElement = {
   activity: DirectLineActivity & {
     channelData?: {
@@ -125,9 +123,7 @@ type InternalTranscriptProps = {
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
   ({ activityElementMapRef, className }, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
-    const [
-      { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, internalLiveRegionFadeAfter, showAvatarInGroup }
-    ] = useStyleOptions();
+    const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
     const [activeDescendantId] = useActiveDescendantId();
     const [activityWithRendererTree] = useActivityTreeWithRenderer();
     const [direction] = useDirection();
@@ -150,7 +146,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const hideAllTimestamps = groupTimestamp === false;
     const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
     const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
-    const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
     const callbackRef = useCallback(
       (element: HTMLDivElement) => {
@@ -544,22 +539,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         tabIndex={0}
       >
         <ScreenReaderText id={labelId} text={transcriptAriaLabel} />
-        {/* This <section> is for live region only. Content is made invisible through CSS. */}
-        <section
-          aria-atomic={false}
-          aria-live="polite"
-          aria-relevant="additions"
-          aria-roledescription={transcriptRoleDescription}
-          role="log"
-        >
-          {renderingElements
-            .filter(({ supportScreenReader }) => supportScreenReader)
-            .map(({ activity, liveRegionKey }) => (
-              <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
-                {() => <ScreenReaderActivity activity={activity} />}
-              </Fade>
-            ))}
-        </section>
+        <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
@@ -631,45 +611,6 @@ InternalTranscript.propTypes = {
     current: PropTypes.instanceOf(Map)
   }).isRequired,
   className: PropTypes.string
-};
-
-// TODO: [P*] Move <InternalScreenReaderTranscript> to a separate file.
-type InternalScreenReaderTranscriptProps = {
-  renderingElements: RenderingElement[];
-};
-
-const InternalScreenReaderTranscript: VFC<InternalScreenReaderTranscriptProps> = ({ renderingElements }) => {
-  const localize = useLocalizer();
-  const [internalLiveRegionFadeAfter] = useStyleOptions();
-
-  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
-
-  return (
-    <section
-      aria-atomic={false}
-      aria-live="polite"
-      aria-relevant="additions"
-      aria-roledescription={transcriptRoleDescription}
-      role="log"
-    >
-      {renderingElements.map(({ activity, liveRegionKey }) => (
-        <Fade fadeAfter={internalLiveRegionFadeAfter} key={liveRegionKey}>
-          {() => <ScreenReaderActivity activity={activity} />}
-        </Fade>
-      ))}
-    </section>
-  );
-};
-
-InternalScreenReaderTranscript.propTypes = {
-  // PropTypes cannot validate precisely with its TypeScript counterpart.
-  // @ts-ignore
-  renderingElements: PropTypes.arrayOf(
-    PropTypes.shape({
-      activity: PropTypes.any,
-      liveRegionKey: PropTypes.string
-    })
-  ).isRequired
 };
 
 type InternalTranscriptScrollableProps = {
