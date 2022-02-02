@@ -3,7 +3,6 @@ import { StrictStyleOptions } from 'botframework-webchat-api';
 export default function createSendBoxTextBoxStyle({
   paddingRegular,
   primaryFont,
-  sendBoxBackground,
   sendBoxDisabledTextColor,
   sendBoxMaxHeight,
   sendBoxPlaceholderColor,
@@ -27,7 +26,7 @@ export default function createSendBoxTextBoxStyle({
       },
 
       '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__html-text-area': {
-        backgroundColor: sendBoxBackground,
+        backgroundColor: 'transparent', // We set this to transparent because we already applied "sendBoxBackground" to a parent container.
 
         '&:not(:disabled):not([aria-disabled="true"])': {
           color: sendBoxTextColor

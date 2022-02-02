@@ -14,7 +14,7 @@ export default function createScrollToEndButtonStyle({
   return {
     '&.webchat__scroll-to-end-button': {
       // TODO: [P3] Can we not to unset borderWidth and outline earlier?
-      '@media screen and (-ms-high-contrast: active)': {
+      '@media screen and (forced-colors: active)': {
         borderWidth: 'initial',
         outline: 'initial'
       },

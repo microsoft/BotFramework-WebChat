@@ -23,6 +23,7 @@ import BasicTypingIndicator from './BasicTypingIndicator';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
+import KeyboardHelp from './Transcript/KeyboardHelp';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import ScreenReaderText from './ScreenReaderText';
 // TODO: [P*] Rename to "getTabbableElements".
@@ -913,6 +914,7 @@ const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
       <ReactScrollToBottomComposer scroller={scroller}>
+        <KeyboardHelp />
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>

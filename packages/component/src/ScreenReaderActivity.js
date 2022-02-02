@@ -105,7 +105,8 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
   return (
     <article
       aria-atomic={true}
-      // "aria-labelledby" is required. Otherwise, Narrator will not narrate the content.
+      // Narrator requires the "aria-labelledby" attribute, otherwise, it will only read "aria-roledescription".
+      // However, iOS VoiceOver and NVDA both ignore the "aria-labelledby" and read out the whole content, including timestamp.
       aria-labelledby={labelId}
       aria-roledescription="message"
       className={classNames('webchat__screen-reader-activity', rootClassName)}
