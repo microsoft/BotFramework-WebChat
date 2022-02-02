@@ -3,35 +3,15 @@
 
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
-export default function createKeyboardHelpStyleSet({
-  paddingRegular,
-  primaryFont,
-  sendBoxButtonShadeColorOnActive,
-  sendBoxButtonShadeColorOnFocus,
-  sendBoxButtonShadeColorOnHover,
-  subtle
-}: StrictStyleOptions) {
+export default function createKeyboardHelpStyleSet({ paddingRegular, primaryFont }: StrictStyleOptions) {
   return {
     '&.webchat__keyboard-help': {
-      borderRadius: 2,
       fontFamily: primaryFont,
       fontSize: 14,
       height: '100%',
       margin: paddingRegular,
+      outline: 0,
 
-      '&:not(.alt)': {
-        outline: 0,
-
-        '& .webchat__keyboard-help__close-button': {
-          borderColor: 'black',
-          borderRadius: 4,
-          borderStyle: 'solid',
-          borderWidth: 2
-        }
-      },
-
-      // When the mouse is pressed on the button, :focus-within make sure the help screen won't close until the mouse click is completed.
-      // '&:not(:focus):not(:focus-within)': {
       '&:not(.webchat__keyboard-help--shown)': {
         height: 0,
         margin: 0,
@@ -44,21 +24,33 @@ export default function createKeyboardHelpStyleSet({
         // From Power BI:
         // boxShadow: '0 6.4px 14.4px rgb(0 0 0 / 13%), 0 1.2px 3.6px rgb(0 0 0 / 11%)',
         // From Fluent (depth-16 for teaching callouts):
-        boxShadow: '0 6.4px 14.4px 0 rgb(0 0 0 / 13%), 0 1.2px 3.6px 0 rgb(0 0 0 / 11%)',
+        borderRadius: 2,
+        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12)',
         boxSizing: 'border-box',
         height: '100%',
         padding: paddingRegular * 2,
-        position: 'relative'
+        position: 'relative',
+
+        '@media (forced-colors: active)': {
+          boxShadow: 'none',
+          outlineColor: 'white',
+          outlineStyle: 'solid',
+          outlineWidth: 4
+        },
+
+        '@media (forced-colors: none) and (prefers-color-scheme: dark)': {
+          boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.28), 0px 0px 2px rgba(0, 0, 0, 0.24)'
+        }
       },
 
       '& .webchat__keyboard-help__close-button': {
         appearance: 'none',
         backgroundColor: 'transparent',
-        borderColor: subtle,
-        borderStyle: 'dashed',
-        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 4,
+        borderStyle: 'solid',
+        borderWidth: 2,
         color: '#999',
-        fontSize: 24,
         height: 34,
         padding: 0,
         position: 'absolute',
@@ -66,20 +58,40 @@ export default function createKeyboardHelpStyleSet({
         top: paddingRegular,
         width: 34,
 
-        '&:active': {
-          backgroundColor: sendBoxButtonShadeColorOnActive
-        },
-
-        '&:not(:active)': {
-          '&:hover': {
-            backgroundColor: sendBoxButtonShadeColorOnHover
+        '@media (forced-colors: none) and (prefers-color-scheme: light)': {
+          '&:active': {
+            backgroundColor: '#EDEBE9' // neutralLight (gray30)
           },
 
-          '&:not(:hover)': {
-            '&:focus': {
-              backgroundColor: sendBoxButtonShadeColorOnFocus
-            }
+          '&:not(:active):hover': {
+            backgroundColor: '#F3F2F1' // neutralLighter (gray20)
           }
+        },
+
+        '@media (forced-colors: none) and (prefers-color-scheme: dark)': {
+          borderColor: 'white',
+
+          '&:active': {
+            backgroundColor: '#292827' // neutralLight (gray30)
+          },
+
+          '&:not(:active):hover': {
+            backgroundColor: '#252423' // neutralLight (gray30)
+          }
+        }
+      },
+
+      '& .webchat__keyboard-help__close-button_image': {
+        fill: '#323130', // neutralPrimary (gray160)
+        height: 10,
+        width: 10,
+
+        '@media (forced-colors: active)': {
+          fill: 'White'
+        },
+
+        '@media (forced-colors: none) and (prefers-color-scheme: dark)': {
+          fill: '#F3F2F1' // neutralPrimary (gray160)
         }
       },
 
@@ -118,7 +130,7 @@ export default function createKeyboardHelpStyleSet({
 
       '@media (forced-colors: none) and (prefers-color-scheme: dark)': {
         backgroundColor: 'black',
-        color: '#CCCBCA', // Keeping contrast ratio at 12.98 for text on background. This is 12.96.
+        color: '#F3F2F1',
 
         '& .webchat__keyboard-help__image--light': {
           display: 'none'

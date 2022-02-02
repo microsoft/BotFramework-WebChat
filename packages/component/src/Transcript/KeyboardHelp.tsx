@@ -76,7 +76,15 @@ const KeyboardHelp: VFC<{}> = () => {
   const handleCloseButtonClick = useCallback(() => focus('sendBox'), [focus]);
 
   const handleKeyDown = useCallback(
-    ({ key }) => (key === 'Enter' || key === 'Escape' || key === 'Space') && focus('sendBox'),
+    event => {
+      const { key } = event;
+
+      if (key === 'Enter' || key === 'Escape' || key === ' ') {
+        event.preventDefault();
+
+        focus('sendBox');
+      }
+    },
     [focus]
   );
 
@@ -114,7 +122,13 @@ const KeyboardHelp: VFC<{}> = () => {
           tabIndex={-1}
           type="button"
         >
-          {'×'}
+          <svg
+            className="webchat__keyboard-help__close-button_image"
+            viewBox="0 0 2048 2048"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M2048 136l-888 888 888 888-136 136-888-888-888 888L0 1912l888-888L0 136 136 0l888 888L1912 0l136 136z" />
+          </svg>
         </button>
         <article className="webchat__keyboard-help__section">
           <header>
