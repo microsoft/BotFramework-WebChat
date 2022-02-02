@@ -114,7 +114,7 @@ const KeyboardHelp: VFC<{}> = () => {
           tabIndex={-1}
           type="button"
         >
-          {'&times;'}
+          {'×'}
         </button>
         <article className="webchat__keyboard-help__section">
           <header>
