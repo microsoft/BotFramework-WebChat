@@ -35,6 +35,7 @@ Notes.propTypes = {
 
 const KeyboardHelp: VFC<{}> = () => {
   const [{ keyboardHelp: keyboardHelpStyleSet }] = useStyleSet();
+  const [shown, setShown] = useState(false);
   const focus = useFocus();
   const localize = useLocalizer();
 
@@ -55,23 +56,6 @@ const KeyboardHelp: VFC<{}> = () => {
   const closeButtonAlt = localize('KEYBOARD_HELP_CLOSE_BUTTON_ALT');
   const header = localize('KEYBOARD_HELP_HEADER');
 
-  const handleCloseButtonClick = useCallback(() => focus('main'), [focus]);
-
-  const handleKeyDown = useCallback(
-    event => {
-      const { key } = event;
-
-      if (key === 'Enter' || key === 'Escape' || key === ' ') {
-        event.preventDefault();
-
-        focus('main');
-      }
-    },
-    [focus]
-  );
-
-  const [shown, setShown] = useState(false);
-
   const handleBlur = useCallback(
     // We will keep the help screen shown if the blur is caused by switch app.
     // When switch app, `document.activeElement` will remains.
@@ -79,7 +63,14 @@ const KeyboardHelp: VFC<{}> = () => {
     [setShown]
   );
 
+  const handleCloseButtonClick = useCallback(() => focus('main'), [focus]);
+
   const handleFocusWithin = useCallback(() => setShown(true), [setShown]);
+
+  const handleKeyPress = useCallback(
+    ({ key }) => (key === 'Enter' || key === 'Escape' || key === ' ') && focus('main'),
+    [focus]
+  );
 
   return (
     <div
@@ -88,7 +79,7 @@ const KeyboardHelp: VFC<{}> = () => {
       })}
       onBlur={handleBlur}
       onFocus={handleFocusWithin}
-      onKeyDown={handleKeyDown}
+      onKeyPress={handleKeyPress}
       role="dialog"
       tabIndex={0}
     >
