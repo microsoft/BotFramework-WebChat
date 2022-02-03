@@ -10,24 +10,6 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-const CHAT_HISTORY_IMAGE_DARK_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIxMDkiIGhlaWdodD0iMTk5IiBzdHJva2U9IiM0ODQ2NDQiLz48cmVjdCB4PSIzLjUiIHk9IjQuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxNTYiIHN0cm9rZT0iI0YzRjJGMSIvPjxyZWN0IHg9IjcuNSIgeT0iOC41IiB3aWR0aD0iOTMiIGhlaWdodD0iNDIiIHN0cm9rZT0iI0YzRjJGMSIgc3Ryb2tlLWRhc2hhcnJheT0iMiAyIi8+PHJlY3QgeD0iNy41IiB5PSI1NS41IiB3aWR0aD0iOTMiIGhlaWdodD0iOTkiIHN0cm9rZT0iI0YzRjJGMSIgc3Ryb2tlLWRhc2hhcnJheT0iMiAyIi8+PHJlY3QgeD0iMy41IiB5PSIxODIuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxMyIgc3Ryb2tlPSIjNDg0NjQ0Ii8+PHJlY3QgeD0iMy41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiM0ODQ2NDQiLz48cmVjdCB4PSIzOC41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiM0ODQ2NDQiLz48cmVjdCB4PSI3My41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiM0ODQ2NDQiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTExNi4zMjggNy42NDY0NUMxMTYuNTI0IDcuNDUxMTggMTE2Ljg0IDcuNDUxMTggMTE3LjAzNiA3LjY0NjQ1TDEyMC4yMTggMTAuODI4NEMxMjAuNDEzIDExLjAyMzcgMTIwLjQxMyAxMS4zNDAzIDEyMC4yMTggMTEuNTM1NUMxMjAuMDIyIDExLjczMDggMTE5LjcwNiAxMS43MzA4IDExOS41MSAxMS41MzU1TDExNy4xODIgOS4yMDcxMVYxNTYuNzkzTDExOS41MSAxNTQuNDY0QzExOS43MDYgMTU0LjI2OSAxMjAuMDIyIDE1NC4yNjkgMTIwLjIxOCAxNTQuNDY0QzEyMC40MTMgMTU0LjY2IDEyMC40MTMgMTU0Ljk3NiAxMjAuMjE4IDE1NS4xNzJMMTE3LjAzNiAxNTguMzU0QzExNi44NCAxNTguNTQ5IDExNi41MjQgMTU4LjU0OSAxMTYuMzI4IDE1OC4zNTRMMTEzLjE0NiAxNTUuMTcyQzExMi45NTEgMTU0Ljk3NiAxMTIuOTUxIDE1NC42NiAxMTMuMTQ2IDE1NC40NjRDMTEzLjM0MiAxNTQuMjY5IDExMy42NTggMTU0LjI2OSAxMTMuODU0IDE1NC40NjRMMTE2LjE4MiAxNTYuNzkzVjkuMjA3MTFMMTEzLjg1NCAxMS41MzU1QzExMy42NTggMTEuNzMwOCAxMTMuMzQyIDExLjczMDggMTEzLjE0NiAxMS41MzU1QzExMi45NTEgMTEuMzQwMyAxMTIuOTUxIDExLjAyMzcgMTEzLjE0NiAxMC44Mjg0TDExNi4zMjggNy42NDY0NVoiIGZpbGw9IiNGM0YyRjEiLz48L3N2Zz4=';
-
-const CHAT_HISTORY_IMAGE_HIGH_CONTRAST_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIxMDkiIGhlaWdodD0iMTk5IiBzdHJva2U9IndoaXRlIi8+PHJlY3QgeD0iMy41IiB5PSI0LjUiIHdpZHRoPSIxMDIiIGhlaWdodD0iMTU2IiBzdHJva2U9IndoaXRlIi8+PHJlY3QgeD0iNy41IiB5PSI4LjUiIHdpZHRoPSI5MyIgaGVpZ2h0PSI0MiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLWRhc2hhcnJheT0iMiAyIi8+PHJlY3QgeD0iNy41IiB5PSI1NS41IiB3aWR0aD0iOTMiIGhlaWdodD0iOTkiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1kYXNoYXJyYXk9IjIgMiIvPjxyZWN0IHg9IjMuNSIgeT0iMTgyLjUiIHdpZHRoPSIxMDIiIGhlaWdodD0iMTMiIHN0cm9rZT0id2hpdGUiLz48cmVjdCB4PSIzLjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0id2hpdGUiLz48cmVjdCB4PSIzOC41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IndoaXRlIi8+PHJlY3QgeD0iNzMuNSIgeT0iMTY1LjUiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMyIgc3Ryb2tlPSJ3aGl0ZSIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTE2LjMyOCA3LjY0NjQ1QzExNi41MjQgNy40NTExOCAxMTYuODQgNy40NTExOCAxMTcuMDM2IDcuNjQ2NDVMMTIwLjIxOCAxMC44Mjg0QzEyMC40MTMgMTEuMDIzNyAxMjAuNDEzIDExLjM0MDMgMTIwLjIxOCAxMS41MzU1QzEyMC4wMjIgMTEuNzMwOCAxMTkuNzA2IDExLjczMDggMTE5LjUxIDExLjUzNTVMMTE3LjE4MiA5LjIwNzExVjE1Ni43OTNMMTE5LjUxIDE1NC40NjRDMTE5LjcwNiAxNTQuMjY5IDEyMC4wMjIgMTU0LjI2OSAxMjAuMjE4IDE1NC40NjRDMTIwLjQxMyAxNTQuNjYgMTIwLjQxMyAxNTQuOTc2IDEyMC4yMTggMTU1LjE3MkwxMTcuMDM2IDE1OC4zNTRDMTE2Ljg0IDE1OC41NDkgMTE2LjUyNCAxNTguNTQ5IDExNi4zMjggMTU4LjM1NEwxMTMuMTQ2IDE1NS4xNzJDMTEyLjk1MSAxNTQuOTc2IDExMi45NTEgMTU0LjY2IDExMy4xNDYgMTU0LjQ2NEMxMTMuMzQyIDE1NC4yNjkgMTEzLjY1OCAxNTQuMjY5IDExMy44NTQgMTU0LjQ2NEwxMTYuMTgyIDE1Ni43OTNWOS4yMDcxMUwxMTMuODU0IDExLjUzNTVDMTEzLjY1OCAxMS43MzA4IDExMy4zNDIgMTEuNzMwOCAxMTMuMTQ2IDExLjUzNTVDMTEyLjk1MSAxMS4zNDAzIDExMi45NTEgMTEuMDIzNyAxMTMuMTQ2IDEwLjgyODRMMTE2LjMyOCA3LjY0NjQ1WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=';
-
-const CHAT_HISTORY_IMAGE_LIGHT_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIxMDkiIGhlaWdodD0iMTk5IiBzdHJva2U9IiNDOEM2QzQiLz48cmVjdCB4PSIzLjUiIHk9IjQuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxNTYiIHN0cm9rZT0iIzMyMzEzMCIvPjxyZWN0IHg9IjcuNSIgeT0iOC41IiB3aWR0aD0iOTMiIGhlaWdodD0iNDIiIHN0cm9rZT0iIzMyMzEzMCIgc3Ryb2tlLWRhc2hhcnJheT0iMiAyIi8+PHJlY3QgeD0iNy41IiB5PSI1NS41IiB3aWR0aD0iOTMiIGhlaWdodD0iOTkiIHN0cm9rZT0iIzMyMzEzMCIgc3Ryb2tlLWRhc2hhcnJheT0iMiAyIi8+PHJlY3QgeD0iMy41IiB5PSIxODIuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxMyIgc3Ryb2tlPSIjQzhDNkM0Ii8+PHJlY3QgeD0iMy41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiNDOEM2QzQiLz48cmVjdCB4PSIzOC41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiNDOEM2QzQiLz48cmVjdCB4PSI3My41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiNDOEM2QzQiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTExNi4zMjggNy42NDY0NUMxMTYuNTI0IDcuNDUxMTggMTE2Ljg0IDcuNDUxMTggMTE3LjAzNiA3LjY0NjQ1TDEyMC4yMTggMTAuODI4NEMxMjAuNDEzIDExLjAyMzcgMTIwLjQxMyAxMS4zNDAzIDEyMC4yMTggMTEuNTM1NUMxMjAuMDIyIDExLjczMDggMTE5LjcwNiAxMS43MzA4IDExOS41MSAxMS41MzU1TDExNy4xODIgOS4yMDcxMVYxNTYuNzkzTDExOS41MSAxNTQuNDY0QzExOS43MDYgMTU0LjI2OSAxMjAuMDIyIDE1NC4yNjkgMTIwLjIxOCAxNTQuNDY0QzEyMC40MTMgMTU0LjY2IDEyMC40MTMgMTU0Ljk3NiAxMjAuMjE4IDE1NS4xNzJMMTE3LjAzNiAxNTguMzU0QzExNi44NCAxNTguNTQ5IDExNi41MjQgMTU4LjU0OSAxMTYuMzI4IDE1OC4zNTRMMTEzLjE0NiAxNTUuMTcyQzExMi45NTEgMTU0Ljk3NiAxMTIuOTUxIDE1NC42NiAxMTMuMTQ2IDE1NC40NjRDMTEzLjM0MiAxNTQuMjY5IDExMy42NTggMTU0LjI2OSAxMTMuODU0IDE1NC40NjRMMTE2LjE4MiAxNTYuNzkzVjkuMjA3MTFMMTEzLjg1NCAxMS41MzU1QzExMy42NTggMTEuNzMwOCAxMTMuMzQyIDExLjczMDggMTEzLjE0NiAxMS41MzU1QzExMi45NTEgMTEuMzQwMyAxMTIuOTUxIDExLjAyMzcgMTEzLjE0NiAxMC44Mjg0TDExNi4zMjggNy42NDY0NVoiIGZpbGw9IiMzMjMxMzAiLz48L3N2Zz4=';
-
-const CHAT_WINDOW_IMAGE_DARK_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHg9IjAuNSIgeT0iMC41IiB3aWR0aD0iMTA5IiBoZWlnaHQ9IjE5OSIgc3Ryb2tlPSIjNDg0NjQ0Ii8+CjxyZWN0IHg9IjMuNSIgeT0iNC41IiB3aWR0aD0iMTAyIiBoZWlnaHQ9IjE1NiIgc3Ryb2tlPSIjRjNGMkYxIi8+CjxyZWN0IHg9IjcuNSIgeT0iOC41IiB3aWR0aD0iOTMiIGhlaWdodD0iNDIiIHN0cm9rZT0iIzQ4NDY0NCIvPgo8cmVjdCB4PSI3LjUiIHk9IjU1LjUiIHdpZHRoPSI5MyIgaGVpZ2h0PSI5OSIgc3Ryb2tlPSIjNDg0NjQ0Ii8+CjxyZWN0IHg9IjMuNSIgeT0iMTgyLjUiIHdpZHRoPSIxMDIiIGhlaWdodD0iMTMiIHN0cm9rZT0iI0YzRjJGMSIvPgo8cmVjdCB4PSIzLjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0iI0YzRjJGMSIvPgo8cmVjdCB4PSIzOC41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiNGM0YyRjEiLz4KPHJlY3QgeD0iNzMuNSIgeT0iMTY1LjUiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMyIgc3Ryb2tlPSIjRjNGMkYxIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTE2LjMyOCA1LjY0NjQ1QzExNi41MjQgNS40NTExOCAxMTYuODQgNS40NTExOCAxMTcuMDM2IDUuNjQ2NDVMMTIwLjIxOCA4LjgyODQzQzEyMC40MTMgOS4wMjM2OSAxMjAuNDEzIDkuMzQwMjcgMTIwLjIxOCA5LjUzNTUzQzEyMC4wMjIgOS43MzA4IDExOS43MDYgOS43MzA4IDExOS41MSA5LjUzNTUzTDExNy4xODIgNy4yMDcxMVYxOTIuNzkzTDExOS41MSAxOTAuNDY0QzExOS43MDYgMTkwLjI2OSAxMjAuMDIyIDE5MC4yNjkgMTIwLjIxOCAxOTAuNDY0QzEyMC40MTMgMTkwLjY2IDEyMC40MTMgMTkwLjk3NiAxMjAuMjE4IDE5MS4xNzJMMTE3LjAzNiAxOTQuMzU0QzExNi44NCAxOTQuNTQ5IDExNi41MjQgMTk0LjU0OSAxMTYuMzI4IDE5NC4zNTRMMTEzLjE0NiAxOTEuMTcyQzExMi45NTEgMTkwLjk3NiAxMTIuOTUxIDE5MC42NiAxMTMuMTQ2IDE5MC40NjRDMTEzLjM0MiAxOTAuMjY5IDExMy42NTggMTkwLjI2OSAxMTMuODU0IDE5MC40NjRMMTE2LjE4MiAxOTIuNzkzVjcuMjA3MTFMMTEzLjg1NCA5LjUzNTUzQzExMy42NTggOS43MzA4IDExMy4zNDIgOS43MzA4IDExMy4xNDYgOS41MzU1M0MxMTIuOTUxIDkuMzQwMjcgMTEyLjk1MSA5LjAyMzY5IDExMy4xNDYgOC44Mjg0M0wxMTYuMzI4IDUuNjQ2NDVaIiBmaWxsPSIjRjNGMkYxIi8+Cjwvc3ZnPgo=';
-
-const CHAT_WINDOW_IMAGE_HIGH_CONTRAST_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHg9IjAuNSIgeT0iMC41IiB3aWR0aD0iMTA5IiBoZWlnaHQ9IjE5OSIgc3Ryb2tlPSJ3aGl0ZSIvPgo8cmVjdCB4PSIzLjUiIHk9IjQuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxNTYiIHN0cm9rZT0id2hpdGUiLz4KPHJlY3QgeD0iNy41IiB5PSI4LjUiIHdpZHRoPSI5MyIgaGVpZ2h0PSI0MiIgc3Ryb2tlPSJ3aGl0ZSIvPgo8cmVjdCB4PSI3LjUiIHk9IjU1LjUiIHdpZHRoPSI5MyIgaGVpZ2h0PSI5OSIgc3Ryb2tlPSJ3aGl0ZSIvPgo8cmVjdCB4PSIzLjUiIHk9IjE4Mi41IiB3aWR0aD0iMTAyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IndoaXRlIi8+CjxyZWN0IHg9IjMuNSIgeT0iMTY1LjUiIHdpZHRoPSIzMiIgaGVpZ2h0PSIxMyIgc3Ryb2tlPSJ3aGl0ZSIvPgo8cmVjdCB4PSIzOC41IiB5PSIxNjUuNSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IndoaXRlIi8+CjxyZWN0IHg9IjczLjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0id2hpdGUiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMTYuMzI4IDUuNjQ2NDVDMTE2LjUyNCA1LjQ1MTE4IDExNi44NCA1LjQ1MTE4IDExNy4wMzYgNS42NDY0NUwxMjAuMjE4IDguODI4NDNDMTIwLjQxMyA5LjAyMzY5IDEyMC40MTMgOS4zNDAyNyAxMjAuMjE4IDkuNTM1NTNDMTIwLjAyMiA5LjczMDggMTE5LjcwNiA5LjczMDggMTE5LjUxIDkuNTM1NTNMMTE3LjE4MiA3LjIwNzExVjE5Mi43OTNMMTE5LjUxIDE5MC40NjRDMTE5LjcwNiAxOTAuMjY5IDEyMC4wMjIgMTkwLjI2OSAxMjAuMjE4IDE5MC40NjRDMTIwLjQxMyAxOTAuNjYgMTIwLjQxMyAxOTAuOTc2IDEyMC4yMTggMTkxLjE3MkwxMTcuMDM2IDE5NC4zNTRDMTE2Ljg0IDE5NC41NDkgMTE2LjUyNCAxOTQuNTQ5IDExNi4zMjggMTk0LjM1NEwxMTMuMTQ2IDE5MS4xNzJDMTEyLjk1MSAxOTAuOTc2IDExMi45NTEgMTkwLjY2IDExMy4xNDYgMTkwLjQ2NEMxMTMuMzQyIDE5MC4yNjkgMTEzLjY1OCAxOTAuMjY5IDExMy44NTQgMTkwLjQ2NEwxMTYuMTgyIDE5Mi43OTNWNy4yMDcxMUwxMTMuODU0IDkuNTM1NTNDMTEzLjY1OCA5LjczMDggMTEzLjM0MiA5LjczMDggMTEzLjE0NiA5LjUzNTUzQzExMi45NTEgOS4zNDAyNyAxMTIuOTUxIDkuMDIzNjkgMTEzLjE0NiA4LjgyODQzTDExNi4zMjggNS42NDY0NVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=';
-
-const CHAT_WINDOW_IMAGE_LIGHT_BASE64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDEyMSAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIxMDkiIGhlaWdodD0iMTk5IiBzdHJva2U9IiNDOEM2QzQiLz48cmVjdCB4PSIzLjUiIHk9IjQuNSIgd2lkdGg9IjEwMiIgaGVpZ2h0PSIxNTYiIHN0cm9rZT0iIzMyMzEzMCIvPjxyZWN0IHg9IjcuNSIgeT0iOC41IiB3aWR0aD0iOTMiIGhlaWdodD0iNDIiIHN0cm9rZT0iI0M4QzZDNCIvPjxyZWN0IHg9IjcuNSIgeT0iNTUuNSIgd2lkdGg9IjkzIiBoZWlnaHQ9Ijk5IiBzdHJva2U9IiNDOEM2QzQiLz48cmVjdCB4PSIzLjUiIHk9IjE4Mi41IiB3aWR0aD0iMTAyIiBoZWlnaHQ9IjEzIiBzdHJva2U9IiMzMjMxMzAiLz48cmVjdCB4PSIzLjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0iIzMyMzEzMCIvPjxyZWN0IHg9IjM4LjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0iIzMyMzEzMCIvPjxyZWN0IHg9IjczLjUiIHk9IjE2NS41IiB3aWR0aD0iMzIiIGhlaWdodD0iMTMiIHN0cm9rZT0iIzMyMzEzMCIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTE2LjMyOCA1LjY0NjQ1QzExNi41MjQgNS40NTExOCAxMTYuODQgNS40NTExOCAxMTcuMDM2IDUuNjQ2NDVMMTIwLjIxOCA4LjgyODQzQzEyMC40MTMgOS4wMjM2OSAxMjAuNDEzIDkuMzQwMjcgMTIwLjIxOCA5LjUzNTUzQzEyMC4wMjIgOS43MzA4IDExOS43MDYgOS43MzA4IDExOS41MSA5LjUzNTUzTDExNy4xODIgNy4yMDcxMVYxOTIuNzkzTDExOS41MSAxOTAuNDY0QzExOS43MDYgMTkwLjI2OSAxMjAuMDIyIDE5MC4yNjkgMTIwLjIxOCAxOTAuNDY0QzEyMC40MTMgMTkwLjY2IDEyMC40MTMgMTkwLjk3NiAxMjAuMjE4IDE5MS4xNzJMMTE3LjAzNiAxOTQuMzU0QzExNi44NCAxOTQuNTQ5IDExNi41MjQgMTk0LjU0OSAxMTYuMzI4IDE5NC4zNTRMMTEzLjE0NiAxOTEuMTcyQzExMi45NTEgMTkwLjk3NiAxMTIuOTUxIDE5MC42NiAxMTMuMTQ2IDE5MC40NjRDMTEzLjM0MiAxOTAuMjY5IDExMy42NTggMTkwLjI2OSAxMTMuODU0IDE5MC40NjRMMTE2LjE4MiAxOTIuNzkzVjcuMjA3MTFMMTEzLjg1NCA5LjUzNTUzQzExMy42NTggOS43MzA4IDExMy4zNDIgOS43MzA4IDExMy4xNDYgOS41MzU1M0MxMTIuOTUxIDkuMzQwMjcgMTEyLjk1MSA5LjAyMzY5IDExMy4xNDYgOC44Mjg0M0wxMTYuMzI4IDUuNjQ2NDVaIiBmaWxsPSIjMzIzMTMwIi8+PC9zdmc+';
-
 type NotesBodyProps = {
   header: string;
   text: string;
@@ -56,24 +38,24 @@ const KeyboardHelp: VFC<{}> = () => {
   const focus = useFocus();
   const localize = useLocalizer();
 
-  const header = localize('KEYBOARD_HELP_HEADER');
-  const closeButtonAlt = localize('KEYBOARD_HELP_CLOSE_BUTTON_ALT');
+  const chatHistoryAccessItemsInMessageBody = localize('KEYBOARD_HELP_CHAT_HISTORY_ACCESS_ITEMS_IN_MESSAGE_BODY');
+  const chatHistoryAccessItemsInMessageHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_ACCESS_ITEMS_IN_MESSAGE_HEADER');
+  const chatHistoryHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_HEADER');
+  const chatHistoryLeaveMessageBody = localize('KEYBOARD_HELP_CHAT_HISTORY_LEAVE_MESSAGE_BODY');
+  const chatHistoryLeaveMessageHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_LEAVE_MESSAGE_HEADER');
+  const chatHistoryMoveBetweenItemsBody = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_ITEMS_BODY');
+  const chatHistoryMoveBetweenItemsHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_ITEMS_HEADER');
+  const chatHistoryMoveBetweenMessagesBody = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_MESSAGES_BODY');
+  const chatHistoryMoveBetweenMessagesHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_MESSAGES_HEADER');
   const chatWindowBodyDoActionBody = localize('KEYBOARD_HELP_CHAT_WINDOW_BODY_DO_ACTION_BODY');
   const chatWindowBodyDoActionHeader = localize('KEYBOARD_HELP_CHAT_WINDOW_BODY_DO_ACTION_HEADER');
   const chatWindowBodyMoveBetweenItemsBody = localize('KEYBOARD_HELP_CHAT_WINDOW_BODY_MOVE_BETWEEN_ITEMS_BODY');
   const chatWindowBodyMoveBetweenItemsHeader = localize('KEYBOARD_HELP_CHAT_WINDOW_BODY_MOVE_BETWEEN_ITEMS_HEADER');
   const chatWindowHeader = localize('KEYBOARD_HELP_CHAT_WINDOW_HEADER');
-  const chatHistoryHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_HEADER');
-  const chatHistoryMoveBetweenMessagesBody = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_MESSAGES_BODY');
-  const chatHistoryMoveBetweenMessagesHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_MESSAGES_HEADER');
-  const chatHistoryMoveBetweenItemsBody = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_ITEMS_BODY');
-  const chatHistoryMoveBetweenItemsHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_MOVE_BETWEEN_ITEMS_HEADER');
-  const chatHistoryLeaveMessageBody = localize('KEYBOARD_HELP_CHAT_HISTORY_LEAVE_MESSAGE_BODY');
-  const chatHistoryLeaveMessageHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_LEAVE_MESSAGE_HEADER');
-  const chatHistoryAccessItemsInMessageBody = localize('KEYBOARD_HELP_CHAT_HISTORY_ACCESS_ITEMS_IN_MESSAGE_BODY');
-  const chatHistoryAccessItemsInMessageHeader = localize('KEYBOARD_HELP_CHAT_HISTORY_ACCESS_ITEMS_IN_MESSAGE_HEADER');
+  const closeButtonAlt = localize('KEYBOARD_HELP_CLOSE_BUTTON_ALT');
+  const header = localize('KEYBOARD_HELP_HEADER');
 
-  const handleCloseButtonClick = useCallback(() => focus('sendBox'), [focus]);
+  const handleCloseButtonClick = useCallback(() => focus('main'), [focus]);
 
   const handleKeyDown = useCallback(
     event => {
@@ -82,7 +64,7 @@ const KeyboardHelp: VFC<{}> = () => {
       if (key === 'Enter' || key === 'Escape' || key === ' ') {
         event.preventDefault();
 
-        focus('sendBox');
+        focus('main');
       }
     },
     [focus]
@@ -124,6 +106,7 @@ const KeyboardHelp: VFC<{}> = () => {
         >
           <svg
             className="webchat__keyboard-help__close-button_image"
+            role="presentation"
             viewBox="0 0 2048 2048"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -135,21 +118,78 @@ const KeyboardHelp: VFC<{}> = () => {
             <h3 className="webchat__keyboard-help__sub-header">{chatWindowHeader}</h3>
           </header>
           <div className="webchat__keyboard-help__two-panes">
-            <img
-              alt=""
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--light"
-              src={CHAT_WINDOW_IMAGE_LIGHT_BASE64}
-            />
-            <img
-              alt=""
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="#C8C6C4" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="#323130" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="#C8C6C4" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="#C8C6C4" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="#323130" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="#323130" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="#323130" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="#323130" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 5.64645C116.524 5.45118 116.84 5.45118 117.036 5.64645L120.218 8.82843C120.413 9.02369 120.413 9.34027 120.218 9.53553C120.022 9.7308 119.706 9.7308 119.51 9.53553L117.182 7.20711V192.793L119.51 190.464C119.706 190.269 120.022 190.269 120.218 190.464C120.413 190.66 120.413 190.976 120.218 191.172L117.036 194.354C116.84 194.549 116.524 194.549 116.328 194.354L113.146 191.172C112.951 190.976 112.951 190.66 113.146 190.464C113.342 190.269 113.658 190.269 113.854 190.464L116.182 192.793V7.20711L113.854 9.53553C113.658 9.7308 113.342 9.7308 113.146 9.53553C112.951 9.34027 112.951 9.02369 113.146 8.82843L116.328 5.64645Z"
+                fill="#323130"
+                fillRule="evenodd"
+              />
+            </svg>
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--dark"
-              src={CHAT_WINDOW_IMAGE_DARK_BASE64}
-            />
-            <img
-              alt=""
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="#484644" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="#F3F2F1" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="#484644" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="#484644" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="#F3F2F1" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="#F3F2F1" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="#F3F2F1" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="#F3F2F1" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 5.64645C116.524 5.45118 116.84 5.45118 117.036 5.64645L120.218 8.82843C120.413 9.02369 120.413 9.34027 120.218 9.53553C120.022 9.7308 119.706 9.7308 119.51 9.53553L117.182 7.20711V192.793L119.51 190.464C119.706 190.269 120.022 190.269 120.218 190.464C120.413 190.66 120.413 190.976 120.218 191.172L117.036 194.354C116.84 194.549 116.524 194.549 116.328 194.354L113.146 191.172C112.951 190.976 112.951 190.66 113.146 190.464C113.342 190.269 113.658 190.269 113.854 190.464L116.182 192.793V7.20711L113.854 9.53553C113.658 9.7308 113.342 9.7308 113.146 9.53553C112.951 9.34027 112.951 9.02369 113.146 8.82843L116.328 5.64645Z"
+                fill="#F3F2F1"
+                fillRule="evenodd"
+              />
+            </svg>
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--high-contrast"
-              src={CHAT_WINDOW_IMAGE_HIGH_CONTRAST_BASE64}
-            />
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="white" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="white" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="white" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="white" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="white" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="white" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="white" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="white" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 5.64645C116.524 5.45118 116.84 5.45118 117.036 5.64645L120.218 8.82843C120.413 9.02369 120.413 9.34027 120.218 9.53553C120.022 9.7308 119.706 9.7308 119.51 9.53553L117.182 7.20711V192.793L119.51 190.464C119.706 190.269 120.022 190.269 120.218 190.464C120.413 190.66 120.413 190.976 120.218 191.172L117.036 194.354C116.84 194.549 116.524 194.549 116.328 194.354L113.146 191.172C112.951 190.976 112.951 190.66 113.146 190.464C113.342 190.269 113.658 190.269 113.854 190.464L116.182 192.793V7.20711L113.854 9.53553C113.658 9.7308 113.342 9.7308 113.146 9.53553C112.951 9.34027 112.951 9.02369 113.146 8.82843L116.328 5.64645Z"
+                fill="white"
+                fillRule="evenodd"
+              />
+            </svg>
             <div className="webchat__keyboard-help__notes-pane">
               <Notes header={chatWindowBodyMoveBetweenItemsHeader} text={chatWindowBodyMoveBetweenItemsBody} />
               <Notes header={chatWindowBodyDoActionHeader} text={chatWindowBodyDoActionBody} />
@@ -161,21 +201,78 @@ const KeyboardHelp: VFC<{}> = () => {
             <h3 className="webchat__keyboard-help__header">{chatHistoryHeader}</h3>
           </header>
           <div className="webchat__keyboard-help__two-panes">
-            <img
-              alt=""
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--light"
-              src={CHAT_HISTORY_IMAGE_LIGHT_BASE64}
-            />
-            <img
-              alt=""
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="#C8C6C4" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="#323130" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="#323130" strokeDasharray="2 2" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="#323130" strokeDasharray="2 2" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="#C8C6C4" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="#C8C6C4" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="#C8C6C4" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="#C8C6C4" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 7.64645C116.524 7.45118 116.84 7.45118 117.036 7.64645L120.218 10.8284C120.413 11.0237 120.413 11.3403 120.218 11.5355C120.022 11.7308 119.706 11.7308 119.51 11.5355L117.182 9.20711V156.793L119.51 154.464C119.706 154.269 120.022 154.269 120.218 154.464C120.413 154.66 120.413 154.976 120.218 155.172L117.036 158.354C116.84 158.549 116.524 158.549 116.328 158.354L113.146 155.172C112.951 154.976 112.951 154.66 113.146 154.464C113.342 154.269 113.658 154.269 113.854 154.464L116.182 156.793V9.20711L113.854 11.5355C113.658 11.7308 113.342 11.7308 113.146 11.5355C112.951 11.3403 112.951 11.0237 113.146 10.8284L116.328 7.64645Z"
+                fill="#323130"
+                fillRule="evenodd"
+              />
+            </svg>
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--dark"
-              src={CHAT_HISTORY_IMAGE_DARK_BASE64}
-            />
-            <img
-              alt=""
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="#484644" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="#F3F2F1" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="#F3F2F1" strokeDasharray="2 2" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="#F3F2F1" strokeDasharray="2 2" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="#484644" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="#484644" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="#484644" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="#484644" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 7.64645C116.524 7.45118 116.84 7.45118 117.036 7.64645L120.218 10.8284C120.413 11.0237 120.413 11.3403 120.218 11.5355C120.022 11.7308 119.706 11.7308 119.51 11.5355L117.182 9.20711V156.793L119.51 154.464C119.706 154.269 120.022 154.269 120.218 154.464C120.413 154.66 120.413 154.976 120.218 155.172L117.036 158.354C116.84 158.549 116.524 158.549 116.328 158.354L113.146 155.172C112.951 154.976 112.951 154.66 113.146 154.464C113.342 154.269 113.658 154.269 113.854 154.464L116.182 156.793V9.20711L113.854 11.5355C113.658 11.7308 113.342 11.7308 113.146 11.5355C112.951 11.3403 112.951 11.0237 113.146 10.8284L116.328 7.64645Z"
+                fill="#F3F2F1"
+                fillRule="evenodd"
+              />
+            </svg>
+            <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--high-contrast"
-              src={CHAT_HISTORY_IMAGE_HIGH_CONTRAST_BASE64}
-            />
+              fill="none"
+              height="200"
+              role="presentation"
+              viewBox="0 0 121 200"
+              width="121"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect height="199" stroke="white" width="109" x="0.5" y="0.5" />
+              <rect height="156" stroke="white" width="102" x="3.5" y="4.5" />
+              <rect height="42" stroke="white" strokeDasharray="2 2" width="93" x="7.5" y="8.5" />
+              <rect height="99" stroke="white" strokeDasharray="2 2" width="93" x="7.5" y="55.5" />
+              <rect height="13" stroke="white" width="102" x="3.5" y="182.5" />
+              <rect height="13" stroke="white" width="32" x="3.5" y="165.5" />
+              <rect height="13" stroke="white" width="32" x="38.5" y="165.5" />
+              <rect height="13" stroke="white" width="32" x="73.5" y="165.5" />
+              <path
+                clipRule="evenodd"
+                d="M116.328 7.64645C116.524 7.45118 116.84 7.45118 117.036 7.64645L120.218 10.8284C120.413 11.0237 120.413 11.3403 120.218 11.5355C120.022 11.7308 119.706 11.7308 119.51 11.5355L117.182 9.20711V156.793L119.51 154.464C119.706 154.269 120.022 154.269 120.218 154.464C120.413 154.66 120.413 154.976 120.218 155.172L117.036 158.354C116.84 158.549 116.524 158.549 116.328 158.354L113.146 155.172C112.951 154.976 112.951 154.66 113.146 154.464C113.342 154.269 113.658 154.269 113.854 154.464L116.182 156.793V9.20711L113.854 11.5355C113.658 11.7308 113.342 11.7308 113.146 11.5355C112.951 11.3403 112.951 11.0237 113.146 10.8284L116.328 7.64645Z"
+                fill="white"
+                fillRule="evenodd"
+              />
+            </svg>
             <div className="webchat__keyboard-help__notes-pane">
               <Notes header={chatHistoryMoveBetweenMessagesHeader} text={chatHistoryMoveBetweenMessagesBody} />
               <Notes header={chatHistoryAccessItemsInMessageHeader} text={chatHistoryAccessItemsInMessageBody} />
