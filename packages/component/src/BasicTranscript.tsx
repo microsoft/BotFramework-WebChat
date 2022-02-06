@@ -18,6 +18,7 @@ import type { ActivityElementMap } from './Transcript/types';
 import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
 
+import { android } from './Utils/detectBrowser';
 import ActivityRow from './Transcript/ActivityRow';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -25,7 +26,6 @@ import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import KeyboardHelp from './Transcript/KeyboardHelp';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-import ScreenReaderText from './ScreenReaderText';
 // TODO: [P*] Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
@@ -102,13 +102,10 @@ type RenderingElement = {
   callbackRef: (element: HTMLElement) => void;
   hideTimestamp: boolean;
   key: string;
-  liveRegionKey: string;
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
   renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
   renderAvatar: AvatarComponentFactory;
   showCallout: boolean;
-  // TODO: Consider rename this or remove this.
-  supportScreenReader: boolean;
 };
 
 type ScrollBehavior = 'auto' | 'smooth';
@@ -141,6 +138,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>();
+    const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
     const terminatorRef = useRef<HTMLDivElement>();
 
     const focusedActivityKeyRef = useValueRef(focusedActivityKey);
@@ -177,21 +175,14 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
           entriesWithSameSenderAndStatus.forEach(({ activity, renderActivity }, indexWithinSenderAndStatusGroup) => {
             // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
+            const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
+            const key: string = getKeyByActivity(activity);
+            const lastInSenderAndStatusGroup =
+              indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
             const renderActivityStatus = createActivityStatusRenderer({
               activity,
               nextVisibleActivity: undefined
             });
-
-            const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
-            const lastInSenderAndStatusGroup =
-              indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
-
-            const key: string = getKeyByActivity(activity);
-            const baseAltText: string =
-              typeof activity?.channelData?.['webchat:fallback-text'] === 'string'
-                ? activity?.channelData?.['webchat:fallback-text']
-                : activity?.channelData?.messageBack?.displayText || activity.text;
-
             const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
 
             let showCallout: boolean;
@@ -229,16 +220,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               hideTimestamp:
                 hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1,
               key,
-
-              // When "liveRegionKey" changes or contents that made up the alt text changed, it will show up in the live region momentarily.
-              liveRegionKey: key + '|' + baseAltText,
               renderActivity,
               renderActivityStatus,
               renderAvatar,
-              showCallout,
-
-              // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
-              supportScreenReader: activity?.channelData?.['webchat:fallback-text'] !== ''
+              showCallout
             });
           });
         });
@@ -459,9 +444,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [activityElementMapRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
     );
 
-    // TODO: [P*] Do we need this `labelId`? Or just use `aria-label`?
-    const labelId = useUniqueId('webchat__basic-transcript__label');
-
     const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
       event => {
         const { altKey, ctrlKey, key, metaKey, target } = event;
@@ -517,9 +499,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     return (
       <div
-        // aria-activedescendant={renderingElements.find(({ key }) => key === focusedActivityKey)?.id}
-        aria-activedescendant={activeDescendantId}
-        aria-labelledby={labelId}
+        // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
+        // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
+        aria-activedescendant={android ? undefined : activeDescendantId}
+        aria-label={transcriptAriaLabel}
         className={classNames(
           'webchat__basic-transcript',
           basicTranscriptStyleSet + '',
@@ -539,7 +522,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
         tabIndex={0}
       >
-        <ScreenReaderText id={labelId} text={transcriptAriaLabel} />
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
@@ -554,43 +536,35 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               renderActivityStatus,
               renderAvatar,
               showCallout
-            }) =>
-              // TODO: [P*] Fix this.
-              // eslint-disable-next-line arrow-body-style
-              {
-                // const { element } = activityElementsRef.current.find(entry => entry.activity === activity) || {};
-
-                // TODO: [P*] Fix this.
-                // const isContentInteractive = !!(element
-                //   ? tabbableElements(element.querySelector('.webchat__basic-transcript__activity-box')).length
-                //   : 0);
-
-                return (
-                  <ActivityRow
-                    activity={activity}
-                    activityKey={key}
-                    key={key}
-                    ref={callbackRef}
-                    // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
-                    shouldSpeak={activity.channelData?.speak}
-                  >
-                    {renderActivity({
-                      hideTimestamp,
-                      renderActivityStatus,
-                      renderAvatar,
-                      showCallout
-                    })}
-                  </ActivityRow>
-                );
-              }
+            }) => (
+              <ActivityRow activity={activity} key={key} ref={callbackRef}>
+                {renderActivity({
+                  hideTimestamp,
+                  renderActivityStatus,
+                  renderAvatar,
+                  showCallout
+                })}
+              </ActivityRow>
+            )
           )}
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
           <Fragment>
             <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={rootElementRef} />
-            <div className="webchat__basic-transcript__terminator" ref={terminatorRef} tabIndex={0}>
+            <div
+              aria-hidden={true}
+              aria-labelledby={terminatorLabelId}
+              className="webchat__basic-transcript__terminator"
+              ref={terminatorRef}
+              role="note"
+              tabIndex={0}
+            >
               <div className="webchat__basic-transcript__terminator-body">
-                <div className="webchat__basic-transcript__terminator-text">{terminatorText}</div>
+                {/* `id` is required for `aria-labelledby` */}
+                {/* eslint-disable-next-line react/forbid-dom-props */}
+                <div className="webchat__basic-transcript__terminator-text" id={terminatorLabelId}>
+                  {terminatorText}
+                </div>
               </div>
             </div>
           </Fragment>
@@ -775,13 +749,14 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
       )}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
-        <ul
+        <section
           aria-roledescription={transcriptRoleDescription}
+          aria-setsize={-1}
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-          role="list"
+          role="feed"
         >
           {children}
-        </ul>
+        </section>
         <BasicTypingIndicator />
       </ReactScrollToBottomPanel>
     </React.Fragment>

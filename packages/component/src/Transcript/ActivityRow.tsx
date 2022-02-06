@@ -1,192 +1,152 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
+import React, { forwardRef, useCallback, useRef } from 'react';
 
 import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FocusEventHandler, KeyboardEventHandler, MouseEventHandler, PropsWithChildren } from 'react';
 
+import { android } from '../Utils/detectBrowser';
 import FocusRedirector from '../Utils/FocusRedirector';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
-import ScreenReaderActivity from '../ScreenReaderActivity';
+import ScreenReaderText from '../ScreenReaderText';
 import SpeakActivity from '../Activity/Speak';
-// TODO: [P*] Rename to "getTabbableElements".
-import tabbableElements from '../Utils/tabbableElements';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
-import useComputeElementIdFromActivityKey from '../providers/TranscriptFocus/useComputeElementIdFromActivityKey';
+import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
+import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import useValueRef from '../hooks/internal/useValueRef';
 
-const { useGetHasAcknowledgedByActivityKey, useGetHasReadByActivityKey, useLocalizer } = hooks;
+const { useGetHasAcknowledgedByActivityKey, useGetHasReadByActivityKey, useGetKeyByActivity } = hooks;
 
 type ActivityRowProps = PropsWithChildren<{
   activity: DirectLineActivity;
-  activityKey: string;
-  shouldSpeak?: boolean;
 }>;
 
-const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(
-  ({ activity, activityKey, children, shouldSpeak }, ref) => {
-    const [activeDescendantId] = useActiveDescendantId();
-    const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
-    const activityKeyRef = useValueRef<string>(activityKey);
-    const ariaLabelId = useMemo(() => `webchat__basic-transcript__activity-label--${activityKey}`, [activityKey]);
-    const bodyRef = useRef<HTMLDivElement>();
-    const focusByActivityKey = useFocusByActivityKey();
-    const id = useComputeElementIdFromActivityKey()(activityKey);
-    const localize = useLocalizer();
-    const read = useGetHasReadByActivityKey()(activityKey);
+const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
+  const [activeDescendantId] = useActiveDescendantId();
+  const bodyRef = useRef<HTMLDivElement>();
+  const focusByActivityKey = useFocusByActivityKey();
+  const getKeyByActivity = useGetKeyByActivity();
+  // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
+  const shouldSpeak = activity.channelData?.speak;
 
-    const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
-    const isActiveDescendant = id === activeDescendantId;
+  const [accessibleName] = useActivityAccessibleName(activity, bodyRef);
+  const activityKey = getKeyByActivity(activity);
 
-    const focusSelf = useCallback<(withFocus?: boolean) => void>(
-      (withFocus?: boolean) => focusByActivityKey(activityKeyRef.current, withFocus),
-      [activityKeyRef, focusByActivityKey]
-    );
+  const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
+  const activityKeyRef = useValueRef<string>(activityKey);
+  const descendantId = useGetDescendantIdByActivityKey()(activityKey);
+  const descendantLabelId = `webchat__basic-transcript__active-descendant-label--${activityKey}`;
+  const read = useGetHasReadByActivityKey()(activityKey);
 
-    const handleClick: MouseEventHandler = useCallback(
-      ({ currentTarget, target }) => {
-        // (Related to #4020)
-        //
-        // This is called while screen reader is running:
-        //
-        // 1. When scan mode is on (Windows Narrator) or in browse mode (NVDA), ENTER key is pressed, or;
-        // 2. When scan mode is off (Windows Narrator) or in focus mode (NVDA), CAPSLOCK + ENTER is pressed
-        //
-        // Although `document.activeElement` (a.k.a. primary focus) is on the transcript,
-        // when ENTER key is pressed with screen reader in scan mode, screen reader will
-        // "do primary action", which ask the browser to send a `click` event to the
-        // active descendant (a.k.a. focused activity).
-        //
-        // While outside of scan mode, this will also capture CAPSLOCK + ENTER,
-        // which is a key combo for "do primary action" or "activates the current navigator object".
-        //
-        // We cannot capture plain ENTER key outside of scan mode here.
-        // We can only capture it on `keydown` event fired to the transcript element.
-        //
-        // Also see https://github.com/nvaccess/nvda/issues/7898.
+  const isActiveDescendant = descendantId === activeDescendantId;
 
-        if (
-          // The followings are for Windows Narrator:
-          // - When scan mode is on
-          //   - Press ENTER will dispatch "click" event to the <li> element
-          //   - This is called "Do primary action"
-          target === currentTarget ||
-          // The followings are for NVDA:
-          // - When in browse mode (red border), and the red box is around the <ScreenReaderActivity>
-          //   - The much simplified DOM tree: <li><article><p>...</p></article></li>
-          //   - Press ENTER will dispatch `click` event
-          //      - NVDA 2020.2 (buggy): In additional to ENTER, when navigating using UP/DOWN arrow keys, it dispatch "click" event to the <article> element
-          //      - NVDA 2021.2: After press ENTER, it dispatch 2 `click` events. First to the <article> element, then to the element currently bordered in red (e.g. <p>)
-          //   - Perhaps, we should add role="application" to container of Web Chat to disable browse mode, as we are not a web document and already offered a full-fledge navigation experience
-          document.getElementById(currentTarget.getAttribute('aria-labelledby')).contains(target as HTMLElement)
-        ) {
-          // Focus on the first tabbable element inside the activity.
-          tabbableElements(bodyRef.current)[0]?.focus();
-        }
-      },
-      [bodyRef]
-    );
+  const focusSelf = useCallback<(withFocus?: boolean) => void>(
+    (withFocus?: boolean) => focusByActivityKey(activityKeyRef.current, withFocus),
+    [activityKeyRef, focusByActivityKey]
+  );
 
-    // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
-    const handleFocus: FocusEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
+  // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
+  const handleDescendantFocus: FocusEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
 
-    const handleKeyDown: KeyboardEventHandler = useCallback(
-      event => {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          event.stopPropagation();
+  // When receive Escape key from descendant, focus back to the activity.
+  const handleDescendantKeyDown: KeyboardEventHandler = useCallback(
+    event => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
 
-          focusSelf();
-        }
-      },
-      [focusSelf]
-    );
+        focusSelf();
+      }
+    },
+    [focusSelf]
+  );
 
-    // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
-    // We should do the same for mouse, that is why we have the mouse down handler here.
-    // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
-    const handleMouseDownCapture: MouseEventHandler = useCallback(
-      ({ target }) => {
-        const element = target as HTMLLIElement;
-        const tabIndex = getTabIndex(element);
+  // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
+  // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the focused activity.
+  // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
 
-        // If mouse down on an element which is not tabbable, then, focus-self.
-        if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
-          focusSelf(false);
-        }
-      },
-      [focusSelf]
-    );
+  // TODO: [P*] Try put this back to Transcript. Clicking on very bottom of the activity may wrongly focus on the next activity, due to paddings.
+  const handleMouseDownCapture: MouseEventHandler = useCallback(
+    ({ target }) => {
+      const element = target as HTMLLIElement;
+      const tabIndex = getTabIndex(element);
 
-    // If "webchat:fallback-text" field is set to empty string, the activity must not be narrated.
-    // TODO: [P*] Add test.
-    const supportScreenReader = activity.channelData?.['webchat:fallback-text'] !== '';
+      // If mouse down on an element which is not tabbable, then, focus-self.
+      if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
+        // When focusing using a mouse, it should not scroll into view.
+        focusSelf(false);
+      }
+    },
+    [focusSelf]
+  );
 
-    // TODO: [P*] Fix this.
-    const isContentInteractive = false;
+  const handleSentinelFocus: () => void = useCallback(() => focusSelf(), [focusSelf]);
 
-    const handleSentinelFocus: () => void = useCallback(() => focusSelf(), [focusSelf]);
+  return (
+    // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
+    <article
+      // TODO: [P*] If "webchat:fallback-text" field is set to empty string, this activity is presentational.
+      // aria-hidden={activity.channelData?.['webchat:fallback-text'] === ''}
+      className={classNames('webchat__basic-transcript__activity', {
+        'webchat__basic-transcript__activity--acknowledged': acknowledged,
+        'webchat__basic-transcript__activity--read': read
+      })}
+      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
+      onMouseDownCapture={handleMouseDownCapture}
+      ref={ref}
+    >
+      {/* TODO: [P*] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
 
-    return (
-      <li
-        aria-labelledby={supportScreenReader ? ariaLabelId : undefined}
-        className={classNames('webchat__basic-transcript__activity', {
-          'webchat__basic-transcript__activity--acknowledged': acknowledged,
-          'webchat__basic-transcript__activity--read': read
-        })}
-        // "id" is required for aria-activedescendant.
+      {/* The following <div> is designed for active descendant only.
+          We want to prevent screen reader from scanning the content that is authored only for active descendant.
+          The specific content should only read when user press UP/DOWN arrow keys to change `aria-activedescendant`.
+          However, Android TalkBack 12.1 is buggy when the there is an element with ID of one of the `aria-activedescendant` potential candidates,
+          TalkBack will narrate the message content twice (i.e. content of `bodyRef`), regardless whether the ID is currently set as `aria-activedescendant` or not.
+          As Android does not support active descendant, we are hiding the whole DOM element altogether. */}
+
+      {!android && (
+        // "id" is required for "aria-labelledby"
         // eslint-disable-next-line react/forbid-dom-props
-        id={id}
-        // This is for capturing "do primary action" done by the screen reader.
-        // With screen reader, will narrate "Press ENTER to interact". But in scan mode, ENTER means "do primary action".
-        // If `onClick` is set, screen reader will send click event when "do primary action".
-        // Related to #4020.
-        onClick={handleClick}
-        onFocus={handleFocus}
-        onKeyDown={handleKeyDown}
-        // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
-        onMouseDownCapture={handleMouseDownCapture}
-        ref={ref}
-      >
-        {/* TODO: [P*] Fix double narration. */}
-        {supportScreenReader && (
-          <ScreenReaderActivity activity={activity} id={ariaLabelId} renderAttachments={false}>
-            {!!isContentInteractive && <p>{activityInteractiveAlt}</p>}
-          </ScreenReaderActivity>
-        )}
-        {/* TODO: [P*] Consider focus trap. */}
-        <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
-        <div className="webchat__basic-transcript__activity-box" ref={bodyRef}>
-          {children}
+        <div aria-labelledby={descendantLabelId} id={descendantId} role="article">
+          <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
-        {shouldSpeak && <SpeakActivity activity={activity} />}
-        <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
-        <div
-          className={classNames('webchat__basic-transcript__activity-indicator', {
-            'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
-          })}
-        />
-      </li>
-    );
-  }
-);
+      )}
+
+      {/* TODO: [P*] Consider focus trap. */}
+      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
+      <div
+        className="webchat__basic-transcript__activity-box"
+        onFocus={handleDescendantFocus}
+        onKeyDown={handleDescendantKeyDown}
+        ref={bodyRef}
+      >
+        {children}
+      </div>
+      {shouldSpeak && <SpeakActivity activity={activity} />}
+      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
+      <div
+        className={classNames('webchat__basic-transcript__activity-indicator', {
+          'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
+        })}
+      />
+    </article>
+  );
+});
 
 ActivityRow.defaultProps = {
-  children: undefined,
-  shouldSpeak: false
+  children: undefined
 };
 
 ActivityRow.propTypes = {
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
+      speak: PropTypes.bool,
       'webchat:fallback-text': PropTypes.string
     })
   }).isRequired,
-  activityKey: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
-  shouldSpeak: PropTypes.bool
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)])
 };
 
 export default ActivityRow;

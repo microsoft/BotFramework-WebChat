@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
-import type { LiveRegionElement } from './types';
+import type { StaticElement, StaticElementEntry } from './types';
 
 type LiveRegionTwinContextType = {
   markAllAsRendered: () => void;
-  queueStaticElement: (element: LiveRegionElement) => void;
-  staticElementsState: readonly [readonly LiveRegionElement[]];
+  queueStaticElement: (element: StaticElement) => void;
+  staticElementEntriesState: readonly [readonly StaticElementEntry[]];
 };
 
 const LiveRegionTwinContext = createContext<LiveRegionTwinContextType>(undefined);

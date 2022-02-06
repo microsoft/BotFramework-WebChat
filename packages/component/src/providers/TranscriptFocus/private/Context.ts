@@ -2,11 +2,11 @@ import { createContext } from 'react';
 
 type TranscriptFocusContextType = {
   activeDescendantIdState: readonly [string];
-  computeElementIdFromActivityKey: (activityKey?: string) => string | undefined;
   focusByActivityKey: (activityKey: boolean | string | undefined, withFocus: boolean | undefined) => void;
   focusedActivityKeyState: readonly [string];
   focusedExplicitlyState: readonly [boolean];
   focusRelativeActivity: (delta: number) => void;
+  getDescendantIdByActivityKey: (activityKey?: string) => string | undefined;
 };
 
 const TranscriptFocusContext = createContext<TranscriptFocusContextType>(undefined);

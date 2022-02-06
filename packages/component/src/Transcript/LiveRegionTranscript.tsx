@@ -1,5 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
+import random from 'math-random';
 import React, { useEffect, useMemo, useRef } from 'react';
 
 import type { DirectLineActivity } from 'botframework-webchat-core';
@@ -7,14 +8,29 @@ import type { FC, RefObject, VFC } from 'react';
 
 import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
 import ScreenReaderActivity from '../ScreenReaderActivity';
-import ScreenReaderText from '../ScreenReaderText';
 import tabbableElements from '../Utils/tabbableElements';
 import useActivityTreeWithRenderer from '../providers/ActivityTree/useActivityTreeWithRenderer';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
 import type { ActivityElementMap } from './types';
+import classNames from 'classnames';
 
 const { useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
+
+const ROOT_STYLE = {
+  '&.webchat__live-region-transcript': {
+    '& .webchat__live-region-transcript__interactive_note': {
+      color: 'transparent',
+      height: 1,
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      whiteSpace: 'nowrap',
+      width: 1
+    }
+  }
+};
 
 /**
  * Checks if the rendering activity is presentational or not. Returns `true` if presentational, otherwise, `false`.
@@ -103,11 +119,27 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     );
 
     if (hasNewLink || hasNewWidget) {
-      // VoiceOver did not narrate empty self-closing tag, such as <div aria-label="Something" />.
-      // Thus, <ScreenReaderText> is needed.
+      // eslint-disable-next-line no-magic-numbers
+      const labelId = `webchat__live-region-transcript__interactive_note--${random().toString(36).substr(2, 5)}`;
+
       queueStaticElement(
-        <div aria-atomic="true" role="note">
-          <ScreenReaderText text={hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt} />
+        // Inside ARIA live region:
+        // - Edge + Narrator:
+        //   - It read if `aria-labelledby` or `aria-label` is set;
+        //   - It read nothing if `aria-labelledby` or `aria-label` are not set (in this case, it read "note").
+        // - Safari + VoiceOver and Chrome + NVDA:
+        //   - They read its content and ignore `aria-labelledby` or `aria-label`
+        //   - They will not read if it is simply <div aria-label="Something" /> without content (self-closing tag).
+        // For best compatibility, we need both `aria-labelledby` and contented <div>.
+        <div
+          aria-atomic="true"
+          aria-labelledby={labelId}
+          className="webchat__live-region-transcript__interactive_note"
+          role="note"
+        >
+          {/* "id" is required for "aria-activedescendant" */}
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <span id={labelId}>{hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt}</span>
         </div>
       );
     }
@@ -119,8 +151,8 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     liveRegionInteractiveLabelAlt,
     liveRegionInteractiveWithLinkLabelAlt,
     prevRenderingActivitiesRef,
-    renderingActivities,
-    queueStaticElement
+    queueStaticElement,
+    renderingActivities
   ]);
 
   return null;
@@ -133,12 +165,14 @@ type LiveRegionTranscriptProps = {
 const LiveRegionTranscript: VFC<LiveRegionTranscriptProps> = ({ activityElementMapRef }) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const localize = useLocalizer();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   return (
     <LiveRegionTwinComposer
       aria-roledescription={transcriptRoleDescription}
+      className={classNames('webchat__live-region-transcript', rootClassName)}
       fadeAfter={internalLiveRegionFadeAfter}
       role="log"
     >

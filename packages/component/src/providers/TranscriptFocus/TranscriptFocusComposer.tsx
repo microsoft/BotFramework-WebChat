@@ -45,7 +45,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   // eslint-disable-next-line no-magic-numbers
   const prefix = useMemo<string>(() => uniqueId(3), []);
 
-  const computeElementIdFromActivityKey: (activityKey?: string) => string | undefined = useCallback(
+  const getDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
     (activityKey?: string) => activityKey && `webchat__transcript-focus-${prefix}__activity-${activityKey}`,
     [prefix]
   );
@@ -90,8 +90,8 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const focusedActivityKeyRef = useValueRef(focusedActivityKey);
 
   const activeDescendantId = useMemo<string>(
-    () => computeElementIdFromActivityKey(focusedActivityKey),
-    [computeElementIdFromActivityKey, focusedActivityKey]
+    () => getDescendantIdByActivityKey(focusedActivityKey),
+    [getDescendantIdByActivityKey, focusedActivityKey]
   );
 
   const focusByActivityKey = useCallback<
@@ -111,7 +111,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
       if (withFocus) {
         containerRef.current?.focus();
 
-        const activeDescendantId = computeElementIdFromActivityKey(
+        const activeDescendantId = getDescendantIdByActivityKey(
           activityKey === false
             ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
               last(renderingActivityKeysRef.current)
@@ -134,7 +134,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
       }
     },
     [
-      computeElementIdFromActivityKey,
+      getDescendantIdByActivityKey,
       containerRef,
       focusedActivityKeyRef,
       renderingActivityKeysRef,
@@ -166,7 +166,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const contextValue = useMemo<TranscriptFocusContextType>(
     () => ({
       activeDescendantIdState: Object.freeze([activeDescendantId]) as readonly [string],
-      computeElementIdFromActivityKey,
+      getDescendantIdByActivityKey,
       focusByActivityKey,
       focusedActivityKeyState: Object.freeze([focusedActivityKey]) as readonly [string],
       focusedExplicitlyState: Object.freeze([!!rawFocusedActivityKey]) as readonly [boolean],
@@ -174,7 +174,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
     }),
     [
       activeDescendantId,
-      computeElementIdFromActivityKey,
+      getDescendantIdByActivityKey,
       focusByActivityKey,
       focusedActivityKey,
       focusRelativeActivity,

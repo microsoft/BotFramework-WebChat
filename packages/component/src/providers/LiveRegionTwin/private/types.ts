@@ -1,5 +1,10 @@
 import type { ReactElement } from 'react';
 
-type LiveRegionElement = Exclude<ReactElement | string, undefined>;
+type StaticElement = Exclude<ReactElement | string, undefined>;
 
-export type { LiveRegionElement };
+type StaticElementEntry = {
+  element: StaticElement;
+  key: number;
+};
+
+export type { StaticElement, StaticElementEntry };

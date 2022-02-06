@@ -7,7 +7,7 @@ import LiveRegionTwinContainer from './private/LiveRegionTwinContainer';
 import LiveRegionTwinContext from './private/Context';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { LiveRegionElement } from './private/types';
+import type { StaticElement, StaticElementEntry } from './private/types';
 
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
@@ -58,16 +58,17 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
   fadeAfter = DEFAULT_FADE_AFTER,
   role
 }) => {
-  const [staticElements, setStaticElements] = useState<LiveRegionElement[]>([]);
+  const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);
   const markAllAsRenderedTimeoutIdRef = useRef<any>();
+  const nextKeyRef = useRef<number>(1);
 
-  const staticElementsRef = useValueRef(staticElements);
+  const staticElementEntriesRef = useValueRef(staticElementEntries);
 
   // This function is called by an effect hook `useMarkAllAsRenderedEffect`, it must be designed with converging in mind.
   // To prevent infinite render loop, after multiple calls to this function, it should eventually no-op.
   const markAllAsRendered = useCallback<() => void>(() => {
-    if (!staticElementsRef.current.length) {
+    if (!staticElementEntriesRef.current.length) {
       // Nothing to remove.
       return;
     }
@@ -81,9 +82,9 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
       // We are playing safe by using value ref to check its length here.
       // If we are certain that `setStaticElements(emptyArray => emptyArray)` is a no-op,
       // we could replace it with just the setter function.
-      staticElementsRef.current.length && setStaticElements([]);
+      staticElementEntriesRef.current.length && setStaticElementEntries([]);
     }, fadeAfterRef.current);
-  }, [fadeAfterRef, markAllAsRenderedTimeoutIdRef, setStaticElements, staticElementsRef]);
+  }, [fadeAfterRef, markAllAsRenderedTimeoutIdRef, setStaticElementEntries, staticElementEntriesRef]);
 
   // When this component is unmounting, make sure all future `setTimeout` are cleared and should not be fired.
   useEffect(
@@ -91,23 +92,29 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
     [markAllAsRenderedTimeoutIdRef]
   );
 
-  const queueStaticElement = useCallback<(staticElement: LiveRegionElement) => void>(
-    (staticElement: LiveRegionElement): void => setStaticElements(staticElements => [...staticElements, staticElement]),
-    [setStaticElements]
+  const queueStaticElement = useCallback<(staticElement: StaticElement) => void>(
+    (element: StaticElement): void => {
+      const key = nextKeyRef.current;
+
+      nextKeyRef.current = nextKeyRef.current + 1;
+
+      setStaticElementEntries(entries => [...entries, { element, key }]);
+    },
+    [nextKeyRef, setStaticElementEntries]
   );
 
-  const staticElementsState = useMemo<readonly [readonly LiveRegionElement[]]>(
-    () => Object.freeze([Object.freeze(staticElements)]) as readonly [readonly LiveRegionElement[]],
-    [staticElements]
+  const staticElementEntriesState = useMemo<readonly [readonly StaticElementEntry[]]>(
+    () => Object.freeze([Object.freeze(staticElementEntries)]) as readonly [readonly StaticElementEntry[]],
+    [staticElementEntries]
   );
 
   const context = useMemo(
     () => ({
       markAllAsRendered,
       queueStaticElement,
-      staticElementsState
+      staticElementEntriesState
     }),
-    [markAllAsRendered, queueStaticElement, staticElementsState]
+    [markAllAsRendered, queueStaticElement, staticElementEntriesState]
   );
 
   return (

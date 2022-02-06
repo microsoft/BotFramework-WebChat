@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import type { VFC } from 'react';
 
-import useStaticElements from './useStaticElements';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
+import useStaticElementEntries from './useStaticElementEntries';
 
 type LiveRegionTwinContainerProps = {
   'aria-label'?: string;
@@ -22,7 +22,7 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
   className,
   role
 }) => {
-  const [staticElements] = useStaticElements();
+  const [staticElementEntries] = useStaticElementEntries();
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
   // The assumption made us safe to mark everything is rendered.
@@ -38,8 +38,9 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
       className={className}
       role={role}
     >
-      {/* TODO: [P*] Do we need "aria-atomic" for text content? */}
-      {staticElements.map(element => (typeof element === 'string' ? <div aria-atomic={true}>{element}</div> : element))}
+      {staticElementEntries.map(({ element, key }) =>
+        typeof element === 'string' ? <div key={key}>{element}</div> : <Fragment key={key}>{element}</Fragment>
+      )}
     </div>
   );
 };

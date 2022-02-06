@@ -17,7 +17,7 @@ type Plural = {
   other: string;
 };
 
-export default function useLocalizer({ plural }: { plural?: keyof Plural } = {}) {
+export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
   const [globalize] = useLocalizedGlobalize();
   const localizedStrings = useLocalizedStrings();
 
