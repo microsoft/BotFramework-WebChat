@@ -74,6 +74,8 @@ const KeyboardHelp: VFC<{}> = () => {
 
   return (
     <div
+      // When the dialog is not shown, "aria-hidden" helps to prevent scan mode from able to scan the content of the dialog.
+      aria-hidden={!shown}
       className={classNames('webchat__keyboard-help', keyboardHelpStyleSet + '', {
         'webchat__keyboard-help--shown': shown
       })}
