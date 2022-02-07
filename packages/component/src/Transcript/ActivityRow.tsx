@@ -94,7 +94,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
       {!android && (
         <div
           aria-labelledby={descendantLabelId}
-          className="webchat__basic-transcript__activity-active-descendant-label"
+          className="webchat__basic-transcript__activity-active-descendant"
           // "id" is required for "aria-labelledby"
           // eslint-disable-next-line react/forbid-dom-props
           id={descendantId}
