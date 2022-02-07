@@ -58,6 +58,15 @@ export default function createBasicTranscriptStyleSet({
         }
       },
 
+      // When the active descendant is focused, `scrollIntoView()` will scroll this invisible <div> into view.
+      '& .webchat__basic-transcript__activity-active-descendant-label': {
+        height: '100%',
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        width: '100%'
+      },
+
       '& .webchat__basic-transcript__activity-box:not(:empty)': {
         paddingBottom: paddingRegular
       },

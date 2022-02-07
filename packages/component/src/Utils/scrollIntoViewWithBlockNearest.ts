@@ -1,4 +1,4 @@
-import findAncestor from './findAncestor';
+import computeScrollIntoView from 'compute-scroll-into-view';
 
 /**
  * Calls `targetElement.scrollIntoView({ block: 'nearest' })`.
@@ -13,25 +13,8 @@ export default function scrollIntoViewWithBlockNearest(targetElement: HTMLElemen
     return targetElement.scrollIntoView({ block: 'nearest' });
   }
 
-  const scrollableElement = findAncestor(targetElement, ancestor => {
-    const { overflowY } = window.getComputedStyle(ancestor);
+  // We should only move transcript scrollable, and not other scrollable, such as document.body which is from the hosting page.
+  const [action] = computeScrollIntoView(targetElement, { block: 'nearest' });
 
-    return overflowY === 'auto' || overflowY === 'scroll';
-  });
-
-  if (!scrollableElement) {
-    throw new Error('"targetElement" must be contained by a scrollable container.');
-  }
-
-  const scrollTopAtTopSide = targetElement.offsetTop;
-  const scrollTopAtBottomSide = targetElement.offsetTop + targetElement.offsetHeight;
-
-  const deltaToTop = scrollableElement.scrollTop - scrollTopAtTopSide;
-  const deltaToBottom = scrollTopAtBottomSide - scrollableElement.scrollTop - scrollableElement.offsetHeight;
-
-  if (deltaToTop < deltaToBottom) {
-    scrollableElement.scrollTop -= deltaToTop;
-  } else {
-    scrollableElement.scrollTop += deltaToBottom;
-  }
+  action.el.scrollTop = action.top;
 }

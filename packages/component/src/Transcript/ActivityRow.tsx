@@ -8,7 +8,6 @@ import type { FocusEventHandler, KeyboardEventHandler, MouseEventHandler, PropsW
 
 import { android } from '../Utils/detectBrowser';
 import FocusRedirector from '../Utils/FocusRedirector';
-import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 import ScreenReaderText from '../ScreenReaderText';
 import SpeakActivity from '../Activity/Speak';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
@@ -65,23 +64,9 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
 
   // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the focused activity.
-  // We are doing it in event capture phase to prevent other components from stopping event propagation to us.
+  // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
 
-  // TODO: [P*] Try put this back to Transcript. Clicking on very bottom of the activity may wrongly focus on the next activity, due to paddings.
-  const handleMouseDownCapture: MouseEventHandler = useCallback(
-    ({ target }) => {
-      const element = target as HTMLLIElement;
-      const tabIndex = getTabIndex(element);
-
-      // If mouse down on an element which is not tabbable, then, focus-self.
-      if (typeof tabIndex !== 'number' || tabIndex < 0 || element.getAttribute('aria-disabled') === 'true') {
-        // When focusing using a mouse, it should not scroll into view.
-        focusSelf(false);
-      }
-    },
-    [focusSelf]
-  );
-
+  const handleMouseDownCapture: MouseEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
   const handleSentinelFocus: () => void = useCallback(() => focusSelf(), [focusSelf]);
 
   return (
@@ -107,9 +92,14 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
           As Android does not support active descendant, we are hiding the whole DOM element altogether. */}
 
       {!android && (
-        // "id" is required for "aria-labelledby"
-        // eslint-disable-next-line react/forbid-dom-props
-        <div aria-labelledby={descendantLabelId} id={descendantId} role="article">
+        <div
+          aria-labelledby={descendantLabelId}
+          className="webchat__basic-transcript__activity-active-descendant-label"
+          // "id" is required for "aria-labelledby"
+          // eslint-disable-next-line react/forbid-dom-props
+          id={descendantId}
+          role="article"
+        >
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
       )}
