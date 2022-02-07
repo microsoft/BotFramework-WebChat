@@ -751,7 +751,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         <section
           aria-roledescription={transcriptRoleDescription}
-          aria-setsize={-1}
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
           role="feed"
         >

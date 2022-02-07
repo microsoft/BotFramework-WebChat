@@ -60,6 +60,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
     <article
+      aria-setsize={-1}
       // TODO: [P*] If "webchat:fallback-text" field is set to empty string, this activity is presentational.
       // aria-hidden={activity.channelData?.['webchat:fallback-text'] === ''}
       className={classNames('webchat__basic-transcript__activity', {
