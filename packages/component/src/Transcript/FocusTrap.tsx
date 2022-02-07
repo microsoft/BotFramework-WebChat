@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
+import React, { Fragment, useCallback, useRef } from 'react';
 
 import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
 
@@ -8,13 +8,11 @@ import tabbableElements from '../Utils/tabbableElements';
 import useValueRef from '../hooks/internal/useValueRef';
 
 type FocusTrapProps = PropsWithChildren<{
-  bodyClassName?: string;
-  className?: string;
   onFocus: () => void;
   onLeave: () => void;
 }>;
 
-const FocusTrap: FC<FocusTrapProps> = ({ bodyClassName, children, className, onFocus, onLeave }) => {
+const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
   const bodyRef = useRef<HTMLDivElement>();
   const onLeaveRef = useValueRef<() => void>(onLeave);
 
@@ -42,27 +40,23 @@ const FocusTrap: FC<FocusTrapProps> = ({ bodyClassName, children, className, onF
   );
 
   return (
-    <div className={className}>
+    <Fragment>
       <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleFirstSentinelFocus} />
-      <div className={bodyClassName} onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+      <div onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
       <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleLastSentinelFocus} />
-    </div>
+    </Fragment>
   );
 };
 
 FocusTrap.defaultProps = {
-  bodyClassName: undefined,
   children: undefined,
-  className: undefined,
   onFocus: undefined
 };
 
 FocusTrap.propTypes = {
-  bodyClassName: PropTypes.string,
   children: PropTypes.any,
-  className: PropTypes.string,
   onFocus: PropTypes.func,
   onLeave: PropTypes.func.isRequired
 };

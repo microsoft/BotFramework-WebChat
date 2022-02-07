@@ -92,12 +92,10 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
         </div>
       )}
       {/* Add tests for focus trap */}
-      <FocusTrap
-        bodyClassName="webchat__basic-transcript__activity-box"
-        onFocus={handleDescendantFocus}
-        onLeave={handleLeaveFocusTrap}
-      >
-        {children}
+      <FocusTrap onFocus={handleDescendantFocus} onLeave={handleLeaveFocusTrap}>
+        <div className="webchat__basic-transcript__activity-box" ref={bodyRef}>
+          {children}
+        </div>
       </FocusTrap>
       {shouldSpeak && <SpeakActivity activity={activity} />}
       <div
