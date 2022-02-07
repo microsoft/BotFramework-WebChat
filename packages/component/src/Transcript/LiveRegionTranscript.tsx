@@ -60,7 +60,7 @@ type LiveRegionTranscriptCoreProps = {
 };
 
 const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
-  const [activityTree] = useActivityTreeWithRenderer();
+  const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const queueStaticElement = useQueueStaticElement();
@@ -68,26 +68,15 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
   const liveRegionInteractiveLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_LABEL_ALT');
   const liveRegionInteractiveWithLinkLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_WITH_LINKS_LABEL_ALT');
 
-  // TODO: [P*] Consider refactoring this hook.
-  //       After refactoring, we should memoize the result more precisely.
   const renderingActivities = useMemo<Readonly<RenderingActivities>>(
     () =>
       Object.freeze(
-        activityTree.reduce<RenderingActivities>(
-          (intermediate, entriesWithSameSender) =>
-            entriesWithSameSender.reduce(
-              (intermediate, entriesWithSameSenderAndStatus) =>
-                entriesWithSameSenderAndStatus.reduce((intermediate, { activity }) => {
-                  intermediate.set(getKeyByActivity(activity), activity);
-
-                  return intermediate;
-                }, intermediate),
-              intermediate
-            ),
+        flattenedActivityTree.reduce<RenderingActivities>(
+          (intermediate, { activity }) => intermediate.set(getKeyByActivity(activity), activity),
           new Map<string, DirectLineActivity>()
         )
       ),
-    [activityTree, getKeyByActivity]
+    [flattenedActivityTree, getKeyByActivity]
   );
 
   const prevRenderingActivitiesRef = useRef<Readonly<RenderingActivities>>();

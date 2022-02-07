@@ -5,11 +5,12 @@ import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC, PropsWithChildren } from 'react';
 
-import { ReadonlyActivityTree } from './private/types';
+import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
 import ActivityTreeContext from './private/Context';
 import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
 import useActivityTreeContext from './private/useContext';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
+import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 
 import type { ActivityTreeContextType } from './private/Context';
 
@@ -31,11 +32,40 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
 
   const activityTreeWithRenderer = useActivityTreeWithRenderer(activitiesWithRenderer);
 
+  const flattenedActivityTreeWithRenderer = useMemoWithPrevious<Readonly<ActivityWithRenderer[]>>(
+    prevFlattenedActivityTree => {
+      const nextFlattenedActivityTree = Object.freeze(
+        activityTreeWithRenderer.reduce<ActivityWithRenderer[]>(
+          (intermediate, entriesWithSameSender) =>
+            entriesWithSameSender.reduce<ActivityWithRenderer[]>(
+              (intermediate, entriesWithSameSenderAndStatus) =>
+                entriesWithSameSenderAndStatus.reduce<ActivityWithRenderer[]>((intermediate, entry) => {
+                  intermediate.push(entry);
+
+                  return intermediate;
+                }, intermediate),
+              intermediate
+            ),
+          []
+        )
+      );
+
+      return nextFlattenedActivityTree.length === prevFlattenedActivityTree?.length &&
+        nextFlattenedActivityTree.every((item, index) => item === prevFlattenedActivityTree[+index])
+        ? prevFlattenedActivityTree
+        : nextFlattenedActivityTree;
+    },
+    [activityTreeWithRenderer]
+  );
+
   const contextValue: ActivityTreeContextType = useMemo(
     () => ({
-      activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree]
+      activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree],
+      flattenedActivityTreeWithRendererState: Object.freeze([flattenedActivityTreeWithRenderer]) as readonly [
+        readonly ActivityWithRenderer[]
+      ]
     }),
-    [activityTreeWithRenderer]
+    [activityTreeWithRenderer, flattenedActivityTreeWithRenderer]
   );
 
   return <ActivityTreeContext.Provider value={contextValue}>{children}</ActivityTreeContext.Provider>;

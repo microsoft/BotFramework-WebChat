@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import random from 'math-random';
 import React, { useCallback, useMemo } from 'react';
 
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC, MutableRefObject } from 'react';
 
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
@@ -36,7 +35,7 @@ function uniqueId(count = Infinity) {
 }
 
 const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, containerRef }) => {
-  const [activityTree] = useActivityTreeWithRenderer();
+  const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
   const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
   const getKeyByActivity = useGetKeyByActivity();
 
@@ -51,32 +50,17 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   );
 
   const renderingActivityKeys = useMemo<readonly string[]>(
-    () =>
-      Object.freeze(
-        activityTree.reduce<DirectLineActivity>(
-          (intermediate, entriesWithSameSender) =>
-            entriesWithSameSender.reduce(
-              (intermediate, entriesWithSameSenderAndStatus) =>
-                entriesWithSameSenderAndStatus.reduce((intermediate, { activity }) => {
-                  intermediate.push(getKeyByActivity(activity));
-
-                  return intermediate;
-                }, intermediate),
-              intermediate
-            ),
-          []
-        )
-      ),
-    [activityTree, getKeyByActivity]
+    () => Object.freeze(flattenedActivityTree.map(({ activity }) => getKeyByActivity(activity))),
+    [flattenedActivityTree, getKeyByActivity]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
 
   // While the transcript or any descendants are not focused, if the transcript is updated, reset the user-selected active descendant.
   // This will assume the last activity, if any, will be the active descendant.
-  const prevActivityTree = usePrevious(activityTree);
+  const prevRenderingActivityKeys = usePrevious(renderingActivityKeys);
 
-  if (activityTree !== prevActivityTree && !containerRef.current?.contains(document.activeElement)) {
+  if (renderingActivityKeys !== prevRenderingActivityKeys && !containerRef.current?.contains(document.activeElement)) {
     rawFocusedActivityKeyRef.current = undefined;
   }
 
