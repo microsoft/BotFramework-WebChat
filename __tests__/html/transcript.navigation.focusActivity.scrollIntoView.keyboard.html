@@ -38,9 +38,7 @@
         await host.sendShiftTab();
 
         // THEN: It should show focus indicator around the last activity.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[0]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[0]);
         await host.snapshot();
 
         // WHEN: Press up arrow 2 times.
@@ -49,9 +47,7 @@
 
         // THEN: It should show focus indicator around activity #29 and scroll it into view.
         await pageConditions.focusedActivityInView();
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[2]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
         await host.snapshot();
 
         // WHEN: Press up arrow 3 times.
@@ -85,9 +81,7 @@
         expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
 
         // THEN: It should continue to keep activity #29 as the `aria-activedescendant`.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[2]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
 
         // WHEN: Scroll the transcript to the bottom.
         pageElements.transcriptScrollable().scrollTop =

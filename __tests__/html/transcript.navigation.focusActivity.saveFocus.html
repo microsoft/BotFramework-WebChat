@@ -65,7 +65,7 @@
         expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
 
         // THEN: Transcript should have `aria-activedescendant` set to the newly sent message.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
+        expect(document.getElementById(pageElements.activeActivity())).toBe(
           [...pageElements.activities()].reverse()[0]
         );
 

@@ -9,10 +9,6 @@
   <body>
     <div id="webchat"></div>
     <script>
-      function getActiveDescendant(element) {
-        return document.getElementById(element.getAttribute('aria-activedescendant'));
-      }
-
       run(async function () {
         WebChat.renderWebChat(
           {
@@ -37,7 +33,7 @@
 
         // THEN: It should focus on the transcript and the last activity.
         expect(document.activeElement).toBe(pageElements.transcript());
-        expect(getActiveDescendant(document.activeElement)).toBe([...pageElements.activities()].reverse()[0]);
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[0]);
 
         // THEN: It should show a visual keyboard indicator around the transcript and the last activity. This is our starting point.
         await host.snapshot();
@@ -48,7 +44,7 @@
 
         // THEN: It should focus on the transcript and the second last activity.
         expect(document.activeElement).toBe(pageElements.transcript());
-        expect(getActiveDescendant(document.activeElement)).toBe([...pageElements.activities()].reverse()[1]);
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[1]);
 
         // THEN: It should show an visual keyboard indicator around the second last activity.
         await host.snapshot();
@@ -59,7 +55,7 @@
 
         // THEN: It should focus on the transcript and the activity which contains the Adaptive Card.
         expect(document.activeElement).toBe(pageElements.transcript());
-        expect(getActiveDescendant(document.activeElement)).toBe([...pageElements.activities()].reverse()[2]);
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
 
         // THEN: It should show an visual keyboard indicator around the card.
         await host.snapshot();
@@ -99,7 +95,7 @@
 
         // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         expect(document.activeElement).toBe(pageElements.transcript());
-        expect(getActiveDescendant(document.activeElement)).toBe([...pageElements.activities()].reverse()[2]);
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
         await host.snapshot();
 
         // WHEN: ENTER key is pressed.
@@ -114,7 +110,7 @@
 
         // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         expect(document.activeElement).toBe(pageElements.transcript());
-        expect(getActiveDescendant(document.activeElement)).toBe([...pageElements.activities()].reverse()[2]);
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
         await host.snapshot();
       });
     </script>

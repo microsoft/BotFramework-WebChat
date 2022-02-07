@@ -69,9 +69,7 @@
 
         // THEN: It should keep focus on the last activity even it is out of view.
         await pageConditions.scrollStabilized();
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[0]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[0]);
         await host.snapshot();
 
         // WHEN: Pressing SHIFT+TAB x 3 to focus back on the transcript.

@@ -39,9 +39,7 @@
         );
 
         // THEN: It should show a visual indicator around activity #29.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[2]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
         await host.snapshot();
 
         // WHEN: Clicking on the <input> inside activity #29.
@@ -53,9 +51,7 @@
         );
 
         // THEN: It should keep activity #29 as `aria-activedescendant`.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[2]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
 
         // THEN: It should no longer have a visual indicator around activity #29.
         await host.snapshot();
@@ -69,9 +65,7 @@
         );
 
         // THEN: It should show a visual indicator around activity #29.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          [...pageElements.activities()].reverse()[2]
-        );
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
         await host.snapshot();
       });
     </script>

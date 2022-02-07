@@ -77,9 +77,7 @@
         await host.snapshot();
 
         // THEN: It should keep the first activity selected through aria-activedescendant.
-        expect(document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'))).toBe(
-          pageElements.activities()[0]
-        );
+        expect(pageElements.activeActivity()).toBe(pageElements.activities()[0]);
 
         // WHEN: Click on the lower-right corner of transcript to focus on it.
         await host.clickAt(-1, -1, pageElements.transcriptScrollable());
