@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useRef } from 'react';
 
 import type { DirectLineActivity } from 'botframework-webchat-core';
-import type { FocusEventHandler, KeyboardEventHandler, MouseEventHandler, PropsWithChildren } from 'react';
+import type { MouseEventHandler, PropsWithChildren } from 'react';
 
 import { android } from '../Utils/detectBrowser';
-import FocusRedirector from '../Utils/FocusRedirector';
+import FocusTrap from './FocusTrap';
 import ScreenReaderText from '../ScreenReaderText';
 import SpeakActivity from '../Activity/Speak';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
@@ -47,27 +47,15 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   );
 
   // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
-  const handleDescendantFocus: FocusEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
-
-  // When receive Escape key from descendant, focus back to the activity.
-  const handleDescendantKeyDown: KeyboardEventHandler = useCallback(
-    event => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        event.stopPropagation();
-
-        focusSelf();
-      }
-    },
-    [focusSelf]
-  );
+  const handleDescendantFocus: () => void = useCallback(() => focusSelf(false), [focusSelf]);
 
   // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the focused activity.
   // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
 
+  // When receive Escape key from descendant, focus back to the activity.
+  const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
   const handleMouseDownCapture: MouseEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
-  const handleSentinelFocus: () => void = useCallback(() => focusSelf(), [focusSelf]);
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
@@ -103,19 +91,15 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
       )}
-
-      {/* TODO: [P*] Consider focus trap. */}
-      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
-      <div
-        className="webchat__basic-transcript__activity-box"
+      {/* Add tests for focus trap */}
+      <FocusTrap
+        bodyClassName="webchat__basic-transcript__activity-box"
         onFocus={handleDescendantFocus}
-        onKeyDown={handleDescendantKeyDown}
-        ref={bodyRef}
+        onLeave={handleLeaveFocusTrap}
       >
         {children}
-      </div>
+      </FocusTrap>
       {shouldSpeak && <SpeakActivity activity={activity} />}
-      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleSentinelFocus} />
       <div
         className={classNames('webchat__basic-transcript__activity-indicator', {
           'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant

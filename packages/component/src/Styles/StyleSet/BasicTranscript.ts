@@ -74,6 +74,7 @@ export default function createBasicTranscriptStyleSet({
         // The bounding box is expanded to both top and bottom to scroll focus indicator into view.
         // We should ignore clicks to make sure this expansion don't register click as focus.
         // Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead.
+        // TODO: [P*] Add tests to make sure click on very top/bottom edge will not focus on another activity.
         pointerEvents: 'none',
         position: 'absolute',
         top: 0,
@@ -82,15 +83,6 @@ export default function createBasicTranscriptStyleSet({
 
       '& .webchat__basic-transcript__activity-box:not(:empty)': {
         paddingBottom: paddingRegular
-      },
-
-      '& .webchat__basic-transcript__activity-sentinel': {
-        height: '100%',
-        left: 0,
-        pointerEvents: 'none',
-        position: 'absolute',
-        top: 0,
-        width: '100%'
       },
 
       '& .webchat__basic-transcript__terminator': {
