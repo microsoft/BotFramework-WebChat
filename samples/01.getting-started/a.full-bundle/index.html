@@ -7,10 +7,7 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
-    <script crossorigin="anonymous" src="/packages/bundle/dist/webchat.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
@@ -39,44 +36,14 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // window.WebChat.renderWebChat(
-        //   {
-        //     directLine: window.WebChat.createDirectLine({ token })
-        //   },
-        //   document.getElementById('webchat')
-        // );
-
-        // document.querySelector('#webchat > *').focus();
-
-        // TODO: [P*] DON'T COMMIT THIS FILE.
-        const {
-          React: { useCallback, useEffect },
-          WebChat: {
-            Components: { BasicWebChat, Composer },
-            createDirectLine,
-            hooks: { useFocus, useSendMessage }
-          }
-        } = window;
-
-        const SendMessageInitially = () => {
-          const sendMessage = useSendMessage();
-
-          useEffect(() => {
-            setTimeout(() => sendMessage('card sports'), 2000);
-          }, []);
-
-          return false;
-        };
-
-        ReactDOM.render(
-          React.createElement(
-            Composer,
-            { directLine: window.WebChat.createDirectLine({ token }) },
-            React.createElement(BasicWebChat),
-            React.createElement(SendMessageInitially)
-          ),
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token })
+          },
           document.getElementById('webchat')
         );
+
+        document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>
