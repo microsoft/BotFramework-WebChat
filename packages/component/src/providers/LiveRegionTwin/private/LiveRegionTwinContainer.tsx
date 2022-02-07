@@ -29,7 +29,6 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
   // In contrary, if we have 0-to-many at different time, we may falsely mark something as rendered.
   useMarkAllAsRenderedEffect();
 
-  // TODO: [P*] Add CSS to hide the live region.
   return (
     <div
       aria-label={ariaLabel}

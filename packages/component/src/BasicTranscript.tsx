@@ -409,11 +409,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // This is capturing plain ENTER.
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
-              const { current: focusedActivityKey } = focusedActivityKeyRef;
-
-              // TODO: [P*] We could do better.
               const body: HTMLElement = activityElementMapRef.current
-                .get(focusedActivityKey)
+                .get(focusedActivityKeyRef.current)
                 ?.querySelector('.webchat__basic-transcript__activity-body');
 
               tabbableElements(body)[0]?.focus();
