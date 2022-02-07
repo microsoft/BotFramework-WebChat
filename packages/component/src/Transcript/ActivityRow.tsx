@@ -49,12 +49,12 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
   const handleDescendantFocus: () => void = useCallback(() => focusSelf(false), [focusSelf]);
 
-  // For accessibility: when the user press up/down arrow keys, we put a visual focus indicator around the focused activity.
-  // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the focused activity.
-  // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
-
   // When receive Escape key from descendant, focus back to the activity.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
+
+  // When the user press UP/DOWN arrow keys, we put a visual focus indicator around the focused activity.
+  // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
+  // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
   const handleMouseDownCapture: MouseEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
 
   return (
@@ -93,7 +93,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
       )}
       {/* Add tests for focus trap */}
       <FocusTrap onFocus={handleDescendantFocus} onLeave={handleLeaveFocusTrap}>
-        <div className="webchat__basic-transcript__activity-box" ref={bodyRef}>
+        <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
           {children}
         </div>
       </FocusTrap>

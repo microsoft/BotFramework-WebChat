@@ -81,7 +81,7 @@ export default function createBasicTranscriptStyleSet({
         width: '100%'
       },
 
-      '& .webchat__basic-transcript__activity-box:not(:empty)': {
+      '& .webchat__basic-transcript__activity-body:not(:empty)': {
         paddingBottom: paddingRegular
       },
 

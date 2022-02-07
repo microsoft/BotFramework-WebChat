@@ -103,7 +103,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     const hasNewWidget = appendedActivities.some(
       ({ key }) =>
         !!tabbableElements(
-          activityElementMapRef.current.get(key)?.querySelector('.webchat__basic-transcript__activity-box')
+          activityElementMapRef.current.get(key)?.querySelector('.webchat__basic-transcript__activity-body')
         ).length
     );
 

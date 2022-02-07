@@ -414,7 +414,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               // TODO: [P*] We could do better.
               const body: HTMLElement = activityElementMapRef.current
                 .get(focusedActivityKey)
-                ?.querySelector('.webchat__basic-transcript__activity-box');
+                ?.querySelector('.webchat__basic-transcript__activity-body');
 
               tabbableElements(body)[0]?.focus();
             }

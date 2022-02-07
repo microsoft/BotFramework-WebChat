@@ -9,6 +9,11 @@ import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useValueRef from '../hooks/internal/useValueRef';
 
+enum InteractiveType {
+  LINK,
+  WIDGET
+}
+
 const { useAvatarForBot, useLocalizer } = hooks;
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
@@ -21,7 +26,7 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
 
 export default function useActivityAccessibleName(activity: DirectLineActivity, bodyRef: RefObject<HTMLElement>) {
   const [{ initials: botInitials }] = useAvatarForBot();
-  const [isInteractive, setIsInteractive] = useState<boolean>(false);
+  const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const fromSelf = activity.from?.role === 'user';
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -29,6 +34,7 @@ export default function useActivityAccessibleName(activity: DirectLineActivity, 
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
   const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
+  const activityInteractiveWithLinkAlt = localize('ACTIVITY_INTERACTIVE_WITH_LINKS_LABEL_ALT'); // "Click to interact."
   const greetingAlt = useMemo(
     () =>
       (fromSelf ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')).replace(
@@ -37,7 +43,7 @@ export default function useActivityAccessibleName(activity: DirectLineActivity, 
       ),
     [botInitials, fromSelf, localize]
   );
-  const isInteractiveRef = useValueRef(isInteractive);
+  const interactiveTypeRef = useValueRef(interactiveType);
   const messageTextAlt = useMemo(
     () => activityAltText(activity, renderMarkdownAsHTML),
     [activity, renderMarkdownAsHTML]
@@ -49,15 +55,31 @@ export default function useActivityAccessibleName(activity: DirectLineActivity, 
 
   const accessibleName = useMemo(
     // We are concatenating in a single string for Safari. If we split it up, Safari will only narrate the first section.
-    () => `${greetingAlt} ${messageTextAlt} ${numAttachmentsAlt} ${isInteractive ? activityInteractiveAlt : ''}`,
-    [activityInteractiveAlt, greetingAlt, isInteractive, messageTextAlt, numAttachmentsAlt]
+    () =>
+      `${greetingAlt} ${messageTextAlt} ${numAttachmentsAlt} ${
+        interactiveType === InteractiveType.LINK
+          ? activityInteractiveWithLinkAlt
+          : interactiveType === InteractiveType.WIDGET
+          ? activityInteractiveAlt
+          : ''
+      }`,
+    [
+      activityInteractiveAlt,
+      activityInteractiveWithLinkAlt,
+      greetingAlt,
+      interactiveType,
+      messageTextAlt,
+      numAttachmentsAlt
+    ]
   );
 
   useEffect(() => {
-    const nextIsInteractive = !!tabbableElements(bodyRef.current).length;
+    const hasLinks = !!bodyRef.current?.querySelector('a');
+    const hasWidgets = !!tabbableElements(bodyRef.current).length;
 
-    isInteractiveRef.current !== nextIsInteractive && setIsInteractive(nextIsInteractive);
-  }, [bodyRef, isInteractiveRef, setIsInteractive]);
+    interactiveTypeRef.current !== hasWidgets &&
+      setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
+  }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 
   return [accessibleName];
 }
