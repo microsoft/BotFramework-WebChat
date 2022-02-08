@@ -545,7 +545,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
           <Fragment>
-            <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={rootElementRef} />
+            <FocusRedirector redirectRef={rootElementRef} />
             <div
               aria-hidden={true}
               aria-labelledby={terminatorLabelId}
@@ -707,9 +707,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   return (
     <React.Fragment>
       {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
-      {!!React.Children.count(children) && (
-        <FocusRedirector className="webchat__basic-transcript__sentinel" redirectRef={terminatorRef} />
-      )}
+      {!!React.Children.count(children) && <FocusRedirector redirectRef={terminatorRef} />}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         <section

@@ -41,11 +41,11 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
 
   return (
     <Fragment>
-      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleFirstSentinelFocus} />
+      <FocusRedirector onFocus={handleFirstSentinelFocus} />
       <div onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
-      <FocusRedirector className="webchat__basic-transcript__activity-sentinel" onFocus={handleLastSentinelFocus} />
+      <FocusRedirector onFocus={handleLastSentinelFocus} />
     </Fragment>
   );
 };
