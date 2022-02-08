@@ -669,6 +669,8 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 
   const nextLastReadActivityKeyRef = useValueRef(nextLastReadActivityKey);
 
+  // TODO: [P*] lastReadActivityKey could be pointing to a typing activity.
+
   // If the "last read activity key" is the last one in the transcript, that means everything is read.
   // If transcript is empty, everything is read.
   const unread = useMemo(
