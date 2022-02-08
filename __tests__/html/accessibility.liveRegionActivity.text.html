@@ -88,6 +88,7 @@
 
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(7);
+        await pageConditions.liveRegionStabilized();
 
         const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
           testHelpers.getAllTextContents(child).join('\n')

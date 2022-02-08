@@ -4,6 +4,7 @@ import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import became from './became';
 import connectivityStatusShown from './connectivityStatusShown';
 import focusedActivityInView from './focusedActivityInView';
+import liveRegionStabilized from './liveRegionStabilized';
 import mediaBufferStabilized from './mediaBufferStabilized';
 import minNumActivitiesShown from './minNumActivitiesShown';
 import numActivitiesShown from './numActivitiesShown';
@@ -25,6 +26,7 @@ export {
   became,
   connectivityStatusShown,
   focusedActivityInView,
+  liveRegionStabilized,
   mediaBufferStabilized,
   minNumActivitiesShown,
   numActivitiesShown,

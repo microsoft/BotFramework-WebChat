@@ -50,6 +50,7 @@
 
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(10);
+        await pageConditions.liveRegionStabilized();
 
         // Unmount Web Chat, and re-render everything.
         ReactDOM.unmountComponentAtNode(container);
