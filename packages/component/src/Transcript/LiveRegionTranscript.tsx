@@ -89,7 +89,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     // We only consider new activities added to the bottom of the chat history.
     // Based on how `aria-relevant="additions"` works, activities that are updated, deleted, or reordered, should be ignored.
     for (const [key, activity] of Array.from(renderingActivities.entries()).reverse()) {
-      if (prevRenderingActivities.has(key)) {
+      if (prevRenderingActivities?.has(key)) {
         break;
       }
 
