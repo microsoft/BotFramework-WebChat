@@ -1,6 +1,7 @@
 import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
 import useActivityKeys from './useActivityKeys';
+import useActivityKeysByRead from './useActivityKeysByRead';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useByteFormatter from './useByteFormatter';
@@ -20,7 +21,6 @@ import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useGetActivityByKey from './useGetActivityByKey';
 import useGetHasAcknowledgedByActivityKey from './useGetHasAcknowledgedByActivityKey';
-import useGetHasReadByActivityKey from './useGetHasReadByActivityKey';
 import useGetKeyByActivity from './useGetKeyByActivity';
 import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
@@ -75,6 +75,7 @@ export {
   useActiveTyping,
   useActivities,
   useActivityKeys,
+  useActivityKeysByRead,
   useAvatarForBot,
   useAvatarForUser,
   useByteFormatter,
@@ -94,7 +95,6 @@ export {
   useEmitTypingIndicator,
   useGetActivityByKey,
   useGetHasAcknowledgedByActivityKey,
-  useGetHasReadByActivityKey,
   useGetKeyByActivity,
   useGetKeyByActivityId,
   useGetSendTimeoutForActivity,

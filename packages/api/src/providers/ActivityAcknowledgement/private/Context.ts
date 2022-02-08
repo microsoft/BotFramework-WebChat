@@ -1,13 +1,14 @@
 import { createContext } from 'react';
 
+// TODO: [P1] It seems acknowledgement is only for transcript scrolling and not very beneficial to everyone.
+//            We should move acknowledgement logic to transcript.
 type ActivityAcknowledgementContextType = {
+  activityKeysByReadState: readonly [readonly string[], readonly string[]];
   getHasAcknowledgedByActivityKey: (activityKey: string) => boolean | undefined;
-  getHasReadByActivityKey: (activityKey: string) => boolean | undefined;
-  // hasAnyUnreadActivitiesState: readonly [boolean];
   lastAcknowledgedActivityKeyState: readonly [string];
   lastReadActivityKeyState: readonly [string];
-  markAllAsAcknowledged: () => void;
   markActivityKeyAsRead: (activityKey: string) => void;
+  markAllAsAcknowledged: () => void;
 };
 
 const ActivityAcknowledgementContext = createContext<ActivityAcknowledgementContextType>(undefined);

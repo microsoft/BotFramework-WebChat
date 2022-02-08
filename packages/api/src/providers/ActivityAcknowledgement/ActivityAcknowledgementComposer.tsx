@@ -115,10 +115,15 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
     [activityAcknowledgementsRef]
   );
 
-  const getHasReadByActivityKey = useCallback<(activityKey: string) => boolean>(
-    (activityKey: string) => activityAcknowledgementsRef.current.get(activityKey)?.read,
-    [activityAcknowledgementsRef]
-  );
+  // TODO: [P2] Memoize with `useMemoWithPrevious` for better memoization of arrays.
+  const activityKeysByReadState = useMemo<readonly [readonly string[], readonly string[]]>(() => {
+    const index = allActivityKeys.indexOf(lastReadActivityKey);
+
+    return Object.freeze([
+      Object.freeze(allActivityKeys.slice(0, index + 1)),
+      Object.freeze(allActivityKeys.slice(index + 1))
+    ]) as readonly [readonly string[], readonly string[]];
+  }, [allActivityKeys, lastReadActivityKey]);
 
   const markAllAsAcknowledged = useCallback((): void => {
     const { current: allActivityKeys } = allActivityKeysRef;
@@ -142,18 +147,24 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
     [allActivityKeysRef, lastReadActivityKeyRef, setRawLastReadActivityKey]
   );
 
+  if (activityKeysByReadState[0].length + activityKeysByReadState[1].length !== allActivityKeys.length) {
+    console.warn(
+      'botframework-webchat internal: Sum of count of read and unread activity keys MUST equals to total number of activity keys.'
+    );
+  }
+
   const contextValue = useMemo<ActivityAcknowledgementContextType>(
     () => ({
+      activityKeysByReadState,
       getHasAcknowledgedByActivityKey,
-      getHasReadByActivityKey,
       lastAcknowledgedActivityKeyState: Object.freeze([lastAcknowledgedActivityKey]) as readonly [string],
       lastReadActivityKeyState: Object.freeze([lastReadActivityKey]) as readonly [string],
       markActivityKeyAsRead,
       markAllAsAcknowledged
     }),
     [
+      activityKeysByReadState,
       getHasAcknowledgedByActivityKey,
-      getHasReadByActivityKey,
       lastAcknowledgedActivityKey,
       lastReadActivityKey,
       markActivityKeyAsRead,

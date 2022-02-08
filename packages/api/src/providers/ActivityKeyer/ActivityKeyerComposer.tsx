@@ -30,7 +30,6 @@ type KeyToActivityMap = Map<string, DirectLineActivity>;
  *
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
-// TODO: [P*] Add telemetry to see how many new keys are generated.
 const ActivityKeyerComposer: FC<{}> = ({ children }) => {
   const existingContext = useActivityKeyerContext(false);
 
@@ -44,6 +43,7 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
   const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
   const keyToActivityMapRef = useRef<Readonly<KeyToActivityMap>>(Object.freeze(new Map()));
 
+  // TODO: [P1] `useMemoWithPrevious` to check and cache the resulting array if it hasn't changed.
   const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
     const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
     const { current: activityToKeyMap } = activityToKeyMapRef;
@@ -76,6 +76,7 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
     clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
     keyToActivityMapRef.current = Object.freeze(nextKeyToActivityMap);
 
+    // `nextActivityKeys` could potentially same as `prevActivityKeys` despite reference differences, we should memoize it.
     return Object.freeze([Object.freeze(nextActivityKeys)]) as readonly [readonly string[]];
   }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
 

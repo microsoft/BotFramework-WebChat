@@ -16,7 +16,7 @@ import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivi
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import useValueRef from '../hooks/internal/useValueRef';
 
-const { useGetHasAcknowledgedByActivityKey, useGetHasReadByActivityKey, useGetKeyByActivity } = hooks;
+const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
 type ActivityRowProps = PropsWithChildren<{
   activity: DirectLineActivity;
@@ -24,6 +24,7 @@ type ActivityRowProps = PropsWithChildren<{
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
+  const [readActivityKeys] = useActivityKeysByRead();
   const bodyRef = useRef<HTMLDivElement>();
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
@@ -37,9 +38,9 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   const activityKeyRef = useValueRef<string>(activityKey);
   const descendantId = useGetDescendantIdByActivityKey()(activityKey);
   const descendantLabelId = `webchat__basic-transcript__active-descendant-label--${activityKey}`;
-  const read = useGetHasReadByActivityKey()(activityKey);
 
   const isActiveDescendant = descendantId === activeDescendantId;
+  const read = readActivityKeys.includes(activityKey);
 
   const focusSelf = useCallback<(withFocus?: boolean) => void>(
     (withFocus?: boolean) => focusByActivityKey(activityKeyRef.current, withFocus),

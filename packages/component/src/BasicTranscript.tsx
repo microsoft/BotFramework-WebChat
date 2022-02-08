@@ -51,6 +51,7 @@ import useValueRef from './hooks/internal/useValueRef';
 
 const {
   useActivityKeys,
+  useActivityKeysByRead,
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
@@ -59,7 +60,6 @@ const {
   useGetKeyByActivity,
   useGetKeyByActivityId,
   useLastAcknowledgedActivityKey,
-  useLastReadActivityKey,
   useLocalizer,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
@@ -596,10 +596,9 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   terminatorRef
 }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
-  const [activityKeys] = useActivityKeys();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
   const [atEnd]: [boolean] = useAtEnd();
-  const [lastReadActivityKey] = useLastReadActivityKey();
+  const [, unreadActivityKeys] = useActivityKeysByRead();
   const [sticky]: [boolean] = useSticky();
   const [styleOptions] = useStyleOptions();
   const focusByActivityKey = useFocusByActivityKey();
@@ -608,7 +607,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
   const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
-  const activityKeysRef = useValueRef(activityKeys);
   const prevSticky = usePrevious(sticky);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
@@ -647,87 +645,58 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     [markAllAsAcknowledged, stickyChangedToTrue]
   );
 
-  const [activityTreeWithRenderer] = useActivityTreeWithRenderer();
+  const [flattenedActivityTreeWithRenderer] = useActivityTreeWithRenderer({ flat: true });
   const getKeyByActivity = useGetKeyByActivity();
-  const renderingActivityKeys: string[] = useMemo<string[]>(() => {
-    const renderingActivityKeys = [];
 
-    for (const entriesWithSameSender of activityTreeWithRenderer) {
-      for (const entriesWithSameSenderAndStatus of entriesWithSameSender) {
-        for (const { activity } of entriesWithSameSenderAndStatus) {
-          renderingActivityKeys.push(getKeyByActivity(activity));
-        }
-      }
-    }
+  const renderingActivityKeys: string[] = useMemo<string[]>(
+    () => flattenedActivityTreeWithRenderer.map(({ activity }) => getKeyByActivity(activity)),
+    [flattenedActivityTreeWithRenderer, getKeyByActivity]
+  );
 
-    return renderingActivityKeys;
-  }, [activityTreeWithRenderer, getKeyByActivity]);
-
-  const lastRenderingActivityKey = renderingActivityKeys[renderingActivityKeys.length - 1];
   const renderingActivityKeysRef = useValueRef(renderingActivityKeys);
 
-  const nextLastReadActivityKey = useMemo(() => {
-    // If the view is sticky, mark the last activity as read. For example:
-    // - View is at bottom when the new activity arrives;
-    // - User clicked on the "New messages" button.
+  // To prevent flashy button, we are not waiting for another render loop to update the `[readActivityKeys, unreadActivityKeys]` state.
+  // Instead, we are building the next one in this `useMemo` call.
+  const nextUnreadActivityKeys = useMemo(() => {
+    // This code need to be careful reviewed as it will cause another render. The code should be converging.
+    // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
+    // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
+    if (sticky && unreadActivityKeys.length) {
+      markActivityKeyAsRead(unreadActivityKeys[unreadActivityKeys.length - 1]);
 
-    if (sticky && lastRenderingActivityKey) {
-      // TODO: [P2] Both `markActivityKeyAsRead` and `markAllAsAcknowledged` hook are setters of useState.
-      //       This means, in a render loop, we will be calling setter and will cause another re-render.
-      //       This is not trivial but we should think if there is a way to avoid this.
-      markActivityKeyAsRead(lastRenderingActivityKey);
-
-      return lastRenderingActivityKey;
+      return [];
     }
 
-    return lastReadActivityKey;
-  }, [lastRenderingActivityKey, lastReadActivityKey, markActivityKeyAsRead, sticky]);
+    return unreadActivityKeys;
+  }, [markActivityKeyAsRead, sticky, unreadActivityKeys]);
 
-  const nextLastReadActivityKeyRef = useValueRef(nextLastReadActivityKey);
+  const nextUnreadActivityKeysRef = useValueRef(nextUnreadActivityKeys);
 
-  // If the "last read activity key" is the last one in the transcript, that means everything is read.
-  // If transcript is empty, everything is read.
+  // If we are rendering anything that is unread, we should show the "New messages" button.
+  // Not everything in the `unreadActivityKeys` are rendered, say, bot typing indicator.
+  // We should not show the "New messages" button for bot typing indicator as it will confuse the user.
   const unread = useMemo(
-    () => renderingActivityKeys[renderingActivityKeys.length - 1] !== nextLastReadActivityKey,
-    [renderingActivityKeys, nextLastReadActivityKey]
+    () => nextUnreadActivityKeys.some(key => renderingActivityKeys.includes(key)),
+    [renderingActivityKeys, nextUnreadActivityKeys]
   );
 
   const handleScrollToEndButtonClick = useCallback(() => {
     scrollToEnd({ behavior: 'smooth' });
 
-    // After the "New message" button is clicked, focus on the first unread activity.
-    // Since "nextLastReadActivityKey" could be pointing to an activity which is not rendered (not contained in `renderingActivityKeys`).
-    // Thus, we need to find out what is the closest last read which is rendered (contained in `renderingActivityKeys`).
-    // Then, first unread will be the next one in the `renderingActivityKeys` array.
-    const { current: activityKeys } = activityKeysRef;
-    const readActivityKeys = activityKeys.slice(0, activityKeys.indexOf(nextLastReadActivityKeyRef.current) + 1);
     const { current: renderingActivityKeys } = renderingActivityKeysRef;
 
-    let firstUnreadActivityKey;
+    // After the "New message" button is clicked, focus on the first unread activity which will be rendered.
+    const firstUnreadRenderingActivityKey = nextUnreadActivityKeysRef.current.find(key =>
+      renderingActivityKeys.includes(key)
+    );
 
-    for (const readActivityKey of readActivityKeys.reverse()) {
-      const index = renderingActivityKeys.indexOf(readActivityKey);
-
-      if (~index) {
-        firstUnreadActivityKey = renderingActivityKeys[index + 1];
-        break;
-      }
-    }
-
-    if (firstUnreadActivityKey) {
-      focusByActivityKey(firstUnreadActivityKey);
+    if (firstUnreadRenderingActivityKey) {
+      focusByActivityKey(firstUnreadRenderingActivityKey);
     } else {
       // If no unread activity, send the focus to the terminator block.
       terminatorRef.current?.focus();
     }
-  }, [
-    activityKeysRef,
-    focusByActivityKey,
-    nextLastReadActivityKeyRef,
-    renderingActivityKeysRef,
-    scrollToEnd,
-    terminatorRef
-  ]);
+  }, [focusByActivityKey, nextUnreadActivityKeysRef, renderingActivityKeysRef, scrollToEnd, terminatorRef]);
 
   const renderScrollToEndButton = useCreateScrollToEndButtonRenderer()({
     atEnd: animatingToEnd || atEnd || sticky,
