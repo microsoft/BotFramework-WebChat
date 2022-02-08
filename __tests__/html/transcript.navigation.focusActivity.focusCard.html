@@ -93,6 +93,13 @@
         // WHEN: TAB key is pressed.
         await host.sendTab();
 
+        // THEN: It should focus back on the first input box in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelectorAll('input')[0]);
+        await host.snapshot();
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
         // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         expect(document.activeElement).toBe(pageElements.transcript());
         expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
@@ -107,6 +114,13 @@
 
         // WHEN: SHIFT-TAB key is pressed.
         await host.sendShiftTab();
+
+        // THEN: It should focus on the submit button in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelector('button'));
+        await host.snapshot();
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
 
         // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
         expect(document.activeElement).toBe(pageElements.transcript());

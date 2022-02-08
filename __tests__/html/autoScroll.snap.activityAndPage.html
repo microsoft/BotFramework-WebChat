@@ -113,9 +113,9 @@
         await pageConditions.minNumActivitiesShown(7);
         await pageConditions.scrollStabilized();
 
-        const activityElementAtTopOfView = document.querySelector('.webchat__basic-transcript__activity:nth-child(7)');
+        const { top } = pageObjects.getActivityBoundingBoxes()[6];
 
-        expect(scrollable.scrollTop).toBe(activityElementAtTopOfView.offsetTop - 100);
+        expect(scrollable.scrollTop).toBe(top - 100);
 
         await host.snapshot();
       });
