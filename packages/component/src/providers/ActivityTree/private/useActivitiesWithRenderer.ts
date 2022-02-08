@@ -17,7 +17,7 @@ export default function useActivitiesWithRenderer(
   );
 
   // Create a memoized context of the createActivityRenderer function.
-  // TODO: [P*] Rename useMemoize to useMemoAll
+  // TODO: [P2] Rename useMemoize to useMemoAll
   const entries = useMemoize(
     createActivityRendererWithLiteralArgs,
     createActivityRendererWithLiteralArgsMemoized => {

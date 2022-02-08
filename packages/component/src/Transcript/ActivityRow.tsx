@@ -61,9 +61,8 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
     <article
+      aria-hidden={activity.channelData?.['webchat:fallback-text'] === ''}
       aria-setsize={-1}
-      // TODO: [P*] If "webchat:fallback-text" field is set to empty string, this activity is presentational.
-      // aria-hidden={activity.channelData?.['webchat:fallback-text'] === ''}
       className={classNames('webchat__basic-transcript__activity', {
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
@@ -72,7 +71,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
       onMouseDownCapture={handleMouseDownCapture}
       ref={ref}
     >
-      {/* TODO: [P*] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
+      {/* TODO: [P1] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
 
       {/* The following <div> is designed for active descendant only.
           We want to prevent screen reader from scanning the content that is authored only for active descendant.

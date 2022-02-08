@@ -74,7 +74,6 @@ export default function createBasicTranscriptStyleSet({
         // The bounding box is expanded to both top and bottom to scroll focus indicator into view.
         // We should ignore clicks to make sure this expansion don't register click as focus.
         // Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead.
-        // TODO: [P*] Add tests to make sure click on very top/bottom edge will not focus on another activity.
         pointerEvents: 'none',
         position: 'absolute',
         top: 0,

@@ -26,7 +26,7 @@ import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import KeyboardHelp from './Transcript/KeyboardHelp';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-// TODO: [P*] Rename to "getTabbableElements".
+// TODO: [P2] #4133 Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
@@ -117,7 +117,7 @@ type InternalTranscriptProps = {
   className?: string;
 };
 
-// TODO: [P*] Add telemetry for computing how many re-render done so far.
+// TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
   ({ activityElementMapRef, className }, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
