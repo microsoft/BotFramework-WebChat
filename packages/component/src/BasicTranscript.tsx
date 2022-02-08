@@ -258,25 +258,23 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         if (typeof scrollTop !== 'undefined') {
           scrollToBottomScrollTo(scrollTop, { behavior });
         } else if (typeof activityId !== 'undefined') {
-          const activityElement = activityElementMapRef.current.get(getKeyByActivityId(activityId));
+          const activityBoundingBoxElement = activityElementMapRef.current
+            .get(getKeyByActivityId(activityId))
+            ?.querySelector('.webchat__basic-transcript__activity-active-descendant');
 
           const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
 
-          if (scrollableElement && activityElement) {
+          if (scrollableElement && activityBoundingBoxElement) {
             // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
-            const { height: activityElementHeight, y: activityElementY } = activityElement.getClientRects()[0];
+            const { height: activityHeight, y: activityY } = activityBoundingBoxElement.getClientRects()[0];
 
             // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
             const { height: scrollableHeight } = scrollableElement.getClientRects()[0];
+            const activityOffsetTop = activityY + scrollableElement.scrollTop;
 
-            const activityElementOffsetTop = activityElementY + scrollableElement.scrollTop;
-
-            const scrollTop = Math.min(
-              activityElementOffsetTop,
-              activityElementOffsetTop - scrollableHeight + activityElementHeight
-            );
+            const scrollTop = Math.min(activityOffsetTop, activityOffsetTop - scrollableHeight + activityHeight);
 
             scrollToBottomScrollTo(scrollTop, { behavior });
           }
