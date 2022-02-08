@@ -52,7 +52,7 @@ describe('suggested-actions command', () => {
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
-    const buttons = await driver.findElements(By.css('button'));
+    const buttons = await driver.findElements(By.css('.webchat__suggested-actions button'));
 
     const imBackButton = buttons[1];
 
@@ -73,7 +73,7 @@ describe('suggested-actions command', () => {
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
-    const buttons = await driver.findElements(By.css('button'));
+    const buttons = await driver.findElements(By.css('.webchat__suggested-actions button'));
 
     const postBackStringButton = buttons[2];
 
@@ -94,7 +94,7 @@ describe('suggested-actions command', () => {
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
-    const buttons = await driver.findElements(By.css('button'));
+    const buttons = await driver.findElements(By.css('.webchat__suggested-actions button'));
 
     const postBackStringButton = buttons[3];
 
@@ -115,7 +115,7 @@ describe('suggested-actions command', () => {
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
-    const buttons = await driver.findElements(By.css('button'));
+    const buttons = await driver.findElements(By.css('.webchat__suggested-actions button'));
 
     const postBackStringButton = buttons[4];
 
@@ -136,7 +136,7 @@ describe('suggested-actions command', () => {
 
     await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
-    const buttons = await driver.findElements(By.css('button'));
+    const buttons = await driver.findElements(By.css('.webchat__suggested-actions button'));
 
     const postBackStringButton = buttons[4];
 
