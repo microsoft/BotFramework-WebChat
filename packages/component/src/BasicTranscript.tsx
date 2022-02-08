@@ -840,9 +840,15 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
                 activityElements[firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1];
 
               if (nthUnacknowledgedActivityElement) {
+                const nthUnacknowledgedActivityBoundingBoxElement = nthUnacknowledgedActivityElement?.querySelector(
+                  '.webchat__basic-transcript__activity-active-descendant'
+                ) as HTMLElement;
+                const nthUnacknowledgedActivityOffsetTop =
+                  nthUnacknowledgedActivityElement.offsetTop + nthUnacknowledgedActivityBoundingBoxElement.offsetTop;
+
                 values.push(
-                  nthUnacknowledgedActivityElement.offsetTop +
-                    nthUnacknowledgedActivityElement.offsetHeight -
+                  nthUnacknowledgedActivityOffsetTop +
+                    nthUnacknowledgedActivityBoundingBoxElement.offsetHeight -
                     offsetHeight -
                     scrollTop +
                     patchedAutoScrollSnapOnActivityOffset
@@ -852,9 +858,14 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
 
             if (patchedAutoScrollSnapOnPage) {
               const firstUnacknowledgedActivityElement = activityElements[+firstUnacknowledgedActivityElementIndex];
+              const firstUnacknowledgedActivityBoundingBoxElement = firstUnacknowledgedActivityElement.querySelector(
+                '.webchat__basic-transcript__activity-active-descendant'
+              ) as HTMLElement;
+              const firstUnacknowledgedActivityOffsetTop =
+                firstUnacknowledgedActivityElement.offsetTop + firstUnacknowledgedActivityBoundingBoxElement.offsetTop;
 
               values.push(
-                firstUnacknowledgedActivityElement.offsetTop -
+                firstUnacknowledgedActivityOffsetTop -
                   scrollTop -
                   offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
                   patchedAutoScrollSnapOnPageOffset
