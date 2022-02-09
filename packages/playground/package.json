@@ -12,7 +12,7 @@
     "@emotion/react": "11.4.0",
     "@fluentui/react": "8.22.3",
     "adaptivecards": "^2.10.0",
-    "botframework-directlinejs": "0.15.0",
+    "botframework-directlinejs": "0.15.1",
     "botframework-webchat": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.1",

@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/runtime@7.15.4`](https://npmjs.com/package/@babel/runtime)
       -  [`adaptivecards@2.10.0`](https://npmjs.com/package/adaptivecards)
       -  [`base64-arraybuffer@1.0.1`](https://npmjs.com/package/base64-arraybuffer)
+      -  [`botframework-directlinejs@0.15.1`](https://npmjs.com/package/botframework-directlinejs)
       -  [`core-js@3.18.3`](https://npmjs.com/package/core-js)
       -  [`markdown-it@12.3.2`](https://npmjs.com/package/markdown-it)
       -  [`markdown-it-attrs-es5@2.0.1`](https://npmjs.com/package/markdown-it-attrs-es5)
