@@ -4,7 +4,9 @@ const clientOffsetToViewportOffset = require('./util/clientOffsetToViewportOffse
 
 module.exports = webDriver =>
   async function click(x, y, element) {
-    ({ x, y } = await clientOffsetToViewportOffset(webDriver, element, x, y));
+    if (element) {
+      ({ x, y } = await clientOffsetToViewportOffset(webDriver, element, x, y));
+    }
 
     await webDriver
       .actions()

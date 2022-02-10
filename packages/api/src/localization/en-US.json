@@ -81,6 +81,7 @@
   "KEYBOARD_HELP_CHAT_WINDOW_BODY_MOVE_BETWEEN_ITEMS_BODY": "Tab key\nShift + tab key",
   "KEYBOARD_HELP_CHAT_WINDOW_BODY_MOVE_BETWEEN_ITEMS_HEADER": "Move between items in the chat window",
   "KEYBOARD_HELP_CHAT_WINDOW_HEADER": "Chat window",
+  "KEYBOARD_HELP_CLOSE_BUTTON_ALT": "Close",
   "KEYBOARD_HELP_HEADER": "Keyboard controls",
   "MARKDOWN_EXTERNAL_LINK_ALT": "Opens in a new window; external.",
   "_MARKDOWN_EXTERNAL_LINK_ALT.comment": "This is for the screen reader and is added to the label of the hyperlink. When clicked, the hyperlink will open in a new tab or window.",

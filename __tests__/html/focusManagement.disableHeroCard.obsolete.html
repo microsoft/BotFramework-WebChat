@@ -56,39 +56,65 @@
 
         const [firstButton, secondButton] = document.querySelectorAll('.ac-adaptiveCard button');
 
+        // WHEN: The first button is focused.
         firstButton.focus();
 
+        // THEN: It should show a focus indicator around the first button.
         await host.snapshot();
 
+        // WHEN: The first button is clicked.
         await firstButton.click();
 
+        // THEN: It should show 4 activities.
         await pageConditions.minNumActivitiesShown(4);
+
+        // THEN: It should scroll to the bottom.
         await pageConditions.scrollToBottomCompleted();
 
+        // THEN: The second button should be disabled.
         expect(secondButton.hasAttribute('disabled')).toBe(true);
 
+        // THEN: The second button should be grayed out.
         await host.snapshot();
 
-        // After clicking on the hero card button, it should keep the focus on the now disabled button.
+        // THEN: The first button should still be kept as focused.
         expect(document.activeElement).toBe(firstButton);
 
-        // Press TAB should focus on the transcript.
-        await host.sendTab();
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
 
-        await host.snapshot();
-
-        // Press SHIFT-TAB cannot put the focus back to the disabled button, instead, it will keep the focus on transcript.
-        await host.sendKeys('ENTER');
-
+        // THEN: It should focus on the transcript.
         expect(document.activeElement).toBe(pageElements.transcript());
 
+        // THEN: It should keep the hero card activity active.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+
+        // THEN: It should focus on the transcript with the first hero card selected.
         await host.snapshot();
 
+        // WHEN: ENTER key is pressed. It should not focus in the activity because the activity no longer contains any interactive elements.
+        //       All buttons in the activity is now disabled.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should keep the focus on the transcript.
+        expect(document.activeElement).toBe(pageElements.transcript());
+
+        // THEN: It should keep the hero card activity active.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+
+        // THEN: It should focus on the transcript with the first hero card selected.
+        await host.snapshot();
+
+        // WHEN: Using arrow keys to move to the second hero card, then focus and press on the first button.
         await host.sendKeys('ARROW_DOWN', 'ARROW_DOWN', 'ENTER', 'ENTER');
 
+        // THEN: It should submit the hero card and receives a response.
         await pageConditions.minNumActivitiesShown(6);
+
+        // THEN: It should scroll to the bottom.
         await pageConditions.scrollToBottomCompleted();
 
+        // THEN: It should submit the hero card and scroll to the bottom.
         await host.snapshot();
       });
     </script>

@@ -22,7 +22,7 @@
         await pageObjects.sendMessageViaSendBox('echo Hello, [World](https://bing.com)!');
         await pageConditions.minNumActivitiesShown(3);
 
-        const externalLink = pageElements.transcript().querySelector('li:last-child a');
+        const externalLink = [...pageElements.activities()].reverse()[0].querySelector('a');
         const relationships = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
 
         expect(relationships).toEqual(['noopener', 'noreferrer']);

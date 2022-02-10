@@ -26,9 +26,12 @@ export default function createBasicTranscriptStyleSet({
           borderStyle: transcriptActivityVisualKeyboardIndicatorStyle,
           borderWidth: transcriptActivityVisualKeyboardIndicatorWidth,
           boxSizing: 'border-box',
-          height: `calc(100% - ${paddingRegular}px)`,
+          height: `calc(100% - ${paddingRegular / 2}px)`,
           left: 0,
-          margin: paddingRegular / 2,
+          marginBottom: 0,
+          marginLeft: paddingRegular / 2,
+          marginRight: paddingRegular / 2,
+          marginTop: 0,
           pointerEvents: 'none',
           position: 'absolute',
           top: 0,
@@ -50,25 +53,35 @@ export default function createBasicTranscriptStyleSet({
         },
 
       '& .webchat__basic-transcript__activity': {
-        paddingTop: paddingRegular,
+        paddingTop: paddingRegular / 2,
         position: 'relative',
 
+        '&:first-child': {
+          marginTop: paddingRegular / 2
+        },
+
         '&:not(:first-child)': {
-          marginTop: -paddingRegular
+          marginTop: -paddingRegular / 2
         }
       },
 
-      '& .webchat__basic-transcript__activity-box:not(:empty)': {
-        paddingBottom: paddingRegular
-      },
-
-      '& .webchat__basic-transcript__activity-sentinel': {
+      // When the activity is focused as active descendant, `scrollIntoView()` will scroll this invisible <div> into view.
+      '& .webchat__basic-transcript__activity-active-descendant': {
         height: '100%',
         left: 0,
+        marginTop: -paddingRegular / 2,
+        paddingBottom: paddingRegular / 2,
+        // The bounding box is expanded to both top and bottom to scroll focus indicator into view.
+        // We should ignore clicks to make sure this expansion don't register click as focus.
+        // Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead.
         pointerEvents: 'none',
         position: 'absolute',
         top: 0,
         width: '100%'
+      },
+
+      '& .webchat__basic-transcript__activity-body:not(:empty)': {
+        paddingBottom: paddingRegular
       },
 
       '& .webchat__basic-transcript__terminator': {

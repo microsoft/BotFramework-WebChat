@@ -58,6 +58,7 @@
         await pageConditions.allImagesLoaded();
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.scrollToBottomCompleted();
+        await pageConditions.liveRegionStabilized();
 
         await pageObjects.focusSendBoxTextBox();
 

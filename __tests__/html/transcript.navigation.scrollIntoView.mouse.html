@@ -51,35 +51,53 @@
         await pageConditions.uiConnected();
         await pageConditions.scrollToBottomCompleted();
 
-        // GIVEN: A transcript with 20 activities, with the first activity focused.
+        // SETUP: A transcript with 20 activities, with the send box focused.
         await pageConditions.numActivitiesShown(20);
         await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: Pressing SHIFT-TAB x 3 to focus on the last activity, then press HOME key.
         await host.sendShiftTab(3);
         await host.sendKeys('HOME');
+
+        // THEN: It should focus on the first activity.
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+
+        // THEN: It should have the scroll top of 0.
         await pageConditions.scrollStabilized(0);
         await host.snapshot();
 
-        // GIVEN: Transcript is scrolled to the bottom.
+        // WHEN: Pressing TAB x 3 to focus on the send box.
         await host.sendTab(3);
+
+        // WHEN: Pressing END key on the send box while it is empty.
         await host.sendKeys('END');
+
+        // THEN: It should scroll to the bottom.
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
+
+        // THEN: It should keep the first activity selected through aria-activedescendant.
+        expect(pageElements.activeActivity()).toBe(pageElements.activities()[0]);
 
         // WHEN: Click on the lower-right corner of transcript to focus on it.
         await host.clickAt(-1, -1, pageElements.transcriptScrollable());
 
-        // THEN: It should keep the scroll position at bottom, with the first activity selected.
-        await pageConditions.scrollToBottomCompleted();
+        // THEN: It should have the first activity selected.
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+
+        // THEN: It should keep the scroll position at bottom.
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
 
         // WHEN: Press arrow down key.
         await host.sendKeys('ARROW_DOWN');
 
-        // THEN: It should focus on the second activity and scroll it into view.
+        // THEN: It should focus on the second activity.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+
+        // THEN: It should scroll the second activity into view.
         await pageConditions.scrollStabilized();
         await pageConditions.focusedActivityInView();
-        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
         await host.snapshot();
       });
     </script>

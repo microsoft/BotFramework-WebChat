@@ -1,22 +1,12 @@
+import getActiveActivity from './activeActivity';
 import transcript from './transcript';
 
-function isSelfOrAncestor(parent, node) {
-  while (node) {
-    if (parent === node) {
-      return true;
-    }
-
-    node = node.parentElement;
-  }
-
-  return false;
-}
-
 export default function focusedActivity() {
-  const activity = document.getElementById(transcript().getAttribute('aria-activedescendant'));
+  const activity = getActiveActivity();
 
   // If focus is on the Adaptive Card or <input> inside the activity, it is considered as focused.
-  if (activity && (document.activeElement === transcript() || isSelfOrAncestor(activity, document.activeElement))) {
+  // if (activity && (document.activeElement === transcript() || isSelfOrAncestor(activity, document.activeElement))) {
+  if (activity && (document.activeElement === transcript() || activity.contains(document.activeElement))) {
     return activity;
   }
 }

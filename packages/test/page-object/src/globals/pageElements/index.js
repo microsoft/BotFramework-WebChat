@@ -1,3 +1,4 @@
+import activeActivity from './activeActivity';
 import activities from './activities';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
@@ -15,6 +16,7 @@ import transcriptScrollable from './transcriptScrollable';
 import transcriptTerminator from './transcriptTerminator';
 
 export {
+  activeActivity,
   activities,
   connectivityStatus,
   focusedActivity,

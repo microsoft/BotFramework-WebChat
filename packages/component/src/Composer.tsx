@@ -16,6 +16,7 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -34,7 +35,7 @@ import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
-const { useReferenceGrammarID, useStyleOptions } = hooks;
+const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
@@ -125,7 +126,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   }, [referenceGrammarID, webSpeechPonyfillFactory]);
 
   const scrollPositionObserversRef = useRef([]);
-  const [numScrollPositionObservers, setNumScrollPositionObservers] = useState(0);
 
   const dispatchScrollPosition = useCallback(
     event => scrollPositionObserversRef.current.forEach(observer => observer(event)),
@@ -135,23 +135,32 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const observeScrollPosition = useCallback(
     observer => {
       scrollPositionObserversRef.current = [...scrollPositionObserversRef.current, observer];
-      setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
 
       return () => {
         scrollPositionObserversRef.current = scrollPositionObserversRef.current.filter(target => target !== observer);
-        setNumScrollPositionObservers(scrollPositionObserversRef.current.length);
       };
     },
-    [scrollPositionObserversRef, setNumScrollPositionObservers]
+    [scrollPositionObserversRef]
   );
 
   const transcriptFocusObserversRef = useRef([]);
   const [numTranscriptFocusObservers, setNumTranscriptFocusObservers] = useState(0);
 
-  const dispatchTranscriptFocus = useCallback(
-    event => transcriptFocusObserversRef.current.forEach(observer => observer(event)),
-    [transcriptFocusObserversRef]
-  );
+  const getActivityByKey = useGetActivityByKey();
+
+  const dispatchTranscriptFocusByActivityKey = useMemo(() => {
+    let prevActivityKey: string | Symbol | undefined = Symbol();
+
+    return activityKey => {
+      if (activityKey !== prevActivityKey) {
+        prevActivityKey = activityKey;
+
+        const event = { activity: getActivityByKey(activityKey) };
+
+        transcriptFocusObserversRef.current.forEach(observer => observer(event));
+      }
+    };
+  }, [getActivityByKey, transcriptFocusObserversRef]);
 
   const observeTranscriptFocus = useCallback(
     observer => {
@@ -170,13 +179,12 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     () => ({
       dictateAbortable,
       dispatchScrollPosition,
-      dispatchTranscriptFocus,
+      dispatchTranscriptFocusByActivityKey,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
       nonce,
-      numScrollPositionObservers,
       numTranscriptFocusObservers,
       observeScrollPosition,
       observeTranscriptFocus,
@@ -193,13 +201,12 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [
       dictateAbortable,
       dispatchScrollPosition,
-      dispatchTranscriptFocus,
+      dispatchTranscriptFocusByActivityKey,
       focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownIt,
       internalRenderMarkdownInline,
       nonce,
-      numScrollPositionObservers,
       numTranscriptFocusObservers,
       observeScrollPosition,
       observeTranscriptFocus,
@@ -338,17 +345,19 @@ const Composer: FC<ComposerProps> = ({
         typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
         {...composerProps}
       >
-        <ComposerCore
-          extraStyleSet={extraStyleSet}
-          nonce={nonce}
-          renderMarkdown={renderMarkdown}
-          styleSet={styleSet}
-          suggestedActionsAccessKey={suggestedActionsAccessKey}
-          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-        >
-          {children}
-          {onTelemetry && <UITracker />}
-        </ComposerCore>
+        <ActivityTreeComposer>
+          <ComposerCore
+            extraStyleSet={extraStyleSet}
+            nonce={nonce}
+            renderMarkdown={renderMarkdown}
+            styleSet={styleSet}
+            suggestedActionsAccessKey={suggestedActionsAccessKey}
+            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+          >
+            {children}
+            {onTelemetry && <UITracker />}
+          </ComposerCore>
+        </ActivityTreeComposer>
       </APIComposer>
     </React.Fragment>
   );

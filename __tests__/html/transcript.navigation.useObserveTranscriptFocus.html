@@ -15,7 +15,7 @@
       const {
         WebChat: {
           Components: { BasicWebChat, Composer },
-          hooks: { useObserveTranscriptFocus }
+          hooks: { useActivities, useObserveTranscriptFocus }
         }
       } = window;
 
@@ -48,49 +48,91 @@
         await pageConditions.numActivitiesShown(32);
         await pageConditions.scrollToBottomCompleted();
 
-        // After the transcript is loaded, it should send an event saying it is not focusing on any activities.
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined]);
+        // WHEN: The transcript is loaded, it should send an event saying it is not focusing on any activities.
+        //       However, the observation was done later than the event is dispatched. Thus, it is not receiving `undefined`.
 
+        // THEN: It should not receive any "transcriptfocus" event.
+        expect(transcriptFocusActivityIDHistory).toEqual([]);
+
+        // SETUP: Focus on the send box.
         await pageObjects.focusSendBoxTextBox();
 
-        // Should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
+        // WHEN: Pressing SHIFT-TAB x 3 to focus on the transcript from the send box.
         await host.sendShiftTab(3);
 
-        // Should focus on activity with ID 31.
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31']);
+        // THEN: It should send a "transcriptfocus" event with the last activity (#31).
+        expect(transcriptFocusActivityIDHistory).toEqual(['31']);
 
-        // Should focus on activity with ID 30.
+        // WHEN: Pressing UP arrow key from the last activity.
         await host.sendKeys('ARROW_UP');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30']);
 
-        // Should focus on activity with ID 29, which is an Adaptive Card.
+        // THEN: It should send a "transcriptfocus" event with the second-last activity (#30).
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30']);
+
+        // WHEN: Pressing UP arrow key from the second-last activity.
         await host.sendKeys('ARROW_UP');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
 
-        // After pressing ENTER to interact with Adaptive Card, it should not send another event because focused activity didn't change.
+        // THEN: It should send a "transcriptfocus" event with the third-last activity, which is a card activity (#29).
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29']);
+
+        // WHEN: Pressing ENTER key while focusingo on the card activity (#29).
         await host.sendKeys('ENTER');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
 
-        // After pressing ESCAPE to focus back to the transcript, it should not send another event because focused activity didn't change.
+        // THEN: It should not send another event because the transcript did not gain any new focus.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29']);
+
+        // WHEN: Pressing ESCAPE key from the Adaptive Card to focus back to the transcript.
         await host.sendKeys('ESCAPE');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29']);
 
-        // After sending a message, since the transcript has changed, the focus will be reset.
-        // It should send an event that the focused activity become undefined.
+        // THEN: It should not send another event because focused activity didn't change.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29']);
+
+        // WHEN: Pressing A followed by ENTER key to send a message.
         await host.sendKeys('A', 'ENTER');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined]);
 
-        // After focusing on an activity programmatically, it should send an event.
+        // THEN: It should send an event indicating no activity is being focused.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29', undefined]);
+
+        // WHEN: Programmatically focus on the <input> of the Adaptive Card.
         document.querySelector('.ac-input').focus();
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29']);
 
-        // After pressing ESCAPE to focus back to the transcript, it should not send another event because focused activity didn't change.
+        // THEN: It should send an event indicating the card activity (#29) is being focused.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29', undefined, '29']);
+
+        // WHEN: Pressing ESCAPE key from the Adaptive Card to focus back to the transcript.
         await host.sendKeys('ESCAPE');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29']);
 
-        // Should foucs on first activity after pressing HOME.
+        // THEN: It should not send another event because focused activity didn't change.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29', undefined, '29']);
+
+        // WHEN: Pressing HOME key from activity #29.
         await host.sendKeys('HOME');
-        expect(transcriptFocusActivityIDHistory).toEqual([undefined, '31', '30', '29', undefined, '29', '0']);
+
+        // THEN: It should send an event indicating the first activity (#0) is focused.
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29', undefined, '29', '0']);
+
+        // WHEN: Pressing END key from the first activity.
+        await host.sendKeys('END');
+
+        // THEN: It should send focus event about the last activity, which is an outgoing activity.
+        const lastActivityId = [...pageObjects.getActivities()].reverse()[0].id;
+
+        expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29', undefined, '29', '0', lastActivityId]);
+
+        // WHEN: Clicking on the first <input> of the card.
+        await host.click(document.querySelector('.ac-input'));
+
+        // THEN: It should send focus event about the card activity (#29).
+        expect(transcriptFocusActivityIDHistory).toEqual([
+          '31',
+          '30',
+          '29',
+          undefined,
+          '29',
+          '0',
+          lastActivityId,
+          '29'
+        ]);
       });
     </script>
   </body>

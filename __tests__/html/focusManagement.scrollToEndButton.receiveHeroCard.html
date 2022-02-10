@@ -28,34 +28,39 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.scrollToBottomCompleted();
 
-        // Focus on the last button of the activity just above the "New messages" button.
+        // SETUP: Focus on the last button of the activity just above the "New messages" button.
         const lastButtonOnFirstCard = pageElements.activities()[1].querySelectorAll('button')[3];
 
         lastButtonOnFirstCard.focus();
 
-        // Scroll to bottom minus 10px.
+        // SETUP: Scroll to bottom minus 10px.
         await pageObjects.scrollToTop(-10);
-
         await host.snapshot();
 
+        // SETUP: Receive a new card, so the "New messages" button is shown.
         await pageObjects.sendMessageViaCode('herocard qna 1');
-
         await pageConditions.minNumActivitiesShown(4);
 
-        // Make sure TAB on the last button will jump to the transcript, then the "New messages" button.
-        await host.sendTab(2);
+        // WHEN: Focusing inside the activity, ESCAPE key is pressed followed by TAB key.
+        await host.sendKeys('ESCAPE');
+        await host.sendTab();
 
+        // THEN: The focus should land on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
         await host.snapshot();
 
-        // Press ENTER on the "New messages" button.
+        // WHEN: ENTER key is pressed on the "New messages" button.
         await host.sendKeys('ENTER');
 
+        // THEN: It should scroll to the bottom.
         await pageConditions.scrollToBottomCompleted();
 
-        // After clicking on "New messages" button for a hero card with buttons, it should focus on the transcript terminator.
-        expect(document.activeElement === pageElements.transcript()).toBe(true);
+        // THEN: It should focus on the transcript.
+        expect(document.activeElement).toBe(pageElements.transcript());
+
+        // THEN: It should focus on the first unread activity.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[2]);
 
         await host.snapshot();
       });

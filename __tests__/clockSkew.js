@@ -103,7 +103,7 @@ describe('Clock skew', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
     const activityElements = await getActivityElements(driver);
-    const lastActivityParagraphElement = await activityElements[activityElements.length - 1].findElement(By.css('.webchat__basic-transcript__activity-box p'));
+    const lastActivityParagraphElement = await activityElements[activityElements.length - 1].findElement(By.css('.webchat__basic-transcript__activity-body p'));
 
     await expect(lastActivityParagraphElement.getText()).resolves.toBe(
       'echo This outgoing activity should be the last in the list.'
@@ -146,7 +146,7 @@ describe('Clock skew', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
     const activityElements = await getActivityElements(driver);
-    const firstActivityParagraphElement = await activityElements[0].findElement(By.css('.webchat__basic-transcript__activity-box p'));
+    const firstActivityParagraphElement = await activityElements[0].findElement(By.css('.webchat__basic-transcript__activity-body p'));
 
     await expect(firstActivityParagraphElement.getText()).resolves.toBe(
       'echo This outgoing activity should be the first in the list before echo back, and last after the echo back.'

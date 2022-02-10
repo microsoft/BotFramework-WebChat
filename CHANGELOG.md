@@ -48,6 +48,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4081](https://github.com/microsoft/BotFramework-WebChat/issues/4081). Updated typing for `StyleOptions.suggestedActionsStackedOverflow`, by [@compulim](https://github.com/compulim), in PR [#4083](https://github.com/microsoft/BotFramework-WebChat/pull/4083)
 -  Fixes [#4075](https://github.com/microsoft/BotFramework-WebChat/issues/4075). Added `box-sizing: border-box` to all descendants under Adaptive Cards, by [@compulim](https://github.com/compulim), in PR [#4084](https://github.com/microsoft/BotFramework-WebChat/pull/4084)
 -  Fixes [#4104](https://github.com/microsoft/BotFramework-WebChat/issues/4104) and [#4105](https://github.com/microsoft/BotFramework-WebChat/issues/4105). Fixed invalid entry in `core/package-lock.json`, removed `playground/host`, and added script to rebase URLs in `package-lock.json`, by [@compulim](https://github.com/compulim), in PR [#4106](https://github.com/microsoft/BotFramework-WebChat/pull/4106)
+-  Fixes [#3933](https://github.com/microsoft/BotFramework-WebChat/issues/3933), [#3934](https://github.com/microsoft/BotFramework-WebChat/issues/3934), [#3994](https://github.com/microsoft/BotFramework-WebChat/issues/3994) and [#4019](https://github.com/microsoft/BotFramework-WebChat/issues/4019), for various accessibility improvements, by [@compulim](https://github.com/compulim), in PR [#4108](https://github.com/microsoft/BotFramework-WebChat/pull/4108)
+   -  Added a new keyboard help screen
+   -  Reduce repetitions when reading message content and briefier readings
+   -  Separated hints for links and interactive widgets
+   -  Focus trap when focus is on interactive attachments or Adaptive Cards
+   -  Using `role="feed"`/`role="article"` for chat history and its messages
+   -  Always assign a message to `aria-activedescendant` for chat history
+   -  Updated verbiage from "transcript" to "chat history"
+   -  Fixed overlapping hit zone causing clicking on bottom edge of message bubble may focus on the next activity instead
+   -  Fixed typings of `useFocus` and `useLocalizer`
 
 ### Changed
 

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      *:focus {
+        background-color: yellow !important;
+        color: Black !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          'Proident esse officia in veniam ullamco laboris deserunt aliquip et. Lorem qui id ea ea Lorem proident excepteur. Aliqua amet ipsum qui proident deserunt nisi do ut esse magna sit voluptate Lorem.',
+          'Sunt veniam aute elit eiusmod consequat in. Proident qui excepteur veniam veniam esse laboris est mollit ad nulla nulla laborum labore. Nisi Lorem irure in amet occaecat labore ut et. Cupidatat sit aute ex reprehenderit consequat nulla cupidatat amet sunt in.',
+          'Et excepteur eu ex non. Ea elit proident tempor sit aliqua pariatur cillum nisi dolor sit ea velit. Cupidatat incididunt qui commodo nulla duis qui duis adipisicing et aute. Do aliquip adipisicing ea non occaecat quis officia enim mollit. Adipisicing non et ipsum ut exercitation minim amet aute mollit. Minim nostrud adipisicing excepteur non in cupidatat non et ea id proident. Minim consequat fugiat Lorem cupidatat ut nostrud fugiat labore elit anim duis nulla enim.',
+          'Amet aute ea magna voluptate sit aute tempor ipsum minim. Amet nostrud veniam laboris duis quis. Reprehenderit cupidatat do cupidatat ipsum laborum. Veniam deserunt irure excepteur enim veniam ea excepteur deserunt duis excepteur proident. Cillum non voluptate veniam aliquip consectetur aliqua irure cupidatat velit sint sint id nostrud aliquip.',
+          'Sunt nulla aliquip aute aliquip magna veniam voluptate elit ullamco ex cupidatat Lorem sint sunt. Lorem esse occaecat officia ipsum sit elit ea in id deserunt tempor quis aliquip. Consequat enim eiusmod non tempor. Laboris anim fugiat duis proident ex amet excepteur ad eu magna tempor Lorem.'
+        ]);
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(5);
+
+        // SETUP: Scroll to top while the transcript is more than a page long.
+        await pageObjects.scrollToTop();
+
+        // THEN: The "New messages" button should be hidden.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // WHEN: Receive a bot typing message.
+        directLine.activityDeferredObservable.next({
+          from: { role: 'bot' },
+          type: 'typing'
+        });
+
+        // THEN: The "New messages" button should remains hidden.
+        await pageConditions.stabilized(
+          'scroll to end button should not shown',
+          () => (pageElements.scrollToEndButton() ? {} : true),
+          5,
+          5000
+        );
+      });
+    </script>
+  </body>
+</html>

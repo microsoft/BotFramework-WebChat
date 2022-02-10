@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
-export default function useFocus(): (where?: 'sendBox' | 'sendBoxWithoutKeyboard') => void {
+export default function useFocus(): (where?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard') => void {
   const { focusSendBoxCallbacksRef, focusTranscriptCallbacksRef } = useWebChatUIContext();
 
   return useCallback(

@@ -9,7 +9,13 @@ import activityAltText from './Utils/activityAltText';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useRenderMarkdownAsHTML from './hooks/useRenderMarkdownAsHTML';
 
-const { useAvatarForBot, useCreateAttachmentForScreenReaderRenderer, useDateFormatter, useLocalizer } = hooks;
+const {
+  useAvatarForBot,
+  useCreateAttachmentForScreenReaderRenderer,
+  useDateFormatter,
+  useGetKeyByActivity,
+  useLocalizer
+} = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__screen-reader-activity': {
@@ -76,6 +82,7 @@ ScreenReaderAttachments.propTypes = {
 const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const formatDate = useDateFormatter();
+  const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -90,18 +97,26 @@ const ScreenReaderActivity = ({ activity, children, id, renderAttachments }) => 
   ).replace(/\s{2,}/gu, ' ');
 
   const timestampAlt = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(timestamp));
+  const labelId = useMemo(
+    () => `webchat__screen-reader-activity__label-${getKeyByActivity(activity)}`,
+    [activity, getKeyByActivity]
+  );
 
   return (
     <article
       aria-atomic={true}
+      // Narrator requires the "aria-labelledby" attribute, otherwise, it will only read "aria-roledescription".
+      // However, iOS VoiceOver and NVDA both ignore the "aria-labelledby" and read out the whole content, including timestamp.
+      aria-labelledby={labelId}
       aria-roledescription="message"
       className={classNames('webchat__screen-reader-activity', rootClassName)}
       // "id" attribute is used by `aria-labelledby`.
       // eslint-disable-next-line react/forbid-dom-props
       id={id}
-      role="region"
     >
-      <p>
+      {/* "id" attribute is used by `aria-labelledby`. */}
+      {/* eslint-disable-next-line react/forbid-dom-props */}
+      <p id={labelId}>
         <span>{greetingAlt}</span>
         <span>{textAlt}</span>
       </p>

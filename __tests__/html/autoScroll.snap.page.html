@@ -84,11 +84,11 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 3, unacknowledged: 1 });
 
-        const activityElementAtTopOfView = document.querySelector('.webchat__basic-transcript__activity:nth-child(4)');
+        const { top: activityElementAtTopOfViewOffsetTop } = pageObjects.getActivityBoundingBoxes()[3];
         const scrollable = document.querySelector('.webchat__basic-transcript__scrollable');
 
         expect(~~scrollable.scrollTop).toBeCloseTo(
-          ~~(activityElementAtTopOfView.offsetTop - scrollable.offsetHeight * 0.8)
+          ~~(activityElementAtTopOfViewOffsetTop - scrollable.offsetHeight * 0.8)
         );
 
         await host.snapshot();

@@ -8,13 +8,10 @@ export default function useSubmitSendBox(): (method?: string, { channelData }?: 
   const trackEvent = useTrackEvent();
 
   return useCallback(
-    (...args) => {
-      // We cannot use spread operator as it broken in Angular.
-      const method = args[0] || 'keyboard';
-
+    (method: string, { channelData }: { channelData?: any } = {}) => {
       trackEvent('submitSendBox', method);
 
-      return submitSendBox(...args);
+      return submitSendBox(method, channelData && { channelData });
     },
     [submitSendBox, trackEvent]
   );

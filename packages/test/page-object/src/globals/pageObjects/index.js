@@ -8,6 +8,7 @@ import focusScrollToEndButton from './focusScrollToEndButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
+import getActivityBoundingBoxes from './getActivityBoundingBoxes';
 import runHook from './runHook';
 import scrollToBottom from './scrollToBottom';
 import scrollToTop from './scrollToTop';
@@ -28,6 +29,7 @@ export {
   focusSendBoxTextBox,
   focusTranscript,
   getActivities,
+  getActivityBoundingBoxes,
   runHook,
   scrollToBottom,
   scrollToTop,

@@ -127,10 +127,10 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 3 });
 
-        const activityElementAtTopOfView = document.querySelectorAll('.webchat__basic-transcript__activity')[4];
-        const scrollable = document.querySelector('.webchat__basic-transcript__scrollable');
+        const { top: activityElementAtTopOfViewOffsetTop } = pageObjects.getActivityBoundingBoxes()[4];
+        const scrollable = pageElements.transcriptScrollable();
 
-        expect(scrollable.scrollTop).toBe(activityElementAtTopOfView.offsetTop);
+        expect(scrollable.scrollTop).toBe(activityElementAtTopOfViewOffsetTop);
 
         await pageObjects.sendMessageViaSendBox('Aloha!');
 
@@ -160,9 +160,7 @@
 
         expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 9, unacknowledged: 3 });
 
-        expect(scrollable.scrollTop).toBe(
-          document.querySelectorAll('.webchat__basic-transcript__activity')[9].offsetTop
-        );
+        expect(scrollable.scrollTop).toBe(pageObjects.getActivityBoundingBoxes()[9].top);
 
         // Scroll to bottom
         scrollable.scrollTop = scrollable.scrollHeight;
