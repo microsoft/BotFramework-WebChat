@@ -5,24 +5,42 @@ import updateIn from 'simple-update-in';
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
-
 import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED } from '../actions/postActivity';
-
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 
-const DEFAULT_STATE = [];
+import type { DeleteActivityAction } from '../actions/deleteActivity';
+import type { IncomingActivityAction } from '../actions/incomingActivity';
+import type { MarkActivityAction } from '../actions/markActivity';
+import type {
+  PostActivityFulfilledAction,
+  PostActivityPendingAction,
+  PostActivityRejectedAction
+} from '../actions/postActivity';
+import type DirectLineActivity from '../types/external/DirectLineActivity';
+
+type ActivitiesAction =
+  | DeleteActivityAction
+  | IncomingActivityAction
+  | MarkActivityAction
+  | PostActivityFulfilledAction
+  | PostActivityPendingAction
+  | PostActivityRejectedAction;
+
+type ActivitiesStateType = DirectLineActivity[];
+
+const DEFAULT_STATE: ActivitiesStateType = [];
 const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
 
-function getClientActivityID({ channelData: { clientActivityID } = {} }) {
+function getClientActivityID({ channelData: { clientActivityID = undefined } = {} }: DirectLineActivity): string {
   return clientActivityID;
 }
 
-function findByClientActivityID(clientActivityID) {
-  return activity => getClientActivityID(activity) === clientActivityID;
+function findByClientActivityID(clientActivityID: string): (activity: DirectLineActivity) => boolean {
+  return (activity: DirectLineActivity) => getClientActivityID(activity) === clientActivityID;
 }
 
-function patchActivity(activity) {
+function patchActivity(activity: DirectLineActivity): DirectLineActivity {
   // Direct Line channel will return a placeholder image for the user-uploaded image.
   // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
   // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
@@ -39,7 +57,10 @@ function patchActivity(activity) {
   });
 }
 
-function upsertActivityWithSort(activities, nextActivity) {
+function upsertActivityWithSort(
+  activities: DirectLineActivity[],
+  nextActivity: DirectLineActivity
+): DirectLineActivity[] {
   nextActivity = patchActivity(nextActivity);
 
   const { channelData: { clientActivityID: nextClientActivityID } = {} } = nextActivity;
@@ -66,46 +87,54 @@ function upsertActivityWithSort(activities, nextActivity) {
   return nextActivities;
 }
 
-export default function activities(state = DEFAULT_STATE, { meta, payload, type }) {
-  switch (type) {
+export default function activities(
+  state: ActivitiesStateType = DEFAULT_STATE,
+  action: ActivitiesAction
+): ActivitiesStateType {
+  switch (action.type) {
     case DELETE_ACTIVITY:
-      state = updateIn(state, [({ id }) => id === payload.activityID]);
+      state = updateIn(state, [({ id }) => id === action.payload.activityID]);
       break;
 
     case MARK_ACTIVITY:
-      state = updateIn(
-        state,
-        [({ id }) => id === payload.activityID, 'channelData', payload.name],
-        () => payload.value
-      );
+      {
+        const { payload } = action;
+
+        state = updateIn(
+          state,
+          [({ id }) => id === payload.activityID, 'channelData', payload.name],
+          () => payload.value
+        );
+      }
+
       break;
 
     case POST_ACTIVITY_PENDING:
       state = upsertActivityWithSort(
         state,
-        updateIn(payload.activity, ['channelData', 'state'], () => SENDING)
+        updateIn(action.payload.activity, ['channelData', 'state'], () => SENDING)
       );
       break;
 
     case POST_ACTIVITY_REJECTED:
       state = updateIn(
         state,
-        [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'],
+        [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'state'],
         () => SEND_FAILED
       );
       break;
 
     case POST_ACTIVITY_FULFILLED:
-      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], () =>
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () =>
         // We will replace the activity with the version from the server
-        updateIn(patchActivity(payload.activity), ['channelData', 'state'], () => SENT)
+        updateIn(patchActivity(action.payload.activity), ['channelData', 'state'], () => SENT)
       );
 
       break;
 
     case INCOMING_ACTIVITY:
       // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
-      state = upsertActivityWithSort(state, payload.activity);
+      state = upsertActivityWithSort(state, action.payload.activity);
       break;
 
     default:

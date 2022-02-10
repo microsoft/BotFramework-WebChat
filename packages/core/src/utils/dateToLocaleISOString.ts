@@ -1,21 +1,21 @@
 /* eslint no-magic-numbers: ["off", { "ignore": [1, 2, 3, 60] }] */
 
-function pad(value, count = 2) {
+function pad(value: number, count = 2): string {
   if (typeof value !== 'number') {
     throw new Error('First argument must be a number');
   }
 
-  value += '';
+  let stringValue = value + '';
 
-  while (value.length < count) {
-    value = '0' + value;
+  while (stringValue.length < count) {
+    stringValue = '0' + stringValue;
   }
 
-  return value;
+  return stringValue;
 }
 
 // Adopted from https://stackoverflow.com/questions/17415579/how-to-iso-8601-format-a-date-with-timezone-offset-in-javascript.
-export default function dateToLocaleISOString(date) {
+export default function dateToLocaleISOString(date: Date): string {
   if (!(date instanceof Date)) {
     throw new Error('First argument must be a Date object');
   }

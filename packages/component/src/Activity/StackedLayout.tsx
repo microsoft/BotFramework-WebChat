@@ -117,16 +117,10 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
   const {
     attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
+    channelData: { messageBack: { displayText: messageBackDisplayText = '' } = {} } = {},
     from: { role } = {},
     text,
     textFormat
-  }: {
-    attachments?: [];
-    channelData?: { messageBack?: { displayText?: string } };
-    from?: { role?: 'bot' | 'user' };
-    text?: string;
-    textFormat?: string;
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;
@@ -257,7 +251,7 @@ StackedLayout.propTypes = {
       role: PropTypes.string.isRequired
     }).isRequired,
     text: PropTypes.string,
-    textFormat: PropTypes.string,
+    textFormat: PropTypes.oneOf(['markdown', 'plain', 'xml']) as PropTypes.Requireable<'markdown' | 'plain' | 'xml'>,
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,

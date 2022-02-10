@@ -666,6 +666,8 @@ ComposerCore.propTypes = {
   cardActionMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   children: PropTypes.any,
   dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
+  // PropTypes.shape({ ... }) did not honor isRequired for its members.
+  // @ts-ignore
   directLine: PropTypes.shape({
     activity$: PropTypes.shape({
       subscribe: PropTypes.func.isRequired

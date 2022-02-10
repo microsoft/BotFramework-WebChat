@@ -1,4 +1,4 @@
-export default function deleteKey(map, key) {
+export default function deleteKey<T>(map: T, key: keyof T): Omit<T, keyof T> {
   if (!map) {
     return map;
   }

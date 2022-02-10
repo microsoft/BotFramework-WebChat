@@ -1,34 +1,52 @@
 import { all, call, cancelled, put, race, select, take, takeEvery } from 'redux-saga/effects';
 
-import observeOnce from './effects/observeOnce';
-import whileConnected from './effects/whileConnected';
-
-import clockSkewAdjustmentSelector from '../selectors/clockSkewAdjustment';
-import combineSelectors from '../selectors/combineSelectors';
-import dateToLocaleISOString from '../utils/dateToLocaleISOString';
-import languageSelector from '../selectors/language';
-import sendTimeoutSelector from '../selectors/sendTimeout';
-
-import deleteKey from '../utils/deleteKey';
-import sleep from '../utils/sleep';
-import uniqueID from '../utils/uniqueID';
-
+import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import {
   POST_ACTIVITY,
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
+import clockSkewAdjustmentSelector from '../selectors/clockSkewAdjustment';
+import combineSelectors from '../selectors/combineSelectors';
+import dateToLocaleISOString from '../utils/dateToLocaleISOString';
+import deleteKey from '../utils/deleteKey';
+import languageSelector from '../selectors/language';
+import observeOnce from './effects/observeOnce';
+import sendTimeoutSelector from '../selectors/sendTimeout';
+import sleep from '../utils/sleep';
+import uniqueID from '../utils/uniqueID';
+import whileConnected from './effects/whileConnected';
 
-import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import type { IncomingActivityAction } from '../actions/incomingActivity';
+import type {
+  PostActivityAction,
+  PostActivityFulfilledAction,
+  PostActivityPendingAction,
+  PostActivityRejectedAction
+} from '../actions/postActivity';
+import type DirectLineActivity from '../types/external/DirectLineActivity';
+import type DirectLineJSBotConnection from '../types/external/DirectLineJSBotConnection';
 
-function getTimestamp(date, clockSkewAdjustment = 0) {
+function getTimestamp(date: Date, clockSkewAdjustment = 0): string {
   // "+date" will return epoch time in milliseconds, same as Date.getTime().
   return new Date(+date + clockSkewAdjustment).toISOString();
 }
 
-function* postActivity(directLine, userID, username, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
-  const { clockSkewAdjustment, locale } = yield select(
+function* postActivity(
+  directLine: DirectLineJSBotConnection,
+  userID: string,
+  username: string,
+  numActivitiesPosted: number,
+  {
+    meta: { method },
+    payload: { activity }
+  }: {
+    meta: { method: string };
+    payload: { activity: DirectLineActivity };
+  }
+) {
+  const { clockSkewAdjustment, locale }: { clockSkewAdjustment: number; locale: string } = yield select(
     combineSelectors({ clockSkewAdjustment: clockSkewAdjustmentSelector, locale: languageSelector })
   );
   const { attachments } = activity;
@@ -38,7 +56,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   activity = {
-    ...deleteKey(activity, 'id'),
+    ...(deleteKey(activity, 'id') as Omit<DirectLineActivity, 'id'>),
     attachments:
       attachments &&
       attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
@@ -48,7 +66,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
         thumbnailUrl
       })),
     channelData: {
-      ...deleteKey(activity.channelData, 'state'),
+      ...(deleteKey(activity.channelData, 'state') as Omit<DirectLineActivity['channelData'], 'state'>),
       clientActivityID,
       // This is unskewed local timestamp for estimating clock skew.
       clientTimestamp: getTimestamp(now)
@@ -81,9 +99,9 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     ];
   }
 
-  const meta = { clientActivityID, method };
+  const meta: { clientActivityID: string; method: string } = { clientActivityID, method };
 
-  yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } });
+  yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } } as PostActivityPendingAction);
 
   try {
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
@@ -93,7 +111,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       for (;;) {
         const {
           payload: { activity }
-        } = yield take(INCOMING_ACTIVITY);
+        }: IncomingActivityAction = yield take(INCOMING_ACTIVITY);
         const { channelData = {}, id } = activity;
 
         if (channelData.clientActivityID === clientActivityID && id) {
@@ -107,11 +125,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     //   - Direct Line service only respond on HTTP after bot respond to Direct Line
     // - Activity may take too long time to echo back
 
-    const sendTimeout = yield select(sendTimeoutSelector);
+    const sendTimeout: number = yield select(sendTimeoutSelector);
 
     const {
       send: { echoBack }
-    } = yield race({
+    }: { send: { echoBack: DirectLineActivity } } = yield race({
       send: all({
         echoBack: echoBackCall,
         postActivity: observeOnce(directLine.postActivity(activity))
@@ -119,23 +137,36 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       timeout: call(() => sleep(sendTimeout).then(() => Promise.reject(new Error('timeout'))))
     });
 
-    yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } });
+    yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } } as PostActivityFulfilledAction);
   } catch (err) {
     console.error('botframework-webchat: Failed to post activity to chat adapter.', err);
 
-    yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: err });
+    yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: err } as PostActivityRejectedAction);
   } finally {
     if (yield cancelled()) {
-      yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: new Error('cancelled') });
+      yield put({
+        type: POST_ACTIVITY_REJECTED,
+        error: true,
+        meta,
+        payload: new Error('cancelled')
+      } as PostActivityRejectedAction);
     }
   }
 }
 
 export default function* postActivitySaga() {
-  yield whileConnected(function* postActivityWhileConnected({ directLine, userID, username }) {
+  yield whileConnected(function* postActivityWhileConnected({
+    directLine,
+    userID,
+    username
+  }: {
+    directLine: DirectLineJSBotConnection;
+    userID: string;
+    username: string;
+  }) {
     let numActivitiesPosted = 0;
 
-    yield takeEvery(POST_ACTIVITY, function* postActivityWrapper(action) {
+    yield takeEvery(POST_ACTIVITY, function* postActivityWrapper(action: PostActivityAction) {
       yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
     });
   });

@@ -54,7 +54,9 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
 
   const {
     channelData: { speechSynthesisUtterance } = {}
-  }: { channelData: { speechSynthesisUtterance?: SpeechSynthesisUtterance } } = activity;
+  }: {
+    channelData?: DirectLineActivity['channelData'] & { speechSynthesisUtterance?: SpeechSynthesisUtterance };
+  } = activity;
 
   return (
     !!activity && (
