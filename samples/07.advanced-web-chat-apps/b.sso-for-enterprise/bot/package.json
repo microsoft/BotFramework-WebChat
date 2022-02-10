@@ -10,10 +10,10 @@
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^4.14.1",
-    "botbuilder-dialogs": "^4.14.1",
+    "botbuilder": "^4.15.0",
+    "botbuilder-dialogs": "^4.15.0",
     "dotenv": "^10.0.0",
-    "restify": "^8.5.1",
+    "restify": "^8.6.0",
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {

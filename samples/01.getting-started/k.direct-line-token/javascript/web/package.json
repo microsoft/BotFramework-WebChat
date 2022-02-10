@@ -12,10 +12,10 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "http-proxy": "^1.18.1",
-    "node-fetch": "^2.6.1",
-    "restify": "^8.5.1"
+    "node-fetch": "^2.6.7",
+    "restify": "^8.6.0"
   },
   "devDependencies": {
-    "node-dev": "^6.4.0"
+    "node-dev": "^7.1.0"
   }
 }
