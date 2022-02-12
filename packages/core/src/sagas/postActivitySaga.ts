@@ -56,7 +56,7 @@ function* postActivity(
     typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   activity = {
-    ...(deleteKey(activity, 'id') as Omit<DirectLineActivity, 'id'>),
+    ...deleteKey(activity, 'id'),
     attachments:
       attachments &&
       attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
@@ -66,7 +66,7 @@ function* postActivity(
         thumbnailUrl
       })),
     channelData: {
-      ...(deleteKey(activity.channelData, 'state') as Omit<DirectLineActivity['channelData'], 'state'>),
+      ...deleteKey(activity.channelData, 'state'),
       clientActivityID,
       // This is unskewed local timestamp for estimating clock skew.
       clientTimestamp: getTimestamp(now)

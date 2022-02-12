@@ -20,6 +20,7 @@ type KnownChannelData = AnyAnd<{
     displayText?: string;
   };
   state?: string;
+  'webchat:fallback-text'?: string;
 }>;
 
 type KnownConversation = AnyAnd<{
@@ -41,27 +42,33 @@ type KnownUser = AnyAnd<{
   role?: 'bot' | 'channel' | 'user';
 }>;
 
-type KnownActivity = AnyAnd<{
-  attachmentLayout?: 'carousel' | 'stacked';
-  attachments?: KnownAttachment[];
+type BasicActivity = {
   channelData?: KnownChannelData;
   channelId?: 'webchat';
   conversation?: KnownConversation;
   entities?: KnownEntity[];
   from?: KnownUser;
   id?: string;
-  inputHint?: 'accepting' | 'expecting' | 'ignoring';
   locale?: string;
   localTimestamp?: string;
   localTimezone?: string;
   receipient?: KnownUser;
+  timestamp?: string;
+  type?: string;
+};
+
+type MessageActivity = BasicActivity & {
+  attachmentLayout?: 'carousel' | 'stacked';
+  attachments?: KnownAttachment[];
+  inputHint?: 'accepting' | 'expecting' | 'ignoring';
   speak?: string;
   suggestedActions?: DirectLineSuggestedAction;
   text?: string;
   textFormat?: 'markdown' | 'plain' | 'xml';
-  timestamp?: string;
-  type?: string;
-}>;
+  type?: 'message';
+};
+
+type KnownActivity = AnyAnd<BasicActivity | MessageActivity>;
 
 type DirectLineActivity = KnownActivity;
 

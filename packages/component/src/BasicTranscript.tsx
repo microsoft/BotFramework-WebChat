@@ -94,11 +94,7 @@ const ROOT_STYLE = {
 };
 
 type RenderingElement = {
-  activity: DirectLineActivity & {
-    channelData?: {
-      ['webchat:fallback-text']: string;
-    };
-  };
+  activity: DirectLineActivity;
   callbackRef: (element: HTMLElement) => void;
   hideTimestamp: boolean;
   key: string;
