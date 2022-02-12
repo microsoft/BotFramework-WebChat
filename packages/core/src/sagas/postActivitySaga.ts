@@ -19,6 +19,7 @@ import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
 
 import type { IncomingActivityAction } from '../actions/incomingActivity';
+import type { ReduxState } from '../types/internal/ReduxState';
 import type {
   PostActivityAction,
   PostActivityFulfilledAction,
@@ -38,16 +39,13 @@ function* postActivity(
   userID: string,
   username: string,
   numActivitiesPosted: number,
-  {
-    meta: { method },
-    payload: { activity }
-  }: {
-    meta: { method: string };
-    payload: { activity: DirectLineActivity };
-  }
+  { meta: { method }, payload: { activity } }: PostActivityAction
 ) {
-  const { clockSkewAdjustment, locale }: { clockSkewAdjustment: number; locale: string } = yield select(
-    combineSelectors({ clockSkewAdjustment: clockSkewAdjustmentSelector, locale: languageSelector })
+  const { clockSkewAdjustment, locale } = yield select(
+    combineSelectors<ReduxState, { clockSkewAdjustment: number; locale: string }>({
+      clockSkewAdjustment: clockSkewAdjustmentSelector,
+      locale: languageSelector
+    })
   );
   const { attachments } = activity;
   const clientActivityID = uniqueID();
