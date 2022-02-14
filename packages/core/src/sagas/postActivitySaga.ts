@@ -7,8 +7,6 @@ import {
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
-import clockSkewAdjustmentSelector from '../selectors/clockSkewAdjustment';
-import combineSelectors from '../selectors/combineSelectors';
 import dateToLocaleISOString from '../utils/dateToLocaleISOString';
 import deleteKey from '../utils/deleteKey';
 import languageSelector from '../selectors/language';
@@ -19,7 +17,6 @@ import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
 
 import type { IncomingActivityAction } from '../actions/incomingActivity';
-import type { ReduxState } from '../types/internal/ReduxState';
 import type {
   PostActivityAction,
   PostActivityFulfilledAction,
@@ -29,11 +26,6 @@ import type {
 import type DirectLineActivity from '../types/external/DirectLineActivity';
 import type DirectLineJSBotConnection from '../types/external/DirectLineJSBotConnection';
 
-function getTimestamp(date: Date, clockSkewAdjustment = 0): string {
-  // "+date" will return epoch time in milliseconds, same as Date.getTime().
-  return new Date(+date + clockSkewAdjustment).toISOString();
-}
-
 function* postActivity(
   directLine: DirectLineJSBotConnection,
   userID: string,
@@ -41,17 +33,12 @@ function* postActivity(
   numActivitiesPosted: number,
   { meta: { method }, payload: { activity } }: PostActivityAction
 ) {
-  const { clockSkewAdjustment, locale } = yield select(
-    combineSelectors<ReduxState, { clockSkewAdjustment: number; locale: string }>({
-      clockSkewAdjustment: clockSkewAdjustmentSelector,
-      locale: languageSelector
-    })
-  );
   const { attachments } = activity;
   const clientActivityID = uniqueID();
-  const now = new Date();
+  const locale = yield select(languageSelector);
   const localTimeZone =
     typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const now = new Date();
 
   activity = {
     ...deleteKey(activity, 'id'),
@@ -67,7 +54,8 @@ function* postActivity(
       ...deleteKey(activity.channelData, 'state'),
       clientActivityID,
       // This is unskewed local timestamp for estimating clock skew.
-      clientTimestamp: getTimestamp(now)
+      // TODO: [P*] Remove this.
+      clientTimestamp: now.toISOString()
     },
     channelId: 'webchat',
     from: {
@@ -77,10 +65,7 @@ function* postActivity(
     },
     locale,
     localTimestamp: dateToLocaleISOString(now),
-    localTimezone: localTimeZone,
-    // This timestamp will be replaced by Direct Line Channel in echoback.
-    // We are temporarily adding this timestamp for sorting.
-    timestamp: getTimestamp(now, clockSkewAdjustment)
+    localTimezone: localTimeZone
   };
 
   if (!numActivitiesPosted) {

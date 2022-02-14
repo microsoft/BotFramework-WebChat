@@ -21,6 +21,7 @@ type KnownChannelData = AnyAnd<{
   };
   state?: string;
   'webchat:fallback-text'?: string;
+  'webchat:sequence-id'?: number;
 }>;
 
 type KnownConversation = AnyAnd<{

@@ -1,3 +1,5 @@
+// TODO: [P*] Remove this.
+
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { SET_CLOCK_SKEW_ADJUSTMENT } from '../actions/setClockSkewAdjustment';
 
