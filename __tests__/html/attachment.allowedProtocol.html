@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const canvas = document.createElement('canvas');
+
+        canvas.setAttribute('height', '1');
+        canvas.setAttribute('width', '1');
+
+        const context = canvas.getContext('2d');
+
+        context.fillStyle = 'Red';
+        context.fillRect(0, 0, 1, 1);
+
+        const dataURL = canvas.toDataURL('image/gif');
+
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'http://bing.com/',
+                name: 'http://bing.com/'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'https://bing.com/',
+                name: 'https://bing.com/'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: dataURL,
+                name: 'data-url.gif'
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // SETUP: Show attachments with various allowed protocols.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should show download icon next to each attachments.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
