@@ -1,5 +1,7 @@
 /** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
+const fetch = require('node-fetch');
+
 const {
   COGNITIVE_SERVICES_REGION,
   COGNITIVE_SERVICES_SUBSCRIPTION_KEY,
@@ -24,7 +26,22 @@ describe.each([
   ]
 ])('speech recognition using %s', (_, { useSubscriptionKey, useDirectLineSpeech, useHostname }) => {
   test('should recognize "Hello, World!".', async () => {
+    if (!useDirectLineSpeech && !COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
+      console.warn('This test only runs on environment with "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" set.');
+
+      return;
+    } else if (useDirectLineSpeech && !DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
+      console.warn('This test only runs on environment with "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" set.');
+
+      return;
+    }
+
+    const { token } = await (
+      await fetch('https://webchat-mockbot3.azurewebsites.net/api/token/directline', { method: 'POST' })
+    ).json();
+
     const params = new URLSearchParams({
+      'dl.token': token,
       'dls.key': DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY || '',
       'dls.region': DIRECT_LINE_SPEECH_REGION || '',
       'speech.key': COGNITIVE_SERVICES_SUBSCRIPTION_KEY || '',
