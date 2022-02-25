@@ -36,10 +36,22 @@ async function waitUntil(fn, timeout = 5000, intervalMS = 1000) {
 }
 
 test('should refresh Direct Line token', async () => {
+  if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+    console.warn('This test only runs on environment with "SPEECH_SERVICES_SUBSCRIPTION_KEY" set.');
+
+    return;
+  }
+
   jest.useFakeTimers('modern');
 
   const { directLine } = await createTestHarness({ enableInternalHTTPSupport: true });
   const initialToken = directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_Agent_Connection_Id);
+
+  // We need to start the conversation, such as POST /conversations.
+  // Otherwise, refreshing token will say "conversation not found".
+  directLine.postActivity({
+    type: 'event'
+  });
 
   // Wait until 2 seconds in real-time clock, to make sure the token renewed is different (JWT has a per-second timestamp).
   await sleep(2000);

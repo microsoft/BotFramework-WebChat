@@ -22,6 +22,12 @@ beforeEach(() => {
 // describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
 describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions) => {
   test('should echo back when saying "hello" and "world"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      console.warn('This test only runs on environment with "SPEECH_SERVICES_SUBSCRIPTION_KEY" set.');
+
+      return;
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);
@@ -41,6 +47,12 @@ describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions)
   });
 
   test('should echo back "Bellevue" when saying "bellview"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      console.warn('This test only runs on environment with "SPEECH_SERVICES_SUBSCRIPTION_KEY" set.');
+
+      return;
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);
@@ -61,6 +73,12 @@ describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions)
   // TODO: Re-enable this test for "enableInternalHttpSupport = true" once DLS bug fix is lit up in production.
   // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
   test('should synthesis if "speak" is empty', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      console.warn('This test only runs on environment with "SPEECH_SERVICES_SUBSCRIPTION_KEY" set.');
+
+      return;
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);
