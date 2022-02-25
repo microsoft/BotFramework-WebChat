@@ -37,7 +37,7 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const res = await fetch('https://webchat-mockbot2.azurewebsites.net/api/token/directlinease', {
+        const res = await fetch('https://webchat-mockbot3.azurewebsites.net/api/token/directlinease', {
           method: 'POST'
         });
 
@@ -46,7 +46,7 @@
         window.WebChat.renderWebChat(
           {
             directLine: await window.WebChat.createDirectLineAppServiceExtension({
-              domain: 'https://webchat-mockbot2.azurewebsites.net/.bot/v3/directline',
+              domain: 'https://webchat-mockbot3.azurewebsites.net/.bot/v3/directline',
               token
             })
           },
