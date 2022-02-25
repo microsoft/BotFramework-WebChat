@@ -21,7 +21,11 @@ beforeEach(() => {
 // TODO: [P2] #4053 Temporarily disable "internal HTTP" test until service recovered.
 // describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
 describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions) => {
-  test('should echo back when saying "hello" and "world"', async () => {
+  test.nightly('should echo back when saying "hello" and "world"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);
@@ -40,7 +44,11 @@ describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions)
     await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
   });
 
-  test('should echo back "Bellevue" when saying "bellview"', async () => {
+  test.nightly('should echo back "Bellevue" when saying "bellview"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);
@@ -60,7 +68,11 @@ describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions)
 
   // TODO: Re-enable this test for "enableInternalHttpSupport = true" once DLS bug fix is lit up in production.
   // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
-  test('should synthesis if "speak" is empty', async () => {
+  test.nightly('should synthesis if "speak" is empty', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
+
     const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
     const connectedPromise = waitForConnected(directLine);

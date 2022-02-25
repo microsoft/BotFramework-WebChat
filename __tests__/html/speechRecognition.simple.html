@@ -40,6 +40,7 @@
           const channelType = params.get('type');
           const directLineSpeechRegion = params.get('dls.region');
           const directLineSpeechSubscriptionKey = params.get('dls.key');
+          const directLineToken = params.get('dl.token');
           const speechServicesRegion = params.get('speech.region');
           const speechServicesSubscriptionKey = params.get('speech.key');
           const useHostname = params.get('host');
@@ -78,42 +79,6 @@
               } else {
                 speechRegion = speechServicesRegion;
               }
-            } else {
-              if (channelType === 'dlspeech') {
-                console.warn(
-                  'No environment variable "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" is set; using the authorization token from webchat-waterbottle.'
-                );
-              } else {
-                console.warn(
-                  'No environment variable "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" is set; using the authorization token from webchat-waterbottle.'
-                );
-              }
-
-              const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-                headers: { origin: 'http://localhost' },
-                method: 'POST'
-              });
-
-              if (!res.ok) {
-                throw new Error(
-                  `Failed to fetch Cognitive Services Speech Services credentials; server returned ${res.status}`
-                );
-              }
-
-              const { region, token: authorizationToken } = await res.json();
-
-              speechAuthorizationToken = authorizationToken;
-
-              if (useHostname) {
-                if (channelType === 'dlspeech') {
-                  directLineSpeechHostname = `${region}.convai.speech.microsoft.com`;
-                }
-
-                speechRecognitionHostname = `${region}.stt.speech.microsoft.com`;
-                speechSynthesisHostname = `${region}.tts.speech.microsoft.com`;
-              } else {
-                speechRegion = region;
-              }
             }
           } else {
             if (channelType === 'dlspeech') {
@@ -128,10 +93,8 @@
                   speechRegion = directLineSpeechRegion;
                 }
               } else {
-                const {
-                  authorizationToken: fetchedSpeechAuthorizationToken,
-                  region: fetchedSpeechRegion
-                } = await fetchDirectLineSpeechCredentials();
+                const { authorizationToken: fetchedSpeechAuthorizationToken, region: fetchedSpeechRegion } =
+                  await fetchDirectLineSpeechCredentials();
 
                 speechAuthorizationToken = fetchedSpeechAuthorizationToken;
                 speechRegion = fetchedSpeechRegion;
@@ -147,10 +110,8 @@
                   speechRegion = speechServicesRegion;
                 }
               } else {
-                const {
-                  authorizationToken: fetchedSpeechAuthorizationToken,
-                  region: fetchedSpeechRegion
-                } = await fetchSpeechServicesCredentials();
+                const { authorizationToken: fetchedSpeechAuthorizationToken, region: fetchedSpeechRegion } =
+                  await fetchSpeechServicesCredentials();
 
                 speechAuthorizationToken = fetchedSpeechAuthorizationToken;
                 speechRegion = fetchedSpeechRegion;
@@ -240,7 +201,7 @@
             });
           } else {
             adapters = {
-              directLine: WebChat.createDirectLine({ token: await fetchDirectLineToken() }),
+              directLine: WebChat.createDirectLine({ token: directLineToken }),
               webSpeechPonyfillFactory: WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
                 audioConfig,
                 audioContext,
@@ -263,7 +224,7 @@
           audioConfig.push(
             await fetchSpeechData({
               fetchCredentials: () => speechCredentials,
-              text: 'Hello World.'
+              text: 'A quick brown fox jumped over the lazy dogs.'
             })
           );
 
@@ -286,7 +247,7 @@
                   .trim()
                   .toLowerCase()
               )
-            ).toEqual(["unknown command i don't know hello world you can say help to learn more"]);
+            ).toEqual(['echo a quick brown fox jumped over the lazy dogs']);
           } catch (err) {
             const files = recognized.map(({ filename }) => `See diff for details: ${filename}`).join('\n');
             const detailedError = new Error(err.message + '\n\n' + files);
