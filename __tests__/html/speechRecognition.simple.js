@@ -25,15 +25,11 @@ describe.each([
     { useDirectLineSpeech: true, useHostname: true, useSubscriptionKey: true }
   ]
 ])('speech recognition using %s', (_, { useSubscriptionKey, useDirectLineSpeech, useHostname }) => {
-  test('should recognize "Hello, World!".', async () => {
+  test.nightly('should recognize "Hello, World!".', async () => {
     if (!useDirectLineSpeech && !COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
-      console.warn('This test only runs on environment with "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" set.');
-
-      return;
+      throw new Error('"COGNITIVE_SERVICES_SUBSCRIPTION_KEY" must be set.');
     } else if (useDirectLineSpeech && !DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
-      console.warn('This test only runs on environment with "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" set.');
-
-      return;
+      throw new Error('"DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" must be set.');
     }
 
     const { token } = await (

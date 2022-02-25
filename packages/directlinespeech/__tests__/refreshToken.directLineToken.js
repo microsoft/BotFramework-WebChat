@@ -35,11 +35,9 @@ async function waitUntil(fn, timeout = 5000, intervalMS = 1000) {
   throw new Error('timed out');
 }
 
-test('should refresh Direct Line token', async () => {
+test.nightly('should refresh Direct Line token', async () => {
   if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
-    console.warn('This test only runs on environment with "SPEECH_SERVICES_SUBSCRIPTION_KEY" set.');
-
-    return;
+    throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
   }
 
   jest.useFakeTimers('modern');
