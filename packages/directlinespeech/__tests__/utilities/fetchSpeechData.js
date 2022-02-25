@@ -5,7 +5,7 @@ import isSSML from './isSSML';
 
 const DEFAULT_LANGUAGE = 'en-US';
 const DEFAULT_OUTPUT_FORMAT = 'riff-16khz-16bit-mono-pcm';
-const DEFAULT_VOICE = 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)';
+const DEFAULT_VOICE = 'en-US-JennyNeural';
 const SYNTHESIS_URL_TEMPLATE = 'https://{region}.tts.speech.microsoft.com/cognitiveservices/v1';
 
 export default async function fetchSpeechData({
