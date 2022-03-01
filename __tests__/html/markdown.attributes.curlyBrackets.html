@@ -183,7 +183,7 @@
         expect(otherCasesProcessedItems[0].querySelector('em')).toHaveProperty('outerHTML', '<em>World</em>');
         expect(otherCasesProcessedItems.shift()).toHaveProperty('innerText', 'Hello, World!');
 
-        host.snapshot();
+        await host.snapshot();
       });
     </script>
   </body>
