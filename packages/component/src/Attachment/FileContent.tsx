@@ -24,6 +24,16 @@ const ROOT_STYLE = {
   }
 };
 
+const ALLOWED_PROTOCOLS = ['data:', 'http:', 'https:'];
+
+function isAllowedProtocol(url) {
+  try {
+    return ALLOWED_PROTOCOLS.includes(new URL(url).protocol);
+  } catch (err) {
+    return false;
+  }
+}
+
 const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
@@ -74,6 +84,8 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
+
+  href = href && isAllowedProtocol(href) ? href : undefined;
 
   const alt = localize(
     href

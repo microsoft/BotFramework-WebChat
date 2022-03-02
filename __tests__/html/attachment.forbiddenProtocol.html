@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: './filename.zip',
+                name: './filename.zip'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'javascript:alert()',
+                name: 'javascript:alert()'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'tel:123',
+                name: 'tel:123'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'map:47.641944,-122.127222',
+                name: 'map:47.641944,-122.127222'
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // SETUP: Show attachments with various allowed protocols.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should not show download icon next to each attachments.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

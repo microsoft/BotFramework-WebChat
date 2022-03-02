@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Adds `eslint-plugin-security`, consolidate `.eslintrc.yml` at project root, and treat warnings as errors, by [@compulim](https://github.com/compulim), in PR [#4079](https://github.com/microsoft/BotFramework-WebChat/pull/4079)
+-  Adds allowed protocol list to file attachment and OAuth card, by [@compulim](https://github.com/compulim), in PR [#4143](https://github.com/microsoft/BotFramework-WebChat/pull/4143)
 
 ### Fixed
 

@@ -74,7 +74,13 @@ export default function createDefaultCardActionMiddleware() {
               const popup = window.open();
               const url = await getSignInUrl();
 
-              popup.location.href = url;
+              if (['http', 'https'].includes(getScheme(url))) {
+                popup.location.href = url;
+              } else {
+                console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', url);
+
+                popup.close();
+              }
             })();
 
             break;
