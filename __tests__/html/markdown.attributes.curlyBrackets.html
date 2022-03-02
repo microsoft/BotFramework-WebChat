@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        await host.windowSize(undefined, 1440, document.getElementById('webchat'));
+
+        expect.extend({
+          toHaveAttributes(received, attributes) {
+            for (const [name, value] of Object.entries(attributes)) {
+              if (!value) {
+                expect(received.hasAttribute(name)).toBeTruthy();
+              } else {
+                expect(received.getAttribute(name)).toBe(value);
+              }
+            }
+
+            return { pass: true };
+          }
+        });
+
+        // GIVEN: Message with some HTML attributes in its Markdown.
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                id: '00000',
+                text: [
+                  '## Regressions',
+                  'The followings are to protect against regressions:',
+                  '- Hello {World}',
+                  '- Hello {1}',
+                  '## Supported',
+                  'The followings are supported Markdown attributes:',
+                  '- [Link](https://bing.com/){aria-label="This is a label"} should return `<a aria-label="This is a label">`',
+                  '- [Link](https://bing.com/){aria-label=Hello} should return `<a aria-label="Hello">`',
+                  '- [Link](https://bing.com/){aria-label=} should return `<a aria-label>`',
+                  '- [Link](https://bing.com/){aria-label} should return `<a aria-label>`',
+                  '- [Link](https://bing.com/){  aria-label="  This is a label with many whitespaces  "  } should return `<a aria-label="  This is a label with many whitespaces  ">`',
+                  '- [Link](https://bing.com/){aria-label=a"b"c} should return `<a aria-label="a"b"c">`',
+                  '## Not recognized',
+                  'The followings are not recognized as Markdown attributes and should left untouched:',
+                  '- [Link](https://bing.com/){aria-label=This is ignored} should left untouched',
+                  '- [Link](https://bing.com/){aria-label ="This is a label with whitespace before equal sign"} should left untouched',
+                  '- [Link](https://bing.com/){.ignored} should left untouched',
+                  '- [Link](https://bing.com/){onload="javascript:void()"} should left untouched',
+                  '## Other cases',
+                  '### Not processed by `markdown-it-attrs`',
+                  '- {aria-label="123"} should left untouched',
+                  '- {aria-label=} should left untouched',
+                  '- {aria-label} should left untouched',
+                  '### Processed by `markdown-it-attrs`',
+                  '- Hello, *World*{aria-label="Emphasized"}!'
+                ].join('\n\n'),
+                textFormat: 'markdown',
+                timestamp: '2000-01-23T12:34:56.12345Z',
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // WHEN: Rendered.
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(1);
+
+        const { children } = document.querySelector('.webchat__bubble__content .markdown');
+
+        const [
+          regressionItems,
+          supportedItems,
+          notRecognizedItems,
+          otherCasesNotProcessedItems,
+          otherCasesProcessedItems
+        ] = [].map.call(document.querySelectorAll('.webchat__bubble__content .markdown ul'), list => [
+          ...list.querySelectorAll('li')
+        ]);
+
+        // THEN: Hello {World} and Hello {1} should be kept as-is.
+        expect(regressionItems.shift()).toHaveProperty('innerText', 'Hello {World}');
+        expect(regressionItems.shift()).toHaveProperty('innerText', 'Hello {1}');
+
+        const anchors = [].map.call(supportedItems, supportItem => supportItem.querySelector('a'));
+
+        // THEN: Valid curly brackets with only "aria-label" defined should be processed. The brackets should be removed from the text.
+
+        // [Link](https://bing.com/){aria-label="This is a label"} should return `<a aria-label="This is a label">
+        expect(supportedItems.shift()).toHaveProperty(
+          'innerText',
+          'Link should return <a aria-label="This is a label">'
+        );
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'This is a label' });
+
+        // [Link](https://bing.com/){aria-label=Hello} should return `<a aria-label="Hello">`
+        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label="Hello">');
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'Hello' });
+
+        // [Link](https://bing.com/){aria-label=} should return `<a aria-label>`
+        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label>');
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': 0 });
+
+        // [Link](https://bing.com/){aria-label} should return `<a aria-label>`
+        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label>');
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': 0 });
+
+        // [Link](https://bing.com/){  aria-label="  This is a label with many whitespaces  "  } should return `<a aria-label="  This is a label with many whitespaces  ">`
+        // Spaces before `aria-label` or after the last quote, is supported by `markdown-it-attrs`.
+        expect(supportedItems.shift()).toHaveProperty(
+          'innerText',
+          'Link should return <a aria-label=" This is a label with many whitespaces ">'
+        );
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': '  This is a label with many whitespaces  ' });
+
+        // [Link](https://bing.com/){aria-label=a"b"c} should return `<a aria-label="a"b"c">`
+        // `aria-label=a"b"c` is supported by `markdown-it-attrs`, will turn into `aria-label="a&quot;b&quot;c"`.
+        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label="a"b"c">');
+        expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'a"b"c' });
+
+        // THEN: Invalid or unrecognized curly brackets should left untouched.
+        //       In Web Chat, we only allow one and only `aria-label` attribute to be set in the attribute.
+        //       If other attributes are detected, it is not in a valid form and is ignored.
+
+        // [Link](https://bing.com/){aria-label=This is ignored} should left untouched
+        // Although "aria-label=This" is recognized, "is ignored" is not valid. The whole bracelet is ignored.
+        expect(notRecognizedItems.shift()).toHaveProperty(
+          'innerText',
+          'Link{aria-label=This is ignored} should left untouched'
+        );
+
+        // [Link](https://bing.com/){aria-label ="This is a label with whitespace before equal sign"} should left untouched
+        // A space between or after the equal sign (=) is not valid in `markdown-it-attrs`.
+        expect(notRecognizedItems.shift()).toHaveProperty(
+          'innerText',
+          'Link{aria-label =“This is a label with whitespace before equal sign”} should left untouched'
+        );
+        expect(notRecognizedItems.shift()).toHaveProperty('innerText', 'Link{.ignored} should left untouched');
+
+        // [Link](https://bing.com/){.ignored} should left untouched
+        // Class is not supported in Web Chat.
+        expect(notRecognizedItems[0].querySelector('a').hasAttribute('onload')).toBe(false);
+
+        // [Link](https://bing.com/){onload="javascript:void()"} should left untouched
+        // "onload" is not a recognized attribute.
+        expect(notRecognizedItems.shift()).toHaveProperty(
+          'innerText',
+          'Link{onload=“javascript:void()”} should left untouched'
+        );
+
+        // THEN: Curly brackets not processed by `markdown-it-attrs` should left untouched.
+
+        // {aria-label="123"} should left untouched
+        // Although the bracelet is valid, it is not processed by `markdown-it-attrs`.
+        expect(otherCasesNotProcessedItems.shift()).toHaveProperty(
+          'innerText',
+          '{aria-label=“123”} should left untouched'
+        );
+
+        // {aria-label=} should left untouched
+        // Although the bracelet is valid, it is not processed by `markdown-it-attrs`.
+        expect(otherCasesNotProcessedItems.shift()).toHaveProperty('innerText', '{aria-label=} should left untouched');
+
+        // {aria-label} should left untouched
+        // Although the bracelet is valid, it is not processed by `markdown-it-attrs`.
+        expect(otherCasesNotProcessedItems.shift()).toHaveProperty('innerText', '{aria-label} should left untouched');
+
+        // THEN: Curly brackets processed by `markdown-it-attrs` should be removed.
+
+        // Hello, *World*{aria-label="Emphasized"}!
+        // Although the bracelet is processed, sanitize rules in Web Chat do not allow setting attribute to emphasis (or anything other than <a>).
+        expect(otherCasesProcessedItems[0].querySelector('em')).toHaveProperty('outerHTML', '<em>World</em>');
+        expect(otherCasesProcessedItems.shift()).toHaveProperty('innerText', 'Hello, World!');
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

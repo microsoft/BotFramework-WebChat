@@ -57,6 +57,16 @@ const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAA
 // This is used for parsing Markdown for external links.
 const internalMarkdownIt = new MarkdownIt();
 
+const MARKDOWN_ATTRS_LEFT_DELIMITER = '⟬';
+// Make sure the delimiter is free from any RegExp characters, such as *, ?, etc.
+// eslint-disable-next-line security/detect-non-literal-regexp
+const MARKDOWN_ATTRS_LEFT_DELIMITER_PATTERN = new RegExp(MARKDOWN_ATTRS_LEFT_DELIMITER, 'gu');
+
+const MARKDOWN_ATTRS_RIGHT_DELIMITER = '⟭';
+// Make sure the delimiter is free from any RegExp characters, such as *, ?, etc.
+// eslint-disable-next-line security/detect-non-literal-regexp
+const MARKDOWN_ATTRS_RIGHT_DELIMITER_PATTERN = new RegExp(MARKDOWN_ATTRS_RIGHT_DELIMITER, 'gu');
+
 export default function render(
   markdown: string,
   { markdownRespectCRLF }: { markdownRespectCRLF: boolean },
@@ -66,14 +76,35 @@ export default function render(
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
 
-  const html = new MarkdownIt({
+  // Related to #3165.
+  // We only support attributes "aria-label" and should leave other attributes as-is.
+  // However, `markdown-it-attrs` remove unrecognized attributes, such as {hello}.
+  // Before passing to `markdown-it-attrs`, we will convert known attributes from {aria-label="..."} into ⟬aria-label="..."⟭ (using white tortoise shell brackets).
+  // Then, we ask `markdown-it-attrs` to only process the new brackets, so it should only try to process things that we allowlisted.
+  // Lastly, we revert tortoise shell brackets back to curly brackets, for unprocessed attributes.
+  markdown = markdown
+    .replace(/\{\s*aria-label()\s*\}/giu, `${MARKDOWN_ATTRS_LEFT_DELIMITER}aria-label${MARKDOWN_ATTRS_RIGHT_DELIMITER}`)
+    .replace(
+      /\{\s*aria-label=("[^"]*"|[^\s}]*)\s*\}/giu,
+      (_, valueInsideQuotes) =>
+        `${MARKDOWN_ATTRS_LEFT_DELIMITER}aria-label=${valueInsideQuotes}${MARKDOWN_ATTRS_RIGHT_DELIMITER}`
+    );
+
+  let html = new MarkdownIt({
     breaks: false,
     html: false,
     linkify: true,
     typographer: true,
     xhtmlOut: true
   })
-    .use(markdownItAttrs)
+    .use(markdownItAttrs, {
+      // `markdown-it-attrs` is added for accessibility and allow bot developers to specify `aria-label`.
+      // We are allowlisting `aria-label` only as it is allowlisted in `sanitize-html`.
+      // Other `aria-*` will be sanitized even we allowlisted here.
+      allowedAttributes: ['aria-label'],
+      leftDelimiter: MARKDOWN_ATTRS_LEFT_DELIMITER,
+      rightDelimiter: MARKDOWN_ATTRS_RIGHT_DELIMITER
+    })
     .use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
       const token = tokens[+index];
 
@@ -96,6 +127,10 @@ export default function render(
       }
     })
     .render(markdown);
+
+  // Restore attributes not processed by `markdown-it-attrs`.
+  // TODO: [P2] #2511 After we fixed our polyfill story, we should use "String.prototype.replaceAll" instead of RegExp for replace all occurrences.
+  html = html.replace(MARKDOWN_ATTRS_LEFT_DELIMITER_PATTERN, '{').replace(MARKDOWN_ATTRS_RIGHT_DELIMITER_PATTERN, '}');
 
   // The signature from "sanitize-html" module is not correct.
   // @ts-ignore
