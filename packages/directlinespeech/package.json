@@ -60,7 +60,7 @@
   "dependencies": {
     "@babel/runtime": "7.15.4",
     "abort-controller": "3.0.0",
-    "abort-controller-es5": "2.0.0",
+    "abort-controller-es5": "2.0.1",
     "base64-arraybuffer": "0.2.0",
     "core-js": "3.18.3",
     "event-as-promise": "1.0.5",
@@ -68,7 +68,7 @@
     "math-random": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "p-defer": "4.0.0",
-    "p-defer-es5": "2.0.0",
+    "p-defer-es5": "2.0.1",
     "web-speech-cognitive-services": "7.1.1"
   },
   "engines": {
