@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Fixed overlapping hit zone causing clicking on bottom edge of message bubble may focus on the next activity instead
    -  Fixed typings of `useFocus` and `useLocalizer`
 -  Fixes [#3165](https://github.com/microsoft/BotFramework-WebChat/issues/3165) and [#4094](https://github.com/microsoft/BotFramework-WebChat/issues/4094). Allowlist `aria-label` for links in Markdown and skip unrecognized attributes or invalid curly brackets, by [@compulim](https://github.com/compulim), in PR [#4095](https://github.com/microsoft/BotFramework-WebChat/pull/4095)
+-  Fixes [#4190](https://github.com/microsoft/BotFramework-WebChat/issues/4190). Recent Markdown curly bracket fix should not break IE11 due to unsupported "u" flag in `RegExp`, by [@compulim](https://github.com/compulim), in PR [#4191](https://github.com/microsoft/BotFramework-WebChat/pull/4191)
 
 ### Changed
 
