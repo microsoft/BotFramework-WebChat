@@ -22,8 +22,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.0] - 2022-03-03
+
 ### Breaking changes
 
+-  New [`Map` object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) polyfill is required for IE11 when using NPM version of Web Chat:
+   -  `Map` object polyfill is not required when using ES5 bundle of Web Chat from our CDN (`webchat-es5.js`)
+   -  If you are seeing new errors while loading NPM version of Web Chat under IE11, please add a polyfill
+   -  We recommend `core-js` package, it can be loaded by `import 'core-js/features/map'`
+   -  Our current list of required polyfills can be found in [`packages/bundle/src/polyfill.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/bundle/src/polyfill.ts)
 -  Style options are introduced to send button for improved accessibility:
    -  `suggestedActionBackground` and `suggestedActionXXXBackground` are being deprecated in favor of `suggestedActionBackgroundColor` and `suggestedActionBackgroundColorOnXXX` respectively, for consistencies when porting to other platforms
    -  `suggestedActionDisabledXXX` is being renamed to `suggestedActionXXXOnDisabled`, for consistencies with other style options
