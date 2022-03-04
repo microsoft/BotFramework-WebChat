@@ -8,6 +8,9 @@
     "build": "npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
@@ -18,12 +21,13 @@
   },
   "author": "",
   "license": "MIT",
+  "skipBump": [],
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "concurrently": "^6.3.0",
-    "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0"
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "concurrently": "^7.0.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   }
 }

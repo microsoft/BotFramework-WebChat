@@ -39,12 +39,16 @@
     "cldr-data-downloader": "./bin/download.sh"
   },
   "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
   },
+  "skipBump": [],
   "dependencies": {
-    "adm-zip": "^0.5.5",
+    "adm-zip": "^0.5.9",
     "nopt": "^5.0.0",
     "progress": "^2.0.3",
     "q": "^1.5.1",
