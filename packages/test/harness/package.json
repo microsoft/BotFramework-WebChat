@@ -53,7 +53,7 @@
     "jest-environment-node": "^27.5.1",
     "jest-image-snapshot": "^4.5.1",
     "node-dev": "^7.1.0",
-    "node-fetch": "^3.2.1",
+    "node-fetch": "^2.6.7",
     "p-defer": "^4.0.0",
     "p-defer-es5": "^2.0.1",
     "selenium-webdriver": "^4.1.1",
