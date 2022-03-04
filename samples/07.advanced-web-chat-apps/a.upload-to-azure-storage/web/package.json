@@ -12,7 +12,9 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "skipBump": [],
+  "skipBump": [
+    "node-fetch"
+  ],
   "dependencies": {
     "@azure/storage-blob": "^12.8.0",
     "dotenv": "^16.0.0",

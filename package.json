@@ -60,6 +60,7 @@
   "skipBump": [
     "@types/react-dom",
     "get-port",
+    "node-fetch",
     "react",
     "react-dom",
     "strip-ansi"

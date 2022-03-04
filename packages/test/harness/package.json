@@ -28,7 +28,8 @@
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
   "skipBump": [
-    "expect"
+    "expect",
+    "node-fetch"
   ],
   "dependencies": {
     "abort-controller": "3.0.0",

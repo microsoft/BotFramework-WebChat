@@ -31,7 +31,8 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "skipBump": [
-    "microsoft-cognitiveservices-speech-sdk"
+    "microsoft-cognitiveservices-speech-sdk",
+    "node-fetch"
   ],
   "devDependencies": {
     "@babel/cli": "^7.17.6",

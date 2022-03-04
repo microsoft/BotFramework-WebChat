@@ -12,7 +12,9 @@
   },
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
-  "skipBump": [],
+  "skipBump": [
+    "node-fetch"
+  ],
   "dependencies": {
     "dotenv": "^16.0.0",
     "http-proxy": "^1.18.1",
