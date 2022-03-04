@@ -13,6 +13,8 @@ const FullComposer: FC<FullComposerProps> = props => (
   <AddFullBundle {...props}>
     {extraProps => (
       <Composer {...props} {...extraProps}>
+        {/* We need to spread, thus, we cannot we destructuring assignment. */}
+        {/* eslint-disable-next-line react/destructuring-assignment */}
         {props.children}
       </Composer>
     )}
