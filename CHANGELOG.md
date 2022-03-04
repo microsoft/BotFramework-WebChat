@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@fluentui/react@8.57.0`](https://npmjs.com/package/@fluentui/react)
       -  [`@types/node@17.0.21`](https://npmjs.com/package/@types/node)
       -  [`@types/react-dom@16.8.5`](https://npmjs.com/package/@types/react-dom)
-      -  [`@types/react@16.8.25`](https://npmjs.com/package/@types/react)
+      -  [`@types/react@17.0.39`](https://npmjs.com/package/@types/react)
       -  [`@typescript-eslint/eslint-plugin@5.13.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
       -  [`@typescript-eslint/parser@5.13.0`](https://npmjs.com/package/@typescript-eslint/parser)
       -  [`adm-zip@0.5.9`](https://npmjs.com/package/adm-zip)
