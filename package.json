@@ -59,6 +59,7 @@
   },
   "skipBump": [
     "@types/react-dom",
+    "get-port",
     "react",
     "react-dom",
     "strip-ansi"
