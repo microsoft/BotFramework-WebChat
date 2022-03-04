@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <script>
+      run(async function () {
+        const container = document.createElement('div');
+
+        container.setAttribute('id', 'webchat');
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              'Aliqua non sint est tempor nisi voluptate amet ipsum. Mollit do velit do eu laboris proident minim dolore non est excepteur. Enim reprehenderit aliqua nostrud adipisicing veniam consequat sit veniam id. Nisi dolore laboris dolore duis Lorem officia proident nostrud. Esse dolor nisi ad nisi est sit magna minim duis laborum.',
+              'Ex eu consectetur ut Lorem ipsum velit. Do aute aliquip esse ea. Ea voluptate velit est reprehenderit ullamco voluptate quis nisi nisi dolor. Velit do exercitation cillum proident minim. Exercitation sint cillum aliquip in. Excepteur elit veniam consectetur ea ad incididunt.',
+              'Nisi ipsum in enim et. Reprehenderit dolore proident ad id. Lorem elit incididunt aliquip sit elit pariatur sit ea aliquip officia deserunt enim incididunt. Occaecat consectetur ullamco adipisicing pariatur. Consectetur id cupidatat nulla deserunt eiusmod commodo laborum laboris laborum.',
+              'Anim fugiat quis consectetur do. Do ipsum qui commodo commodo officia. Ex qui pariatur reprehenderit aliqua consequat eu veniam laborum est mollit fugiat. Esse nisi consectetur laborum tempor cillum officia officia qui labore ipsum adipisicing.',
+              'Dolor ea labore aute culpa veniam voluptate fugiat commodo sint do aliqua aute ea. In aute commodo ex labore sint quis. Et aliquip laboris excepteur quis aliqua sit do labore eiusmod.',
+              'Exercitation amet excepteur quis ipsum officia. Occaecat dolor velit reprehenderit ullamco cillum nostrud culpa qui. Reprehenderit id cupidatat nostrud occaecat. Tempor ea exercitation aliqua non consequat officia cillum sunt.',
+              'Velit deserunt cillum sunt cupidatat fugiat culpa occaecat ipsum in esse. In commodo ut amet anim ea sint incididunt. Amet dolor laborum velit sunt velit laborum.',
+              'Sint voluptate laboris minim fugiat. Sint incididunt sit proident amet ut exercitation cillum id id culpa culpa. Mollit ad occaecat occaecat aliqua tempor anim elit commodo do. Sunt minim ut quis dolore pariatur non veniam duis Lorem labore aliquip ut.',
+              'Id occaecat tempor sit anim Lorem cupidatat officia voluptate. Laborum consectetur commodo velit aute ex. Dolore reprehenderit nostrud est ullamco aliqua irure enim. Eiusmod laborum adipisicing pariatur esse laboris consectetur nulla veniam minim dolor cupidatat excepteur. Ad tempor sint do mollit fugiat amet veniam culpa sunt cupidatat. Laboris ut labore commodo aliquip laboris laboris consequat voluptate.'
+            ]),
+            store: testHelpers.createStore()
+          },
+          container
+        );
+
+        document.body.append(container);
+
+        await pageConditions.uiConnected();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -267,16 +267,22 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           if (scrollableElement && activityBoundingBoxElement) {
             // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
-            const { height: activityHeight, y: activityY } = activityBoundingBoxElement.getClientRects()[0];
+            const activityBoundingBoxElementClientRect = activityBoundingBoxElement.getClientRects()[0];
 
             // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
             // eslint-disable-next-line prefer-destructuring
-            const { height: scrollableHeight } = scrollableElement.getClientRects()[0];
-            const activityOffsetTop = activityY + scrollableElement.scrollTop;
+            const scrollableElementClientRect = scrollableElement.getClientRects()[0];
 
-            const scrollTop = Math.min(activityOffsetTop, activityOffsetTop - scrollableHeight + activityHeight);
+            // If either the activity or the transcript scrollable is not on DOM, we will not scroll the view.
+            if (activityBoundingBoxElementClientRect && scrollableElementClientRect) {
+              const { height: activityHeight, y: activityY } = activityBoundingBoxElementClientRect;
+              const { height: scrollableHeight } = scrollableElementClientRect;
+              const activityOffsetTop = activityY + scrollableElement.scrollTop;
 
-            scrollToBottomScrollTo(scrollTop, { behavior });
+              const scrollTop = Math.min(activityOffsetTop, activityOffsetTop - scrollableHeight + activityHeight);
+
+              scrollToBottomScrollTo(scrollTop, { behavior });
+            }
           }
         }
       },
@@ -342,7 +348,14 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
         // "getClientRects()" is not returning an array, thus, it is not destructurable.
         // eslint-disable-next-line prefer-destructuring
-        const { bottom: scrollableClientBottom } = scrollableElement.getClientRects()[0];
+        const scrollableElementClientRect = scrollableElement.getClientRects()[0];
+
+        // If the scrollable is not mounted, we cannot measure which activity is in view. Thus, we will not fire any events.
+        if (!scrollableElementClientRect) {
+          return;
+        }
+
+        const { bottom: scrollableClientBottom } = scrollableElementClientRect;
 
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
@@ -352,7 +365,14 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             ? activityElements
                 .reverse()
                 // Add subpixel tolerance
-                .find(([, element]) => element.getClientRects()[0].bottom < scrollableClientBottom + 1)
+                .find(([, element]) => {
+                  // "getClientRects()" is not returning an array, thus, it is not destructurable.
+                  // eslint-disable-next-line prefer-destructuring
+                  const elementClientRect = element.getClientRects()[0];
+
+                  // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
+                  return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
+                })
             : activityElements[0]
         )?.[0];
 
