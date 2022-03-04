@@ -273,6 +273,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // eslint-disable-next-line prefer-destructuring
             const scrollableElementClientRect = scrollableElement.getClientRects()[0];
 
+            // If either the activity or the transcript scrollable is not on DOM, we will not scroll the view.
             if (activityBoundingBoxElementClientRect && scrollableElementClientRect) {
               const { height: activityHeight, y: activityY } = activityBoundingBoxElementClientRect;
               const { height: scrollableHeight } = scrollableElementClientRect;
@@ -349,6 +350,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         // eslint-disable-next-line prefer-destructuring
         const scrollableElementClientRect = scrollableElement.getClientRects()[0];
 
+        // If the scrollable is not mounted, we cannot measure which activity is in view. Thus, we will not fire any events.
         if (!scrollableElementClientRect) {
           return;
         }
@@ -368,7 +370,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
                   // eslint-disable-next-line prefer-destructuring
                   const elementClientRect = element.getClientRects()[0];
 
-                  // If the activity is not attached on DOM, we should not count it as it is not visible.
+                  // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
                   return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
                 })
             : activityElements[0]

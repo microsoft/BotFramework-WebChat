@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#4196](https://github.com/microsoft/BotFramework-WebChat/issues/4196). Should able to render/mount to a detached DOM node, by [@compulim](https://github.com/compulim), in PR [#4197](https://github.com/microsoft/BotFramework-WebChat/issues/4197)
+-  Fixes [#4196](https://github.com/microsoft/BotFramework-WebChat/issues/4196). Should render/mount to a detached DOM node without errors, by [@compulim](https://github.com/compulim), in PR [#4197](https://github.com/microsoft/BotFramework-WebChat/issues/4197)
 
 ## [4.15.0] - 2022-03-03
 
