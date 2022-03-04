@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
   "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "start": "node-dev --no-notify --respawn .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Microsoft Corporation",
-  "license": "MIT",
+  "skipBump": [],
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.0",
     "http-proxy": "^1.18.1",
-    "node-fetch": "^2.6.7",
-    "restify": "^8.6.0"
+    "node-fetch": "^3.2.1",
+    "restify": "^8.6.1"
   },
   "devDependencies": {
     "node-dev": "^7.1.0"

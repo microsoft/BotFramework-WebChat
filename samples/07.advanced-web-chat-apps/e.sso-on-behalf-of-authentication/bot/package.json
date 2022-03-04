@@ -6,29 +6,37 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "watch": "nodemon ./index.js",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon ./index.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Microsoft/BotBuilder-Samples.git"
   },
+  "skipBump": [
+    "@microsoft/microsoft-graph-client",
+    "eslint",
+    "eslint-plugin-promise"
+  ],
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.2.1",
     "botbuilder": "^4.15.0",
     "botbuilder-dialogs": "^4.15.0",
-    "dotenv": "^10.0.0",
-    "restify": "^8.6.0"
+    "dotenv": "^16.0.0",
+    "restify": "^8.6.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^5.0.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.15"
   }
 }

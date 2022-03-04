@@ -3,20 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/",
+  "skipBump": [],
   "dependencies": {
-    "botframework-webchat": "^4.14.1",
-    "botframework-webchat-component": "^4.14.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "botframework-webchat": "^4.15.0",
+    "botframework-webchat-component": "^4.15.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
