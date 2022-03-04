@@ -22,6 +22,8 @@ const PCM_RECORDER_HARDCODED_SETTINGS: MediaTrackSettings = Object.freeze({
 
 const PCM_RECORDER_HARDCODED_FORMAT: Format = Object.freeze({
   bitsPerSample: PCM_RECORDER_HARDCODED_SETTINGS.sampleSize,
+  // `channelCount` is not on @types/web@0.0.54 yet.
+  // @ts-ignore
   channels: PCM_RECORDER_HARDCODED_SETTINGS.channelCount,
   samplesPerSec: PCM_RECORDER_HARDCODED_SETTINGS.sampleRate
 });
