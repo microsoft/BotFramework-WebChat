@@ -226,7 +226,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
     themeStyle.appendChild(
       document.createTextNode(getStyleForTheme(theme, remoteConfig))
     );
-    document.head.appendChild(themeStyle);
+    document.body.appendChild(themeStyle);
   }
 
   // FEEDYOU use twemoji to make emoji compatible
@@ -412,7 +412,6 @@ const FullScreenTheme = (theme: Theme) => `
 
   .wc-message-pane .wc-suggested-actions {
     position: absolute;
-    bottom: 0px;
     z-index: 10000;
     background-color: white;
   }

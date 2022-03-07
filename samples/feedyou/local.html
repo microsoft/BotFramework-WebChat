@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- PUT THIS CODE RIGHT BEFORE THE </BODY> TAG (you can also use some tag manager like GTM) AND REPLACE ... WITH BOT ID -->
+    <!--  • design and behavior of webchat could be configured remotely from Feedyou Designer -->
+    <!--  • it is needed to append #feedbot-test-mode to the URL to show chatbot window during development -->
+    <link href="../../botchat.css" rel="stylesheet" />
+    <script type="text/javascript">
+      (function (f,y,b,o,t,s){(t = y.createElement(b)), (s = y.getElementsByTagName(b)[0]);t.async = 1;t.src = "../../botchat-es5.js";t.onload=function(){BotChat.App({
+        bot: { id: "feedbot-demo-webchat" },
+      })};s.parentNode.insertBefore(t, s);})(window, document, "script");
+    </script>
+    <!-- --------------------------------------------------------------------------------------- -->
+
+  </body>
+</html>
