@@ -26,7 +26,6 @@
     "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "docker": "npm run docker:up",
-    "docker:ci": "npm run docker:up -- --detach",
     "docker:down": "docker-compose -f docker-compose-wsl2.yml down --rmi all",
     "docker:up": "docker-compose -f docker-compose-wsl2.yml down && docker-compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
@@ -53,8 +52,7 @@
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
     "stop:docker": "echo This command has been renamed to \"npm run docker:down\" && npm run docker:down",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
-    "test": "jest --watch",
-    "test:ci": "npm run test -- --ci --coverage true --no-watch"
+    "test": "jest --watch"
   },
   "skipBump": [
     "@types/react-dom",
