@@ -2,9 +2,9 @@
 /* eslint react/require-default-props: "off" */
 
 import { Constants, DirectLineActivity } from 'botframework-webchat-core';
-import React, { ReactNode, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import React, { ReactNode, useMemo, VFC } from 'react';
 
-import SendState from '../types/SendState';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
@@ -13,30 +13,34 @@ const {
   ActivityClientState: { SEND_FAILED, SENDING, SENT }
 } = Constants;
 
-const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity }) => {
+type ActivityStatusContainerProps = {
+  activity: DirectLineActivity;
+  hideTimestamp: boolean;
+  nextVisibleActivity: DirectLineActivity;
+};
+
+const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
+  activity,
+  hideTimestamp,
+  nextVisibleActivity
+}) => {
   const { activityStatusRenderer: createActivityStatusRenderer } = useWebChatAPIContext();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
 
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
   // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
   const {
-    channelData: { clientTimestamp = 0, state } = {},
-    from: { role }
-  }: {
-    channelData: {
-      clientTimestamp?: number;
-      state?: SendState;
-    };
-    from: {
-      role: string;
-    };
-  } = activity;
+    channelData: { state } = {},
+    from: { role },
+    // If no timestamp, we assume the "sending" will be timed out as "send failed".
+    localTimestamp = new Date(0).toISOString()
+  }: DirectLineActivity = activity;
 
   const activitySent = state !== SENDING && state !== SEND_FAILED;
   const fromUser = role === 'user';
   const sendTimeout = getSendTimeoutForActivity({ activity });
 
-  const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(clientTimestamp).getTime() + sendTimeout : 0);
+  const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(localTimestamp).getTime() + sendTimeout : 0);
 
   const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
@@ -51,6 +55,21 @@ const ActivityStatusContainer = ({ activity, hideTimestamp, nextVisibleActivity 
       }),
     [activity, createActivityStatusRenderer, hideTimestamp, nextVisibleActivity, sendState]
   );
+};
+
+ActivityStatusContainer.defaultProps = {
+  hideTimestamp: false,
+  nextVisibleActivity: undefined
+};
+
+ActivityStatusContainer.propTypes = {
+  activity: PropTypes.shape({
+    channelData: PropTypes.shape({ state: PropTypes.string }),
+    from: PropTypes.shape({ role: PropTypes.string }),
+    localTimestamp: PropTypes.string
+  }).isRequired,
+  hideTimestamp: PropTypes.bool,
+  nextVisibleActivity: PropTypes.any
 };
 
 export default function useCreateActivityStatusRenderer(): (renderOptions: {

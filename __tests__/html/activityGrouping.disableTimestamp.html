@@ -28,14 +28,16 @@
             type: 'message'
           },
           {
-            channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sending' },
+            channelData: { clientActivityID: '2.1', state: 'sending' },
             from: { role: 'user' },
+            localTimestamp: -300001,
             text: 'Elit adipisicing laborum sit anim.',
             type: 'message'
           },
           {
-            channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sending' },
+            channelData: { clientActivityID: '2.2', state: 'sending' },
             from: { role: 'user' },
+            localTimestamp: -5001,
             text: 'Nostrud enim enim ipsum pariatur commodo.',
             type: 'message'
           },
@@ -91,7 +93,7 @@
         await host.snapshot();
 
         directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sent' },
+          channelData: { clientActivityID: '2.1', state: 'sent' },
           from: { role: 'user' },
           id: '2.1',
           text: 'Elit adipisicing laborum sit anim.',
@@ -100,7 +102,7 @@
         });
 
         directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sent' },
+          channelData: { clientActivityID: '2.2', state: 'sent' },
           from: { role: 'user' },
           id: '2.2',
           text: 'Nostrud enim enim ipsum pariatur commodo.',

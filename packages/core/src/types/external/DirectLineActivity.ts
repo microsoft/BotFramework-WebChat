@@ -15,11 +15,10 @@ type KnownAttachment = AnyAnd<{
 
 type KnownChannelData = AnyAnd<{
   clientActivityID?: string;
-  clientTimestamp?: string;
   messageBack?: {
     displayText?: string;
   };
-  state?: string;
+  state?: 'sending' | 'send failed' | 'sent';
   'webchat:fallback-text'?: string;
   'webchat:sequence-id'?: number;
 }>;

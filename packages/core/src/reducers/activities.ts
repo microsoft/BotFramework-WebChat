@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, -1] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, -1] }] */
 
 import updateIn from 'simple-update-in';
 
@@ -40,7 +40,7 @@ function findByClientActivityID(clientActivityID: string): (activity: DirectLine
   return (activity: DirectLineActivity) => getClientActivityID(activity) === clientActivityID;
 }
 
-function patchActivity(activity: DirectLineActivity): DirectLineActivity {
+function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineActivity): DirectLineActivity {
   // Direct Line channel will return a placeholder image for the user-uploaded image.
   // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
   // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
@@ -56,6 +56,22 @@ function patchActivity(activity: DirectLineActivity): DirectLineActivity {
     }
   });
 
+  // If the message does not have sequence ID, use these fallback values:
+  // 1. "timestamp" field
+  //    - outgoing activity will not have "timestamp" field
+  // 2. last activity sequence ID (or 0) + 0.001
+  //    - best effort to put this message the last one in the chat history
+  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], sequenceId =>
+    typeof sequenceId === 'number'
+      ? sequenceId
+      : typeof activity.timestamp !== 'undefined'
+      ? +new Date(activity.timestamp)
+      : // We assume there will be no more than 1,000 messages sent before receiving server response.
+        // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
+        // eslint-disable-next-line no-magic-numbers
+        (lastActivity?.channelData?.['webchat:sequence-id'] || 0) + 0.001
+  );
+
   // TODO: We should move this patching logic to a DLJS wrapper for simplicity.
   activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], sequenceId =>
     typeof sequenceId === 'number' ? sequenceId : +new Date(activity.timestamp) || 0
@@ -68,7 +84,7 @@ function upsertActivityWithSort(
   activities: DirectLineActivity[],
   nextActivity: DirectLineActivity
 ): DirectLineActivity[] {
-  nextActivity = patchActivity(nextActivity);
+  nextActivity = patchActivity(nextActivity, activities[activities.length - 1]);
 
   const { channelData: { clientActivityID: nextClientActivityID, 'webchat:sequence-id': nextSequenceId } = {} } =
     nextActivity;
@@ -122,18 +138,10 @@ export default function activities(
           payload: { activity }
         } = action;
 
+        // TODO: [P*] Add some verifications here:
+        //       - Must have "localTimestamp" field
+        //       - Must NOT have "timestamp" field
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-
-        // When the message is being sent, it don't have sequence ID yet.
-        // We are assigning it a temporary sequence ID based on the last known activity.
-        activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], sequenceId =>
-          typeof sequenceId === 'number'
-            ? sequenceId
-            : // We assume there will be no more than 1,000 messages sent before receiving server response.
-              // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
-              // eslint-disable-next-line no-magic-numbers
-              (state[state.length - 1]?.channelData?.['webchat:sequence-id'] || 0) + 0.001
-        );
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -151,12 +159,14 @@ export default function activities(
     case POST_ACTIVITY_FULFILLED:
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () =>
         // We will replace the activity with the version from the server
-        updateIn(patchActivity(action.payload.activity), ['channelData', 'state'], () => SENT)
+        updateIn(patchActivity(action.payload.activity, state[state.length - 1]), ['channelData', 'state'], () => SENT)
       );
 
       break;
 
     case INCOMING_ACTIVITY:
+      // TODO: [P*] Add some verifications here:
+      //       - Must have "timestamp" field
       // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
       state = upsertActivityWithSort(state, action.payload.activity);
 

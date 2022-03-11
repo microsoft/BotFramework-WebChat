@@ -59,15 +59,16 @@
               ? {
                   channelData: {
                     clientActivityID: index + '',
-                    clientTimestamp: 0,
                     state: 'sent'
-                  }
+                  },
+                  localTimestamp: 0
                 }
-              : {}),
+              : {
+                  timestamp: 0
+                }),
             from: { role: fromUser ? 'user' : 'bot' },
             id: index + '',
             text: `#${index}: ${text}`,
-            timestamp: 0,
             type: 'message'
           };
         });

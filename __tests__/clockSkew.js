@@ -12,7 +12,8 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-describe('Clock skew', () => {
+// TODO: [P*] Remove this test.
+describe.skip('Clock skew', () => {
   let driver, pageObjects;
 
   beforeEach(async () => {

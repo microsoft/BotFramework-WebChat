@@ -74,7 +74,6 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 SendStatus.propTypes = {
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
-      clientTimestamp: PropTypes.string,
       state: PropTypes.string
     })
   }).isRequired,

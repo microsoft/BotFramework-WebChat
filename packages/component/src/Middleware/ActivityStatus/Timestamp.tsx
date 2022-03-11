@@ -41,7 +41,7 @@ Timestamp.defaultProps = {
 
 Timestamp.propTypes = {
   activity: PropTypes.shape({
-    timestamp: PropTypes.string.isRequired
+    timestamp: PropTypes.string
   }).isRequired,
   className: PropTypes.string
 };

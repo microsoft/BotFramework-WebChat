@@ -52,10 +52,7 @@ function* postActivity(
       })),
     channelData: {
       ...deleteKey(activity.channelData, 'state'),
-      clientActivityID,
-      // This is unskewed local timestamp for estimating clock skew.
-      // TODO: [P*] Remove this.
-      clientTimestamp: now.toISOString()
+      clientActivityID
     },
     channelId: 'webchat',
     from: {
