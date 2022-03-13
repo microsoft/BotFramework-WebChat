@@ -1,5 +1,10 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineCardAction } from './DirectLineCardAction';
 
-type DirectLineSignInCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Signin-card
+type DirectLineSignInCard = {
+  buttons?: DirectLineCardAction[];
+  contentType: 'application/vnd.microsoft.card.signin';
+  text?: string;
+};
 
-export default DirectLineSignInCard;
+export type { DirectLineSignInCard };

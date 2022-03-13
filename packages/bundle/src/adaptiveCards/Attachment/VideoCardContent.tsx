@@ -46,6 +46,8 @@ VideoCardContent.defaultProps = {
 
 VideoCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     autoloop: PropTypes.bool,
     autostart: PropTypes.bool,
@@ -54,10 +56,10 @@ VideoCardContent.propTypes = {
     }),
     media: PropTypes.arrayOf(
       PropTypes.shape({
-        profile: PropTypes.string.isRequired,
+        profile: PropTypes.string,
         url: PropTypes.string.isRequired
       })
-    )
+    ).isRequired
   }).isRequired,
   disabled: PropTypes.bool
 };

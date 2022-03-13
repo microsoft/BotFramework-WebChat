@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineBasicCardEssence } from './DirectLineBasicCardEssence';
 
-type DirectLineThumbnailCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Thumbnail-cards
+type DirectLineThumbnailCard = DirectLineBasicCardEssence & {
+  contentType: 'application/vnd.microsoft.card.thumbnail';
+};
 
-export default DirectLineThumbnailCard;
+export type { DirectLineThumbnailCard };

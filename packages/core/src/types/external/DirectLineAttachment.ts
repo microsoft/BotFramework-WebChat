@@ -1,4 +1,4 @@
-import { AnyAnd } from '../AnyAnd';
+import type { AnyAnd } from '../AnyAnd';
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#attachment
 type DirectLineAttachment = AnyAnd<{
@@ -10,4 +10,4 @@ type DirectLineAttachment = AnyAnd<{
   thumbnailUrl?: string;
 }>;
 
-export default DirectLineAttachment;
+export type { DirectLineAttachment };

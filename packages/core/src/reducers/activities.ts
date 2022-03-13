@@ -9,6 +9,7 @@ import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED 
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 
 import type { DeleteActivityAction } from '../actions/deleteActivity';
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
 import type {
@@ -16,7 +17,6 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import type DirectLineActivity from '../types/external/DirectLineActivity';
 
 type ActivitiesAction =
   | DeleteActivityAction

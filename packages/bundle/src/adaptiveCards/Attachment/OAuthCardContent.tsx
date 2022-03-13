@@ -48,6 +48,8 @@ OAuthCardContent.defaultProps = {
 
 OAuthCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     buttons: PropTypes.array
   }).isRequired,

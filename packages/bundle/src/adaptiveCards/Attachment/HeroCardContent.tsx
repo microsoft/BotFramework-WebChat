@@ -50,10 +50,12 @@ HeroCardContent.defaultProps = {
 
 HeroCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     images: PropTypes.arrayOf(
       PropTypes.shape({
-        alt: PropTypes.string,
+        alt: PropTypes.string.isRequired,
         tap: PropTypes.any,
         url: PropTypes.string.isRequired
       })

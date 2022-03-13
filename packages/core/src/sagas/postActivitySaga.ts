@@ -16,6 +16,8 @@ import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
 
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
+import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type {
   PostActivityAction,
@@ -23,8 +25,6 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import type DirectLineActivity from '../types/external/DirectLineActivity';
-import type DirectLineJSBotConnection from '../types/external/DirectLineJSBotConnection';
 
 function* postActivity(
   directLine: DirectLineJSBotConnection,

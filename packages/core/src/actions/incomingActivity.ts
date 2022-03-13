@@ -1,4 +1,4 @@
-import type DirectLineActivity from '../types/external/DirectLineActivity';
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 
 type IncomingActivityActionType = 'DIRECT_LINE/INCOMING_ACTIVITY';
 

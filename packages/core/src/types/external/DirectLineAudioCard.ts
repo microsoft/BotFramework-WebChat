@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineMediaCardEssence } from './DirectLineMediaCardEssence';
 
-type DirectLineAudioCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#audio-card
+type DirectLineAudioCard = DirectLineMediaCardEssence & {
+  contentType: 'application/vnd.microsoft.card.audio';
+};
 
-export default DirectLineAudioCard;
+export type { DirectLineAudioCard };

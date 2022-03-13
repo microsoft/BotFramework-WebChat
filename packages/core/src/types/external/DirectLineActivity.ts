@@ -13,10 +13,9 @@
 // Until we fully typed out DirectLineActivity, we need to use "any" here.
 // We only know the DirectLineActivity must be a map, and not other primitive types.
 
-import DirectLineAttachment from './DirectLineAttachment';
-import DirectLineSuggestedAction from './DirectLineSuggestedAction';
-
 import type { AnyAnd } from '../AnyAnd';
+import type { DirectLineAttachment } from './DirectLineAttachment';
+import type { DirectLineSuggestedAction } from './DirectLineSuggestedAction';
 
 type ChannelData<SendState extends string | undefined, Type extends string> = AnyAnd<
   {
@@ -157,4 +156,4 @@ type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
 
 type DirectLineActivity = SelfActivity | OthersActivity;
 
-export default DirectLineActivity;
+export type { DirectLineActivity };

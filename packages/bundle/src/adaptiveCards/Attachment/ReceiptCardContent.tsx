@@ -55,54 +55,32 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
       }
 
       items &&
-        items.map(
-          ({
-            image: { alt, tap: imageTap, url } = {},
-            price,
-            quantity,
-            subtitle,
-            tap,
-            text,
-            title
-          }: {
-            image: {
-              alt?: string;
-              tap?: any;
-              url?: string;
-            };
-            price: string;
-            quantity: string;
-            subtitle: string;
-            tap: any;
-            text: string;
-            title: string;
-          }) => {
-            let itemColumns;
+        items.map(({ image: { alt, tap: imageTap, url } = {}, price, quantity, subtitle, tap, text, title }) => {
+          let itemColumns;
 
-            if (url) {
-              const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
+          if (url) {
+            const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
-              itemColumns = columns;
-              builder.addImage(url, itemImageColumn, imageTap, alt);
-            } else {
-              itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
-            }
-
-            const [itemTitleColumn, itemPriceColumn] = itemColumns;
-
-            builder.addTextBlock(
-              quantity ? `${title} &times; ${quantity}` : title,
-              { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
-              itemTitleColumn
-            );
-            builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
-            builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
-
-            if (text) {
-              builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
-            }
+            itemColumns = columns;
+            builder.addImage(url, itemImageColumn, imageTap, alt);
+          } else {
+            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
           }
-        );
+
+          const [itemTitleColumn, itemPriceColumn] = itemColumns;
+
+          builder.addTextBlock(
+            quantity ? `${title} &times; ${quantity}` : title,
+            { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
+            itemTitleColumn
+          );
+          builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+          builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
+
+          if (text) {
+            builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+          }
+        });
 
       if (!nullOrUndefined(vat)) {
         const vatCol = builder.addColumnSet([75, 25]);
@@ -152,6 +130,8 @@ ReceiptCardContent.defaultProps = {
 
 ReceiptCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     buttons: PropTypes.array,
     facts: PropTypes.arrayOf(

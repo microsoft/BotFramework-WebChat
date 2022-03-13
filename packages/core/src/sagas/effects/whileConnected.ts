@@ -4,7 +4,7 @@ import { CONNECT_FULFILLING } from '../../actions/connect';
 import { DISCONNECT_PENDING } from '../../actions/disconnect';
 import { RECONNECT_PENDING, RECONNECT_FULFILLING } from '../../actions/reconnect';
 
-import type DirectLineJSBotConnection from '../../types/external/DirectLineJSBotConnection';
+import type { DirectLineJSBotConnection } from '../../types/external/DirectLineJSBotConnection';
 
 export default function whileConnectedEffect(
   fn: ({

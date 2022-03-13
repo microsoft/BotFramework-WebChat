@@ -17,13 +17,13 @@ type AnimationCardContentProps = {
 };
 
 const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
-  const { media = [] } = content;
+  const { media = [] as DirectLineAnimationCard['media'] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>
       <ul className="media-list">
-        {media.map(({ profile = '', url }, index) => (
+        {media.map(({ profile, url }, index) => (
           <li key={index}>
             {/\.gif$/iu.test(url) ? <ImageContent alt={profile} src={url} /> : <VideoContent alt={profile} src={url} />}
           </li>
@@ -41,6 +41,8 @@ AnimationCardContent.defaultProps = {
 
 AnimationCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     media: PropTypes.arrayOf(
       PropTypes.shape({

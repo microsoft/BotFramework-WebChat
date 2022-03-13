@@ -1,5 +1,5 @@
+import type { DirectLineActivity } from '../external/DirectLineActivity';
 import type { Notification } from './Notification';
-import type DirectLineActivity from '../external/DirectLineActivity';
 
 type ReduxState = {
   activities: DirectLineActivity[];

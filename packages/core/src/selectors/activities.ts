@@ -1,5 +1,5 @@
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { ReduxState } from '../types/internal/ReduxState';
-import type DirectLineActivity from '../types/external/DirectLineActivity';
 
 const activities = ({ activities }: ReduxState) => activities;
 
