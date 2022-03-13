@@ -36,7 +36,11 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
     markActivityAsSpoken(activity);
   }, [activity, markActivityAsSpoken]);
 
-  const singleLine = useMemo(() => {
+  const singleLine: false | string = useMemo(() => {
+    if (activity.type !== 'message') {
+      return false;
+    }
+
     const { attachments = [], speak, text } = activity;
 
     return (
@@ -52,11 +56,8 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
     );
   }, [activity]);
 
-  const {
-    channelData: { speechSynthesisUtterance } = {}
-  }: {
-    channelData?: DirectLineActivity['channelData'] & { speechSynthesisUtterance?: SpeechSynthesisUtterance };
-  } = activity;
+  const speechSynthesisUtterance: false | SpeechSynthesisUtterance | undefined =
+    activity.type === 'message' && activity.channelData.speechSynthesisUtterance;
 
   return (
     !!activity && (
@@ -73,6 +74,8 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
 };
 
 Speak.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     attachments: PropTypes.arrayOf(
       PropTypes.shape({
@@ -86,7 +89,8 @@ Speak.propTypes = {
       speechSynthesisUtterance: PropTypes.any
     }),
     speak: PropTypes.string,
-    text: PropTypes.string
+    text: PropTypes.string,
+    type: PropTypes.string.isRequired
   }).isRequired
 };
 

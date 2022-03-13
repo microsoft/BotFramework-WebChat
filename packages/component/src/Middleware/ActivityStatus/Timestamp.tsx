@@ -40,6 +40,8 @@ Timestamp.defaultProps = {
 };
 
 Timestamp.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     timestamp: PropTypes.string
   }).isRequired,

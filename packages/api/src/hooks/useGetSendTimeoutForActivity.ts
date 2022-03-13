@@ -13,7 +13,7 @@ export default function useGetSendTimeoutForActivity(): ({ activity }: { activit
           return sendTimeout(activity);
         }
 
-        return activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout;
+        return activity.type === 'message' && activity.attachments?.length ? sendTimeoutForAttachments : sendTimeout;
       },
     [sendTimeout, sendTimeoutForAttachments]
   );

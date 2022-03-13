@@ -5,7 +5,14 @@ import { useCallback } from 'react';
 import useTrackEvent from './useTrackEvent';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function useSendFiles(): (files: File[]) => void {
+type PostActivityFile = {
+  name: string;
+  size: number;
+  thumbnail?: string;
+  url: string;
+};
+
+export default function useSendFiles(): (files: PostActivityFile[]) => void {
   const { sendFiles } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 

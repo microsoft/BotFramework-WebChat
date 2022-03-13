@@ -72,6 +72,8 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 };
 
 SendStatus.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
       state: PropTypes.string

@@ -30,19 +30,32 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
   // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
   const {
-    channelData: { state } = {},
-    from: { role },
-    // If no timestamp, we assume the "sending" will be timed out as "send failed".
-    localTimestamp = new Date(0).toISOString()
+    channelData,
+    from: { role }
   }: DirectLineActivity = activity;
 
-  const activitySent = state !== SENDING && state !== SEND_FAILED;
   const fromUser = role === 'user';
-  const sendTimeout = getSendTimeoutForActivity({ activity });
+  let activitySent: boolean;
+  let sendTimeoutAt: number;
 
-  const pastTimeout = useTimePassed(fromUser && !activitySent ? new Date(localTimestamp).getTime() + sendTimeout : 0);
+  if (fromUser) {
+    const { state } = channelData;
+    const sendTimeout = getSendTimeoutForActivity({ activity });
 
-  const sendState = activitySent || !fromUser ? SENT : pastTimeout ? SEND_FAILED : SENDING;
+    activitySent = state !== SENDING && state !== SEND_FAILED;
+
+    // If no timestamp, we assume the "sending" will be timed out as "send failed".
+    sendTimeoutAt = !activitySent
+      ? new Date(activity.localTimestamp || new Date(0).toISOString()).getTime() + sendTimeout
+      : 0;
+  } else {
+    activitySent = true;
+    sendTimeoutAt = 0;
+  }
+
+  const pastTimeout = useTimePassed(sendTimeoutAt);
+
+  const sendState = activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING;
 
   return useMemo(
     () =>
@@ -63,9 +76,11 @@ ActivityStatusContainer.defaultProps = {
 };
 
 ActivityStatusContainer.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
-    channelData: PropTypes.shape({ state: PropTypes.string }),
-    from: PropTypes.shape({ role: PropTypes.string }),
+    channelData: PropTypes.shape({ state: PropTypes.string }).isRequired,
+    from: PropTypes.shape({ role: PropTypes.string }).isRequired,
     localTimestamp: PropTypes.string
   }).isRequired,
   hideTimestamp: PropTypes.bool,

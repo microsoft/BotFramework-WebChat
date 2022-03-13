@@ -1,4 +1,4 @@
-/* eslint complexity: ["error", 30] */
+/* eslint complexity: ["error", 50] */
 
 import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks, RenderAttachment } from 'botframework-webchat-api';
@@ -93,7 +93,7 @@ type StackedLayoutProps = {
   hideTimestamp?: boolean;
   renderActivityStatus?: (({ hideTimestamp: boolean }) => Exclude<ReactNode, boolean | null | undefined>) | false;
   renderAttachment?: RenderAttachment;
-  renderAvatar?: (activity: DirectLineActivity) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
+  renderAvatar?: ({ activity: DirectLineActivity }) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
   showCallout?: boolean;
 };
 
@@ -115,17 +115,13 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
 
-  const {
-    attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText = '' } = {} } = {},
-    from: { role } = {},
-    text,
-    textFormat
-  } = activity;
+  const isMessage = activity.type === 'message';
 
-  const activityDisplayText = messageBackDisplayText || text;
-  const fromUser = role === 'user';
+  const attachments = (isMessage && activity.attachments) || [];
+  const fromUser = activity.from.role === 'user';
+  const messageBackDisplayText: string = (isMessage && activity.channelData.messageBack.displayText) || '';
 
+  const activityDisplayText = isMessage ? messageBackDisplayText || activity.text : '';
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (
     fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
@@ -146,7 +142,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
-  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
+  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
   return (
     <div
@@ -186,10 +182,12 @@ const StackedLayout: FC<StackedLayoutProps> = ({
               >
                 {renderAttachment({
                   activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
+                  attachment: isMessage
+                    ? {
+                        content: activityDisplayText,
+                        contentType: textFormatToContentType(activity.textFormat)
+                      }
+                    : undefined
                 })}
               </Bubble>
             </div>
@@ -240,6 +238,8 @@ StackedLayout.defaultProps = {
 };
 
 StackedLayout.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     attachments: PropTypes.array,
     channelData: PropTypes.shape({

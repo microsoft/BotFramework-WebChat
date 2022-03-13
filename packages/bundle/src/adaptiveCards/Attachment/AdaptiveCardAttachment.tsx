@@ -20,6 +20,8 @@ AdaptiveCardAttachment.defaultProps = {
 };
 
 AdaptiveCardAttachment.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   attachment: PropTypes.shape({
     content: PropTypes.any.isRequired
   }).isRequired,

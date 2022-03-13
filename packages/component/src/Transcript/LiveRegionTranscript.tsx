@@ -38,7 +38,11 @@ const ROOT_STYLE = {
  * Presentational activity, will be rendered visually but not going through screen reader.
  */
 function isPresentational(activity: DirectLineActivity): boolean {
-  const { channelData }: { channelData?: { messageBack?: { displayText?: string } }; text?: string } = activity;
+  if (activity.type !== 'message') {
+    return;
+  }
+
+  const { channelData } = activity;
 
   // "Fallback text" includes both message text and narratives for attachments.
   // Emptying out "fallback text" essentially mute for both message and attachments.

@@ -32,8 +32,8 @@ const DEFAULT_STATE: ActivitiesStateType = [];
 const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
 
-function getClientActivityID({ channelData: { clientActivityID = undefined } = {} }: DirectLineActivity): string {
-  return clientActivityID;
+function getClientActivityID(activity: DirectLineActivity): string | undefined {
+  return activity.channelData.clientActivityID;
 }
 
 function findByClientActivityID(clientActivityID: string): (activity: DirectLineActivity) => boolean {
@@ -50,7 +50,7 @@ function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineAct
   // Also, if the "contentURL" starts with "blob:", this means the user is uploading a file (the URL is constructed by URL.createObjectURL)
   // Although the copy/reference of the file is temporary in-memory, to make the UX consistent across page refresh, we do not allow the user to re-download the file either.
 
-  activity = updateIn(activity, ['attachments', () => true, 'contentUrl'], contentUrl => {
+  activity = updateIn(activity, ['attachments', () => true, 'contentUrl'], (contentUrl: string) => {
     if (contentUrl !== DIRECT_LINE_PLACEHOLDER_URL && !/^blob:/iu.test(contentUrl)) {
       return contentUrl;
     }
@@ -61,7 +61,7 @@ function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineAct
   //    - outgoing activity will not have "timestamp" field
   // 2. last activity sequence ID (or 0) + 0.001
   //    - best effort to put this message the last one in the chat history
-  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], sequenceId =>
+  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], (sequenceId?: number) =>
     typeof sequenceId === 'number'
       ? sequenceId
       : typeof activity.timestamp !== 'undefined'
@@ -73,8 +73,8 @@ function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineAct
   );
 
   // TODO: We should move this patching logic to a DLJS wrapper for simplicity.
-  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], sequenceId =>
-    typeof sequenceId === 'number' ? sequenceId : +new Date(activity.timestamp) || 0
+  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], (sequenceId: number) =>
+    typeof sequenceId === 'number' ? sequenceId : +new Date(activity.timestamp || 0) || 0
   );
 
   return activity;
@@ -101,7 +101,7 @@ function upsertActivityWithSort(
 
   const indexToInsert = nextActivities.findIndex(
     ({ channelData: { state, 'webchat:sequence-id': sequenceId } = {} }) =>
-      sequenceId > nextSequenceId && state !== SENDING && state !== SEND_FAILED
+      (sequenceId || 0) > (nextSequenceId || 0) && state !== SENDING && state !== SEND_FAILED
   );
 
   // If no right place are found, append it
@@ -116,7 +116,7 @@ export default function activities(
 ): ActivitiesStateType {
   switch (action.type) {
     case DELETE_ACTIVITY:
-      state = updateIn(state, [({ id }) => id === action.payload.activityID]);
+      state = updateIn(state, [({ id }: DirectLineActivity) => id === action.payload.activityID]);
       break;
 
     case MARK_ACTIVITY:
@@ -125,7 +125,7 @@ export default function activities(
 
         state = updateIn(
           state,
-          [({ id }) => id === payload.activityID, 'channelData', payload.name],
+          [({ id }: DirectLineActivity) => id === payload.activityID, 'channelData', payload.name],
           () => payload.value
         );
       }
@@ -154,6 +154,7 @@ export default function activities(
         [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'state'],
         () => SEND_FAILED
       );
+
       break;
 
     case POST_ACTIVITY_FULFILLED:

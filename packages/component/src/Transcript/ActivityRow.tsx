@@ -18,9 +18,7 @@ import useValueRef from '../hooks/internal/useValueRef';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{
-  activity: DirectLineActivity;
-}>;
+type ActivityRowProps = PropsWithChildren<{ activity: DirectLineActivity }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
@@ -112,6 +110,8 @@ ActivityRow.defaultProps = {
 };
 
 ActivityRow.propTypes = {
+  // PropTypes cannot fully capture TypeScript type.
+  // @ts-ignore
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
       speak: PropTypes.bool,

@@ -30,7 +30,7 @@ export default function useActivityAccessibleName(activity: DirectLineActivity, 
   const fromSelf = activity.from?.role === 'user';
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
-  const numAttachments = activity.attachments?.length || 0;
+  const numAttachments = activity.type === 'message' ? activity.attachments?.length || 0 : 0;
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
   const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
