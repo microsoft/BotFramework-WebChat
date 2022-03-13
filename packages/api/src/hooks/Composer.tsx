@@ -7,13 +7,10 @@ import {
   clearSuggestedActions,
   connect as createConnectAction,
   createStore,
-  DirectLineActivity,
-  DirectLineJSBotConnection,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
   markActivity,
-  OneOrMany,
   postActivity,
   sendEvent,
   sendFiles,
@@ -34,6 +31,8 @@ import {
   stopSpeakingActivity,
   submitSendBox
 } from 'botframework-webchat-core';
+
+import type { DirectLineActivity, DirectLineJSBotConnection, OneOrMany } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';

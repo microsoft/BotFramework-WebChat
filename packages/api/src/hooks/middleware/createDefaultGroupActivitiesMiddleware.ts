@@ -1,4 +1,5 @@
-import { Constants, DirectLineActivity } from 'botframework-webchat-core';
+import { Constants } from 'botframework-webchat-core';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
