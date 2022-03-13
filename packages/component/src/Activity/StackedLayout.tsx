@@ -1,10 +1,10 @@
 /* eslint complexity: ["error", 50] */
 
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks, RenderAttachment } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC, ReactNode } from 'react';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';

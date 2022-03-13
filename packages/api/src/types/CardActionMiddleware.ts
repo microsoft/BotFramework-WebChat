@@ -1,4 +1,4 @@
-import { DirectLineCardAction } from 'botframework-webchat-core';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import FunctionMiddleware from './FunctionMiddleware';
 

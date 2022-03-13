@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useMemo } from 'react';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import useStyleOptions from './useStyleOptions';
 

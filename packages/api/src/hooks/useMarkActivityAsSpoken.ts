@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useCallback } from 'react';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import useMarkActivity from './internal/useMarkActivity';
 

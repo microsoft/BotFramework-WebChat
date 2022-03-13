@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode } from 'react';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import { AvatarComponentFactory } from './AvatarMiddleware';
 import { RenderAttachment } from './AttachmentMiddleware';

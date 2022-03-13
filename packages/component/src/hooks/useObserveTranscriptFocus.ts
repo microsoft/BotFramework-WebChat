@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useEffect } from 'react';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 

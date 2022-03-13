@@ -8,7 +8,6 @@ import {
   SubmitAction
 } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
-import { DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
@@ -21,6 +20,7 @@ import React, {
   useState,
   VFC
 } from 'react';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';

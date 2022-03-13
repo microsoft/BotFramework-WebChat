@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import Observable from 'core-js/features/observable';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 

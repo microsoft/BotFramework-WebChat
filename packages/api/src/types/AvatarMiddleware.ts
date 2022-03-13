@@ -1,4 +1,4 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
+import type { DirectLineActivity } from 'botframework-webchat-core';
 
 import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
