@@ -119,7 +119,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
   const attachments = (isMessage && activity.attachments) || [];
   const fromUser = activity.from.role === 'user';
-  const messageBackDisplayText: string = (isMessage && activity.channelData.messageBack.displayText) || '';
+  const messageBackDisplayText: string = (isMessage && activity.channelData.messageBack?.displayText) || '';
 
   const activityDisplayText = isMessage ? messageBackDisplayText || activity.text : '';
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
