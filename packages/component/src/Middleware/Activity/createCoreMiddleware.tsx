@@ -16,7 +16,7 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         const { type } = activity;
 
         // Filter out activities that should not be visible
-        if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
+        if (type === 'conversationUpdate' || type === 'event' || type === 'invoke' || type === 'typing') {
           return false;
         } else if (type === 'message') {
           const { attachments, channelData, text } = activity;
@@ -31,10 +31,6 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           ) {
             return false;
           }
-          // TODO: [P*] Add tests for this case... it was skipped before.
-        } else if (type === 'typing' && activity.from.role === 'user') {
-          // Do not show typing by oneself
-          return false;
         }
 
         if (type === 'message' || type === 'typing') {
