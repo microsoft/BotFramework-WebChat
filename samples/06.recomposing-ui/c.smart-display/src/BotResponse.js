@@ -30,9 +30,7 @@ const BotResponse = ({ lastReadActivityID }) => {
             </div>
           ))}
         </Film>
-        {lastBotActivity.channelData && lastBotActivity.channelData.speak && (
-          <SpeakActivity activity={lastBotActivity} />
-        )}
+        {lastBotActivity.channelData?.speak && <SpeakActivity activity={lastBotActivity} />}
       </div>
     )
   );

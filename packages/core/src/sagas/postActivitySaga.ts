@@ -33,7 +33,7 @@ function* postActivity(
   numActivitiesPosted: number,
   { meta: { method }, payload: { activity } }: PostActivityAction
 ) {
-  const { attachments } = activity;
+  const attachments = (activity.type === 'message' && activity.attachments) || [];
   const clientActivityID = uniqueID();
   const locale = yield select(languageSelector);
   const localTimeZone =
@@ -92,9 +92,7 @@ function* postActivity(
         const {
           payload: { activity }
         }: IncomingActivityAction = yield take(INCOMING_ACTIVITY);
-        const { channelData = {}, id } = activity;
-
-        if (channelData.clientActivityID === clientActivityID && id) {
+        if (activity.channelData?.clientActivityID === clientActivityID && activity.id) {
           return activity;
         }
       }

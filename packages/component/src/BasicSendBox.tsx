@@ -33,7 +33,7 @@ const ROOT_STYLE = {
 
 // TODO: [P3] We should consider exposing core/src/definitions and use it instead
 function activityIsSpeakingOrQueuedToSpeak(activity: DirectLineActivity) {
-  return activity.type === 'message' && activity.channelData.speak;
+  return activity.type === 'message' && activity.channelData?.speak;
 }
 
 function useSendBoxSpeechInterimsVisible(): [boolean] {

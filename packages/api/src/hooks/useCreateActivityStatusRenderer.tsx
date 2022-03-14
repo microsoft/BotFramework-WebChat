@@ -31,7 +31,6 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
   // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
   // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
   const {
-    channelData,
     from: { role }
   }: DirectLineActivity = activity;
 
@@ -40,7 +39,7 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
   let sendTimeoutAt: number;
 
   if (fromUser) {
-    const { state } = channelData;
+    const state = activity.channelData?.state;
     const sendTimeout = getSendTimeoutForActivity({ activity });
 
     activitySent = state !== SENDING && state !== SEND_FAILED;
@@ -80,7 +79,7 @@ ActivityStatusContainer.propTypes = {
   // PropTypes cannot fully capture TypeScript types.
   // @ts-ignore
   activity: PropTypes.shape({
-    channelData: PropTypes.shape({ state: PropTypes.string }).isRequired,
+    channelData: PropTypes.shape({ state: PropTypes.string }),
     from: PropTypes.shape({ role: PropTypes.string }).isRequired,
     localTimestamp: PropTypes.string
   }).isRequired,

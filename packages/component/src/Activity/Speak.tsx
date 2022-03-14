@@ -57,7 +57,7 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
   }, [activity]);
 
   const speechSynthesisUtterance: false | SpeechSynthesisUtterance | undefined =
-    activity.type === 'message' && activity.channelData.speechSynthesisUtterance;
+    activity.type === 'message' && activity.channelData?.speechSynthesisUtterance;
 
   return (
     !!activity && (

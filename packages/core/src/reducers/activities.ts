@@ -33,7 +33,7 @@ const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
 
 function getClientActivityID(activity: DirectLineActivity): string | undefined {
-  return activity.channelData.clientActivityID;
+  return activity.channelData?.clientActivityID;
 }
 
 function findByClientActivityID(clientActivityID: string): (activity: DirectLineActivity) => boolean {

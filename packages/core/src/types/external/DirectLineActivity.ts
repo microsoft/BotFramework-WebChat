@@ -132,6 +132,7 @@ type CoreActivityEssence<
   channelId?: string;
   entities?: Entity[];
   from: ChannelAcount<Role>;
+  localTimezone?: string;
   replyToId?: string;
   type: string;
 } & TimestampEssence<Role, SendState> &
