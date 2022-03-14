@@ -27,7 +27,7 @@
       run(async function () {
         const directLine = await testHelpers.createDirectLineWithTranscript(
           new Array(10).fill().map((_, index) => {
-            const timestamp = index;
+            const timestamp = index < 5 ? index * 2 : (index - 5) * 2 + 1;
             const sequenceId = 10 - index;
             const text = `seq=${sequenceId}, index=${index}, ts=${timestamp}`;
 
@@ -44,8 +44,11 @@
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(10);
         await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should show a transcript sorted based on "seq" field.
+        await host.snapshot();
       });
     </script>
   </body>

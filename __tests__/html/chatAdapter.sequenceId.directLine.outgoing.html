@@ -96,9 +96,14 @@
           activities[1].channelData['webchat:sequence-id'] < activities[2].channelData['webchat:sequence-id']
         ).toBe(true);
 
-        // THEN: Both outgoing messages should not send "webchat:sequence-id".
+        // THEN: Both outgoing messages should not send "webchat:sequence-id" and "state".
         expect(sending[0].activity.channelData['webchat:sequence-id']).toBeUndefined();
+        expect(sending[0].activity.channelData.state).toBeUndefined();
         expect(sending[1].activity.channelData['webchat:sequence-id']).toBeUndefined();
+        expect(sending[1].activity.channelData.state).toBeUndefined();
+
+        // THEN: It should show message in order of "2", "1", followed by "0".
+        await host.snapshot();
 
         // WHEN: The first message has echoed back with a timestamp of 1.
         sending[0].resolve({
@@ -113,6 +118,11 @@
           () => store.getState().activities.find(activity => activity.channelData.state === 'sent'),
           2000
         );
+
+        // THEN: It should show message in the order of "1", "2", followed by "0".
+        //       "1" should be marked as sent.
+        //       "0" should be sending.
+        await host.snapshot();
 
         // THEN: The first outgoing message should appears first, before the bot's message.
         //       The first outgoing message has a smaller timestamp (t=1) than the bot's message (t=2).
@@ -138,6 +148,9 @@
           'User activity has timestamp of 1.',
           'Bot activity has timestamp of 2.'
         ]);
+
+        // THEN: It should show message in the order of "0", "1", followed by "2".
+        await host.snapshot();
       });
     </script>
   </body>
