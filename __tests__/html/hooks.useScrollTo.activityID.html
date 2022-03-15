@@ -135,16 +135,16 @@
         await renderWithFunction(() => useScrollTo()({ activityID: '12' }));
         await host.snapshot();
 
-        // // When on top, it should always return the first activity in the transcript.
-        // await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }));
-        // await new Promise(resolve => setTimeout(resolve, 200)); // Wait until "scroll" event
-        // expect(lastScrollPosition).toHaveProperty('activityID', '0');
-        // expect(lastScrollPosition).toHaveProperty('scrollTop', 0);
-        // await host.snapshot();
+        // When on top, it should always return the first activity in the transcript.
+        await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }));
+        await new Promise(resolve => setTimeout(resolve, 200)); // Wait until "scroll" event
+        expect(lastScrollPosition).toHaveProperty('activityID', '0');
+        expect(lastScrollPosition).toHaveProperty('scrollTop', 0);
+        await host.snapshot();
 
-        // // Since "19" is a super-long activity, it should appears on the top of the page.
-        // await renderWithFunction(() => useScrollTo()({ activityID: '19' }));
-        // await host.snapshot();
+        // Since "19" is a super-long activity, it should appears on the top of the page.
+        await renderWithFunction(() => useScrollTo()({ activityID: '19' }));
+        await host.snapshot();
       });
     </script>
   </body>
