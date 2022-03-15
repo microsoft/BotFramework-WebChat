@@ -138,9 +138,6 @@ export default function activities(
           payload: { activity }
         } = action;
 
-        // TODO: [P*] Add some verifications here:
-        //       - Must have "localTimestamp" field
-        //       - Must NOT have "timestamp" field
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
 
         state = upsertActivityWithSort(state, activity);
@@ -166,8 +163,6 @@ export default function activities(
       break;
 
     case INCOMING_ACTIVITY:
-      // TODO: [P*] Add some verifications here:
-      //       - Must have "timestamp" field
       // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
       state = upsertActivityWithSort(state, action.payload.activity);
 
