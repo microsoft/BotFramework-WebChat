@@ -251,7 +251,7 @@ StackedLayout.propTypes = {
       role: PropTypes.string.isRequired
     }).isRequired,
     text: PropTypes.string,
-    textFormat: PropTypes.oneOf(['markdown', 'plain', 'xml']) as PropTypes.Requireable<'markdown' | 'plain' | 'xml'>,
+    textFormat: PropTypes.oneOf(['markdown', 'plain', 'xml']),
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,

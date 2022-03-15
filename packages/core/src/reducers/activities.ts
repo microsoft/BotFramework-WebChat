@@ -72,7 +72,7 @@ function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineAct
         (lastActivity?.channelData?.['webchat:sequence-id'] || 0) + 0.001
   );
 
-  // TODO: We should move this patching logic to a DLJS wrapper for simplicity.
+  // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
   activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], (sequenceId: number) =>
     typeof sequenceId === 'number' ? sequenceId : +new Date(activity.timestamp || 0) || 0
   );
