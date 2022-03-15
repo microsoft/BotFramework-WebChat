@@ -1,5 +1,5 @@
 import { Constants } from 'botframework-webchat-core';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
@@ -42,8 +42,8 @@ function sending(activity) {
 }
 
 function shouldGroupTimestamp(
-  activityX: DirectLineActivity,
-  activityY: DirectLineActivity,
+  activityX: WebChatActivity,
+  activityY: WebChatActivity,
   groupTimestamp: boolean | number
 ): boolean {
   if (groupTimestamp === false) {

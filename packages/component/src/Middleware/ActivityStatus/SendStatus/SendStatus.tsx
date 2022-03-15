@@ -2,7 +2,7 @@ import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../../../connectToWebChat';
 import ScreenReaderText from '../../../ScreenReaderText';
@@ -34,7 +34,7 @@ const connectSendStatus = (...selectors) =>
   );
 
 type SendStatusProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   sendState: 'sending' | 'send failed' | 'sent';
 };
 

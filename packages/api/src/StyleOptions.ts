@@ -1,4 +1,4 @@
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type StyleOptions = {
   /**
@@ -675,7 +675,7 @@ type StyleOptions = {
    */
   groupTimestamp?: boolean | number;
 
-  sendTimeout?: number | ((activity: DirectLineActivity) => number);
+  sendTimeout?: number | ((activity: WebChatActivity) => number);
   sendTimeoutForAttachments?: number;
 
   /**

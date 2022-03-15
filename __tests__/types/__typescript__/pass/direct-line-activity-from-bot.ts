@@ -1,7 +1,7 @@
-import type { DirectLineActivity } from '../../../../packages/core';
+import type { WebChatActivity } from '../../../../packages/core';
 
 // All activities from bot must be from server.
-const activity: DirectLineActivity = {
+const activity: WebChatActivity = {
   channelData: {
     'webchat:sequence-id': 0
   },

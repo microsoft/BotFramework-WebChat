@@ -9,7 +9,6 @@ import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED 
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 
 import type { DeleteActivityAction } from '../actions/deleteActivity';
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
 import type {
@@ -17,6 +16,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
 type ActivitiesAction =
   | DeleteActivityAction
@@ -26,21 +26,21 @@ type ActivitiesAction =
   | PostActivityPendingAction
   | PostActivityRejectedAction;
 
-type ActivitiesStateType = DirectLineActivity[];
+type ActivitiesStateType = WebChatActivity[];
 
 const DEFAULT_STATE: ActivitiesStateType = [];
 const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
 
-function getClientActivityID(activity: DirectLineActivity): string | undefined {
+function getClientActivityID(activity: WebChatActivity): string | undefined {
   return activity.channelData?.clientActivityID;
 }
 
-function findByClientActivityID(clientActivityID: string): (activity: DirectLineActivity) => boolean {
-  return (activity: DirectLineActivity) => getClientActivityID(activity) === clientActivityID;
+function findByClientActivityID(clientActivityID: string): (activity: WebChatActivity) => boolean {
+  return (activity: WebChatActivity) => getClientActivityID(activity) === clientActivityID;
 }
 
-function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineActivity): DirectLineActivity {
+function patchActivity(activity: WebChatActivity, lastActivity: WebChatActivity): WebChatActivity {
   // Direct Line channel will return a placeholder image for the user-uploaded image.
   // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
   // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
@@ -80,10 +80,7 @@ function patchActivity(activity: DirectLineActivity, lastActivity: DirectLineAct
   return activity;
 }
 
-function upsertActivityWithSort(
-  activities: DirectLineActivity[],
-  nextActivity: DirectLineActivity
-): DirectLineActivity[] {
+function upsertActivityWithSort(activities: WebChatActivity[], nextActivity: WebChatActivity): WebChatActivity[] {
   nextActivity = patchActivity(nextActivity, activities[activities.length - 1]);
 
   const { channelData: { clientActivityID: nextClientActivityID, 'webchat:sequence-id': nextSequenceId } = {} } =
@@ -116,7 +113,7 @@ export default function activities(
 ): ActivitiesStateType {
   switch (action.type) {
     case DELETE_ACTIVITY:
-      state = updateIn(state, [({ id }: DirectLineActivity) => id === action.payload.activityID]);
+      state = updateIn(state, [({ id }: WebChatActivity) => id === action.payload.activityID]);
       break;
 
     case MARK_ACTIVITY:
@@ -125,7 +122,7 @@ export default function activities(
 
         state = updateIn(
           state,
-          [({ id }: DirectLineActivity) => id === payload.activityID, 'channelData', payload.name],
+          [({ id }: WebChatActivity) => id === payload.activityID, 'channelData', payload.name],
           () => payload.value
         );
       }

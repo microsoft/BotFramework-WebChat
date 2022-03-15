@@ -1,4 +1,4 @@
-import type { DirectLineActivity, DirectLineAttachment } from 'botframework-webchat-core';
+import type { DirectLineAttachment, WebChatActivity } from 'botframework-webchat-core';
 
 // TODO: We should consider using a prop for "attachmentMiddleware" to render for screen reader, instead of having another middleware.
 
@@ -6,7 +6,7 @@ import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 
 type AttachmentForScreenReaderComponentFactoryOptions = [
   {
-    activity: DirectLineActivity;
+    activity: WebChatActivity;
     attachment: DirectLineAttachment;
   }
 ];

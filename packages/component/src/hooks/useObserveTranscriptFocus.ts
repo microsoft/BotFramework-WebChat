@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useObserveTranscriptFocus(
-  observer: (event: { activity: DirectLineActivity }) => void,
+  observer: (event: { activity: WebChatActivity }) => void,
   deps: any[]
 ): void {
   if (typeof observer !== 'function') {

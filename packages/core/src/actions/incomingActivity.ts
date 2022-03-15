@@ -1,15 +1,15 @@
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
 type IncomingActivityActionType = 'DIRECT_LINE/INCOMING_ACTIVITY';
 
 type IncomingActivityAction = {
-  payload: { activity: DirectLineActivity };
+  payload: { activity: WebChatActivity };
   type: IncomingActivityActionType;
 };
 
 const INCOMING_ACTIVITY: IncomingActivityActionType = 'DIRECT_LINE/INCOMING_ACTIVITY';
 
-function incomingActivity(activity: DirectLineActivity): IncomingActivityAction {
+function incomingActivity(activity: WebChatActivity): IncomingActivityAction {
   return {
     type: INCOMING_ACTIVITY,
     payload: { activity }

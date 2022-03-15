@@ -1,7 +1,7 @@
-import type { DirectLineActivity } from '../../../../packages/core';
+import type { WebChatActivity } from '../../../../packages/core';
 
 // All activities that are sending, are activities that did not reach the server yet (a.k.a. activity-in-transit).
-const activity: DirectLineActivity = {
+const activity: WebChatActivity = {
   channelData: {
     state: 'sending',
     'webchat:sequence-id': 0

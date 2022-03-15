@@ -25,6 +25,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
 function* postActivity(
   directLine: DirectLineJSBotConnection,
@@ -107,10 +108,10 @@ function* postActivity(
 
     const {
       send: { echoBack }
-    }: { send: { echoBack: DirectLineActivity } } = yield race({
+    }: { send: { echoBack: WebChatActivity } } = yield race({
       send: all({
         echoBack: echoBackCall,
-        postActivity: observeOnce(directLine.postActivity(activity))
+        postActivity: observeOnce(directLine.postActivity(activity as DirectLineActivity))
       }),
       timeout: call(() => sleep(sendTimeout).then(() => Promise.reject(new Error('timeout'))))
     });

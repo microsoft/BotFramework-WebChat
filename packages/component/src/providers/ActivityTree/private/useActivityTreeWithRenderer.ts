@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import intersectionOf from '../../../Utils/intersectionOf';
 import removeInline from '../../../Utils/removeInline';
@@ -54,8 +54,8 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
       sender: activitiesBySender,
       status: activitiesByStatus
     }: {
-      sender: readonly (readonly DirectLineActivity[])[];
-      status: readonly (readonly DirectLineActivity[])[];
+      sender: readonly (readonly WebChatActivity[])[];
+      status: readonly (readonly WebChatActivity[])[];
     } = groupActivities({
       activities: visibleActivities
     });

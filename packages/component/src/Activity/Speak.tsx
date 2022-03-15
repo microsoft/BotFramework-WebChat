@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
@@ -24,7 +24,7 @@ const connectSpeakActivity = (...selectors) =>
   );
 
 type SpeakProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
 };
 
 const Speak: FC<SpeakProps> = ({ activity }) => {

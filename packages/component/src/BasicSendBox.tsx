@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
@@ -32,7 +32,7 @@ const ROOT_STYLE = {
 };
 
 // TODO: [P3] We should consider exposing core/src/definitions and use it instead
-function activityIsSpeakingOrQueuedToSpeak(activity: DirectLineActivity) {
+function activityIsSpeakingOrQueuedToSpeak(activity: WebChatActivity) {
   return activity.type === 'message' && activity.channelData?.speak;
 }
 

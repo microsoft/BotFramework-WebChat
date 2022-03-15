@@ -63,4 +63,4 @@ Combining the algorithms above, Web Chat has the following assumptions
 
 -  Posting an activity, [`sagas/postActivitySaga.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/sagas/postActivitySaga.ts)
 -  Inserting an activity into the chat history, [`reducers/activities.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/reducers/activities.ts)
--  Activity type, [`types/DirectLineActivity.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/types/external/DirectLineActivity.ts)
+-  Activity type, [`types/WebChatActivity.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/types/WebChatActivity.ts)

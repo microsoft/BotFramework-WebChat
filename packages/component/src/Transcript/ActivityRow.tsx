@@ -2,9 +2,8 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useRef } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -18,7 +17,7 @@ import useValueRef from '../hooks/internal/useValueRef';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ activity: DirectLineActivity }>;
+type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();

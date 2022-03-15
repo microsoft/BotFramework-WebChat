@@ -4,10 +4,13 @@ import updateIn from 'simple-update-in';
 import observeEach from './effects/observeEach';
 import queueIncomingActivity from '../actions/queueIncomingActivity';
 import whileConnected from './effects/whileConnected';
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
+import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
-const PASSTHRU_FN = value => value;
+const PASSTHRU_FN = (value: unknown) => value;
 
-function patchActivityWithFromRole(activity, userID) {
+function patchActivityWithFromRole(activity: DirectLineActivity, userID?: string): DirectLineActivity {
   // Some activities, such as "ConversationUpdate", does not have "from" defined.
   // And although "role" is defined in Direct Line spec, it was not sent over the wire.
   // We normalize the activity here to simplify null-check and logic later.
@@ -28,7 +31,7 @@ function patchActivityWithFromRole(activity, userID) {
   return activity;
 }
 
-function patchNullAsUndefined(activity) {
+function patchNullAsUndefined(activity: DirectLineActivity): DirectLineActivity {
   // These fields are known used in Web Chat and in any cases, they should not be null, but undefined.
   // The only field omitted is "value", as it could be null purposefully.
 
@@ -56,12 +59,13 @@ function patchNullAsUndefined(activity) {
   }, activity);
 }
 
-function* observeActivity({ directLine, userID }) {
-  yield observeEach(directLine.activity$, function* observeActivity(activity) {
+function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotConnection; userID?: string }) {
+  yield observeEach(directLine.activity$, function* observeActivity(activity: DirectLineActivity) {
+    // TODO: [P2] #3953 Move the patching logic to a DirectLineJS wrapper, instead of too close to inners of Web Chat.
     activity = patchNullAsUndefined(activity);
     activity = patchActivityWithFromRole(activity, userID);
 
-    yield put(queueIncomingActivity(activity));
+    yield put(queueIncomingActivity(activity as WebChatActivity));
   });
 }
 

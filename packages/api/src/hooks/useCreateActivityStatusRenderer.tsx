@@ -4,7 +4,7 @@
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { ReactNode, useMemo, VFC } from 'react';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useTimePassed from './internal/useTimePassed';
@@ -15,9 +15,9 @@ const {
 } = Constants;
 
 type ActivityStatusContainerProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   hideTimestamp: boolean;
-  nextVisibleActivity: DirectLineActivity;
+  nextVisibleActivity: WebChatActivity;
 };
 
 const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
@@ -32,7 +32,7 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
   // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
   const {
     from: { role }
-  }: DirectLineActivity = activity;
+  }: WebChatActivity = activity;
 
   const fromUser = role === 'user';
   let activitySent: boolean;
@@ -88,12 +88,12 @@ ActivityStatusContainer.propTypes = {
 };
 
 export default function useCreateActivityStatusRenderer(): (renderOptions: {
-  activity: DirectLineActivity;
-  nextVisibleActivity: DirectLineActivity;
+  activity: WebChatActivity;
+  nextVisibleActivity: WebChatActivity;
 }) => (props: { hideTimestamp?: boolean }) => ReactNode {
   return useMemo(
     () =>
-      ({ activity, nextVisibleActivity }: { activity: DirectLineActivity; nextVisibleActivity: DirectLineActivity }) =>
+      ({ activity, nextVisibleActivity }: { activity: WebChatActivity; nextVisibleActivity: WebChatActivity }) =>
       ({ hideTimestamp }: { hideTimestamp?: boolean } = {}) =>
         (
           <ActivityStatusContainer

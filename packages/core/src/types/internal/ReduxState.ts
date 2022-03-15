@@ -1,8 +1,8 @@
-import type { DirectLineActivity } from '../external/DirectLineActivity';
 import type { Notification } from './Notification';
+import type { WebChatActivity } from '../external/WebChatActivity';
 
 type ReduxState = {
-  activities: DirectLineActivity[];
+  activities: WebChatActivity[];
   clockSkewAdjustment: number;
   dictateState: string;
   language: string;

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import type { DirectLineActivity, DirectLineAttachment } from 'botframework-webchat-core';
+import type { DirectLineAttachment, WebChatActivity } from 'botframework-webchat-core';
 
 type AttachmentProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   attachment: DirectLineAttachment;
 };
 

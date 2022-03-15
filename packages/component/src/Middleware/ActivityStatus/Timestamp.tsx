@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './RelativeTime';
@@ -11,7 +11,7 @@ import useStyleSet from '../../hooks/useStyleSet';
 const { useStyleOptions } = hooks;
 
 type TimestampProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   className?: string;
 };
 

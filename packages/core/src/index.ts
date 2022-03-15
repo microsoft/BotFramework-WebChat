@@ -43,6 +43,7 @@ import type { DirectLineSignInCard } from './types/external/DirectLineSignInCard
 import type { DirectLineSuggestedAction } from './types/external/DirectLineSuggestedAction';
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
+import type { WebChatActivity } from './types/WebChatActivity';
 
 const Constants = { ActivityClientState, DictateState };
 const version = process.env.npm_package_version;
@@ -95,5 +96,6 @@ export type {
   DirectLineSuggestedAction,
   DirectLineThumbnailCard,
   DirectLineVideoCard,
-  OneOrMany
+  OneOrMany,
+  WebChatActivity
 };
