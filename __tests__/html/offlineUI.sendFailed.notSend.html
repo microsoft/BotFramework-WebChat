@@ -42,9 +42,15 @@
 
           clock.tick(400);
 
+          // SETUP: Send 2 messages
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('42', { waitForSend: false });
+          await pageObjects.sendMessageViaSendBox('First message', { waitForSend: false });
+          await pageObjects.sendMessageViaSendBox('Last message', { waitForSend: false });
 
+          // THEN: It should show both messages as "sending".
+          await host.snapshot();
+
+          // WHEN: After 20 seconds passed without a successful sent signals from both of the messages.
           clock.tick(20000);
 
           await pageConditions.became(
@@ -57,6 +63,7 @@
             30000
           );
 
+          // THEN: It should show 2 "send failed, retry" prompts.
           await host.snapshot();
         },
         { ignoreErrors: true }
