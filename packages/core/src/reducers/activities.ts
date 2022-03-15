@@ -7,7 +7,6 @@ import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
 import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED } from '../actions/postActivity';
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
-
 import type { DeleteActivityAction } from '../actions/deleteActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';

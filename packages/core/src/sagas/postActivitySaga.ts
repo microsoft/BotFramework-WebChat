@@ -15,7 +15,6 @@ import sendTimeoutSelector from '../selectors/sendTimeout';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
-
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { IncomingActivityAction } from '../actions/incomingActivity';

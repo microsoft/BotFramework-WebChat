@@ -1,11 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
-
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import intersectionOf from '../../../Utils/intersectionOf';
 import removeInline from '../../../Utils/removeInline';
-
 import type { ActivityWithRenderer, ReadonlyActivityTree } from './types';
 
 const { useGroupActivities } = hooks;
