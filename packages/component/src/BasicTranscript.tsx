@@ -15,8 +15,8 @@ import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react
 
 import type { ActivityComponentFactory, AvatarComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
-import type { WebChatActivity } from 'botframework-webchat-core';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
 import ActivityRow from './Transcript/ActivityRow';
