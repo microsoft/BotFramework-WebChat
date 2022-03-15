@@ -25,8 +25,10 @@
           overridePostActivity: activity => {
             const id = '0';
 
-            // All activity-in-transit should have
+            // All activity-in-transit should not have timestamp.
             expect(activity.timestamp).toBeUndefined();
+
+            // All activity-in-transit should have local timestamp.
             expect(activity).toHaveProperty('localTimestamp', '1969-12-31T16:00:00.600-08:00');
 
             // Without "Intl" object, local time zone name cannot be retrieved.
