@@ -43,17 +43,14 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
 
     const { attachments = [], speak, text } = activity;
 
-    return (
-      !!activity &&
-      [
-        speak || text,
-        ...attachments
-          .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
-          .map(attachment => attachment?.content?.speak)
-      ]
-        .filter(line => line)
-        .join('\r\n')
-    );
+    return [
+      speak || text,
+      ...attachments
+        .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
+        .map(attachment => attachment?.content?.speak)
+    ]
+      .filter(line => line)
+      .join('\r\n');
   }, [activity]);
 
   const speechSynthesisUtterance: false | SpeechSynthesisUtterance | undefined =
