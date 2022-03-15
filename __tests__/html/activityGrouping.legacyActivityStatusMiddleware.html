@@ -88,14 +88,14 @@
                 type: 'message'
               },
               {
-                channelData: { clientActivityID: '2.1', state: 'sending' },
+                channelData: { clientActivityID: '2.1', state: 'sending', 'webchat:sequence-id': -30000.999 },
                 from: { role: 'user' },
                 localTimestamp: -20001,
                 text: 'This message should have status "Send failed".',
                 type: 'message'
               },
               {
-                channelData: { clientActivityID: '2.2', state: 'sending' },
+                channelData: { clientActivityID: '2.2', state: 'sending', 'webchat:sequence-id': -30000.998 },
                 from: { role: 'user' },
                 localTimestamp: 0,
                 text: 'This message should have status "Sending...", then turn to "Send failed".',
