@@ -1,0 +1,44 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+
+#webchat {
+  height: 100%;
+  width: 100%;
+}
+
+#webchat[watermark="true"] [role="complementary"] ul[role="list"]::after {
+  content: "Powered By ...";
+  background: linear-gradient(
+    rgba(248, 248, 248, 0),
+    rgba(248, 248, 248, 0.63),
+    #f8f8f8 40%
+  );
+  bottom: 0;
+  right: 0;
+  color: #707070;
+  display: block;
+  font-family: "Segoe Semibold", Calibri, "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  padding: 15px 10px 10px;
+  position: absolute;
+  position: sticky;
+  text-align: right;
+}
+
+#webchat[watermark="true"] .webchat__scrollToEndButton {
+  bottom: 32px;
+  left: 50%;
+  right: unset;
+  transform: translate(-50%, 0);
+}
+button.ac-pushButton:hover {
+  background: #0071ca !important;
+}
+button.ac-pushButton:hover div {
+  color: #ffffff !important;
+}
