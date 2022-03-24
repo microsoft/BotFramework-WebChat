@@ -50,7 +50,7 @@ test('getter should represent bot and user typing respectively', async () => {
     {
       at: 0,
       expireAt: 5000,
-      name: 'bot',
+      name: 'Bot',
       role: 'bot'
     }
   ]);
@@ -63,7 +63,7 @@ test('getter should represent bot and user typing respectively', async () => {
     {
       at: 0,
       expireAt: 5000,
-      name: 'bot',
+      name: 'Bot',
       role: 'bot'
     },
     {
