@@ -113,7 +113,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Resolves [#4099](https://github.com/microsoft/BotFramework-WebChat/issues/4099), added typing indicator to live region for screen reader, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Resolves [#4099](https://github.com/microsoft/BotFramework-WebChat/issues/4099), added typing indicator to live region for screen reader, by [@compulim](https://github.com/compulim), in PR [#4210](https://github.com/microsoft/BotFramework-WebChat/pull/4210)
 
 ## [4.15.1] - 2022-03-04
 
