@@ -12,13 +12,15 @@ import tabbableElements from '../Utils/tabbableElements';
 import useActivityTreeWithRenderer from '../providers/ActivityTree/useActivityTreeWithRenderer';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useTypistNames from './useTypistNames';
+
 import type { ActivityElementMap } from './types';
 
 const { useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__live-region-transcript': {
-    '& .webchat__live-region-transcript__interactive_note': {
+    '& .webchat__live-region-transcript__interactive-note, & .webchat__live-region-transcript__text-element': {
       color: 'transparent',
       height: 1,
       overflow: 'hidden',
@@ -62,12 +64,19 @@ type LiveRegionTranscriptCoreProps = {
 
 const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
   const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
+  const [typistNames] = useTypistNames();
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const queueStaticElement = useQueueStaticElement();
 
   const liveRegionInteractiveLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_LABEL_ALT');
   const liveRegionInteractiveWithLinkLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_WITH_LINKS_LABEL_ALT');
+  const typingIndicator =
+    !!typistNames.length &&
+    localize(
+      typistNames.length > 1 ? 'TYPING_INDICATOR_MULTIPLE_TEXT' : 'TYPING_INDICATOR_SINGLE_TEXT',
+      typistNames[0]
+    );
 
   const renderingActivities = useMemo<Readonly<RenderingActivities>>(
     () =>
@@ -110,7 +119,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
 
     if (hasNewLink || hasNewWidget) {
       // eslint-disable-next-line no-magic-numbers
-      const labelId = `webchat__live-region-transcript__interactive_note--${random().toString(36).substr(2, 5)}`;
+      const labelId = `webchat__live-region-transcript__interactive-note--${random().toString(36).substr(2, 5)}`;
 
       queueStaticElement(
         // Inside ARIA live region:
@@ -124,7 +133,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
         <div
           aria-atomic="true"
           aria-labelledby={labelId}
-          className="webchat__live-region-transcript__interactive_note"
+          className="webchat__live-region-transcript__interactive-note"
           role="note"
         >
           {/* "id" is required for "aria-activedescendant" */}
@@ -144,6 +153,10 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     queueStaticElement,
     renderingActivities
   ]);
+
+  useEffect(() => {
+    typingIndicator && queueStaticElement(typingIndicator);
+  }, [queueStaticElement, typingIndicator]);
 
   return null;
 };
@@ -165,6 +178,7 @@ const LiveRegionTranscript: VFC<LiveRegionTranscriptProps> = ({ activityElementM
       className={classNames('webchat__live-region-transcript', rootClassName)}
       fadeAfter={internalLiveRegionFadeAfter}
       role="log"
+      textElementClassName="webchat__live-region-transcript__text-element"
     >
       <LiveRegionTranscriptCore activityElementMapRef={activityElementMapRef} />
     </LiveRegionTwinComposer>

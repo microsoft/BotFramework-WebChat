@@ -15,6 +15,7 @@ import scrollToEndButtonShown from './scrollToEndButtonShown';
 import stabilized from './stabilized';
 import suggestedActionsShown from './suggestedActionsShown';
 import toastShown from './toastShown';
+import typingIndicatorHidden from './typingIndicatorHidden';
 import typingIndicatorShown from './typingIndicatorShown';
 import uiConnected from './uiConnected';
 import webChatRendered from './webChatRendered';
@@ -37,6 +38,7 @@ export {
   stabilized,
   suggestedActionsShown,
   toastShown,
+  typingIndicatorHidden,
   typingIndicatorShown,
   uiConnected,
   webChatRendered

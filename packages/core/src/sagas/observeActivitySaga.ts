@@ -59,11 +59,26 @@ function patchNullAsUndefined(activity: DirectLineActivity): DirectLineActivity 
   }, activity);
 }
 
+// Patching the `from.name` to be a human readable name.
+// We use the `from.name` for typing indicator, such that it read "John is typing...".
+function patchFromName(activity: DirectLineActivity) {
+  return updateIn(activity, ['from', 'name'], (name: string | undefined): string => {
+    const { channelId, from = {} } = activity;
+
+    if ((channelId === 'directline' || channelId === 'webchat') && from.id === from.name && from.role === 'bot') {
+      return 'Bot';
+    }
+
+    return name;
+  });
+}
+
 function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotConnection; userID?: string }) {
   yield observeEach(directLine.activity$, function* observeActivity(activity: DirectLineActivity) {
     // TODO: [P2] #3953 Move the patching logic to a DirectLineJS wrapper, instead of too close to inners of Web Chat.
     activity = patchNullAsUndefined(activity);
     activity = patchActivityWithFromRole(activity, userID);
+    activity = patchFromName(activity);
 
     yield put(queueIncomingActivity(activity as WebChatActivity));
   });

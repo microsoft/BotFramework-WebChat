@@ -143,7 +143,9 @@ useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
+> On or before 4.15.1, there is [an issue](https://github.com/microsoft/BotFramework-WebChat/issues/4209) which the `at` field is not accurately reflecting the time when the participant start typing.
+
+This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant. Both time values are based on local clock.
 
 If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 

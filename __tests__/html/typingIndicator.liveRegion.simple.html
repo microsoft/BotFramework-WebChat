@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const clock = lolex.install();
+        const directLine = testHelpers.createDirectLineWithTranscript();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        const liveRegionElement = pageElements.transcriptLiveRegion();
+        const liveRegionInnerTexts = [];
+
+        const mutationObserver = new MutationObserver(records => {
+          liveRegionInnerTexts.push(
+            ...[].reduce.call(
+              records,
+              (addedInnerTexts, record) =>
+                [].reduce.call(
+                  record.addedNodes,
+                  (addedInnerTexts, { innerText }) => [...addedInnerTexts, innerText],
+                  addedInnerTexts
+                ),
+              []
+            )
+          );
+        });
+
+        mutationObserver.observe(liveRegionElement, { childList: true });
+
+        // WHEN: At t = 0, a typing activity is sent by the bot.
+        directLine.activityDeferredObservable.next({
+          channelId: 'directline',
+          from: {
+            id: 'bot-id',
+            name: 'bot-id',
+            role: 'bot'
+          },
+          id: 'a00001',
+          timestamp: new Date().toISOString(),
+          type: 'typing'
+        });
+
+        // THEN: It should read "Bot is typing."
+        await pageConditions.became(
+          'typing indicator to appear in live region',
+          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
+          5000
+        );
+
+        // THEN: The typing indicator should be shown.
+        await pageConditions.typingIndicatorShown();
+
+        // WHEN: At t = 1, another typing activity is sent by the bot.
+        clock.tick(1000);
+        directLine.activityDeferredObservable.next({
+          channelId: 'directline',
+          from: {
+            id: 'bot-id',
+            name: 'bot-id',
+            role: 'bot'
+          },
+          id: 'a00002',
+          timestamp: new Date().toISOString(),
+          type: 'typing'
+        });
+
+        // THEN: It should not add any live region elements.
+        await pageConditions.became(
+          'typing indicator should not add to the live region',
+          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
+          5000
+        );
+
+        // THEN: The typing indicator should be shown.
+        await pageConditions.typingIndicatorShown();
+
+        // WHEN: At t = 6.
+        clock.tick(5000);
+
+        // THEN: It should not add any live region elements.
+        await pageConditions.became(
+          'typing indicator should not add to the live region',
+          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
+          5000
+        );
+
+        // THEN: The typing indicator should be hidden.
+        await pageConditions.typingIndicatorHidden();
+      });
+    </script>
+  </body>
+</html>
