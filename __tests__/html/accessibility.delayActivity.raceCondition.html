@@ -26,7 +26,7 @@
 
         const directLine = testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
-            return new Observable(({ complete, next }) => {
+            return new Observable(observer => {
               const id = '00001';
 
               directLine.activityDeferredObservable.next({
@@ -41,8 +41,8 @@
                 type: 'message'
               });
 
-              next(id);
-              complete();
+              observer.next(id);
+              observer.complete();
             });
           }
         });

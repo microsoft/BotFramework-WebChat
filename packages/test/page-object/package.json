@@ -12,6 +12,9 @@
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --out-dir lib/ src/",
     "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
@@ -20,24 +23,27 @@
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch"
   },
+  "skipBump": [
+    "microsoft-cognitiveservices-speech-sdk"
+  ],
   "dependencies": {
-    "base64-arraybuffer": "1.0.1",
+    "base64-arraybuffer": "1.0.2",
     "botframework-webchat": "^0.0.0-0",
     "classnames": "2.3.1",
-    "core-js": "3.18.3",
+    "core-js": "3.21.1",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "p-defer": "4.0.0",
-    "prop-types": "15.7.2",
+    "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "@babel/preset-react": "^7.14.5",
-    "concurrently": "^6.3.0",
-    "esbuild": "^0.12.29"
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "concurrently": "^7.0.0",
+    "esbuild": "^0.14.24"
   }
 }

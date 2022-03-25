@@ -5,18 +5,22 @@
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/01.getting-started/g.hybrid-react-npm/",
   "dependencies": {
     "chat-component": "^1.0.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "react-scripts": "5.0.0"
+    "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
   },
+  "skipBump": [],
   "eslintConfig": {
     "extends": "react-app"
   },
