@@ -9,7 +9,9 @@
 
 'use strict';
 
+import { fileURLToPath } from 'url';
 import { mkdirSync } from 'fs';
+import { resolve } from 'path';
 import assert from 'assert';
 
 import { isUrl, readJSON } from './util.js';
@@ -37,17 +39,20 @@ export default function (srcUrl, destPath, options, callback) {
     options = {};
   }
 
-  assert(typeof srcUrl === 'string', 'must include srcUrl (e.g., "http://www.unicode.org/Public/cldr/26/json.zip")');
+  assert(typeof srcUrl === 'string', 'must include srcUrl (e.g., "https://www.unicode.org/Public/cldr/26/json.zip")');
 
   assert(typeof destPath === 'string', 'must include destPath (e.g., "./cldr")');
   assert(!/\.\./u.test(destPath), '"destPath" must not contains "..".');
+  assert(!/^file:/u.test(destPath), '"destPath" must not be URL.');
 
   assert(typeof options === 'object', 'invalid options');
 
   assert(typeof callback === 'function', 'must include callback function');
 
+  destPath = resolve(fileURLToPath(import.meta.url), destPath);
+
   try {
-    mkdirSync(new URL(destPath, import.meta.url), { recursive: true });
+    mkdirSync(destPath, { recursive: true });
   } catch (err) {
     if (err.code !== 'EEXIST') {
       throw err;

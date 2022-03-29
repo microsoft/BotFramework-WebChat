@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#4102](https://github.com/microsoft/BotFramework-WebChat/issues/4102). Fixed `cldr-data-downloader` package not working properly on Windows, by [@compulim](https://github.com/compulim) in PR [#4223](https://github.com/microsoft/BotFramework-WebChat/pull/4223)
+
 ### Changed
 
 -  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195)

@@ -44,7 +44,7 @@
     "eslint": "npm run precommit",
     "install": "node ./src/install.mjs",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
+    "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
   "skipBump": [],
   "dependencies": {
