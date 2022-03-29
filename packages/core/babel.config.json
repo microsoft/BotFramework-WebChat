@@ -5,6 +5,7 @@
     }
   },
   "plugins": [
+    "@babel/plugin-transform-typescript",
     "@babel/proposal-object-rest-spread",
     "@babel/plugin-transform-runtime",
     [
@@ -15,7 +16,6 @@
     ]
   ],
   "presets": [
-    "@babel/preset-typescript",
     [
       "@babel/preset-env",
       {

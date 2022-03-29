@@ -22,9 +22,6 @@ declare class Observable<T> {
 
   /** Subscribes to the sequence with callbacks */
   subscribe(onNext: NextFunction<T>, onError?: ErrorFunction, onComplete?: CompleteFunction): Subscription;
-
-  /** Returns itself */
-  [Symbol.observable](): Observable<T>;
 }
 
 declare class Subscription {
