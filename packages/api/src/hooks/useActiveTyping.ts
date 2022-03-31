@@ -10,7 +10,7 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
 
   const [{ typingAnimationDuration }] = useStyleOptions();
   const forceRender = useForceRender();
-  const typing: { [userId: string]: { at: number; name: string; role: string; tag: string } } = useSelector(
+  const typing: { [userId: string]: { at: number; name: string; role: string; tag?: string } } = useSelector(
     ({ typing }) => typing
   );
 

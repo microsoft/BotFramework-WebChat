@@ -37,7 +37,8 @@ test('getter should represent bot and user typing respectively', async () => {
       at: 0,
       expireAt: 5000,
       name: 'Happy Web Chat user',
-      role: 'user'
+      role: 'user',
+      tag: null
     }
   ]);
 
@@ -51,7 +52,8 @@ test('getter should represent bot and user typing respectively', async () => {
       at: 0,
       expireAt: 5000,
       name: 'bot',
-      role: 'bot'
+      role: 'bot',
+      tag: null
     }
   ]);
 
@@ -64,13 +66,15 @@ test('getter should represent bot and user typing respectively', async () => {
       at: 0,
       expireAt: 5000,
       name: 'bot',
-      role: 'bot'
+      role: 'bot',
+      tag: null
     },
     {
       at: 0,
       expireAt: 5000,
       name: 'Happy Web Chat user',
-      role: 'user'
+      role: 'user',
+      tag: null
     }
   ]);
 });
@@ -102,7 +106,8 @@ test('getter should filter out inactive typing', async () => {
       at: 0,
       expireAt: 5000,
       name: 'Happy Web Chat user',
-      role: 'user'
+      role: 'user',
+      tag: null
     }
   ]);
 
@@ -121,7 +126,8 @@ test('getter should filter out inactive typing', async () => {
       at: 3000,
       expireAt: 8000,
       name: 'Happy Web Chat user',
-      role: 'user'
+      role: 'user',
+      tag: null
     }
   ]);
 
@@ -137,7 +143,8 @@ test('getter should filter out inactive typing', async () => {
       at: 3000,
       expireAt: 13000,
       name: 'Happy Web Chat user',
-      role: 'user'
+      role: 'user',
+      tag: null
     }
   ]);
 });
