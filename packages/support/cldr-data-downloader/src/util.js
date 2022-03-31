@@ -28,10 +28,9 @@ function deepEqual(a, b) {
 
 function isUrl(urlOrPath) {
   try {
-    // eslint-disable-next-line no-new
-    new URL(urlOrPath);
+    const url = new URL(urlOrPath);
 
-    return true;
+    return ['file:', 'http:', 'https:'].some(protocol => url.protocol === protocol);
   } catch (err) {
     return false;
   }

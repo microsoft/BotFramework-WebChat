@@ -90,7 +90,7 @@ let isNpm3;
 
   if (process.env.CLDR_URL) {
     console.warn('CLDR_URL is deprecated, use CLDR_DATA_URLS_JSON instead.');
-    srcUrl = srcUrl.replace('http://www.unicode.org/Public/cldr', process.env.CLDR_URL.replace(/\/$/u, ''));
+    srcUrl = srcUrl.replace('https://www.unicode.org/Public/cldr', process.env.CLDR_URL.replace(/\/$/u, ''));
   } else {
     if (process.env.CLDR_DATA_URLS_JSON) {
       srcUrl = process.env.CLDR_DATA_URLS_JSON;
