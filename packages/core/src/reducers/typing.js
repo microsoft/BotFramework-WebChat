@@ -12,7 +12,7 @@ export default function lastTyping(state = DEFAULT_STATE, { payload, type }) {
   if (type === INCOMING_ACTIVITY || type === POST_ACTIVITY_PENDING) {
     const {
       activity: {
-        from: { id, name, role },
+        from: { id, name, role, tag },
         type: activityType
       }
     } = payload;
@@ -21,7 +21,8 @@ export default function lastTyping(state = DEFAULT_STATE, { payload, type }) {
       state = updateIn(state, [id], () => ({
         at: Date.now(),
         name,
-        role
+        role,
+        tag
       }));
     } else if (activityType === 'message') {
       state = updateIn(state, [id]);

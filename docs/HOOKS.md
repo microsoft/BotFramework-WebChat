@@ -137,13 +137,14 @@ interface Typing {
   expireAt: number;
   name: string;
   role: 'bot' | 'user';
+  tag: string;
 }
 
 useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant.
+This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant and a (`tag`) as an additional property we wish to pass to receiver..
 
 If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 
@@ -906,6 +907,7 @@ interface Typing {
   expireAt: number;
   name: string;
   role: 'bot' | 'user';
+  tag: string;
 }
 
 useRenderTypingIndicator():
