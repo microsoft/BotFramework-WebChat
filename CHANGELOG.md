@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    -  Production dependencies
       -  [`@babel/runtime@7.17.2`](https://npmjs.com/package/@babel/runtime)
       -  [`@emotion/css@11.7.1`](https://npmjs.com/package/@emotion/css)
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`memoize-one@6.0.0`](https://npmjs.com/package/memoize-one)
       -  [`mime@3.0.0`](https://npmjs.com/package/mime)
       -  [`prop-types@15.8.1`](https://npmjs.com/package/prop-types)
-      -  [`react-redux@7.2.6`](https://npmjs.com/package/react-redux)
+      -  [`react-redux@7.2.8`](https://npmjs.com/package/react-redux)
       -  [`redux@4.1.2`](https://npmjs.com/package/redux)
       -  [`sanitize-html@2.7.0`](https://npmjs.com/package/sanitize-html)
    -  Development dependencies
