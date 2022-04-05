@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195) and PR [#4230](https://github.com/microsoft/BotFramework-WebChat/pull/4230)
    -  Production dependencies
       -  [`@babel/runtime@7.17.2`](https://npmjs.com/package/@babel/runtime)
       -  [`@emotion/css@11.7.1`](https://npmjs.com/package/@emotion/css)
