@@ -24,7 +24,7 @@ const ROOT_STYLE = {
   }
 };
 
-const ALLOWED_PROTOCOLS = ['data:', 'http:', 'https:'];
+const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
 
 function isAllowedProtocol(url) {
   try {
