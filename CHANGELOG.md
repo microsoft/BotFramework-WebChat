@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#4102](https://github.com/microsoft/BotFramework-WebChat/issues/4102). Fixed `cldr-data-downloader` package not working properly on Windows, by [@compulim](https://github.com/compulim) in PR [#4223](https://github.com/microsoft/BotFramework-WebChat/pull/4223)
--  Fixes [#4232]. Added `blob:` to allowed protocol list for file attachment UI (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#4232]. Added `blob:` to allowed protocol list for file attachment UI (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#4233](https://github.com/microsoft/BotFramework-WebChat/pull/4233)
 
 ### Changed
 
