@@ -4,10 +4,14 @@
 
 ## Changelog Entry
 
+## Changed
+
+-  Added a tag attribute for from object for typing indicator.
 <!-- Please paste your new entry from CHANGELOG.MD here. Entry is not required for work only related to development purposes. -->
 
 ## Description
 
+-  BotFramework-webchat-adapter sends from object as part of typing indicator activity which is mapped to typing object in Botframeork-webchat. Added a new tag in adapter as well as webchat to pass tag to receiver side to indicate sender is typing in public/Internal panel. (We have a single adapter for two react webchat's one is public other is internal to distinguish between the two we need tag params)
 <!-- Please discuss the changes you have worked on. What do the changes do; why is this PR needed? -->
 
 ## Design
@@ -16,6 +20,8 @@
 
 ## Specific Changes
 
+-  Added a tag attribute for typing object in api/hooks
+-  Mapped to tag for from object for any incoming_activity for typing indicator
 <!-- Please list the changes in a concise manner. -->
 
 ## -
