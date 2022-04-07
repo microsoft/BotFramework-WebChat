@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+-  Added a tag attribute for from object for typing indicator
 -  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4195](https://github.com/microsoft/BotFramework-WebChat/pull/4195)
    -  Production dependencies
       -  [`@babel/runtime@7.17.2`](https://npmjs.com/package/@babel/runtime)
