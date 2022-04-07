@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { DirectLineActivity, DirectLineJSBotConnection } from 'botframework-webchat-core';
+import type { DirectLineJSBotConnection, WebChatActivity } from 'botframework-webchat-core';
 
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
@@ -38,10 +38,10 @@ type WebChatAPIContext = {
   markActivity?: ({ id: string }, name: string, value?: any) => void;
   onCardAction?: PerformCardAction;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
-  postActivity?: (activity: DirectLineActivity) => Observable<string>;
+  postActivity?: (activity: WebChatActivity) => Observable<string>;
   renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
-  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
+  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
   sendEvent?: (name: string, value: any) => void;
   sendFiles?: (files: File[]) => void;
   sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;

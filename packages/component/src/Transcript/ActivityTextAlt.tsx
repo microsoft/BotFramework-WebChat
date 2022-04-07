@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { RefObject, VFC } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import ScreenReaderText from '../ScreenReaderText';
 import useActivityAccessibleName from './useActivityAccessibleName';
 
 type ActivityTextAltProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   bodyRef: RefObject<HTMLDivElement>;
   id: string;
 };

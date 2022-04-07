@@ -1,8 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useEffect, useMemo, useState } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { RefObject } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
@@ -24,13 +23,13 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-export default function useActivityAccessibleName(activity: DirectLineActivity, bodyRef: RefObject<HTMLElement>) {
+export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const fromSelf = activity.from?.role === 'user';
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
-  const numAttachments = activity.attachments?.length || 0;
+  const numAttachments = activity.type === 'message' ? activity.attachments?.length || 0 : 0;
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
   const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."

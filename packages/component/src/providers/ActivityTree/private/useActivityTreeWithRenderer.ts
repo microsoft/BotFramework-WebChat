@@ -1,19 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import intersectionOf from '../../../Utils/intersectionOf';
 import removeInline from '../../../Utils/removeInline';
-
 import type { ActivityWithRenderer, ReadonlyActivityTree } from './types';
 
 const { useGroupActivities } = hooks;
 
-function validateAllEntriesTagged(
-  entries: readonly ActivityWithRenderer[],
-  bins: readonly (readonly ActivityWithRenderer[])[]
-): boolean {
+function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (readonly T[])[]): boolean {
   return entries.every(entry => bins.some(bin => bin.includes(entry)));
 }
 
@@ -48,8 +43,8 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
   // Both arrays should contains all activities.
 
   const { entriesBySender, entriesByStatus } = useMemo<{
-    entriesBySender: readonly (readonly DirectLineActivity[])[];
-    entriesByStatus: readonly (readonly DirectLineActivity[])[];
+    entriesBySender: readonly (readonly ActivityWithRenderer[])[];
+    entriesByStatus: readonly (readonly ActivityWithRenderer[])[];
   }>(() => {
     const visibleActivities = entries.map(({ activity }) => activity);
 
@@ -57,8 +52,8 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
       sender: activitiesBySender,
       status: activitiesByStatus
     }: {
-      sender: readonly (readonly DirectLineActivity[])[];
-      status: readonly (readonly DirectLineActivity[])[];
+      sender: readonly (readonly WebChatActivity[])[];
+      status: readonly (readonly WebChatActivity[])[];
     } = groupActivities({
       activities: visibleActivities
     });

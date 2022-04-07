@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineBasicCardEssence } from './DirectLineBasicCardEssence';
 
-type DirectLineHeroCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Hero-cards
+type DirectLineHeroCard = DirectLineBasicCardEssence & {
+  contentType: 'application/vnd.microsoft.card.hero';
+};
 
-export default DirectLineHeroCard;
+export type { DirectLineHeroCard };

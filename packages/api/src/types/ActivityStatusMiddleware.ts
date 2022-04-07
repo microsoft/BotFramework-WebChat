@@ -1,17 +1,17 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import SendState from './SendState';
 
 // TODO: Migrate this legacy middleware signature.
 type RenderActivityStatusOptions = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   hideTimestamp: boolean;
   sendState: SendState;
 
   // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
   /** @deprecated */
-  nextVisibleActivity: DirectLineActivity;
+  nextVisibleActivity: WebChatActivity;
 
   // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
   /** @deprecated */

@@ -1,6 +1,3 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
-
-import { DirectLineAttachment } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
@@ -41,8 +38,13 @@ export default function useSendFiles(): (files: File[]) => void {
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
         //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-        const attachments: DirectLineAttachment[] = await Promise.all(
-          [].map.call(files, async file => {
+        const attachments: {
+          name: string;
+          size: number;
+          url: string;
+          thumbnail?: string;
+        }[] = await Promise.all(
+          Array.from(files).map(async file => {
             let thumbnail;
 
             if (downscaleImageToDataURL && enableUploadThumbnail && canMakeThumbnail(file)) {

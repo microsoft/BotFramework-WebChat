@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { AvatarComponentFactory } from './AvatarMiddleware';
 import { RenderAttachment } from './AttachmentMiddleware';
@@ -14,8 +14,8 @@ type ActivityProps = {
 type ActivityComponent = (props: ActivityProps) => Exclude<ReactNode, boolean>;
 
 type ActivityComponentFactoryOptions = {
-  activity: DirectLineActivity;
-  nextVisibleActivity: DirectLineActivity;
+  activity: WebChatActivity;
+  nextVisibleActivity: WebChatActivity;
 };
 
 type ActivityComponentFactory = (options: ActivityComponentFactoryOptions) => ActivityComponent | false;

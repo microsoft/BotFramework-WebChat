@@ -1,7 +1,8 @@
-import { Constants, DirectLineActivity } from 'botframework-webchat-core';
+import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../../../connectToWebChat';
 import ScreenReaderText from '../../../ScreenReaderText';
@@ -33,7 +34,7 @@ const connectSendStatus = (...selectors) =>
   );
 
 type SendStatusProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   sendState: 'sending' | 'send failed' | 'sent';
 };
 
@@ -72,9 +73,10 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 };
 
 SendStatus.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
-      clientTimestamp: PropTypes.string,
       state: PropTypes.string
     })
   }).isRequired,

@@ -1,8 +1,8 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
@@ -24,7 +24,7 @@ const connectSpeakActivity = (...selectors) =>
   );
 
 type SpeakProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
 };
 
 const Speak: FC<SpeakProps> = ({ activity }) => {
@@ -36,25 +36,25 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
     markActivityAsSpoken(activity);
   }, [activity, markActivityAsSpoken]);
 
-  const singleLine = useMemo(() => {
+  const singleLine: false | string = useMemo(() => {
+    if (activity.type !== 'message') {
+      return false;
+    }
+
     const { attachments = [], speak, text } = activity;
 
-    return (
-      !!activity &&
-      [
-        speak || text,
-        ...attachments
-          .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
-          .map(attachment => attachment?.content?.speak)
-      ]
-        .filter(line => line)
-        .join('\r\n')
-    );
+    return [
+      speak || text,
+      ...attachments
+        .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
+        .map(attachment => attachment?.content?.speak)
+    ]
+      .filter(line => line)
+      .join('\r\n');
   }, [activity]);
 
-  const {
-    channelData: { speechSynthesisUtterance } = {}
-  }: { channelData: { speechSynthesisUtterance?: SpeechSynthesisUtterance } } = activity;
+  const speechSynthesisUtterance: false | SpeechSynthesisUtterance | undefined =
+    activity.type === 'message' && activity.channelData?.speechSynthesisUtterance;
 
   return (
     !!activity && (
@@ -71,6 +71,8 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
 };
 
 Speak.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     attachments: PropTypes.arrayOf(
       PropTypes.shape({
@@ -84,7 +86,8 @@ Speak.propTypes = {
       speechSynthesisUtterance: PropTypes.any
     }),
     speak: PropTypes.string,
-    text: PropTypes.string
+    text: PropTypes.string,
+    type: PropTypes.string.isRequired
   }).isRequired
 };
 

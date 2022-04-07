@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineMediaCardEssence } from './DirectLineMediaCardEssence';
 
-type DirectLineVideoCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#video-card
+type DirectLineVideoCard = DirectLineMediaCardEssence & {
+  contentType: 'application/vnd.microsoft.card.video';
+};
 
-export default DirectLineVideoCard;
+export type { DirectLineVideoCard };

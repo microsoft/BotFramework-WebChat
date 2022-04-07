@@ -93,8 +93,7 @@
               role: 'bot'
             },
             id: '1.1',
-            text:
-              'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.',
+            text: 'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.',
             timestamp: -120002,
             type: 'message'
           },
@@ -121,7 +120,6 @@
           },
           {
             channelData: {
-              clientTimestamp: -6001,
               // "send failed" is actually ignored and treated as "sending".
               // As long as this field is not "sent", we will consider it is "sending" or "send failed".
               state: 'send failed'
@@ -130,6 +128,7 @@
               role: 'user'
             },
             id: '4.0',
+            localTimestamp: -6001,
             text: 'A retry prompt must show on this activity.',
             timestamp: -6001,
             type: 'message'
@@ -154,20 +153,20 @@
               role: 'user'
             },
             id: '5.1',
-            text:
-              'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.',
+            text: 'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.',
             timestamp: -5001,
             type: 'message'
           },
           {
             channelData: {
-              clientTimestamp: -3001,
-              state: 'sending'
+              state: 'sending',
+              'webchat:sequence-id': -5000.999
             },
             from: {
               role: 'user'
             },
             id: '6.0',
+            localTimestamp: -3001,
             text: 'This activity is being sent.',
             timestamp: -3001,
             type: 'message'

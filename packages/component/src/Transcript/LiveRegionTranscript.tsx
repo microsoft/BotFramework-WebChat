@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import random from 'math-random';
 import React, { useEffect, useMemo, useRef } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC, RefObject, VFC } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
 import ScreenReaderActivity from '../ScreenReaderActivity';
@@ -12,9 +12,7 @@ import tabbableElements from '../Utils/tabbableElements';
 import useActivityTreeWithRenderer from '../providers/ActivityTree/useActivityTreeWithRenderer';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-
 import type { ActivityElementMap } from './types';
-import classNames from 'classnames';
 
 const { useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
@@ -37,9 +35,12 @@ const ROOT_STYLE = {
  *
  * Presentational activity, will be rendered visually but not going through screen reader.
  */
-function isPresentational(activity: DirectLineActivity): boolean {
-  const { channelData }: { attachments?: []; channelData?: { messageBack?: { displayText?: string } }; text?: string } =
-    activity;
+function isPresentational(activity: WebChatActivity): boolean {
+  if (activity.type !== 'message') {
+    return;
+  }
+
+  const { channelData } = activity;
 
   // "Fallback text" includes both message text and narratives for attachments.
   // Emptying out "fallback text" essentially mute for both message and attachments.
@@ -53,7 +54,7 @@ function isPresentational(activity: DirectLineActivity): boolean {
   return !(channelData?.messageBack?.displayText || activity.text || activity.attachments?.length);
 }
 
-type RenderingActivities = Map<string, DirectLineActivity>;
+type RenderingActivities = Map<string, WebChatActivity>;
 
 type LiveRegionTranscriptCoreProps = {
   activityElementMapRef: RefObject<ActivityElementMap>;
@@ -73,7 +74,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
       Object.freeze(
         flattenedActivityTree.reduce<RenderingActivities>(
           (intermediate, { activity }) => intermediate.set(getKeyByActivity(activity), activity),
-          new Map<string, DirectLineActivity>()
+          new Map<string, WebChatActivity>()
         )
       ),
     [flattenedActivityTree, getKeyByActivity]
@@ -83,7 +84,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
 
   useEffect(() => {
     const { current: prevRenderingActivities } = prevRenderingActivitiesRef;
-    const appendedActivities: { activity: DirectLineActivity; key: string }[] = [];
+    const appendedActivities: { activity: WebChatActivity; key: string }[] = [];
 
     // Bottom-up, find activities which are recently appended (i.e. new activity will have a new key).
     // We only consider new activities added to the bottom of the chat history.

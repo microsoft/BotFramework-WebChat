@@ -1,11 +1,11 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 
 type AvatarComponentFactoryArguments = [
   {
-    activity: DirectLineActivity;
+    activity: WebChatActivity;
     fromUser: boolean;
     styleOptions: StrictStyleOptions;
   }

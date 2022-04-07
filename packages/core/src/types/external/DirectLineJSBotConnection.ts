@@ -2,4 +2,4 @@
 
 type DirectLineJSBotConnection = any;
 
-export default DirectLineJSBotConnection;
+export type { DirectLineJSBotConnection };

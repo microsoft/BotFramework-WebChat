@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      const BASE_TIMESTAMP = +new Date(2020, 0, 1, 12, 34);
+
+      function createActivity(text, timestamp) {
+        return {
+          from: { role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text,
+          timestamp: new Date(BASE_TIMESTAMP + timestamp),
+          type: 'message'
+        };
+      }
+
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          new Array(10).fill().map((_, index) => {
+            const timestamp = index < 5 ? index * 2 : (index - 5) * 2 + 1;
+            const text = `index=${index}, ts=${timestamp}`;
+
+            return createActivity(text, timestamp);
+          })
+        );
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(10);
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should show a chat history sorted based on "ts" field.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

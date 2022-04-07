@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineMediaCardEssence } from './DirectLineMediaCardEssence';
 
-type DirectLineAnimationCard = any;
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Animation-card
+type DirectLineAnimationCard = DirectLineMediaCardEssence & {
+  contentType: 'application/vnd.microsoft.card.animation';
+};
 
-export default DirectLineAnimationCard;
+export type { DirectLineAnimationCard };

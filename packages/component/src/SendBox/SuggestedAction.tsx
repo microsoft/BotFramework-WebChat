@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { MouseEventHandler, useCallback, useRef, VFC } from 'react';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
@@ -13,7 +14,6 @@ import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import { DirectLineCardAction } from 'botframework-webchat-core';
 
 const { useDirection, useDisabled, usePerformCardAction, useStyleOptions, useSuggestedActions } = hooks;
 

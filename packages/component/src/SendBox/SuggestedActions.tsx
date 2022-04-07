@@ -1,11 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { DirectLineCardAction } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo, useRef } from 'react';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';

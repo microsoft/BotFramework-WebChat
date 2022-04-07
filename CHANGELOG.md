@@ -22,10 +22,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  A new `type WebChatActivity` is introduced in the `botframework-webchat-core` package
+   -  If you are previously using the `type DirectLineActivity`, you may need to move to this new type
+   -  All Web Chat APIs will use the newer `type WebChatActivity`
+   -  The new `type WebChatActivity` is a well-defined type for handling activities inside Web Chat
+   -  The existing `type DirectLineActivity` will be used solely for communicating with `type DirectLineJSBotConnection`, a.k.a. `botframework-directlinejs` package
+
 ### Fixed
 
 -  Fixes [#4102](https://github.com/microsoft/BotFramework-WebChat/issues/4102). Fixed `cldr-data-downloader` package not working properly on Windows, by [@compulim](https://github.com/compulim) in PR [#4223](https://github.com/microsoft/BotFramework-WebChat/pull/4223)
 -  Fixes [#4232](https://github.com/microsoft/BotFramework-WebChat/issues/4232). Added `blob:` to allowed protocol list for file attachment UI (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#4233](https://github.com/microsoft/BotFramework-WebChat/pull/4233)
+-  Fixes [#4204](https://github.com/microsoft/BotFramework-WebChat/issues/4204). Sort using `activity.channelData['webchat:sequence-id']` and fallback to epoch time of `activity.timestamp`, by [@compulim](https://github.com/compulim), in PR [#4203](https://github.com/microsoft/BotFramework-WebChat/pull/4203)
 
 ### Changed
 
@@ -107,8 +116,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 -  Fixes [#4196](https://github.com/microsoft/BotFramework-WebChat/issues/4196). Should render/mount to a detached DOM node without errors, by [@compulim](https://github.com/compulim), in PR [#4197](https://github.com/microsoft/BotFramework-WebChat/issues/4197)
-
-## [4.15.0] - 2022-03-03
 
 ### Breaking changes
 

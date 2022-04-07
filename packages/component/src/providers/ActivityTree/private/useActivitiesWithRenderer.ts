@@ -1,17 +1,15 @@
 import { useCallback, useRef } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import useMemoize from '../../../hooks/internal/useMemoize';
-
 import type { ActivityWithRenderer } from './types';
 
 export default function useActivitiesWithRenderer(
-  activities: readonly DirectLineActivity[],
+  activities: readonly WebChatActivity[],
   createActivityRenderer
 ): readonly ActivityWithRenderer[] {
   const createActivityRendererWithLiteralArgs = useCallback(
-    (activity: DirectLineActivity, nextVisibleActivity: DirectLineActivity) =>
+    (activity: WebChatActivity, nextVisibleActivity: WebChatActivity) =>
       createActivityRenderer({ activity, nextVisibleActivity }),
     [createActivityRenderer]
   );
@@ -27,7 +25,7 @@ export default function useActivitiesWithRenderer(
       // useMemoize() allows any number of memoization.
 
       const activitiesWithRenderer: ActivityWithRenderer[] = [];
-      let nextVisibleActivity: DirectLineActivity;
+      let nextVisibleActivity: WebChatActivity;
 
       for (let index = activities.length - 1; index >= 0; index--) {
         const activity = activities[+index];

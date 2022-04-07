@@ -1,8 +1,8 @@
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityWithRenderer = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
 };
 

@@ -1,5 +1,5 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useMemo } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { AvatarComponentFactory } from '../types/AvatarMiddleware';
 import useStyleOptions from './useStyleOptions';
@@ -8,7 +8,7 @@ import useWebChatAPIContext from './internal/useWebChatAPIContext';
 export default function useCreateAvatarRenderer(): ({
   activity
 }: {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
 }) => AvatarComponentFactory {
   const [styleOptions] = useStyleOptions();
   const { avatarRenderer } = useWebChatAPIContext();
