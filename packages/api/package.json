@@ -60,7 +60,7 @@
     "globalize": "1.7.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
-    "react-redux": "7.2.6",
+    "react-redux": "7.2.8",
     "redux": "4.1.2",
     "simple-update-in": "2.2.0"
   },
