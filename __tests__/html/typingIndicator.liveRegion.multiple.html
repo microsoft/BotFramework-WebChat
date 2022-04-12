@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const clock = lolex.install();
+        const directLine = testHelpers.createDirectLineWithTranscript();
+
+        let nextActivityId = 1;
+        const sendTyping = who => {
+          directLine.activityDeferredObservable.next({
+            channelId: 'directline',
+            from:
+              who === 'John'
+                ? {
+                    id: 'u00001',
+                    name: 'John',
+                    role: 'bot'
+                  }
+                : {
+                    id: 'u00002',
+                    name: 'Mary',
+                    role: 'bot'
+                  },
+            id: `a${nextActivityId++}`,
+            timestamp: new Date().toISOString(),
+            type: 'typing'
+          });
+        };
+
+        const liveRegionTypingIndicatorBecame = expected =>
+          pageConditions.became(
+            'typing indicator to appear in live region',
+            () => liveRegionInnerTexts.join('\n') === expected.join('\n'),
+            2000
+          );
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        const liveRegionElement = pageElements.transcriptLiveRegion();
+        const liveRegionInnerTexts = [];
+
+        const mutationObserver = new MutationObserver(records => {
+          liveRegionInnerTexts.push(
+            ...[].reduce.call(
+              records,
+              (addedInnerTexts, record) =>
+                [].reduce.call(
+                  record.addedNodes,
+                  (addedInnerTexts, { innerText }) => [...addedInnerTexts, innerText],
+                  addedInnerTexts
+                ),
+              []
+            )
+          );
+        });
+
+        mutationObserver.observe(liveRegionElement, { childList: true });
+
+        // WHEN: At t = 0, John send a typing activity, which should expires at t >= 5.
+        sendTyping('John');
+
+        // THEN: It should read "John is typing."
+        await liveRegionTypingIndicatorBecame(['John is typing.']);
+
+        // THEN: The typing indicator should be shown.
+        await pageConditions.typingIndicatorShown();
+
+        // WHEN: At t = 0.5, Mary send a typing activity, which should expires at t >= 5.5.
+        clock.tick(500);
+        sendTyping('Mary');
+
+        // THEN: It should read "John and others are typing."
+        await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.']);
+
+        // WHEN: At t = 1, John send another typing activity, which should expires at t >= 6.
+        clock.tick(500);
+        sendTyping('John');
+
+        // THEN: It should not add any live region elements.
+        await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.']);
+
+        // WHEN: At t = 1.5, Mary send another typing activity, which should expires at t >= 6.5.
+        clock.tick(500);
+        sendTyping('Mary');
+
+        // THEN: It should not add any live region elements.
+        await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.']);
+
+        // THEN: At t = 6, it should read "Mary is typing."
+        clock.tick(4500);
+        await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.', 'Mary is typing.']);
+
+        // THEN: The typing indicator should be shown, because Mary is typing.
+        await pageConditions.typingIndicatorShown();
+
+        // THEN: At t = 6.5, it should not add any live region elements.
+        clock.tick(500);
+        await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.', 'Mary is typing.']);
+
+        // THEN: Tthe typing indicator should be hidden, because all typing indicators are expired.
+        await pageConditions.typingIndicatorHidden();
+      });
+    </script>
+  </body>
+</html>

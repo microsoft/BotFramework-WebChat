@@ -1,4 +1,4 @@
-.webchat__screen-reader-activity, .webchat__live-region-transcript__interactive_note {
+.webchat__screen-reader-activity, .webchat__live-region-transcript__interactive-note, .webchat__live-region-transcript__text-element {
   color: initial !important;
   height: initial !important;
   opacity: initial !important;

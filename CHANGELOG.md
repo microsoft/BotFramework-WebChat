@@ -111,11 +111,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`webpack-cli@4.9.2`](https://npmjs.com/package/webpack-cli)
       -  [`webpack@5.70.0`](https://npmjs.com/package/webpack)
 
+### Added
+
+-  Resolves [#4099](https://github.com/microsoft/BotFramework-WebChat/issues/4099), added typing indicator to live region for screen reader, by [@compulim](https://github.com/compulim), in PR [#4210](https://github.com/microsoft/BotFramework-WebChat/pull/4210)
+
 ## [4.15.1] - 2022-03-04
 
 ### Fixed
 
--  Fixes [#4196](https://github.com/microsoft/BotFramework-WebChat/issues/4196). Should render/mount to a detached DOM node without errors, by [@compulim](https://github.com/compulim), in PR [#4197](https://github.com/microsoft/BotFramework-WebChat/issues/4197)
+-  Fixes [#4196](https://github.com/microsoft/BotFramework-WebChat/issues/4196). Should render/mount to a detached DOM node without errors, by [@compulim](https://github.com/compulim), in PR [#4197](https://github.com/microsoft/BotFramework-WebChat/pull/4197)
 
 ### Breaking changes
 

@@ -36,6 +36,9 @@ type LiveRegionTwinComposerProps = PropsWithChildren<{
 
   /** Optional "role" attribute for the live region twin container. */
   role?: string;
+
+  /** Optional "className" attribute for static text element. */
+  textElementClassName?: string;
 }>;
 
 /**
@@ -56,7 +59,8 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
   children,
   className,
   fadeAfter = DEFAULT_FADE_AFTER,
-  role
+  role,
+  textElementClassName
 }) => {
   const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);
@@ -125,6 +129,7 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
         aria-roledescription={ariaRoleDescription}
         className={className}
         role={role}
+        textElementClassName={textElementClassName}
       />
       {children}
     </LiveRegionTwinContext.Provider>
@@ -138,7 +143,8 @@ LiveRegionTwinComposer.defaultProps = {
   children: undefined,
   className: undefined,
   fadeAfter: DEFAULT_FADE_AFTER,
-  role: undefined
+  role: undefined,
+  textElementClassName: undefined
 };
 
 LiveRegionTwinComposer.propTypes = {
@@ -148,7 +154,8 @@ LiveRegionTwinComposer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fadeAfter: PropTypes.number,
-  role: PropTypes.string
+  role: PropTypes.string,
+  textElementClassName: PropTypes.string
 };
 
 export default LiveRegionTwinComposer;

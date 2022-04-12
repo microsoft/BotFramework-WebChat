@@ -18,11 +18,12 @@ export default function lastTyping(state = DEFAULT_STATE, { payload, type }) {
     } = payload;
 
     if (activityType === 'typing') {
-      state = updateIn(state, [id], () => ({
-        at: Date.now(),
-        name,
-        role
-      }));
+      const now = Date.now();
+
+      state = updateIn(state, [id, 'at'], at => at || now);
+      state = updateIn(state, [id, 'last'], () => now);
+      state = updateIn(state, [id, 'name'], () => name);
+      state = updateIn(state, [id, 'role'], () => role);
     } else if (activityType === 'message') {
       state = updateIn(state, [id]);
     }
