@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Lisää viestejä",
   "TRANSCRIPT_NEW_MESSAGES": "Uudet viestit",
   "TRANSCRIPT_TERMINATOR_TEXT": "Keskusteluhistorian loppu",
-  "TYPING_INDICATOR_ALT": "Näytetään kirjoittamisen ilmaisin"
+  "TYPING_INDICATOR_ALT": "Näytetään kirjoittamisen ilmaisin",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 kirjoittaa.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja muut kirjoittavat."
 }

@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "추가 메시지",
   "TRANSCRIPT_NEW_MESSAGES": "새 메시지",
   "TRANSCRIPT_TERMINATOR_TEXT": "채팅 기록의 끝 부분",
-  "TYPING_INDICATOR_ALT": "입력 표시기 표시"
+  "TYPING_INDICATOR_ALT": "입력 표시기 표시",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1님이 입력 중입니다.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1님과 다른 사용자가 입력 중입니다."
 }

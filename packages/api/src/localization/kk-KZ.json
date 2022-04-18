@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Қосымша хабарлар",
   "TRANSCRIPT_NEW_MESSAGES": "Жаңа хабарлар",
   "TRANSCRIPT_TERMINATOR_TEXT": "Сөйлесу журналының соңы",
-  "TYPING_INDICATOR_ALT": "Мәтін теру индикаторын көрсету"
+  "TYPING_INDICATOR_ALT": "Мәтін теру индикаторын көрсету",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 is typing.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 and others are typing."
 }

@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Další zprávy",
   "TRANSCRIPT_NEW_MESSAGES": "Nové zprávy",
   "TRANSCRIPT_TERMINATOR_TEXT": "Konec historie chatu",
-  "TYPING_INDICATOR_ALT": "Zobrazuje se indikátor psaní"
+  "TYPING_INDICATOR_ALT": "Zobrazuje se indikátor psaní",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 píše.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 a další píšou."
 }

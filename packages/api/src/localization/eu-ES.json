@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Mezu gehiago",
   "TRANSCRIPT_NEW_MESSAGES": "Mezu berriak",
   "TRANSCRIPT_TERMINATOR_TEXT": "Berriketa-historiaren amaiera",
-  "TYPING_INDICATOR_ALT": "Idazketa-adierazlea ikusgai dago"
+  "TYPING_INDICATOR_ALT": "Idazketa-adierazlea ikusgai dago",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 idazten ari da.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 eta beste batzuk idazten ari dira."
 }

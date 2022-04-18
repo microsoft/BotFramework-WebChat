@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Weitere Meldungen",
   "TRANSCRIPT_NEW_MESSAGES": "Neue Nachrichten",
   "TRANSCRIPT_TERMINATOR_TEXT": "Ende des Chatverlaufs",
-  "TYPING_INDICATOR_ALT": "Anzeigen des Eingabeindikators"
+  "TYPING_INDICATOR_ALT": "Anzeigen des Eingabeindikators",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 gibt gerade ein.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 und weitere geben gerade ein."
 }

@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Још порука",
   "TRANSCRIPT_NEW_MESSAGES": "Нове поруке",
   "TRANSCRIPT_TERMINATOR_TEXT": "Крај историје ћаскања",
-  "TYPING_INDICATOR_ALT": "Приказује се индикатор куцања"
+  "TYPING_INDICATOR_ALT": "Приказује се индикатор куцања",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 куца.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други куцају."
 }

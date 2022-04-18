@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Més missatges",
   "TRANSCRIPT_NEW_MESSAGES": "Missatges nous",
   "TRANSCRIPT_TERMINATOR_TEXT": "Fi de l'historial de xat",
-  "TYPING_INDICATOR_ALT": "S'està mostrant l'indicador d'escriptura"
+  "TYPING_INDICATOR_ALT": "S'està mostrant l'indicador d'escriptura",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 està escrivint.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i altres persones estan escrivint."
 }

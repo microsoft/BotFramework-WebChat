@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Vairāk ziņojumu",
   "TRANSCRIPT_NEW_MESSAGES": "Jauni ziņojumi",
   "TRANSCRIPT_TERMINATOR_TEXT": "Tērzēšanas vēstures beigas",
-  "TYPING_INDICATOR_ALT": "Rāda rakstīšanas indikatoru"
+  "TYPING_INDICATOR_ALT": "Rāda rakstīšanas indikatoru",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 raksta.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 un citi raksta."
 }

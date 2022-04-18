@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Fler meddelanden",
   "TRANSCRIPT_NEW_MESSAGES": "Nya meddelanden",
   "TRANSCRIPT_TERMINATOR_TEXT": "Slut på chatthistorik",
-  "TYPING_INDICATOR_ALT": "Visar skrivindikatorn"
+  "TYPING_INDICATOR_ALT": "Visar skrivindikatorn",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 skriver.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 och andra skriver."
 }

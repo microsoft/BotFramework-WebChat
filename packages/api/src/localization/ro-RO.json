@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Mai multe mesaje",
   "TRANSCRIPT_NEW_MESSAGES": "Mesaje noi",
   "TRANSCRIPT_TERMINATOR_TEXT": "Sfârșit istoric chat",
-  "TYPING_INDICATOR_ALT": "Se afișează indicatorul de tastare"
+  "TYPING_INDICATOR_ALT": "Se afișează indicatorul de tastare",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 tastează.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 și alții tastează."
 }

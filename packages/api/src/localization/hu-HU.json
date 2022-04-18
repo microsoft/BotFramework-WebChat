@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "További üzenetek",
   "TRANSCRIPT_NEW_MESSAGES": "Új üzenetek",
   "TRANSCRIPT_TERMINATOR_TEXT": "A csevegési előzmények vége",
-  "TYPING_INDICATOR_ALT": "Gépelésjelző megjelenítése"
+  "TYPING_INDICATOR_ALT": "Gépelésjelző megjelenítése",
+  "TYPING_INDICATOR_SINGLE_TEXT": "1 $ és ír.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "1 $ és mások még írnak."
 }
