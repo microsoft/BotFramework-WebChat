@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "अधिक संदेश",
   "TRANSCRIPT_NEW_MESSAGES": "नए संदेश",
   "TRANSCRIPT_TERMINATOR_TEXT": "चैट इतिहास का अंत",
-  "TYPING_INDICATOR_ALT": "टाइप करने वाला संकेतक दिखा रहा है"
+  "TYPING_INDICATOR_ALT": "टाइप करने वाला संकेतक दिखा रहा है",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 टाइप कर रहा है.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 और अन्य लिख रहे हैं."
 }

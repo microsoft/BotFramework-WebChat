@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Rohkem sõnumeid",
   "TRANSCRIPT_NEW_MESSAGES": "Uued sõnumid",
   "TRANSCRIPT_TERMINATOR_TEXT": "Vestluse ajaloo lõpp",
-  "TYPING_INDICATOR_ALT": "Tippimise näidiku kuvamine"
+  "TYPING_INDICATOR_ALT": "Tippimise näidiku kuvamine",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 kirjutab.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja teised kirjutavad."
 }

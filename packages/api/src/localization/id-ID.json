@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Pesan lainnya",
   "TRANSCRIPT_NEW_MESSAGES": "Pesan baru",
   "TRANSCRIPT_TERMINATOR_TEXT": "Akhir riwayat obrolan",
-  "TYPING_INDICATOR_ALT": "Menampilkan indikator pengetikan"
+  "TYPING_INDICATOR_ALT": "Menampilkan indikator pengetikan",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 sedang mengetik.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lainnya sedang mengetik."
 }

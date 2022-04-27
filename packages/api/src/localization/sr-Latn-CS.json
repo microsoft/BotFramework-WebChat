@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Još poruka",
   "TRANSCRIPT_NEW_MESSAGES": "Nove poruke",
   "TRANSCRIPT_TERMINATOR_TEXT": "Kraj istorije ćaskanja",
-  "TYPING_INDICATOR_ALT": "Prikazuje se indikator kucanja"
+  "TYPING_INDICATOR_ALT": "Prikazuje se indikator kucanja",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 kuca.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i drugi kucaju."
 }

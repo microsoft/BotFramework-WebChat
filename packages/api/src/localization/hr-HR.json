@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Više poruka",
   "TRANSCRIPT_NEW_MESSAGES": "Nove poruke",
   "TRANSCRIPT_TERMINATOR_TEXT": "Kraj povijesti čavrljanja",
-  "TYPING_INDICATOR_ALT": "Prikaz pokazatelja tipkanja"
+  "TYPING_INDICATOR_ALT": "Prikaz pokazatelja tipkanja",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 tipka.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i drugi tipkaju."
 }

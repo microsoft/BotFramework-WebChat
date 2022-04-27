@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Các tin nhắn khác",
   "TRANSCRIPT_NEW_MESSAGES": "Tin nhắn mới",
   "TRANSCRIPT_TERMINATOR_TEXT": "Kết thúc lịch sử trò chuyện",
-  "TYPING_INDICATOR_ALT": "Hiển thị chỉ báo đang nhập"
+  "TYPING_INDICATOR_ALT": "Hiển thị chỉ báo đang nhập",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 đang nhập.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 và những người khác đang nhập."
 }

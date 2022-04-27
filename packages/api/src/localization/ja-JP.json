@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "その他のメッセージ",
   "TRANSCRIPT_NEW_MESSAGES": "新しいメッセージ",
   "TRANSCRIPT_TERMINATOR_TEXT": "チャット履歴の終了",
-  "TYPING_INDICATOR_ALT": "入力インジケーターを表示しています"
+  "TYPING_INDICATOR_ALT": "入力インジケーターを表示しています",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 が入力しています。",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 と他のユーザーが入力しています。"
 }

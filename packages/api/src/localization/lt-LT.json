@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Daugiau pranešimų",
   "TRANSCRIPT_NEW_MESSAGES": "Nauji pranešimai",
   "TRANSCRIPT_TERMINATOR_TEXT": "Pokalbio retrospektyvos pabaiga",
-  "TYPING_INDICATOR_ALT": "Rodomas teksto įvedimo indikatorius"
+  "TYPING_INDICATOR_ALT": "Rodomas teksto įvedimo indikatorius",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 rašo.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "Rašo $1 ir kiti."
 }

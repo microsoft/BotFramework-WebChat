@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Lebih banyak mesej",
   "TRANSCRIPT_NEW_MESSAGES": "Mesej baharu",
   "TRANSCRIPT_TERMINATOR_TEXT": "Tamat sejarah sembang",
-  "TYPING_INDICATOR_ALT": "Menunjukkan penunjuk menaip"
+  "TYPING_INDICATOR_ALT": "Menunjukkan penunjuk menaip",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 sedang menaip.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lain-lain sedang menaip."
 }

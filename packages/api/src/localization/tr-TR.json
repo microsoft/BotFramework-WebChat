@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Diğer iletiler",
   "TRANSCRIPT_NEW_MESSAGES": "Yeni iletiler",
   "TRANSCRIPT_TERMINATOR_TEXT": "Sohbet geçmişinin sonu",
-  "TYPING_INDICATOR_ALT": "Yazma göstergesi gösteriliyor"
+  "TYPING_INDICATOR_ALT": "Yazma göstergesi gösteriliyor",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 yazıyor.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ve diğer kişiler yazıyor."
 }
