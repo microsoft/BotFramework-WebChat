@@ -35,6 +35,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4102](https://github.com/microsoft/BotFramework-WebChat/issues/4102). Fixed `cldr-data-downloader` package not working properly on Windows, by [@compulim](https://github.com/compulim) in PR [#4223](https://github.com/microsoft/BotFramework-WebChat/pull/4223)
 -  Fixes [#4232](https://github.com/microsoft/BotFramework-WebChat/issues/4232). Added `blob:` to allowed protocol list for file attachment UI (`<FileContent>`), by [@compulim](https://github.com/compulim) in PR [#4233](https://github.com/microsoft/BotFramework-WebChat/pull/4233)
 -  Fixes [#4204](https://github.com/microsoft/BotFramework-WebChat/issues/4204). Sort using `activity.channelData['webchat:sequence-id']` and fallback to epoch time of `activity.timestamp`, by [@compulim](https://github.com/compulim), in PR [#4203](https://github.com/microsoft/BotFramework-WebChat/pull/4203)
+-  Fixes [#4264](https://github.com/microsoft/BotFramework-WebChat/issues/4264). Fixed focus trap should leave when the activity no longer contains any tabbable elements (including elements with `aria-disabled="true"`), by [@compulim](https://github.com/compulim) in PR [#4265](https://github.com/microsoft/BotFramework-WebChat/pull/4265)
+
+### Added
+
+-  Resolves [#4099](https://github.com/microsoft/BotFramework-WebChat/issues/4099), added typing indicator to live region for screen reader, by [@compulim](https://github.com/compulim), in PR [#4210](https://github.com/microsoft/BotFramework-WebChat/pull/4210)
 
 ### Changed
 
@@ -110,10 +115,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`typescript@4.6.2`](https://npmjs.com/package/typescript)
       -  [`webpack-cli@4.9.2`](https://npmjs.com/package/webpack-cli)
       -  [`webpack@5.70.0`](https://npmjs.com/package/webpack)
-
-### Added
-
--  Resolves [#4099](https://github.com/microsoft/BotFramework-WebChat/issues/4099), added typing indicator to live region for screen reader, by [@compulim](https://github.com/compulim), in PR [#4210](https://github.com/microsoft/BotFramework-WebChat/pull/4210)
 
 ## [4.15.1] - 2022-03-04
 
