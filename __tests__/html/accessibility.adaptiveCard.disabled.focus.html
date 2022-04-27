@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18.1.0/umd/react.production.min.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const {
+          Components: { AdaptiveCardContent }
+        } = window.WebChat;
+
+        const NOW = Date.now();
+
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '0',
+            text: 'This is the first message.',
+            timestamp: new Date(NOW).toISOString(),
+            type: 'message'
+          },
+          {
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  type: 'AdaptiveCard',
+                  version: '1.3',
+                  body: [
+                    {
+                      type: 'TextBlock',
+                      text: 'Do you want to take a survey?',
+                      size: 'Large',
+                      weight: 'Bolder',
+                      wrap: true
+                    },
+                    {
+                      type: 'ActionSet',
+                      actions: [
+                        {
+                          type: 'Action.Submit',
+                          title: 'Yes'
+                        },
+                        {
+                          type: 'Action.Submit',
+                          title: 'No'
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date(NOW + 1).toISOString(),
+            type: 'message'
+          },
+          {
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '2',
+            text: 'This is the last message.',
+            timestamp: new Date(NOW + 2).toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        const createAttachmentMiddleware =
+          disabled =>
+          () =>
+          next =>
+          (...args) => {
+            const [{ attachment }] = args;
+
+            switch (attachment.contentType) {
+              case 'application/vnd.microsoft.card.adaptive':
+                return React.createElement(AdaptiveCardContent, {
+                  actionPerformedClassName: 'card__action--performed',
+                  content: attachment.content,
+                  disabled
+                });
+
+              default:
+                return next(...args);
+            }
+          };
+
+        const props = {
+          directLine,
+          store: testHelpers.createStore()
+        };
+
+        function render(patchProps) {
+          WebChat.renderWebChat({ ...props, ...patchProps }, document.getElementById('webchat'));
+        }
+
+        render({ attachmentMiddleware: createAttachmentMiddleware(false) });
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: Focus on the send box.
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: Pressing SHIFT-TAB x 3 key should focus on the chat history with the last message selected.
+        await host.sendShiftTab(3);
+
+        // WHEN: Pressing UP arrow key should select the message with the Adaptive Card.
+        await host.sendKeys('UP');
+
+        // WHEN: Pressing ENTER key on the last message with the Adaptive Card.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should focus on the "Yes" button.
+        await host.snapshot();
+
+        // WHEN: Web Chat is being disabled.
+        render({ attachmentMiddleware: createAttachmentMiddleware(true) });
+
+        // THEN: The buttons on the Adaptive Cards should be disabled
+        await host.snapshot();
+
+        // WHEN: Pressing TAB key.
+        await host.sendTab();
+
+        // THEN: It should send the focus back to the transcript.
+        await pageConditions.became(
+          'focus is on the chat history',
+          () => document.activeElement === pageElements.transcript(),
+          1000
+        );
+
+        // THEN: It should focus on the transcript with the last message selected.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
