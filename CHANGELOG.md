@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.2] - 2022-05-09
+
 ### Breaking changes
 
 -  A new `type WebChatActivity` is introduced in the `botframework-webchat-core` package
