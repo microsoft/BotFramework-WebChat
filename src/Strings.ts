@@ -463,6 +463,23 @@ const localizedStrings: LocalizedStrings = {
         uploadFile: "Incarca un fisier",
         speak: "Speak"
     },
+    'uk-ua': {
+        title: "Chat",
+        send: "Send",
+        unknownFile: "[File of type '%1']",
+        unknownCard: "[Unknown Card '%1']",
+        receiptVat: "VAT",
+        receiptTax: "Tax",
+        receiptTotal: "Total",
+        messageRetry: "retry",
+        messageFailed: "couldn't send",
+        messageSending: "sending",
+        timeSent: " at %1",
+        consolePlaceholder: "Type your message...",
+        listeningIndicator: "Listening...",
+        uploadFile: "Upload file",
+        speak: "Speak"
+    }
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -528,6 +545,8 @@ function mapLocale(locale: string) {
         } else {
             return 'zh-hans';
         }
+    } else if (locale.startsWith('uk')) {
+        return 'uk-ua'
     }
 
     return 'en-us';

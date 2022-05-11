@@ -1,0 +1,70 @@
+ #!/bin/bash
+
+ # Validate "gh" bin presence first
+ GH_PATH=`which gh`
+ if [ "$GH_PATH" == "" ]; then
+   echo "GitHub CLI not installed, please follow instructions here https://github.com/cli/cli#installation to install it first, then follow by \"gh auth login\" to authenticate 🔐\n"
+   exit 1
+ fi
+
+ # Parse current Git branch to get parts separated by slash
+ BRANCH=`git rev-parse --abbrev-ref HEAD`
+ BRANCH_LOWERCASE=`echo "${BRANCH}" | tr '[A-Z]' '[a-z]'`
+ BRANCH_BY_SLASH=(${BRANCH_LOWERCASE//\// })
+ BRANCH_TITLE=${BRANCH_BY_SLASH[1]}
+ BRANCH_PREFIX=`echo "${BRANCH_BY_SLASH[0]}"`
+
+ if [ "$BRANCH_PREFIX" != "feature" ]; then
+   printf "Current branch does not starts with feature/ ($BRANCH_PREFIX) ⛔️\n\n"
+   exit 1
+ fi
+
+ # Last part of current Git branch to Jira issue ID
+ BRANCH_TITLE_BY_DASH=(${BRANCH_TITLE//-/ })
+ JIRA_ISSUE_PROJECT=`echo "${BRANCH_TITLE_BY_DASH[0]}" | tr '[a-z]' '[A-Z]'`
+ JIRA_ISSUE_NUMBER=${BRANCH_TITLE_BY_DASH[1]}
+ JIRA_ISSUE_ID="${JIRA_ISSUE_PROJECT}-${JIRA_ISSUE_NUMBER}"
+
+ if [ "$JIRA_ISSUE_PROJECT" != "FBOT" ]; then
+   printf "Branch name should be in feature/FBOT-XYZ-... format ⛔️\n\n"
+   exit 1
+ fi
+
+ JIRA_ISSUE_NUMBER_VALID=`echo "$JIRA_ISSUE_NUMBER" | grep -E ^[0-9]+$`
+ if [ "$JIRA_ISSUE_NUMBER_VALID" == '' ]; then
+   printf "Jira ticket ID \"${JIRA_ISSUE_NUMBER}\" from current branch is not a number ⛔️\n\n"
+   exit 1
+ fi
+
+ # Get desired feat/fix/... prefix
+ readPrefix () {
+   read -p "What should be the PR prefix? (feat, fix, perf, revert, docs, style, refactor, test, build, ci, chore) " PR_PREFIX
+   if [ "$PR_PREFIX" != "feat" ] && [ "$PR_PREFIX" != "fix" ] && [ "$PR_PREFIX" != "perf" ] && [ "$PR_PREFIX" != "revert" ] && [ "$PR_PREFIX" != "docs" ] && [ "$PR_PREFIX" != "style" ] && [ "$PR_PREFIX" != "refactor" ] && [ "$PR_PREFIX" != "test" ] && [ "$PR_PREFIX" != "build" ] && [ "$PR_PREFIX" != "ci" ] && [ "$PR_PREFIX" != "chore" ]; then
+     echo "Nice try but \"$PR_PREFIX\" was not on the list of allowed prefixes ⛔️"
+     readPrefix
+   fi
+ }
+ readPrefix
+
+ # Compose all required parameters
+ PR_TITLE="${PR_PREFIX}: ${JIRA_ISSUE_ID} "`echo $BRANCH_TITLE | sed s/${BRANCH_TITLE_BY_DASH[0]}-${BRANCH_TITLE_BY_DASH[1]}-// | sed 's/\-/ /g'`
+ PR_BODY="https://feedyou.atlassian.net/browse/${JIRA_ISSUE_ID}"
+
+ printf "Creating empty commit to force GitHub to use PR title as squash commit mesasge instead of single commit message\n\n"
+ git commit --allow-empty -m "ci: dummy commit to fix GitHub PR squash message"
+ git push
+
+ # Create PR
+ printf "Creating PR using following command:\n\n  gh pr create --title '${PR_TITLE}' --body '${PR_BODY}' --repo feedyou-ai/feedbot-webchat\n\n"
+
+ #read -p "Should I proceed? 🚀 (y/n)" CONFIRM
+ #if [ "$CONFIRM" != "y" ]; then
+ #  printf "OK, aborting now 😪\n\n"
+ #  exit 1
+ #fi
+
+ printf "\n"
+ gh pr create --title "${PR_TITLE}" --body "${PR_BODY}" --repo feedyou-ai/feedbot-webchat
+ printf "\n\n"
+
+ # TODO draft prompt

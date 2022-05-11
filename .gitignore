@@ -1,6 +1,7 @@
 node_modules
 /.vs/botchat/v14/.suo
 /.vs/config/applicationhost.config
+.idea
 /botchat.sln
 /Web.config
 /local
