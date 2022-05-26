@@ -1,7 +1,12 @@
+# Setting to a different base image to secure your container supply chain.
+ARG REGISTRY=docker.io
+ARG IMAGE_VERSION=18
+ARG BASE_IMAGE=$REGISTRY/node:$IMAGE_VERSION
+
 # This container is for simplifying CI when using Azure Pipelines
 
 # The first builder image will build HTML and JavaScript code out of the create-react-app project
-FROM node:12 AS builder-react
+FROM $BASE_IMAGE AS builder-react
 WORKDIR /var/build/react/
 
 # Copy the web app code to /var/build/react/
@@ -15,7 +20,7 @@ RUN npm ci
 RUN npm run build
 
 # The second builder image will aggregate all code into a single Docker image for export
-FROM node:12
+FROM $BASE_IMAGE
 
 # Copy the bot code to /var/bot/
 ADD bot/ /var/build/bot/
