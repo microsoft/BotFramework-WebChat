@@ -1,7 +1,6 @@
 # Setting to a different base image to secure your container supply chain.
 ARG REGISTRY=docker.io
-ARG IMAGE_VERSION=18
-ARG BASE_IMAGE=$REGISTRY/node:$IMAGE_VERSION
+ARG BASE_IMAGE=$REGISTRY/node:18
 
 # This container is for simplifying CI when using Azure Pipelines
 FROM $BASE_IMAGE
