@@ -464,21 +464,21 @@ const localizedStrings: LocalizedStrings = {
         speak: "Speak"
     },
     'uk-ua': {
-        title: "Chat",
-        send: "Send",
-        unknownFile: "[File of type '%1']",
-        unknownCard: "[Unknown Card '%1']",
-        receiptVat: "VAT",
-        receiptTax: "Tax",
-        receiptTotal: "Total",
-        messageRetry: "retry",
-        messageFailed: "couldn't send",
-        messageSending: "sending",
-        timeSent: " at %1",
-        consolePlaceholder: "Type your message...",
-        listeningIndicator: "Listening...",
-        uploadFile: "Upload file",
-        speak: "Speak"
+        title: "Чат",
+        send: "Надіслати",
+        unknownFile: "[Файл типу '%1']",
+        unknownCard: "[Невідома картка '%1']",
+        receiptVat: "ПДВ",
+        receiptTax: "Податок з прод.",
+        receiptTotal: "Всього",
+        messageRetry: "повторити",
+        messageFailed: "не вдалося надіслати",
+        messageSending: "Відправлення",
+        timeSent: " в %1",
+        consolePlaceholder: "Напишіть своє повідомлення...",
+        listeningIndicator: "Завантажте файл",
+        uploadFile: "Завантажте файл",
+        speak: "Використовуйте голос"
     }
 }
 
