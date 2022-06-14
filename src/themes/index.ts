@@ -2,7 +2,20 @@ import { ExpandableBarTheme } from './ExpandableBarTheme'
 import { FullScreenTheme } from './FullScreenTheme'
 import { ExpandableKnobTheme } from './ExpandableKnobTheme'
 import { Sidebar } from './SidebarTheme'
-import { Theme } from '../App'
+
+export type Theme = {
+	mainColor: string;
+	template: any;
+	customCss?: string;
+	showSignature?: boolean,
+	enableScreenshotUpload?: boolean
+	signature?: {
+		partnerLogoUrl: string,
+		partnerLogoStyle: string,
+		partnerLinkUrl: string,
+		mode: string
+	}
+};
 
 export function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
 	switch (theme && theme.template && theme.template.type) {

@@ -1,5 +1,5 @@
 import { BaseTheme } from './BaseTheme'
-import { Theme } from '../App'
+import { Theme } from './index'
 
 export const FullScreenTheme = (theme: Theme) => `
   body {

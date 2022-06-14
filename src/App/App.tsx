@@ -1,26 +1,17 @@
 import 'core-js'
 import * as React from 'react'
-import { ChatProps } from './Chat'
-import { render, renderExpandableTemplate, renderFullScreenTemplate } from './AppService'
+import { ChatProps } from '../Chat'
+import {
+	attachRootComponentToDom,
+	renderExpandableTemplate,
+	renderFullScreenTemplate,
+	renderWebchatApp,
+} from './renderWebchatApp'
 import { DirectLine } from 'botframework-directlinejs'
-import * as konsole from './Konsole'
-import { getFeedyouParam, setFeedyouParam } from './FeedyouParams'
-import { getStyleForTheme } from './themes'
-import { generateUserId } from './utils/generateUserId'
-
-export type Theme = {
-  mainColor: string;
-  template: any;
-  customCss?: string;
-  showSignature?: boolean,
-  enableScreenshotUpload?: boolean
-  signature?: {
-    partnerLogoUrl: string,
-    partnerLogoStyle: string,
-    partnerLinkUrl: string,
-    mode: string
-  }
-};
+import * as konsole from '../Konsole'
+import { getFeedyouParam, setFeedyouParam } from '../FeedyouParams'
+import { getStyleForTheme, Theme } from '../themes'
+import { generateUserId } from '../utils/generateUserId'
 
 export type AppProps = ChatProps & {
   theme?: Theme;
@@ -247,17 +238,6 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
   );
   document.head.appendChild(style);
 
-  // FEEDYOU if no container provided, generate default one
-  if (!container) {
-    switch (props.theme && props.theme.template && props.theme.template.type) {
-      case "full-screen":
-        renderFullScreenTemplate(props);
-        break;
-      default:
-        renderExpandableTemplate(props);
-    }
-  } else {
-    render(props, container);
-  }
+	renderWebchatApp(props, container)
 };
 

@@ -1,8 +1,12 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { Chat } from "./Chat";
-import { AppProps } from "./App";
-import isSmallScreen from './utils/isSmallScreen'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { AppProps } from './App'
+import { handleAutoExpand } from './handleAutoexpand'
+import { RootComponent } from './RootComponent'
+
+export const attachRootComponentToDom = (props: AppProps, container?: HTMLElement) => {
+	ReactDOM.render(React.createElement(RootComponent, props), container);
+};
 
 export function renderExpandableTemplate(props: AppProps) {
   let rendered = false;
@@ -47,7 +51,7 @@ export function renderExpandableTemplate(props: AppProps) {
         '<span class="feedbot-title">' +
         ((props.header && props.header.text) || "Chatbot") +
         '</span>'+((props.header && props.header.extraHtml && '<span class="feedbot-extra-html">' + props.header.extraHtml + '</span>') || "") +'<a onclick="return false;" class="feedbot-minimize" href="#">_</a>';
-      render(props, container);
+      attachRootComponentToDom(props, container);
     }
 
     // when closed manually, store flag to do not open automatically after reload
@@ -69,100 +73,58 @@ export function renderExpandableTemplate(props: AppProps) {
   
   document.body.appendChild(location.hash.includes('#feedbot-css-reset') ? reset : wrapper)
 
-  const autoExpandTimeout = getAutoExpandTimeout(
-	  props.autoExpandTimeout,
-	  props.persist,
-	  props.manualCloseExpireInMinutes || 60 * 24,
-  )
-	
-  if (autoExpandTimeout > 0) {
-    
-    let expandedOnce = false
-    header.addEventListener("click", () => {
-      expandedOnce = true
-    })
-    
-    setTimeout(() => {
-      if (!expandedOnce && wrapper.className.indexOf("collapsed") >= 0) {
-        header.click();
-      }
-    }, autoExpandTimeout);
-  
-  }
+	handleAutoExpand(
+		props.autoExpandTimeout,
+		props.persist,
+		props.manualCloseExpireInMinutes,
+		header,
+		wrapper
+	)
 }
 
 export function renderFullScreenTemplate(props: AppProps) {
-    let container = document.createElement("div");
-    container.className = "feedbot";
-  
-    const wrapper = document.createElement("div");
-    wrapper.className = "feedbot-wrapper";
-  
-    const logo = document.createElement("div");
-    logo.className = "feedbot-logo";
-    
-    const logoImg = document.createElement('img')
-    logoImg.src = props.theme && props.theme.template && props.theme.template.logoUrl || "https://cdn.feedyou.ai/webchat/feedyou_logo_red.png"
-    logoImg.alt = "Logo"
-    logo.appendChild(logoImg)
-    
-    wrapper.appendChild(logo);
+	let container = document.createElement("div");
+	container.className = "feedbot";
+	
+	const wrapper = document.createElement("div");
+	wrapper.className = "feedbot-wrapper";
+	
+	const logo = document.createElement("div");
+	logo.className = "feedbot-logo";
+	
+	const logoImg = document.createElement('img')
+	logoImg.src = props.theme && props.theme.template && props.theme.template.logoUrl || "https://cdn.feedyou.ai/webchat/feedyou_logo_red.png"
+	logoImg.alt = "Logo"
+	logo.appendChild(logoImg)
+	
+	wrapper.appendChild(logo);
+	
+	wrapper.appendChild(container);
+	document.body.appendChild(wrapper);
+	
+	const customScript = props.theme && props.theme.template && props.theme.template.customScript
+	if (customScript)  {
+	  const customScriptTag = document.createElement("script");
+	  customScriptTag.appendChild(document.createTextNode(customScript))
+	  document.body.appendChild(customScriptTag);
+	}
+	
+	attachRootComponentToDom(props, container);
 
-    wrapper.appendChild(container);
-    document.body.appendChild(wrapper);
-
-    const customScript = props.theme && props.theme.template && props.theme.template.customScript
-    if (customScript)  {
-      const customScriptTag = document.createElement("script");
-      customScriptTag.appendChild(document.createTextNode(customScript))
-      document.body.appendChild(customScriptTag);
-    }
-
-    render(props, container);
-  }
-
-export const render = (props: AppProps, container?: HTMLElement) => {
-  ReactDOM.render(<AppContainer {...props} />, container);
-};
-
-const AppContainer = (props: AppProps) => (
-  <div className="wc-app">
-    <Chat {...props} />
-  </div>
-);
-
-function getMinutesBetweenTimestamps (t1: number, t2: number)  {
-	const milisDelta = Math.abs(t2-t1)
-	return milisDelta/1000/60
 }
 
-function shouldPreventExpandDueToManualClose(expirationIntervalInMinutes: number) {
-	if(!localStorage || !localStorage.feedbotClosed) return false;
-	if(localStorage.feedbotClosed === "false") return false
-	
-	const closedTimestamp = Number(localStorage.feedbotClosed)
-	const minutesSinceClosed = getMinutesBetweenTimestamps(closedTimestamp, Date.now())
-	if(minutesSinceClosed <= expirationIntervalInMinutes) return true
-	
-	return false
-}
 
-function getAutoExpandTimeout(
-	defaultTimeout: number,
-	persist: string,
-	manualCloseExpireInMinutes: number
-): number {
-  if (window.location.href.includes('utm_source=Feedbot') && (persist === 'user' || persist === 'conversation')) {
-    return 1
-  }
-  
-  if(shouldPreventExpandDueToManualClose(manualCloseExpireInMinutes)) {
-	return 0
-  }
-	
-  if(isSmallScreen()){
-  	return 0
-  }
-	
-  return defaultTimeout
+export const renderWebchatApp = (props: AppProps, container: HTMLElement) => {
+	// FEEDYOU if no container provided, generate default one
+	if (!container) {
+		switch (props.theme && props.theme.template && props.theme.template.type) {
+			case "full-screen":
+				renderFullScreenTemplate(props);
+				break;
+			default:
+				renderExpandableTemplate(props);
+		}
+	} else {
+		attachRootComponentToDom(props, container);
+	}
 }

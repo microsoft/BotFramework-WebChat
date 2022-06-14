@@ -1,5 +1,5 @@
 import { ExpandableKnobTheme } from './ExpandableKnobTheme'
-import { Theme } from '../App'
+import { Theme } from './index'
 
 function getSidebarBackgroundColor(theme: Theme) {
 	return '#e1e1e1'

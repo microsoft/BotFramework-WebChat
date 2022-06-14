@@ -1,5 +1,5 @@
 import { ExpandableBarTheme } from './ExpandableBarTheme'
-import { Theme } from '../App'
+import { Theme } from './index'
 
 export const ExpandableKnobTheme = (theme: Theme) => `
   .feedbot-reset {

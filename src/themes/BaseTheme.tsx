@@ -1,4 +1,4 @@
-import { Theme } from '../App'
+import { Theme } from './index'
 
 function isSafari() {
 	return !(navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') !== -1)
