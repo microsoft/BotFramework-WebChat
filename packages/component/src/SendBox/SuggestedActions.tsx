@@ -8,6 +8,7 @@ import React, { FC, useMemo, useRef } from 'react';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
+import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
 import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
@@ -83,12 +84,12 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
     ]
   );
 
+  // TODO: Add role="toolbar".
   return (
     // TODO: The content of suggested actions should be the labelled by the activity.
     //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
     <div
       aria-labelledby={ariaLabelId}
-      aria-live="polite"
       className={classNames(
         'webchat__suggested-actions',
         'webchat__suggested-actions--carousel-layout',
@@ -97,7 +98,7 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
         suggestedActionsStyleSet + '',
         (className || '') + ''
       )}
-      role="status"
+      role="toolbar"
     >
       <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
@@ -114,6 +115,7 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
           {children}
         </BasicFilm>
       )}
+      <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
 };
@@ -134,6 +136,7 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
+  // TODO: Add role="toolbar".
   return (
     <div
       aria-labelledby={ariaLabelId}
@@ -175,6 +178,7 @@ const SuggestedActionStackedContainer = ({ children, className, screenReaderText
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
+  // TODO: Add role="toolbar".
   return (
     <div
       aria-labelledby={ariaLabelId}
@@ -257,6 +261,7 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
           displayText={displayText}
           image={image}
           imageAlt={imageAltText}
+          itemIndex={index}
           text={text}
           textClassName={
             suggestedActionLayout === 'stacked' && suggestedActionsStackedLayoutButtonTextWrap
@@ -288,22 +293,28 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
 
   if (suggestedActionLayout === 'flow') {
     return (
-      <SuggestedActionFlowContainer className={className} screenReaderText={screenReaderText}>
-        {children}
-      </SuggestedActionFlowContainer>
+      <RovingTabIndexComposer>
+        <SuggestedActionFlowContainer className={className} screenReaderText={screenReaderText}>
+          {children}
+        </SuggestedActionFlowContainer>
+      </RovingTabIndexComposer>
     );
   } else if (suggestedActionLayout === 'stacked') {
     return (
-      <SuggestedActionStackedContainer className={className} screenReaderText={screenReaderText}>
-        {children}
-      </SuggestedActionStackedContainer>
+      <RovingTabIndexComposer direction="vertical">
+        <SuggestedActionStackedContainer className={className} screenReaderText={screenReaderText}>
+          {children}
+        </SuggestedActionStackedContainer>
+      </RovingTabIndexComposer>
     );
   }
 
   return (
-    <SuggestedActionCarouselContainer className={className} screenReaderText={screenReaderText}>
-      {children}
-    </SuggestedActionCarouselContainer>
+    <RovingTabIndexComposer>
+      <SuggestedActionCarouselContainer className={className} screenReaderText={screenReaderText}>
+        {children}
+      </SuggestedActionCarouselContainer>
+    </RovingTabIndexComposer>
   );
 };
 

@@ -9,6 +9,9 @@ export default function createSuggestedActionsStyle({
   suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
   suggestedActionsStackedOverflow,
+  suggestedActionsContainerVisualKeyboardIndicatorColor,
+  suggestedActionsContainerVisualKeyboardIndicatorStyle,
+  suggestedActionsContainerVisualKeyboardIndicatorWidth,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnDisabled,
   transcriptOverlayButtonBackgroundOnFocus,
@@ -20,6 +23,8 @@ export default function createSuggestedActionsStyle({
 }: StrictStyleOptions) {
   return {
     '&.webchat__suggested-actions': {
+      position: 'relative',
+
       '&.webchat__suggested-actions--carousel-layout': {
         '& .webchat__suggested-actions__carousel': {
           paddingBottom: paddingRegular / 2,
@@ -160,6 +165,21 @@ export default function createSuggestedActionsStyle({
       '& .webchat__suggested-actions__item-box': {
         display: 'flex',
         maxWidth: '100%'
+      },
+
+      // TODO: "focus-within" is not supported in IE11.
+      '&.webchat__suggested-actions--focus, &:focus-within': {
+        '& .webchat__suggested-actions__focus-indicator': {
+          borderColor: suggestedActionsContainerVisualKeyboardIndicatorColor,
+          borderStyle: suggestedActionsContainerVisualKeyboardIndicatorStyle,
+          borderWidth: suggestedActionsContainerVisualKeyboardIndicatorWidth,
+          boxSizing: 'border-box',
+          height: '100%',
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: 0,
+          width: '100%'
+        }
       }
     }
   };

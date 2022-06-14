@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { MouseEventHandler, useCallback, useRef, VFC } from 'react';
+import React, { MouseEventHandler, useCallback, VFC } from 'react';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import AccessibleButton from '../Utils/AccessibleButton';
@@ -9,11 +9,12 @@ import connectToWebChat from '../connectToWebChat';
 import useFocus from '../hooks/useFocus';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
+import useItemRef from '../providers/RovingTabIndex/useItemRef';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useScrollToEnd from '../hooks/useScrollToEnd';
-import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 
 const { useDirection, useDisabled, usePerformCardAction, useStyleOptions, useSuggestedActions } = hooks;
 
@@ -43,6 +44,7 @@ type SuggestedActionProps = {
   displayText?: string;
   image?: string;
   imageAlt?: string;
+  itemIndex: number;
   text?: string;
   textClassName?: string;
   type?:
@@ -65,6 +67,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
   displayText,
   image,
   imageAlt,
+  itemIndex,
   text,
   textClassName,
   type,
@@ -77,7 +80,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
   const [direction] = useDirection();
   const [disabled] = useDisabled();
   const focus = useFocus();
-  const focusRef = useRef();
+  const focusRef = useItemRef<HTMLButtonElement>(itemIndex);
   const localizeAccessKey = useLocalizeAccessKey();
   const performCardAction = usePerformCardAction();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -100,6 +103,8 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
     [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
   );
 
+  // TODO: Do we still need AccessKeySink?
+  //       Do we need to improve it so it don't land on tabindex="-1"?
   useFocusAccessKeyEffect(accessKey, focusRef);
 
   return (
@@ -154,6 +159,7 @@ SuggestedAction.propTypes = {
   displayText: PropTypes.string,
   image: PropTypes.string,
   imageAlt: PropTypes.string,
+  itemIndex: PropTypes.number.isRequired,
   text: PropTypes.string,
   textClassName: PropTypes.string,
   // TypeScript class is not mappable to PropTypes.
