@@ -79,13 +79,13 @@ export function renderExpandableTemplate(props: AppProps) {
     
     let expandedOnce = false
     header.addEventListener("click", () => {
-      expandedOnce = true      
+      expandedOnce = true
     })
     
     setTimeout(() => {
       if (!expandedOnce && wrapper.className.indexOf("collapsed") >= 0) {
         header.click();
-      }    
+      }
     }, autoExpandTimeout);
   
   }
@@ -122,7 +122,7 @@ export function renderFullScreenTemplate(props: AppProps) {
   }
 
 export const render = (props: AppProps, container?: HTMLElement) => {
-  ReactDOM.render(React.createElement(AppContainer, props), container);
+  ReactDOM.render(<AppContainer {...props} />, container);
 };
 
 const AppContainer = (props: AppProps) => (
