@@ -9,9 +9,9 @@ export default function createSuggestedActionsStyle({
   suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
   suggestedActionsStackedOverflow,
-  suggestedActionsContainerVisualKeyboardIndicatorColor,
-  suggestedActionsContainerVisualKeyboardIndicatorStyle,
-  suggestedActionsContainerVisualKeyboardIndicatorWidth,
+  suggestedActionsVisualKeyboardIndicatorColor,
+  suggestedActionsVisualKeyboardIndicatorStyle,
+  suggestedActionsVisualKeyboardIndicatorWidth,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnDisabled,
   transcriptOverlayButtonBackgroundOnFocus,
@@ -169,9 +169,9 @@ export default function createSuggestedActionsStyle({
 
       '&.webchat__suggested-actions--focus-within, &:focus-within': {
         '& .webchat__suggested-actions__focus-indicator': {
-          borderColor: suggestedActionsContainerVisualKeyboardIndicatorColor,
-          borderStyle: suggestedActionsContainerVisualKeyboardIndicatorStyle,
-          borderWidth: suggestedActionsContainerVisualKeyboardIndicatorWidth,
+          borderColor: suggestedActionsVisualKeyboardIndicatorColor,
+          borderStyle: suggestedActionsVisualKeyboardIndicatorStyle,
+          borderWidth: suggestedActionsVisualKeyboardIndicatorWidth,
           boxSizing: 'border-box',
           height: '100%',
           pointerEvents: 'none',

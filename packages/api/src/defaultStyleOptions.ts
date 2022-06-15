@@ -208,9 +208,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   suggestedActionsStackedLayoutButtonMaxHeight: undefined,
   suggestedActionsStackedLayoutButtonTextWrap: false,
 
-  suggestedActionsContainerVisualKeyboardIndicatorColor: 'Black',
-  suggestedActionsContainerVisualKeyboardIndicatorStyle: 'solid',
-  suggestedActionsContainerVisualKeyboardIndicatorWidth: 2,
+  suggestedActionsVisualKeyboardIndicatorColor: 'Black',
+  suggestedActionsVisualKeyboardIndicatorStyle: 'solid',
+  suggestedActionsVisualKeyboardIndicatorWidth: 2,
 
   // Timestamp
   groupTimestamp: true,
