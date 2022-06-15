@@ -95,5 +95,3 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 	}
 }
 
-export type IntroMessageProps = Props
-
