@@ -157,7 +157,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
   );
 
   // This hook run on every render to rectify `activeItemIndexRef`.
-  // So it will always point to an existing item or first time if available.
+  // So it will always point to an existing item or first item if available.
   useEffect(() => {
     setActiveItemIndex(value => value);
   });

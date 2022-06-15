@@ -103,8 +103,6 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
     [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
   );
 
-  // TODO: Do we still need AccessKeySink?
-  //       Do we need to improve it so it don't land on tabindex="-1"?
   useFocusAccessKeyEffect(accessKey, focusRef);
 
   return (

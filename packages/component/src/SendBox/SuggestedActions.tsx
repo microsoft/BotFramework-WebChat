@@ -4,7 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
@@ -66,6 +66,7 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [nonce] = useNonce();
+  const [focusedWithin, setFocusedWithin] = useState(false);
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -84,7 +85,9 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
     ]
   );
 
-  // TODO: Add role="toolbar".
+  const handleBlur = useCallback(() => setFocusedWithin(false), [setFocusedWithin]);
+  const handleFocus = useCallback(() => setFocusedWithin(true), [setFocusedWithin]);
+
   return (
     // TODO: The content of suggested actions should be the labelled by the activity.
     //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
@@ -93,11 +96,16 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
       className={classNames(
         'webchat__suggested-actions',
         'webchat__suggested-actions--carousel-layout',
-        { 'webchat__suggested-actions--rtl': direction === 'rtl' },
+        {
+          'webchat__suggested-actions--focus-within': focusedWithin,
+          'webchat__suggested-actions--rtl': direction === 'rtl'
+        },
         rootClassName,
         suggestedActionsStyleSet + '',
         (className || '') + ''
       )}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
       role="toolbar"
     >
       <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
@@ -136,7 +144,6 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
-  // TODO: Add role="toolbar".
   return (
     <div
       aria-labelledby={ariaLabelId}
@@ -148,7 +155,7 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
         suggestedActionsStyleSet + '',
         (className || '') + ''
       )}
-      role="status"
+      role="toolbar"
     >
       <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
@@ -158,6 +165,7 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
           ))}
         </div>
       )}
+      <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
 };
@@ -178,7 +186,6 @@ const SuggestedActionStackedContainer = ({ children, className, screenReaderText
   const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
-  // TODO: Add role="toolbar".
   return (
     <div
       aria-labelledby={ariaLabelId}
@@ -190,12 +197,13 @@ const SuggestedActionStackedContainer = ({ children, className, screenReaderText
         suggestedActionsStyleSet + '',
         (className || '') + ''
       )}
-      role="status"
+      role="toolbar"
     >
       <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
         <div className="webchat__suggested-actions__stack">{children}</div>
       )}
+      <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
 };

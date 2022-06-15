@@ -167,8 +167,7 @@ export default function createSuggestedActionsStyle({
         maxWidth: '100%'
       },
 
-      // TODO: "focus-within" is not supported in IE11.
-      '&.webchat__suggested-actions--focus, &:focus-within': {
+      '&.webchat__suggested-actions--focus-within, &:focus-within': {
         '& .webchat__suggested-actions__focus-indicator': {
           borderColor: suggestedActionsContainerVisualKeyboardIndicatorColor,
           borderStyle: suggestedActionsContainerVisualKeyboardIndicatorStyle,
