@@ -1,12 +1,7 @@
 import 'core-js'
 import * as React from 'react'
 import { ChatProps } from '../Chat'
-import {
-	attachRootComponentToDom,
-	renderExpandableTemplate,
-	renderFullScreenTemplate,
-	renderWebchatApp,
-} from './renderWebchatApp'
+import { renderWebchatApp } from './renderWebchatApp'
 import { DirectLine } from 'botframework-directlinejs'
 import * as konsole from '../Konsole'
 import { getFeedyouParam, setFeedyouParam } from '../FeedyouParams'

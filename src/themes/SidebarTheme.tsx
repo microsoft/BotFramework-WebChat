@@ -12,7 +12,7 @@ function getSidebarBackgroundColor(theme: Theme) {
 	return color*/
 }
 
-export const Sidebar = (theme: Theme) => `
+export const SidebarTheme = (theme: Theme) => `
   ${ExpandableKnobTheme(theme)}
 
   body .feedbot-wrapper:not(.collapsed) .feedbot-header {

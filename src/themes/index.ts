@@ -1,7 +1,7 @@
 import { ExpandableBarTheme } from './ExpandableBarTheme'
 import { FullScreenTheme } from './FullScreenTheme'
 import { ExpandableKnobTheme } from './ExpandableKnobTheme'
-import { Sidebar } from './SidebarTheme'
+import { SidebarTheme } from './SidebarTheme'
 
 export type Theme = {
 	mainColor: string;
@@ -26,7 +26,7 @@ export function getStyleForTheme(theme: Theme, remoteConfig: boolean): string {
 		case 'expandable-knob':
 			return ExpandableKnobTheme(theme)
 		case 'sidebar':
-			return Sidebar(theme)
+			return SidebarTheme(theme)
 	}
 	
 	// backward compatibility - knob is new default for remote config, old default is bar

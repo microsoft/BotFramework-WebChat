@@ -1,6 +1,8 @@
 import { getMinutesBetweenTimestamps } from './getMinutesBetweenTimestamps'
 
-export function wasWebchatManuallyClosedWithinExpirationPeriod(expirationIntervalInMinutes: number) {
+const DEFAULT_MANUAL_CLOSE_EXPIRY_INTERVAL = 60 * 24
+
+export function wasWebchatManuallyClosedWithinExpirationPeriod(expirationIntervalInMinutes = DEFAULT_MANUAL_CLOSE_EXPIRY_INTERVAL) {
 	if (!localStorage || !localStorage.feedbotClosed) return false
 	if (localStorage.feedbotClosed === 'false') return false
 	

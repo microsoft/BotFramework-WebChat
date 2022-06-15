@@ -542,31 +542,33 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         // only render real stuff after we know our dimensions
         return (
-            <Provider store={ this.store }>
-                <div
-                    className="wc-chatview-panel"
-                    onKeyDownCapture={ this._handleKeyDownCapture }
-                    ref={ this._saveChatviewPanelRef }
-                >
-                    {
-                        !!state.format.chatTitle &&
-                            <div className="wc-header">
-                                <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
-                            </div>
-                    }
-                    <MessagePane>
-                        <History
-                            onCardAction={ this._handleCardAction }
-                            ref={ this._saveHistoryRef }
-                        />
-                    </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
-                    {
-                        this.props.resize === 'detect' &&
-                            <ResizeDetector onresize={ this.resizeListener } />
-                    }
-                </div>
-            </Provider>
+            <div className="wc-app">
+                <Provider store={ this.store }>
+                      <div
+                          className="wc-chatview-panel"
+                          onKeyDownCapture={ this._handleKeyDownCapture }
+                          ref={ this._saveChatviewPanelRef }
+                      >
+                          {
+                              !!state.format.chatTitle &&
+                                  <div className="wc-header">
+                                      <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
+                                  </div>
+                          }
+                          <MessagePane>
+                              <History
+                                  onCardAction={ this._handleCardAction }
+                                  ref={ this._saveHistoryRef }
+                              />
+                          </MessagePane>
+                          <Shell ref={ this._saveShellRef } />
+                          {
+                              this.props.resize === 'detect' &&
+                                  <ResizeDetector onresize={ this.resizeListener } />
+                          }
+                      </div>
+                  </Provider>
+            </div>
         );
     }
 }
