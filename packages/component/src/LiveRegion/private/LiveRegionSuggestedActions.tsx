@@ -11,7 +11,7 @@ type LiveRegionSuggestedActionsProps = {
 };
 
 const LiveRegionSuggestedActions: VFC<LiveRegionSuggestedActionsProps> = ({ suggestedActions }) => (
-  <p className="webchat__live-region-activity__suggested-actions">
+  <span className="webchat__live-region-activity__suggested-actions">
     {suggestedActions.actions?.map((action, index) => (
       // Direct Line schema does not have key other than index.
       // eslint-disable-next-line react/no-array-index-key
@@ -19,7 +19,7 @@ const LiveRegionSuggestedActions: VFC<LiveRegionSuggestedActionsProps> = ({ sugg
         {computeSuggestedActionText(action)}
       </button>
     ))}
-  </p>
+  </span>
 );
 
 LiveRegionSuggestedActions.propTypes = {

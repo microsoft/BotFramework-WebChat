@@ -50,6 +50,9 @@
       run(async function () {
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
+        const styleOptions = {
+          internalLiveRegionFadeAfter: 60000
+        };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -65,7 +68,7 @@
         };
 
         render(
-          <Composer directLine={directLine} store={store}>
+          <Composer directLine={directLine} store={store} styleOptions={styleOptions}>
             <BasicWebChat />
             <SendOnConnect />
           </Composer>,
@@ -76,9 +79,24 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
         await pageConditions.suggestedActionsShown();
+        await pageConditions.liveRegionStabilized();
+
+        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        expect(screenReaderTexts).toHaveLength(3);
+
+        expect(screenReaderTexts[0]).toBe('You said:\nsuggested-actions');
+        expect(
+          screenReaderTexts[1].startsWith(
+            'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text\nSent at'
+          )
+        ).toBeTruthy();
+        expect(screenReaderTexts[2]).toBe('Suggested Actions Container: Has content. Press Alt + Shift + A to select.');
 
         expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content. Press Alt + Shift + A to select.'
+          'Suggested Actions Container: '
         );
 
         expect(

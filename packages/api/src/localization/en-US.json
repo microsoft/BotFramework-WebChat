@@ -97,7 +97,6 @@
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Has content. Press $1 to select.",
   "_SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY.comment": "$1 will be \"ACCESS_KEY_ALT\".",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Is empty",
   "SUGGESTED_ACTIONS_ALT": "Suggested Actions Container: $1",
   "_SUGGESTED_ACTIONS_ALT.comment": "This is for screen reader. $1 will be one of \"SUGGESTED_ACTIONS_ALT_*\".",
   "TEXT_INPUT_ALT": "Message input box",

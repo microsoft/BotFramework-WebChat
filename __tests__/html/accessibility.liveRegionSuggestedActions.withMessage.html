@@ -39,21 +39,6 @@
                   ]
                 },
                 text: 'Where are you from?'
-              },
-              {
-                ...baseActivity,
-                suggestedActions: {
-                  actions: [
-                    {
-                      title: 'What can I say?',
-                      type: 'imBack'
-                    },
-                    {
-                      title: 'What is the weather?',
-                      type: 'imBack'
-                    }
-                  ]
-                }
               }
             ]),
             store: testHelpers.createStore(),
@@ -77,9 +62,7 @@
         expect(screenReaderTexts[0]).toBe(
           'Bot said:\nWhere are you from?\nUSA\nHong Kong\nSent at January 1 at 12:34 PM'
         );
-        expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nWhat can I say?\nWhat is the weather?\nSent at January 1 at 12:34 PM'
-        );
+        expect(screenReaderTexts[1]).toBe('Suggested Actions Container: Has content. Press Alt + Shift + A to select.');
 
         // The screenshot should show the suggested actions as HTML <button> and verify we sent a <button> to screen reader.
         await host.snapshot();
