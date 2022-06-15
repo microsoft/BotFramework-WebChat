@@ -101,10 +101,14 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
   const keyedActivities = useMemo<Readonly<RenderingActivities>>(
     () =>
       Object.freeze(
-        activities.reduce<RenderingActivities>(
-          (intermediate, activity) => intermediate.set(getKeyByActivity(activity), activity),
-          new Map<string, WebChatActivity>()
-        )
+        activities.reduce<RenderingActivities>((intermediate, activity) => {
+          // Only "message" activity will be read by screen reader.
+          if (activity.type === 'message') {
+            return intermediate.set(getKeyByActivity(activity), activity);
+          }
+
+          return intermediate;
+        }, new Map<string, WebChatActivity>())
       ),
     [activities, getKeyByActivity]
   );
