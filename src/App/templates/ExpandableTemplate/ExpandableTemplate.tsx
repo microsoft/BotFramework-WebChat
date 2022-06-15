@@ -1,16 +1,17 @@
 import * as React from 'react'
 import cx from 'classnames'
-import { AppProps } from '../App'
-import { Signature } from './fragments/Signature/Signature'
-import { Header } from './fragments/Header'
+import { AppProps } from '../../App'
+import { Signature } from './Signature/Signature'
+import { Header } from './Header'
 import {
 	wasWebchatManuallyClosedWithinExpirationPeriod,
-} from '../../utils/wasWebchatManuallyClosedWithinExpirationPeriod'
-import isSmallScreen from '../../utils/isSmallScreen'
+} from '../../../utils/wasWebchatManuallyClosedWithinExpirationPeriod'
+import isSmallScreen from '../../../utils/isSmallScreen'
 import {
 	shouldRestorePreviousConversation,
-} from '../../utils/shouldRestorePreviousConversation'
-import { Chat } from '../../Chat'
+} from '../../../utils/shouldRestorePreviousConversation'
+import { Chat } from '../../../Chat'
+import { IntroMessage } from '../../../IntroMessage/IntroMessage'
 
 export type Props = AppProps
 
@@ -90,6 +91,15 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 				{signature && showSignature &&
 					<Signature signature={signature} botId={bot.id} />
 				}
+				
+				{!initialized && (
+					<IntroMessage
+						title="How can I help you?"
+						message="Supportive title for the chatbot intro?"
+						showAfterMs={1}
+						onTrigger={this.expand}
+					/>
+				)}
 			</div>
 		)
 	}
