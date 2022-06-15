@@ -95,6 +95,10 @@
 
         expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
 
+        // Change access key on-the-fly.
+
+        await renderWebChat({ suggestedActionsAccessKey: 'Z z' });
+
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
         await pageObjects.focusTranscript();
