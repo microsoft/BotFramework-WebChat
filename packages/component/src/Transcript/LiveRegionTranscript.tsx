@@ -6,29 +6,31 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import type { FC, RefObject, VFC } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
+import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
-import ScreenReaderActivity from '../ScreenReaderActivity';
 import tabbableElements from '../Utils/tabbableElements';
-import useActivityTreeWithRenderer from '../providers/ActivityTree/useActivityTreeWithRenderer';
+import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useTypistNames from './useTypistNames';
 
 import type { ActivityElementMap } from './types';
 
-const { useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
+const { useActivities, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__live-region-transcript': {
-    '& .webchat__live-region-transcript__interactive-note, & .webchat__live-region-transcript__text-element': {
-      color: 'transparent',
-      height: 1,
-      overflow: 'hidden',
-      position: 'absolute',
-      top: 0,
-      whiteSpace: 'nowrap',
-      width: 1
-    }
+    '& .webchat__live-region-transcript__interactive-note, & .webchat__live-region-transcript__suggested-actions-note, & .webchat__live-region-transcript__text-element':
+      {
+        color: 'transparent',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        top: 0,
+        whiteSpace: 'nowrap',
+        width: 1
+      }
   }
 };
 
@@ -52,8 +54,13 @@ function isPresentational(activity: WebChatActivity): boolean {
     return !fallbackText;
   }
 
-  // If there are "displayText" (MessageBack), "text", or any attachments, there are something to narrate.
-  return !(channelData?.messageBack?.displayText || activity.text || activity.attachments?.length);
+  // If there are "displayText" (MessageBack), "text", any attachments, or suggested actions, there are something to narrate.
+  return !(
+    channelData?.messageBack?.displayText ||
+    activity.text ||
+    activity.attachments?.length ||
+    activity.suggestedActions?.actions?.length
+  );
 }
 
 type RenderingActivities = Map<string, WebChatActivity>;
@@ -63,10 +70,15 @@ type LiveRegionTranscriptCoreProps = {
 };
 
 const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
-  const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
+  // We are looking for all activities instead of just those will be rendered.
+  // This is because some activities that chosen not be rendered in the chat history,
+  // we might still need to be read by screen reader. Such as, suggested actions without text content.
+  const [accessKey] = useSuggestedActionsAccessKey();
+  const [activities] = useActivities();
   const [typistNames] = useTypistNames();
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
+  const localizeAccessKey = useLocalizeAccessKey();
   const queueStaticElement = useQueueStaticElement();
 
   const liveRegionInteractiveLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_LABEL_ALT');
@@ -78,15 +90,23 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
       typistNames[0]
     );
 
-  const renderingActivities = useMemo<Readonly<RenderingActivities>>(
+  // TODO: [P*] We should change the narration to "Message has suggested actions. Press SHIFT + ALT + A to select them."
+  const liveRegionSuggestedActionsLabelAlt = localize(
+    'SUGGESTED_ACTIONS_ALT',
+    accessKey
+      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY', localizeAccessKey(accessKey))
+      : localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
+  );
+
+  const keyedActivities = useMemo<Readonly<RenderingActivities>>(
     () =>
       Object.freeze(
-        flattenedActivityTree.reduce<RenderingActivities>(
-          (intermediate, { activity }) => intermediate.set(getKeyByActivity(activity), activity),
+        activities.reduce<RenderingActivities>(
+          (intermediate, activity) => intermediate.set(getKeyByActivity(activity), activity),
           new Map<string, WebChatActivity>()
         )
       ),
-    [flattenedActivityTree, getKeyByActivity]
+    [activities, getKeyByActivity]
   );
 
   const prevRenderingActivitiesRef = useRef<Readonly<RenderingActivities>>();
@@ -98,14 +118,14 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     // Bottom-up, find activities which are recently appended (i.e. new activity will have a new key).
     // We only consider new activities added to the bottom of the chat history.
     // Based on how `aria-relevant="additions"` works, activities that are updated, deleted, or reordered, should be ignored.
-    for (const [key, activity] of Array.from(renderingActivities.entries()).reverse()) {
+    for (const [key, activity] of Array.from(keyedActivities.entries()).reverse()) {
       if (prevRenderingActivities?.has(key)) {
         break;
       }
 
       appendedActivities.unshift({ activity, key });
 
-      isPresentational(activity) || queueStaticElement(<ScreenReaderActivity activity={activity} />);
+      isPresentational(activity) || queueStaticElement(<LiveRegionActivity activity={activity} />);
     }
 
     const hasNewLink = appendedActivities.some(({ key }) => activityElementMapRef.current.get(key)?.querySelector('a'));
@@ -115,6 +135,10 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
         !!tabbableElements(
           activityElementMapRef.current.get(key)?.querySelector('.webchat__basic-transcript__activity-body')
         ).length
+    );
+
+    const hasSuggestedActions = appendedActivities.some(
+      ({ activity }) => activity.type === 'message' && activity.suggestedActions?.actions?.length
     );
 
     if (hasNewLink || hasNewWidget) {
@@ -136,22 +160,37 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
           className="webchat__live-region-transcript__interactive-note"
           role="note"
         >
-          {/* "id" is required for "aria-activedescendant" */}
+          {/* "id" is required */}
           {/* eslint-disable-next-line react/forbid-dom-props */}
           <span id={labelId}>{hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt}</span>
         </div>
       );
     }
 
-    prevRenderingActivitiesRef.current = renderingActivities;
+    // This is a footnote reading "Suggested actions container: has content. Press CTRL + SHIFT + A to select."
+    if (hasSuggestedActions) {
+      // eslint-disable-next-line no-magic-numbers
+      const labelId = `webchat__live-region-transcript__suggested-actions-note--${random().toString(36).substr(2, 5)}`;
+
+      queueStaticElement(
+        <div aria-labelledby={labelId} className="webchat__live-region-transcript__suggested-actions-note" role="note">
+          {/* "id" is required */}
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <span id={labelId}>{liveRegionSuggestedActionsLabelAlt}</span>
+        </div>
+      );
+    }
+
+    prevRenderingActivitiesRef.current = keyedActivities;
   }, [
     activityElementMapRef,
     getKeyByActivity,
     liveRegionInteractiveLabelAlt,
     liveRegionInteractiveWithLinkLabelAlt,
+    liveRegionSuggestedActionsLabelAlt,
     prevRenderingActivitiesRef,
     queueStaticElement,
-    renderingActivities
+    keyedActivities
   ]);
 
   useEffect(() => {
