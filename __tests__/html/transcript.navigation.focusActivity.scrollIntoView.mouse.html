@@ -40,6 +40,9 @@
 
         // THEN: It should show a visual indicator around activity #29.
         expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
+
+        // THEN: It should not scroll activity #29 into the view.
+        //       Activity #31 should be bottom aligned and displayed completely.
         await host.snapshot();
 
         // WHEN: Clicking on the <input> inside activity #29.
@@ -54,6 +57,7 @@
         expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
 
         // THEN: It should no longer have a visual indicator around activity #29.
+        //       Activity #31 should be bottom aligned and displayed completely.
         await host.snapshot();
 
         // WHEN: Clicking on the top left of the transcript.
@@ -66,6 +70,9 @@
 
         // THEN: It should show a visual indicator around activity #29.
         expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
+
+        // THEN: It should show activity #29 partially with top part off the screen.
+        //       Activity #31 should be bottom aligned and displayed completely.
         await host.snapshot();
       });
     </script>

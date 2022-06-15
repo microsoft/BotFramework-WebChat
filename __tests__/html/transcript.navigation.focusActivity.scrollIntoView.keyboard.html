@@ -55,7 +55,8 @@
         await host.sendKeys('ARROW_UP');
         await host.sendKeys('ARROW_UP');
 
-        // THEN: Activity #29 should be partially off the screen.
+        // THEN: Activity #26 should be top aligned with appropriate spacing.
+        //       Activity #29 should be partially off the screen on the bottom side.
         await host.snapshot();
 
         // WHEN: Press down arrow 3 times.
@@ -63,7 +64,7 @@
         await host.sendKeys('ARROW_DOWN');
         await host.sendKeys('ARROW_DOWN');
 
-        // THEN: Activity #29 should be at the bottom of the scroll view.
+        // THEN: Activity #29 should be displayed completed and aligned to the bottom of the screen with appropriate spacing.
         const activity29 = [...pageElements.activities()].reverse()[2];
 
         await pageConditions.focusedActivityInView();
@@ -98,8 +99,10 @@
         // THEN: It should scroll activity #29 in the view.
         await pageConditions.focusedActivityInView();
         expect(pageElements.transcriptScrollable().scrollTop).toBe(
-          [...pageElements.activities()].reverse()[2].offsetTop
+          [...pageElements.activities()].reverse()[2].offsetTop - 5 // 5px is the margin
         );
+
+        // THEN: It should show activity #29 completely with top aligned and appropriate spacing.
         await host.snapshot();
       });
     </script>
