@@ -13,7 +13,10 @@
         WebChat.renderWebChat(
           {
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore()
+            store: testHelpers.createStore(),
+            styleOptions: {
+              suggestedActionLayout: 'stacked'
+            }
           },
           document.getElementById('webchat')
         );
