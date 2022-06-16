@@ -5,7 +5,22 @@ import { SidebarTheme } from './SidebarTheme'
 
 export type Theme = {
 	mainColor: string;
-	template: any;
+	template?: {
+		// Dost možná tu nějaký propy chyběj,
+		// tak je neváhej připsat! :)
+		autoExpandTimeout?: number,
+		type?: string,
+		headerText?: string,
+		collapsedHeaderText?: string,
+		introMessage?: {
+			title: string,
+			description: string,
+			timeout: number
+		},
+		iconUrl?: string,
+		customScript?: string,
+		logoUrl?: string,
+	};
 	customCss?: string;
 	showSignature?: boolean,
 	enableScreenshotUpload?: boolean

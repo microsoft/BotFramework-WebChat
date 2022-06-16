@@ -43,6 +43,10 @@ export class IntroMessage extends React.Component<Props, State> {
 		const { isVisible } = this.state
 		const { trigger, dismiss } = this
 		
+		if(!title && !message) {
+			return null
+		}
+		
 		if (!isVisible) {
 			return null
 		}
@@ -51,8 +55,8 @@ export class IntroMessage extends React.Component<Props, State> {
 			<div className="intro-message" onClick={trigger}>
 				<style>{introMessageCss}</style>
 				<div className="intro-message__click-zone" onClick={trigger}>
-					<div className="intro-message__title">{title}</div>
-					<div className="intro-message__message">{message}</div>
+					{title && <div className="intro-message__title">{title}</div>}
+					{message && <div className="intro-message__message">{message}</div>}
 				</div>
 				
 				<div className="intro-message__close-icon" onClick={dismiss}>

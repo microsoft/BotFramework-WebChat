@@ -73,9 +73,8 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 		const { theme, bot } = this.props
 		const { collapsed, initialized } = this.state
 		
-		const signature = theme && theme.signature
-		const showSignature = !!theme && theme.showSignature
-		
+		const { signature, showSignature, template } = theme || {} as typeof theme
+		const { introMessage } = theme.template || {} as typeof template
 		
 		return (
 			<div
@@ -92,11 +91,11 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 					<Signature signature={signature} botId={bot.id} />
 				}
 				
-				{!initialized && (
+				{!initialized && introMessage && (
 					<IntroMessage
-						title="How can I help you?"
-						message="Supportive title for the chatbot intro?"
-						showAfterMs={1}
+						title={introMessage.title}
+						message={introMessage.description}
+						showAfterMs={introMessage.timeout}
 						onTrigger={this.expand}
 					/>
 				)}
