@@ -90,7 +90,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
       typistNames[0]
     );
 
-  // TODO: [P*] We should change the narration to "Message has suggested actions. Press SHIFT + ALT + A to select them."
+  // TODO: [P1] #4315 We should change the narration to "Message has suggested actions. Press SHIFT + ALT + A to select them."
   const liveRegionSuggestedActionsLabelAlt = localize(
     'SUGGESTED_ACTIONS_ALT',
     accessKey

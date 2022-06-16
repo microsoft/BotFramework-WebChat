@@ -66,7 +66,7 @@ const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity, id }) => {
     return activityKey && `webchat__live-region-activity__label-${activityKey}`;
   }, [activity, getKeyByActivity]);
 
-  // TODO: [P0] Investigate: this section seems to be narrated 2 times by some screen readers.
+  // TODO: [P0] #4294 Investigate: this section seems to be narrated 2 times by some screen readers.
   return (
     <article
       aria-atomic={true}

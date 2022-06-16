@@ -26,7 +26,7 @@ const LiveRegionAttachments: VFC<LiveRegionAttachmentsProps> = ({ activity }) =>
 
   const attachmentForScreenReaderRenderers = attachments
     .map(attachment => createAttachmentForScreenReaderRenderer({ activity, attachment }))
-    .filter(render => render);
+    .filter(Boolean);
 
   const numGenericAttachments = attachments.length - attachmentForScreenReaderRenderers.length;
 

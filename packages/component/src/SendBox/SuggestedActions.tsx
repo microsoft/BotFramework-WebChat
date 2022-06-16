@@ -214,7 +214,7 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
 
-  // TODO: [P1] Clean up this one so screen reader will narrate something similar to "suggested actions toolbar".
+  // TODO: [P1] #4315 Clean up this one so screen reader will narrate something similar to "suggested actions toolbar".
   const screenReaderText = localize('SUGGESTED_ACTIONS_ALT', '');
 
   const children = suggestedActions.map((cardAction, index) => {
