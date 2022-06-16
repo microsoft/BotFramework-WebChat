@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 
-export default function useDateFormatter(): (date: number | Date) => string {
+export default function useDateFormatter(): (date: Date | number | string) => string {
   const [globalize] = useLocalizedGlobalize();
 
   const formatDate = useMemo(

@@ -73,26 +73,31 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
         await pageConditions.suggestedActionsShown();
+        await pageConditions.liveRegionStabilized();
+
+        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        expect(screenReaderTexts).toHaveLength(3);
+
+        expect(screenReaderTexts[0]).toBe('You said:\nsuggested-actions');
+        expect(
+          screenReaderTexts[1].startsWith(
+            'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text\nSent at'
+          )
+        ).toBeTruthy();
+        expect(screenReaderTexts[2]).toBe('Suggested Actions Container: Has content');
 
         expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content'
+          'Suggested Actions Container: '
         );
 
         expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
 
-        // Change access key on-the-fly, it should update screen reader text.
+        // Change access key on-the-fly.
 
         await renderWebChat({ suggestedActionsAccessKey: 'Z z' });
-
-        expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content. Press Alt + Shift + Z to select.'
-        );
-
-        expect(
-          [].map.call(document.querySelectorAll('[aria-keyshortcuts]'), element =>
-            element.getAttribute('aria-keyshortcuts')
-          )
-        ).toEqual(new Array(6).fill('Alt + Shift + Z'));
 
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.

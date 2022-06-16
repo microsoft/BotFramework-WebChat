@@ -662,6 +662,15 @@ type StyleOptions = {
    */
   suggestedActionsStackedLayoutButtonTextWrap?: boolean;
 
+  /** Suggested actions: Visual keyboard indicator color for the container. */
+  suggestedActionsVisualKeyboardIndicatorColor?: string;
+
+  /** Suggested actions: Visual keyboard indicator style for the container. */
+  suggestedActionsVisualKeyboardIndicatorStyle?: string;
+
+  /** Suggested actions: Visual keyboard indicator width for the container. */
+  suggestedActionsVisualKeyboardIndicatorWidth?: number;
+
   /**
    * Timestamp
    */

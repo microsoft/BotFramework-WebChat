@@ -22,9 +22,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  Suggested actions is now a [`role="toolbar"`](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) and adopted roving tab index
+   -  <kbd>TAB</kbd> key will now land on the container, instead of individual button
+   -  While the focus is on the container, <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> arrow keys are used to select different buttons (<kbd>UP</kbd>/<kbd>DOWN</kbd> for stacked layout)
+   -  Visual focus indicator is now two tiered. The default styling is same as the one we use in chat history
+      -  New style options added `suggestedActionsVisualKeyboardIndicatorColor`, `suggestedActionsVisualKeyboardIndicatorStyle`, `suggestedActionsVisualKeyboardIndicatorWidth`
+   -  Suggested actions container will be unmounted when there are no suggested action button to display
+   -  Suggested actions container is not longer a live region. The suggested action buttons will now be narrated by the chat history live region
+
 ### Changed
 
 -  Resolves [#4301](https://github.com/microsoft/BotFramework-WebChat/issues/4301). Updated `Dockerfile` to support secure container supply chain, by [@compulim](https://github.com/compulim) in PR [#4303](https://github.com/microsoft/BotFramework-WebChat/pull/4303)
+
+### Fixed
+
+-  Fixes [#4293](https://github.com/microsoft/BotFramework-WebChat/issues/4293) and [#4296](https://github.com/microsoft/BotFramework-WebChat/issues/4296). Fixed accessibility issues for suggested actions, by [@compulim](https://github.com/compulim), in PR [#4314](https://github.com/microsoft/BotFramework-WebChat/pull/4314)
+   -  Centralized live region of suggested actions into chat history live region for better live region control
+   -  Suggested actions container is now a `role="toolbar"` and uses roving tab index for multiple suggested action
 
 ## [4.15.2] - 2022-05-09
 

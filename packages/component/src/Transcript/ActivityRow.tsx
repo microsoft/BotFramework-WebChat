@@ -63,7 +63,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
       })}
-      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
+      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
       onMouseDownCapture={handleMouseDownCapture}
       ref={ref}
     >

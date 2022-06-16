@@ -183,8 +183,12 @@ test('unknown card', async () => {
 
   const browserConsoleErrors = await driver.manage().logs().get(logging.Type.BROWSER);
 
-  expect(browserConsoleErrors[0].level.name_).toEqual('WARNING');
-  expect(browserConsoleErrors[0].message).toContain('No renderer for attachment for screen reader of type');
+  expect(
+    browserConsoleErrors.find(
+      ({ level: { name_ }, message }) =>
+        name_ === 'WARNING' && ~message.indexOf('No renderer for attachment for screen reader of type')
+    )
+  ).toBeTruthy();
 });
 
 test('Inputs card with custom style options and submit action', async () => {

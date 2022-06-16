@@ -9,6 +9,9 @@ export default function createSuggestedActionsStyle({
   suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
   suggestedActionsStackedOverflow,
+  suggestedActionsVisualKeyboardIndicatorColor,
+  suggestedActionsVisualKeyboardIndicatorStyle,
+  suggestedActionsVisualKeyboardIndicatorWidth,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnDisabled,
   transcriptOverlayButtonBackgroundOnFocus,
@@ -20,6 +23,8 @@ export default function createSuggestedActionsStyle({
 }: StrictStyleOptions) {
   return {
     '&.webchat__suggested-actions': {
+      position: 'relative',
+
       '&.webchat__suggested-actions--carousel-layout': {
         '& .webchat__suggested-actions__carousel': {
           paddingBottom: paddingRegular / 2,
@@ -160,6 +165,20 @@ export default function createSuggestedActionsStyle({
       '& .webchat__suggested-actions__item-box': {
         display: 'flex',
         maxWidth: '100%'
+      },
+
+      '&.webchat__suggested-actions--focus-within, &:focus-within': {
+        '& .webchat__suggested-actions__focus-indicator': {
+          borderColor: suggestedActionsVisualKeyboardIndicatorColor,
+          borderStyle: suggestedActionsVisualKeyboardIndicatorStyle,
+          borderWidth: suggestedActionsVisualKeyboardIndicatorWidth,
+          boxSizing: 'border-box',
+          height: '100%',
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: 0,
+          width: '100%'
+        }
       }
     }
   };
