@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  New style options added `suggestedActionsVisualKeyboardIndicatorColor`, `suggestedActionsVisualKeyboardIndicatorStyle`, `suggestedActionsVisualKeyboardIndicatorWidth`
    -  Suggested actions container will be unmounted when there are no suggested action button to display
    -  Suggested actions container is not longer a live region. The suggested action buttons will now be narrated by the chat history live region
+-  Published NPM packages will now only includes `/dist`, `/lib`, and `/src` folders
+   -  Previously, `/dist` was missed from our NPM packages
 
 ### Changed
 
