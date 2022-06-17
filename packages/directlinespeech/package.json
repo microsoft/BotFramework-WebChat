@@ -3,8 +3,10 @@
   "version": "0.0.0-0",
   "description": "Direct Line Speech SDK",
   "files": [
-    "dist/**/*",
-    "lib/**/*"
+    "dist/**/*.js",
+    "dist/**/*.map",
+    "lib/**/*",
+    "src/**/*"
   ],
   "main": "lib/index.js",
   "scripts": {

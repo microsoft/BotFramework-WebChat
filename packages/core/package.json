@@ -15,6 +15,10 @@
   "bugs": {
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
+  "files": [
+    "lib/**/*",
+    "src/**/*"
+  ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
   "scripts": {
     "build": "npm run build:typescript && npm run build:babel",

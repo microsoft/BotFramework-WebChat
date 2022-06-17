@@ -31,10 +31,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  New style options added `suggestedActionsVisualKeyboardIndicatorColor`, `suggestedActionsVisualKeyboardIndicatorStyle`, `suggestedActionsVisualKeyboardIndicatorWidth`
    -  Suggested actions container will be unmounted when there are no suggested action button to display
    -  Suggested actions container is not longer a live region. The suggested action buttons will now be narrated by the chat history live region
+-  Published NPM packages will now include `/dist`, `/lib`, and `/src` folders
+   -  The `/dist` folder was previously missing from our NPM packages
 
 ### Changed
 
 -  Resolves [#4301](https://github.com/microsoft/BotFramework-WebChat/issues/4301). Updated `Dockerfile` to support secure container supply chain, by [@compulim](https://github.com/compulim) in PR [#4303](https://github.com/microsoft/BotFramework-WebChat/pull/4303)
+-  Resolves [#4317](https://github.com/microsoft/BotFramework-WebChat/issues/4317). Updated `package.json` to allowlist `/dist`, `/lib`, `/src`, by [@compulim](https://github.com/compulim) in PR [#4318](https://github.com/microsoft/BotFramework-WebChat/pull/4318)
 
 ### Fixed
 
