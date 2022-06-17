@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Suggested actions container will be unmounted when there are no suggested action button to display
    -  Suggested actions container is not longer a live region. The suggested action buttons will now be narrated by the chat history live region
 -  Published NPM packages will now include `/dist`, `/lib`, and `/src` folders
-   -  Previously, `/dist` was missed from our NPM packages
+   -  The `/dist` folder was previously missing from our NPM packages
 
 ### Changed
 
