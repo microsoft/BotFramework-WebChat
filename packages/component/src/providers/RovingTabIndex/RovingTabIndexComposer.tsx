@@ -70,6 +70,8 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
       switch (key) {
         case 'ArrowDown':
         case 'ArrowRight':
+        case 'Down': // IE11
+        case 'Right': // IE11
           if ((vertical && key === 'ArrowRight') || (!vertical && key === 'ArrowDown')) {
             return;
           }
@@ -91,6 +93,8 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
 
         case 'ArrowLeft':
         case 'ArrowUp':
+        case 'Left': // IE11
+        case 'Up': // IE11
           if ((vertical && key === 'ArrowLeft') || (!vertical && key === 'ArrowUp')) {
             return;
           }
