@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4293](https://github.com/microsoft/BotFramework-WebChat/issues/4293) and [#4296](https://github.com/microsoft/BotFramework-WebChat/issues/4296). Fixed accessibility issues for suggested actions, by [@compulim](https://github.com/compulim), in PR [#4314](https://github.com/microsoft/BotFramework-WebChat/pull/4314)
    -  Centralized live region of suggested actions into chat history live region for better live region control
    -  Suggested actions container is now a `role="toolbar"` and uses roving tab index for multiple suggested action
+-  Fixes [#4319](https://github.com/microsoft/BotFramework-WebChat/issues/4319). Fixed navigation keys not working in suggested actions under IE Mode, by [@compulim](https://github.com/compulim), in PR [#4320](https://github.com/microsoft/BotFramework-WebChat/pull/4320)
 
 ## [4.15.2] - 2022-05-09
 
