@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  Resolves [#4301](https://github.com/microsoft/BotFramework-WebChat/issues/4301). Updated `Dockerfile` to support secure container supply chain, by [@compulim](https://github.com/compulim) in PR [#4303](https://github.com/microsoft/BotFramework-WebChat/pull/4303)
+-  Resolves [#4317](https://github.com/microsoft/BotFramework-WebChat/issues/4317). Updated `package.json` to allowlist `/dist`, `/lib`, `/src`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Fixed
 
