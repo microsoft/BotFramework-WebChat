@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { FC } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import ActivityKeyerContext, { ActivityKeyerContextType } from './private/Context';
 import getActivityId from './private/getActivityId';
@@ -12,9 +11,9 @@ import useActivities from '../../hooks/useActivities';
 import useActivityKeyerContext from './private/useContext';
 
 type ActivityIdToKeyMap = Map<string, string>;
-type ActivityToKeyMap = Map<DirectLineActivity, string>;
+type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
-type KeyToActivityMap = Map<string, DirectLineActivity>;
+type KeyToActivityMap = Map<string, WebChatActivity>;
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -80,13 +79,13 @@ const ActivityKeyerComposer: FC<{}> = ({ children }) => {
     return Object.freeze([Object.freeze(nextActivityKeys)]) as readonly [readonly string[]];
   }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
 
-  const getActivityByKey: (key?: string) => DirectLineActivity | undefined = useCallback(
-    (key?: string): DirectLineActivity | undefined => key && keyToActivityMapRef.current.get(key),
+  const getActivityByKey: (key?: string) => undefined | WebChatActivity = useCallback(
+    (key?: string): undefined | WebChatActivity => key && keyToActivityMapRef.current.get(key),
     [keyToActivityMapRef]
   );
 
-  const getKeyByActivity: (activity?: DirectLineActivity) => string | undefined = useCallback(
-    (activity?: DirectLineActivity) => activity && activityToKeyMapRef.current.get(activity),
+  const getKeyByActivity: (activity?: WebChatActivity) => string | undefined = useCallback(
+    (activity?: WebChatActivity) => activity && activityToKeyMapRef.current.get(activity),
     [activityToKeyMapRef]
   );
 

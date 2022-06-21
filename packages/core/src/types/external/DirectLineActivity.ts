@@ -4,4 +4,4 @@
 // We only know the DirectLineActivity must be a map, and not other primitive types.
 type DirectLineActivity = Exclude<any, [] | boolean | Function | number | string>;
 
-export default DirectLineActivity;
+export type { DirectLineActivity };

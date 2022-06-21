@@ -1,9 +1,9 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { useMemo } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import useStyleOptions from './useStyleOptions';
 
-export default function useGetSendTimeoutForActivity(): ({ activity }: { activity: DirectLineActivity }) => number {
+export default function useGetSendTimeoutForActivity(): ({ activity }: { activity: WebChatActivity }) => number {
   const [{ sendTimeout, sendTimeoutForAttachments }] = useStyleOptions();
 
   return useMemo(
@@ -13,7 +13,7 @@ export default function useGetSendTimeoutForActivity(): ({ activity }: { activit
           return sendTimeout(activity);
         }
 
-        return activity.attachments && activity.attachments.length ? sendTimeoutForAttachments : sendTimeout;
+        return activity.type === 'message' && activity.attachments?.length ? sendTimeoutForAttachments : sendTimeout;
       },
     [sendTimeout, sendTimeoutForAttachments]
   );

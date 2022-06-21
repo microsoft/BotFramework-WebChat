@@ -12,6 +12,7 @@ type LiveRegionTwinContainerProps = {
   'aria-roledescription'?: string;
   className?: string;
   role?: string;
+  textElementClassName?: string;
 };
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
@@ -20,7 +21,8 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
   'aria-live': ariaLive,
   'aria-roledescription': ariaRoleDescription,
   className,
-  role
+  role,
+  textElementClassName
 }) => {
   const [staticElementEntries] = useStaticElementEntries();
 
@@ -37,9 +39,21 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
       className={className}
       role={role}
     >
-      {staticElementEntries.map(({ element, key }) =>
-        typeof element === 'string' ? <div key={key}>{element}</div> : <Fragment key={key}>{element}</Fragment>
-      )}
+      {staticElementEntries.map(({ element, key }) => {
+        if (typeof element === 'string') {
+          const id = `webchat__live-region-twin__text-element-${key}`;
+
+          return (
+            <div aria-atomic={true} aria-labelledby={id} className={textElementClassName} key={key}>
+              {/* "aria-labelledby" requires the use of "id" attribute. */}
+              {/* eslint-disable-next-line react/forbid-dom-props */}
+              <p id={id}>{element}</p>
+            </div>
+          );
+        }
+
+        return <Fragment key={key}>{element}</Fragment>;
+      })}
     </div>
   );
 };
@@ -48,7 +62,8 @@ LiveRegionTwinContainer.defaultProps = {
   'aria-label': undefined,
   'aria-roledescription': undefined,
   className: undefined,
-  role: undefined
+  role: undefined,
+  textElementClassName: undefined
 };
 
 LiveRegionTwinContainer.propTypes = {
@@ -58,7 +73,8 @@ LiveRegionTwinContainer.propTypes = {
   'aria-live': PropTypes.oneOf(['assertive', 'polite']).isRequired,
   'aria-roledescription': PropTypes.string,
   className: PropTypes.string,
-  role: PropTypes.string
+  role: PropTypes.string,
+  textElementClassName: PropTypes.string
 };
 
 export default LiveRegionTwinContainer;

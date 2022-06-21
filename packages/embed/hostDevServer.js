@@ -6,7 +6,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const { join } = require('path');
 const fetch = require('node-fetch');
 
-const { PORT = 5000 } = process.env;
+const { PORT = 5002 } = process.env;
 const server = createServer();
 
 server.use(queryParser());

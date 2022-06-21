@@ -125,4 +125,4 @@ type DirectLineCardAction =
   | ShowImageCardAction
   | SignInCardAction;
 
-export default DirectLineCardAction;
+export type { DirectLineCardAction };

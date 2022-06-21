@@ -45,6 +45,11 @@ services:
     ports:
       - '5081:80'
     stop_grace_period: 0s
+    volumes:
+      - ./__tests__/html/:/var/web/__tests__/html/
+      - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
+      - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
+      - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/
 
   jest-server:
     build:

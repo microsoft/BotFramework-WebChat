@@ -1,4 +1,8 @@
-FROM node:alpine
+# Setting to a different base image to secure your container supply chain.
+ARG REGISTRY=docker.io
+ARG BASE_IMAGE=$REGISTRY/node:18-alpine
+
+FROM $BASE_IMAGE
 
 RUN apk update && \
     apk upgrade && \
@@ -11,8 +15,4 @@ WORKDIR /var/web/
 ENTRYPOINT ["npx", "--no-install", "serve", "-c", "serve-test.json", "-p", "80", "/var/web/"]
 
 ADD serve-test.json /var/web/
-ADD __tests__/html/ /var/web/__tests__/html/
-ADD packages/bundle/dist/webchat-es5.js /var/web/packages/bundle/dist/
-ADD packages/test/harness/dist/ /var/web/packages/test/harness/dist/
-ADD packages/test/page-object/dist/ /var/web/packages/test/page-object/dist/
 RUN echo {}>/var/web/package.json

@@ -1,8 +1,8 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './RelativeTime';
@@ -11,7 +11,7 @@ import useStyleSet from '../../hooks/useStyleSet';
 const { useStyleOptions } = hooks;
 
 type TimestampProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   className?: string;
 };
 
@@ -40,8 +40,10 @@ Timestamp.defaultProps = {
 };
 
 Timestamp.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
-    timestamp: PropTypes.string.isRequired
+    timestamp: PropTypes.string
   }).isRequired,
   className: PropTypes.string
 };

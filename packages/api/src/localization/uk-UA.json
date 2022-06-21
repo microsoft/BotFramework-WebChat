@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Інші повідомлення",
   "TRANSCRIPT_NEW_MESSAGES": "Нові повідомлення",
   "TRANSCRIPT_TERMINATOR_TEXT": "Кінець історії чату",
-  "TYPING_INDICATOR_ALT": "Показує індикатор набору"
+  "TYPING_INDICATOR_ALT": "Показує індикатор набору",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 вводить повідомлення.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 та інші вводять повідомлення."
 }

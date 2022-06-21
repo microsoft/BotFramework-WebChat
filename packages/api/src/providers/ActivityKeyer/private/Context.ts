@@ -1,11 +1,10 @@
 import { createContext } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityKeyerContextType = {
   activityKeysState: readonly [readonly string[]];
-  getActivityByKey: (key?: string) => DirectLineActivity | undefined;
-  getKeyByActivity: (activity?: DirectLineActivity) => string | undefined;
+  getActivityByKey: (key?: string) => undefined | WebChatActivity;
+  getKeyByActivity: (activity?: WebChatActivity) => string | undefined;
   getKeyByActivityId: (activityKey?: string) => string | undefined;
 };
 

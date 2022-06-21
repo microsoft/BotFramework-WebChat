@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Več sporočil",
   "TRANSCRIPT_NEW_MESSAGES": "Nova sporočila",
   "TRANSCRIPT_TERMINATOR_TEXT": "Konec zgodovine klepeta",
-  "TYPING_INDICATOR_ALT": "Prikaz indikatorja tipkanja"
+  "TYPING_INDICATOR_ALT": "Prikaz indikatorja tipkanja",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 tipka.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 in drugi tipkajo."
 }

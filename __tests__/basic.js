@@ -136,6 +136,7 @@ test('thumbnail card with a long title and richCardWrapTitle set to default valu
 test('absolute timestamp', async () => {
   const activities = [
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000000',
       timestamp: '2019-08-08T16:41:12.9397263Z',
@@ -148,6 +149,7 @@ test('absolute timestamp', async () => {
       text: 'echo "Hello, World!"'
     },
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000001',
       timestamp: '2019-08-08T16:41:13.1835518Z',
@@ -159,6 +161,7 @@ test('absolute timestamp', async () => {
       text: 'Echoing back in a separate activity.'
     },
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000002',
       timestamp: '2019-08-08T16:41:13.3963019Z',

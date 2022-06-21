@@ -10,15 +10,17 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
 
   const [{ typingAnimationDuration }] = useStyleOptions();
   const forceRender = useForceRender();
-  const typing: { [userId: string]: { at: number; name: string; role: string } } = useSelector(({ typing }) => typing);
+  const typing: { [userId: string]: { at: number; last: number; name: string; role: string } } = useSelector(
+    ({ typing }) => typing
+  );
 
   if (typeof expireAfter !== 'number') {
     expireAfter = typingAnimationDuration;
   }
 
   const activeTyping: { [userId: string]: Typing } = Object.entries(typing).reduce(
-    (activeTyping, [id, { at, name, role }]) => {
-      const until = at + expireAfter;
+    (activeTyping, [id, { at, last, name, role }]) => {
+      const until = last + expireAfter;
 
       if (until > now) {
         return { ...activeTyping, [id]: { at, expireAt: until, name, role } };

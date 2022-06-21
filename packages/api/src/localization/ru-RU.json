@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Другие сообщения",
   "TRANSCRIPT_NEW_MESSAGES": "Новые сообщения",
   "TRANSCRIPT_TERMINATOR_TEXT": "Конец истории чата",
-  "TYPING_INDICATOR_ALT": "Отображение индикатора ввода"
+  "TYPING_INDICATOR_ALT": "Отображение индикатора ввода",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 вводит текст.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и другие вводят текст."
 }

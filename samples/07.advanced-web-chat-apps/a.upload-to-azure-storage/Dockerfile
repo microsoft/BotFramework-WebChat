@@ -1,7 +1,11 @@
+# Setting to a different base image to secure your container supply chain.
+ARG REGISTRY=docker.io
+ARG BASE_IMAGE=$REGISTRY/node:18
+
 # This container is for simplifying CI when using Azure Pipelines
 
 # Aggregates all code into a single Docker image for export
-FROM node:12
+FROM $BASE_IMAGE
 
 # Copy the bot code to /var/bot/
 ADD bot/ /var/build/bot/

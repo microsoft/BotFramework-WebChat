@@ -1,9 +1,9 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { DirectLineAudioCard } from 'botframework-webchat-core';
 import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
+import type { DirectLineAudioCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
 
@@ -41,6 +41,8 @@ AudioCardContent.defaultProps = {
 
 AudioCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     autostart: PropTypes.bool,
     autoloop: PropTypes.bool,

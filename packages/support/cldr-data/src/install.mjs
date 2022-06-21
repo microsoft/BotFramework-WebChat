@@ -14,7 +14,7 @@ let coverage, parentPackage, peerPackages, srcUrl;
 import { fileURLToPath } from 'url';
 import { promisify } from 'util';
 import { readPackage } from 'read-pkg';
-import { readPackageUpAsync } from 'read-pkg-up';
+import { readPackageUp } from 'read-pkg-up';
 import child_process from 'child_process';
 // False alarm.
 // eslint-disable-next-line node/no-missing-import
@@ -51,7 +51,7 @@ let isNpm3;
   const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
   try {
-    parentPackage = (await readPackageUpAsync({ cwd: path.join(__dirname, '../../..') })).packageJson;
+    parentPackage = (await readPackageUp({ cwd: path.join(__dirname, '../../..') })).packageJson;
   } catch (error) {
     // Ignore error
   }
@@ -90,7 +90,7 @@ let isNpm3;
 
   if (process.env.CLDR_URL) {
     console.warn('CLDR_URL is deprecated, use CLDR_DATA_URLS_JSON instead.');
-    srcUrl = srcUrl.replace('http://www.unicode.org/Public/cldr', process.env.CLDR_URL.replace(/\/$/u, ''));
+    srcUrl = srcUrl.replace('https://www.unicode.org/Public/cldr', process.env.CLDR_URL.replace(/\/$/u, ''));
   } else {
     if (process.env.CLDR_DATA_URLS_JSON) {
       srcUrl = process.env.CLDR_DATA_URLS_JSON;

@@ -180,7 +180,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   suggestedActionKeyboardFocusIndicatorBorderColor: '#605E5C',
   suggestedActionKeyboardFocusIndicatorBorderRadius: 0,
-  suggestedActionKeyboardFocusIndicatorBorderStyle: 'solid',
+  suggestedActionKeyboardFocusIndicatorBorderStyle: 'dashed',
   suggestedActionKeyboardFocusIndicatorBorderWidth: 1,
   suggestedActionKeyboardFocusIndicatorInset: 2,
 
@@ -207,6 +207,10 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   suggestedActionsStackedOverflow: undefined,
   suggestedActionsStackedLayoutButtonMaxHeight: undefined,
   suggestedActionsStackedLayoutButtonTextWrap: false,
+
+  suggestedActionsVisualKeyboardIndicatorColor: 'Black',
+  suggestedActionsVisualKeyboardIndicatorStyle: 'solid',
+  suggestedActionsVisualKeyboardIndicatorWidth: 2,
 
   // Timestamp
   groupTimestamp: true,

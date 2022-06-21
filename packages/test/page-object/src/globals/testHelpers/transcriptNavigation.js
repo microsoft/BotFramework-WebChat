@@ -100,7 +100,7 @@ function createInputCardActivity(index = 0) {
     from: { role: 'bot' },
     id: index + '',
     text: `This is an input card`,
-    timestamp: 0,
+    timestamp: index,
     type: 'message'
   };
 }
@@ -153,7 +153,6 @@ function generateTranscript() {
         ? {
             channelData: {
               clientActivityID: index + '',
-              clientTimestamp: 0,
               state: 'sent'
             }
           }
@@ -161,7 +160,7 @@ function generateTranscript() {
       from: { role: fromUser ? 'user' : 'bot' },
       id: index + '',
       text: `#${index}: ${text}`,
-      timestamp: 0,
+      timestamp: index,
       type: 'message'
     };
   });

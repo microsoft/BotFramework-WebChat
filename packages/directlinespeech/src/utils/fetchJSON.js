@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 // Helper function for fetching network resource as JSON
 export default async function fetchJSON(url, options) {
   const res = await fetch(url, {

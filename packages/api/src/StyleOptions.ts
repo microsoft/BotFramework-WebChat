@@ -1,4 +1,4 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type StyleOptions = {
   /**
@@ -662,6 +662,15 @@ type StyleOptions = {
    */
   suggestedActionsStackedLayoutButtonTextWrap?: boolean;
 
+  /** Suggested actions: Visual keyboard indicator color for the container. */
+  suggestedActionsVisualKeyboardIndicatorColor?: string;
+
+  /** Suggested actions: Visual keyboard indicator style for the container. */
+  suggestedActionsVisualKeyboardIndicatorStyle?: string;
+
+  /** Suggested actions: Visual keyboard indicator width for the container. */
+  suggestedActionsVisualKeyboardIndicatorWidth?: number;
+
   /**
    * Timestamp
    */
@@ -675,7 +684,7 @@ type StyleOptions = {
    */
   groupTimestamp?: boolean | number;
 
-  sendTimeout?: number | ((activity: DirectLineActivity) => number);
+  sendTimeout?: number | ((activity: WebChatActivity) => number);
   sendTimeoutForAttachments?: number;
 
   /**

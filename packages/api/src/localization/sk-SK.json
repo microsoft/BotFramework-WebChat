@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Ďalšie správy",
   "TRANSCRIPT_NEW_MESSAGES": "Nové správy",
   "TRANSCRIPT_TERMINATOR_TEXT": "Koniec histórie konverzácie",
-  "TYPING_INDICATOR_ALT": "Zobrazuje sa indikátor písania"
+  "TYPING_INDICATOR_ALT": "Zobrazuje sa indikátor písania",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 píše.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 a ďalší píšu."
 }

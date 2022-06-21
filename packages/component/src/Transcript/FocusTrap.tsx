@@ -16,6 +16,11 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
   const bodyRef = useRef<HTMLDivElement>();
   const onLeaveRef = useValueRef<() => void>(onLeave);
 
+  const getTabbableElementsInBody = useCallback(
+    () => tabbableElements(bodyRef.current).filter(element => element.getAttribute('aria-disabled') !== 'true'),
+    [bodyRef]
+  );
+
   const handleBodyKeyDown: KeyboardEventHandler = useCallback(
     event => {
       if (event.key === 'Escape') {
@@ -29,15 +34,18 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
   );
 
   const handleFirstSentinelFocus: () => void = useCallback(() => {
-    const focusables = tabbableElements(bodyRef.current);
+    const focusables = getTabbableElementsInBody();
 
-    focusables[focusables.length - 1]?.focus();
-  }, [bodyRef]);
+    const lastTabbableElement = focusables[focusables.length - 1];
 
-  const handleLastSentinelFocus: () => void = useCallback(
-    () => tabbableElements(bodyRef.current)[0]?.focus(),
-    [bodyRef]
-  );
+    lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
+  }, [getTabbableElementsInBody, onLeaveRef]);
+
+  const handleLastSentinelFocus: () => void = useCallback(() => {
+    const [firstTabbableElement] = getTabbableElementsInBody();
+
+    firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+  }, [getTabbableElementsInBody, onLeaveRef]);
 
   return (
     <Fragment>

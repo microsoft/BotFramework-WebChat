@@ -12,9 +12,9 @@ type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;
  * @param {(fn: Fn<TArgs, TIntermediate>) => TFinal} callback - When called, this function should execute the memoizing function.
  * @param {DependencyList[]} deps - Dependencies to detect for chagnes.
  */
-export default function useMemoize<TArgs extends [], TIntermediate, TFinal>(
-  fn: Fn<TArgs, TIntermediate>,
-  callback: (fn: Fn<TArgs, TIntermediate>) => TFinal,
+export default function useMemoize<TIntermediate, TFinal>(
+  fn: Fn<unknown, TIntermediate>,
+  callback: (fn: Fn<unknown, TIntermediate>) => TFinal,
   deps: DependencyList[]
 ): TFinal {
   if (typeof fn !== 'function') {
@@ -26,10 +26,10 @@ export default function useMemoize<TArgs extends [], TIntermediate, TFinal>(
   }
 
   const memoizedFn = useMemo(() => {
-    let cache: Cache<TArgs, TIntermediate>[] = [];
+    let cache: Cache<unknown, TIntermediate>[] = [];
 
-    return (run: (fn: Fn<TArgs, TIntermediate>) => TFinal) => {
-      const nextCache: Cache<TArgs, TIntermediate>[] = [];
+    return (run: (fn: Fn<unknown, TIntermediate>) => TFinal) => {
+      const nextCache: Cache<unknown, TIntermediate>[] = [];
       const result = run((...args) => {
         const { result } = [...cache, ...nextCache].find(
           ({ args: cachedArgs }) =>

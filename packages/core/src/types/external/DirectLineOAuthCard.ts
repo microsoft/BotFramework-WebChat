@@ -1,5 +1,9 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineCardAction } from './DirectLineCardAction';
 
-type DirectLineOAuthCard = any;
+type DirectLineOAuthCard = {
+  buttons?: DirectLineCardAction[];
+  contentType: 'application/vnd.microsoft.card.oauth';
+  text?: string;
+};
 
-export default DirectLineOAuthCard;
+export type { DirectLineOAuthCard };

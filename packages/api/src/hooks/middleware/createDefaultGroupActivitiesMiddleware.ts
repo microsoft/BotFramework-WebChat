@@ -1,9 +1,10 @@
-import { Constants, DirectLineActivity } from 'botframework-webchat-core';
+import { Constants } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 const {
-  ActivityClientState: { SENT }
+  ActivityClientState: { SENDING, SEND_FAILED, SENT }
 } = Constants;
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
@@ -25,13 +26,24 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
-function sending(activity: DirectLineActivity): boolean {
-  return activity.from.role === 'user' && activity.channelData && activity.channelData.state !== SENT;
+function sending(activity) {
+  if (activity.from.role === 'user') {
+    const state = activity.channelData?.state;
+
+    switch (state) {
+      case SENDING:
+      case SEND_FAILED:
+        return state;
+
+      default:
+        return SENT;
+    }
+  }
 }
 
 function shouldGroupTimestamp(
-  activityX: DirectLineActivity,
-  activityY: DirectLineActivity,
+  activityX: WebChatActivity,
+  activityY: WebChatActivity,
   groupTimestamp: boolean | number
 ): boolean {
   if (groupTimestamp === false) {

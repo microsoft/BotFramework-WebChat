@@ -3,18 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/",
+  "skipBump": [],
   "dependencies": {
-    "botframework-webchat": "^4.14.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "botframework-webchat": "^4.15.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "react-scripts start"
   },
   "browserslist": [
     ">0.2%",

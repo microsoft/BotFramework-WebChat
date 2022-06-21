@@ -1,7 +1,7 @@
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createAdapters } from 'botframework-directlinespeech-sdk';
-import { DirectLineJSBotConnection } from 'botframework-webchat-core';
 import { WebSpeechPonyfill } from 'botframework-webchat-api';
+import type { DirectLineJSBotConnection } from 'botframework-webchat-core';
 
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';

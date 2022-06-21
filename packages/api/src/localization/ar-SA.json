@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "المزيد من الرسائل",
   "TRANSCRIPT_NEW_MESSAGES": "رسائل جديدة",
   "TRANSCRIPT_TERMINATOR_TEXT": "نهاية محفوظات الدردشة",
-  "TYPING_INDICATOR_ALT": "إظهار مؤشر الكتابة"
+  "TYPING_INDICATOR_ALT": "إظهار مؤشر الكتابة",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 يكتب الآن.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 وغيره يكتبون الآن."
 }

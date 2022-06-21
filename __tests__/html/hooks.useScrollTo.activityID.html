@@ -55,15 +55,17 @@
           const fromUser = index % 2;
 
           return {
-            ...(fromUser
-              ? {
-                  channelData: {
-                    clientActivityID: index + '',
-                    clientTimestamp: 0,
-                    state: 'sent'
+            channelData: {
+              'webchat:sequence-id': index,
+              ...(fromUser
+                ? {
+                    channelData: {
+                      clientActivityID: index + '',
+                      state: 'sent'
+                    }
                   }
-                }
-              : {}),
+                : {})
+            },
             from: { role: fromUser ? 'user' : 'bot' },
             id: index + '',
             text: `#${index}: ${text}`,

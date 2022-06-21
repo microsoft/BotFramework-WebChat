@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Mais mensagens",
   "TRANSCRIPT_NEW_MESSAGES": "Novas mensagens",
   "TRANSCRIPT_TERMINATOR_TEXT": "Fim do histórico de chat",
-  "TYPING_INDICATOR_ALT": "A mostrar o indicador de escrita"
+  "TYPING_INDICATOR_ALT": "A mostrar o indicador de escrita",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 está a escrever.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 e outros utilizadores estão a escrever."
 }

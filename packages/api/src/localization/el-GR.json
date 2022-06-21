@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Περισσότερα μηνύματα",
   "TRANSCRIPT_NEW_MESSAGES": "Νέα μηνύματα",
   "TRANSCRIPT_TERMINATOR_TEXT": "Λήξη ιστορικού συνομιλίας",
-  "TYPING_INDICATOR_ALT": "Εμφάνιση δείκτη πληκτρολόγησης"
+  "TYPING_INDICATOR_ALT": "Εμφάνιση δείκτη πληκτρολόγησης",
+  "TYPING_INDICATOR_SINGLE_TEXT": "Ο/Η $1 πληκτρολογεί.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "Ο/Η $1 και άλλοι πληκτρολογούν."
 }

@@ -1,5 +1,6 @@
 import activeActivity from './activeActivity';
 import activities from './activities';
+import activityContents from './activityContents';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import microphoneButton from './microphoneButton';
@@ -18,6 +19,7 @@ import transcriptTerminator from './transcriptTerminator';
 export {
   activeActivity,
   activities,
+  activityContents,
   connectivityStatus,
   focusedActivity,
   microphoneButton,

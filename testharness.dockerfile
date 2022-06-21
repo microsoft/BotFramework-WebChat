@@ -1,4 +1,8 @@
-FROM node:alpine
+# Setting to a different base image to secure your container supply chain.
+ARG REGISTRY=docker.io
+ARG BASE_IMAGE=$REGISTRY/node:18-alpine
+
+FROM $BASE_IMAGE
 
 RUN apk update && \
     apk upgrade && \

@@ -48,6 +48,8 @@
 
           const directLine = await testHelpers.createDirectLineWithTranscript([
             {
+              // Setting sequence ID to simplify the order of these test cases.
+              channelData: { 'webchat:sequence-id': 0 },
               from: { role: 'bot' },
               id: '1.0',
               text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
@@ -55,21 +57,23 @@
               type: 'message'
             },
             {
-              channelData: { clientTimestamp: -60001, state: 'sending' },
+              channelData: { state: 'sending', 'webchat:sequence-id': 1 },
               from: { role: 'user' },
               id: '2.0',
+              localTimestamp: -60001,
               text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
               type: 'message'
             },
             {
-              channelData: { clientTimestamp: 0, state: 'sending' },
+              channelData: { state: 'sending', 'webchat:sequence-id': 2 },
               from: { role: 'user' },
               id: '3.0',
+              localTimestamp: 0,
               text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
               type: 'message'
             },
             {
-              channelData: { state: 'sent' },
+              channelData: { state: 'sent', 'webchat:sequence-id': 3 },
               from: { role: 'user' },
               id: '4.0',
               text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',

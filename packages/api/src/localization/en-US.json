@@ -18,7 +18,7 @@
   "ACTIVITY_YOU_ATTACHED_ALT": "You attached:",
   "_ACTIVITY_YOU_ATTACHED_ALT.comment": "This is for screen reader and is narrated before each attachments sent by the user.",
   "ACTIVITY_NUM_ATTACHMENTS_ONE_ALT": "1 attachment.",
-  "_ACTIVITY_NUM_ATTACHMENTS_OONE_ALT.comment": "This is for screen reader and only narrated when the message arrive. The narration when the message arrive, could be \"Bot WC said: Hello, World! 1 attachment. Sent at 2020-01-02 12:34 PM.\". This is for plural rule of \"one\".",
+  "_ACTIVITY_NUM_ATTACHMENTS_ONE_ALT.comment": "This is for screen reader and only narrated when the message arrive. The narration when the message arrive, could be \"Bot WC said: Hello, World! 1 attachment. Sent at 2020-01-02 12:34 PM.\". This is for plural rule of \"one\".",
   "ACTIVITY_NUM_ATTACHMENTS_FEW_ALT": "$1 attachments.",
   "_ACTIVITY_NUM_ATTACHMENTS_FEW_ALT.comment": "$1 is the number of attachments. This is for plural rule of \"few\".",
   "ACTIVITY_NUM_ATTACHMENTS_MANY_ALT": "$1 attachments.",
@@ -97,7 +97,6 @@
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Has content",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Has content. Press $1 to select.",
   "_SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY.comment": "$1 will be \"ACCESS_KEY_ALT\".",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Is empty",
   "SUGGESTED_ACTIONS_ALT": "Suggested Actions Container: $1",
   "_SUGGESTED_ACTIONS_ALT.comment": "This is for screen reader. $1 will be one of \"SUGGESTED_ACTIONS_ALT_*\".",
   "TEXT_INPUT_ALT": "Message input box",
@@ -137,5 +136,8 @@
   "TRANSCRIPT_NEW_MESSAGES": "New messages",
   "TRANSCRIPT_TERMINATOR_TEXT": "End of chat history",
   "TYPING_INDICATOR_ALT": "Showing typing indicator",
-  "_TYPING_INDICATOR_ALT.comment": "This is for screen reader for the label that will be narrated when the other party is typing a message."
+  "_TYPING_INDICATOR_SINGLE_TEXT.comment": "This shows when a single user is typing.",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 is typing.",
+  "_TYPING_INDICATOR_MULTIPLE_TEXT.comment": "This shows when two or more users are typing simultaneously.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 and others are typing."
 }

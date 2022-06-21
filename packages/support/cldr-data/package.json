@@ -38,15 +38,19 @@
     "urls.json"
   ],
   "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "install": "node ./src/install.mjs",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
+    "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
+  "skipBump": [],
   "dependencies": {
     "cldr-data-downloader": "0.3.5-0",
-    "glob": "^7.1.7",
-    "read-pkg": "7.0.0",
-    "read-pkg-up": "8.0.0"
+    "glob": "^7.2.0",
+    "read-pkg": "^7.1.0",
+    "read-pkg-up": "^9.1.0"
   }
 }

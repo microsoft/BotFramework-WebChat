@@ -8,24 +8,31 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "skipBump": [
+    "adaptivecards",
+    "rxjs"
+  ],
   "dependencies": {
-    "@emotion/react": "11.4.0",
-    "@fluentui/react": "8.22.3",
+    "@emotion/react": "11.8.1",
+    "@fluentui/react": "8.57.0",
     "adaptivecards": "^2.10.0",
     "botframework-directlinejs": "0.15.1",
     "botframework-webchat": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.1",
-    "memoize-one": "5.2.1",
+    "memoize-one": "6.0.0",
     "on-error-resume-next": "1.1.0",
     "rxjs": "5"
   },
   "devDependencies": {
-    "prettier": "^2.4.1",
+    "prettier": "^2.5.1",
     "react-scripts": "^5.0.0"
   },
   "scripts": {
     "build": "react-scripts build",
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom"

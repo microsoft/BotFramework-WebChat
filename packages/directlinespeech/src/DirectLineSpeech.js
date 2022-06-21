@@ -90,7 +90,7 @@ export default class DirectLineSpeech {
     try {
       // TODO: [P1] Direct Line Speech server currently do not ack the outgoing activities with any activity ID or timestamp.
       const pseudoActivityId = randomActivityId();
-      const isSpeech = !!(activity.channelData && activity.channelData.speech);
+      const isSpeech = !!activity.channelData?.speech;
 
       // Do not send the activity if it was from speech.
       if (!isSpeech) {

@@ -1,21 +1,21 @@
-import { DirectLineActivity } from 'botframework-webchat-core';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
 type GroupActivities = CallFunction<
-  [{ activities: DirectLineActivity[] }],
+  [{ activities: WebChatActivity[] }],
   {
-    sender: DirectLineActivity[][];
-    status: DirectLineActivity[][];
+    sender: WebChatActivity[][];
+    status: WebChatActivity[][];
   }
 >;
 
 type GroupActivitiesMiddleware = FunctionMiddleware<
   [],
-  [{ activities: DirectLineActivity[] }],
+  [{ activities: WebChatActivity[] }],
   {
-    sender: DirectLineActivity[][];
-    status: DirectLineActivity[][];
+    sender: WebChatActivity[][];
+    status: WebChatActivity[][];
   }
 >;
 

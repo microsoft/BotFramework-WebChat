@@ -5,8 +5,11 @@ export default function getUserMedia(constraints: MediaStreamConstraints): Promi
     return navigator.mediaDevices.getUserMedia(constraints);
   }
 
-  // Although getUserMedia has vendor prefix, they are only used in very old version of browsers.
+  // We are intentionally using the deprecated `navigator.getUserMedia` to make sure backward compatibility.
+  // @ts-ignore
   if (typeof navigator.getUserMedia !== 'undefined') {
+    // We are intentionally using the deprecated `navigator.getUserMedia` to make sure backward compatibility.
+    // @ts-ignore
     return new Promise((resolve, reject) => navigator.getUserMedia(constraints, resolve, reject));
   }
 

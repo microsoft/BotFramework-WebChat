@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "הודעות נוספות",
   "TRANSCRIPT_NEW_MESSAGES": "הודעות חדשות",
   "TRANSCRIPT_TERMINATOR_TEXT": "סוף היסטוריית הצ'אט",
-  "TYPING_INDICATOR_ALT": "מחוון שמציג הקלדה"
+  "TYPING_INDICATOR_ALT": "מחוון שמציג הקלדה",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 מקליד/ה.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ואחרים מקלידים/ות."
 }

@@ -2,9 +2,8 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useRef } from 'react';
-
-import type { DirectLineActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -18,9 +17,7 @@ import useValueRef from '../hooks/internal/useValueRef';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{
-  activity: DirectLineActivity;
-}>;
+type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
@@ -66,7 +63,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
       })}
-      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <ScreenReaderActivity>).
+      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
       onMouseDownCapture={handleMouseDownCapture}
       ref={ref}
     >
@@ -112,6 +109,8 @@ ActivityRow.defaultProps = {
 };
 
 ActivityRow.propTypes = {
+  // PropTypes cannot fully capture TypeScript type.
+  // @ts-ignore
   activity: PropTypes.shape({
     channelData: PropTypes.shape({
       speak: PropTypes.bool,

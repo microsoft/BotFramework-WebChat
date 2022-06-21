@@ -2,18 +2,14 @@ import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
-
 import {
   clearSuggestedActions,
   connect as createConnectAction,
   createStore,
-  DirectLineActivity,
-  DirectLineJSBotConnection,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
   markActivity,
-  OneOrMany,
   postActivity,
   sendEvent,
   sendFiles,
@@ -34,6 +30,7 @@ import {
   stopSpeakingActivity,
   submitSendBox
 } from 'botframework-webchat-core';
+import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
@@ -199,7 +196,7 @@ type ComposerCoreProps = {
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
   scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
-  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: DirectLineActivity) => void;
+  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
@@ -666,6 +663,8 @@ ComposerCore.propTypes = {
   cardActionMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   children: PropTypes.any,
   dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
+  // PropTypes.shape({ ... }) did not honor isRequired for its members.
+  // @ts-ignore
   directLine: PropTypes.shape({
     activity$: PropTypes.shape({
       subscribe: PropTypes.func.isRequired

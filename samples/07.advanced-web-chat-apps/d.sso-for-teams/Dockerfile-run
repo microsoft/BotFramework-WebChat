@@ -1,5 +1,9 @@
+# Setting to a different base image to secure your container supply chain.
+ARG REGISTRY=docker.io
+ARG BASE_IMAGE=$REGISTRY/node:18
+
 # This is the container for running the demo under Azure Web App
-FROM node:12
+FROM $BASE_IMAGE
 
 # Expose both port 80 and 2222 (SSH for Azure Web App)
 EXPOSE 80 2222

@@ -14,7 +14,7 @@ export default connectToWebChat(({ activities }) => ({
     !!activity && (
       <React.Fragment>
         <p>{activity.text}</p>
-        {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+        {activity.channelData?.speak && <SpeakActivity activity={activity} />}
       </React.Fragment>
     )
 );

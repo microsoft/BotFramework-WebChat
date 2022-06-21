@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Flere meldinger",
   "TRANSCRIPT_NEW_MESSAGES": "Nye meldinger",
   "TRANSCRIPT_TERMINATOR_TEXT": "Slutten på chatteloggen",
-  "TYPING_INDICATOR_ALT": "Viser skriveindikatoren"
+  "TYPING_INDICATOR_ALT": "Viser skriveindikatoren",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 skriver.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 og andre skriver."
 }

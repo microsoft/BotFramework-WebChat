@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "ข้อความเพิ่มเติม",
   "TRANSCRIPT_NEW_MESSAGES": "ข้อความใหม่",
   "TRANSCRIPT_TERMINATOR_TEXT": "สิ้นสุดประวัติการแชท",
-  "TYPING_INDICATOR_ALT": "แสดงตัวแสดงการพิมพ์"
+  "TYPING_INDICATOR_ALT": "แสดงตัวแสดงการพิมพ์",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 กำลังพิมพ์",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 และคนอื่นๆ กำลังพิมพ์"
 }

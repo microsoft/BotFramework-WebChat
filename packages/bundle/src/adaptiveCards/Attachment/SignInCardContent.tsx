@@ -1,7 +1,7 @@
-import { DirectLineSignInCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
+import type { DirectLineSignInCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
 

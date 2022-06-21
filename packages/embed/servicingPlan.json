@@ -381,6 +381,46 @@
           "sha384-R4Eevwf75H8RQkTqCaFNpvO0V9nq+heLX30jLGKNrAICynjuHUbMo7D2usohGsRu"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-03-03.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.15": {
+      "redirects": [
+        [
+          "*",
+          "4.15.1"
+        ]
+      ]
+    },
+    "4.15.0": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.0/webchat-es5.js",
+          "sha384-TtowdQBmshxMHrPmS4fj8c7Y1++TrzO2Z7TvQ1lF9EskDY6cchxo8RO9/JT21JTL"
+        ]
+      ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-03-04.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.15.1": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.1/webchat-es5.js",
+          "sha384-9o6xJEK8DboSm23+cyRi/6ROyiQFbCXgSN+GkpMXVtIC0QeYRPA9lD8MlXPikyub"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.15.2": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.2/webchat-es5.js",
+          "sha384-lUORlicC7NzeZQx9OQ8/uCjmblHgyo9cOV4Q4UlnTct4AXwWzNiS5+4w3rCcO/h5"
+        ]
+      ],
       "private": true,
       "versionFamily": "4"
     },

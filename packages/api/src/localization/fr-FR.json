@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Plus de messages",
   "TRANSCRIPT_NEW_MESSAGES": "Nouveaux messages",
   "TRANSCRIPT_TERMINATOR_TEXT": "Fin de l’historique des conversations instantanées",
-  "TYPING_INDICATOR_ALT": "Affichage de l'indicateur de saisie"
+  "TYPING_INDICATOR_ALT": "Affichage de l'indicateur de saisie",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 effectue une saisie.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 et d’autres effectuent une saisie."
 }

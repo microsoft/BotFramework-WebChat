@@ -1,9 +1,9 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
 
-import { DirectLineThumbnailCard } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC, useMemo } from 'react';
+import type { DirectLineThumbnailCard } from 'botframework-webchat-core';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -68,6 +68,8 @@ ThumbnailCardContent.defaultProps = {
 
 ThumbnailCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   content: PropTypes.shape({
     buttons: PropTypes.array,
     images: PropTypes.arrayOf(

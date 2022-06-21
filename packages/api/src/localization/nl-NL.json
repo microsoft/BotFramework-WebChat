@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Meer berichten",
   "TRANSCRIPT_NEW_MESSAGES": "Nieuwe berichten",
   "TRANSCRIPT_TERMINATOR_TEXT": "Einde chatgeschiedenis",
-  "TYPING_INDICATOR_ALT": "Indicator voor typen weergeven"
+  "TYPING_INDICATOR_ALT": "Indicator voor typen weergeven",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 is bezig met typen.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 en anderen zijn bezig met typen."
 }

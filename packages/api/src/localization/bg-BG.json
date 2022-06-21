@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Още съобщения",
   "TRANSCRIPT_NEW_MESSAGES": "Нови съобщения",
   "TRANSCRIPT_TERMINATOR_TEXT": "Край на хронологията на чата",
-  "TYPING_INDICATOR_ALT": "Показване на индикатор за въвеждане"
+  "TYPING_INDICATOR_ALT": "Показване на индикатор за въвеждане",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 пише.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други пишат."
 }

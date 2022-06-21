@@ -1,10 +1,10 @@
-/* eslint complexity: ["error", 30] */
+/* eslint complexity: ["error", 50] */
 
-import { DirectLineActivity } from 'botframework-webchat-core';
 import { hooks, RenderAttachment } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC, ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -89,11 +89,11 @@ const connectStackedLayout = (...selectors) =>
   );
 
 type StackedLayoutProps = {
-  activity: DirectLineActivity;
+  activity: WebChatActivity;
   hideTimestamp?: boolean;
   renderActivityStatus?: (({ hideTimestamp: boolean }) => Exclude<ReactNode, boolean | null | undefined>) | false;
   renderAttachment?: RenderAttachment;
-  renderAvatar?: (activity: DirectLineActivity) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
+  renderAvatar?: ({ activity: WebChatActivity }) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
   showCallout?: boolean;
 };
 
@@ -115,23 +115,13 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
 
-  const {
-    attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-    from: { role } = {},
-    text,
-    textFormat
-  }: {
-    attachments?: [];
-    channelData?: { messageBack?: { displayText?: string } };
-    from?: { role?: 'bot' | 'user' };
-    text?: string;
-    textFormat?: string;
-  } = activity;
+  const isMessage = activity.type === 'message';
 
-  const activityDisplayText = messageBackDisplayText || text;
-  const fromUser = role === 'user';
+  const attachments = (isMessage && activity.attachments) || [];
+  const fromUser = activity.from.role === 'user';
+  const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
 
+  const activityDisplayText = isMessage ? messageBackDisplayText || activity.text : '';
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (
     fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
@@ -152,7 +142,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
-  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments.length);
+  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
   return (
     <div
@@ -192,10 +182,12 @@ const StackedLayout: FC<StackedLayoutProps> = ({
               >
                 {renderAttachment({
                   activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
+                  attachment: isMessage
+                    ? {
+                        content: activityDisplayText,
+                        contentType: textFormatToContentType(activity.textFormat)
+                      }
+                    : undefined
                 })}
               </Bubble>
             </div>
@@ -246,6 +238,8 @@ StackedLayout.defaultProps = {
 };
 
 StackedLayout.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
   activity: PropTypes.shape({
     attachments: PropTypes.array,
     channelData: PropTypes.shape({
@@ -257,7 +251,7 @@ StackedLayout.propTypes = {
       role: PropTypes.string.isRequired
     }).isRequired,
     text: PropTypes.string,
-    textFormat: PropTypes.string,
+    textFormat: PropTypes.oneOf(['markdown', 'plain', 'xml']),
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,

@@ -1,5 +1,8 @@
-// TODO: [P1] #3953 We should fully type it out.
+import type { DirectLineCardAction } from './DirectLineCardAction';
 
-type DirectLineSuggestedAction = any;
+type DirectLineSuggestedAction = {
+  actions?: DirectLineCardAction[];
+  to?: string[];
+};
 
-export default DirectLineSuggestedAction;
+export type { DirectLineSuggestedAction };

@@ -94,5 +94,7 @@
   "TRANSCRIPT_MORE_MESSAGES": "Więcej wiadomości",
   "TRANSCRIPT_NEW_MESSAGES": "Nowe wiadomości",
   "TRANSCRIPT_TERMINATOR_TEXT": "Koniec historii czatu",
-  "TYPING_INDICATOR_ALT": "Wyświetlanie wskaźnika wpisywania"
+  "TYPING_INDICATOR_ALT": "Wyświetlanie wskaźnika wpisywania",
+  "TYPING_INDICATOR_SINGLE_TEXT": "$1 pisze.",
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i inni piszą."
 }
