@@ -74,14 +74,14 @@
 
         // In screen reader transcript, the attachment are rendered and narrated.
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!'
         );
 
         // No attachments should be narrated.
         expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM'
+          'Bot said:\nWith "webchat:fallback-text" field.'
         );
-        expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM');
+        expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!');
 
         const activityAlts = [].map.call(pageElements.transcriptLiveRegion().children, element =>
           testHelpers.getAllTextContents(element).join('\n')
@@ -92,11 +92,11 @@
 
         // In interactive transcript, this is narrated as "2 attachments".
         expect(activityAlts[0]).toBe(
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM'
+          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!'
         );
 
-        expect(activityAlts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.\nSent at January 1 at 12:34 PM');
-        expect(activityAlts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!\nSent at January 1 at 12:34 PM');
+        expect(activityAlts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.');
+        expect(activityAlts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!');
       });
     </script>
   </body>

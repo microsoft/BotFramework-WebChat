@@ -1,7 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import random from 'math-random';
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { FC, RefObject, VFC } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
@@ -21,7 +20,7 @@ const { useActivities, useGetKeyByActivity, useLocalizer, useStyleOptions } = ho
 
 const ROOT_STYLE = {
   '&.webchat__live-region-transcript': {
-    '& .webchat__live-region-transcript__interactive-note, & .webchat__live-region-transcript__suggested-actions-note, & .webchat__live-region-transcript__text-element':
+    '& .webchat__live-region-transcript__note, & .webchat__live-region-transcript__note, & .webchat__live-region-transcript__text-element':
       {
         color: 'transparent',
         height: 1,
@@ -78,7 +77,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
   const [typistNames] = useTypistNames();
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
-  const localizeAccessKey = useLocalizeAccessKey();
+  const localizeAccessKeyAsAccessibleName = useLocalizeAccessKey('accessible name');
   const queueStaticElement = useQueueStaticElement();
 
   const liveRegionInteractiveLabelAlt = localize('TRANSCRIPT_LIVE_REGION_INTERACTIVE_LABEL_ALT');
@@ -90,13 +89,12 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
       typistNames[0]
     );
 
-  // TODO: [P1] #4315 We should change the narration to "Message has suggested actions. Press SHIFT + ALT + A to select them."
-  const liveRegionSuggestedActionsLabelAlt = localize(
-    'SUGGESTED_ACTIONS_ALT',
-    accessKey
-      ? localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY', localizeAccessKey(accessKey))
-      : localize('SUGGESTED_ACTIONS_ALT_HAS_CONTENT')
-  );
+  const liveRegionSuggestedActionsLabelAlt = accessKey
+    ? localize(
+        'TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT',
+        localizeAccessKeyAsAccessibleName(accessKey)
+      )
+    : localize('TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT');
 
   const keyedActivities = useMemo<Readonly<RenderingActivities>>(
     () =>
@@ -145,42 +143,22 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
       ({ activity }) => activity.type === 'message' && activity.suggestedActions?.actions?.length
     );
 
+    // This is a footnote reading either:
+    // - "Message is interactive. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact.", or;
+    // - "One or more links in the message. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact."
     if (hasNewLink || hasNewWidget) {
-      // eslint-disable-next-line no-magic-numbers
-      const labelId = `webchat__live-region-transcript__interactive-note--${random().toString(36).substr(2, 5)}`;
-
       queueStaticElement(
-        // Inside ARIA live region:
-        // - Edge + Narrator:
-        //   - It read if `aria-labelledby` or `aria-label` is set;
-        //   - It read nothing if `aria-labelledby` or `aria-label` are not set (in this case, it read "note").
-        // - Safari + VoiceOver and Chrome + NVDA:
-        //   - They read its content and ignore `aria-labelledby` or `aria-label`
-        //   - They will not read if it is simply <div aria-label="Something" /> without content (self-closing tag).
-        // For best compatibility, we need both `aria-labelledby` and contented <div>.
-        <div
-          aria-atomic="true"
-          aria-labelledby={labelId}
-          className="webchat__live-region-transcript__interactive-note"
-          role="note"
-        >
-          {/* "id" is required */}
-          {/* eslint-disable-next-line react/forbid-dom-props */}
-          <span id={labelId}>{hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt}</span>
+        <div className="webchat__live-region-transcript__note" role="note">
+          {hasNewLink ? liveRegionInteractiveWithLinkLabelAlt : liveRegionInteractiveLabelAlt}
         </div>
       );
     }
 
     // This is a footnote reading "Suggested actions container: has content. Press CTRL + SHIFT + A to select."
     if (hasSuggestedActions) {
-      // eslint-disable-next-line no-magic-numbers
-      const labelId = `webchat__live-region-transcript__suggested-actions-note--${random().toString(36).substr(2, 5)}`;
-
       queueStaticElement(
-        <div aria-labelledby={labelId} className="webchat__live-region-transcript__suggested-actions-note" role="note">
-          {/* "id" is required */}
-          {/* eslint-disable-next-line react/forbid-dom-props */}
-          <span id={labelId}>{liveRegionSuggestedActionsLabelAlt}</span>
+        <div className="webchat__live-region-transcript__note" role="note">
+          {liveRegionSuggestedActionsLabelAlt}
         </div>
       );
     }

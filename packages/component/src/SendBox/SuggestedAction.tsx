@@ -81,7 +81,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
   const [disabled] = useDisabled();
   const focus = useFocus();
   const focusRef = useItemRef<HTMLButtonElement>(itemIndex);
-  const localizeAccessKey = useLocalizeAccessKey();
+  const localizeAccessKeyAsAriaKeyShortcuts = useLocalizeAccessKey('aria-keyshortcuts');
   const performCardAction = usePerformCardAction();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const scrollToEnd = useScrollToEnd();
@@ -107,7 +107,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
 
   return (
     <AccessibleButton
-      {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKey(accessKey) } : {})}
+      {...(accessKey ? { 'aria-keyshortcuts': localizeAccessKeyAsAriaKeyShortcuts(accessKey) } : {})}
       className={classNames(
         'webchat__suggested-action',
         {

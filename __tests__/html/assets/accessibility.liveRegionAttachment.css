@@ -1,6 +1,5 @@
 .webchat__live-region-activity,
-.webchat__live-region-transcript__interactive-note,
-.webchat__live-region-transcript__suggested-actions-note,
+.webchat__live-region-transcript__note,
 .webchat__live-region-transcript__text-element {
   color: initial !important;
   height: initial !important;

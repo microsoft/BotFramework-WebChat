@@ -19,6 +19,9 @@ type LiveRegionAttachmentsProps = {
   activity: WebChatActivity & { type: 'message' };
 };
 
+// When "renderAttachments" is false, we will not render the content of attachments.
+// That means, it will only render "2 attachments", instead of "image attachment".
+// This is used in the visual transcript, where we render "Press ENTER to interact."
 const LiveRegionAttachments: VFC<LiveRegionAttachmentsProps> = ({ activity }) => {
   const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
@@ -35,14 +38,11 @@ const LiveRegionAttachments: VFC<LiveRegionAttachmentsProps> = ({ activity }) =>
 
   return (
     <Fragment>
-      {!!attachmentForScreenReaderRenderers.length && (
-        <ul>
-          {attachmentForScreenReaderRenderers.map((render, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li key={index}>{render()}</li>
-          ))}
-        </ul>
-      )}
+      {attachmentForScreenReaderRenderers.map((render, index) => (
+        // Direct Line does not have key for attachment other than index.
+        // eslint-disable-next-line react/no-array-index-key
+        <p key={index}>{render()}</p>
+      ))}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
     </Fragment>
   );
