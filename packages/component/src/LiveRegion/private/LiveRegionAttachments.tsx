@@ -41,7 +41,7 @@ const LiveRegionAttachments: VFC<LiveRegionAttachmentsProps> = ({ activity }) =>
       {attachmentForScreenReaderRenderers.map((render, index) => (
         // Direct Line does not have key for attachment other than index.
         // eslint-disable-next-line react/no-array-index-key
-        <p key={index}>{render()}</p>
+        <div key={index}>{render()}</div>
       ))}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
     </Fragment>
