@@ -147,7 +147,6 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   return (
     <div
       aria-labelledby={activityDisplayText ? ariaLabelId : undefined}
-      aria-roledescription="activity"
       className={classNames('webchat__stacked-layout', rootClassName, stackedLayoutStyleSet + '', {
         'webchat__stacked-layout--extra-trailing': extraTrailing,
         'webchat__stacked-layout--from-user': fromUser,
