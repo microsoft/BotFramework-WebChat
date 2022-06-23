@@ -158,7 +158,6 @@ const StackedLayout: FC<StackedLayoutProps> = ({
         'webchat__stacked-layout--show-nub': showNub,
         'webchat__stacked-layout--top-callout': topAlignedCallout
       })}
-      role="group"
     >
       <div className="webchat__stacked-layout__main">
         <div className="webchat__stacked-layout__avatar-gutter">

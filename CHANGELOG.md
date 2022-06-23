@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Centralized live region of suggested actions into chat history live region for better live region control
    -  Suggested actions container is now a `role="toolbar"` and uses roving tab index for multiple suggested action
 -  Fixes [#4319](https://github.com/microsoft/BotFramework-WebChat/issues/4319). Fixed navigation keys not working in suggested actions under IE Mode, by [@compulim](https://github.com/compulim), in PR [#4320](https://github.com/microsoft/BotFramework-WebChat/pull/4320)
+-  Fixes [#4315](https://github.com/microsoft/BotFramework-WebChat/issues/4315). Cleaned up localization strings for suggested actions, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
+-  Fixes [#4294](https://github.com/microsoft/BotFramework-WebChat/issues/4294). Screen reader should not read message twice when navigating in the chat history, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
+-  Fixes [#4295](https://github.com/microsoft/BotFramework-WebChat/issues/4295). Screen reader should not read suggested actions twice when message arrive in live region, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
+-  Fixes [#4325](https://github.com/microsoft/BotFramework-WebChat/issues/4325). `aria-keyshortcuts` should use modifier keys according to `KeyboardEvent` key values spec, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
 
 ## [4.15.2] - 2022-05-09
 
