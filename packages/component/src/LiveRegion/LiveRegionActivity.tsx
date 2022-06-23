@@ -53,12 +53,12 @@ const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity }) => {
 
   return (
     <article aria-atomic={true} className={classNames('webchat__live-region-activity', rootClassName)}>
-      <span>{greetingAlt}</span>
+      <div>{greetingAlt}</div>
       {validFallbackText ? (
-        <span>{fallbackText}</span>
+        <div>{fallbackText}</div>
       ) : (
         <Fragment>
-          <span>{textAlt}</span>
+          <div>{textAlt}</div>
           {type === 'message' && (
             <Fragment>
               {!!activity.suggestedActions && (

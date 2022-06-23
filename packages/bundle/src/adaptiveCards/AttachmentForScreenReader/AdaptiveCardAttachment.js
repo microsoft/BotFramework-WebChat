@@ -58,7 +58,6 @@ AdaptiveCardChoiceSetInput.propTypes = {
 };
 
 const AdaptiveCardAttachment = ({ content }) => {
-  const labelId = useUniqueId('webchat__id');
   const localize = useLocalizer();
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
   const [
@@ -112,8 +111,8 @@ const AdaptiveCardAttachment = ({ content }) => {
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || '', '', '');
 
   return (
-    <article aria-labelledby={labelId}>
-      <div id={labelId}>{cardLabel}</div>
+    <article>
+      <div>{cardLabel}</div>
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />

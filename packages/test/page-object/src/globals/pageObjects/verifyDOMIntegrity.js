@@ -30,7 +30,6 @@ export default function verifyDOMIntegrity() {
   });
 
   // No class attribute should have the word "undefined" in it
-
   [].forEach.call(document.querySelectorAll('[class]'), element => {
     const className = element.getAttribute('class');
 
