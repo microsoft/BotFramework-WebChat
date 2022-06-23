@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Đang bắt đầu...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Có nội dung",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Có nội dung. Nhấn $1 để chọn.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Đang trống",
   "SUGGESTED_ACTIONS_ALT": "Vùng chứa hành động được đề xuất: $1",
   "TEXT_INPUT_ALT": "Hộp nhập tin nhắn",
   "TEXT_INPUT_PLACEHOLDER": "Nhập tin nhắn của bạn",

@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Démarrage en cours...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "A du contenu",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Contenu disponible. Appuyez sur $1 pour le sélectionner.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Est vide",
   "SUGGESTED_ACTIONS_ALT": "Conteneur d'actions suggérées : $1",
   "TEXT_INPUT_ALT": "Zone de saisie du message",
   "TEXT_INPUT_PLACEHOLDER": "Tapez votre message",

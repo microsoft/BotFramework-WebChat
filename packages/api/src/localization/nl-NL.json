@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Starten...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Bevat inhoud",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Bevat inhoud. Druk op $1 om te selecteren.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Is leeg",
   "SUGGESTED_ACTIONS_ALT": "Container voor voorgestelde acties: $1",
   "TEXT_INPUT_ALT": "Vak voor berichtinvoer",
   "TEXT_INPUT_PLACEHOLDER": "Typ uw bericht",

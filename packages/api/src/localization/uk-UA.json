@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Початок…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Має вміст",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Має вміст. Натисніть клавішу $1, щоб вибрати.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Пустий",
   "SUGGESTED_ACTIONS_ALT": "Контейнер рекомендованих дій: $1",
   "TEXT_INPUT_ALT": "Вікно вводу повідомлень",
   "TEXT_INPUT_PLACEHOLDER": "Введіть повідомлення",

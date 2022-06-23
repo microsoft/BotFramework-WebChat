@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Έναρξη…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Έχει περιεχόμενο",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Έχει περιεχόμενο. Πατήστε $1 για επιλογή.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Είναι κενό",
   "SUGGESTED_ACTIONS_ALT": "Κοντέινερ προτεινόμενων ενεργειών: $1",
   "TEXT_INPUT_ALT": "Πλαίσιο εισαγωγής μηνύματος",
   "TEXT_INPUT_PLACEHOLDER": "Πληκτρολογήστε το μήνυμά σας",

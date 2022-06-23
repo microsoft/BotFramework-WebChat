@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Начало...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Има съдържание",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Има съдържание. Натиснете $1, за да изберете.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Е празно",
   "SUGGESTED_ACTIONS_ALT": "Контейнер за предложени действия: $1",
   "TEXT_INPUT_ALT": "Поле за въвеждане на съобщение",
   "TEXT_INPUT_PLACEHOLDER": "Въведете съобщението си",

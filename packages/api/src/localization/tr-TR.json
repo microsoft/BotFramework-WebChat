@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Başlatılıyor...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "İçerik var",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "İçerik var. Seçmek için $1 tuşuna basın.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Boş",
   "SUGGESTED_ACTIONS_ALT": "Önerilen Eylemler Kapsayıcısı: $1",
   "TEXT_INPUT_ALT": "İleti gelen kutusu",
   "TEXT_INPUT_PLACEHOLDER": "İletinizi yazın",

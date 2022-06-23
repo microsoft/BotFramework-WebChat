@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "開始しています…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "コンテンツがあります",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "コンテンツがあります。選択するには $1 を押します。",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "空です",
   "SUGGESTED_ACTIONS_ALT": "推奨するアクション コンテナー: $1",
   "TEXT_INPUT_ALT": "メッセージ入力ボックス",
   "TEXT_INPUT_PLACEHOLDER": "メッセージを入力してください",

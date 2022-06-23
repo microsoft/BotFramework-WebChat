@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "מתחיל...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "מכיל תוכן",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "מכיל תוכן. לחץ על $1 כדי לבחור.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "ריק",
   "SUGGESTED_ACTIONS_ALT": "גורם מכיל של פעולות מוצעות: $1",
   "TEXT_INPUT_ALT": "תיבה להזנת הודעה",
   "TEXT_INPUT_PLACEHOLDER": "הקלד את ההודעה שלך",
