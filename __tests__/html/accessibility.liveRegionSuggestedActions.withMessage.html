@@ -60,9 +60,9 @@
         expect(screenReaderTexts).toHaveLength(2);
 
         expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nWhere are you from?\nUSA\nHong Kong\nSent at January 1 at 12:34 PM'
+          'Bot said:\nWhere are you from?\nUSA\nHong Kong'
         );
-        expect(screenReaderTexts[1]).toBe('Suggested Actions Container: Has content. Press Alt + Shift + A to select.');
+        expect(screenReaderTexts[1]).toBe('Message has suggested actions. Press Alt Shift A to select them.');
 
         // The screenshot should show the suggested actions as HTML <button> and verify we sent a <button> to screen reader.
         await host.snapshot();

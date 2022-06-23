@@ -4,19 +4,18 @@ import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useCallback, useMemo, useRef } from 'react';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import connectToWebChat from '../connectToWebChat';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
-import ScreenReaderText from '../ScreenReaderText';
 import SuggestedAction from './SuggestedAction';
+import useFocus from '../hooks/useFocus';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
 import useNonce from '../hooks/internal/useNonce';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -43,7 +42,7 @@ const connectSuggestedActions = (...selectors) =>
     ...selectors
   );
 
-const SuggestedActionCarouselContainer = ({ children, className, screenReaderText }) => {
+const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [
     {
       suggestedActionsCarouselFlipperBoxWidth,
@@ -54,7 +53,6 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [nonce] = useNonce();
-  const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const ref = useRef();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -79,7 +77,8 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
     // TODO: The content of suggested actions should be the labelled by the activity.
     //       That means, when the user focus into the suggested actions, it should read similar to "Bot said, what's your preference of today? Suggested actions has items: apple button, orange button, banana button."
     <div
-      aria-labelledby={ariaLabelId}
+      aria-label={label}
+      aria-orientation="horizontal"
       className={classNames(
         'webchat__suggested-actions',
         'webchat__suggested-actions--carousel-layout',
@@ -94,7 +93,6 @@ const SuggestedActionCarouselContainer = ({ children, className, screenReaderTex
       ref={ref}
       role="toolbar"
     >
-      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
         <BasicFilm
           autoCenter={false}
@@ -122,18 +120,18 @@ SuggestedActionCarouselContainer.defaultProps = {
 SuggestedActionCarouselContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
-  screenReaderText: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired
 };
 
-const SuggestedActionFlowContainer = ({ children, className, screenReaderText }) => {
+const SuggestedActionFlowContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
-  const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
+      aria-label={label}
       aria-live="polite"
+      aria-orientation="horizontal"
       className={classNames(
         'webchat__suggested-actions',
         'webchat__suggested-actions--flow-layout',
@@ -143,7 +141,6 @@ const SuggestedActionFlowContainer = ({ children, className, screenReaderText })
       )}
       role="toolbar"
     >
-      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
         <div className="webchat__suggested-actions__flow-box">
           {React.Children.map(children, child => (
@@ -164,18 +161,18 @@ SuggestedActionFlowContainer.defaultProps = {
 SuggestedActionFlowContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
-  screenReaderText: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired
 };
 
-const SuggestedActionStackedContainer = ({ children, className, screenReaderText }) => {
+const SuggestedActionStackedContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
-  const ariaLabelId = useUniqueId('webchat__suggested-actions');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
+      aria-label={label}
       aria-live="polite"
+      aria-orientation="vertical"
       className={classNames(
         'webchat__suggested-actions',
         'webchat__suggested-actions--stacked-layout',
@@ -185,7 +182,6 @@ const SuggestedActionStackedContainer = ({ children, className, screenReaderText
       )}
       role="toolbar"
     >
-      <ScreenReaderText id={ariaLabelId} text={screenReaderText} />
       {!!children && !!React.Children.count(children) && (
         <div className="webchat__suggested-actions__stack">{children}</div>
       )}
@@ -202,7 +198,7 @@ SuggestedActionStackedContainer.defaultProps = {
 SuggestedActionStackedContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
-  screenReaderText: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired
 };
 
 type SuggestedActionsProps = {
@@ -213,9 +209,13 @@ type SuggestedActionsProps = {
 const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
+  const focus = useFocus();
 
-  // TODO: [P1] #4315 Clean up this one so screen reader will narrate something similar to "suggested actions toolbar".
-  const screenReaderText = localize('SUGGESTED_ACTIONS_ALT', '');
+  const handleEscapeKey = useCallback(() => {
+    focus('sendBox');
+  }, [focus]);
+
+  const label = localize('SUGGESTED_ACTIONS_LABEL_ALT');
 
   const children = suggestedActions.map((cardAction, index) => {
     const { displayText, image, imageAltText, text, type, value } = cardAction as {
@@ -266,16 +266,16 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
 
   if (suggestedActionLayout === 'flow') {
     return (
-      <RovingTabIndexComposer>
-        <SuggestedActionFlowContainer className={className} screenReaderText={screenReaderText}>
+      <RovingTabIndexComposer onEscapeKey={handleEscapeKey}>
+        <SuggestedActionFlowContainer className={className} label={label}>
           {children}
         </SuggestedActionFlowContainer>
       </RovingTabIndexComposer>
     );
   } else if (suggestedActionLayout === 'stacked') {
     return (
-      <RovingTabIndexComposer direction="vertical">
-        <SuggestedActionStackedContainer className={className} screenReaderText={screenReaderText}>
+      <RovingTabIndexComposer onEscapeKey={handleEscapeKey} orientation="vertical">
+        <SuggestedActionStackedContainer className={className} label={label}>
           {children}
         </SuggestedActionStackedContainer>
       </RovingTabIndexComposer>
@@ -283,8 +283,8 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
   }
 
   return (
-    <RovingTabIndexComposer>
-      <SuggestedActionCarouselContainer className={className} screenReaderText={screenReaderText}>
+    <RovingTabIndexComposer onEscapeKey={handleEscapeKey}>
+      <SuggestedActionCarouselContainer className={className} label={label}>
         {children}
       </SuggestedActionCarouselContainer>
     </RovingTabIndexComposer>

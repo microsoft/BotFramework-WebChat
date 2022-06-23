@@ -188,7 +188,6 @@ const CarouselFilmStrip = ({
         (className || '') + ''
       )}
       ref={scrollableCallbackRef}
-      role="group"
     >
       <div className="webchat__carousel-filmstrip__main">
         <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>

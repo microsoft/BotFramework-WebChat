@@ -1,15 +1,11 @@
-/* eslint-disable react/forbid-dom-props */
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hooks } from 'botframework-webchat-component';
 
-import useUniqueId from '../hooks/internal/useUniqueId';
-
 const { useLocalizer } = hooks;
 
 const RichCardAttachment = ({ content = {} }) => {
-  const labelId = useUniqueId('webchat__id');
   const localize = useLocalizer();
   const { buttons, facts, image, images, items, subtitle, tax, text, title, total, vat } = content;
 
@@ -20,8 +16,8 @@ const RichCardAttachment = ({ content = {} }) => {
   const cardLabel = localize('ATTACHMENT_CARD', title || '', subtitle || '', text || '');
 
   return (
-    <article aria-labelledby={labelId}>
-      <div id={labelId}>{cardLabel}</div>
+    <article>
+      <div>{cardLabel}</div>
       {!!image && !!image.alt && <img alt={image.alt} />}
       {!!images && !!images.length && images.map(({ alt }, index) => <img alt={alt} key={index} />)}
       {!!facts && !!facts.length && (

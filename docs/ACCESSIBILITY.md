@@ -277,6 +277,7 @@ To make the live region more consistent across browsers and easier to control, w
    -  Visible, rich, dynamic, and interactive chat history
    -  Screen reader only reads the chat history marked as live region
       -  Web Chat does not narrate attachment contents: attachments can be customized and the DOM tree could be very complex with interactive elements
+      -  Empty messages will be narrated if they have suggested actions
 -  The live region contains activities that were recently
    -  When the DOM element appear in the live region, the screen reader will compute the alternative text and queue it for narration in a first-come-first-serve manner
    -  The screen reader will keep the alternative text in the queue even after the DOM element is removed from the live region
@@ -286,6 +287,10 @@ To make the live region more consistent across browsers and easier to control, w
    -  If the removal is too fast:
       -  0-100 ms: Chrome and TalkBack on Android may miss some of the activities
       -  The development team settled on using one second after some experimentation
+-  The suggested actions should be narrated inside the live region twin
+   -  Suggested actions usually come with message activity
+   -  Having 2 or more live regions updated at the same time will confuse browser and interrupt each other
+   -  If more than one live regions are expected to update at the same time, they should be consolidated
 
 ### Technical Limitation
 
@@ -397,9 +402,11 @@ There are 3 ways a screen reader can read messages:
    -  It should automatically read when the message first appear in the chat history
    -  It should read the message text, and its attachments, such as "Yes button"
    -  It should NOT read the timestamp. As the message just arrived, the timestamp is redundant
+   -  It should read suggested actions, regardless whether the message is empty or not
    -  If the message or its attachments contains links or interactive elements
       -  If the message or its attachments contains links, it should read hints about the links, otherwise;
       -  If the message or its attachments contains interactive elements, such as button, is detected, it should read hints about interactive content
+   -  If the message contains suggested actions, it should read hints about suggested actions
 -  Focus landing on the message via chat history navigation
    -  It should read the message, and count of attachments, e.g. "2 attachments"
    -  To make the readings brief, it should not read the timestamp

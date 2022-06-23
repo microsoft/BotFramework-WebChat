@@ -1,3 +1,5 @@
+/* eslint complexity: ["error", 50] */
+
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
@@ -9,10 +11,11 @@ import type { RovingTabIndexContextType } from './private/Context';
 type ItemRef = MutableRefObject<HTMLElement | undefined>;
 
 type RovingTabIndexContextProps = PropsWithChildren<{
-  direction?: 'horizontal' | 'vertical';
+  onEscapeKey?: () => void;
+  orientation?: 'horizontal' | 'vertical';
 }>;
 
-const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, direction }) => {
+const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey, orientation }) => {
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);
 
@@ -65,7 +68,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
   const handleKeyDown = useCallback<(event: KeyboardEvent) => void>(
     event => {
       const { key } = event;
-      const vertical = direction === 'vertical';
+      const vertical = orientation === 'vertical';
 
       switch (key) {
         case 'ArrowDown':
@@ -122,6 +125,15 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
           setActiveItemIndex(Infinity);
           break;
 
+        case 'Escape':
+          if (!onEscapeKey) {
+            // If the "onEscapeKey" prop is not passed, don't call preventDefault() and stopPropagation().
+            return;
+          }
+
+          onEscapeKey();
+          break;
+
         default:
           return;
       }
@@ -129,7 +141,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
       event.preventDefault();
       event.stopPropagation();
     },
-    [setActiveItemIndex, direction]
+    [setActiveItemIndex, onEscapeKey, orientation]
   );
 
   const itemEffector = useCallback(
@@ -170,11 +182,13 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, dire
 };
 
 RovingTabIndexComposer.defaultProps = {
-  direction: 'horizontal'
+  onEscapeKey: undefined,
+  orientation: 'horizontal'
 };
 
 RovingTabIndexComposer.propTypes = {
-  direction: PropTypes.oneOf(['horizontal', 'vertical'])
+  onEscapeKey: PropTypes.func,
+  orientation: PropTypes.oneOf(['horizontal', 'vertical'])
 };
 
 export default RovingTabIndexComposer;

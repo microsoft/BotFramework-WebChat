@@ -41,13 +41,9 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
     >
       {staticElementEntries.map(({ element, key }) => {
         if (typeof element === 'string') {
-          const id = `webchat__live-region-twin__text-element-${key}`;
-
           return (
-            <div aria-atomic={true} aria-labelledby={id} className={textElementClassName} key={key}>
-              {/* "aria-labelledby" requires the use of "id" attribute. */}
-              {/* eslint-disable-next-line react/forbid-dom-props */}
-              <p id={id}>{element}</p>
+            <div aria-atomic={true} className={textElementClassName} key={key}>
+              {element}
             </div>
           );
         }
