@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "आरंभ हो रहा है…",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "इसमें सामग्री है",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "सामग्री है. चयन करने के लिए $1 दबाएँ.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "खाली है",
   "SUGGESTED_ACTIONS_ALT": "सुझाई गई कार्रवाइयों का कंटेनर: $1",
   "TEXT_INPUT_ALT": "संदेश इनपुट बॉक्स",
   "TEXT_INPUT_PLACEHOLDER": "अपना संदेश लिखें",

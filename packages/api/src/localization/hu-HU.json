@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Kezdés...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Van tartalma",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Tartalma van. A kiválasztáshoz nyomja meg ezt: $1.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Üres",
   "SUGGESTED_ACTIONS_ALT": "Javasolt műveletek tárolója: $1",
   "TEXT_INPUT_ALT": "Üzenet beviteli mezője",
   "TEXT_INPUT_PLACEHOLDER": "Írja be az üzenetét",

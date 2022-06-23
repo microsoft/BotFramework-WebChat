@@ -70,7 +70,6 @@
   "SPEECH_INPUT_STARTING": "Trwa rozpoczynanie...",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT": "Ma zawartość",
   "SUGGESTED_ACTIONS_ALT_HAS_CONTENT_AND_ACCESS_KEY": "Ma zawartość. Naciśnij klawisz $1, aby wybrać.",
-  "SUGGESTED_ACTIONS_ALT_NO_CONTENT": "Jest puste",
   "SUGGESTED_ACTIONS_ALT": "Kontener sugerowanych akcji: $1",
   "TEXT_INPUT_ALT": "Pole wprowadzania wiadomości",
   "TEXT_INPUT_PLACEHOLDER": "Wpisz wiadomość",
