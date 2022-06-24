@@ -60,6 +60,7 @@
 
         audioElement.removeAttribute('controls');
 
+        await pageObjects.verifyDOMIntegrity();
         await pageObjects.focusSendBoxTextBox();
 
         await host.sendShiftTab(3);

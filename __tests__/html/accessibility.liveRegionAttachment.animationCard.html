@@ -63,6 +63,7 @@
         await pageConditions.scrollToBottomCompleted();
         await pageConditions.liveRegionStabilized();
 
+        await pageObjects.verifyDOMIntegrity();
         await pageObjects.focusSendBoxTextBox();
 
         await host.sendShiftTab(3);
