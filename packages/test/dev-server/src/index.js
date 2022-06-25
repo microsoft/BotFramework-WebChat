@@ -2,6 +2,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import { fileURLToPath } from 'url';
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
+import chalk from 'chalk';
 import compression from 'compression';
 import express from 'express';
 import serve from 'serve-handler';
@@ -27,6 +28,25 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
       changeOrigin: true,
       logLevel: 'warn',
       pathRewrite: { '^\\/__dist__\\/': '/' },
+      onProxyReq(_proxyReq, _req, res) {
+        res.setHeader('x-request-time', new Date().toISOString());
+      },
+      onProxyRes(_, req, res) {
+        const duration = Date.now() - new Date(res.getHeader('x-request-time'));
+        const durationString = `(${duration} ms)`;
+
+        console.log(
+          `${req.url} ${
+            duration < 1000
+              ? chalk.greenBright(durationString)
+              : duration < 2000
+              ? chalk.yellowBright(durationString)
+              : chalk.redBright(durationString)
+          }`
+        );
+
+        res.removeHeader('x-request-time');
+      },
       target: ESBUILD_TARGET
     })
   );
