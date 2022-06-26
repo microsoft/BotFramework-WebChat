@@ -37,7 +37,7 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "start": "concurrently --kill-others --names \"babel,devserver,tsc\" \"npm run start:babel\" \"npm run start:devserver\" \"npm run start:typescript\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:devserver": "node ./script/devServer.cjs",
+    "start:devserver": "node ./scripts/devServer.mjs",
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "skipBump": [
@@ -86,7 +86,6 @@
     "esbuild": "^0.14.47",
     "isomorphic-react": "^0.0.0-0",
     "isomorphic-react-dom": "^0.0.0-0",
-    "serve-handler": "^6.1.3",
     "source-map-loader": "^3.0.1",
     "terser-webpack-plugin": "^5.3.1",
     "typescript": "^4.6.2",

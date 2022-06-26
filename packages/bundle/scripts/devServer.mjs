@@ -1,14 +1,8 @@
-/* eslint-disable */
+import { build, serve } from 'esbuild';
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const { build, serve } = require('esbuild');
-const { createServer, request } = require('http');
-const { resolve } = require('path');
-const serveConfigJSON = require('../../../serve-test.json');
-const serveHandler = require('serve-handler');
-
-const { PORT = 5001 } = process.env || {};
-
-const resolveFromProjectRoot = resolve.bind(undefined, __dirname, '..');
+const resolveFromProjectRoot = resolve.bind(undefined, fileURLToPath(import.meta.url), '../../');
 
 // This is a plugin for resolving "react" from "isomorphic-react".
 // With normal NPM package, we will resolving the actual "react" package.
@@ -56,33 +50,5 @@ const BUILD_OPTIONS = {
     serve({}, BUILD_OPTIONS)
   ]);
 
-  createServer((req, res) => {
-    // Redirect all /__dist__/ to ESBuild development server.
-    if (/^\/__dist__\//u.test(req.url)) {
-      const path = req.url.replace(/^\/__dist__\//u, '/');
-      const start = Date.now();
-
-      return req.pipe(
-        request(
-          {
-            hostname: host,
-            port,
-            path,
-            method: req.method,
-            headers: req.headers
-          },
-          proxyRes =>
-            proxyRes
-              .pipe(res, { end: true })
-              .once('finish', () => console.log(`[serve] took ${Date.now() - start} ms for ${path}.`))
-        ),
-        { end: true }
-      );
-    }
-
-    return serveHandler(req, res, {
-      ...serveConfigJSON,
-      public: resolveFromProjectRoot('./../../')
-    });
-  }).listen(PORT, () => console.log(`[serve] listening to port ${PORT}.`));
+  console.log(`[serve] listening to http://${host}:${port}/.`);
 })();

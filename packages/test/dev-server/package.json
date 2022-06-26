@@ -1,0 +1,19 @@
+{
+  "name": "@webchat/dev-server",
+  "version": "0.0.0-0",
+  "description": "Development server for Web Chat",
+  "main": "./src/index.js",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node ."
+  },
+  "type": "module",
+  "devDependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.18.1",
+    "http-proxy-middleware": "^2.0.6",
+    "serve-handler": "^6.1.3"
+  }
+}

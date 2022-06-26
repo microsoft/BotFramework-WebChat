@@ -1,0 +1,6 @@
+env:
+  node: true
+
+rules:
+  no-console: off
+  no-magic-numbers: off
