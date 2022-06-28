@@ -48,7 +48,7 @@
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
     "prepare": "husky install",
-    "start": "concurrently --kill-others --raw \"serve -p 5000\" \"serve -p 5001 -c serve-test.json\" \"lerna run --ignore playground --parallel --stream start\"",
+    "start": "concurrently --kill-others --raw \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
     "stop:docker": "echo This command has been renamed to \"npm run docker:down\" && npm run docker:down",
     "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",

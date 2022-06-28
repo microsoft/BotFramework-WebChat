@@ -35,10 +35,10 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "concurrently --kill-others --names \"babel,tsc,webpack\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:webpack\"",
+    "start": "concurrently --kill-others --names \"babel,devserver,tsc\" \"npm run start:babel\" \"npm run start:devserver\" \"npm run start:typescript\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:typescript": "npm run build:typescript -- --watch",
-    "start:webpack": "npm run build:webpack -- --watch"
+    "start:devserver": "node ./scripts/devServer.mjs",
+    "start:typescript": "npm run build:typescript -- --watch"
   },
   "skipBump": [
     "adaptivecards",
@@ -83,6 +83,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "concurrently": "^7.0.0",
+    "esbuild": "^0.14.47",
     "isomorphic-react": "^0.0.0-0",
     "isomorphic-react-dom": "^0.0.0-0",
     "source-map-loader": "^3.0.1",

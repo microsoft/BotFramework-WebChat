@@ -1,0 +1,8 @@
+# More relaxed rules for CLI tooling.
+
+env:
+  node: true
+
+rules:
+  no-console: off
+  no-magic-numbers: off
