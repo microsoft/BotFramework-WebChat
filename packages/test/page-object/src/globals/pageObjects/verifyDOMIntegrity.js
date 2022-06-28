@@ -3,16 +3,22 @@
 export default function verifyDOMIntegrity() {
   // If an element has "aria-labelledby", the label element must be present on the screen.
   [].forEach.call(document.querySelectorAll('[aria-labelledby]'), element => {
-    const labelId = element.getAttribute('aria-labelledby');
-    const labelElement = document.getElementById(labelId);
+    element
+      .getAttribute('aria-labelledby')
+      .split(' ')
+      .map(labelId => labelId.trim())
+      .filter(Boolean)
+      .forEach(labelId => {
+        const labelElement = document.getElementById(labelId);
 
-    if (!labelElement) {
-      const message = `verifyDOMIntegrity: Cannot find element referenced by aria-labelledby attribute with ID "${labelId}".`;
+        if (!labelElement) {
+          const message = `verifyDOMIntegrity: Cannot find element referenced by aria-labelledby attribute with ID "${labelId}".`;
 
-      console.warn(message, element);
+          console.warn(message, element);
 
-      throw new Error(message);
-    }
+          throw new Error(message);
+        }
+      });
   });
 
   // No two elements can have the same ID.
@@ -35,6 +41,19 @@ export default function verifyDOMIntegrity() {
 
     if (~className.indexOf('undefined')) {
       const message = `No elements should have the keyword "undefined" in it, we saw "${className}".`;
+
+      console.warn(message, element);
+
+      throw new Error(message);
+    }
+  });
+
+  // Elements of `role="heading"` must have `aria-level` set
+  [].forEach.call(document.querySelectorAll('[role="heading"]'), element => {
+    const ariaLevel = +element.getAttribute('aria-level');
+
+    if (!(ariaLevel >= 1 && ariaLevel === ~~ariaLevel)) {
+      const message = 'Elements of role="heading" must have aria-level set to an integer equal to or greater than 1.';
 
       console.warn(message, element);
 
