@@ -7,6 +7,29 @@ import usePrevious from './private/usePrevious';
 
 import type { AdaptiveCard, CardObject } from 'adaptivecards';
 
+const INPUT_ELEMENT_SELECTOR = 'input, select, textarea';
+
+/**
+ * Finds the actual input element rendered by the `CardObject`, such as `<input>`, `<select>`, or `<textarea`.
+ *
+ * The `CardObject.renderedElement` could be a `<div>` representing the container for the `CardObject`.
+ *
+ * @return {HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined} Returns the `<input>`, `<select>`, or `<textarea` rendered by the `CardObject`, otherwise, `undefined`.
+ */
+function getInputElement(
+  cardObject: CardObject
+): HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined {
+  const { renderedElement } = cardObject;
+
+  if (renderedElement) {
+    if (renderedElement.matches(INPUT_ELEMENT_SELECTOR)) {
+      return renderedElement as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    }
+
+    return renderedElement.querySelector(INPUT_ELEMENT_SELECTOR);
+  }
+}
+
 /**
  * Re-rendering: Current user-inputted values must be saved and restored on re-render.
  */
@@ -21,32 +44,32 @@ export default function usePersistValuesModEffect(adaptiveCard: AdaptiveCard) {
       const { current: valuesMap } = valuesMapRef;
 
       adaptiveCard.getAllInputs().forEach(cardObject => {
-        const { renderedElement } = cardObject;
+        const inputElement = getInputElement(cardObject);
 
         if (
           !(
-            renderedElement instanceof HTMLInputElement ||
-            renderedElement instanceof HTMLSelectElement ||
-            renderedElement instanceof HTMLTextAreaElement
+            inputElement instanceof HTMLInputElement ||
+            inputElement instanceof HTMLSelectElement ||
+            inputElement instanceof HTMLTextAreaElement
           ) ||
           !valuesMap.has(cardObject)
         ) {
           return;
         }
 
-        setInputValue(renderedElement, valuesMap.get(cardObject));
+        setInputValue(inputElement, valuesMap.get(cardObject));
       });
 
       return () => {
         valuesMapRef.current = adaptiveCard
           .getAllInputs()
           .reduce<Map<CardObject, boolean | string>>((valuesMap, cardObject) => {
-            const { renderedElement } = cardObject;
+            const inputElement = getInputElement(cardObject);
 
-            return renderedElement instanceof HTMLInputElement ||
-              renderedElement instanceof HTMLSelectElement ||
-              renderedElement instanceof HTMLTextAreaElement
-              ? valuesMap.set(cardObject, getInputValue(renderedElement))
+            return inputElement instanceof HTMLInputElement ||
+              inputElement instanceof HTMLSelectElement ||
+              inputElement instanceof HTMLTextAreaElement
+              ? valuesMap.set(cardObject, getInputValue(inputElement))
               : valuesMap;
           }, new Map());
       };

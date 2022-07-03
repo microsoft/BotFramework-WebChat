@@ -165,22 +165,42 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
 
-  const applyActionShouldBePushButtonMod = useActionShouldBePushButtonModEffect(adaptiveCard, actionPerformedClassName);
-  const applyActionSetShouldNotBeMenuBarMod = useActionSetShouldNotBeMenuBarModEffect(adaptiveCard);
-  const applyActiveElementMod = useActiveElementModEffect(adaptiveCard);
-  const applyDisabledMod = useDisabledModEffect(adaptiveCard, disabled);
-  const applyPersistValuesMod = usePersistValuesModEffect(adaptiveCard);
-
-  const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(
-    () =>
-      renderAdaptiveCard(adaptiveCard, {
-        adaptiveCardsHostConfig,
-        adaptiveCardsPackage: { GlobalSettings, HostConfig },
-        renderMarkdownAsHTML,
-        setTabIndexAtCardRoot
-      }),
-    [adaptiveCard, adaptiveCardsHostConfig, GlobalSettings, HostConfig, renderMarkdownAsHTML, setTabIndexAtCardRoot]
+  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] = useActionShouldBePushButtonModEffect(
+    adaptiveCard,
+    actionPerformedClassName
   );
+  const [applyActionSetShouldNotBeMenuBarMod, undoActionSetShouldNotBeMenuBarMod] =
+    useActionSetShouldNotBeMenuBarModEffect(adaptiveCard);
+  const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
+  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard, disabled);
+  const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
+
+  const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
+    undoActionShouldBePushButtonMod();
+    undoActionSetShouldNotBeMenuBarMod();
+    undoActiveElementMod();
+    undoDisabledMod();
+    undoPersistValuesMod();
+
+    return renderAdaptiveCard(adaptiveCard, {
+      adaptiveCardsHostConfig,
+      adaptiveCardsPackage: { GlobalSettings, HostConfig },
+      renderMarkdownAsHTML,
+      setTabIndexAtCardRoot
+    });
+  }, [
+    adaptiveCard,
+    adaptiveCardsHostConfig,
+    GlobalSettings,
+    HostConfig,
+    renderMarkdownAsHTML,
+    setTabIndexAtCardRoot,
+    undoActionShouldBePushButtonMod,
+    undoActionSetShouldNotBeMenuBarMod,
+    undoActiveElementMod,
+    undoDisabledMod,
+    undoPersistValuesMod
+  ]);
 
   useMemo(() => {
     adaptiveCard.onExecuteAction = handleExecuteAction;
@@ -204,7 +224,14 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     applyActiveElementMod(element);
     applyDisabledMod(element);
     applyPersistValuesMod(element);
-  });
+  }, [
+    applyActionShouldBePushButtonMod,
+    applyActionSetShouldNotBeMenuBarMod,
+    applyActiveElementMod,
+    applyDisabledMod,
+    applyPersistValuesMod,
+    element
+  ]);
 
   return errors?.length ? (
     node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />

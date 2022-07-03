@@ -40,13 +40,15 @@ export default function useActionShouldBePushButtonModEffect(
         actionElement => {
           const cardObject = findDOMNodeOwner(adaptiveCard, actionElement);
 
-          if (pushedCardObjectsRef.current.has(cardObject)) {
-            actionPerformedClassName &&
-              undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
+          if (!actionElement.hasAttribute('aria-expanded')) {
+            if (pushedCardObjectsRef.current.has(cardObject)) {
+              actionPerformedClassName &&
+                undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
 
-            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
-          } else {
-            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'false'));
+              undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
+            } else {
+              undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'false'));
+            }
           }
 
           undoStack.push(

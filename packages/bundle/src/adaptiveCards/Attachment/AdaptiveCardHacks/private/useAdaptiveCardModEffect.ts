@@ -39,16 +39,14 @@ class Mod {
 export default function useAdaptiveCardModEffect(
   modder: (adaptiveCard: AdaptiveCard, cardElement: HTMLElement) => () => void,
   adaptiveCard: AdaptiveCard
-): (cardElement: HTMLElement) => void {
+): readonly [(cardElement: HTMLElement) => void, () => void] {
   const adaptiveCardRef = useValueRef(adaptiveCard);
   const mod = useMemo(() => new Mod(modder), [modder]);
   const reapplyRef = useRef<() => void>();
 
-  const modRef = useValueRef(mod);
   const observerRef = useLazyRef<MutationObserver>(() => new MutationObserver(() => reapplyRef.current?.()));
 
   reapplyRef.current = undefined;
-  mod.undo();
 
   useEffect(
     () => () => {
@@ -57,11 +55,11 @@ export default function useAdaptiveCardModEffect(
     [observerRef]
   );
 
-  return useCallback(
+  const handleApply = useCallback(
     (cardElement: HTMLElement) => {
       if (adaptiveCardRef.current && cardElement) {
         // Apply the mod immediately, then assign the function to reapply() so we can call later when mutation happens.
-        (reapplyRef.current = () => modRef.current.apply(adaptiveCardRef.current, cardElement))();
+        (reapplyRef.current = () => mod.apply(adaptiveCardRef.current, cardElement))();
       }
 
       const { current: observer } = observerRef;
@@ -69,6 +67,13 @@ export default function useAdaptiveCardModEffect(
       observer.disconnect();
       observer.observe(cardElement, { childList: true, subtree: true });
     },
-    [adaptiveCardRef, observerRef, modRef]
+    [adaptiveCardRef, observerRef, mod]
+  );
+
+  const handleUndo = useCallback(() => mod.undo(), [mod]);
+
+  return useMemo(
+    () => Object.freeze([handleApply, handleUndo]) as readonly [(cardElement: HTMLElement) => void, () => void],
+    [handleApply, handleUndo]
   );
 }

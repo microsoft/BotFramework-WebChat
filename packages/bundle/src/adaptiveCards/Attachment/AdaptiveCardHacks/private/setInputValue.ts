@@ -6,7 +6,13 @@
  * @returns Returns `true` if the element is `<input type="checkbox">` or `<input type="radio">`, otherwise, `false`.
  */
 function isCheckBoxOrRadio(element: HTMLElement): element is HTMLInputElement & { type: 'checkbox' | 'radio' } {
-  return true;
+  if (element instanceof HTMLInputElement) {
+    const { type } = element;
+
+    return type === 'checkbox' || type === 'radio';
+  }
+
+  return false;
 }
 
 /**
