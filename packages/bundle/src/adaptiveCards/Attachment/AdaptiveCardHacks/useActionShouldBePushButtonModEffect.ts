@@ -1,0 +1,101 @@
+import { useMemo, useRef } from 'react';
+
+import addEventListenerWithUndo from '../../DOMManipulationWithUndo/addEventListenerWithUndo';
+import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
+import durableAddClassWithUndo from '../../DOMManipulationWithUndo/durableAddClassWithUndo';
+import findDOMNodeOwner from './private/findDOMNodeOwner';
+import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
+import useAdaptiveCardModEffect from './useAdaptiveCardModEffect';
+import usePrevious from './private/usePrevious';
+
+import type { AdaptiveCard, CardObject } from 'adaptivecards';
+import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
+
+/**
+ * Accessibility: Action in ActionSet/CardElement should be push button.
+ *
+ * Pressing the action button is a decision-making process. The decision made by the end-user need to be read by the screen reader.
+ * Thus, we need to indicate what decision the end-user made.
+ *
+ * Since action buttons are button, the intuitive way to indicate selection of a button is marking it as pressed.
+ *
+ * One exception is the `Action.ShowUrl` action. This button represents expand/collapse header of an accordion.
+ * Thus, their state is indicated by `aria-expanded`, instead of `aria-pressed`.
+ * However, we still need to remove other unnecessary ARIA fields.
+ */
+export default function useActionShouldBePushButtonModEffect(
+  adaptiveCard: AdaptiveCard,
+  actionPerformedClassName?: string
+) {
+  const prevAdaptiveCard = usePrevious(adaptiveCard);
+  const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
+
+  prevAdaptiveCard === adaptiveCard || pushedCardObjectsRef.current.clear();
+
+  const modder = useMemo(
+    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement) => {
+      const undoStack: UndoFunction[] = [];
+
+      Array.from(cardElement.querySelectorAll('button.ac-pushButton') as NodeListOf<HTMLButtonElement>).forEach(
+        actionElement => {
+          const cardObject = findDOMNodeOwner(adaptiveCard, actionElement);
+
+          if (pushedCardObjectsRef.current.has(cardObject)) {
+            actionPerformedClassName &&
+              undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
+
+            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
+          } else {
+            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'false'));
+          }
+
+          undoStack.push(
+            setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-posinset', false),
+            setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-setsize', false),
+            setOrRemoveAttributeIfFalseWithUndo(actionElement, 'role', false)
+          );
+        }
+      );
+
+      undoStack.push(
+        addEventListenerWithUndo(
+          cardElement,
+          'click',
+          ({ target }) => {
+            const actionElement = target as HTMLButtonElement;
+
+            if (!actionElement.matches('button.ac-pushButton')) {
+              return;
+            }
+
+            const cardObject = findDOMNodeOwner(adaptiveCard, actionElement);
+
+            if (
+              // Not an AC button.
+              !cardObject ||
+              // Ignores buttons which are supposed to be disabled.
+              actionElement.getAttribute('aria-disabled') === 'true' ||
+              // Mods all AC action buttons except those for `Action.ShowCard`, which has `aria-expanded` attribute.
+              actionElement.hasAttribute('aria-expanded')
+            ) {
+              return;
+            }
+
+            actionPerformedClassName &&
+              undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
+
+            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
+
+            cardObject && pushedCardObjectsRef.current.add(cardObject);
+          },
+          { capture: true }
+        )
+      );
+
+      return () => bunchUndos(undoStack)();
+    },
+    [actionPerformedClassName, pushedCardObjectsRef]
+  );
+
+  return useAdaptiveCardModEffect(modder, adaptiveCard);
+}
