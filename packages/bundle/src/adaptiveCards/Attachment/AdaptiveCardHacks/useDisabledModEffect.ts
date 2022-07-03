@@ -34,10 +34,7 @@ export default function useDisabledModEffect(adaptiveCard: AdaptiveCard, disable
 
       const undoStack: (() => void)[] = Array.from(
         cardElement.querySelectorAll(INPUT_ELEMENT_SELECTOR) as NodeListOf<InputElementType>
-      ).reduce(
-        (undoStack, element) => [...undoStack, durableDisableInputElementAccessiblyWithUndo(element)],
-        [] as UndoFunction[]
-      );
+      ).map(element => durableDisableInputElementAccessiblyWithUndo(element));
 
       return () => bunchUndos(undoStack)();
     },
