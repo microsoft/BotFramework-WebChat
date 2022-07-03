@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import useLazyRef from './private/useLazyRef';
-import useValueRef from './private/useValueRef';
+import useLazyRef from './useLazyRef';
+import useValueRef from './useValueRef';
 
 import type { AdaptiveCard } from 'adaptivecards';
 

@@ -61,8 +61,8 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
 
   // TODO: [P2] #3199 We should consider using `adaptiveCard.selectAction` instead.
   // The null check for "tapAction" is in "handleClickAndKeyPressForTapAction".
-  const handleClickAndKeyPress = useCallback(
-    (event: KeyboardEvent | MouseEvent): void => {
+  const handleClickAndKeyPress = useCallback<KeyboardEventHandler<HTMLDivElement> | MouseEventHandler<HTMLDivElement>>(
+    (event): void => {
       const { key, type } = event as KeyboardEvent;
       const target = event.target as HTMLDivElement;
 
@@ -182,6 +182,10 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     [adaptiveCard, adaptiveCardsHostConfig, GlobalSettings, HostConfig, renderMarkdownAsHTML, setTabIndexAtCardRoot]
   );
 
+  useMemo(() => {
+    adaptiveCard.onExecuteAction = handleExecuteAction;
+  }, [adaptiveCard, handleExecuteAction]);
+
   useLayoutEffect(() => {
     const { current } = contentRef;
 
@@ -202,18 +206,13 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     applyPersistValuesMod(element);
   });
 
-  useMemo(() => {
-    // Set onExecuteAction without causing unnecessary re-render.
-    adaptiveCard.onExecuteAction = handleExecuteAction;
-  }, [adaptiveCard, handleExecuteAction]);
-
   return errors?.length ? (
     node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
-      onClick={handleClickAndKeyPressForTapAction as unknown as MouseEventHandler<HTMLDivElement>}
-      onKeyPress={handleClickAndKeyPressForTapAction as unknown as KeyboardEventHandler<HTMLDivElement>}
+      onClick={handleClickAndKeyPressForTapAction as MouseEventHandler<HTMLDivElement>}
+      onKeyPress={handleClickAndKeyPressForTapAction as KeyboardEventHandler<HTMLDivElement>}
       ref={contentRef}
     />
   );

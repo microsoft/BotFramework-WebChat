@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+
 import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
 import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
-import useAdaptiveCardModEffect from './useAdaptiveCardModEffect';
+import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 
 import type { AdaptiveCard } from 'adaptivecards';
 

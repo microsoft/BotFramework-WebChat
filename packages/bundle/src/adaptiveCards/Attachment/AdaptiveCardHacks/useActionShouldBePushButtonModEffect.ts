@@ -5,7 +5,7 @@ import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
 import durableAddClassWithUndo from '../../DOMManipulationWithUndo/durableAddClassWithUndo';
 import findDOMNodeOwner from './private/findDOMNodeOwner';
 import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
-import useAdaptiveCardModEffect from './useAdaptiveCardModEffect';
+import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
 import type { AdaptiveCard, CardObject } from 'adaptivecards';
@@ -71,7 +71,7 @@ export default function useActionShouldBePushButtonModEffect(
             const cardObject = findDOMNodeOwner(adaptiveCard, actionElement);
 
             if (
-              // Not an AC button.
+              // Not an AC action.
               !cardObject ||
               // Ignores buttons which are supposed to be disabled.
               actionElement.getAttribute('aria-disabled') === 'true' ||

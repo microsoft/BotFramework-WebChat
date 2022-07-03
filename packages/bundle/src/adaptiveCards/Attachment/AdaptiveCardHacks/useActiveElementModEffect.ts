@@ -1,13 +1,13 @@
 import { useMemo, useRef } from 'react';
 
 import findDOMNodeOwner from './private/findDOMNodeOwner';
-import useAdaptiveCardModEffect from './useAdaptiveCardModEffect';
+import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
-import { AdaptiveCard, CardObject } from 'adaptivecards';
+import type { AdaptiveCard, CardObject } from 'adaptivecards';
 
 /**
- * When the Adaptive Card renderer refresh its content. The last focused element must be saved and then restored during render cycle.
+ * Re-rendering: Last focused element must be persisted during render cycle.
  */
 export default function useActiveElementModEffect(adaptiveCard: AdaptiveCard) {
   const activeCardObjectRef = useRef<CardObject | undefined>();
