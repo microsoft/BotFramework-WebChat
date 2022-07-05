@@ -17,5 +17,5 @@ export default function addEventListenerWithUndo(
 
   element.addEventListener(name, handler, options);
 
-  return () => element.removeEventListener(name, handler);
+  return () => element.removeEventListener(name, handler, options);
 }

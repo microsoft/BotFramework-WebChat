@@ -24,16 +24,15 @@ import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunct
  * However, we still need to remove other unnecessary ARIA fields.
  */
 export default function useActionShouldBePushButtonModEffect(
-  adaptiveCard: AdaptiveCard,
-  actionPerformedClassName?: string
-) {
+  adaptiveCard: AdaptiveCard
+): readonly [(cardElement: HTMLElement, actionPerformedClassName?: string) => void, () => void] {
   const prevAdaptiveCard = usePrevious(adaptiveCard);
   const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
 
   prevAdaptiveCard === adaptiveCard || pushedCardObjectsRef.current.clear();
 
   const modder = useMemo(
-    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement) => {
+    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, actionPerformedClassName?: string) => {
       const undoStack: UndoFunction[] = [];
 
       Array.from(cardElement.querySelectorAll('button.ac-pushButton') as NodeListOf<HTMLButtonElement>).forEach(
@@ -96,7 +95,7 @@ export default function useActionShouldBePushButtonModEffect(
 
       return () => bunchUndos(undoStack)();
     },
-    [actionPerformedClassName, pushedCardObjectsRef]
+    [pushedCardObjectsRef]
   );
 
   return useAdaptiveCardModEffect(modder, adaptiveCard);

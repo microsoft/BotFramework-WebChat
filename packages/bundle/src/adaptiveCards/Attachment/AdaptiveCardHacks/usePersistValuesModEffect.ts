@@ -1,33 +1,73 @@
 import { useMemo, useRef } from 'react';
 
-import getInputValue from './private/getInputValue';
-import setInputValue from './private/setInputValue';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
 import type { AdaptiveCard, CardObject } from 'adaptivecards';
 
-const INPUT_ELEMENT_SELECTOR = 'input, select, textarea';
-
-/**
- * Finds the actual input element rendered by the `CardObject`, such as `<input>`, `<select>`, or `<textarea`.
- *
- * The `CardObject.renderedElement` could be a `<div>` representing the container for the `CardObject`.
- *
- * @return {HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined} Returns the `<input>`, `<select>`, or `<textarea` rendered by the `CardObject`, otherwise, `undefined`.
- */
-function getInputElement(
-  cardObject: CardObject
-): HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined {
+function getUserValues(cardObject: CardObject): Set<string> {
   const { renderedElement } = cardObject;
 
-  if (renderedElement) {
-    if (renderedElement.matches(INPUT_ELEMENT_SELECTOR)) {
-      return renderedElement as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+  if (!renderedElement) {
+    return new Set();
+  }
+
+  return Array.from(
+    renderedElement.querySelectorAll('input, option, textarea') as NodeListOf<
+      HTMLInputElement | HTMLOptionElement | HTMLTextAreaElement
+    >
+  ).reduce<Set<string>>((values, element) => {
+    if (element instanceof HTMLInputElement) {
+      const { type } = element;
+
+      if (type === 'checkbox' || type === 'radio') {
+        element.checked && values.add(element.value);
+      } else {
+        // ASSUMPTION: We expect CardObject will NOT mix <input type="text"> with <input type="checkbox">.
+        values.clear();
+        values.add(element.value);
+      }
+    } else if (element instanceof HTMLOptionElement) {
+      element.selected && values.add(element.value);
+    } else {
+      // ASSUMPTION: We expect CardObject will NOT mix <textarea> with <input type="checkbox">.
+      values.clear();
+      values.add(element.value);
     }
 
-    return renderedElement.querySelector(INPUT_ELEMENT_SELECTOR);
+    return values;
+  }, new Set());
+}
+
+function setUserValues(cardObject: CardObject, values: Set<string>): void {
+  const { renderedElement } = cardObject;
+
+  if (!renderedElement) {
+    return;
   }
+
+  // If the element does not support multiple choices, say <input type="text"> or <textarea>, then, use the first value.
+  const defaultValue = Array.from(values)[0] || '';
+
+  (
+    renderedElement.querySelectorAll('input, option, textarea') as NodeListOf<
+      HTMLInputElement | HTMLOptionElement | HTMLTextAreaElement
+    >
+  ).forEach(element => {
+    if (element instanceof HTMLInputElement) {
+      const { type } = element;
+
+      if (type === 'checkbox' || type === 'radio') {
+        element.checked = values.has(element.value);
+      } else {
+        element.value = defaultValue;
+      }
+    } else if (element instanceof HTMLOptionElement) {
+      element.selected = values.has(element.value);
+    } else {
+      element.value = defaultValue;
+    }
+  });
 }
 
 /**
@@ -35,7 +75,7 @@ function getInputElement(
  */
 export default function usePersistValuesModEffect(adaptiveCard: AdaptiveCard) {
   const prevAdaptiveCard = usePrevious(adaptiveCard);
-  const valuesMapRef = useRef<Map<CardObject, boolean | string>>(new Map());
+  const valuesMapRef = useRef<Map<CardObject, Set<string>>>(new Map());
 
   prevAdaptiveCard === adaptiveCard || valuesMapRef.current.clear();
 
@@ -44,33 +84,16 @@ export default function usePersistValuesModEffect(adaptiveCard: AdaptiveCard) {
       const { current: valuesMap } = valuesMapRef;
 
       adaptiveCard.getAllInputs().forEach(cardObject => {
-        const inputElement = getInputElement(cardObject);
-
-        if (
-          !(
-            inputElement instanceof HTMLInputElement ||
-            inputElement instanceof HTMLSelectElement ||
-            inputElement instanceof HTMLTextAreaElement
-          ) ||
-          !valuesMap.has(cardObject)
-        ) {
-          return;
-        }
-
-        setInputValue(inputElement, valuesMap.get(cardObject));
+        valuesMap.has(cardObject) && setUserValues(cardObject, valuesMap.get(cardObject));
       });
 
       return () => {
         valuesMapRef.current = adaptiveCard
           .getAllInputs()
-          .reduce<Map<CardObject, boolean | string>>((valuesMap, cardObject) => {
-            const inputElement = getInputElement(cardObject);
+          .reduce<Map<CardObject, Set<string>>>((valuesMap, cardObject) => {
+            const value = getUserValues(cardObject);
 
-            return inputElement instanceof HTMLInputElement ||
-              inputElement instanceof HTMLSelectElement ||
-              inputElement instanceof HTMLTextAreaElement
-              ? valuesMap.set(cardObject, getInputValue(inputElement))
-              : valuesMap;
+            return typeof value !== 'undefined' ? valuesMap.set(cardObject, value) : valuesMap;
           }, new Map());
       };
     },

@@ -23,9 +23,11 @@ type InputElementType = HTMLButtonElement | HTMLInputElement | HTMLSelectElement
  * One exception is the `Action.ShowUrl`, this is because this action is expand/collapse of an accordion control.
  * Similar to `<details>`/`<summary>`, accordion must not allowed to be disabled.
  */
-export default function useDisabledModEffect(adaptiveCard: AdaptiveCard, disabled: boolean) {
+export default function useDisabledModEffect(
+  adaptiveCard: AdaptiveCard
+): readonly [(cardElement: HTMLElement, disabled: boolean) => void, () => void] {
   const modder = useMemo(
-    () => (_, cardElement: HTMLElement) => {
+    () => (_, cardElement: HTMLElement, disabled: boolean) => {
       if (!disabled) {
         return NO_OP;
       }
@@ -36,7 +38,7 @@ export default function useDisabledModEffect(adaptiveCard: AdaptiveCard, disable
 
       return () => bunchUndos(undoStack)();
     },
-    [disabled]
+    []
   );
 
   return useAdaptiveCardModEffect(modder, adaptiveCard);

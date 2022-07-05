@@ -165,14 +165,12 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
 
-  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] = useActionShouldBePushButtonModEffect(
-    adaptiveCard,
-    actionPerformedClassName
-  );
+  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] =
+    useActionShouldBePushButtonModEffect(adaptiveCard);
   const [applyActionSetShouldNotBeMenuBarMod, undoActionSetShouldNotBeMenuBarMod] =
     useActionSetShouldNotBeMenuBarModEffect(adaptiveCard);
   const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
-  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard, disabled);
+  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
   const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
 
   const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
@@ -219,17 +217,19 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   // Apply all mods regardless whether the element changed or not.
   // This is because we have undoed mods when we call the `useXXXModEffect` hook.
   useLayoutEffect(() => {
-    applyActionShouldBePushButtonMod(element);
+    applyActionShouldBePushButtonMod(element, actionPerformedClassName);
     applyActionSetShouldNotBeMenuBarMod(element);
     applyActiveElementMod(element);
-    applyDisabledMod(element);
+    applyDisabledMod(element, disabled);
     applyPersistValuesMod(element);
   }, [
+    actionPerformedClassName,
     applyActionShouldBePushButtonMod,
     applyActionSetShouldNotBeMenuBarMod,
     applyActiveElementMod,
     applyDisabledMod,
     applyPersistValuesMod,
+    disabled,
     element
   ]);
 
