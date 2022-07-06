@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4295](https://github.com/microsoft/BotFramework-WebChat/issues/4295). Screen reader should not read suggested actions twice when message arrive in live region, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
 -  Fixes [#4325](https://github.com/microsoft/BotFramework-WebChat/issues/4325). `aria-keyshortcuts` should use modifier keys according to `KeyboardEvent` key values spec, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
 -  Fixes [#4327](https://github.com/microsoft/BotFramework-WebChat/issues/4327). In Adaptive Cards, `TextBlock` with `style="heading"` should have `aria-level` set, by [@compulim](https://github.com/compulim), in PR [#4329](https://github.com/microsoft/BotFramework-WebChat/issues/4329)
+-  Fixes [#3949](https://github.com/microsoft/BotFramework-WebChat/issues/3949). For accessibility reasons, buttons in Adaptive Cards should be `role="button"` instead of `role="menubar"`/`role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#4263](https://github.com/microsoft/BotFramework-WebChat/issues/4263)
 
 ## Changes
 
