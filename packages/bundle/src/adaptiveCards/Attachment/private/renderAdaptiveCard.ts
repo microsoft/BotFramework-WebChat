@@ -28,13 +28,7 @@ export default function renderAdaptiveCard(
     renderMarkdownAsHTML?: (markdown: string) => string;
     setTabIndexAtCardRoot: boolean;
   }
-):
-  | {
-      element: HTMLElement;
-    }
-  | {
-      errors: Error[];
-    } {
+): { element: HTMLElement } | { errors: Error[] } {
   // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
 
   // TODO: [P3] Checks if we could make the "renderMarkdownAsHTML" per card

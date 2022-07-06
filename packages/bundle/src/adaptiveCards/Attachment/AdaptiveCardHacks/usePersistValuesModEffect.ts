@@ -5,15 +5,18 @@ import usePrevious from './private/usePrevious';
 
 import type { AdaptiveCard, CardObject } from 'adaptivecards';
 
-function getUserValues(cardObject: CardObject): Set<string> {
-  const { renderedElement } = cardObject;
-
-  if (!renderedElement) {
+/**
+ * Gets all user-inputted values under a DOM node.
+ *
+ * We assume values are ID-ed. If not ID-ed (such as `<textarea>`), there will be only a single instance (no two `<textarea>`).
+ */
+function getUserValues(element: HTMLElement | undefined): Set<string> {
+  if (!element) {
     return new Set();
   }
 
   return Array.from(
-    renderedElement.querySelectorAll('input, option, textarea') as NodeListOf<
+    element.querySelectorAll('input, option, textarea') as NodeListOf<
       HTMLInputElement | HTMLOptionElement | HTMLTextAreaElement
     >
   ).reduce<Set<string>>((values, element) => {
@@ -39,10 +42,13 @@ function getUserValues(cardObject: CardObject): Set<string> {
   }, new Set());
 }
 
-function setUserValues(cardObject: CardObject, values: Set<string>): void {
-  const { renderedElement } = cardObject;
-
-  if (!renderedElement) {
+/**
+ * Set multiple user-inputted values under a DOM node.
+ *
+ * This function must be paired with `getUserValues`.
+ */
+function setUserValues(element: HTMLElement | undefined, values: Set<string>): void {
+  if (!element) {
     return;
   }
 
@@ -50,7 +56,7 @@ function setUserValues(cardObject: CardObject, values: Set<string>): void {
   const defaultValue = Array.from(values)[0] || '';
 
   (
-    renderedElement.querySelectorAll('input, option, textarea') as NodeListOf<
+    element.querySelectorAll('input, option, textarea') as NodeListOf<
       HTMLInputElement | HTMLOptionElement | HTMLTextAreaElement
     >
   ).forEach(element => {
@@ -84,14 +90,14 @@ export default function usePersistValuesModEffect(adaptiveCard: AdaptiveCard) {
       const { current: valuesMap } = valuesMapRef;
 
       adaptiveCard.getAllInputs().forEach(cardObject => {
-        valuesMap.has(cardObject) && setUserValues(cardObject, valuesMap.get(cardObject));
+        valuesMap.has(cardObject) && setUserValues(cardObject.renderedElement, valuesMap.get(cardObject));
       });
 
       return () => {
         valuesMapRef.current = adaptiveCard
           .getAllInputs()
           .reduce<Map<CardObject, Set<string>>>((valuesMap, cardObject) => {
-            const value = getUserValues(cardObject);
+            const value = getUserValues(cardObject.renderedElement);
 
             return typeof value !== 'undefined' ? valuesMap.set(cardObject, value) : valuesMap;
           }, new Map());

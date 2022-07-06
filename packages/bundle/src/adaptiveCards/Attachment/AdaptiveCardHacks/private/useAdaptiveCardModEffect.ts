@@ -35,12 +35,12 @@ class Mod<TArgs extends unknown[]> {
 /**
  * Creates a mod effect for Adaptive Card.
  *
- * When this hook is executed, it will undo all current mods.
- * The returned function must be called as soon as the Adaptive Card element is mounted on the page.
+ * When this hook is executed, it will return two functions for applying and undo the mod.
+ * It will also monitor the DOM tree and undo-then-reapply if mutation occurred.
  *
- * When the returned function is called, the mod will be applied.
+ * The first function must be called right after DOM is mounted. The second function must be called right before re-render.
  *
- * @return {function} A function, when called, will apply mods to the Adaptive Card element.
+ * @return {[function, function]} Two functions, the first one to apply the mod, the second one to undo the mod.
  */
 export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
   modder: (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, ...args: TArgs) => () => void,
