@@ -64,6 +64,8 @@ export default function useActionShouldBePushButtonModEffect(
           cardElement,
           'click',
           ({ target }) => {
+            // Depends on click location, `target` could be the <div> inside the <button class="ac-pushButton">.
+            // Thus, we need to check if we the `target` is inside `button.ac-pushButton` or not.
             const actionElement = closest(target as HTMLButtonElement, 'button.ac-pushButton');
 
             if (!actionElement) {
