@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react';
 
 import addEventListenerWithUndo from '../../DOMManipulationWithUndo/addEventListenerWithUndo';
 import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
+import closest from './private/closest';
 import durableAddClassWithUndo from '../../DOMManipulationWithUndo/durableAddClassWithUndo';
 import findDOMNodeOwner from './private/findDOMNodeOwner';
 import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
@@ -63,9 +64,9 @@ export default function useActionShouldBePushButtonModEffect(
           cardElement,
           'click',
           ({ target }) => {
-            const actionElement = target as HTMLButtonElement;
+            const actionElement = closest(target as HTMLButtonElement, 'button.ac-pushButton');
 
-            if (!actionElement.matches('button.ac-pushButton')) {
+            if (!actionElement) {
               return;
             }
 
