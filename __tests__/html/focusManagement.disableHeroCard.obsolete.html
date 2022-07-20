@@ -25,24 +25,27 @@
 
         WebChat.renderWebChat(
           {
-            attachmentMiddleware: () => next => (...args) => {
-              const [{ activity, attachment }] = args;
-              const { activities } = store.getState();
-              const messageActivities = activities.filter(activity => activity.type === 'message');
-              const mostRecent = messageActivities.pop() === activity;
+            attachmentMiddleware:
+              () =>
+              next =>
+              (...args) => {
+                const [{ activity, attachment }] = args;
+                const { activities } = store.getState();
+                const messageActivities = activities.filter(activity => activity.type === 'message');
+                const mostRecent = messageActivities.pop() === activity;
 
-              if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
-                return (
-                  <HeroCardContent
-                    actionPerformedClassName="card__action--performed"
-                    content={attachment.content}
-                    disabled={!mostRecent}
-                  />
-                );
-              }
+                if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
+                  return (
+                    <HeroCardContent
+                      actionPerformedClassName="card__action--performed"
+                      content={attachment.content}
+                      disabled={!mostRecent}
+                    />
+                  );
+                }
 
-              return next(...args);
-            },
+                return next(...args);
+              },
             directLine,
             store
           },
@@ -72,7 +75,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: The second button should be disabled.
-        expect(secondButton.hasAttribute('disabled')).toBe(true);
+        expect(secondButton.getAttribute('aria-disabled')).toBe('true');
 
         // THEN: The second button should be grayed out.
         await host.snapshot();

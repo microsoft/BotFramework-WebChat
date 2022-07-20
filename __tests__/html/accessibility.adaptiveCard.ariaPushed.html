@@ -34,26 +34,6 @@
         return false;
       }
 
-      /** Checks if the page is conform to a subset of WCAG. */
-      // TODO: We should use axe-core to validate WAI-ARIA conformity.
-      function expectWCAGConformity() {
-        // EXPECT: Conform to WAI-ARIA, all "menubar" should have 1 or more descendants of "menuitem".
-        [...document.querySelectorAll('[role="menubar"]')].forEach(menuBar =>
-          expect(menuBar.querySelectorAll('[role="menuitem"]').length).toBeTruthy()
-        );
-
-        // EXPECT: Conform to WAI-ARIA, all "menuitem" should be a descendant of "menu" or "menubar".
-        [...document.querySelectorAll('[role="menuitem"]')].forEach(menuItem => {
-          expect(
-            hasAncestor(menuItem, ancestor => {
-              const ancestorRole = ancestor.getAttribute('role');
-
-              return ancestorRole === 'menu' || ancestorRole === 'menubar';
-            })
-          ).toBeTruthy();
-        });
-      }
-
       run(async function () {
         const directLine = await testHelpers.createDirectLineWithTranscript([
           {
@@ -127,34 +107,20 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.scrollToBottomCompleted();
 
-        // GIVEN: There should be 2 set of `ac-actionSet` containers.
+        // SETUP: Focus on the send box.
+        await pageObjects.focusSendBoxTextBox();
+
+        // SETUP: There should be 2 set of `ac-actionSet` containers.
         expect(document.querySelectorAll('.ac-actionSet')).toHaveLength(2);
 
-        // GIVEN: All `ac-actionSet` should have `[role="menubar"]`.
-        Array.from(document.querySelectorAll('.ac-actionSet')).every(actionSet =>
-          expect(actionSet.getAttribute('role')).toBe('menubar')
-        );
-
-        // GIVEN: All 'ac-pushButton' should not have "aria-pressed".
+        // SETUP: All 'ac-pushButton' should not have `aria-pressed="true"`.
         Array.from(document.querySelectorAll('.ac-pushButton')).every(pushButton =>
-          expect(pushButton.hasAttribute('aria-pressed')).toBe(false)
+          expect(pushButton.hasAttribute('aria-pressed')).not.toBe('true')
         );
-
-        // GIVEN: The page should conform to WCAG.
-        expectWCAGConformity();
 
         // WHEN: Clicking on the card action button ("Submit card").
-        await host.click(
-          Array.from(document.getElementsByClassName('ac-pushButton')).find(
-            pushButton => pushButton.innerText === 'Submit card'
-          )
-        );
-
-        // THEN: The first `ac-actionSet` should have `[role="menubar"]` untouched.
-        expect(document.querySelectorAll('.ac-actionSet')[0].getAttribute('role')).toBe('menubar');
-
-        // THEN: The second `ac-actionSet` should have `[role="menubar"]` removed.
-        expect(document.querySelectorAll('.ac-actionSet')[1].hasAttribute('role')).toBe(false);
+        await host.sendShiftTab(3);
+        await host.sendKeys('ENTER', 'TAB', 'TAB', 'ENTER');
 
         // THEN: Selected `ac-pushButton` should have `aria-pressed` set to `true`.
         Array.from(document.querySelectorAll('.ac-pushButton'))
@@ -171,20 +137,11 @@
         // THEN: Non-selection should not have `aria-pressed` set.
         Array.from(document.querySelectorAll('.ac-pushButton'))
           .filter(pushButton => pushButton.innerText !== 'Submit card')
-          .forEach(pushButton => expect(pushButton.hasAttribute('aria-pressed')).toBeFalsy());
-
-        // THEN: The page should conform to WCAG.
-        expectWCAGConformity();
+          .forEach(pushButton => expect(pushButton.getAttribute('aria-pressed')).not.toBe('true'));
 
         // WHEN: Click on the first action set button ("Yes")
-        await host.click(
-          Array.from(document.getElementsByClassName('ac-pushButton')).find(
-            pushButton => pushButton.innerText === 'Yes'
-          )
-        );
-
-        // THEN: The first `ac-actionSet` should have `[role="menubar"]` removed.
-        expect(document.querySelectorAll('.ac-actionSet')[0].hasAttribute('role')).toBe(false);
+        await host.sendShiftTab(2);
+        await host.sendKeys('ENTER');
 
         // THEN: Selected `ac-pushButton` should have `aria-pressed` set to `true`.
         Array.from(document.querySelectorAll('.ac-pushButton'))
@@ -197,9 +154,6 @@
             pushButton => pushButton.getAttribute('aria-pressed') === 'true'
           )
         ).toHaveLength(2);
-
-        // THEN: The page should conform to WCAG.
-        expectWCAGConformity();
       });
     </script>
   </body>
