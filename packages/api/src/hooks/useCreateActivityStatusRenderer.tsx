@@ -3,16 +3,55 @@
 
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { ReactNode, useMemo, VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
 
-import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
-import useTimePassed from './internal/useTimePassed';
+import useGetKeyByActivity from '../hooks/useGetKeyByActivity';
+import useSendStatusByActivityKey from '../hooks/useSendStatusByActivityKey';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
+
+import type { ReactNode, VFC } from 'react';
+import type { SendStatus } from '../providers/ActivitySendStatus/SendStatus';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING, SENT }
 } = Constants;
+
+type InnerActivityStatusContainerProps = {
+  activity: WebChatActivity;
+  hideTimestamp: boolean;
+  nextVisibleActivity: WebChatActivity;
+  sendStatus: SendStatus;
+};
+
+const ActivityStatusContainerCore: VFC<InnerActivityStatusContainerProps> = memo(
+  ({ activity, hideTimestamp, nextVisibleActivity, sendStatus }) => {
+    const { activityStatusRenderer: createActivityStatusRenderer } = useWebChatAPIContext();
+
+    // TODO: [P*] `createActivityStatusRenderer` should not be optional, check `useWebChatAPIContext`.
+    return createActivityStatusRenderer({
+      activity,
+      hideTimestamp,
+      // TODO: [P*] Remove deprecated.
+      nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
+      sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
+      sendState: sendStatus === 'sending' ? SENDING : sendStatus === 'send failed' ? SEND_FAILED : SENT
+    });
+  }
+);
+
+ActivityStatusContainerCore.propTypes = {
+  // PropTypes cannot fully capture TypeScript types.
+  // @ts-ignore
+  activity: PropTypes.shape({
+    channelData: PropTypes.shape({ state: PropTypes.string }),
+    from: PropTypes.shape({ role: PropTypes.string }).isRequired,
+    localTimestamp: PropTypes.string
+  }).isRequired,
+  hideTimestamp: PropTypes.bool.isRequired,
+  nextVisibleActivity: PropTypes.any,
+  sendStatus: PropTypes.oneOf(['sending', 'send failed', 'sent'])
+};
 
 type ActivityStatusContainerProps = {
   activity: WebChatActivity;
@@ -20,58 +59,27 @@ type ActivityStatusContainerProps = {
   nextVisibleActivity: WebChatActivity;
 };
 
-const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = ({
-  activity,
-  hideTimestamp,
-  nextVisibleActivity
-}) => {
-  const { activityStatusRenderer: createActivityStatusRenderer } = useWebChatAPIContext();
-  const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
+const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = memo(
+  ({ activity, hideTimestamp, nextVisibleActivity }) => {
+    const [sendStatusByActivityKey] = useSendStatusByActivityKey();
+    const getKeyByActivity = useGetKeyByActivity();
 
-  // SEND_FAILED from the activity is ignored, and is instead based on styleOptions.sendTimeout.
-  // Note that the derived state is time-sensitive. The useTimePassed() hook is used to make sure it changes over time.
-  const {
-    from: { role }
-  }: WebChatActivity = activity;
+    const key = getKeyByActivity(activity);
 
-  const fromUser = role === 'user';
-  let activitySent: boolean;
-  let sendTimeoutAt: number;
+    const sendStatus = (typeof key === 'string' && sendStatusByActivityKey.get(key)) || 'sent';
 
-  if (fromUser) {
-    const state = activity.channelData?.state;
-    const sendTimeout = getSendTimeoutForActivity({ activity });
-
-    activitySent = state !== SENDING && state !== SEND_FAILED;
-
-    // If no timestamp, we assume the "sending" will be timed out as "send failed".
-    sendTimeoutAt = !activitySent
-      ? new Date(activity.localTimestamp || new Date(0).toISOString()).getTime() + sendTimeout
-      : 0;
-  } else {
-    activitySent = true;
-    sendTimeoutAt = 0;
+    return (
+      <ActivityStatusContainerCore
+        activity={activity}
+        hideTimestamp={hideTimestamp}
+        nextVisibleActivity={nextVisibleActivity}
+        sendStatus={sendStatus}
+      />
+    );
   }
-
-  const pastTimeout = useTimePassed(sendTimeoutAt);
-
-  const sendState = activitySent ? SENT : pastTimeout ? SEND_FAILED : SENDING;
-
-  return useMemo(
-    () =>
-      createActivityStatusRenderer({
-        activity,
-        hideTimestamp,
-        nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
-        sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
-        sendState
-      }),
-    [activity, createActivityStatusRenderer, hideTimestamp, nextVisibleActivity, sendState]
-  );
-};
+);
 
 ActivityStatusContainer.defaultProps = {
-  hideTimestamp: false,
   nextVisibleActivity: undefined
 };
 
@@ -83,22 +91,24 @@ ActivityStatusContainer.propTypes = {
     from: PropTypes.shape({ role: PropTypes.string }).isRequired,
     localTimestamp: PropTypes.string
   }).isRequired,
-  hideTimestamp: PropTypes.bool,
+  hideTimestamp: PropTypes.bool.isRequired,
   nextVisibleActivity: PropTypes.any
 };
 
-export default function useCreateActivityStatusRenderer(): (renderOptions: {
+type ActivityStatusRenderer = (renderOptions: {
   activity: WebChatActivity;
   nextVisibleActivity: WebChatActivity;
-}) => (props: { hideTimestamp?: boolean }) => ReactNode {
-  return useMemo(
+}) => (props: { hideTimestamp?: boolean }) => ReactNode;
+
+export default function useCreateActivityStatusRenderer(): ActivityStatusRenderer {
+  return useMemo<ActivityStatusRenderer>(
     () =>
-      ({ activity, nextVisibleActivity }: { activity: WebChatActivity; nextVisibleActivity: WebChatActivity }) =>
-      ({ hideTimestamp }: { hideTimestamp?: boolean } = {}) =>
+      ({ activity, nextVisibleActivity }) =>
+      ({ hideTimestamp }) =>
         (
           <ActivityStatusContainer
             activity={activity}
-            hideTimestamp={hideTimestamp}
+            hideTimestamp={hideTimestamp || false}
             nextVisibleActivity={nextVisibleActivity}
           />
         ),

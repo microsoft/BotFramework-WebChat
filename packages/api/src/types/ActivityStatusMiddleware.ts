@@ -1,7 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactElement } from 'react';
+import type { SendState } from './SendState';
 import type { WebChatActivity } from 'botframework-webchat-core';
-
-import SendState from './SendState';
 
 // TODO: Migrate this legacy middleware signature.
 type RenderActivityStatusOptions = {
@@ -18,11 +17,9 @@ type RenderActivityStatusOptions = {
   sameTimestampGroup: boolean;
 };
 
-type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactNode;
+type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactElement;
 
 type ActivityStatusEnhancer = (next: RenderActivityStatus) => RenderActivityStatus;
 type ActivityStatusMiddleware = () => ActivityStatusEnhancer;
 
-export default ActivityStatusMiddleware;
-
-export type { RenderActivityStatus };
+export type { ActivityStatusMiddleware, RenderActivityStatus };

@@ -30,14 +30,12 @@ import {
   stopSpeakingActivity,
   submitSendBox
 } from 'botframework-webchat-core';
-import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
-import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -74,6 +72,9 @@ import applyMiddleware, {
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+
+import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -207,8 +208,6 @@ type ComposerCoreProps = {
 
   /** @deprecated Please use "activityMiddleware" instead. */
   activityRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "activityStatusMiddleware" instead. */
-  activityStatusRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
   /** @deprecated Please use "attachmentMiddleware" instead. */
   attachmentRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
   /** @deprecated Please use "avatarMiddleware" instead. */
@@ -228,7 +227,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
-  activityStatusRenderer,
   attachmentMiddleware,
   attachmentForScreenReaderMiddleware,
   attachmentRenderer,
@@ -388,22 +386,16 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     );
   }, [activityMiddleware, activityRenderer]);
 
-  const patchedActivityStatusRenderer = useMemo(() => {
-    activityStatusRenderer &&
-      console.warn(
-        'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15, please use "activityStatusMiddleware" instead.'
-      );
-
-    return (
-      activityStatusRenderer ||
+  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
+    () =>
       applyMiddlewareForRenderer(
         'activity status',
         { strict: false },
         ...singleToArray(activityStatusMiddleware),
         () => () => () => false
-      )({})
-    );
-  }, [activityStatusMiddleware, activityStatusRenderer]);
+      )({}),
+    [activityStatusMiddleware]
+  );
 
   const patchedAttachmentForScreenReaderRenderer = useMemo(
     () =>
@@ -603,7 +595,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      {typeof children === 'function' ? children(context) : children}
+      <ActivitySendStatusComposer>
+        {typeof children === 'function' ? children(context) : children}
+      </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );
@@ -619,7 +613,6 @@ ComposerCore.defaultProps = {
   activityMiddleware: undefined,
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
-  activityStatusRenderer: undefined,
   attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
   attachmentRenderer: undefined,
@@ -655,7 +648,6 @@ ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  activityStatusRenderer: PropTypes.func,
   attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentRenderer: PropTypes.func,
@@ -731,9 +723,7 @@ const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, stor
       <Provider context={WebChatReduxContext} store={memoizedStore}>
         <ActivityKeyerComposer>
           <ActivityAcknowledgementComposer>
-            <ActivitySendStatusComposer>
-              <ComposerCore onTelemetry={onTelemetry} {...props} />
-            </ActivitySendStatusComposer>
+            <ComposerCore onTelemetry={onTelemetry} {...props} />
           </ActivityAcknowledgementComposer>
         </ActivityKeyerComposer>
       </Provider>

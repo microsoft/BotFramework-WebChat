@@ -1,3 +1,3 @@
 type SendState = 'sending' | 'send failed' | 'sent';
 
-export default SendState;
+export type { SendState };

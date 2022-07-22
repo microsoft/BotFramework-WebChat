@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
 import { isSelfActivity, isSelfActivityInTransit } from 'botframework-webchat-core';
-import ActivityStatusContext from './private/Context';
+import ActivitySendStatusContext from './private/Context';
 import freezeArray from '../../utils/freezeArray';
 import isDiffMap from './private/isDiffMap';
 import useActivities from '../../hooks/useActivities';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
-import useStyleOptions from '../../hooks/useStyleOptions';
+import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 
-import type { ActivityStatusContextType } from './private/Context';
+import type { ActivitySendStatusContextType } from './private/Context';
 import type { FC } from 'react';
 import type { SendStatus } from './SendStatus';
 
@@ -17,11 +17,11 @@ import type { SendStatus } from './SendStatus';
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-const ActivityStatusComposer: FC = children => {
-  const [{ sendTimeout, sendTimeoutForAttachments }] = useStyleOptions();
+const ActivitySendStatusComposer: FC = ({ children }) => {
   const [activities] = useActivities();
   const forceRender = useForceRender();
   const getKeyByActivity = useGetKeyByActivity();
+  const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
   const sendStatusByActivityKeyRef = useRef<ReadonlyMap<string, SendStatus>>(Object.freeze(new Map()));
 
   /**
@@ -48,16 +48,7 @@ const ActivityStatusComposer: FC = children => {
               } else if (activity.channelData.state === 'send failed') {
                 expiryByActivityKey.set(key, EXPIRY_SEND_FAILED);
               } else {
-                const localTimestamp = +new Date(activity.localTimestamp);
-                const hasAttachments = activity.type === 'message' && activity.attachments?.length;
-
-                const expiry =
-                  localTimestamp +
-                  (hasAttachments
-                    ? sendTimeoutForAttachments
-                    : typeof sendTimeout === 'function'
-                    ? sendTimeout(activity)
-                    : sendTimeout);
+                const expiry = +new Date(activity.localTimestamp) + getSendTimeoutForActivity({ activity });
 
                 expiry && expiryByActivityKey.set(key, expiry);
               }
@@ -67,7 +58,7 @@ const ActivityStatusComposer: FC = children => {
           return expiryByActivityKey;
         }, new Map())
       ),
-    [activities, getKeyByActivity, sendTimeout, sendTimeoutForAttachments]
+    [activities, getKeyByActivity, getSendTimeoutForActivity]
   );
 
   // Turns the expiry (epoch time) into `SendStatus`, which is based on current clock.
@@ -88,7 +79,7 @@ const ActivityStatusComposer: FC = children => {
 
   const sendStatusByActivityKeyState = useMemo(() => freezeArray([sendStatusByActivityKey]), [sendStatusByActivityKey]);
 
-  const context = useMemo<ActivityStatusContextType>(
+  const context = useMemo<ActivitySendStatusContextType>(
     () => ({
       sendStatusByActivityKeyState
     }),
@@ -112,7 +103,7 @@ const ActivityStatusComposer: FC = children => {
     }
   }, [forceRender, nextExpiry]);
 
-  return <ActivityStatusContext.Provider value={context}>{children}</ActivityStatusContext.Provider>;
+  return <ActivitySendStatusContext.Provider value={context}>{children}</ActivitySendStatusContext.Provider>;
 };
 
-export default ActivityStatusComposer;
+export default ActivitySendStatusComposer;

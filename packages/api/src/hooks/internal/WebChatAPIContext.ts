@@ -18,7 +18,7 @@ import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;
-  activityStatusRenderer?: RenderActivityStatus;
+  activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: RenderAttachment;
   avatarRenderer?: AvatarComponentFactory;
