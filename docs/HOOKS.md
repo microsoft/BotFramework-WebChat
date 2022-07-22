@@ -110,6 +110,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendPostBack`](#usesendpostback)
 -  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity) (Deprecated)
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
+-  [`useSendStatusByActivityKey`](#usesendstatusbyactivitykey)
 -  [`useSetNotification`](#usesetnotification)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 -  [`useStartDictate`](#usestartdictate)
@@ -1066,6 +1067,26 @@ useSendTypingIndicator(): [boolean]
 This hook will return whether the typing indicator will be sent to the bot when the send box value is being modified.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useSendStatusByActivityKey`
+
+// TODO: [P*] Maybe rename to "send state" from "send status".
+
+<!-- prettier-ignore-start -->
+```js
+useSendStatusByActivityKey(): [Map<string, 'sending' | 'send failed' | 'sent'>]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return send status of all outgoing activities, either `"sending"`, `"send failed"`, or `"sent"`. The key of the `Map` is activity key. This is different than activity ID and can be obtained via the [`useGetKeyByActivity`](#usegetkeybyactivity) or [`useGetKeyByActivityId`](#usegetkeybyactivityid) hooks.
+
+`"send failed"` is not a terminator state. An activity marked as `"send failed"` could become other state again. However, `"sent"` is a terminator state.
+
+If `styleOptions.sendTimeout` or `styleOptions.sendTimeoutForAttachments` increased, an activity previously marked as `"send failed"` (due to timeout) could become `"sending"` again.
+
+If the activity failed to send (`"send failed"`), retrying the send will also change the send status back to `"sending"`.
+
+Send status is based on clock and could change very frequently. This will incur performance cost. Please use this hook deliberately.
 
 ## `useSetNotification`
 

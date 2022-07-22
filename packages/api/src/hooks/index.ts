@@ -53,6 +53,7 @@ import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
+import useSendStatusByActivityKey from './useSendStatusByActivityKey';
 import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useSetNotification from './useSetNotification';
@@ -127,6 +128,7 @@ export {
   useSendMessage,
   useSendMessageBack,
   useSendPostBack,
+  useSendStatusByActivityKey,
   useSendTimeoutForActivity,
   useSendTypingIndicator,
   useSetNotification,

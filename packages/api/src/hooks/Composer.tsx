@@ -36,6 +36,7 @@ import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
+import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
@@ -730,7 +731,9 @@ const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, stor
       <Provider context={WebChatReduxContext} store={memoizedStore}>
         <ActivityKeyerComposer>
           <ActivityAcknowledgementComposer>
-            <ComposerCore onTelemetry={onTelemetry} {...props} />
+            <ActivitySendStatusComposer>
+              <ComposerCore onTelemetry={onTelemetry} {...props} />
+            </ActivitySendStatusComposer>
           </ActivityAcknowledgementComposer>
         </ActivityKeyerComposer>
       </Provider>

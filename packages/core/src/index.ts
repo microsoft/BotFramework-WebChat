@@ -7,6 +7,12 @@ import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
+import {
+  isOthersActivity,
+  isSelfActivity,
+  isSelfActivityFromServer,
+  isSelfActivityInTransit
+} from './types/WebChatActivity';
 import markActivity from './actions/markActivity';
 import OneOrMany from './types/OneOrMany';
 import postActivity from './actions/postActivity';
@@ -58,6 +64,10 @@ export {
   dismissNotification,
   emitTypingIndicator,
   isForbiddenPropertyName,
+  isOthersActivity,
+  isSelfActivity,
+  isSelfActivityFromServer,
+  isSelfActivityInTransit,
   markActivity,
   postActivity,
   sendEvent,

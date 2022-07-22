@@ -11,7 +11,10 @@ import type { AnyAnd } from './AnyAnd';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
 
-type ChannelData<SendState extends string | undefined, Type extends string> = AnyAnd<
+type SupportedRole = 'bot' | 'channel' | 'user';
+type SupportedSendState = 'sending' | 'send failed' | 'sent';
+
+type ChannelData<SendState extends SupportedSendState | undefined, Type extends string> = AnyAnd<
   {
     // TODO: [P2] #3953 Rename to "webchat:attachment-sizes".
     attachmentSizes?: number[];
@@ -21,7 +24,7 @@ type ChannelData<SendState extends string | undefined, Type extends string> = An
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
-  } & (SendState extends string
+  } & (SendState extends SupportedSendState
     ? {
         // TODO: [P2] #3953 Rename to "webchat:send-state".
         state: SendState;
@@ -61,7 +64,7 @@ type ClientCapabilitiesEntity = {
 type Entity = ClientCapabilitiesEntity | AnyAnd<{ type: Exclude<string, 'ClientCapabilities'> }>;
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
-type ChannelAcount<Role = 'bot' | 'channel' | 'user'> = {
+type ChannelAcount<Role extends SupportedRole> = {
   id: string;
   name?: string;
   role: Role;
@@ -109,7 +112,10 @@ type TimestampInTransitEssence = {
   timestamp?: string;
 };
 
-type TimestampEssence<Role extends string, SendState extends string | undefined> = Role extends 'user'
+type TimestampEssence<
+  Role extends SupportedRole,
+  SendState extends SupportedSendState | undefined
+> = Role extends 'user'
   ? SendState extends 'sending' | 'send failed'
     ? TimestampInTransitEssence
     : TimestampFromServerEssence
@@ -118,8 +124,8 @@ type TimestampEssence<Role extends string, SendState extends string | undefined>
 // Abstract - core
 
 type CoreActivityEssence<
-  Role extends 'bot' | 'channel' | 'user',
-  SendState extends string | undefined,
+  Role extends SupportedRole,
+  SendState extends SupportedSendState | undefined,
   Type extends string = 'conversationUpdate' | 'event' | 'invoke' | 'message' | 'typing'
 > = {
   channelData: ChannelData<SendState, Type>;
@@ -149,6 +155,43 @@ type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
 
 // Exported
 
+function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
+  return activity.from.role === 'user';
+}
+
+function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfActivityFromServer {
+  if (isSelfActivity(activity)) {
+    const {
+      channelData: { state }
+    } = activity;
+
+    return state === 'sending' || state === 'send failed';
+  }
+
+  return false;
+}
+
+function isSelfActivityInTransit(activity: WebChatActivity): activity is SelfActivityInTransit {
+  if (isSelfActivity(activity)) {
+    const {
+      channelData: { state }
+    } = activity;
+
+    return state === 'sending' || state === 'send failed';
+  }
+
+  return false;
+}
+
+function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
+  const {
+    from: { role }
+  } = activity;
+
+  return role === 'bot' || role === 'channel';
+}
+
 type WebChatActivity = SelfActivity | OthersActivity;
 
+export { isOthersActivity, isSelfActivity, isSelfActivityFromServer, isSelfActivityInTransit };
 export type { WebChatActivity };
