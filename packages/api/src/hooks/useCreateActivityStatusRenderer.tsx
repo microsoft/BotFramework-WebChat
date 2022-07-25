@@ -98,13 +98,13 @@ ActivityStatusContainer.propTypes = {
 type ActivityStatusRenderer = (renderOptions: {
   activity: WebChatActivity;
   nextVisibleActivity: WebChatActivity;
-}) => (props: { hideTimestamp?: boolean }) => ReactNode;
+}) => (props?: { hideTimestamp?: boolean }) => ReactNode;
 
 export default function useCreateActivityStatusRenderer(): ActivityStatusRenderer {
   return useMemo<ActivityStatusRenderer>(
     () =>
       ({ activity, nextVisibleActivity }) =>
-      ({ hideTimestamp }) =>
+      ({ hideTimestamp } = {}) =>
         (
           <ActivityStatusContainer
             activity={activity}
