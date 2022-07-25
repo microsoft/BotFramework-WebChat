@@ -5,7 +5,7 @@ import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../../../connectToWebChat';
-import ScreenReaderText from '../../../ScreenReaderText';
+// import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';
 import useStyleSet from '../../../hooks/useStyleSet';
@@ -46,7 +46,8 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 
   const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');
 
-  const label = localize('ACTIVITY_STATUS_SEND_STATUS_ALT', sendingText);
+  // TODO: [P*] Remove SEND_STATUS_ALT from `en-US.json`.
+  // const label = localize('ACTIVITY_STATUS_SEND_STATUS_ALT', sendingText);
 
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
@@ -58,8 +59,8 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 
   return (
     <React.Fragment>
-      <ScreenReaderText text={label} />
-      <span aria-hidden={true} className={sendStatusStyleSet}>
+      {/* <ScreenReaderText text={label} /> */}
+      <span className={sendStatusStyleSet}>
         {sendState === SENDING ? (
           sendingText
         ) : sendState === SEND_FAILED ? (

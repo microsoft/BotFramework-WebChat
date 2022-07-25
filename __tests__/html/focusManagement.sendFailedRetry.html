@@ -10,6 +10,18 @@
   <body>
     <div id="webchat"></div>
     <script>
+      function allOutgoingMessagesSendFailed() {
+        return pageConditions.became(
+          'All outgoing messages to fail sending',
+          () =>
+            pageObjects
+              .getActivities()
+              .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
+              .every(({ channelData: { state } }) => state === 'send failed'),
+          30000
+        );
+      }
+
       run(
         async function () {
           const clock = lolex.install();
@@ -21,7 +33,7 @@
             connectionStatus$: directLine.connectionStatus$,
             postActivity: activity => {
               if (activity.type === 'message') {
-                return new Observable(({ error }) => error(new Error('artificial error')));
+                return new Observable(observer => observer.error(new Error('artificial error')));
               } else {
                 return directLine.postActivity(activity);
               }
@@ -41,30 +53,36 @@
           clock.tick(400);
 
           await pageConditions.uiConnected();
+
+          // SETUP: Send "echo Hello, World!" to the bot.
           await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
 
+          // WHEN: After 20 seconds.
           clock.tick(20000);
 
-          await pageConditions.became(
-            'All outgoing messages to fail sending',
-            () =>
-              pageObjects
-                .getActivities()
-                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed'),
-            30000
-          );
+          // THEN: All outgoing messages should have `activity.channelData.state` of `"send failed"`.
+          await allOutgoingMessagesSendFailed();
 
-          // TODO: We should make this CSS better, and probably put it inside pageElements.
-          const retryButton = document.querySelector('button[data-markdown-href]');
+          // WHEN: The "Retry" button in the first activity status is being clicked.
+          pageElements.activityStatuses()[0].querySelector('button[data-markdown-href]').click();
 
-          retryButton.click();
+          // THEN: There should be 2 outgoing messages.
+          await pageConditions.numActivitiesShown(2);
 
-          // After clicking on retry button, it should focus back on the type focus sink.
+          // THEN: Both outgoing messages should have `activity.channelData.state` of `"send failed"`.
+          await allOutgoingMessagesSendFailed();
+
+          // THEN: Both outgoing messages should show "Send failed. Retry." because the modded `postActivity` throw artificial error immediately.
+          expect(
+            [].map.call(document.querySelectorAll('.webchat__stacked-layout__status'), ({ innerText }) => innerText)
+          ).toEqual(['Send failed. Retry.', 'Send failed. Retry.']);
+
+          // THEN: The focus should focus be on the send box.
           expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
           await host.snapshot();
         },
+        // Ignoring errors thrown as "artificial error".
         { ignoreErrors: true }
       );
     </script>
