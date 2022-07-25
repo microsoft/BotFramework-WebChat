@@ -40,13 +40,19 @@
 
           await pageConditions.uiConnected();
           await pageConditions.allOutgoingActivitiesSent();
+
+          // WHEN: Sending an message.
           await pageObjects.sendMessageViaSendBox('error', { waitForSend: false });
+
+          // THEN: The INCOMING_ACTIVITY from the bot should trigger the saga error.
           await pageConditions.minNumActivitiesShown(2);
           await pageConditions.actionDispatched('WEB_CHAT/SAGA_ERROR');
 
-          // Wait until error status come up
+          // THEN: The error status should be displayed.
           await pageConditions.connectivityStatusShown(/render error/iu);
 
+          // THEN: SAGA_ERROR will cancel all sagas, thus, `activity.channelState.state` will become `"send failed"`.
+          //       As a result, the timestamp on the screenshot should become "Send failed, retry."
           await host.snapshot();
         },
         { ignoreErrors: true }
