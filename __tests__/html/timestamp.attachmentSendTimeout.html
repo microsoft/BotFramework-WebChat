@@ -65,9 +65,6 @@
           // WHEN: Sending out the file.
           await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
 
-          console.log(pageElements.activities());
-          console.log(pageElements.activityStatuses());
-
           // THEN: It should show "sending".
           //       Note the first activity is reserved for "run hook".
           await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
