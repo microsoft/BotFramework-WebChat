@@ -8,7 +8,7 @@ export default function deleteKey<TMap, TKey extends keyof TMap>(map: TMap, ...k
   const nextMap = { ...map };
 
   for (const key of keys) {
-    if (!isForbiddenPropertyName(key)) {
+    if (typeof key !== 'string' || !isForbiddenPropertyName(key)) {
       // Mitigation through denylisting.
       // eslint-disable-next-line security/detect-object-injection
       delete nextMap[key];
