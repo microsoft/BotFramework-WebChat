@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Activity, Message, User, CardActionTypes } from 'botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
-import { Dispatch, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
@@ -30,6 +30,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
+    private lastRenderScrollHeight = 0
 
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
@@ -45,7 +46,17 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             scrollToBottomDetectionTolerance = 70; // this should be in-sync with $actionsHeight scss var
         }
 
-        this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= scrollToBottomDetectionTolerance);
+        this.scrollToBottom = this.shouldScrollToBottom(scrollToBottomDetectionTolerance)
+    }
+    
+    shouldScrollToBottom = (detectionTolerance: number) => {
+      const didContentSizeChangeExternallyFromLastRender = this.scrollMe.scrollHeight !== this.lastRenderScrollHeight
+      
+      if(didContentSizeChangeExternallyFromLastRender) {
+        return this.scrollToBottom  // Carry value from last render cycle
+      }
+      
+      return Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= detectionTolerance
     }
 
     componentDidUpdate() {
@@ -75,6 +86,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             }
         }
 
+        this.lastRenderScrollHeight = this.scrollMe.scrollHeight
         this.autoscroll();
     }
 
