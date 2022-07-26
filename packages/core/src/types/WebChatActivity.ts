@@ -28,6 +28,34 @@ type ChannelData<SendState extends SupportedSendState | undefined, Type extends 
     ? {
         // TODO: [P2] #3953 Rename to "webchat:send-state".
         state: SendState;
+
+        // The newer "webchat:send-status" is slightly different than the previous "state".
+        // The difference is: the newer "webchat:send-status" use a hardcoded 5 minutes timeout, instead of user-defined timeout.
+        // We assume web developers will not set a timeout value longer than 5 minutes.
+        //
+        // The older one use a user-defined timeout, which could be a small number (say, 5s).
+        // At t=6s after a message is being sent, the message will be marked as "send failed" and the saga which "wait/listen to delivery status" will stop.
+        // Changing `styleOptions.sendTimeout` to 20s will not "revive" the message back to "sending" because the saga has already stopped.
+        // Thus, in our old code, we could not make the `state` field useful because it lacks "revivability". Thus, we simply ignored it.
+        // As the saga had already stopped, changing `styleOptions.sendTimeout` will not "revive" the message back to "sending."
+        // Not able to "revive" the message equally means our React props cannot be changed on-the-fly.
+        //
+        // The downside of not using `state` field means, if the activity fail immediately or fatally (e.g. network error),
+        // the UI will not change to "Send failed" until the specified timeout has passed.
+        //
+        // With the newer "webchat:send-status" field, the "send failed" state could means:
+        // - More than 5 minutes had passed while sending the activity;
+        // - Platform returned error (say HTTP 4xx/5xx or network error).
+        //
+        // UI should use `styleOptions.sendTimeout` with the `activity.localTimestamp` field to determines if the
+        // activity is visually timed out or not. And UI should expect `styleOptions` could change at any time.
+        //
+        // The 5 minutes timeout is currently hardcoded and should be large enough to support user-defined timeouts.
+        // As Redux Saga use stack/heap to keep track of waits and this could be expensive, the 5 minutes timeout will GC the waits.
+        // The hardcoded timeout value can be easily increased with the cost of memory.
+        //
+        // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
+        // 'webchat:send-status': SendState;
       }
     : {}) &
     (Type extends 'message'
