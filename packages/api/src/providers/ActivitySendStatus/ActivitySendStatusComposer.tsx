@@ -45,7 +45,7 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
             if (key) {
               if (!isSelfActivityInTransit(activity)) {
                 expiryByActivityKey.set(key, EXPIRY_SENT);
-              } else if (activity.channelData.state === 'send failed') {
+              } else if (activity.channelData['webchat:send-status'] === 'send failed') {
                 expiryByActivityKey.set(key, EXPIRY_SEND_FAILED);
               } else {
                 const expiry = +new Date(activity.localTimestamp) + getSendTimeoutForActivity({ activity });

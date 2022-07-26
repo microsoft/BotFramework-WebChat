@@ -26,7 +26,7 @@ type ChannelData<SendState extends SupportedSendState | undefined, Type extends 
     'webchat:sequence-id': number;
   } & (SendState extends SupportedSendState
     ? {
-        // TODO: [P2] #3953 Rename to "webchat:send-state".
+        // TODO: [P*] Resolves #3953.
         state: SendState;
 
         // The newer "webchat:send-status" is slightly different than the previous "state".
@@ -55,7 +55,7 @@ type ChannelData<SendState extends SupportedSendState | undefined, Type extends 
         // The hardcoded timeout value can be easily increased with the cost of memory.
         //
         // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
-        // 'webchat:send-status': SendState;
+        'webchat:send-status': SendState;
       }
     : {}) &
     (Type extends 'message'
@@ -190,10 +190,10 @@ function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
 function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfActivityFromServer {
   if (isSelfActivity(activity)) {
     const {
-      channelData: { state }
+      channelData: { 'webchat:send-status': sendStatus }
     } = activity;
 
-    return state === 'sending' || state === 'send failed';
+    return sendStatus !== 'sending' && sendStatus !== 'send failed';
   }
 
   return false;
@@ -202,10 +202,10 @@ function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfAc
 function isSelfActivityInTransit(activity: WebChatActivity): activity is SelfActivityInTransit {
   if (isSelfActivity(activity)) {
     const {
-      channelData: { state }
+      channelData: { 'webchat:send-status': sendStatus }
     } = activity;
 
-    return state === 'sending' || state === 'send failed';
+    return sendStatus === 'sending' || sendStatus === 'send failed';
   }
 
   return false;

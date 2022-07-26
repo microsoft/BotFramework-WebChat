@@ -4,6 +4,7 @@ import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import {
   POST_ACTIVITY,
   POST_ACTIVITY_FULFILLED,
+  POST_ACTIVITY_IMPEDED,
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
@@ -21,10 +22,16 @@ import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type {
   PostActivityAction,
   PostActivityFulfilledAction,
+  PostActivityImpededAction,
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
 import type { WebChatActivity } from '../types/WebChatActivity';
+import type { WebChatOutgoingActivity } from '../types/WebChatOutgoingActivity';
+
+// After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
+// This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
+const HARD_SEND_TIMEOUT = 300000;
 
 function* postActivity(
   directLine: DirectLineJSBotConnection,
@@ -40,18 +47,12 @@ function* postActivity(
     typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = new Date();
 
-  activity = {
+  // Currently, we allow untyped outgoing activity as long as the chat adapter can deliver.
+  // In the future, we should warn if the outgoing activity is not matching the type.
+  const outgoingActivity: WebChatOutgoingActivity = {
     ...deleteKey(activity, 'id'),
-    attachments:
-      attachments &&
-      attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
-        contentType,
-        contentUrl,
-        name,
-        thumbnailUrl
-      })),
     channelData: {
-      ...deleteKey(activity.channelData, 'state'),
+      ...deleteKey(activity.channelData, 'state', 'webchat:send-status'),
       clientActivityID
     },
     channelId: 'webchat',
@@ -62,12 +63,30 @@ function* postActivity(
     },
     locale,
     localTimestamp: dateToLocaleISOString(now),
-    localTimezone: localTimeZone
+    localTimezone: localTimeZone,
+    ...(activity.type === 'message'
+      ? {
+          attachments:
+            attachments &&
+            attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
+              contentType,
+              contentUrl,
+              name,
+              thumbnailUrl
+            })),
+          text: activity.text
+        }
+      : activity.type === 'event'
+      ? {
+          name: activity.name,
+          value: activity.value
+        }
+      : {})
   };
 
   if (!numActivitiesPosted) {
-    activity.entities = [
-      ...(activity.entities || []),
+    outgoingActivity.entities = [
+      ...(outgoingActivity.entities || []),
       {
         // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
         //       We need to understand why we need to send these, and only send capabilities the client have
@@ -81,7 +100,13 @@ function* postActivity(
 
   const meta: { clientActivityID: string; method: string } = { clientActivityID, method };
 
-  yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } } as PostActivityPendingAction);
+  yield put({
+    type: POST_ACTIVITY_PENDING,
+    meta,
+    payload: { activity: outgoingActivity }
+  } as PostActivityPendingAction);
+
+  let echoed: boolean | undefined;
 
   try {
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
@@ -93,6 +118,8 @@ function* postActivity(
           payload: { activity }
         }: IncomingActivityAction = yield take(INCOMING_ACTIVITY);
         if (activity.channelData?.clientActivityID === clientActivityID && activity.id) {
+          echoed = true;
+
           return activity;
         }
       }
@@ -110,16 +137,37 @@ function* postActivity(
     }: { send: { echoBack: WebChatActivity } } = yield race({
       send: all({
         echoBack: echoBackCall,
-        postActivity: observeOnce(directLine.postActivity(activity as DirectLineActivity))
+        postActivity: observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity))
       }),
-      timeout: call(() => sleep(sendTimeout).then(() => Promise.reject(new Error('timeout'))))
+      timeout: call(function* () {
+        yield call(() => sleep(sendTimeout));
+
+        // The IMPEDED action is for changing `channelData.state` to "send failed".
+        yield put({
+          type: POST_ACTIVITY_IMPEDED,
+          meta,
+          payload: { activity: outgoingActivity }
+        } as PostActivityImpededAction);
+
+        yield call(() => sleep(HARD_SEND_TIMEOUT - sendTimeout));
+
+        // TODO: [P*] Add tests.
+        throw !echoed
+          ? new Error('outgoing message did not echo back')
+          : new Error('call to postActivity did not return any values');
+      })
     });
 
     yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } } as PostActivityFulfilledAction);
   } catch (err) {
     console.error('botframework-webchat: Failed to post activity to chat adapter.', err);
 
-    yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: err } as PostActivityRejectedAction);
+    yield put({
+      type: POST_ACTIVITY_REJECTED,
+      error: true,
+      meta,
+      payload: err
+    } as PostActivityRejectedAction);
   } finally {
     if (yield cancelled()) {
       yield put({

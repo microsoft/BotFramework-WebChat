@@ -2,6 +2,7 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 
 type PostActivityActionType = 'DIRECT_LINE/POST_ACTIVITY';
 type PostActivityFulfilledActionType = 'DIRECT_LINE/POST_ACTIVITY_FULFILLED';
+type PostActivityImpededActionType = 'DIRECT_LINE/POST_ACTIVITY_IMPEDED';
 type PostActivityPendingActionType = 'DIRECT_LINE/POST_ACTIVITY_PENDING';
 type PostActivityRejectedActionType = 'DIRECT_LINE/POST_ACTIVITY_REJECTED';
 
@@ -15,6 +16,12 @@ type PostActivityFulfilledAction = {
   meta: { clientActivityID: string; method: string };
   payload: { activity: WebChatActivity };
   type: PostActivityFulfilledActionType;
+};
+
+type PostActivityImpededAction = {
+  meta: { clientActivityID: string; method: string };
+  payload: { activity: WebChatActivity };
+  type: PostActivityImpededActionType;
 };
 
 type PostActivityPendingAction = {
@@ -32,6 +39,7 @@ type PostActivityRejectedAction = {
 
 const POST_ACTIVITY: PostActivityActionType = 'DIRECT_LINE/POST_ACTIVITY';
 const POST_ACTIVITY_FULFILLED: PostActivityFulfilledActionType = `${POST_ACTIVITY}_FULFILLED`;
+const POST_ACTIVITY_IMPEDED: PostActivityImpededActionType = `${POST_ACTIVITY}_IMPEDED`;
 const POST_ACTIVITY_PENDING: PostActivityPendingActionType = `${POST_ACTIVITY}_PENDING`;
 const POST_ACTIVITY_REJECTED: PostActivityRejectedActionType = `${POST_ACTIVITY}_REJECTED`;
 
@@ -44,5 +52,11 @@ function postActivity(activity: WebChatActivity, method = 'keyboard'): PostActiv
 }
 
 export default postActivity;
-export { POST_ACTIVITY, POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED };
-export type { PostActivityAction, PostActivityFulfilledAction, PostActivityPendingAction, PostActivityRejectedAction };
+export { POST_ACTIVITY, POST_ACTIVITY_FULFILLED, POST_ACTIVITY_IMPEDED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED };
+export type {
+  PostActivityAction,
+  PostActivityFulfilledAction,
+  PostActivityImpededAction,
+  PostActivityPendingAction,
+  PostActivityRejectedAction
+};

@@ -5,13 +5,19 @@ import updateIn from 'simple-update-in';
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
-import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED } from '../actions/postActivity';
+import {
+  POST_ACTIVITY_FULFILLED,
+  POST_ACTIVITY_IMPEDED,
+  POST_ACTIVITY_PENDING,
+  POST_ACTIVITY_REJECTED
+} from '../actions/postActivity';
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 import type { DeleteActivityAction } from '../actions/deleteActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
 import type {
   PostActivityFulfilledAction,
+  PostActivityImpededAction,
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
@@ -22,6 +28,7 @@ type ActivitiesAction =
   | IncomingActivityAction
   | MarkActivityAction
   | PostActivityFulfilledAction
+  | PostActivityImpededAction
   | PostActivityPendingAction
   | PostActivityRejectedAction;
 
@@ -134,14 +141,18 @@ export default function activities(
           payload: { activity }
         } = action;
 
-        activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
+        activity = updateIn(
+          activity,
+          ['channelData', name => name === 'state' || name === 'webchat:send-status'],
+          () => SENDING
+        );
 
         state = upsertActivityWithSort(state, activity);
       }
 
       break;
 
-    case POST_ACTIVITY_REJECTED:
+    case POST_ACTIVITY_IMPEDED:
       state = updateIn(
         state,
         [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'state'],
@@ -150,10 +161,23 @@ export default function activities(
 
       break;
 
+    case POST_ACTIVITY_REJECTED:
+      state = updateIn(
+        state,
+        [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'webchat:send-status'],
+        () => SEND_FAILED
+      );
+
+      break;
+
     case POST_ACTIVITY_FULFILLED:
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () =>
         // We will replace the activity with the version from the server
-        updateIn(patchActivity(action.payload.activity, state[state.length - 1]), ['channelData', 'state'], () => SENT)
+        updateIn(
+          patchActivity(action.payload.activity, state[state.length - 1]),
+          ['channelData', name => name === 'state' || name === 'webchat:send-status'],
+          () => SENT
+        )
       );
 
       break;
