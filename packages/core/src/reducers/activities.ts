@@ -200,10 +200,7 @@ export default function activities(
         //            The echo back activity contains no `channelData['webchat:send-status']`.
         // This also applies to the older `channelData.state` field.
         if (isSelfActivity(activity)) {
-          const {
-            channelData: { clientActivityID },
-            id
-          } = activity;
+          const { channelData: { clientActivityID } = {}, id } = activity;
 
           const existingActivity = state.find(
             activity =>
