@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
-import { isSelfActivity, isSelfActivityInTransit } from 'botframework-webchat-core';
+import { isSelfActivity, isSelfActivitySendFailed, isSelfActivitySent } from 'botframework-webchat-core';
 import ActivitySendStatusContext from './private/Context';
 import freezeArray from '../../utils/freezeArray';
 import isDiffMap from './private/isDiffMap';
@@ -43,9 +43,9 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
             const key = getKeyByActivity(activity);
 
             if (key) {
-              if (!isSelfActivityInTransit(activity)) {
+              if (isSelfActivitySent(activity)) {
                 expiryByActivityKey.set(key, EXPIRY_SENT);
-              } else if (activity.channelData['webchat:send-status'] === 'send failed') {
+              } else if (isSelfActivitySendFailed(activity)) {
                 expiryByActivityKey.set(key, EXPIRY_SEND_FAILED);
               } else {
                 const expiry = +new Date(activity.localTimestamp) + getSendTimeoutForActivity({ activity });

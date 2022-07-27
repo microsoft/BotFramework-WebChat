@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      async function createDirectLineForTest() {
+        const directLine = await testHelpers.createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            if (activity.type === 'message') {
+              setTimeout(() => {
+                directLine.activityDeferredObservable.next({
+                  ...activity,
+                  id: 'a00001',
+                  timestamp: new Date().toISOString()
+                });
+              }, 1000);
+
+              return new Observable(() => {});
+            } else {
+              return workingDirectLine.postActivity(activity);
+            }
+          }
+        });
+
+        return directLine;
+      }
+
+      run(
+        async function () {
+          const clock = lolex.install();
+
+          WebChat.renderWebChat(
+            {
+              directLine: await createDirectLineForTest(),
+              store: testHelpers.createStore(),
+              styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.webChatRendered();
+
+          clock.tick(400);
+
+          // SETUP: Send a message
+          await pageConditions.uiConnected();
+          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          // THEN: The message should have status of "Sending".
+          await pageConditions.became(
+            'Both messages should have status of "Sending"',
+            () => pageElements.activityStatuses()[0].innerText === 'Sending',
+            1000
+          );
+          await host.snapshot();
+
+          // WHEN: After 20 seconds.
+          clock.tick(20000);
+
+          // THEN: `channelData.state` should be "send failed".
+          //       `channelData['webchat:send-status']` should be "sending".
+          await pageConditions.became(
+            'channelData.state should be "send failed" while channelData[\'webchat:send-status\'] should be "sending"',
+            () => {
+              const [{ channelData }] = pageObjects.getActivities();
+
+              console.log(channelData);
+
+              return channelData.state === 'send failed' && channelData['webchat:send-status'] === 'sending';
+            },
+            1000
+          );
+
+          // WHEN: After 280 seconds (at t=5m).
+          clock.tick(280000);
+
+          // THEN: `channelData.state` should be "send failed".
+          //       `channelData['webchat:send-status']` should be "send failed".
+          await pageConditions.became(
+            'channelData.state should be "send failed" while channelData[\'webchat:send-status\'] should be "send failed"',
+            () => {
+              const [{ channelData }] = pageObjects.getActivities();
+
+              return channelData.state === 'send failed' && channelData['webchat:send-status'] === 'send failed';
+            },
+            1000
+          );
+
+          // THEN: The console should have an error message saying "timed out while waiting for postActivity to return any values".
+          await pageConditions.errorMessageLogged('timed out while waiting for postActivity to return any values');
+
+          // THEN: Both messages should have status of "Send failed. Retry.".
+          await pageConditions.became(
+            'Both messages should have status of "Send failed. Retry."',
+            () => pageElements.activityStatuses()[0].innerText === 'Send failed. Retry.',
+            1000
+          );
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

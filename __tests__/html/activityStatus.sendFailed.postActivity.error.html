@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+       async function createDirectLineForTest() {
+        const directLine = await testHelpers.createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            if (activity.type === 'message') {
+              return new Observable(observer => {
+                setTimeout(() => observer.error(new Error('artificial error')), 1000);
+              });
+            } else {
+              return workingDirectLine.postActivity(activity);
+            }
+          }
+        });
+
+        return directLine;
+      }
+
+      run(
+        async function () {
+          const clock = lolex.install();
+
+          WebChat.renderWebChat(
+            {
+              directLine: await createDirectLineForTest(),
+              store: testHelpers.createStore(),
+              styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.webChatRendered();
+
+          clock.tick(400);
+
+          // SETUP: Send a message
+          await pageConditions.uiConnected();
+          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          // THEN: The message should have status of "Sending".
+          await pageConditions.became(
+            'Both messages should have status of "Sending"',
+            () => pageElements.activityStatuses()[0].innerText === 'Sending',
+            1000
+          );
+          await host.snapshot();
+
+          // WHEN: After 1 second.
+          clock.tick(1000);
+
+          // THEN: The console should have an error message saying "Failed to post activity to chat adapter."
+          await pageConditions.errorMessageLogged('Failed to post activity to chat adapter.');
+
+          // THEN: Both messages should have status of "Send failed. Retry.".
+          await pageConditions.became(
+            'Both messages should have status of "Send failed. Retry."',
+            () => pageElements.activityStatuses()[0].innerText === 'Send failed. Retry.',
+            1000
+          );
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

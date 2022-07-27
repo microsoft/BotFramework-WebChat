@@ -10,11 +10,10 @@
 import type { AnyAnd } from './AnyAnd';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
+import type { SupportedRole } from './internal/SupportedRole';
+import type { SupportedSendStatus } from './internal/SupportedSendStatus';
 
-type SupportedRole = 'bot' | 'channel' | 'user';
-type SupportedSendState = 'sending' | 'send failed' | 'sent';
-
-type ChannelData<SendState extends SupportedSendState | undefined, Type extends string> = AnyAnd<
+type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extends string> = AnyAnd<
   {
     // TODO: [P2] #3953 Rename to "webchat:attachment-sizes".
     attachmentSizes?: number[];
@@ -24,10 +23,10 @@ type ChannelData<SendState extends SupportedSendState | undefined, Type extends 
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
-  } & (SendState extends SupportedSendState
+  } & (SendStatus extends SupportedSendStatus
     ? {
         // TODO: [P*] Resolves #3953.
-        state: SendState;
+        state: SendStatus;
 
         // The newer "webchat:send-status" is slightly different than the previous "state".
         // The difference is: the newer "webchat:send-status" use a hardcoded 5 minutes timeout, instead of user-defined timeout.
@@ -55,7 +54,7 @@ type ChannelData<SendState extends SupportedSendState | undefined, Type extends 
         // The hardcoded timeout value can be easily increased with the cost of memory.
         //
         // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
-        'webchat:send-status': SendState;
+        'webchat:send-status': SendStatus;
       }
     : {}) &
     (Type extends 'message'
@@ -142,9 +141,9 @@ type TimestampInTransitEssence = {
 
 type TimestampEssence<
   Role extends SupportedRole,
-  SendState extends SupportedSendState | undefined
+  SendStatus extends SupportedSendStatus | undefined
 > = Role extends 'user'
-  ? SendState extends 'sending' | 'send failed'
+  ? SendStatus extends 'sending' | 'send failed'
     ? TimestampInTransitEssence
     : TimestampFromServerEssence
   : TimestampFromServerEssence;
@@ -153,17 +152,17 @@ type TimestampEssence<
 
 type CoreActivityEssence<
   Role extends SupportedRole,
-  SendState extends SupportedSendState | undefined,
+  SendStatus extends SupportedSendStatus | undefined,
   Type extends string = 'conversationUpdate' | 'event' | 'invoke' | 'message' | 'typing'
 > = {
-  channelData: ChannelData<SendState, Type>;
+  channelData: ChannelData<SendStatus, Type>;
   channelId?: string;
   entities?: Entity[];
   from: ChannelAcount<Role>;
   localTimezone?: string;
   replyToId?: string;
   type: string;
-} & TimestampEssence<Role, SendState> &
+} & TimestampEssence<Role, SendStatus> &
   (Type extends 'event'
     ? EventActivityEssence
     : Type extends 'message'
@@ -174,10 +173,11 @@ type CoreActivityEssence<
 
 // Concrete
 
-type SelfActivityInTransit = CoreActivityEssence<'user', 'sending' | 'send failed'>;
-type SelfActivityFromServer = CoreActivityEssence<'user', 'sent'>;
+type SelfActivitySendFailed = CoreActivityEssence<'user', 'send failed'>;
+type SelfActivitySending = CoreActivityEssence<'user', 'sending'>;
+type SelfActivitySent = CoreActivityEssence<'user', 'sent'>;
 
-type SelfActivity = SelfActivityInTransit | SelfActivityFromServer;
+type SelfActivity = SelfActivitySendFailed | SelfActivitySending | SelfActivitySent;
 
 type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
 
@@ -187,20 +187,29 @@ function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
   return activity.from.role === 'user';
 }
 
-function isSelfActivityInTransit(activity: WebChatActivity): activity is SelfActivityInTransit {
+function isSelfActivitySendFailed(activity: WebChatActivity): activity is SelfActivitySendFailed {
   if (isSelfActivity(activity)) {
-    const {
-      channelData: { 'webchat:send-status': sendStatus }
-    } = activity;
+    const { channelData } = activity;
 
-    return sendStatus === 'sending' || sendStatus === 'send failed';
+    // TODO: [P*] Add deprecation notes for older `channelData.state`.
+    return (channelData['webchat:send-status'] || channelData.state) === 'send failed';
   }
 
   return false;
 }
 
-function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfActivityFromServer {
-  return isSelfActivity(activity) && !isSelfActivityInTransit(activity);
+function isSelfActivitySent(activity: WebChatActivity): activity is SelfActivitySendFailed {
+  if (isSelfActivity(activity)) {
+    const { channelData } = activity;
+
+    return (channelData['webchat:send-status'] || channelData.state) === 'sent';
+  }
+
+  return false;
+}
+
+function isSelfActivitySending(activity: WebChatActivity): activity is SelfActivitySent {
+  return isSelfActivity(activity) && !isSelfActivitySendFailed(activity) && !isSelfActivitySent(activity);
 }
 
 function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
@@ -213,5 +222,5 @@ function isOthersActivity(activity: WebChatActivity): activity is OthersActivity
 
 type WebChatActivity = SelfActivity | OthersActivity;
 
-export { isOthersActivity, isSelfActivity, isSelfActivityFromServer, isSelfActivityInTransit };
+export { isOthersActivity, isSelfActivity, isSelfActivitySending, isSelfActivitySendFailed, isSelfActivitySent };
 export type { WebChatActivity };

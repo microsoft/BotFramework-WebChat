@@ -44,8 +44,8 @@ export const BotSignInToast = ({ notification }) => {
       ({ channelData: { invokeId: activityInvokeId } = {} }) => invokeId === activityInvokeId
     );
     if (invokeActivity) {
-      const { channelData: { state } = {} } = invokeActivity;
-      if (state === 'send failed') {
+      const { channelData: { 'webchat:send-status': sendStatus } = {} } = invokeActivity;
+      if (sendStatus === 'send failed') {
         dismissNotification(id);
         setNotification({
           id: 'traditionalbotauthentication',
@@ -53,7 +53,7 @@ export const BotSignInToast = ({ notification }) => {
           level: 'error',
           message: 'There was an error authenticating the bot.'
         });
-      } else if (state === 'sent') {
+      } else if (sendStatus === 'sent') {
         dismissNotification(id);
         setNotification({
           id: 'signinsuccessful',

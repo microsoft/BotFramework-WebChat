@@ -10,8 +10,9 @@ import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import {
   isOthersActivity,
   isSelfActivity,
-  isSelfActivityFromServer,
-  isSelfActivityInTransit
+  isSelfActivitySendFailed,
+  isSelfActivitySending,
+  isSelfActivitySent
 } from './types/WebChatActivity';
 import markActivity from './actions/markActivity';
 import OneOrMany from './types/OneOrMany';
@@ -66,8 +67,9 @@ export {
   isForbiddenPropertyName,
   isOthersActivity,
   isSelfActivity,
-  isSelfActivityFromServer,
-  isSelfActivityInTransit,
+  isSelfActivitySendFailed,
+  isSelfActivitySending,
+  isSelfActivitySent,
   markActivity,
   postActivity,
   sendEvent,

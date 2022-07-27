@@ -4,6 +4,7 @@ import updateIn from 'simple-update-in';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import { isSelfActivity } from '../types/WebChatActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
 import {
   POST_ACTIVITY_FULFILLED,
@@ -21,6 +22,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
+import type { SupportedSendStatus } from '../types/internal/SupportedSendStatus';
 import type { WebChatActivity } from '../types/WebChatActivity';
 
 type ActivitiesAction =
@@ -142,7 +144,7 @@ export default function activities(
         } = action;
 
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
+        activity = updateIn(activity, ['channelData', 'webchat:send-status'], (): SupportedSendStatus => 'sending');
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -162,7 +164,7 @@ export default function activities(
       state = updateIn(
         state,
         [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'webchat:send-status'],
-        () => SEND_FAILED
+        (): SupportedSendStatus => 'send failed'
       );
 
       break;
@@ -176,14 +178,52 @@ export default function activities(
           () => SENT
         );
 
-        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+        return updateIn(activity, ['channelData', 'webchat:send-status'], (): SupportedSendStatus => 'sent');
       });
 
       break;
 
     case INCOMING_ACTIVITY:
-      // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
-      state = upsertActivityWithSort(state, action.payload.activity);
+      {
+        let {
+          payload: { activity }
+        } = action;
+
+        // If the incoming activity is an echo back, we should keep the existing `channelData.state` and `channelData['webchat:send-status']` fields.
+        //
+        // Otherwise, it will fail following scenario:
+        // 1. Send an activity to the service
+        // 2. Service echoed back the activity
+        // 3. Service did NOT return `postActivity` call
+        // -  EXPECT: `channelData['webchat:send-status']` should be "sending".
+        // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
+        //            The echo back activity contains no `channelData['webchat:send-status']`.
+        // This also applies to the older `channelData.state` field.
+        if (isSelfActivity(activity)) {
+          const {
+            channelData: { clientActivityID },
+            id
+          } = activity;
+
+          const existingActivity = state.find(
+            activity =>
+              (clientActivityID && activity.channelData.clientActivityID === clientActivityID) ||
+              (id && activity.id === id)
+          );
+
+          if (existingActivity) {
+            activity = updateIn(activity, ['channelData', 'state'], () => existingActivity.channelData.state);
+            activity = updateIn(
+              activity,
+              ['channelData', 'webchat:send-status'],
+              () => existingActivity.channelData['webchat:send-status']
+            );
+          }
+        }
+
+        // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
+        state = upsertActivityWithSort(state, activity);
+      }
 
       break;
 

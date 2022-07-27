@@ -153,8 +153,8 @@ function* postActivity(
 
         // TODO: [P*] Add tests.
         throw !echoed
-          ? new Error('outgoing message did not echo back')
-          : new Error('call to postActivity did not return any values');
+          ? new Error('timed out while waiting for outgoing message to echo back')
+          : new Error('timed out while waiting for postActivity to return any values');
       })
     });
 
