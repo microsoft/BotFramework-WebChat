@@ -141,11 +141,8 @@ export default function activities(
           payload: { activity }
         } = action;
 
-        activity = updateIn(
-          activity,
-          ['channelData', name => name === 'state' || name === 'webchat:send-status'],
-          () => SENDING
-        );
+        activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
+        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -171,14 +168,16 @@ export default function activities(
       break;
 
     case POST_ACTIVITY_FULFILLED:
-      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () =>
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => {
         // We will replace the activity with the version from the server
-        updateIn(
+        const activity = updateIn(
           patchActivity(action.payload.activity, state[state.length - 1]),
-          ['channelData', name => name === 'state' || name === 'webchat:send-status'],
+          ['channelData', 'state'],
           () => SENT
-        )
-      );
+        );
+
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+      });
 
       break;
 

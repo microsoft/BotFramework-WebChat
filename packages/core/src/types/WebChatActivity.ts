@@ -187,18 +187,6 @@ function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
   return activity.from.role === 'user';
 }
 
-function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfActivityFromServer {
-  if (isSelfActivity(activity)) {
-    const {
-      channelData: { 'webchat:send-status': sendStatus }
-    } = activity;
-
-    return sendStatus !== 'sending' && sendStatus !== 'send failed';
-  }
-
-  return false;
-}
-
 function isSelfActivityInTransit(activity: WebChatActivity): activity is SelfActivityInTransit {
   if (isSelfActivity(activity)) {
     const {
@@ -209,6 +197,10 @@ function isSelfActivityInTransit(activity: WebChatActivity): activity is SelfAct
   }
 
   return false;
+}
+
+function isSelfActivityFromServer(activity: WebChatActivity): activity is SelfActivityFromServer {
+  return isSelfActivity(activity) && !isSelfActivityInTransit(activity);
 }
 
 function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
