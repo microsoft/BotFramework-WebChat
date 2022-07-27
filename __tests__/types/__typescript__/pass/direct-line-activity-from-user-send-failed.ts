@@ -4,6 +4,7 @@ import type { WebChatActivity } from '../../../../packages/core';
 const activity: WebChatActivity = {
   channelData: {
     state: 'send failed',
+    'webchat:send-status': 'send failed',
     'webchat:sequence-id': 0
   },
   from: {
