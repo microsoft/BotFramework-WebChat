@@ -17,7 +17,7 @@
             pageObjects
               .getActivities()
               .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-              .every(({ channelData: { state } }) => state === 'send failed'),
+              .every(({ channelData: { 'webchat:send-status': sendStatus } }) => sendStatus === 'send failed'),
           30000
         );
       }
@@ -59,6 +59,8 @@
 
           // WHEN: After 20 seconds.
           clock.tick(20000);
+
+          console.log(pageObjects.getActivities());
 
           // THEN: All outgoing messages should have `activity.channelData.state` of `"send failed"`.
           await allOutgoingMessagesSendFailed();
