@@ -58,9 +58,7 @@
 
         await pageConditions.became(
           'turn into "Send failed. Retry."',
-          () =>
-            document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText ===
-            'Send failed. Retry.',
+          () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
           1000
         );
 
@@ -71,7 +69,7 @@
 
         await pageConditions.became(
           'turn into "Sending"',
-          () => document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText === 'Sending',
+          () => pageElements.activityStatuses()[0]?.innerText === 'Sending',
           1000
         );
 
@@ -81,10 +79,8 @@
         clock.tick(5000);
 
         await pageConditions.became(
-          'turn into "Send failed. Retry.',
-          () =>
-            document.querySelector('.webchat__stacked-layout__status [aria-hidden]').innerText ===
-            'Send failed. Retry.',
+          'turn into "Send failed. Retry."',
+          () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
           1000
         );
 
