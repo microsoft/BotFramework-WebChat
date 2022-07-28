@@ -1,11 +1,9 @@
-import { Constants } from 'botframework-webchat-core';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { isSelfActivity, isSelfActivitySendFailed, isSelfActivitySending } from 'botframework-webchat-core';
 
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
-const {
-  ActivityClientState: { SENDING, SEND_FAILED, SENT }
-} = Constants;
+import type { SendStatus } from '../../providers/ActivitySendStatus/SendStatus';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   let lastBin: T[];
@@ -26,18 +24,15 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
-function sending(activity) {
-  if (activity.from.role === 'user') {
-    const state = activity.channelData?.state;
-
-    switch (state) {
-      case SENDING:
-      case SEND_FAILED:
-        return state;
-
-      default:
-        return SENT;
+function sending(activity): undefined | SendStatus {
+  if (isSelfActivity(activity)) {
+    if (isSelfActivitySending(activity)) {
+      return 'sending';
+    } else if (isSelfActivitySendFailed(activity)) {
+      return 'send failed';
     }
+
+    return 'sent';
   }
 }
 

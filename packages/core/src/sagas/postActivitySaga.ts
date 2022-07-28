@@ -151,7 +151,6 @@ function* postActivity(
 
         yield call(() => sleep(HARD_SEND_TIMEOUT - sendTimeout));
 
-        // TODO: [P*] Add tests.
         throw !echoed
           ? new Error('timed out while waiting for outgoing message to echo back')
           : new Error('timed out while waiting for postActivity to return any values');

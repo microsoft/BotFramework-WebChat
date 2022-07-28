@@ -42,7 +42,8 @@
             case 2000:
               directLine.activityDeferredObservable.next({
                 channelData: {
-                  state: 'sent'
+                  state: 'sent',
+                  // 'webchat:send-status': 'sent'
                 },
                 from: {
                   role: 'user'
@@ -58,7 +59,8 @@
             case 3000:
               directLine.activityDeferredObservable.next({
                 channelData: {
-                  state: 'sent'
+                  state: 'sent',
+                  // 'webchat:send-status': 'sent'
                 },
                 from: {
                   role: 'user'

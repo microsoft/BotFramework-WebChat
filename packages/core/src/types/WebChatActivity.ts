@@ -220,6 +220,8 @@ function isOthersActivity(activity: WebChatActivity): activity is OthersActivity
   return role === 'bot' || role === 'channel';
 }
 
+// TODO: [P*] Consider adding "markActivityAsSending" or similar functions that works in conjuction with "isSelfActivitySending" and etc.
+
 type WebChatActivity = SelfActivity | OthersActivity;
 
 export { isOthersActivity, isSelfActivity, isSelfActivitySending, isSelfActivitySendFailed, isSelfActivitySent };
