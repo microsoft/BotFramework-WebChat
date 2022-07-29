@@ -13,69 +13,9 @@
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
         const clock = lolex.install();
-
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            const returnPostActivityDeferred = createDeferred();
-
-            postActivityCallDeferred.resolve({ activity, returnPostActivityDeferred });
-
-            return new Observable(observer => {
-              (async function () {
-                try {
-                  const returnPostActivityValue = await returnPostActivityDeferred.promise;
-
-                  observer.next(await returnPostActivityDeferred.promise);
-                  observer.complete();
-                } catch (error) {
-                  observer.error(error);
-                }
-              })();
-            });
-          }
-        });
-
-        let postActivityCallDeferred;
-
         const store = testHelpers.createStore();
 
-        const sendMessage = async text => {
-          postActivityCallDeferred = createDeferred();
-
-          store.dispatch({
-            type: 'DIRECT_LINE/POST_ACTIVITY',
-            meta: { method: 'code' },
-            payload: {
-              activity: {
-                from: {
-                  id: 'user',
-                  role: 'user'
-                },
-                text,
-                type: 'message'
-              }
-            }
-          });
-
-          const { activity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
-
-          const id = Math.random().toString(36).substring(2, 7);
-          const timestamp = new Date().toISOString();
-
-          return {
-            echoBack: updater => {
-              let nextActivity = { ...activity, id, timestamp };
-
-              if (updater) {
-                nextActivity = updater(nextActivity);
-              }
-
-              directLine.activityDeferredObservable.next(nextActivity);
-            },
-            rejectPostActivity: error => returnPostActivityDeferred.reject(error),
-            resolvePostActivity: () => returnPostActivityDeferred.resolve(id)
-          };
-        };
+        const directLine = testHelpers.createDirectLineEmulator(store);
 
         WebChat.renderWebChat(
           {
@@ -91,62 +31,62 @@
 
         await pageConditions.webChatRendered();
 
-        directLine.activityDeferredObservable.next('Ullamco mollit sunt officia consectetur ex commodo.');
+        directLine.emulateIncomingActivity('Ullamco mollit sunt officia consectetur ex commodo.');
 
-        await pageConditions.numActivitiesShown(1);
+        // await pageConditions.numActivitiesShown(1);
 
-        directLine.activityDeferredObservable.next(
+        directLine.emulateIncomingActivity(
           'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.'
         );
 
-        await pageConditions.numActivitiesShown(2);
+        // await pageConditions.numActivitiesShown(2);
 
         clock.tick(60001);
 
-        directLine.activityDeferredObservable.next('Anim do voluptate eiusmod nostrud fugiat.');
+        directLine.emulateIncomingActivity('Anim do voluptate eiusmod nostrud fugiat.');
 
-        await pageConditions.numActivitiesShown(3);
+        // await pageConditions.numActivitiesShown(3);
 
         clock.tick(54000);
 
-        const sendMessage1 = await sendMessage(
+        const sendMessage1 = await directLine.emulateOutgoingActivity(
           'This will not be grouped initially because the next activity is not sent.'
         );
 
         sendMessage1.echoBack();
         sendMessage1.resolvePostActivity();
 
-        await pageConditions.numActivitiesShown(4);
+        // await pageConditions.numActivitiesShown(4);
 
-        const sendMessage2 = await sendMessage('A retry prompt must show on this activity.');
+        const sendMessage2 = await directLine.emulateOutgoingActivity('A retry prompt must show on this activity.');
 
-        await pageConditions.numActivitiesShown(5);
+        // await pageConditions.numActivitiesShown(5);
 
         clock.tick(1000);
 
-        const sendMessage3 = await sendMessage(
+        const sendMessage3 = await directLine.emulateOutgoingActivity(
           'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.'
         );
 
         sendMessage3.echoBack();
         sendMessage3.resolvePostActivity();
 
-        await pageConditions.numActivitiesShown(6);
+        // await pageConditions.numActivitiesShown(6);
 
-        const sendMessage4 = await sendMessage(
+        const sendMessage4 = await directLine.emulateOutgoingActivity(
           'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'
         );
 
         sendMessage4.echoBack();
         sendMessage4.resolvePostActivity();
 
-        await pageConditions.numActivitiesShown(7);
+        // await pageConditions.numActivitiesShown(7);
 
         clock.tick(2000);
 
-        const sendMessage5 = await sendMessage('This activity is being sent.');
+        const sendMessage5 = await directLine.emulateOutgoingActivity('This activity is being sent.');
 
-        await pageConditions.numActivitiesShown(8);
+        // await pageConditions.numActivitiesShown(8);
 
         clock.tick(4000);
         await host.snapshot();
