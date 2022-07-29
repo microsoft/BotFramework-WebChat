@@ -2,7 +2,7 @@ import { isSelfActivity } from '../WebChatActivity';
 
 import type { WebChatActivity } from '../WebChatActivity';
 
-function asSendFailed(activity: WebChatActivity): WebChatActivity {
+function markAsSendFailed(activity: WebChatActivity): WebChatActivity {
   if (isSelfActivity(activity)) {
     return {
       ...activity,
@@ -18,7 +18,7 @@ function asSendFailed(activity: WebChatActivity): WebChatActivity {
   return activity;
 }
 
-function asSending(activity: WebChatActivity): WebChatActivity {
+function markAsSending(activity: WebChatActivity): WebChatActivity {
   if (isSelfActivity(activity)) {
     return {
       ...activity,
@@ -34,7 +34,7 @@ function asSending(activity: WebChatActivity): WebChatActivity {
   return activity;
 }
 
-function asSent(activity: WebChatActivity): WebChatActivity {
+function markAsSent(activity: WebChatActivity): WebChatActivity {
   if (isSelfActivity(activity)) {
     return {
       ...activity,
@@ -50,4 +50,4 @@ function asSent(activity: WebChatActivity): WebChatActivity {
   return activity;
 }
 
-export { asSendFailed, asSending, asSent };
+export { markAsSendFailed, markAsSending, markAsSent };

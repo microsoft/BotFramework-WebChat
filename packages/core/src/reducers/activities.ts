@@ -2,7 +2,6 @@
 
 import updateIn from 'simple-update-in';
 
-import { asSendFailed, asSending, asSent } from '../types/internal/ActivitySendStatus';
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import {
@@ -12,6 +11,7 @@ import {
   isSelfActivitySent
 } from '../types/WebChatActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
+import { markAsSendFailed, markAsSending, markAsSent } from '../types/internal/ActivitySendStatus';
 import {
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_IMPEDED,
@@ -149,7 +149,7 @@ export default function activities(
         } = action;
 
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = asSending(activity);
+        activity = markAsSending(activity);
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -167,7 +167,7 @@ export default function activities(
 
     case POST_ACTIVITY_REJECTED:
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity =>
-        asSendFailed({ ...activity, channelData: { ...activity.channelData, state: SEND_FAILED } })
+        markAsSendFailed({ ...activity, channelData: { ...activity.channelData, state: SEND_FAILED } })
       );
 
       break;
@@ -181,7 +181,7 @@ export default function activities(
           () => SENT
         );
 
-        return asSent(activity);
+        return markAsSent(activity);
       });
 
       break;
@@ -213,11 +213,11 @@ export default function activities(
 
           if (existingActivity) {
             if (isSelfActivitySending(existingActivity)) {
-              activity = asSending(activity);
+              activity = markAsSending(activity);
             } else if (isSelfActivitySendFailed(existingActivity)) {
-              activity = asSendFailed(activity);
+              activity = markAsSendFailed(activity);
             } else if (isSelfActivitySent(existingActivity)) {
-              activity = asSent(activity);
+              activity = markAsSent(activity);
             }
           }
         }

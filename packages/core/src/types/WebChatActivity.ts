@@ -27,7 +27,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     ? {
         // TODO: [P*] Resolves #3953.
         /**
-         * @deprecated Since 4.15.3: Please use `useSendStatusByActivityKey()` hook instead.
+         * @deprecated Since 4.15.3: Please use `channelData['webchat:send-status']` or `useSendStatusByActivityKey()` hook instead.
          */
         state: SendStatus;
 
@@ -58,9 +58,17 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         //
         // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
 
-        // TODO: [P*] Rename to 'webchat:internal-send-status'.
         /**
-         * This is internal field, please use `useSendStatusByActivityKey()` hook instead.
+         * The send status of the activity.
+         *
+         * - `"sending"`, the activity is in-transit and it has not been timed out;
+         * - `"send failed"`, the activity cannot be delivered permanently and further processing had been stopped;
+         * - `"sent"`, the activity is delivered successfully.
+         *
+         * Due to network-related race conditions, the activity could be marked as `"send failed"` but delivered by the service.
+         * In this case, the activity should continue to mark as `"send failed"`.
+         *
+         * For further details, please see [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362).
          */
         'webchat:send-status': SendStatus;
       }
