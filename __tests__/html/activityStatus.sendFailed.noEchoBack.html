@@ -92,7 +92,8 @@
           // THEN: `channelData['webchat:send-status']` should be "sending".
           await activityChannelDataWebChatSendStatusBecame('sending');
 
-          // THEN: The message should have status of "Send failed. Retry.".
+          // THEN: The message should have status of "Send failed. Retry."
+          //       This is because the message passed 20s as defined in `styleOptions.sendTimeout`.
           await activityStatusInnerTextContained('Send failed. Retry.');
 
           // WHEN: After 280 seconds (at t=5m).

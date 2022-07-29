@@ -2,9 +2,15 @@
 
 import updateIn from 'simple-update-in';
 
+import { asSendFailed, asSending, asSent } from '../types/internal/ActivitySendStatus';
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
-import { isSelfActivity } from '../types/WebChatActivity';
+import {
+  isSelfActivity,
+  isSelfActivitySendFailed,
+  isSelfActivitySending,
+  isSelfActivitySent
+} from '../types/WebChatActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
 import {
   POST_ACTIVITY_FULFILLED,
@@ -22,7 +28,6 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import type { SupportedSendStatus } from '../types/internal/SupportedSendStatus';
 import type { WebChatActivity } from '../types/WebChatActivity';
 
 type ActivitiesAction =
@@ -144,7 +149,7 @@ export default function activities(
         } = action;
 
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = updateIn(activity, ['channelData', 'webchat:send-status'], (): SupportedSendStatus => 'sending');
+        activity = asSending(activity);
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -161,11 +166,9 @@ export default function activities(
       break;
 
     case POST_ACTIVITY_REJECTED:
-      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID), 'channelData'], channelData => {
-        channelData = updateIn(channelData, ['state'], () => SEND_FAILED);
-
-        return updateIn(channelData, ['webchat:send-status'], (): SupportedSendStatus => 'send failed');
-      });
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity =>
+        asSendFailed({ ...activity, channelData: { ...activity.channelData, state: SEND_FAILED } })
+      );
 
       break;
 
@@ -178,7 +181,7 @@ export default function activities(
           () => SENT
         );
 
-        return updateIn(activity, ['channelData', 'webchat:send-status'], (): SupportedSendStatus => 'sent');
+        return asSent(activity);
       });
 
       break;
@@ -209,11 +212,13 @@ export default function activities(
           );
 
           if (existingActivity) {
-            activity = updateIn(
-              activity,
-              ['channelData', 'webchat:send-status'],
-              () => existingActivity.channelData['webchat:send-status']
-            );
+            if (isSelfActivitySending(existingActivity)) {
+              activity = asSending(activity);
+            } else if (isSelfActivitySendFailed(existingActivity)) {
+              activity = asSendFailed(activity);
+            } else if (isSelfActivitySent(existingActivity)) {
+              activity = asSent(activity);
+            }
           }
         }
 

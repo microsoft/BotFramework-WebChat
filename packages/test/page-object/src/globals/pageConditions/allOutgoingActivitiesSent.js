@@ -7,7 +7,7 @@ export default function allOutgoingActivitiesSent() {
     () =>
       getActivities()
         .filter(({ from: { role }, name, type }) => role === 'user' && name !== '__RUN_HOOK' && type === 'message')
-        .every(({ channelData: { state } = {} }) => state === 'sent'),
+        .every(({ channelData: { 'webchat:send-status': sendStatus } = {} }) => sendStatus === 'sent'),
     15000
   );
 }

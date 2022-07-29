@@ -24,7 +24,7 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
-function sending(activity): undefined | SendStatus {
+function sendStatus(activity): SendStatus | undefined {
   if (isSelfActivity(activity)) {
     if (isSelfActivitySending(activity)) {
       return 'sending';
@@ -45,7 +45,7 @@ function shouldGroupTimestamp(
     // Hide timestamp for all activities.
     return true;
   } else if (activityX && activityY) {
-    if (sending(activityX) !== sending(activityY)) {
+    if (sendStatus(activityX) !== sendStatus(activityY)) {
       return false;
     }
 

@@ -52,6 +52,7 @@ function* postActivity(
   const outgoingActivity: WebChatOutgoingActivity = {
     ...deleteKey(activity, 'id'),
     channelData: {
+      // Remove local fields that should not be send to the service.
       ...deleteKey(activity.channelData, 'state', 'webchat:send-status'),
       clientActivityID
     },

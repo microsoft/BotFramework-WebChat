@@ -1,4 +1,3 @@
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
@@ -11,10 +10,6 @@ import useFocus from '../../../hooks/useFocus';
 import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer, usePostActivity } = hooks;
-
-const {
-  ActivityClientState: { SEND_FAILED, SENDING }
-} = Constants;
 
 const connectSendStatus = (...selectors) =>
   connectToWebChat(
@@ -35,10 +30,10 @@ const connectSendStatus = (...selectors) =>
 
 type SendStatusProps = {
   activity: WebChatActivity;
-  sendState: 'sending' | 'send failed' | 'sent';
+  sendStatus: 'sending' | 'send failed' | 'sent';
 };
 
-const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
+const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();
   const localize = useLocalizer();
@@ -61,9 +56,9 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
     <React.Fragment>
       {/* <ScreenReaderText text={label} /> */}
       <span className={sendStatusStyleSet}>
-        {sendState === SENDING ? (
+        {sendStatus === 'sending' ? (
           sendingText
-        ) : sendState === SEND_FAILED ? (
+        ) : sendStatus === 'send failed' ? (
           <SendFailedRetry onRetryClick={handleRetryClick} />
         ) : (
           false
@@ -74,14 +69,10 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendState }) => {
 };
 
 SendStatus.propTypes = {
+  activity: PropTypes.any.isRequired,
   // PropTypes cannot fully capture TypeScript types.
   // @ts-ignore
-  activity: PropTypes.shape({
-    channelData: PropTypes.shape({
-      state: PropTypes.string
-    })
-  }).isRequired,
-  sendState: PropTypes.oneOf([SENDING, SEND_FAILED]).isRequired
+  sendStatus: PropTypes.oneOf(['sending', 'send failed', 'sent']).isRequired
 };
 
 export default SendStatus;

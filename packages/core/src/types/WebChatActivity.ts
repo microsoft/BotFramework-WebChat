@@ -26,6 +26,9 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
   } & (SendStatus extends SupportedSendStatus
     ? {
         // TODO: [P*] Resolves #3953.
+        /**
+         * @deprecated Since 4.15.3: Please use `useSendStatusByActivityKey()` hook instead.
+         */
         state: SendStatus;
 
         // The newer "webchat:send-status" is slightly different than the previous "state".
@@ -54,6 +57,11 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         // The hardcoded timeout value can be easily increased with the cost of memory.
         //
         // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
+
+        // TODO: [P*] Rename to 'webchat:internal-send-status'.
+        /**
+         * This is internal field, please use `useSendStatusByActivityKey()` hook instead.
+         */
         'webchat:send-status': SendStatus;
       }
     : {}) &
@@ -183,6 +191,14 @@ type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
 
 // Exported
 
+function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
+  const {
+    from: { role }
+  } = activity;
+
+  return role === 'bot' || role === 'channel';
+}
+
 function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
   return activity.from.role === 'user';
 }
@@ -210,14 +226,6 @@ function isSelfActivitySent(activity: WebChatActivity): activity is SelfActivity
 
 function isSelfActivitySending(activity: WebChatActivity): activity is SelfActivitySent {
   return isSelfActivity(activity) && !isSelfActivitySendFailed(activity) && !isSelfActivitySent(activity);
-}
-
-function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
-  const {
-    from: { role }
-  } = activity;
-
-  return role === 'bot' || role === 'channel';
 }
 
 // TODO: [P*] Consider adding "markActivityAsSending" or similar functions that works in conjuction with "isSelfActivitySending" and etc.

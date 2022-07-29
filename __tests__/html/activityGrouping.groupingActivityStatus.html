@@ -5,180 +5,82 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      body.jest .lolex {
-        display: none;
-      }
-
-      .lolex {
-        left: 10px;
-        position: fixed;
-        top: 10px;
-      }
-
-      .lolex__clock {
-        font-family: Consolas, 'Courier New', Courier, monospace;
-      }
-    </style>
   </head>
   <body>
     <div id="webchat"></div>
-    <div class="lolex">
-      <button class="lolex__advance-button">Advance</button>
-      <span class="lolex__clock">t = 0</span>
-    </div>
     <script>
       run(async function () {
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
         const clock = lolex.install();
 
-        function refreshClock() {
-          const now = Date.now();
+        const directLine = await testHelpers.createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            const returnPostActivityDeferred = createDeferred();
 
-          document.querySelector('.lolex__clock').textContent = `t = ${now}`;
+            postActivityCallDeferred.resolve({ activity, returnPostActivityDeferred });
 
-          switch (now) {
-            case 2000:
-              directLine.activityDeferredObservable.next({
-                channelData: {
-                  state: 'sent',
-                  // 'webchat:send-status': 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '6.0',
-                text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.',
-                timestamp: 3000,
-                type: 'message'
-              });
+            return new Observable(observer => {
+              (async function () {
+                try {
+                  const returnPostActivityValue = await returnPostActivityDeferred.promise;
 
-              break;
-
-            case 3000:
-              directLine.activityDeferredObservable.next({
-                channelData: {
-                  state: 'sent',
-                  // 'webchat:send-status': 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '4.0',
-                text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.',
-                timestamp: -6001,
-                type: 'message'
-              });
-
-              break;
+                  observer.next(await returnPostActivityDeferred.promise);
+                  observer.complete();
+                } catch (error) {
+                  observer.error(error);
+                }
+              })();
+            });
           }
-        }
-
-        document.querySelector('.lolex__advance-button').addEventListener('click', () => {
-          clock.tick(1000);
-          refreshClock();
         });
 
-        const directLine = await testHelpers.createDirectLineWithTranscript([
-          {
-            from: {
-              role: 'bot'
+        let postActivityCallDeferred;
+
+        const store = testHelpers.createStore();
+
+        const sendMessage = async text => {
+          postActivityCallDeferred = createDeferred();
+
+          store.dispatch({
+            type: 'DIRECT_LINE/POST_ACTIVITY',
+            meta: { method: 'code' },
+            payload: {
+              activity: {
+                from: {
+                  id: 'user',
+                  role: 'user'
+                },
+                text,
+                type: 'message'
+              }
+            }
+          });
+
+          const { activity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
+
+          const id = Math.random().toString(36).substring(2, 7);
+          const timestamp = new Date().toISOString();
+
+          return {
+            echoBack: updater => {
+              let nextActivity = { ...activity, id, timestamp };
+
+              if (updater) {
+                nextActivity = updater(nextActivity);
+              }
+
+              directLine.activityDeferredObservable.next(nextActivity);
             },
-            id: '1.0',
-            text: 'Ullamco mollit sunt officia consectetur ex commodo.',
-            timestamp: -120002,
-            type: 'message'
-          },
-          {
-            from: {
-              role: 'bot'
-            },
-            id: '1.1',
-            text: 'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.',
-            timestamp: -120002,
-            type: 'message'
-          },
-          {
-            from: {
-              role: 'bot'
-            },
-            id: '2.0',
-            text: 'Anim do voluptate eiusmod nostrud fugiat.',
-            timestamp: -60001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '3.0',
-            text: 'This will not be grouped initially because the next activity is not sent.',
-            timestamp: -6001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              // "send failed" is actually ignored and treated as "sending".
-              // As long as this field is not "sent", we will consider it is "sending" or "send failed".
-              state: 'send failed'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '4.0',
-            localTimestamp: -6001,
-            text: 'A retry prompt must show on this activity.',
-            timestamp: -6001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '5.0',
-            text: 'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '5.1',
-            text: 'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sending',
-              'webchat:sequence-id': -5000.999
-            },
-            from: {
-              role: 'user'
-            },
-            id: '6.0',
-            localTimestamp: -3001,
-            text: 'This activity is being sent.',
-            timestamp: -3001,
-            type: 'message'
-          }
-        ]);
+            rejectPostActivity: error => returnPostActivityDeferred.reject(error),
+            resolvePostActivity: () => returnPostActivityDeferred.resolve(id)
+          };
+        };
 
         WebChat.renderWebChat(
           {
             directLine,
-            store: testHelpers.createStore(),
+            store,
             styleOptions: {
               groupTimestamp: 60000,
               sendTimeout: 5000
@@ -189,15 +91,80 @@
 
         await pageConditions.webChatRendered();
 
-        const advanceButton = document.querySelector('.lolex__advance-button');
+        directLine.activityDeferredObservable.next('Ullamco mollit sunt officia consectetur ex commodo.');
 
-        advanceButton.click();
+        await pageConditions.numActivitiesShown(1);
+
+        directLine.activityDeferredObservable.next(
+          'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.'
+        );
+
+        await pageConditions.numActivitiesShown(2);
+
+        clock.tick(60001);
+
+        directLine.activityDeferredObservable.next('Anim do voluptate eiusmod nostrud fugiat.');
+
+        await pageConditions.numActivitiesShown(3);
+
+        clock.tick(54000);
+
+        const sendMessage1 = await sendMessage(
+          'This will not be grouped initially because the next activity is not sent.'
+        );
+
+        sendMessage1.echoBack();
+        sendMessage1.resolvePostActivity();
+
+        await pageConditions.numActivitiesShown(4);
+
+        const sendMessage2 = await sendMessage('A retry prompt must show on this activity.');
+
+        await pageConditions.numActivitiesShown(5);
+
+        clock.tick(1000);
+
+        const sendMessage3 = await sendMessage(
+          'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.'
+        );
+
+        sendMessage3.echoBack();
+        sendMessage3.resolvePostActivity();
+
+        await pageConditions.numActivitiesShown(6);
+
+        const sendMessage4 = await sendMessage(
+          'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'
+        );
+
+        sendMessage4.echoBack();
+        sendMessage4.resolvePostActivity();
+
+        await pageConditions.numActivitiesShown(7);
+
+        clock.tick(2000);
+
+        const sendMessage5 = await sendMessage('This activity is being sent.');
+
+        await pageConditions.numActivitiesShown(8);
+
+        clock.tick(4000);
         await host.snapshot();
 
-        advanceButton.click();
+        clock.tick(1000);
+        sendMessage5.echoBack(activity => ({
+          ...activity,
+          text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.'
+        }));
+        sendMessage5.resolvePostActivity();
         await host.snapshot();
 
-        advanceButton.click();
+        clock.tick(1000);
+        sendMessage2.echoBack(activity => ({
+          ...activity,
+          text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.'
+        }));
+        sendMessage2.resolvePostActivity();
         await host.snapshot();
       });
     </script>

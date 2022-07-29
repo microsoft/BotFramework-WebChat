@@ -66,7 +66,7 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
   const now = Date.now();
 
   for (const [key, expiry] of expiryByActivityKey) {
-    nextSendStatusByActivityKey.set(key, expiry === EXPIRY_SENT ? 'sent' : expiry > now ? 'sending' : 'send failed');
+    nextSendStatusByActivityKey.set(key, expiry === EXPIRY_SENT ? 'sent' : now >= expiry ? 'send failed' : 'sending');
   }
 
   // Checks the result for memoization.

@@ -153,7 +153,8 @@ function generateTranscript() {
         ? {
             channelData: {
               clientActivityID: index + '',
-              state: 'sent'
+              state: 'sent',
+              'webchat:send-status': 'sent'
             }
           }
         : {}),
