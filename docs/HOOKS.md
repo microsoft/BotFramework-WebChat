@@ -1070,8 +1070,6 @@ To modify this value, change the value in the style options prop passed to Web C
 
 ## `useSendStatusByActivityKey`
 
-// TODO: [P*] Maybe rename to "send state" from "send status".
-
 <!-- prettier-ignore-start -->
 ```js
 useSendStatusByActivityKey(): [Map<string, 'sending' | 'send failed' | 'sent'>]

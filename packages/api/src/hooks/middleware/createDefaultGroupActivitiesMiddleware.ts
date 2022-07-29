@@ -24,6 +24,9 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
+// TODO: [P*] Consider using the newer `useSendStatusByActivityKey`.
+//       Also find out why it did not fail today.
+//       Maybe we did not have tests for "modifying sendTimeout and verify grouping is reflecting the change".
 function sendStatus(activity): SendStatus | undefined {
   if (isSelfActivity(activity)) {
     if (isSelfActivitySending(activity)) {

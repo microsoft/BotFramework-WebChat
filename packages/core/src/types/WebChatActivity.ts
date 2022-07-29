@@ -211,6 +211,8 @@ function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
   return activity.from.role === 'user';
 }
 
+// TODO: [P*] Can we not to export these functions and only mark them as internal?
+//       Web developers may only need `useSendStatusByActivityKey` hook only.
 function isSelfActivitySendFailed(activity: WebChatActivity): activity is SelfActivitySendFailed {
   if (isSelfActivity(activity)) {
     const { channelData } = activity;
