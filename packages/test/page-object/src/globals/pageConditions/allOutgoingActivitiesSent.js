@@ -5,7 +5,15 @@ export default function allOutgoingActivitiesSent() {
   return became(
     'all outgoing activities sent',
     () =>
-      activityStatuses().every(({ innerText }) => !innerText.includes('Send failed') && !innerText.includes('Sending')),
+      activityStatuses().every(activityStatusElement => {
+        if (!activityStatusElement) {
+          return true;
+        }
+
+        const { innerText } = activityStatusElement;
+
+        return !innerText.includes('Send failed') && !innerText.includes('Sending');
+      }),
     15000
   );
 }
