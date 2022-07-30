@@ -100,8 +100,15 @@ export default function createDirectLineEmulator(store) {
       const echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
 
       return {
-        echoBack: updater =>
-          activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity),
+        echoBack: async updater => {
+          activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
+
+          await became(
+            'echo back activity appears in the store',
+            () => store.getState().activities.find(activity => activity.id === id),
+            1000
+          );
+        },
         rejectPostActivity: error => returnPostActivityDeferred.reject(error),
         resolvePostActivity: () => returnPostActivityDeferred.resolve(id)
       };

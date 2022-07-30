@@ -33,19 +33,13 @@
 
         directLine.emulateIncomingActivity('Ullamco mollit sunt officia consectetur ex commodo.');
 
-        // await pageConditions.numActivitiesShown(1);
-
         directLine.emulateIncomingActivity(
           'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.'
         );
 
-        // await pageConditions.numActivitiesShown(2);
-
         clock.tick(60001);
 
         directLine.emulateIncomingActivity('Anim do voluptate eiusmod nostrud fugiat.');
-
-        // await pageConditions.numActivitiesShown(3);
 
         clock.tick(54000);
 
@@ -53,14 +47,10 @@
           'This will not be grouped initially because the next activity is not sent.'
         );
 
-        sendMessage1.echoBack();
+        await sendMessage1.echoBack();
         sendMessage1.resolvePostActivity();
 
-        // await pageConditions.numActivitiesShown(4);
-
         const sendMessage2 = await directLine.emulateOutgoingActivity('A retry prompt must show on this activity.');
-
-        // await pageConditions.numActivitiesShown(5);
 
         clock.tick(1000);
 
@@ -68,31 +58,25 @@
           'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.'
         );
 
-        sendMessage3.echoBack();
+        await sendMessage3.echoBack();
         sendMessage3.resolvePostActivity();
-
-        // await pageConditions.numActivitiesShown(6);
 
         const sendMessage4 = await directLine.emulateOutgoingActivity(
           'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'
         );
 
-        sendMessage4.echoBack();
+        await sendMessage4.echoBack();
         sendMessage4.resolvePostActivity();
-
-        // await pageConditions.numActivitiesShown(7);
 
         clock.tick(2000);
 
         const sendMessage5 = await directLine.emulateOutgoingActivity('This activity is being sent.');
 
-        // await pageConditions.numActivitiesShown(8);
-
         clock.tick(4000);
         await host.snapshot();
 
         clock.tick(1000);
-        sendMessage5.echoBack(activity => ({
+        await sendMessage5.echoBack(activity => ({
           ...activity,
           text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.'
         }));
@@ -100,7 +84,7 @@
         await host.snapshot();
 
         clock.tick(1000);
-        sendMessage2.echoBack(activity => ({
+        await sendMessage2.echoBack(activity => ({
           ...activity,
           text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.'
         }));
