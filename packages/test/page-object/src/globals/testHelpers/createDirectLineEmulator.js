@@ -16,6 +16,10 @@ function uniqueId() {
 }
 
 export default function createDirectLineEmulator(store) {
+  if (!store) {
+    throw new Error('"store" argument must be provided when calling createDirectLineEmulator().');
+  }
+
   const now = Date.now();
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
@@ -99,19 +103,25 @@ export default function createDirectLineEmulator(store) {
 
       const echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
 
-      return {
-        echoBack: async updater => {
-          activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
+      const echoBack = async updater => {
+        activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
 
-          await became(
-            'echo back activity appears in the store',
-            () => store.getState().activities.find(activity => activity.id === id),
-            1000
-          );
-        },
-        rejectPostActivity: error => returnPostActivityDeferred.reject(error),
-        resolvePostActivity: () => returnPostActivityDeferred.resolve(id)
+        await became(
+          'echo back activity appears in the store',
+          () => store.getState().activities.find(activity => activity.id === id),
+          1000
+        );
       };
+
+      const rejectPostActivity = error => returnPostActivityDeferred.reject(error);
+      const resolvePostActivity = () => returnPostActivityDeferred.resolve(id);
+
+      const resolveAll = async updater => {
+        await echoBack(updater);
+        resolvePostActivity();
+      };
+
+      return { echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
     }
   };
 }

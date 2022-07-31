@@ -93,8 +93,6 @@
           // THEN: The console should have an error message saying "artificial error"
           await pageConditions.errorMessageLogged('artificial error');
 
-          console.log(pageObjects.getActivities()[0]);
-
           // THEN: `channelData.state` should be "send failed".
           await activityChannelDataStateBecame('send failed');
 

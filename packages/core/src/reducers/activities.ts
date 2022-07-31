@@ -162,9 +162,11 @@ export default function activities(
       break;
 
     case POST_ACTIVITY_REJECTED:
-      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity =>
-        updateIn(activity, ['channelData', 'webchat:send-status'], () => 'send failed')
-      );
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity => {
+        activity = updateIn(activity, ['channelData', 'state'], () => 'send failed');
+
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => 'send failed');
+      });
 
       break;
 
