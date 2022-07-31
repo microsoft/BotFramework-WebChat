@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
-import { isSelfActivity, isSelfActivitySendFailed, isSelfActivitySent } from 'botframework-webchat-core';
 import ActivitySendStatusContext from './private/Context';
 import freezeArray from '../../utils/freezeArray';
 import isDiffMap from './private/isDiffMap';
@@ -39,13 +38,21 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
     () =>
       Object.freeze(
         activities.reduce<Map<string, number>>((expiryByActivityKey, activity) => {
-          if (isSelfActivity(activity)) {
+          if (activity.from.role === 'user') {
             const key = getKeyByActivity(activity);
 
             if (key) {
-              if (isSelfActivitySent(activity)) {
+              const {
+                channelData: { state, 'webchat:send-status': sendStatus }
+              } = activity;
+
+              // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+              // Please refer to #4362 for details. Remove on or after 2024-07-31.
+              const rectifiedSendStatus = sendStatus || (state === 'sent' ? 'sent' : 'sending');
+
+              if (rectifiedSendStatus === 'sent') {
                 expiryByActivityKey.set(key, EXPIRY_SENT);
-              } else if (isSelfActivitySendFailed(activity)) {
+              } else if (rectifiedSendStatus === 'send failed') {
                 expiryByActivityKey.set(key, EXPIRY_SEND_FAILED);
               } else {
                 const expiry = +new Date(activity.localTimestamp) + getSendTimeoutForActivity({ activity });

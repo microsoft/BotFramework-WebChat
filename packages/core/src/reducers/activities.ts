@@ -4,14 +4,7 @@ import updateIn from 'simple-update-in';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
-import {
-  isSelfActivity,
-  isSelfActivitySendFailed,
-  isSelfActivitySending,
-  isSelfActivitySent
-} from '../types/WebChatActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
-import { markAsSendFailed, markAsSending, markAsSent } from '../types/internal/ActivitySendStatus';
 import {
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_IMPEDED,
@@ -108,10 +101,9 @@ function upsertActivityWithSort(activities: WebChatActivity[], nextActivity: Web
 
   // Then, find the right (sorted) place to insert the new activity at, based on timestamp
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
-
   const indexToInsert = nextActivities.findIndex(
-    ({ channelData: { state, 'webchat:sequence-id': sequenceId } = {} }) =>
-      (sequenceId || 0) > (nextSequenceId || 0) && state !== SENDING && state !== SEND_FAILED
+    ({ channelData: { 'webchat:send-status': sendStatus, 'webchat:sequence-id': sequenceId } = {} }) =>
+      (sequenceId || 0) > (nextSequenceId || 0) && sendStatus !== 'sending' && sendStatus !== 'send failed'
   );
 
   // If no right place are found, append it
@@ -148,8 +140,10 @@ export default function activities(
           payload: { activity }
         } = action;
 
+        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+        // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = markAsSending(activity);
+        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => 'sending');
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -159,6 +153,8 @@ export default function activities(
     case POST_ACTIVITY_IMPEDED:
       state = updateIn(
         state,
+        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+        // Please refer to #4362 for details. Remove on or after 2024-07-31.
         [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'state'],
         () => SEND_FAILED
       );
@@ -167,7 +163,7 @@ export default function activities(
 
     case POST_ACTIVITY_REJECTED:
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity =>
-        markAsSendFailed({ ...activity, channelData: { ...activity.channelData, state: SEND_FAILED } })
+        updateIn(activity, ['channelData', 'webchat:send-status'], () => 'send failed')
       );
 
       break;
@@ -177,11 +173,13 @@ export default function activities(
         // We will replace the activity with the version from the server
         const activity = updateIn(
           patchActivity(action.payload.activity, state[state.length - 1]),
+          // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+          // Please refer to #4362 for details. Remove on or after 2024-07-31.
           ['channelData', 'state'],
           () => SENT
         );
 
-        return markAsSent(activity);
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => 'sent');
       });
 
       break;
@@ -192,7 +190,7 @@ export default function activities(
           payload: { activity }
         } = action;
 
-        // If the incoming activity is an echo back, we should keep the existing `channelData.state` and `channelData['webchat:send-status']` fields.
+        // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` fields.
         //
         // Otherwise, it will fail following scenario:
         // 1. Send an activity to the service
@@ -202,7 +200,7 @@ export default function activities(
         // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
         //            The echo back activity contains no `channelData['webchat:send-status']`.
         // This also applies to the older `channelData.state` field.
-        if (isSelfActivity(activity)) {
+        if (activity.from.role === 'user') {
           const { channelData: { clientActivityID } = {}, id } = activity;
 
           const existingActivity = state.find(
@@ -212,12 +210,12 @@ export default function activities(
           );
 
           if (existingActivity) {
-            if (isSelfActivitySending(existingActivity)) {
-              activity = markAsSending(activity);
-            } else if (isSelfActivitySendFailed(existingActivity)) {
-              activity = markAsSendFailed(activity);
-            } else if (isSelfActivitySent(existingActivity)) {
-              activity = markAsSent(activity);
+            const {
+              channelData: { 'webchat:send-status': sendStatus }
+            } = existingActivity;
+
+            if (sendStatus === 'send failed' || sendStatus === 'sending' || sendStatus === 'sent') {
+              activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
             }
           }
         }

@@ -1,5 +1,3 @@
-import { isSelfActivity, isSelfActivitySendFailed, isSelfActivitySending } from 'botframework-webchat-core';
-
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 import type { SendStatus } from '../../providers/ActivitySendStatus/SendStatus';
@@ -24,18 +22,15 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
-// TODO: [P*] Consider using the newer `useSendStatusByActivityKey`.
-//       Also find out why it did not fail today.
-//       Maybe we did not have tests for "modifying sendTimeout and verify grouping is reflecting the change".
-function sendStatus(activity): SendStatus | undefined {
-  if (isSelfActivity(activity)) {
-    if (isSelfActivitySending(activity)) {
-      return 'sending';
-    } else if (isSelfActivitySendFailed(activity)) {
-      return 'send failed';
-    }
+function sendStatus(activity: WebChatActivity): SendStatus | undefined {
+  if (activity.from.role === 'user') {
+    const {
+      channelData: { state, 'webchat:send-status': sendStatus }
+    } = activity;
 
-    return 'sent';
+    // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+    // Please refer to #4362 for details. Remove on or after 2024-07-31.
+    return sendStatus || (state === 'sent' ? 'sent' : 'sending');
   }
 }
 

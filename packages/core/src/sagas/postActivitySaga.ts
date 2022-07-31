@@ -53,6 +53,8 @@ function* postActivity(
     ...deleteKey(activity, 'id'),
     channelData: {
       // Remove local fields that should not be send to the service.
+      // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+      // Please refer to #4362 for details. Remove on or after 2024-07-31.
       ...deleteKey(activity.channelData, 'state', 'webchat:send-status'),
       clientActivityID
     },

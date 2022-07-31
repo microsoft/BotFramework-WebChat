@@ -28,6 +28,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         // TODO: [P*] Resolves #3953.
         /**
          * @deprecated Since 4.15.3: Please use `channelData['webchat:send-status']` or `useSendStatusByActivityKey()` hook instead.
+         *             Please refer to https://github.com/microsoft/BotFramework-WebChat/pull/4362 for details. This field will be removed on or after 2024-07-31.
          */
         state: SendStatus;
 
@@ -189,58 +190,16 @@ type CoreActivityEssence<
 
 // Concrete
 
+type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
+
 type SelfActivitySendFailed = CoreActivityEssence<'user', 'send failed'>;
 type SelfActivitySending = CoreActivityEssence<'user', 'sending'>;
 type SelfActivitySent = CoreActivityEssence<'user', 'sent'>;
 
 type SelfActivity = SelfActivitySendFailed | SelfActivitySending | SelfActivitySent;
 
-type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
-
 // Exported
-
-function isOthersActivity(activity: WebChatActivity): activity is OthersActivity {
-  const {
-    from: { role }
-  } = activity;
-
-  return role === 'bot' || role === 'channel';
-}
-
-function isSelfActivity(activity: WebChatActivity): activity is SelfActivity {
-  return activity.from.role === 'user';
-}
-
-// TODO: [P*] Can we not to export these functions and only mark them as internal?
-//       Web developers may only need `useSendStatusByActivityKey` hook only.
-function isSelfActivitySendFailed(activity: WebChatActivity): activity is SelfActivitySendFailed {
-  if (isSelfActivity(activity)) {
-    const { channelData } = activity;
-
-    // TODO: [P*] Add deprecation notes for older `channelData.state`.
-    return (channelData['webchat:send-status'] || channelData.state) === 'send failed';
-  }
-
-  return false;
-}
-
-function isSelfActivitySent(activity: WebChatActivity): activity is SelfActivitySendFailed {
-  if (isSelfActivity(activity)) {
-    const { channelData } = activity;
-
-    return (channelData['webchat:send-status'] || channelData.state) === 'sent';
-  }
-
-  return false;
-}
-
-function isSelfActivitySending(activity: WebChatActivity): activity is SelfActivitySent {
-  return isSelfActivity(activity) && !isSelfActivitySendFailed(activity) && !isSelfActivitySent(activity);
-}
-
-// TODO: [P*] Consider adding "markActivityAsSending" or similar functions that works in conjuction with "isSelfActivitySending" and etc.
 
 type WebChatActivity = SelfActivity | OthersActivity;
 
-export { isOthersActivity, isSelfActivity, isSelfActivitySending, isSelfActivitySendFailed, isSelfActivitySent };
 export type { WebChatActivity };
