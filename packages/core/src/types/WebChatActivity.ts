@@ -30,7 +30,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
          * @deprecated Since 4.15.3: Please use `channelData['webchat:send-status']` or `useSendStatusByActivityKey()` hook instead.
          *             Please refer to https://github.com/microsoft/BotFramework-WebChat/pull/4362 for details. This field will be removed on or after 2024-07-31.
          */
-        state: SendStatus;
+        state?: SendStatus;
 
         // The newer "webchat:send-status" is slightly different than the previous "state".
         // The difference is: the newer "webchat:send-status" use a hardcoded 5 minutes timeout, instead of user-defined timeout.

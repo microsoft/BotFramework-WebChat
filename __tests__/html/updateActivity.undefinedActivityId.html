@@ -39,18 +39,29 @@
 
         await pageConditions.uiConnected();
 
+        // WHEN: An "echo" message is being sent to the bot.
         await pageObjects.sendMessageViaSendBox('echo This message will not be replaced by a carousel.', {
           waitForSend: true
         });
+
+        // THEN: Both bot replies will have `activity.id` of `undefined`.
+        //       Although the ID is duplicated, it is falsy, thus, we are treating them different ID.
+        //       Thus, it should show 3 messages: 1 outgoing and 2 incoming.
         await pageConditions.numActivitiesShown(3);
 
+        // THEN: It should show 3 messages.
         await host.snapshot();
 
+        // THEN: A "carousel" message is being sent.
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
+        // THEN: It should show 5 messages in total, where 2 are new incoming messages related to carousel.
         await pageConditions.numActivitiesShown(5);
+
+        // WHEN: All images are loaded.
         await pageConditions.allImagesLoaded();
 
+        // THEN: It should show 5 messages in total.
         await host.snapshot();
       });
     </script>

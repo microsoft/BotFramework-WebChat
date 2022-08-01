@@ -51,7 +51,7 @@
           // THEN: The error status should be displayed.
           await pageConditions.connectivityStatusShown(/render error/iu);
 
-          // THEN: SAGA_ERROR will cancel all sagas, thus, `activity.channelState.state` will become `"send failed"`.
+          // THEN: SAGA_ERROR will cancel all sagas, thus, `activity.channelState['webchat:send-status']` will become `"send failed"`.
           //       As a result, the timestamp on the screenshot should become "Send failed, retry."
           await host.snapshot();
         },
