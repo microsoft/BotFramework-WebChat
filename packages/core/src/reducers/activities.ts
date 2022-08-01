@@ -99,11 +99,9 @@ function upsertActivityWithSort(activities: WebChatActivity[], nextActivity: Web
       !(nextClientActivityID && clientActivityID === nextClientActivityID) && !(id && id === nextActivity.id)
   );
 
-  // Then, find the right (sorted) place to insert the new activity at, based on timestamp
-  // Since clockskew might happen, we will ignore timestamp on messages that are sending
+  // Then, find the right (sorted) place to insert the new activity at, based on sequence ID.
   const indexToInsert = nextActivities.findIndex(
-    ({ channelData: { 'webchat:send-status': sendStatus, 'webchat:sequence-id': sequenceId } = {} }) =>
-      (sequenceId || 0) > (nextSequenceId || 0) && sendStatus !== 'sending' && sendStatus !== 'send failed'
+    ({ channelData: { 'webchat:sequence-id': sequenceId } = {} }) => (sequenceId || 0) > (nextSequenceId || 0)
   );
 
   // If no right place are found, append it

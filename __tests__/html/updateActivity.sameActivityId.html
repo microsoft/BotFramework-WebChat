@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const workingDirectLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        let firstBotActivityId;
+        let firstBotActivityTimestamp;
+
+        const directLine = {
+          activity$: workingDirectLine.activity$.map(activity => {
+            if (!activity.channelData && activity.type === 'message') {
+              // Duplicate the ID using the first message activity from bot.
+
+              if (firstBotActivityId) {
+                return Object.assign({}, activity, {
+                  id: firstBotActivityId,
+                  timestamp: firstBotActivityTimestamp
+                });
+              }
+
+              firstBotActivityId = activity.id;
+              firstBotActivityTimestamp = activity.timestamp;
+            }
+
+            return activity;
+          }),
+          connectionStatus$: workingDirectLine.connectionStatus$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          token: workingDirectLine.token
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('echo This message will be replaced by a carousel.', {
+          waitForSend: true
+        });
+        await pageConditions.numActivitiesShown(2);
+
+        await host.snapshot();
+
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
