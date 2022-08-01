@@ -26,7 +26,6 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     'webchat:sequence-id': number;
   } & (SendStatus extends SupportedSendStatus
     ? {
-        // TODO: [P*] Resolves #3953.
         /**
          * @deprecated Since 4.15.3: Please use `channelData['webchat:send-status']` or `useSendStatusByActivityKey()` hook instead.
          *             Please refer to https://github.com/microsoft/BotFramework-WebChat/pull/4362 for details. This field will be removed on or after 2024-07-31.

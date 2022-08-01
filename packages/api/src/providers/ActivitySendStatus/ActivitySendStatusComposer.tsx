@@ -33,8 +33,8 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
    * - `-Infinity` if the activity failed to send (a.k.a. already expired), otherwise;
    * - An epoch time of when the activity will be expired.
    */
-  // TODO: [P*] We could build a `useMemoMap()` hook to memoize mapper function more efficiently.
   const expiryByActivityKey = useMemo<ReadonlyMap<string, number>>(
+    // We could build a `useMemoMap()` hook to memoize mapper function more efficiently.
     () =>
       Object.freeze(
         activities.reduce<Map<string, number>>((expiryByActivityKey, activity) => {
