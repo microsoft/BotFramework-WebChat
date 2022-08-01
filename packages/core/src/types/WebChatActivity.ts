@@ -57,7 +57,10 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         // As Redux Saga use stack/heap to keep track of waits and this could be expensive, the 5 minutes timeout will GC the waits.
         // The hardcoded timeout value can be easily increased with the cost of memory.
         //
-        // In the future, if we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
+        // In the future:
+        //
+        // -  If we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
+        // -  This flag is set by Web Chat. We should move this flag to somewhere internal and not modifiable/overrideable by chat adapter developers.
 
         /**
          * The send status of the activity.
