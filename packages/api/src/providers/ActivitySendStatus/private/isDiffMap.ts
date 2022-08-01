@@ -3,10 +3,9 @@
  *
  * The equality of the value is compared using `Object.is`.
  */
-// TODO: [P*] Add unit tests.
 export default function isDiffMap<K, V>(x: ReadonlyMap<K, V>, y: ReadonlyMap<K, V>): boolean {
-  const xKeys = new Set(x.keys());
-  const yKeys = new Set(y.keys());
+  const xKeys = new Set(x?.keys());
+  const yKeys = new Set(y?.keys());
 
   if (xKeys.size !== yKeys.size) {
     return true;
