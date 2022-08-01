@@ -208,6 +208,8 @@ type ComposerCoreProps = {
 
   /** @deprecated Please use "activityMiddleware" instead. */
   activityRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
+  /** @deprecated Please use "activityStatusMiddleware" instead. */
+  activityStatusRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
   /** @deprecated Please use "attachmentMiddleware" instead. */
   attachmentRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
   /** @deprecated Please use "avatarMiddleware" instead. */
@@ -227,8 +229,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
-  attachmentMiddleware,
+  activityStatusRenderer,
   attachmentForScreenReaderMiddleware,
+  attachmentMiddleware,
   attachmentRenderer,
   avatarMiddleware,
   avatarRenderer,
@@ -386,16 +389,22 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     );
   }, [activityMiddleware, activityRenderer]);
 
-  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
-    () =>
+  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(() => {
+    activityStatusRenderer &&
+      console.warn(
+        'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15, please use "activityStatusMiddleware" instead.'
+      );
+
+    return (
+      activityStatusRenderer ||
       applyMiddlewareForRenderer(
         'activity status',
         { strict: false },
         ...singleToArray(activityStatusMiddleware),
         () => () => () => false
-      )({}),
-    [activityStatusMiddleware]
-  );
+      )({})
+    );
+  }, [activityStatusMiddleware, activityStatusRenderer]);
 
   const patchedAttachmentForScreenReaderRenderer = useMemo(
     () =>
@@ -613,6 +622,7 @@ ComposerCore.defaultProps = {
   activityMiddleware: undefined,
   activityRenderer: undefined,
   activityStatusMiddleware: undefined,
+  activityStatusRenderer: undefined,
   attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
   attachmentRenderer: undefined,
@@ -648,6 +658,7 @@ ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
+  activityStatusRenderer: PropTypes.func,
   attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentRenderer: PropTypes.func,
