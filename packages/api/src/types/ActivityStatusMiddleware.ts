@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react';
-import type { SendState } from './SendState';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 // TODO: Migrate this legacy middleware signature.
 type RenderActivityStatusOptions = {
   activity: WebChatActivity;
   hideTimestamp: boolean;
-  sendState: SendState;
+  sendState: 'sending' | 'send failed' | 'sent';
 
   // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
   /** @deprecated */

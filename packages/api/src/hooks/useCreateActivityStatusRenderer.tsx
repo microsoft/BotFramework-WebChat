@@ -28,7 +28,6 @@ const ActivityStatusContainerCore: VFC<InnerActivityStatusContainerProps> = memo
     return createActivityStatusRenderer({
       activity,
       hideTimestamp,
-      // TODO: [P*] Remove deprecated.
       nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
       sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
       sendState: sendStatus === 'send failed' || sendStatus === 'sent' ? sendStatus : 'sending'
