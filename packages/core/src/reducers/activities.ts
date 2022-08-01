@@ -200,6 +200,12 @@ export default function activities(
         // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
         //            The echo back activity contains no `channelData['webchat:send-status']`.
         // This also applies to the older `channelData.state` field.
+        //
+        // In the future, when we revamp our object model, we could use a different signal so we don't need the code below:
+        // -  If `activity.id` is set, it is "sent";
+        // -  If `activity.id` is not set, it is either "sending" or "send failed";
+        //    - `activity.channelData['webchat:send-failed-reason']` is set, it is "send failed", otherwise;
+        //    - It is sending.
         if (activity.from.role === 'user') {
           const { id } = activity;
           const clientActivityID = getClientActivityID(activity);
