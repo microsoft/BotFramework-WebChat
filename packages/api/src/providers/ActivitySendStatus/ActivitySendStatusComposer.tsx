@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 import ActivitySendStatusContext from './private/Context';
 import freezeArray from '../../utils/freezeArray';
-import isDiffMap from './private/isDiffMap';
+import isMapEqual from './private/isMapEqual';
 import useActivities from '../../hooks/useActivities';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
@@ -77,7 +77,7 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
   }
 
   // Checks the result for memoization.
-  if (isDiffMap(sendStatusByActivityKeyRef.current, nextSendStatusByActivityKey)) {
+  if (!isMapEqual(sendStatusByActivityKeyRef.current, nextSendStatusByActivityKey)) {
     sendStatusByActivityKeyRef.current = Object.freeze(nextSendStatusByActivityKey);
   }
 
