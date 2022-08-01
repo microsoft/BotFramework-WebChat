@@ -146,6 +146,8 @@ function* postActivity(
         yield call(() => sleep(sendTimeout));
 
         // The IMPEDED action is for changing `channelData.state` to "send failed".
+        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+        // Please refer to #4362 for details. Remove on or after 2024-07-31.
         yield put({
           type: POST_ACTIVITY_IMPEDED,
           meta,
