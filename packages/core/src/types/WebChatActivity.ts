@@ -10,8 +10,9 @@
 import type { AnyAnd } from './AnyAnd';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
-import type { SupportedRole } from './internal/SupportedRole';
-import type { SupportedSendStatus } from './internal/SupportedSendStatus';
+
+type SupportedRole = 'bot' | 'channel' | 'user';
+type SupportedSendStatus = 'sending' | 'send failed' | 'sent';
 
 type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extends string> = AnyAnd<
   {

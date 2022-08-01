@@ -1,7 +1,13 @@
+import { Constants } from 'botframework-webchat-core';
+
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 import type { SendStatus } from '../../providers/ActivitySendStatus/SendStatus';
 import type { WebChatActivity } from 'botframework-webchat-core';
+
+const {
+  ActivityClientState: { SENT }
+} = Constants;
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   let lastBin: T[];
@@ -22,7 +28,7 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   return bins;
 }
 
-function sendStatus(activity: WebChatActivity): SendStatus | undefined {
+function sending(activity: WebChatActivity): SendStatus | undefined {
   if (activity.from.role === 'user') {
     const {
       channelData: { state, 'webchat:send-status': sendStatus }
@@ -30,7 +36,7 @@ function sendStatus(activity: WebChatActivity): SendStatus | undefined {
 
     // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
     // Please refer to #4362 for details. Remove on or after 2024-07-31.
-    return sendStatus || (state === 'sent' ? 'sent' : 'sending');
+    return sendStatus || (state === 'sent' ? SENT : 'sending');
   }
 }
 
@@ -43,7 +49,7 @@ function shouldGroupTimestamp(
     // Hide timestamp for all activities.
     return true;
   } else if (activityX && activityY) {
-    if (sendStatus(activityX) !== sendStatus(activityY)) {
+    if (sending(activityX) !== sending(activityY)) {
       return false;
     }
 

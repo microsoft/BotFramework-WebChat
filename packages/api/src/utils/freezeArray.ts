@@ -2,7 +2,7 @@ function freezeArray<T>(array: [T]): readonly [T];
 function freezeArray<T1, T2>(array: [T1, T2]): readonly [T1, T2];
 function freezeArray<T1, T2, T3>(array: [T1, T2, T3]): readonly [T1, T2, T3];
 function freezeArray<T1, T2, T3, T4>(array: [T1, T2, T3, T4]): readonly [T1, T2, T3, T4];
-function freezeArray<T1, T2, T3, T4, T5>(array: [T1, T2, T3, T4, T5]): readonly [T1, T2, T3, T4];
+function freezeArray<T1, T2, T3, T4, T5>(array: [T1, T2, T3, T4, T5]): readonly [T1, T2, T3, T4, T5];
 function freezeArray<T>(array: T[]): readonly T[];
 
 /**

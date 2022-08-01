@@ -163,7 +163,7 @@ export default function activities(
 
     case POST_ACTIVITY_REJECTED:
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity => {
-        activity = updateIn(activity, ['channelData', 'state'], () => 'send failed');
+        activity = updateIn(activity, ['channelData', 'state'], () => SEND_FAILED);
 
         return updateIn(activity, ['channelData', 'webchat:send-status'], () => 'send failed');
       });
@@ -203,12 +203,12 @@ export default function activities(
         //            The echo back activity contains no `channelData['webchat:send-status']`.
         // This also applies to the older `channelData.state` field.
         if (activity.from.role === 'user') {
-          const { channelData: { clientActivityID } = {}, id } = activity;
+          const { id } = activity;
+          const clientActivityID = getClientActivityID(activity);
 
           const existingActivity = state.find(
             activity =>
-              (clientActivityID && activity.channelData.clientActivityID === clientActivityID) ||
-              (id && activity.id === id)
+              (clientActivityID && getClientActivityID(activity) === clientActivityID) || (id && activity.id === id)
           );
 
           if (existingActivity) {
