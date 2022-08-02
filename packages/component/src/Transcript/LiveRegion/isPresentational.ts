@@ -1,9 +1,10 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 /**
- * Checks if the rendering activity is presentational or not. Returns `true` if presentational and should not be narrated, otherwise, `false`.
+ * Determines if the rendering activity is presentational or not.
+ * Returns `true` if the activity is presentational and should not be read by screen reader, otherwise, `false`.
  *
- * Presentational activity, will be rendered visually but not going through screen reader.
+ * @returns {boolean} `true` if the activity is presentational and should not be read by screen reader, otherwise, `false`.
  */
 export default function isPresentational(activity: WebChatActivity): boolean {
   if (activity.type !== 'message') {

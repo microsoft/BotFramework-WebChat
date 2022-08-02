@@ -27,6 +27,8 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
  * Computes accessible name of an activity during transcript navigation.
  *
  * This text should be kept simple and short.
+ *
+ * Due to a bug in Safari, accessible name for active descendant must be a string but not a DOM element.
  */
 export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
   const [{ initials: botInitials }] = useAvatarForBot();

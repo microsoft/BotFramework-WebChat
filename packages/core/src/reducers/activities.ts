@@ -193,18 +193,19 @@ export default function activities(
         // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` fields.
         //
         // Otherwise, it will fail following scenario:
+        //
         // 1. Send an activity to the service
         // 2. Service echoed back the activity
         // 3. Service did NOT return `postActivity` call
         // -  EXPECT: `channelData['webchat:send-status']` should be "sending".
         // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
         //            The echo back activity contains no `channelData['webchat:send-status']`.
-        // This also applies to the older `channelData.state` field.
         //
-        // In the future, when we revamp our object model, we could use a different signal so we don't need the code below:
-        // -  If `activity.id` is set, it is "sent";
+        // In the future, when we revamp our object model, we could use a different signal so we don't need the code below, for example:
+        //
+        // -  If `activity.id` is set, it is "sent", because the chat service assigned an ID to the activity;
         // -  If `activity.id` is not set, it is either "sending" or "send failed";
-        //    - `activity.channelData['webchat:send-failed-reason']` is set, it is "send failed", otherwise;
+        //    - If `activity.channelData['webchat:send-failed-reason']` is set, it is "send failed" with the reason, otherwise;
         //    - It is sending.
         if (activity.from.role === 'user') {
           const { id } = activity;
@@ -226,7 +227,6 @@ export default function activities(
           }
         }
 
-        // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
         state = upsertActivityWithSort(state, activity);
       }
 

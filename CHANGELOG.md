@@ -33,11 +33,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Suggested actions container is not longer a live region. The suggested action buttons will now be narrated by the chat history live region
 -  Published NPM packages will now include `/dist`, `/lib`, and `/src` folders
    -  The `/dist` folder was previously missing from our NPM packages
+-  The `activity.channelData.state` property is being deprecated in favor of the updated [`activity.channelData['webchat:send-status']`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/types/WebChatActivity.ts) property, main differences:
+   -  The new `'webchat:send-status'` property will become `"send failed"` when the chat adapter failed to send the activity or after passing a hardcoded 5 minute timeout
+   -  Previously the `state` property would become `"send failed"` when the chat adapter failed to send the activity or after passing a timeout as defined in `styleOptions.sendTimeout`
+   -  See PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362) for details
 
 ### Changed
 
 -  Resolves [#4301](https://github.com/microsoft/BotFramework-WebChat/issues/4301). Updated `Dockerfile` to support secure container supply chain, by [@compulim](https://github.com/compulim) in PR [#4303](https://github.com/microsoft/BotFramework-WebChat/pull/4303)
 -  Resolves [#4317](https://github.com/microsoft/BotFramework-WebChat/issues/4317). Updated `package.json` to allowlist `/dist`, `/lib`, `/src`, by [@compulim](https://github.com/compulim) in PR [#4318](https://github.com/microsoft/BotFramework-WebChat/pull/4318)
+-  Resolves [#4322](https://github.com/microsoft/BotFramework-WebChat/issues/4322). Improved error messages for sending activities, by [@compulim](https://github.com/compulim) in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362)
+-  Resolves [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Added new `useSendStatusByActivityKey` hook to check the UI send status of an outgoing activity, by [@compulim](https://github.com/compulim) in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362)
+   -  The send status returned by this hook is designed to display different UIs that reflect the "sending", "send failed" or "sent" status of the activity
+   -  When modifying `styleOptions.sendTimeout` prop, the send status returned by this hook may transition from `"send failed"` to `"sending"`, and vice versa
 
 ### Fixed
 
@@ -51,6 +59,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4325](https://github.com/microsoft/BotFramework-WebChat/issues/4325). `aria-keyshortcuts` should use modifier keys according to `KeyboardEvent` key values spec, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
 -  Fixes [#4327](https://github.com/microsoft/BotFramework-WebChat/issues/4327). In Adaptive Cards, `TextBlock` with `style="heading"` should have `aria-level` set, by [@compulim](https://github.com/compulim), in PR [#4329](https://github.com/microsoft/BotFramework-WebChat/issues/4329)
 -  Fixes [#3949](https://github.com/microsoft/BotFramework-WebChat/issues/3949). For accessibility reasons, buttons in Adaptive Cards should be `role="button"` instead of `role="menubar"`/`role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#4263](https://github.com/microsoft/BotFramework-WebChat/issues/4263)
+-  Fixes [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Screen reader should read when an activity was failed to send, by [@compulim](https://github.com/compulim), in PR [#4326](https://github.com/microsoft/BotFramework-WebChat/issues/4326), also fixed:
+   -  The "send failed" status on the activity should show up as soon as the chat adapter failed to send the activity
 
 ## Changes
 

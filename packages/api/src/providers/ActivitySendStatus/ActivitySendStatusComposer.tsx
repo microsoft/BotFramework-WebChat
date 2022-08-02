@@ -24,11 +24,12 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
   const sendStatusByActivityKeyRef = useRef<ReadonlyMap<string, SendStatus>>(Object.freeze(new Map()));
 
   /**
-   * A key/value map to stores when the outgoing activity is going to expire.
+   * Map of outgoing activities and their respective expiry.
    *
    * The key is the activity key.
    *
    * The value is:
+   *
    * - `Infinity` if the activity is already sent (and will never expire), otherwise;
    * - `-Infinity` if the activity failed to send (a.k.a. already expired), otherwise;
    * - An epoch time of when the activity will be expired.
@@ -68,15 +69,16 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
     [activities, getKeyByActivity, getSendTimeoutForActivity]
   );
 
-  // Turns the expiry (epoch time) into `SendStatus`, which is based on current clock.
+  /** Map of outgoing activities and their respective send status. */
   const nextSendStatusByActivityKey = new Map<string, SendStatus>();
   const now = Date.now();
 
+  // Turns the expiry (epoch time) into `SendStatus`, which is based on current clock.
   for (const [key, expiry] of expiryByActivityKey) {
     nextSendStatusByActivityKey.set(key, expiry === EXPIRY_SENT ? 'sent' : now >= expiry ? 'send failed' : 'sending');
   }
 
-  // Checks the result for memoization.
+  // Only memoize the new result if it has changed.
   if (!isMapEqual(sendStatusByActivityKeyRef.current, nextSendStatusByActivityKey)) {
     sendStatusByActivityKeyRef.current = Object.freeze(nextSendStatusByActivityKey);
   }
@@ -84,16 +86,17 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
   // Gets/realizes the `current` from `ref` because we need to use it for `deps` array in hooks for memoization.
   const { current: sendStatusByActivityKey } = sendStatusByActivityKeyRef;
 
-  const sendStatusByActivityKeyState = useMemo(() => freezeArray([sendStatusByActivityKey]), [sendStatusByActivityKey]);
+  const sendStatusByActivityKeyState = useMemo<readonly [ReadonlyMap<string, SendStatus>]>(
+    () => freezeArray([sendStatusByActivityKey]),
+    [sendStatusByActivityKey]
+  );
 
   const context = useMemo<ActivitySendStatusContextType>(
-    () => ({
-      sendStatusByActivityKeyState
-    }),
+    () => ({ sendStatusByActivityKeyState }),
     [sendStatusByActivityKeyState]
   );
 
-  // Finds the closest expiry. This is the time we should recomputes everything.
+  // Finds the closest expiry. This is the time we should recompute `sendStatusByActivityKey`.
   const nextExpiry = Array.from(expiryByActivityKey.values())
     // Ignores activities which are already marked as `"send failed"`, because the magic number its `-Infinity`.
     // We don't need to recompute them because `"send failed"` cannot change back to `"sending"` without modifying `activities` or `styleOptions`.
@@ -101,7 +104,7 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
     .sort()
     .find(expiry => expiry > now);
 
-  // Recomputes everything (i.e. re-render) when one of the activities become expire, so the `sendStatusByActivityKey` would need to be updated.
+  // When the activity with closest expiry expire, recomputes everything so the `sendStatusByActivityKey` will be updated.
   useEffect(() => {
     if (nextExpiry) {
       const timeout = setTimeout(forceRender, nextExpiry - Date.now());

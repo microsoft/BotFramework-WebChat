@@ -36,8 +36,6 @@
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING": "Sending",
   "ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT": "Sent at $1",
   "_ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT.comment": "$1 is the time when the message is successfully sent, in absolute format, e.g. 12:34 PM.",
-  "ACTIVITY_STATUS_SEND_STATUS_ALT": "Send Status: $1",
-  "_ACTIVITY_STATUS_SEND_STATUS_ALT.comment": "This is for screen reader. $1 will be one of \"ACTIVITY_STATUS_SEND_STATUS_ALT_*\".",
   "ACTIVITY_STATUS_TIMESTAMP_JUST_NOW": "Just now",
   "ACTIVITY_STATUS_TIMESTAMP_ONE_HOUR_AGO": "An hour ago",
   "ACTIVITY_STATUS_TIMESTAMP_ONE_MINUTE_AGO": "A minute ago",

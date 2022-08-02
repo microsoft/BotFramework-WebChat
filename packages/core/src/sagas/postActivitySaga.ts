@@ -27,7 +27,7 @@ import type {
   PostActivityRejectedAction
 } from '../actions/postActivity';
 import type { WebChatActivity } from '../types/WebChatActivity';
-import type { WebChatOutgoingActivity } from '../types/WebChatOutgoingActivity';
+import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
@@ -145,7 +145,7 @@ function* postActivity(
       timeout: call(function* () {
         yield call(() => sleep(sendTimeout));
 
-        // The IMPEDED action is for changing `channelData.state` to "send failed".
+        // The IMPEDED action is for backward compatibility by changing `channelData.state` to "send failed".
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
         yield put({

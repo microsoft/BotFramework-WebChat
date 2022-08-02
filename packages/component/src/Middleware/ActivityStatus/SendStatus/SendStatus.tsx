@@ -4,7 +4,6 @@ import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../../../connectToWebChat';
-// import ScreenReaderText from '../../../ScreenReaderText';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';
 import useStyleSet from '../../../hooks/useStyleSet';
@@ -39,11 +38,6 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
   const localize = useLocalizer();
   const postActivity = usePostActivity();
 
-  const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');
-
-  // TODO: [P*] Remove SEND_STATUS_ALT from `en-US.json`.
-  // const label = localize('ACTIVITY_STATUS_SEND_STATUS_ALT', sendingText);
-
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
 
@@ -51,10 +45,10 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
     // We want to make sure the user stay inside Web Chat
     focus('sendBoxWithoutKeyboard');
   }, [activity, focus, postActivity]);
+  const sendingText = localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENDING');
 
   return (
     <React.Fragment>
-      {/* <ScreenReaderText text={label} /> */}
       <span className={sendStatusStyleSet}>
         {sendStatus === 'sending' ? (
           sendingText
