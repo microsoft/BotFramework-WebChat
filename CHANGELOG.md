@@ -34,8 +34,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Published NPM packages will now include `/dist`, `/lib`, and `/src` folders
    -  The `/dist` folder was previously missing from our NPM packages
 -  The `activity.channelData.state` property is being deprecated in favor of the updated [`activity.channelData['webchat:send-status']`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/types/WebChatActivity.ts) property, main differences:
-   -  The new `'webchat:send-status'` property will become `"send failed"` when the chat adapter failed to send the activity or after passing a hardcoded 5 minute timeout
-   -  Previously the `state` property would become `"send failed"` when the chat adapter failed to send the activity or after passing a timeout as defined in `styleOptions.sendTimeout`
+   -  Previously, the `state` property would become `"send failed"` when the chat adapter failed to send the activity, or after passing a timeout as defined in `styleOptions.sendTimeout`
+   -  The new `'webchat:send-status'` property will become `"send failed"` when the chat adapter failed to send the activity, or after passing a hardcoded timeout of 5 minutes
    -  See PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362) for details
 
 ### Changed
