@@ -13,7 +13,7 @@ enum InteractiveType {
   WIDGET
 }
 
-const { useAvatarForBot, useLocalizer } = hooks;
+const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   few: 'ACTIVITY_NUM_ATTACHMENTS_FEW_ALT',
@@ -23,17 +23,33 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
+/**
+ * Computes accessible name of an activity during transcript navigation.
+ *
+ * This text should be kept simple and short.
+ */
 export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
   const [{ initials: botInitials }] = useAvatarForBot();
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
+  const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const fromSelf = activity.from?.role === 'user';
+  const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
   const numAttachments = activity.type === 'message' ? activity.attachments?.length || 0 : 0;
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
 
-  const activityInteractiveAlt = localize('ACTIVITY_INTERACTIVE_LABEL_ALT'); // "Click to interact."
-  const activityInteractiveWithLinkAlt = localize('ACTIVITY_INTERACTIVE_WITH_LINKS_LABEL_ALT'); // "Click to interact."
+  /** "Click to interact." */
+  const activityInteractiveFootNoteAlt = localize('ACTIVITY_INTERACTIVE_FOOTNOTE_ALT');
+  /** "Message is interactive." */
+  const activityInteractiveReasonInteractiveContentAlt = localize(
+    'ACTIVITY_INTERACTIVE_REASON_INTERACTIVE_CONTENT_ALT'
+  );
+  /** "One or more links in the message." */
+  const activityInteractiveReasonLinkAlt = localize('ACTIVITY_INTERACTIVE_REASON_LINK_ALT');
+  /** "Send failed." */
+  const activityInteractiveReasonSendFailedAlt = localize('ACTIVITY_INTERACTIVE_REASON_SEND_FAILED_ALT');
+  const activityKey = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
   const greetingAlt = useMemo(
     () =>
       (fromSelf ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')).replace(
@@ -52,21 +68,36 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     [localizeWithPlural, numAttachments]
   );
 
+  const isSendFailed = useMemo(
+    () => sendStatusByActivityKey.get(activityKey) === 'send failed',
+    [activityKey, sendStatusByActivityKey]
+  );
+
   const accessibleName = useMemo(
     // We are concatenating in a single string for Safari. If we split it up, Safari will only narrate the first section.
     () =>
-      `${greetingAlt} ${messageTextAlt} ${numAttachmentsAlt} ${
+      [
+        greetingAlt,
+        messageTextAlt,
+        numAttachmentsAlt,
+        isSendFailed ? activityInteractiveReasonSendFailedAlt : '',
         interactiveType === InteractiveType.LINK
-          ? activityInteractiveWithLinkAlt
+          ? activityInteractiveReasonLinkAlt
           : interactiveType === InteractiveType.WIDGET
-          ? activityInteractiveAlt
-          : ''
-      }`,
+          ? activityInteractiveReasonInteractiveContentAlt
+          : '',
+        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : ''
+      ]
+        .filter(Boolean)
+        .join(' '),
     [
-      activityInteractiveAlt,
-      activityInteractiveWithLinkAlt,
+      activityInteractiveFootNoteAlt,
+      activityInteractiveReasonInteractiveContentAlt,
+      activityInteractiveReasonLinkAlt,
+      activityInteractiveReasonSendFailedAlt,
       greetingAlt,
       interactiveType,
+      isSendFailed,
       messageTextAlt,
       numAttachmentsAlt
     ]

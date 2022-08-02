@@ -4,6 +4,7 @@
     "declaration": true,
     "declarationDir": "../lib",
     "declarationMap": true,
+    "downlevelIteration": true,
     "emitDeclarationOnly": true,
     "jsx": "react",
     "preserveWatchOutput": true,
