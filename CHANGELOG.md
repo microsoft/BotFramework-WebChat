@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Added new `useSendStatusByActivityKey` hook to check the UI send status of an outgoing activity, by [@compulim](https://github.com/compulim) in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362)
    -  The send status returned by this hook is designed to display different UIs that reflect the "sending", "send failed" or "sent" status of the activity
    -  When modifying `styleOptions.sendTimeout` prop, the send status returned by this hook may transition from `"send failed"` to `"sending"`, and vice versa
+   -  This is different from the send status provided by the chat adapter `activities.channelData['webchat:send-status']`
 
 ### Fixed
 
