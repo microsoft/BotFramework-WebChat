@@ -14,14 +14,14 @@ import type { RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import type { SendStatus } from '../types/internal/SendStatus';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-type InnerActivityStatusContainerProps = {
+type ActivityStatusContainerCoreProps = {
   activity: WebChatActivity;
   hideTimestamp: boolean;
   nextVisibleActivity: WebChatActivity;
   sendStatus: SendStatus;
 };
 
-const ActivityStatusContainerCore: VFC<InnerActivityStatusContainerProps> = memo(
+const ActivityStatusContainerCore: VFC<ActivityStatusContainerCoreProps> = memo(
   ({ activity, hideTimestamp, nextVisibleActivity, sendStatus }) => {
     const { activityStatusRenderer: createActivityStatusRenderer }: { activityStatusRenderer: RenderActivityStatus } =
       useWebChatAPIContext();
@@ -75,6 +75,7 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = memo(
 );
 
 ActivityStatusContainer.defaultProps = {
+  hideTimestamp: false,
   nextVisibleActivity: undefined
 };
 
@@ -85,7 +86,7 @@ ActivityStatusContainer.propTypes = {
     from: PropTypes.shape({ role: PropTypes.string }).isRequired,
     localTimestamp: PropTypes.string
   }).isRequired,
-  hideTimestamp: PropTypes.bool.isRequired,
+  hideTimestamp: PropTypes.bool,
   nextVisibleActivity: PropTypes.any
 };
 
@@ -102,7 +103,7 @@ export default function useCreateActivityStatusRenderer(): ActivityStatusRendere
         (
           <ActivityStatusContainer
             activity={activity}
-            hideTimestamp={hideTimestamp || false}
+            hideTimestamp={hideTimestamp}
             nextVisibleActivity={nextVisibleActivity}
           />
         ),
