@@ -3,7 +3,7 @@ import type { WebChatActivity } from '../../../../packages/core';
 // All activities which are "sent", must be from server.
 const activity: WebChatActivity = {
   channelData: {
-    state: 'sent',
+    'webchat:send-status': 'sent',
     'webchat:sequence-id': 0
   },
   from: {

@@ -1,5 +1,5 @@
 import type { Notification } from './Notification';
-import type { WebChatActivity } from '../external/WebChatActivity';
+import type { WebChatActivity } from '../WebChatActivity';
 
 type ReduxState = {
   activities: WebChatActivity[];

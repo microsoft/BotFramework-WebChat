@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import SendState from './SendState';
+import type { SendStatus } from '../types/internal/SendStatus';
 
 // TODO: Migrate this legacy middleware signature.
 type RenderActivityStatusOptions = {
   activity: WebChatActivity;
   hideTimestamp: boolean;
-  sendState: SendState;
+  sendState: SendStatus;
 
   // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
   /** @deprecated */
@@ -18,11 +18,9 @@ type RenderActivityStatusOptions = {
   sameTimestampGroup: boolean;
 };
 
-type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactNode;
+type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactElement;
 
 type ActivityStatusEnhancer = (next: RenderActivityStatus) => RenderActivityStatus;
 type ActivityStatusMiddleware = () => ActivityStatusEnhancer;
 
-export default ActivityStatusMiddleware;
-
-export type { RenderActivityStatus };
+export type { ActivityStatusMiddleware, RenderActivityStatus };

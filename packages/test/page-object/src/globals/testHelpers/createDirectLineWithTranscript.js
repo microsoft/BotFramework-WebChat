@@ -15,7 +15,7 @@ function createUpdateRelativeTimestamp(now) {
         },
         id: Math.random().toString(36).substr(2, 5),
         text: activity,
-        timestamp: 0,
+        timestamp: new Date().toISOString(),
         type: 'message'
       };
     }

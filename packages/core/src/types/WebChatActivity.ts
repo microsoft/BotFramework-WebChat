@@ -11,7 +11,10 @@ import type { AnyAnd } from './AnyAnd';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
 
-type ChannelData<SendState extends string | undefined, Type extends string> = AnyAnd<
+type SupportedRole = 'bot' | 'channel' | 'user';
+type SupportedSendStatus = 'sending' | 'send failed' | 'sent';
+
+type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extends string> = AnyAnd<
   {
     // TODO: [P2] #3953 Rename to "webchat:attachment-sizes".
     attachmentSizes?: number[];
@@ -21,10 +24,57 @@ type ChannelData<SendState extends string | undefined, Type extends string> = An
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
-  } & (SendState extends string
+  } & (SendStatus extends SupportedSendStatus
     ? {
-        // TODO: [P2] #3953 Rename to "webchat:send-state".
-        state: SendState;
+        /**
+         * @deprecated Since 4.15.3: Please use `channelData['webchat:send-status']` or `useSendStatusByActivityKey()` hook instead.
+         *             Please refer to https://github.com/microsoft/BotFramework-WebChat/pull/4362 for details. This field will be removed on or after 2024-07-31.
+         */
+        state?: SendStatus;
+
+        // The newer "webchat:send-status" is slightly different than the previous "state".
+        // The difference is: the newer "webchat:send-status" use a hardcoded 5 minutes timeout, instead of user-defined timeout.
+        // We assume web developers will not set a timeout value longer than 5 minutes.
+        //
+        // The older one use a user-defined timeout, which could be a small number (say, 5s).
+        // At t=6s after a message is being sent, the message will be marked as "send failed" and the saga which "wait/listen to delivery status" will stop.
+        // Changing `styleOptions.sendTimeout` to 20s will not "revive" the message back to "sending" because the saga has already stopped.
+        // Thus, in our old code, we could not make the `state` field useful because it lacks "revivability". Thus, we simply ignored it.
+        // As the saga had already stopped, changing `styleOptions.sendTimeout` will not "revive" the message back to "sending."
+        // Not able to "revive" the message equally means our React props cannot be changed on-the-fly.
+        //
+        // The downside of not using `state` field means, if the activity fail immediately or fatally (e.g. network error),
+        // the UI will not change to "Send failed" until the specified timeout has passed.
+        //
+        // With the newer "webchat:send-status" field, the "send failed" state could means:
+        // - More than 5 minutes had passed while sending the activity;
+        // - Platform returned error (say HTTP 4xx/5xx or network error).
+        //
+        // UI should use `styleOptions.sendTimeout` with the `activity.localTimestamp` field to determines if the
+        // activity is visually timed out or not. And UI should expect `styleOptions` could change at any time.
+        //
+        // The 5 minutes timeout is currently hardcoded and should be large enough to support user-defined timeouts.
+        // As Redux Saga use stack/heap to keep track of waits and this could be expensive, the 5 minutes timeout will GC the waits.
+        // The hardcoded timeout value can be easily increased with the cost of memory.
+        //
+        // In the future:
+        //
+        // -  If we move to other business logic library that offer lower costs, we could hardcode the timeout to Infinity.
+        // -  This flag is set by Web Chat. We should move this flag to somewhere internal and not modifiable/overrideable by chat adapter developers.
+
+        /**
+         * The send status of the activity.
+         *
+         * - `"sending"`, the activity is in-transit and it has not been timed out;
+         * - `"send failed"`, the activity cannot be delivered permanently and further processing had been stopped;
+         * - `"sent"`, the activity is delivered successfully.
+         *
+         * Due to network-related race conditions, the activity could be marked as `"send failed"` but delivered by the service.
+         * In this case, the activity should continue to mark as `"send failed"`.
+         *
+         * For further details, please see [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362).
+         */
+        'webchat:send-status': SendStatus;
       }
     : {}) &
     (Type extends 'message'
@@ -61,7 +111,7 @@ type ClientCapabilitiesEntity = {
 type Entity = ClientCapabilitiesEntity | AnyAnd<{ type: Exclude<string, 'ClientCapabilities'> }>;
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
-type ChannelAcount<Role = 'bot' | 'channel' | 'user'> = {
+type ChannelAcount<Role extends SupportedRole> = {
   id: string;
   name?: string;
   role: Role;
@@ -109,8 +159,11 @@ type TimestampInTransitEssence = {
   timestamp?: string;
 };
 
-type TimestampEssence<Role extends string, SendState extends string | undefined> = Role extends 'user'
-  ? SendState extends 'sending' | 'send failed'
+type TimestampEssence<
+  Role extends SupportedRole,
+  SendStatus extends SupportedSendStatus | undefined
+> = Role extends 'user'
+  ? SendStatus extends 'sending' | 'send failed'
     ? TimestampInTransitEssence
     : TimestampFromServerEssence
   : TimestampFromServerEssence;
@@ -118,18 +171,18 @@ type TimestampEssence<Role extends string, SendState extends string | undefined>
 // Abstract - core
 
 type CoreActivityEssence<
-  Role extends 'bot' | 'channel' | 'user',
-  SendState extends string | undefined,
+  Role extends SupportedRole,
+  SendStatus extends SupportedSendStatus | undefined,
   Type extends string = 'conversationUpdate' | 'event' | 'invoke' | 'message' | 'typing'
 > = {
-  channelData: ChannelData<SendState, Type>;
+  channelData: ChannelData<SendStatus, Type>;
   channelId?: string;
   entities?: Entity[];
   from: ChannelAcount<Role>;
   localTimezone?: string;
   replyToId?: string;
   type: string;
-} & TimestampEssence<Role, SendState> &
+} & TimestampEssence<Role, SendStatus> &
   (Type extends 'event'
     ? EventActivityEssence
     : Type extends 'message'
@@ -140,12 +193,13 @@ type CoreActivityEssence<
 
 // Concrete
 
-type SelfActivityInTransit = CoreActivityEssence<'user', 'sending' | 'send failed'>;
-type SelfActivityFromServer = CoreActivityEssence<'user', 'sent'>;
-
-type SelfActivity = SelfActivityInTransit | SelfActivityFromServer;
-
 type OthersActivity = CoreActivityEssence<'bot' | 'channel', undefined>;
+
+type SelfActivitySendFailed = CoreActivityEssence<'user', 'send failed'>;
+type SelfActivitySending = CoreActivityEssence<'user', 'sending'>;
+type SelfActivitySent = CoreActivityEssence<'user', 'sent'>;
+
+type SelfActivity = SelfActivitySendFailed | SelfActivitySending | SelfActivitySent;
 
 // Exported
 

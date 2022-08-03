@@ -1,6 +1,8 @@
 import activeActivity from './activeActivity';
 import activities from './activities';
+import activityActiveDescendantLabels from './activityActiveDescendantLabels';
 import activityContents from './activityContents';
+import activityStatuses from './activityStatuses';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import microphoneButton from './microphoneButton';
@@ -19,7 +21,9 @@ import transcriptTerminator from './transcriptTerminator';
 export {
   activeActivity,
   activities,
+  activityActiveDescendantLabels,
   activityContents,
+  activityStatuses,
   connectivityStatus,
   focusedActivity,
   microphoneButton,

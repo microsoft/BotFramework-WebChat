@@ -3,6 +3,7 @@ import allImagesLoaded from './allImagesLoaded';
 import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import became from './became';
 import connectivityStatusShown from './connectivityStatusShown';
+import errorMessageLogged from './errorMessageLogged';
 import focusedActivityInView from './focusedActivityInView';
 import liveRegionStabilized from './liveRegionStabilized';
 import mediaBufferStabilized from './mediaBufferStabilized';
@@ -26,6 +27,7 @@ export {
   allOutgoingActivitiesSent,
   became,
   connectivityStatusShown,
+  errorMessageLogged,
   focusedActivityInView,
   liveRegionStabilized,
   mediaBufferStabilized,

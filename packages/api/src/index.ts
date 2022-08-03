@@ -1,6 +1,5 @@
 import * as hooks from './hooks';
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
-import ActivityStatusMiddleware, { RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
 } from './types/AttachmentForScreenReaderMiddleware';
@@ -19,6 +18,8 @@ import ToastMiddleware, { RenderToast } from './types/ToastMiddleware';
 import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
+
+import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
 
 export { Composer, concatMiddleware, defaultStyleOptions, hooks, Localize, localize, normalizeStyleOptions };
 

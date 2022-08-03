@@ -407,9 +407,12 @@ There are 3 ways a screen reader can read messages:
       -  If the message or its attachments contains links, it should read hints about the links, otherwise;
       -  If the message or its attachments contains interactive elements, such as button, is detected, it should read hints about interactive content
    -  If the message contains suggested actions, it should read hints about suggested actions
+   -  If any messages failed to send recently, it should read hints about the failure
+      -  It should not read if the message is presentational, such as `event` or `typing` activities
 -  Focus landing on the message via chat history navigation
    -  It should read the message, and count of attachments, e.g. "2 attachments"
    -  To make the readings brief, it should not read the timestamp
+   -  If the message is outgoing message and failed to send, it should read hints about the failure
    -  If links are detected in the message or its attachments, it should read hints about the links, otherwise;
    -  If interactive elements, such as button, is detected, it should read hints about interactive content
 -  Browse mode (a.k.a. scan mode)

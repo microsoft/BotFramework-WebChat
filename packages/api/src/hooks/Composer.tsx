@@ -30,13 +30,12 @@ import {
   stopSpeakingActivity,
   submitSendBox
 } from 'botframework-webchat-core';
-import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
-import ActivityStatusMiddleware from '../types/ActivityStatusMiddleware';
+import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -73,6 +72,9 @@ import applyMiddleware, {
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+
+import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -228,8 +230,8 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   activityRenderer,
   activityStatusMiddleware,
   activityStatusRenderer,
-  attachmentMiddleware,
   attachmentForScreenReaderMiddleware,
+  attachmentMiddleware,
   attachmentRenderer,
   avatarMiddleware,
   avatarRenderer,
@@ -387,7 +389,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     );
   }, [activityMiddleware, activityRenderer]);
 
-  const patchedActivityStatusRenderer = useMemo(() => {
+  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(() => {
     activityStatusRenderer &&
       console.warn(
         'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15, please use "activityStatusMiddleware" instead.'
@@ -602,7 +604,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      {typeof children === 'function' ? children(context) : children}
+      <ActivitySendStatusComposer>
+        {typeof children === 'function' ? children(context) : children}
+      </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );

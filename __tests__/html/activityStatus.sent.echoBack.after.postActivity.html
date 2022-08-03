@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      async function createDirectLineForTest() {
+        const directLine = await testHelpers.createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            if (activity.type === 'message') {
+              setTimeout(() => {
+                directLine.activityDeferredObservable.next({
+                  ...activity,
+                  id: 'a00001',
+                  timestamp: new Date().toISOString()
+                });
+              }, 2000);
+
+              return new Observable(observer => {
+                setTimeout(() => observer.next('a00001'), 1000);
+              });
+            } else {
+              return workingDirectLine.postActivity(activity);
+            }
+          }
+        });
+
+        return directLine;
+      }
+
+      function activityStatusInnerTextContained(expectedInnerTextPattern) {
+        return pageConditions.became(
+          `Activity status should contains "${expectedInnerTextPattern}"`,
+          () => pageElements.activityStatuses()[0].innerText.includes(expectedInnerTextPattern),
+          1000
+        );
+      }
+
+      function activityChannelDataStateBecame(expectedState) {
+        if (typeof expectedState === 'undefined') {
+          return pageConditions.became(
+            `Activity "channelData.state" should be undefined`,
+            () => !('state' in pageObjects.getActivities()[0].channelData),
+            1000
+          );
+        }
+
+        return pageConditions.became(
+          `Activity "channelData.state" should be "${expectedState}"`,
+          () => pageObjects.getActivities()[0].channelData?.state === expectedState,
+          1000
+        );
+      }
+
+      function activityChannelDataWebChatSendStatusBecame(expectedSendStatus) {
+        return pageConditions.became(
+          `Activity "channelData['webchat:send-status']" should be "${expectedSendStatus}"`,
+          () => pageObjects.getActivities()[0].channelData?.['webchat:send-status'] === expectedSendStatus,
+          1000
+        );
+      }
+
+      run(async function () {
+        const clock = lolex.install();
+
+        WebChat.renderWebChat(
+          {
+            directLine: await createDirectLineForTest(),
+            store: testHelpers.createStore(),
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(400);
+
+        // SETUP: Send a message
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+        // THEN: `channelData.state` should be "sending".
+        await activityChannelDataStateBecame('sending');
+
+        // THEN: `channelData['webchat:send-status']` should be "sending".
+        await activityChannelDataWebChatSendStatusBecame('sending');
+
+        // THEN: The message should have status of "Sending".
+        await activityStatusInnerTextContained('Sending');
+
+        // WHEN: After 1 seconds, the postActivity() call returned.
+        clock.tick(1000);
+
+        // THEN: `channelData.state` should be "sending".
+        await activityChannelDataStateBecame('sending');
+
+        // THEN: `channelData['webchat:send-status']` should be "sending".
+        await activityChannelDataWebChatSendStatusBecame('sending');
+
+        // THEN: The message should have status of "Sending".
+        await activityStatusInnerTextContained('Sending');
+
+        // THEN: The activity object should not have an ID.
+        expect('id' in pageObjects.getActivities()[0]).toBeFalsy();
+
+        // WHEN: After 1 seconds (t=2s), the echo back message arrived.
+        clock.tick(1000);
+
+        // THEN: `channelData.state` should be "sent".
+        await activityChannelDataStateBecame('sent');
+
+        // THEN: `channelData['webchat:send-status']` should be "sent".
+        await activityChannelDataWebChatSendStatusBecame('sent');
+
+        // THEN: The message should have status of "Just now".
+        await activityStatusInnerTextContained('Just now');
+
+        // THEN: The activity object should have an ID of "a00001".
+        expect(pageObjects.getActivities()[0]).toHaveProperty('id', 'a00001');
+      });
+    </script>
+  </body>
+</html>

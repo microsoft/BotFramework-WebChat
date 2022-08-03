@@ -5,6 +5,7 @@ import * as token from './token/index';
 import * as transcriptNavigation from './transcriptNavigation';
 import arrayBufferToBase64 from './arrayBufferToBase64';
 import createAudioInputStreamFromRiffWavArrayBuffer from './speech/audioConfig/createAudioInputStreamFromRiffWavArrayBuffer';
+import createDirectLineEmulator from './createDirectLineEmulator';
 import createDirectLineWithTranscript from './createDirectLineWithTranscript';
 import createRenderWebChatWithHook from './createRenderWebChatWithHook';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
@@ -21,6 +22,7 @@ export {
   activityGrouping,
   arrayBufferToBase64,
   createAudioInputStreamFromRiffWavArrayBuffer,
+  createDirectLineEmulator,
   createDirectLineWithTranscript,
   createRenderWebChatWithHook,
   createRunHookActivityMiddleware,

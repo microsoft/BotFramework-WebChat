@@ -1,13 +1,19 @@
+import activityStatuses from '../pageElements/activityStatuses';
 import became from './became';
-import getActivities from '../pageObjects/getActivities';
 
 export default function allOutgoingActivitiesSent() {
   return became(
     'all outgoing activities sent',
     () =>
-      getActivities()
-        .filter(({ from: { role }, name, type }) => role === 'user' && name !== '__RUN_HOOK' && type === 'message')
-        .every(({ channelData: { state } = {} }) => state === 'sent'),
+      activityStatuses().every(activityStatusElement => {
+        if (!activityStatusElement) {
+          return true;
+        }
+
+        const { innerText } = activityStatusElement;
+
+        return !innerText.includes('Send failed') && !innerText.includes('Sending');
+      }),
     15000
   );
 }

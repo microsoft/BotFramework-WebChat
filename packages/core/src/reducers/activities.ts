@@ -5,13 +5,19 @@ import updateIn from 'simple-update-in';
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
-import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED } from '../actions/postActivity';
-import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
+import {
+  POST_ACTIVITY_FULFILLED,
+  POST_ACTIVITY_IMPEDED,
+  POST_ACTIVITY_PENDING,
+  POST_ACTIVITY_REJECTED
+} from '../actions/postActivity';
+import { SEND_FAILED, SENDING, SENT } from '../types/internal/SendStatus';
 import type { DeleteActivityAction } from '../actions/deleteActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
 import type {
   PostActivityFulfilledAction,
+  PostActivityImpededAction,
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
@@ -22,6 +28,7 @@ type ActivitiesAction =
   | IncomingActivityAction
   | MarkActivityAction
   | PostActivityFulfilledAction
+  | PostActivityImpededAction
   | PostActivityPendingAction
   | PostActivityRejectedAction;
 
@@ -92,12 +99,9 @@ function upsertActivityWithSort(activities: WebChatActivity[], nextActivity: Web
       !(nextClientActivityID && clientActivityID === nextClientActivityID) && !(id && id === nextActivity.id)
   );
 
-  // Then, find the right (sorted) place to insert the new activity at, based on timestamp
-  // Since clockskew might happen, we will ignore timestamp on messages that are sending
-
+  // Then, find the right (sorted) place to insert the new activity at, based on sequence ID.
   const indexToInsert = nextActivities.findIndex(
-    ({ channelData: { state, 'webchat:sequence-id': sequenceId } = {} }) =>
-      (sequenceId || 0) > (nextSequenceId || 0) && state !== SENDING && state !== SEND_FAILED
+    ({ channelData: { 'webchat:sequence-id': sequenceId } = {} }) => (sequenceId || 0) > (nextSequenceId || 0)
   );
 
   // If no right place are found, append it
@@ -134,33 +138,97 @@ export default function activities(
           payload: { activity }
         } = action;
 
+        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+        // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
+        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
 
         state = upsertActivityWithSort(state, activity);
       }
 
       break;
 
-    case POST_ACTIVITY_REJECTED:
+    case POST_ACTIVITY_IMPEDED:
       state = updateIn(
         state,
+        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+        // Please refer to #4362 for details. Remove on or after 2024-07-31.
         [findByClientActivityID(action.meta.clientActivityID), 'channelData', 'state'],
         () => SEND_FAILED
       );
 
       break;
 
+    case POST_ACTIVITY_REJECTED:
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity => {
+        activity = updateIn(activity, ['channelData', 'state'], () => SEND_FAILED);
+
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SEND_FAILED);
+      });
+
+      break;
+
     case POST_ACTIVITY_FULFILLED:
-      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () =>
+      state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => {
         // We will replace the activity with the version from the server
-        updateIn(patchActivity(action.payload.activity, state[state.length - 1]), ['channelData', 'state'], () => SENT)
-      );
+        const activity = updateIn(
+          patchActivity(action.payload.activity, state[state.length - 1]),
+          // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+          // Please refer to #4362 for details. Remove on or after 2024-07-31.
+          ['channelData', 'state'],
+          () => SENT
+        );
+
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+      });
 
       break;
 
     case INCOMING_ACTIVITY:
-      // TODO: [P4] #2100 Move "typing" into Constants.ActivityType
-      state = upsertActivityWithSort(state, action.payload.activity);
+      {
+        let {
+          payload: { activity }
+        } = action;
+
+        // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` fields.
+        //
+        // Otherwise, it will fail following scenario:
+        //
+        // 1. Send an activity to the service
+        // 2. Service echoed back the activity
+        // 3. Service did NOT return `postActivity` call
+        // -  EXPECT: `channelData['webchat:send-status']` should be "sending".
+        // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
+        //            The echo back activity contains no `channelData['webchat:send-status']`.
+        //
+        // In the future, when we revamp our object model, we could use a different signal so we don't need the code below, for example:
+        //
+        // -  If `activity.id` is set, it is "sent", because the chat service assigned an ID to the activity;
+        // -  If `activity.id` is not set, it is either "sending" or "send failed";
+        //    - If `activity.channelData['webchat:send-failed-reason']` is set, it is "send failed" with the reason, otherwise;
+        //    - It is sending.
+        if (activity.from.role === 'user') {
+          const { id } = activity;
+          const clientActivityID = getClientActivityID(activity);
+
+          const existingActivity = state.find(
+            activity =>
+              (clientActivityID && getClientActivityID(activity) === clientActivityID) || (id && activity.id === id)
+          );
+
+          if (existingActivity) {
+            const {
+              channelData: { 'webchat:send-status': sendStatus }
+            } = existingActivity;
+
+            if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
+              activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
+            }
+          }
+        }
+
+        state = upsertActivityWithSort(state, activity);
+      }
 
       break;
 

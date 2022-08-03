@@ -5,7 +5,9 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import type { FC, RefObject, VFC } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
+import isPresentational from './LiveRegion/isPresentational';
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
+import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
@@ -32,35 +34,6 @@ const ROOT_STYLE = {
       }
   }
 };
-
-/**
- * Checks if the rendering activity is presentational or not. Returns `true` if presentational, otherwise, `false`.
- *
- * Presentational activity, will be rendered visually but not going through screen reader.
- */
-function isPresentational(activity: WebChatActivity): boolean {
-  if (activity.type !== 'message') {
-    return;
-  }
-
-  const { channelData } = activity;
-
-  // "Fallback text" includes both message text and narratives for attachments.
-  // Emptying out "fallback text" essentially mute for both message and attachments.
-  const fallbackText = channelData?.['webchat:fallback-text'];
-
-  if (typeof fallbackText === 'string') {
-    return !fallbackText;
-  }
-
-  // If there are "displayText" (MessageBack), "text", any attachments, or suggested actions, there are something to narrate.
-  return !(
-    channelData?.messageBack?.displayText ||
-    activity.text ||
-    activity.attachments?.length ||
-    activity.suggestedActions?.actions?.length
-  );
-}
 
 type RenderingActivities = Map<string, WebChatActivity>;
 
@@ -166,7 +139,6 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     prevRenderingActivitiesRef.current = keyedActivities;
   }, [
     activityElementMapRef,
-    getKeyByActivity,
     liveRegionInteractiveLabelAlt,
     liveRegionInteractiveWithLinkLabelAlt,
     liveRegionSuggestedActionsLabelAlt,
@@ -179,7 +151,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
     typingIndicator && queueStaticElement(typingIndicator);
   }, [queueStaticElement, typingIndicator]);
 
-  return null;
+  return <LiveRegionSendFailed />;
 };
 
 type LiveRegionTranscriptProps = {

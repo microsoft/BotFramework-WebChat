@@ -265,8 +265,7 @@ CarouselFilmStrip.propTypes = {
     channelData: PropTypes.shape({
       messageBack: PropTypes.shape({
         displayText: PropTypes.string
-      }),
-      state: PropTypes.string
+      })
     }),
     from: PropTypes.shape({
       role: PropTypes.string.isRequired

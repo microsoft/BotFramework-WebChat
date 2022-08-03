@@ -21,7 +21,7 @@
             connectionStatus$: directLine.connectionStatus$,
             postActivity: activity => {
               if (activity.type === 'message') {
-                return new Observable(({ error }) => error(new Error('artificial error')));
+                return new Observable(observer => observer.error(new Error('artificial error')));
               } else {
                 return directLine.postActivity(activity);
               }
@@ -41,30 +41,49 @@
           clock.tick(400);
 
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
 
+          // SETUP: Send "echo Hello, World!" to the bot.
+          await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+          await pageConditions.numActivitiesShown(1);
+
+          // WHEN: After 20 seconds.
           clock.tick(20000);
 
+          // THEN: All outgoing messages should have `activity.channelData.state` of `"send failed"`.
           await pageConditions.became(
-            'All outgoing messages to fail sending',
-            () =>
-              pageObjects
-                .getActivities()
-                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed'),
-            30000
+            'All outgoing messages sent',
+            () => pageElements.activityStatuses()[0].innerText === 'Send failed. Retry.',
+            1000
           );
 
-          // TODO: We should make this CSS better, and probably put it inside pageElements.
-          const retryButton = document.querySelector('button[data-markdown-href]');
+          return;
 
-          retryButton.click();
+          // WHEN: The "Retry" button in the first activity status is being clicked.
+          pageElements.activityStatuses()[0].querySelector('button[data-markdown-href]').click();
 
-          // After clicking on retry button, it should focus back on the type focus sink.
+          // THEN: There should be 2 outgoing messages.
+          await pageConditions.numActivitiesShown(2);
+
+          // THEN: Both outgoing messages should show "Send failed. Retry." because the modded `postActivity` throw artificial error immediately.
+          await pageConditions.became(
+            'All outgoing messages sent',
+            () => {
+              const activityStatuses = pageElements.activityStatuses();
+
+              return (
+                activityStatuses.length === 2 &&
+                activityStatuses.every(({ innerText }) => innerText === 'Send failed. Retry.')
+              );
+            },
+            1000
+          );
+
+          // THEN: The focus should focus be on the send box.
           expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
           await host.snapshot();
         },
+        // Ignoring errors thrown as "artificial error".
         { ignoreErrors: true }
       );
     </script>

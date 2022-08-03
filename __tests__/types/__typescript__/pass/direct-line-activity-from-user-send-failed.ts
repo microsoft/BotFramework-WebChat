@@ -3,7 +3,7 @@ import type { WebChatActivity } from '../../../../packages/core';
 // All activities that failed to send, are activities that never reach the server (a.k.a. activity-in-transit).
 const activity: WebChatActivity = {
   channelData: {
-    state: 'send failed',
+    'webchat:send-status': 'send failed',
     'webchat:sequence-id': 0
   },
   from: {

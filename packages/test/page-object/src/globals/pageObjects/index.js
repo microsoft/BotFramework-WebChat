@@ -9,6 +9,7 @@ import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
 import getActivityBoundingBoxes from './getActivityBoundingBoxes';
+import observeLiveRegion from './observeLiveRegion';
 import runHook from './runHook';
 import scrollToBottom from './scrollToBottom';
 import scrollToTop from './scrollToTop';
@@ -30,6 +31,7 @@ export {
   focusTranscript,
   getActivities,
   getActivityBoundingBoxes,
+  observeLiveRegion,
   runHook,
   scrollToBottom,
   scrollToTop,

@@ -3,7 +3,7 @@ import type { WebChatActivity } from '../../../../packages/core';
 // All activities that are sending, are activities that did not reach the server yet (a.k.a. activity-in-transit).
 const activity: WebChatActivity = {
   channelData: {
-    state: 'sending',
+    'webchat:send-status': 'sending',
     'webchat:sequence-id': 0
   },
   from: {

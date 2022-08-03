@@ -31,7 +31,8 @@
               directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
               store: testHelpers.createStore(),
               styleOptions: {
-                sendTimeout: 20000
+                sendTimeout: 20000,
+                // sendTimeoutForAttachments: 40000
               }
             };
 
@@ -51,31 +52,44 @@
 
           await pageConditions.webChatRendered();
 
-          // Advance 1 second for the connection status prompt to be gone.
+          // SETUP: Advance 1 second for the connection status prompt to be gone.
           clock.tick(1000);
 
           await pageConditions.uiConnected();
 
+          // SETUP: An empty file blob.
           const fileBlob = new Blob([new ArrayBuffer(0)]);
 
           fileBlob.name = 'empty.zip';
 
+          // WHEN: Sending out the file.
           await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+
+          // THEN: It should show "Sending".
+          //       Note the first activity is reserved for "run hook", we are checking activity status from the second activity.
+          await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
           await host.snapshot();
 
+          // WHEN: After 20 seconds.
+          //       Note the send timeout for activity with attachments is 40 seconds.
           clock.tick(20000);
 
-          // After 20 seconds, it should still show "sending".
+          // THEN: It should continue to show "sending" because attachments has longer timeout (40 seconds).
+          await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
           await host.snapshot();
 
+          // WHEN: Advanced another 20 seconds.
           clock.tick(100000);
 
-          // After 120 seconds, it should show time out.
+          // THEN: It should show timed out because the send timeout for message with attachments is 40 seconds.
+          await expect(pageElements.activityStatuses()[1].innerText).toBe('Send failed. Retry.');
           await host.snapshot();
 
+          // WHEN: Setting `styleOptions.sendTimeoutForAttachments` to 50 seconds.
           updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
 
-          // After changing the timeout to 130 seconds, it should show "sending".
+          // THEN: It should revive the message and show "Sending" again.
+          await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
           await host.snapshot();
         },
         { ignoreErrors: true }
