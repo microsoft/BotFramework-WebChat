@@ -33,10 +33,12 @@ const LiveRegionSendFailed: VFC<{}> = () => {
    */
   const activityKeysOfSendFailed = useMemo<Set<string>>(
     () =>
-      new Set(
-        Array.from(sendStatusByActivityKey)
-          .filter(([key, sendStatus]) => sendStatus === SEND_FAILED && !isPresentational(getActivityByKey(key)))
-          .map(([key]) => key)
+      Array.from(sendStatusByActivityKey).reduce(
+        (activityKeysOfSendFailed, [key, sendStatus]) =>
+          sendStatus === SEND_FAILED && !isPresentational(getActivityByKey(key))
+            ? activityKeysOfSendFailed.add(key)
+            : activityKeysOfSendFailed,
+        new Set<string>()
       ),
     [getActivityByKey, sendStatusByActivityKey]
   );
