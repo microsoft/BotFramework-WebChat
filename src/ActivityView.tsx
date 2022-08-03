@@ -115,7 +115,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                                 attachments={ attachments }
                                 attachmentLayout={ activity.attachmentLayout }
                                 format={ props.format }
-                                onCardAction={ isLast ? props.onCardAction : () => {} }
+                                onCardAction={ props.onCardAction }
                                 onImageLoad={ props.onImageLoad }
                                 size={ props.size }
                                 tiles={tiles}
