@@ -1,6 +1,7 @@
 import { ActivityStatusMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
+import { SENDING, SEND_FAILED } from '../../types/internal/SendStatus';
 import SendStatus from './SendStatus/SendStatus';
 
 export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
@@ -10,8 +11,8 @@ export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
     // eslint-disable-next-line react/prop-types
     ({ activity, sendState, ...args }) => {
       switch (sendState) {
-        case 'sending':
-        case 'send failed':
+        case SENDING:
+        case SEND_FAILED:
           return <SendStatus activity={activity} sendStatus={sendState} />;
 
         default:

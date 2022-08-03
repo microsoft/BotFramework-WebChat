@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
+import { SENDING, SEND_FAILED, SENT } from '../../../types/internal/SendStatus';
 import connectToWebChat from '../../../connectToWebChat';
 import SendFailedRetry from './SendFailedRetry';
 import useFocus from '../../../hooks/useFocus';
 import useStyleSet from '../../../hooks/useStyleSet';
+
+import type { SendStatus as SendStatusType } from '../../../types/internal/SendStatus';
 
 const { useLocalizer, usePostActivity } = hooks;
 
@@ -29,7 +32,7 @@ const connectSendStatus = (...selectors) =>
 
 type SendStatusProps = {
   activity: WebChatActivity;
-  sendStatus: 'sending' | 'send failed' | 'sent';
+  sendStatus: SendStatusType;
 };
 
 const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
@@ -50,9 +53,9 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
   return (
     <React.Fragment>
       <span className={sendStatusStyleSet}>
-        {sendStatus === 'sending' ? (
+        {sendStatus === SENDING ? (
           sendingText
-        ) : sendStatus === 'send failed' ? (
+        ) : sendStatus === SEND_FAILED ? (
           <SendFailedRetry onRetryClick={handleRetryClick} />
         ) : (
           false
@@ -66,7 +69,7 @@ SendStatus.propTypes = {
   activity: PropTypes.any.isRequired,
   // PropTypes cannot fully capture TypeScript types.
   // @ts-ignore
-  sendStatus: PropTypes.oneOf(['sending', 'send failed', 'sent']).isRequired
+  sendStatus: PropTypes.oneOf([SENDING, SEND_FAILED, SENT]).isRequired
 };
 
 export default SendStatus;

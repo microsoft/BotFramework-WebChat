@@ -4,13 +4,14 @@
 import PropTypes from 'prop-types';
 import React, { memo, useMemo } from 'react';
 
+import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import useGetKeyByActivity from '../hooks/useGetKeyByActivity';
 import useSendStatusByActivityKey from '../hooks/useSendStatusByActivityKey';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 import type { ReactNode, VFC } from 'react';
 import type { RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type { SendStatus } from '../providers/ActivitySendStatus/SendStatus';
+import type { SendStatus } from '../types/internal/SendStatus';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 type InnerActivityStatusContainerProps = {
@@ -30,7 +31,7 @@ const ActivityStatusContainerCore: VFC<InnerActivityStatusContainerProps> = memo
       hideTimestamp,
       nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
       sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
-      sendState: sendStatus === 'send failed' || sendStatus === 'sent' ? sendStatus : 'sending'
+      sendState: sendStatus === SEND_FAILED || sendStatus === SENT ? sendStatus : SENDING
     });
   }
 );
@@ -44,7 +45,7 @@ ActivityStatusContainerCore.propTypes = {
   }).isRequired,
   hideTimestamp: PropTypes.bool.isRequired,
   nextVisibleActivity: PropTypes.any,
-  sendStatus: PropTypes.oneOf(['sending', 'send failed', 'sent'])
+  sendStatus: PropTypes.oneOf([SENDING, SEND_FAILED, SENT])
 };
 
 type ActivityStatusContainerProps = {
@@ -60,7 +61,7 @@ const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = memo(
 
     const key = getKeyByActivity(activity);
 
-    const sendStatus = (typeof key === 'string' && sendStatusByActivityKey.get(key)) || 'sent';
+    const sendStatus = (typeof key === 'string' && sendStatusByActivityKey.get(key)) || SENT;
 
     return (
       <ActivityStatusContainerCore

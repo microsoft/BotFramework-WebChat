@@ -11,7 +11,7 @@ import {
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
-import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
+import { SEND_FAILED, SENDING, SENT } from '../types/internal/SendStatus';
 import type { DeleteActivityAction } from '../actions/deleteActivity';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
@@ -141,7 +141,7 @@ export default function activities(
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => 'sending');
+        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
 
         state = upsertActivityWithSort(state, activity);
       }
@@ -163,7 +163,7 @@ export default function activities(
       state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], activity => {
         activity = updateIn(activity, ['channelData', 'state'], () => SEND_FAILED);
 
-        return updateIn(activity, ['channelData', 'webchat:send-status'], () => 'send failed');
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SEND_FAILED);
       });
 
       break;
@@ -179,7 +179,7 @@ export default function activities(
           () => SENT
         );
 
-        return updateIn(activity, ['channelData', 'webchat:send-status'], () => 'sent');
+        return updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
       });
 
       break;
@@ -221,7 +221,7 @@ export default function activities(
               channelData: { 'webchat:send-status': sendStatus }
             } = existingActivity;
 
-            if (sendStatus === 'send failed' || sendStatus === 'sending' || sendStatus === 'sent') {
+            if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
             }
           }

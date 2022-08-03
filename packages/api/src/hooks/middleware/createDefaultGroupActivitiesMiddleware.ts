@@ -1,13 +1,8 @@
-import { Constants } from 'botframework-webchat-core';
-
+import { SENDING, SENT } from '../../types/internal/SendStatus';
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
-import type { SendStatus } from '../../providers/ActivitySendStatus/SendStatus';
+import type { SendStatus } from '../../types/internal/SendStatus';
 import type { WebChatActivity } from 'botframework-webchat-core';
-
-const {
-  ActivityClientState: { SENT }
-} = Constants;
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   let lastBin: T[];
@@ -36,7 +31,7 @@ function sending(activity: WebChatActivity): SendStatus | undefined {
 
     // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
     // Please refer to #4362 for details. Remove on or after 2024-07-31.
-    return sendStatus || (state === 'sent' ? SENT : 'sending');
+    return sendStatus || (state === SENT ? SENT : SENDING);
   }
 }
 

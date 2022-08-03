@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { useEffect, useMemo } from 'react';
 import type { VFC } from 'react';
 
+import { SEND_FAILED } from '../../types/internal/SendStatus';
 import isPresentational from './isPresentational';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useQueueStaticElement from '../../providers/LiveRegionTwin/useQueueStaticElement';
@@ -34,7 +35,7 @@ const LiveRegionSendFailed: VFC<{}> = () => {
     () =>
       new Set(
         Array.from(sendStatusByActivityKey)
-          .filter(([key, sendStatus]) => sendStatus === 'send failed' && !isPresentational(getActivityByKey(key)))
+          .filter(([key, sendStatus]) => sendStatus === SEND_FAILED && !isPresentational(getActivityByKey(key)))
           .map(([key]) => key)
       ),
     [getActivityByKey, sendStatusByActivityKey]

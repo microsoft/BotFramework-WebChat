@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
+import { SEND_FAILED } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
@@ -71,7 +72,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
   );
 
   const isSendFailed = useMemo(
-    () => sendStatusByActivityKey.get(activityKey) === 'send failed',
+    () => sendStatusByActivityKey.get(activityKey) === SEND_FAILED,
     [activityKey, sendStatusByActivityKey]
   );
 
