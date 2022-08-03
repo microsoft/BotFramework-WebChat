@@ -101,9 +101,14 @@ const ActivitySendStatusComposer: FC = ({ children }) => {
   const nextExpiry = Array.from(expiryByActivityKey.values())
     // Ignores activities which are already marked as `"send failed"`, because the magic number its `-Infinity`.
     // We don't need to recompute them because `"send failed"` cannot change back to `"sending"` without modifying `activities` or `styleOptions`.
-    .filter(expiry => expiry !== EXPIRY_SEND_FAILED)
-    .sort()
-    .find(expiry => expiry > now);
+    .reduce((nextExpiry, expiry) => {
+      // Finds the next closest expiry, exclude those that already expired.
+      if (expiry > now && expiry < nextExpiry) {
+        return expiry;
+      }
+
+      return nextExpiry;
+    }, Infinity);
 
   // When the activity with closest expiry expire, recomputes everything so the `sendStatusByActivityKey` will be updated.
   useEffect(() => {
