@@ -60,8 +60,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4325](https://github.com/microsoft/BotFramework-WebChat/issues/4325). `aria-keyshortcuts` should use modifier keys according to `KeyboardEvent` key values spec, by [@compulim](https://github.com/compulim), in PR [#4323](https://github.com/microsoft/BotFramework-WebChat/issues/4323)
 -  Fixes [#4327](https://github.com/microsoft/BotFramework-WebChat/issues/4327). In Adaptive Cards, `TextBlock` with `style="heading"` should have `aria-level` set, by [@compulim](https://github.com/compulim), in PR [#4329](https://github.com/microsoft/BotFramework-WebChat/issues/4329)
 -  Fixes [#3949](https://github.com/microsoft/BotFramework-WebChat/issues/3949). For accessibility reasons, buttons in Adaptive Cards should be `role="button"` instead of `role="menubar"`/`role="menuitem"`, by [@compulim](https://github.com/compulim), in PR [#4263](https://github.com/microsoft/BotFramework-WebChat/issues/4263)
--  Fixes [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Screen reader should read when an activity was failed to send, by [@compulim](https://github.com/compulim), in PR [#4326](https://github.com/microsoft/BotFramework-WebChat/issues/4326), also fixed:
+-  Fixes [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Screen reader should read when an activity was failed to send, by [@compulim](https://github.com/compulim), in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362), also fixed:
    -  The "send failed" status on the activity should show up as soon as the chat adapter failed to send the activity
+-  Fixes [#4312](https://github.com/microsoft/BotFramework-WebChat/issues/4312). `groupActivityMiddleware` returning invalid value should not throw exceptions, by [@compulim](https://github.com/compulim), in PR [#4378](https://github.com/microsoft/BotFramework-WebChat/pull/4378).
 
 ## Changes
 

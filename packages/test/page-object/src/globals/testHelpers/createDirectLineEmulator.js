@@ -64,6 +64,7 @@ export default function createDirectLineEmulator(store) {
           type: 'message'
         };
       } else {
+        activity = updateIn(activity, ['from', 'role'], role => role || 'bot');
         activity = updateIn(activity, ['timestamp'], timestamp =>
           typeof timestamp === 'number' ? new Date(now + timestamp).toISOString() : timestamp
         );

@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 import intersectionOf from '../../../Utils/intersectionOf';
 import removeInline from '../../../Utils/removeInline';
@@ -48,15 +47,10 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
   }>(() => {
     const visibleActivities = entries.map(({ activity }) => activity);
 
-    const {
-      sender: activitiesBySender,
-      status: activitiesByStatus
-    }: {
-      sender: readonly (readonly WebChatActivity[])[];
-      status: readonly (readonly WebChatActivity[])[];
-    } = groupActivities({
-      activities: visibleActivities
-    });
+    const groupActivitiesResult = groupActivities({ activities: visibleActivities });
+
+    const activitiesBySender = groupActivitiesResult?.sender || [];
+    const activitiesByStatus = groupActivitiesResult?.status || [];
 
     const [entriesBySender, entriesByStatus] = [activitiesBySender, activitiesByStatus].map(bins =>
       bins.map(bin => bin.map(activity => entries.find(entry => entry.activity === activity)))
@@ -87,10 +81,11 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
     const activityTree: (readonly (readonly ActivityWithRenderer[])[])[] = [];
 
     while (entriesPendingGrouping.length) {
+      let found: boolean;
       const entriesWithSameSender = entriesBySender.find(bin => bin.includes(entriesPendingGrouping[0]));
       const senderTree: (readonly ActivityWithRenderer[])[] = [];
 
-      entriesWithSameSender.forEach(entry => {
+      entriesWithSameSender?.forEach(entry => {
         const entriesWithSameStatus = entriesByStatus.find(bin => bin.includes(entry));
 
         const entriesWithSameSenderAndStatus = intersectionOf<ActivityWithRenderer>(
@@ -102,8 +97,13 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
         if (entriesWithSameSenderAndStatus.length) {
           senderTree.push(Object.freeze(entriesWithSameSenderAndStatus));
           removeInline(entriesPendingGrouping, ...entriesWithSameSenderAndStatus);
+
+          found = true;
         }
       });
+
+      // If the entry is not grouped by the middleware, just put the entry in its own bin.
+      found || senderTree.push(Object.freeze([entriesPendingGrouping.shift()]));
 
       activityTree.push(Object.freeze(senderTree));
     }
