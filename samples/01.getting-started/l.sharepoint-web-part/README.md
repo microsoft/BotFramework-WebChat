@@ -1,6 +1,6 @@
 # Sample - Hosting on SharePoint as web part using React template
 
-A simple web part using React template hosting Web Chat from NPM. The development build is hosted under Docker.
+A simple SharePoint web part using React template hosting Web Chat from NPM. The SharePoint Framework (SPFx) development environment is hosted under Docker.
 
 ![Web Chat hosted inside SharePoint workbench showing a weather card](./webchat-sharepoint-web-part.png)
 
@@ -42,7 +42,7 @@ This code host a full-feature Web Chat as a SharePoint web part using React temp
 
 ### Preparation
 
-We are hosting the development environment in Docker to enable cloud development. The `Dockerfile` will do the followings to prepare the development environment:
+We are hosting SPFx in Docker to enable cloud development. The `Dockerfile` will do the followings to prepare the development environment:
 
 1. Download [`gulp@4`](https://npmjs.com/package/gulp), [`yo` (Yeoman)](https://yeoman.io/), and [`@microsoft/generator-sharepoint` (SharePoint scaffold)](https://npmjs.com/package/@microsoft/generator-sharepoint)
 1. Create a new user account `spfx` (requirement of Yeoman when running under Docker)
