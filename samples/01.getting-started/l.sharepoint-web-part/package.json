@@ -1,0 +1,13 @@
+{
+  "name": "sample-getting-started-sharepoint-web-part",
+  "version": "0.0.0-0",
+  "description": "",
+  "main": "src/proxy.js",
+  "scripts": {
+    "build": "docker build -t spfx .",
+    "start": "docker run --rm -it -p 4321:54321 -p 35729:35729 spfx"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "type": "module"
+}
