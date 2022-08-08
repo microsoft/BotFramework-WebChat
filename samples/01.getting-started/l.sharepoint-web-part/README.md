@@ -42,7 +42,7 @@ This code host a full-feature Web Chat as a SharePoint web part using React temp
 
 ### Preparation
 
-We are hosting SPFx in Docker to enable cloud development. The `Dockerfile` will do the followings to prepare the development environment:
+SPFx is hosted in Docker to enable cloud development. The `Dockerfile` will do the followings to prepare the development environment:
 
 1. Download [`gulp@4`](https://npmjs.com/package/gulp), [`yo` (Yeoman)](https://yeoman.io/), and [`@microsoft/generator-sharepoint` (SharePoint scaffold)](https://npmjs.com/package/@microsoft/generator-sharepoint)
 1. Create a new user account `spfx` (requirement of Yeoman when running under Docker)
@@ -56,8 +56,8 @@ We are hosting SPFx in Docker to enable cloud development. The `Dockerfile` will
 1. Run `gulp trust-dev-cert` to create a self-signed certificate for Webpack/SPFx development server
 1. Copy the reverse proxy
    -  Webpack/SPFx development server only listen to `https://localhost/` but not `https://0.0.0.0/`, the host of the Docker will not able to access it
-   -  We wrote a reverse proxy (`proxy.js`) to proxy requests from `https://0.0.0.0:54321/` to `https://localhost:4321`
-   -  When we run the Docker image, we will map port 54321 back to 4321 as SharePoint workbench only accept development server from https://localhost:4321/
+   -  A reverse proxy (`proxy.js`) to proxy requests from `https://0.0.0.0:54321/` to `https://localhost:4321`
+   -  When running the Docker image, port 54321 will be mapped back to 4321 as SharePoint workbench only accept development server from https://localhost:4321/
 1. Install [Web Chat](https://github.com/microsoft/BotFramework-WebChat/)
 1. Copy web part code to the container
 1. Set the entrypoint to run both reverse proxy and Webpack/SPFx development server (via `gulp serve`)
@@ -66,13 +66,13 @@ We are hosting SPFx in Docker to enable cloud development. The `Dockerfile` will
 When running the Docker image, it will expose:
 
 -  Port 54321, which will proxy to Webpack/SPFx development server at https://localhost:4321/
-   -  While running `npm start`, this port will be remapped to 4321 via `docker run --publish 4321:54321 ...`
+   -  While running `npm start`, this port will be mapped to 4321 via `docker run --publish 4321:54321 ...`
    -  This port will use a different self-signed certificate
 -  Port 35729, which will point to LiveReload server
 
 ### Web part code
 
-We copied the sample web part code from SharePoint scaffold and modified them to host Web Chat.
+These are based on web part sample code from SharePoint scaffold and modified to host Web Chat.
 
 #### `webparts/webChat/components/IWebChatProps.ts`
 
