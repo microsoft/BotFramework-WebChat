@@ -67,6 +67,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Resolves [#4316](https://github.com/microsoft/BotFramework-WebChat/issues/4316). Using [ESBuild](https://esbuild.github.io/) as development server, by [@compulim](https://github.com/compulim), in PR [#4330](https://github.com/microsoft/BotFramework-WebChat/issues/4330)
 
+### Samples
+
+-  Added [`01.getting-started/l.sharepoint-web-part`](../../samples/01.getting-started/l.sharepoint-web-part) for hosting Web Chat as a SharePoint web part, in PR [#4385](https://github.com/microsoft/BotFramework-WebChat/pull/4385), by [@compulim](https://github.com/compulim)
+
 ## [4.15.2] - 2022-05-09
 
 ### Breaking changes
