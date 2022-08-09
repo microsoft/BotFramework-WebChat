@@ -1,6 +1,6 @@
 {
   "name": "@feedyou-ai/feedbot-webchat-v0",
-  "version": "0.14.1-10",
+  "version": "0.14.1-11",
   "description": "Embeddable web chat control for the Microsoft Bot Framework modified by Feedyou",
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
