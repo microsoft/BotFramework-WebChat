@@ -590,6 +590,8 @@ InternalTranscript.defaultProps = {
   className: ''
 };
 
+InternalTranscript.displayName = 'InternalTranscript';
+
 InternalTranscript.propTypes = {
   // PropTypes cannot validate precisely with its TypeScript counterpart.
   // @ts-ignore

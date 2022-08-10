@@ -63,6 +63,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4211](https://github.com/microsoft/BotFramework-WebChat/issues/4211). Screen reader should read when an activity was failed to send, by [@compulim](https://github.com/compulim), in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/pull/4362), also fixed:
    -  The "send failed" status on the activity should show up as soon as the chat adapter failed to send the activity
 -  Fixes [#4312](https://github.com/microsoft/BotFramework-WebChat/issues/4312). `groupActivityMiddleware` returning invalid value should not throw exceptions, by [@compulim](https://github.com/compulim), in PR [#4378](https://github.com/microsoft/BotFramework-WebChat/pull/4378).
+-  Fixes [#4386](https://github.com/microsoft/BotFramework-WebChat/issues/4386). Clicking on Adaptive Cards should not throw exception under IE11, by [@compulim](https://github.com/compulim), in PR [#4387](https://github.com/microsoft/BotFramework-WebChat/pull/4387), also fixed:
+   -  Prop type warning should not be shown for `<ActivityRow>`
 
 ## Changes
 

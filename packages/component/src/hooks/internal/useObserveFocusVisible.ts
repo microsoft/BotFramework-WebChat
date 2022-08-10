@@ -210,7 +210,16 @@ function useObserveFocusVisibleForModernBrowsers(
   onFocusVisibleRef: MutableRefObject<() => void>
 ) {
   const handleFocus = useCallback(() => {
-    if (targetRef.current.matches(':focus-visible')) {
+    const { current } = targetRef;
+
+    if (
+      // "msMatchesSelector" is vendor-prefixed version of "matches".
+      // eslint-disable-next-line dot-notation
+      (current.matches || (current['msMatchesSelector'] as (selector: string) => boolean)).call(
+        current,
+        ':focus-visible'
+      )
+    ) {
       onFocusVisibleRef?.current();
     }
   }, [onFocusVisibleRef, targetRef]);

@@ -108,6 +108,8 @@ ActivityRow.defaultProps = {
   children: undefined
 };
 
+ActivityRow.displayName = 'ActivityRow';
+
 ActivityRow.propTypes = {
   // PropTypes cannot fully capture TypeScript type.
   // @ts-ignore
@@ -117,7 +119,7 @@ ActivityRow.propTypes = {
       'webchat:fallback-text': PropTypes.string
     })
   }).isRequired,
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)])
+  children: PropTypes.any
 };
 
 export default ActivityRow;

@@ -26,7 +26,9 @@ function orSelf(element) {
     return;
   }
 
-  if (element.matches(SELECTOR)) {
+  // "msMatchesSelector" is vendor-prefixed version of "matches".
+  // eslint-disable-next-line dot-notation
+  if ((element.matches || element['msMatchesSelector']).call(element, SELECTOR)) {
     return element;
   }
 
