@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.3] - 2022-08-10
+
 ### Breaking changes
 
 -  Suggested actions is now a [`role="toolbar"`](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) and adopted roving tab index
