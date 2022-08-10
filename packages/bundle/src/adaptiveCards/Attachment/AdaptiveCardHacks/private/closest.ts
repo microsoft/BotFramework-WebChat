@@ -8,7 +8,9 @@ export default function closest(element: HTMLElement, selector: string): HTMLEle
   let current: HTMLElement | null = element;
 
   while (current) {
-    if (current.matches(selector)) {
+    // "msMatchesSelector" is vendor-prefixed version of "matches".
+    // eslint-disable-next-line dot-notation
+    if ((current.matches || (current['msMatchesSelector'] as (selector: string) => boolean)).call(current, selector)) {
       return current;
     }
 
