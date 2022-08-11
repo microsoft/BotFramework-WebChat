@@ -39,7 +39,9 @@
     "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.mjs",
     "start:typescript": "npm run build:typescript -- --watch"
   },
-  "skipBump": [],
+  "skipBump": [
+    "react-redux"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.18.10",
@@ -64,7 +66,7 @@
     "globalize": "1.7.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
-    "react-redux": "8.0.2",
+    "react-redux": "7.2.8",
     "redux": "4.2.0",
     "simple-update-in": "2.2.0"
   },

@@ -31,7 +31,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`core-js@3.24.1`](https://npmjs.com/package/core-js)
       -  [`markdown-it-attrs@4.1.4`](https://npmjs.com/package/markdown-it-attrs)
       -  [`markdown-it@13.0.1`](https://npmjs.com/package/markdown-it)
-      -  [`react-redux@8.0.2`](https://npmjs.com/package/react-redux)
       -  [`redux@4.2.0`](https://npmjs.com/package/redux)
       -  [`sanitize-html@2.7.1`](https://npmjs.com/package/sanitize-html)
    -  Development dependencies
