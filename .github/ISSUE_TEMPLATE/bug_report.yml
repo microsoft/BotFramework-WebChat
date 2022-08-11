@@ -2,6 +2,8 @@ name: Bug Report
 description: Create a report to help us improve
 labels:
   - bug
+  - customer-reported
+  - Bot Services
 body:
   - type: markdown
     attributes:
