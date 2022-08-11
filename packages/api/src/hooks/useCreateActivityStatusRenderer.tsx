@@ -43,8 +43,14 @@ ActivityStatusContainerCore.propTypes = {
     from: PropTypes.shape({ role: PropTypes.string }).isRequired,
     localTimestamp: PropTypes.string
   }).isRequired,
+  // In eslint-plugin-react@7.30.1, this rule does not understand "memo()" and disregarded the usage of this prop.
+  // eslint-disable-next-line react/no-unused-prop-types
   hideTimestamp: PropTypes.bool.isRequired,
+  // In eslint-plugin-react@7.30.1, this rule does not understand "memo()" and disregarded the usage of this prop.
+  // eslint-disable-next-line react/no-unused-prop-types
   nextVisibleActivity: PropTypes.any,
+  // In eslint-plugin-react@7.30.1, this rule does not understand "memo()" and disregarded the usage of this prop.
+  // eslint-disable-next-line react/no-unused-prop-types
   sendStatus: PropTypes.oneOf([SENDING, SEND_FAILED, SENT])
 };
 
