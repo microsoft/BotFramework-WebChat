@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 import {
   clearSuggestedActions,
@@ -74,7 +74,9 @@ import applyMiddleware, {
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 
 import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import type { ContextOf } from '../types/internal/ContextOf';
 import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
+import type { FC, ReactNode } from 'react';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -185,7 +187,7 @@ type ComposerCoreProps = {
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
-  children?: ReactNode;
+  children?: ReactNode | ((context: ContextOf<typeof WebChatAPIContext>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
   disabled?: boolean;

@@ -11,7 +11,7 @@ type ActivityProps = {
   showCallout: boolean;
 };
 
-type ActivityComponent = (props: ActivityProps) => Exclude<ReactNode, boolean>;
+type ActivityComponent = (props: ActivityProps) => Exclude<ReactNode, boolean | null | undefined>;
 
 type ActivityComponentFactoryOptions = {
   activity: WebChatActivity;

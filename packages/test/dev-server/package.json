@@ -7,6 +7,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev",
+    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "start": "node ."
   },
   "type": "module",

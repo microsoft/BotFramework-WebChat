@@ -10,14 +10,14 @@ import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 
 import type { ActivitySendStatusContextType } from './private/Context';
-import type { FC } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import type { SendStatus } from '../../types/internal/SendStatus';
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-const ActivitySendStatusComposer: FC = ({ children }) => {
+const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
   const [activities] = useActivities();
   const forceRender = useForceRender();
   const getKeyByActivity = useGetKeyByActivity();
