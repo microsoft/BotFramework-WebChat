@@ -98,9 +98,7 @@ To host this demo, you will need to clone the code and run locally.
 
 ## Setup Azure Bot Services
 
-> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
-
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Add OAuth Connection for the bot to the Bot Channel Registration
    1. In the Bot Channel Registration open the settings blade

@@ -82,11 +82,9 @@ To host this demo, you will need to clone the code and run locally.
 
 ## Setup Azure Bot Services
 
-> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
-
 > Since we already setup `PROXY_BOT_URL` in our web server `/web/.env` in "[Clone the code](#clone-the-code)" step, we can reuse the same ngrok tunnel. It will forward traffic from the web server to the bot.
 
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0). Points the messaging URL to https://a1b2c3d4.ngrok.io/api/messages.
+You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource). Points the messaging URL to https://a1b2c3d4.ngrok.io/api/messages.
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  ```
