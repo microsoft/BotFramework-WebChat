@@ -1,0 +1,158 @@
+name: Bug Report
+description: Create a report to help us improve
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
+        >
+        > [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) to get support related to Bot Framework and Web Chat.
+  - type: checkboxes
+    attributes:
+      label: Is it an issue related to Adaptive Cards?
+      description: If yes, please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
+      options:
+        - label: Yes, this is an Adaptive Card issue but it is specific to Web Chat.
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Do you have any screenshots?
+      description: Be sure to remove or obscure personally identifiable information from your code and screenshots
+  - type: dropdown
+    id: version
+    attributes:
+      label: What version of Web Chat are you using?
+      description: |
+        To determine what version of Web Chat you are running, open your browser's development tools, and paste the following line of code into the console.
+
+        `[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
+
+        If you are not using latest version of Web Chat, please upgrade to the latest version as the issue may have been resolved.
+      options:
+        - Latest production
+        - Development build
+        - I am not using latest
+        - Unrelated
+    validations:
+      required: true
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: Which distribution are you using Web Chat from?
+      options:
+        - Bundle (webchat.js)
+        - NPM
+        - IFRAME
+        - Unrelated
+    validations:
+      required: true
+  - type: dropdown
+    id: hosting-environment
+    attributes:
+      label: Which hosting environment does this issue primarily affect?
+      description: If you choose "Others", please provide us information on your hosting environment in the Additional Context section.
+      options:
+        - Web apps
+        - Dynamics 365 Omnichannel
+        - SharePoint
+        - PowerApps
+        - Electron
+        - Cordova/PhoneGap
+        - WebView on React Native
+        - Others or unrelated
+    validations:
+      required: true
+  - type: dropdown
+    id: browser-and-platform
+    attributes:
+      label: Which browsers and platforms do the issue happened?
+      description: Please make sure the issue continued to repro on latest version of the browser.
+      multiple: true
+      options:
+        - "Browser: Edge (latest)"
+        - "Browser: Chrome (latest)"
+        - "Browser: Firefox (latest)"
+        - "Browser: Safari (latest)"
+        - "Browser: IE Mode (latest)"
+        - "Platform: Windows"
+        - "Platform: macOS"
+        - "Platform: iOS/iPadOS"
+        - "Platform: Android"
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this issue affect?
+      options:
+        - "Attachment: Adaptive Card"
+        - "Attachment: OAuth card"
+        - "Attachment: Other rich cards"
+        - Chat history
+        - "Customization: Branding"
+        - "Customization: Others"
+        - Notification
+        - Protocol or service
+        - Send box
+        - Speech
+        - Suggested action
+        - Others/unrelated
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Is this an accessibility issue?
+      options:
+        - label: Yes, this is an accessibility issue.
+  - type: textarea
+    id: describe-the-bug
+    attributes:
+      label: Please describe the bug
+      description: Give a clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: console-log
+    attributes:
+      label: Do you see any errors in console log?
+      description: If errors are logged to the console, please copy them here.
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: How to reproduce the issue?
+      value: |
+        1. Navigate to ...
+        2. Click on ...
+        3. Type "..." in the send box
+    validations:
+      required: true
+  - type: textarea
+    id: expected-and-actual
+    attributes:
+      label: What is the expected and actual behavior?
+      description: Give a clear and concise description of what you expect to happen and what actually happened.
+      value: |
+        Expected:
+
+        Actual:
+    validations:
+      required: true
+  - type: textarea
+    id: adaptive-card-json
+    attributes:
+      label: Adaptive Card JSON
+      description: If this issue is related to Adaptive Cards, please paste the JSON of the card below.
+      placeholder: |
+        ```json
+        {
+          "type": "AdaptiveCard",
+          "body": []
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "version": "1.5"
+        }
+        ```
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
