@@ -1,0 +1,26 @@
+name: Question
+description: Ask a question not related to implementation here
+labels:
+  - question
+  - customer-reported
+  - Bot Services
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🚨 The issue tracker is not for implementation questions 🚨
+
+        Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
+
+        This repo focuses on the development of Web Chat, a client/channel for Bot Framework. If you have questions on implementation or about other features of Bot Framework, please see the below list to direct your questions to the correct repo or site.
+
+        | Topic                       | Description                                                  | Link                                                    |
+        | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
+        | Web Chat 'How to' Questions | Ask implementation questions about Web Chat                  | https://stackoverflow.com/questions/tagged/web-chat     |
+        | Bot Framework Questions     | Ask implementation questions related to the BotFramework SDK | https://stackoverflow.com/questions/tagged/botframework |
+        | Bot Builder                 | A comprehensive list of Bot Framework SDKs and tools         | https://github.com/microsoft/BotBuilder                 |
+  - type: textarea
+    attributes:
+      label: I have a question
+    validations:
+      required: true
