@@ -1,4 +1,10 @@
-/** @jest-environment jsdom */
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options { "customExportConditions": ["node"] }
+ *
+ * "uuid" resolved by jest-environment-jsdom is importing "browser-esm" instead of "cjs".
+ * As Jest does not support ESM, they will fail to resolve "uuid", which is required by "botframework-streaming@4.14.1".
+ */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
 let consoleWarns;
