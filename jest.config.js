@@ -1,3 +1,4 @@
+const { defaults } = require('jest-config');
 const { join, relative } = require('path');
 
 module.exports = {
@@ -99,5 +100,12 @@ module.exports = {
   transform: {
     '[\\/]__tests__[\\/]html[\\/]': './babel-passthru-transformer.js',
     '\\.[jt]sx?$': './babel-jest-config.js'
-  }
+  },
+  transformIgnorePatterns: [
+    // jest-environment-jsdom import packages as browser.
+    // Packages, such as "uuid", export itself for browser as ES5 + ESM.
+    // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
+    '/node_modules/(?!(uuid)/)',
+    ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
+  ]
 };
