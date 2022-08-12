@@ -91,6 +91,7 @@
     "global-agent": "^3.0.0",
     "husky": "^8.0.1",
     "jest": "^28.1.3",
+    "jest-environment-jsdom": "^28.1.3",
     "jest-image-snapshot": "^5.1.0",
     "jest-junit": "^14.0.0",
     "jest-trx-results-processor": "^3.0.1",
