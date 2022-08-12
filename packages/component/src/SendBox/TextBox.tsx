@@ -114,14 +114,14 @@ function useTextBoxValue(): [
   const setter = useCallback<
     (
       nextValue: string,
-      options: { selectionEnd: number; selectionStart: number }
+      options?: { selectionEnd: number; selectionStart: number }
     ) => {
       selectionEnd: number;
       selectionStart: number;
       value: string;
     }
   >(
-    (nextValue, { selectionEnd, selectionStart }) => {
+    (nextValue, { selectionEnd, selectionStart } = { selectionEnd: undefined, selectionStart: undefined }) => {
       if (typeof nextValue !== 'string') {
         throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
       }

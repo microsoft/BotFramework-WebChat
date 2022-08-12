@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react';
 
-import type { ActivityComponentFactory, AvatarComponentFactory } from 'botframework-webchat-api';
+import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
@@ -100,7 +100,7 @@ type RenderingElement = {
   key: string;
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
   renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
-  renderAvatar: AvatarComponentFactory;
+  renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout: boolean;
 };
 

@@ -14,8 +14,8 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-import type { AvatarComponentFactory, RenderAttachment } from 'botframework-webchat-api';
 import type { FC, ReactNode } from 'react';
+import type { RenderAttachment } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
@@ -95,7 +95,7 @@ type StackedLayoutProps = {
   hideTimestamp?: boolean;
   renderActivityStatus?: ({ hideTimestamp: boolean }) => ReactNode;
   renderAttachment?: RenderAttachment;
-  renderAvatar?: AvatarComponentFactory;
+  renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout?: boolean;
 };
 
@@ -143,9 +143,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
-  const renderAvatarResult = showCallout && hasAvatar && renderAvatar({ activity, fromUser, styleOptions });
-
-  const showAvatar = !!renderAvatarResult;
+  const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
   return (
@@ -163,7 +161,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
       })}
     >
       <div className="webchat__stacked-layout__main">
-        <div className="webchat__stacked-layout__avatar-gutter">{renderAvatarResult && renderAvatarResult()}</div>
+        <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar()}</div>
         <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
             <div

@@ -1,13 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import type { RenderAttachment } from './AttachmentMiddleware';
 import type { WebChatActivity } from 'botframework-webchat-core';
-
-import { AvatarComponentFactory } from './AvatarMiddleware';
-import { RenderAttachment } from './AttachmentMiddleware';
 
 type ActivityProps = {
   hideTimestamp: boolean;
   renderActivityStatus: ({ hideTimestamp: boolean }) => ReactNode;
-  renderAvatar: AvatarComponentFactory;
+  renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout: boolean;
 };
 
