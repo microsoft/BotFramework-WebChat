@@ -13,8 +13,8 @@
     "rxjs"
   ],
   "dependencies": {
-    "@emotion/react": "11.8.1",
-    "@fluentui/react": "8.57.0",
+    "@emotion/react": "11.10.0",
+    "@fluentui/react": "8.87.1",
     "adaptivecards": "^2.10.0",
     "botframework-directlinejs": "0.15.1",
     "botframework-webchat": "0.0.0-0",
@@ -25,8 +25,8 @@
     "rxjs": "5"
   },
   "devDependencies": {
-    "prettier": "^2.5.1",
-    "react-scripts": "^5.0.0"
+    "prettier": "^2.7.1",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "build": "react-scripts build",

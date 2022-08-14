@@ -1,14 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
-import type { FC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
-import ActivityKeyerContext, { ActivityKeyerContextType } from './private/Context';
+import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import uniqueId from './private/uniqueId';
 import useActivities from '../../hooks/useActivities';
 import useActivityKeyerContext from './private/useContext';
+
+import type { ActivityKeyerContextType } from './private/Context';
+import type { FC, PropsWithChildren } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
@@ -29,7 +31,7 @@ type KeyToActivityMap = Map<string, WebChatActivity>;
  *
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
-const ActivityKeyerComposer: FC<{}> = ({ children }) => {
+const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
   const existingContext = useActivityKeyerContext(false);
 
   if (existingContext) {

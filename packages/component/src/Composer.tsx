@@ -1,16 +1,11 @@
-import {
-  Composer as APIComposer,
-  ComposerProps as APIComposerProps,
-  hooks,
-  WebSpeechPonyfillFactory
-} from 'botframework-webchat-api';
+import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -34,6 +29,9 @@ import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
+
+import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
+import type { FC, ReactNode } from 'react';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -251,11 +249,7 @@ ComposerCore.propTypes = {
   webSpeechPonyfillFactory: PropTypes.func
 };
 
-type ComposerProps = APIComposerProps &
-  ComposerCoreProps & {
-    nonce?: string;
-    webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
-  };
+type ComposerProps = APIComposerProps & ComposerCoreProps;
 
 const Composer: FC<ComposerProps> = ({
   activityMiddleware,

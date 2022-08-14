@@ -1,17 +1,18 @@
 import { useMemo } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
-
-import { AvatarComponentFactory } from '../types/AvatarMiddleware';
 import useStyleOptions from './useStyleOptions';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
+
+import type { AvatarComponentFactory } from '../types/AvatarMiddleware';
+import type { ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 export default function useCreateAvatarRenderer(): ({
   activity
 }: {
   activity: WebChatActivity;
-}) => AvatarComponentFactory {
+}) => false | (() => Exclude<ReactNode, boolean | null | undefined>) {
   const [styleOptions] = useStyleOptions();
-  const { avatarRenderer } = useWebChatAPIContext();
+  const { avatarRenderer }: { avatarRenderer: AvatarComponentFactory } = useWebChatAPIContext();
 
   return useMemo(
     () =>

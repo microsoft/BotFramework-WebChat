@@ -1,9 +1,12 @@
-import { ComposerProps } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React from 'react';
 
-import AddFullBundle, { AddFullBundleProps } from './AddFullBundle';
+import AddFullBundle from './AddFullBundle';
+
+import type { AddFullBundleProps } from './AddFullBundle';
+import type { ComposerProps } from 'botframework-webchat-component';
+import type { FC } from 'react';
 
 const { Composer } = Components;
 

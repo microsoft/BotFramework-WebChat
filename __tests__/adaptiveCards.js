@@ -5,10 +5,7 @@ import { logging } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
-
-import createAdaptiveCardsHostConfig from '../packages/bundle/src/adaptiveCards/Styles/adaptiveCardHostConfig';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -58,7 +55,17 @@ test('action styles', async () => {
 });
 
 test('breakfast card with custom host config', async () => {
-  const adaptiveCardHostConfig = createAdaptiveCardsHostConfig({ bubbleTextColor: '#FF0000' });
+  const adaptiveCardHostConfig = {
+    containerStyles: {
+      default: {
+        foregroundColors: {
+          default: {
+            default: '#FF9900'
+          }
+        }
+      }
+    }
+  };
 
   const { driver, pageObjects } = await setupWebDriver({
     props: {

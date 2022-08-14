@@ -49,7 +49,7 @@
   "skipBump": [],
   "dependencies": {
     "adm-zip": "^0.5.9",
-    "nopt": "^5.0.0",
+    "nopt": "^6.0.0",
     "progress": "^2.0.3",
     "q": "^1.5.1",
     "request": "^2.88.2",

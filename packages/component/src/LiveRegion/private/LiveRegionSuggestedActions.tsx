@@ -30,5 +30,3 @@ LiveRegionSuggestedActions.propTypes = {
 };
 
 export default LiveRegionSuggestedActions;
-
-export type { LiveRegionSuggestedActions };

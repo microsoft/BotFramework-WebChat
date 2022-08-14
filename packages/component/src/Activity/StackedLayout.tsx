@@ -1,10 +1,9 @@
 /* eslint complexity: ["error", 50] */
 
-import { hooks, RenderAttachment } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -13,8 +12,11 @@ import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-
 import useUniqueId from '../hooks/internal/useUniqueId';
+
+import type { FC, ReactNode } from 'react';
+import type { RenderAttachment } from 'botframework-webchat-api';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
@@ -91,9 +93,9 @@ const connectStackedLayout = (...selectors) =>
 type StackedLayoutProps = {
   activity: WebChatActivity;
   hideTimestamp?: boolean;
-  renderActivityStatus?: (({ hideTimestamp: boolean }) => Exclude<ReactNode, boolean | null | undefined>) | false;
+  renderActivityStatus?: ({ hideTimestamp: boolean }) => ReactNode;
   renderAttachment?: RenderAttachment;
-  renderAvatar?: ({ activity: WebChatActivity }) => (() => Exclude<ReactNode, boolean | null | undefined>) | false;
+  renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout?: boolean;
 };
 
@@ -159,9 +161,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
       })}
     >
       <div className="webchat__stacked-layout__main">
-        <div className="webchat__stacked-layout__avatar-gutter">
-          {showAvatar && renderAvatar && renderAvatar({ activity })}
-        </div>
+        <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar()}</div>
         <div className="webchat__stacked-layout__content">
           {!!activityDisplayText && (
             <div
@@ -230,7 +230,7 @@ const StackedLayout: FC<StackedLayoutProps> = ({
 
 StackedLayout.defaultProps = {
   hideTimestamp: false,
-  renderActivityStatus: false,
+  renderActivityStatus: () => false,
   renderAvatar: undefined,
   showCallout: true
 };

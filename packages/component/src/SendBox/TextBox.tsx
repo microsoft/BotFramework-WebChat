@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
@@ -16,6 +16,8 @@ import useScrollToEnd from '../hooks/useScrollToEnd';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+
+import type { MutableRefObject, ReactEventHandler } from 'react';
 
 const { useDisabled, useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useSubmitSendBox } = hooks;
 
@@ -109,8 +111,17 @@ function useTextBoxValue(): [
   const replaceEmoticon = useReplaceEmoticon();
   const stopDictate = useStopDictate();
 
-  const setter = useCallback(
-    (nextValue, { selectionEnd, selectionStart } = {}) => {
+  const setter = useCallback<
+    (
+      nextValue: string,
+      options?: { selectionEnd: number; selectionStart: number }
+    ) => {
+      selectionEnd: number;
+      selectionStart: number;
+      value: string;
+    }
+  >(
+    (nextValue, { selectionEnd, selectionStart } = { selectionEnd: undefined, selectionStart: undefined }) => {
       if (typeof nextValue !== 'string') {
         throw new Error('botframework-webchat: First argument passed to useTextBoxValue() must be a string.');
       }
@@ -269,8 +280,8 @@ const TextBox = ({ className }) => {
     [submitTextBox, undoStackRef]
   );
 
-  const handleSelect = useCallback(
-    ({ target: { selectionEnd, selectionStart, value } }) => {
+  const handleSelect = useCallback<ReactEventHandler<HTMLInputElement | HTMLTextAreaElement>>(
+    ({ currentTarget: { selectionEnd, selectionStart, value } }) => {
       if (value === prevInputStateRef.current.value) {
         // When caret move, we should push to undo stack on change.
         placeCheckpointOnChangeRef.current = true;
@@ -338,7 +349,7 @@ const TextBox = ({ className }) => {
     [scrollDown, scrollUp]
   );
 
-  const focusCallback = useCallback(
+  const focusCallback = useCallback<(options?: { noKeyboard?: boolean }) => void>(
     ({ noKeyboard } = {}) => {
       const { current } = inputElementRef;
 

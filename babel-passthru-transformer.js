@@ -1,1 +1,1 @@
-module.exports = { process: value => value };
+module.exports = { process: value => ({ code: value }) };
