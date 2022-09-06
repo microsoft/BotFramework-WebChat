@@ -30,7 +30,7 @@
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,globalize,tsc\" \"npm run start:babel\" \"npm run start:globalize\" \"npm run start:typescript\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.js",
+    "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.mjs",
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
