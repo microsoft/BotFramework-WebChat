@@ -132,7 +132,7 @@ function toDist(filename) {
 
         // The function will make sure access to the path is limited.
         // eslint-disable-next-line security/detect-non-literal-fs-filename, no-magic-numbers
-        await fs.writeFile(toDist(`main/${language}/units-patched.json`), JSON.stringify(units, null, 2));
+        await fs.writeFile(toDist(`main/${language}/units.json`), JSON.stringify(units, null, 2));
       }
     })
   );
