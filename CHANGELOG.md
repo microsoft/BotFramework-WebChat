@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  QFE: Fixes [#4403](https://github.com/microsoft/BotFramework-WebChat/issues/4403). Patched Unicode CLDR database which caused file upload in Polish to appear blank, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  QFE: Fixes [#4403](https://github.com/microsoft/BotFramework-WebChat/issues/4403). Patched Unicode CLDR database which caused file upload in Polish to appear blank, by [@compulim](https://github.com/compulim), in PR [#4406](https://github.com/microsoft/BotFramework-WebChat/pull/4406)
 
 ## [4.14.1] - 2021-09-07
 
