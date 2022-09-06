@@ -35,11 +35,12 @@
   "files": [
     "src/index.js",
     "src/install.js",
+    "src/patch.mjs",
     "urls.json"
   ],
   "scripts": {
     "eslint": "npm run precommit",
-    "install": "node ./src/install.js",
+    "install": "node ./src/install.js && node ./src/patch.mjs",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint",
     "prettier": "prettier --check src/**/*.{js,ts,tsx}"
