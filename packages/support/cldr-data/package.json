@@ -35,6 +35,7 @@
   "files": [
     "src/index.js",
     "src/install.mjs",
+    "src/patch.mjs",
     "urls.json"
   ],
   "scripts": {
@@ -42,7 +43,7 @@
     "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
-    "install": "node ./src/install.mjs",
+    "install": "node ./src/install.mjs && node ./src/patch.mjs",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
