@@ -385,6 +385,17 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.14.2": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.14.2/webchat-es5.js",
+          "sha384-rICoECir+m94sA3D9FN2nWP76JKfcGJA5uhCZ/nSM3JNYWtnqUk5mHCgVvgWE+if"
+        ]
+      ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-09-07.",
+      "private": true,
+      "versionFamily": "4"
+    },
     "4.15": {
       "redirects": [
         [
