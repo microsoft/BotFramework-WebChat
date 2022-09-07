@@ -9,13 +9,15 @@
   <body>
     <div id="webchat"></div>
     <script>
-      run(async function () {
+        const clock = lolex.install();
+
+        run(async function () {
         const directLine = testHelpers.createDirectLineWithTranscript([
           {
             type: 'message',
             id: 'A0000001',
-            timestamp: '2022-09-06T20:49:30.3628667Z',
-            localTimestamp: '2022-09-06T13:49:29.166-07:00',
+            timestamp: '2000-01-23T12:34:56.12345Z',
+            localTimestamp: '2000-01-23T12:34:56.12345Z',
             localTimezone: 'America/Los_Angeles',
             channelId: 'directline',
             from: {
@@ -46,6 +48,11 @@
           },
           document.getElementById('webchat')
         );
+
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
 
         await pageConditions.uiConnected();
         await host.snapshot();
