@@ -18,66 +18,77 @@ beforeEach(() => {
   global.AudioContext = MockAudioContext;
 });
 
-describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
-  '%s',
-  (_, testHarnessOptions) => {
-    test('should echo back when saying "hello" and "world"', async () => {
-      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+// TODO: [P2] #4053 Temporarily disable "internal HTTP" test until service recovered.
+// describe.each([['without internal HTTP support'], ['with internal HTTP support', { enableInternalHTTPSupport: true }]])(
+describe.each([['without internal HTTP support']])('%s', (_, testHarnessOptions) => {
+  test.nightly('should echo back when saying "hello" and "world"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
 
-      const connectedPromise = waitForConnected(directLine);
-      const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
+    const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
-      await connectedPromise;
+    const connectedPromise = waitForConnected(directLine);
+    const activitiesPromise = subscribeAll(take(directLine.activity$, 2));
 
-      await sendTextAsSpeech('hello');
-      await sendTextAsSpeech('world');
+    await connectedPromise;
 
-      const activities = await activitiesPromise;
-      const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
-      );
+    await sendTextAsSpeech('hello');
+    await sendTextAsSpeech('world');
 
-      await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
-    });
+    const activities = await activitiesPromise;
+    const activityUtterances = Promise.all(
+      activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
+    );
 
-    test('should echo back "Bellevue" when saying "bellview"', async () => {
-      const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
+    await expect(activityUtterances).resolves.toEqual(['Hello.', 'World.']);
+  });
 
-      const connectedPromise = waitForConnected(directLine);
-      const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
+  test.nightly('should echo back "Bellevue" when saying "bellview"', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
 
-      await connectedPromise;
+    const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
-      await sendTextAsSpeech('bellview');
+    const connectedPromise = waitForConnected(directLine);
+    const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
 
-      const activities = await activitiesPromise;
-      const activityUtterances = Promise.all(
-        activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
-      );
+    await connectedPromise;
 
-      await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
-    });
-  }
-);
+    await sendTextAsSpeech('bellview');
 
-// TODO: Re-enable this test for "enableInternalHttpSupport = true" once DLS bug fix is lit up in production.
-// 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
-test('should synthesis if "speak" is empty', async () => {
-  const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness();
+    const activities = await activitiesPromise;
+    const activityUtterances = Promise.all(
+      activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
+    );
 
-  const connectedPromise = waitForConnected(directLine);
-  const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
+    await expect(activityUtterances).resolves.toEqual(['Bellevue.']);
+  });
 
-  await connectedPromise;
+  // TODO: Re-enable this test for "enableInternalHttpSupport = true" once DLS bug fix is lit up in production.
+  // 2020-05-11: Direct Line Speech protocol was updated to synthesize "text" if "speak" property is not set.
+  test.nightly('should synthesis if "speak" is empty', async () => {
+    if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+    }
 
-  // "Don't speak XXX" command will not send "speak" property on respond.
-  await sendTextAsSpeech("Don't speak anything.");
+    const { directLine, fetchCredentials, sendTextAsSpeech } = await createTestHarness(testHarnessOptions);
 
-  const activities = await activitiesPromise;
-  const activityUtterances = await Promise.all(
-    activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
-  );
+    const connectedPromise = waitForConnected(directLine);
+    const activitiesPromise = subscribeAll(take(directLine.activity$, 1));
 
-  // Despite it does not have "speak" property, Direct Line Speech protocol will fallback to "text" property for synthesize.
-  expect(activityUtterances).toEqual([`Don't speak anything.`]);
+    await connectedPromise;
+
+    // "Don't speak XXX" command will not send "speak" property on respond.
+    await sendTextAsSpeech("Don't speak anything.");
+
+    const activities = await activitiesPromise;
+    const activityUtterances = await Promise.all(
+      activities.map(activity => recognizeActivityAsText(activity, { fetchCredentials }))
+    );
+
+    // Despite it does not have "speak" property, Direct Line Speech protocol will fallback to "text" property for synthesize.
+    expect(activityUtterances).toEqual([`Don't speak anything.`]);
+  });
 });
