@@ -22,7 +22,6 @@ import { Shell, ShellFunctions } from './Shell';
 import getDeviceData from './utils/getDeviceData'
 
 declare const fbq: Function;
-declare const dataLayer: Array<Object>;
 
 interface GaEvent {
     eventCategory: string
@@ -33,6 +32,7 @@ interface GaEvent {
 
 interface GtmEvent {
     event: string
+    dataLayerName?: string
     variables?: Array<{name: string, value: string}>
 }
 
@@ -738,11 +738,13 @@ function trackGoogleAnalyticsEvent(event: GaEvent) {
     }
 }
 
-function trackGoogleTagManagerEvent({event, variables}: GtmEvent) {
+function trackGoogleTagManagerEvent({event, variables, dataLayerName}: GtmEvent) {
     const data = (variables || []).reduce((data, variable) => ({...data, [variable.name]: variable.value}), {event})
-    if (typeof dataLayer === 'object') {
+    const dataLayer = dataLayerName || "dataLayer"
+    
+    if (typeof (window as any)[dataLayer] === 'object') {
         console.log('Tracking GTM custom event dataLayer.push(...)', data)
-        dataLayer.push(data)
+        ;(window as any)[dataLayer].push(data)
     } else {
         console.warn('dataLayer is undefined - cannot track GTM custom event dataLayer.push(...)', data)
     }
