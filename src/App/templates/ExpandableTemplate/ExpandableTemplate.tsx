@@ -70,7 +70,7 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 	}
 	
 	render() {
-		const { theme, bot } = this.props
+		const { theme, bot, user } = this.props
 		const { collapsed, initialized } = this.state
 		
 		const { signature, showSignature, template } = theme || {} as typeof theme
@@ -93,6 +93,7 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 				
 				{!initialized && introMessage && (
 					<IntroMessage
+					  userId={user.id}
 						title={introMessage.title}
 						message={introMessage.description}
 						showAfterMs={introMessage.timeout}

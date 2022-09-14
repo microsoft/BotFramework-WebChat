@@ -6,6 +6,7 @@ import { CloseIcon } from './CloseIcon'
 
 export type Props = {
 	title: string,
+	userId: string
 	message: string,
 	showAfterMs: number
 	onTrigger(): void
@@ -20,15 +21,15 @@ export class IntroMessage extends React.Component<Props, State> {
 	showMessage = () => this.setState({ isVisible: true })
 	hideMessage = () => this.setState({ isVisible: false })
 	
-	trigger = () => {
+	trigger = async(userId: string) => {
 		this.hideMessage()
-		logTriggerInDatabase()
+		await logTriggerInDatabase(userId)
 		this.props.onTrigger()
 	}
 	
-	dismiss = () => {
+	dismiss = async(userId: string) => {
 		this.hideMessage()
-		logDismissalInDatabase()
+		await logDismissalInDatabase(userId)
 	}
 	
 	constructor(props: Props) {
@@ -39,7 +40,7 @@ export class IntroMessage extends React.Component<Props, State> {
 	}
 	
 	render() {
-		const { title, message } = this.props
+		const { title, userId, message } = this.props
 		const { isVisible } = this.state
 		const { trigger, dismiss } = this
 		
@@ -52,14 +53,14 @@ export class IntroMessage extends React.Component<Props, State> {
 		}
 		
 		return (
-			<div className="intro-message" onClick={trigger}>
+			<div className="intro-message" onClick={async() => await trigger(userId)}>
 				<style>{introMessageCss}</style>
-				<div className="intro-message__click-zone" onClick={trigger}>
+				<div className="intro-message__click-zone" onClick={async() => await trigger(userId)}>
 					{title && <div className="intro-message__title">{title}</div>}
 					{message && <div className="intro-message__message">{message}</div>}
 				</div>
 				
-				<div className="intro-message__close-icon" onClick={dismiss}>
+				<div className="intro-message__close-icon" onClick={async() => await dismiss(userId)}>
 					<CloseIcon />
 				</div>
 			</div>
