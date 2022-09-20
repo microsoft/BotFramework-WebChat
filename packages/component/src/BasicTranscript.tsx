@@ -510,14 +510,15 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     );
 
     const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
-    const statusMessage = connectivityStatus.message;
-    const isWaiting = statusMessage === 'connecting' || statusMessage === 'reconnecting';
+    const statusMessage = connectivityStatus?.message;
+    const isWaiting = !statusMessage || statusMessage === 'connecting' || statusMessage === 'reconnecting';
 
     return (
       <div
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
         // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
         aria-activedescendant={android ? undefined : activeDescendantId}
+        aria-busy={isWaiting}
         aria-label={transcriptAriaLabel}
         className={classNames(
           'webchat__basic-transcript',
@@ -529,10 +530,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         onFocus={handleFocus}
         onKeyDown={handleTranscriptKeyDown}
         onKeyDownCapture={handleTranscriptKeyDownCapture}
-        ref={callbackRef}
         // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
         // https://www.w3.org/TR/wai-aria/#aria-activedescendant
-        role={isWaiting ? 'busy' : 'group'}
+        ref={callbackRef}
+        role="group"
         // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
         // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
         // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
@@ -541,7 +542,11 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
-        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
+        <InternalTranscriptScrollable
+          isWaiting={isWaiting}
+          onFocusFiller={handleFocusFiller}
+          terminatorRef={terminatorRef}
+        >
           {renderingElements.map(
             ({
               activity,
@@ -610,13 +615,15 @@ type InternalTranscriptScrollableProps = {
   children?: ReactNode;
   onFocusFiller: () => void;
   terminatorRef: MutableRefObject<HTMLDivElement>;
+  isWaiting: boolean;
 };
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   children,
   onFocusFiller,
-  terminatorRef
+  terminatorRef,
+  isWaiting
 }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
@@ -736,7 +743,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
         <section
           aria-roledescription={transcriptRoleDescription}
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-          role="feed"
+          role={isWaiting ? undefined : 'feed'}
         >
           {children}
         </section>
@@ -748,6 +755,7 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 
 InternalTranscriptScrollable.propTypes = {
   children: PropTypes.any.isRequired,
+  isWaiting: PropTypes.bool.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
 };
