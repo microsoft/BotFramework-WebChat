@@ -882,7 +882,7 @@ type BasicTranscriptProps = {
   className?: string;
 };
 
-const BasicTranscript: React.FC<BasicTranscriptProps> = ({ className }) => {
+const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
