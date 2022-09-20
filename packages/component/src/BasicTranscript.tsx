@@ -15,7 +15,7 @@ import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react
 
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
+import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
@@ -55,6 +55,7 @@ const {
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
+  useDebouncedNotifications,
   useDirection,
   useGetActivityByKey,
   useGetKeyByActivity,
@@ -508,6 +509,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
     );
 
+    const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
+    const statusMessage = connectivityStatus.message;
+    const isWaiting = statusMessage === 'connecting' || statusMessage === 'reconnecting';
+
     return (
       <div
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
@@ -527,7 +532,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         ref={callbackRef}
         // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
         // https://www.w3.org/TR/wai-aria/#aria-activedescendant
-        role="group"
+        role={isWaiting ? 'busy' : 'group'}
         // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
         // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
         // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
@@ -869,7 +874,7 @@ type BasicTranscriptProps = {
   className?: string;
 };
 
-const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
+const BasicTranscript: React.FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
