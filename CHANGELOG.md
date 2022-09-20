@@ -22,7 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Fixed
+-  Fixes [#4393](https://github.com/microsoft/BotFramework-WebChat/issues/4393). Assigns correct ARIA roles to components in web chat when a conversation status is pending, by [@beyackle2](https://github.com/beyackle2), in PR [#4420](https://github.com/microsoft/BotFramework-WebChat/pull/4420)
+
+### Fixe
 
 -  Card action image alt text should use `imageAltText` field and fallback to `text` field, by [@compulim](https://github.com/compulim) in PR [#4333](https://github.com/microsoft/BotFramework-WebChat/pull/4333)
 
