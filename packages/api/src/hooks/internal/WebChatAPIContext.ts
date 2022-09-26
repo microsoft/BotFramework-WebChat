@@ -35,11 +35,15 @@ type WebChatAPIContext = {
   language?: string;
   localizedGlobalizeState?: PrecompiledGlobalize[];
   localizedStrings?: { [language: string]: LocalizedStrings };
-  markActivity?: ({ id: string }, name: string, value?: any) => void;
+  markActivity?: (activity: { id: string }, name: string, value?: any) => void;
   onCardAction?: PerformCardAction;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   postActivity?: (activity: WebChatActivity) => Observable<string>;
-  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
   sendEvent?: (name: string, value: any) => void;

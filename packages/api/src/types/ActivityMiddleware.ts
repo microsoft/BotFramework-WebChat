@@ -4,7 +4,7 @@ import type { WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityProps = {
   hideTimestamp: boolean;
-  renderActivityStatus: ({ hideTimestamp: boolean }) => ReactNode;
+  renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
   renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout: boolean;
 };

@@ -198,7 +198,11 @@ type ComposerCoreProps = {
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
-  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
   selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
   sendTypingIndicator?: boolean;
