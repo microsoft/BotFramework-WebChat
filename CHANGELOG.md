@@ -31,7 +31,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`core-js@3.25.3`](https://npmjs.com/package/core-js)
       -  [`redux-saga@1.2.1`](https://npmjs.com/package/redux-saga)
       -  [`sanitize-html@2.7.2`](https://npmjs.com/package/sanitize-html)
-      -  [`uuid@9.0.0`](https://npmjs.com/package/uuid)
    -  Development dependencies
       -  [`@babel/core@7.19.1`](https://npmjs.com/package/@babel/core)
       -  [`@babel/plugin-transform-runtime@7.19.1`](https://npmjs.com/package/@babel/plugin-transform-runtime)

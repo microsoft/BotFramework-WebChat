@@ -42,7 +42,8 @@
   },
   "skipBump": {
     "adaptivecards": "needs to bump manually",
-    "microsoft-cognitiveservices-speech-sdk": "needs to bump manually"
+    "microsoft-cognitiveservices-speech-sdk": "needs to bump manually",
+    "uuid": "uuid@9 emit non-ES5 build because of default parameters"
   },
   "dependencies": {
     "@babel/runtime": "7.19.0",
@@ -64,7 +65,7 @@
     "prop-types": "15.8.1",
     "sanitize-html": "2.7.2",
     "url-search-params-polyfill": "8.1.1",
-    "uuid": "9.0.0",
+    "uuid": "8.3.2",
     "web-speech-cognitive-services": "7.1.1",
     "whatwg-fetch": "3.6.2"
   },
