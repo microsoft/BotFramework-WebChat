@@ -9,8 +9,8 @@
     "build:babel": "babel src --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
     "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
@@ -21,12 +21,12 @@
   },
   "author": "",
   "license": "MIT",
-  "skipBump": [],
+  "skipBump": {},
   "devDependencies": {
     "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.18.10",
-    "@babel/preset-env": "^7.18.10",
-    "concurrently": "^7.3.0",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "concurrently": "^7.4.0",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   }

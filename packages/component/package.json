@@ -26,8 +26,8 @@
     "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
     "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --save-exact $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
@@ -37,30 +37,32 @@
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:typescript": "npm run build:typescript -- --watch"
   },
-  "skipBump": [
-    "react-redux"
-  ],
+  "skipBump": {
+    "botframework-webchat-api": "use local peer version",
+    "botframework-webchat-core": "use local peer version",
+    "react-redux": ""
+  },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.18.10",
-    "@babel/preset-env": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
-    "@types/node": "^18.7.1",
-    "@types/react": "^18.0.17",
+    "@types/node": "^18.7.22",
+    "@types/react": "^18.0.21",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^7.3.0",
-    "core-js": "^3.24.1",
+    "concurrently": "^7.4.0",
+    "core-js": "^3.25.3",
     "node-dev": "^7.4.3",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.3"
   },
   "dependencies": {
     "@emotion/css": "11.10.0",
     "base64-js": "1.5.1",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
-    "classnames": "2.3.1",
+    "classnames": "2.3.2",
     "compute-scroll-into-view": "1.0.17",
     "event-target-shim": "6.0.2",
     "markdown-it": "13.0.1",
