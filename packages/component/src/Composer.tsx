@@ -47,7 +47,11 @@ type ComposerCoreProps = {
   children?: ReactNode;
   extraStyleSet?: any;
   nonce?: string;
-  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   styleSet?: any;
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;

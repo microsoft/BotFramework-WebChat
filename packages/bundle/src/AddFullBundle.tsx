@@ -15,7 +15,11 @@ type AddFullBundleProps = {
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
-  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   styleOptions?: StyleOptions & AdaptiveCardsStyleOptions;
   styleSet?: any & { options: StrictFullBundleStyleOptions };
 

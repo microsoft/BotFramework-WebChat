@@ -22,6 +22,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4423](https://github.com/microsoft/BotFramework-WebChat/pull/4423)
+   -  Production dependencies
+      -  [`@babel/runtime@7.19.0`](https://npmjs.com/package/@babel/runtime)
+      -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.25.3`](https://npmjs.com/package/core-js)
+      -  [`redux-saga@1.2.1`](https://npmjs.com/package/redux-saga)
+      -  [`sanitize-html@2.7.2`](https://npmjs.com/package/sanitize-html)
+   -  Development dependencies
+      -  [`@babel/core@7.19.1`](https://npmjs.com/package/@babel/core)
+      -  [`@babel/plugin-transform-runtime@7.19.1`](https://npmjs.com/package/@babel/plugin-transform-runtime)
+      -  [`@babel/plugin-transform-typescript@7.19.1`](https://npmjs.com/package/@babel/plugin-transform-typescript)
+      -  [`@babel/preset-env@7.19.1`](https://npmjs.com/package/@babel/preset-env)
+      -  [`@babel/runtime@7.19.0`](https://npmjs.com/package/@babel/runtime)
+      -  [`@types/node@18.7.22`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@18.0.21`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@5.38.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@5.38.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`babel-jest@29.0.3`](https://npmjs.com/package/babel-jest)
+      -  [`concurrently@7.4.0`](https://npmjs.com/package/concurrently)
+      -  [`core-js@3.25.3`](https://npmjs.com/package/core-js)
+      -  [`dotenv@16.0.2`](https://npmjs.com/package/dotenv)
+      -  [`esbuild@0.15.9`](https://npmjs.com/package/esbuild)
+      -  [`eslint-plugin-react@7.31.8`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint@8.24.0`](https://npmjs.com/package/eslint)
+      -  [`jest-image-snapshot@5.2.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest-junit@14.0.1`](https://npmjs.com/package/jest-junit)
+      -  [`jest@29.0.3`](https://npmjs.com/package/jest)
+      -  [`lerna@5.5.2`](https://npmjs.com/package/lerna)
+      -  [`nodemon@2.0.20`](https://npmjs.com/package/nodemon)
+      -  [`terser-webpack-plugin@5.3.6`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`typescript@4.8.3`](https://npmjs.com/package/typescript)
+      -  [`webpack-stats-plugin@1.1.0`](https://npmjs.com/package/webpack-stats-plugin)
+
 ## [4.15.4] - 2022-09-15
 
 ### Fixed

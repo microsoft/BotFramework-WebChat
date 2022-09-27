@@ -15,13 +15,21 @@ export default function useComposerProps({
 }: {
   attachmentForScreenReaderMiddleware: AttachmentForScreenReaderMiddleware[];
   attachmentMiddleware: AttachmentMiddleware[];
-  renderMarkdown?: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   styleOptions: any;
   styleSet: any;
 }): {
   attachmentForScreenReaderMiddleware: AttachmentForScreenReaderMiddleware[];
   attachmentMiddleware: AttachmentMiddleware[];
-  renderMarkdown: (markdown: string, { markdownRespectCRLF: boolean }, { externalLinkAlt: string }) => string;
+  renderMarkdown: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
   extraStyleSet: any;
 } {
   const patchedAttachmentMiddleware = useMemo(

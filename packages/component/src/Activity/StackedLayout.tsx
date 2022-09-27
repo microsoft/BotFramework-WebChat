@@ -93,7 +93,7 @@ const connectStackedLayout = (...selectors) =>
 type StackedLayoutProps = {
   activity: WebChatActivity;
   hideTimestamp?: boolean;
-  renderActivityStatus?: ({ hideTimestamp: boolean }) => ReactNode;
+  renderActivityStatus?: (options: { hideTimestamp: boolean }) => ReactNode;
   renderAttachment?: RenderAttachment;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout?: boolean;
