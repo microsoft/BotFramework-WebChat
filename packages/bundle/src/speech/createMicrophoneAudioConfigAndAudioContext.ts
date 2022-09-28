@@ -52,7 +52,7 @@ function createMicrophoneAudioConfig(options: MicrophoneAudioInputStreamOptions)
   const { audioConstraints, audioContext, debug, enableTelemetry, pcmRecorderWorkletUrl } = options;
   const bufferDurationInMS = options.bufferDurationInMS || DEFAULT_BUFFER_DURATION_IN_MS;
 
-  const pcmRecorder = new PcmRecorder();
+  const pcmRecorder = new PcmRecorder(true);
 
   pcmRecorderWorkletUrl && pcmRecorder.setWorkletUrl(pcmRecorderWorkletUrl);
 

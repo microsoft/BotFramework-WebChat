@@ -30,8 +30,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`@babel/runtime@7.19.0`](https://npmjs.com/package/@babel/runtime)
       -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
       -  [`core-js@3.25.3`](https://npmjs.com/package/core-js)
+      -  [`microsoft-cognitiveservices-speech-sdk@1.23.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk)
       -  [`redux-saga@1.2.1`](https://npmjs.com/package/redux-saga)
       -  [`sanitize-html@2.7.2`](https://npmjs.com/package/sanitize-html)
+      -  [`web-speech-cognitive-services@7.1.2`](https://npmjs.com/package/web-speech-cognitive-services)
    -  Development dependencies
       -  [`@babel/core@7.19.1`](https://npmjs.com/package/@babel/core)
       -  [`@babel/plugin-transform-runtime@7.19.1`](https://npmjs.com/package/@babel/plugin-transform-runtime)
