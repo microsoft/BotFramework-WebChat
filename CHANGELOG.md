@@ -80,6 +80,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`typescript@4.8.3`](https://npmjs.com/package/typescript)
       -  [`webpack-stats-plugin@1.1.0`](https://npmjs.com/package/webpack-stats-plugin)
 
+### Samples
+
+-  Bumped all dependencies used by samples, by [@compulim](https://github.com/compulim) in PR [#4436](https://github.com/microsoft/BotFramework-WebChat/pull/4436)
+
 ## [4.15.4] - 2022-09-15
 
 ### Fixed
