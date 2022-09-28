@@ -2,21 +2,19 @@
   "name": "single-sign-on-app",
   "version": "0.1.0",
   "private": true,
-  "skipBump": [],
+  "skipBump": {},
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
     "prop-types": "^15.8.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "http-proxy-middleware": "^2.0.3",
-    "react-scripts": "^5.0.0"
+    "http-proxy-middleware": "^2.0.6",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",

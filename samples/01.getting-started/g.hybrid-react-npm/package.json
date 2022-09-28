@@ -7,15 +7,13 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "postinstall": "lerna bootstrap",
     "start": "lerna run build --scope=chat-component && lerna run start --parallel --stream"
   },
   "license": "MIT",
-  "skipBump": [],
+  "skipBump": {},
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^5.5.2"
   }
 }

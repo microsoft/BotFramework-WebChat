@@ -1,31 +1,29 @@
 {
   "name": "chat-component",
-  "version": "1.0.0",
+  "version": "0.0.0-0",
   "description": "",
   "main": "lib/index.js",
   "private": true,
   "scripts": {
     "build": "babel --out-dir lib src/**/*",
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "start": "npm run build -- --verbose --watch"
   },
   "license": "MIT",
-  "skipBump": [
-    "@types/react-dom",
-    "react",
-    "react-dom"
-  ],
+  "skipBump": {
+    "@types/react-dom": "intentionally using an older version",
+    "react": "intentionally using an older version",
+    "react-dom": "intentionally using an older version"
+  },
   "dependencies": {
-    "botframework-webchat": "^4.15.0",
+    "botframework-webchat": "^4.15.4",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-react": "^7.16.7"
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.3",
+    "@babel/preset-react": "^7.18.6"
   }
 }

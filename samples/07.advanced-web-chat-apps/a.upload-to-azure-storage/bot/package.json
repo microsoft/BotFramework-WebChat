@@ -4,24 +4,22 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "start": "node-dev --no-notify --respawn .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "skipBump": [],
+  "skipBump": {},
   "dependencies": {
-    "@azure/storage-blob": "^12.8.0",
-    "botbuilder": "^4.15.0",
-    "botbuilder-dialogs": "^4.15.0",
+    "@azure/storage-blob": "^12.11.0",
+    "botbuilder": "^4.17.1",
+    "botbuilder-dialogs": "^4.17.1",
     "bytes": "^3.1.2",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.2",
     "restify": "^8.6.1"
   },
   "devDependencies": {
-    "node-dev": "^7.1.0"
+    "node-dev": "^7.4.3"
   }
 }
