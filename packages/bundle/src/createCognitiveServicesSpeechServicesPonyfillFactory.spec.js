@@ -7,6 +7,8 @@
  */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
+import random from 'math-random';
+
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
 let createPonyfill;
@@ -39,6 +41,15 @@ beforeEach(() => {
       // eslint-disable-next-line no-empty-function
       return { connect: () => {} };
     }
+  };
+
+  window.URL = {
+    ...window.URL,
+    // Even when AudioContext does not support audio worklet, PCMRecorder always create it via URL.createObjectURL().
+    // As JSDOM does not support URL.createObjectURL(), we need to return a dummy blob URL.
+    // https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/572
+    // eslint-disable-next-line no-magic-numbers
+    createObjectURL: () => `blob:${random().toString(36).substring(2)}`
   };
 
   window.navigator.mediaDevices = {

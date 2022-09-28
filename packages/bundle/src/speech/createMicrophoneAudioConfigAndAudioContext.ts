@@ -135,6 +135,9 @@ export default function createMicrophoneAudioConfigAndAudioContext({
   // Web Chat has an implementation of AudioConfig for microphone that would enable better support on Safari:
   // - Maintain same instance of `AudioContext` across recognitions;
   // - Resume suspended `AudioContext` on user gestures.
+  //
+  // This is filed as https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/571.
+  // Before Speech SDK team take our suggestion, we need to continue using a custom AudioConfig object to persist the blessing.
   audioContext || (audioContext = createAudioContext());
 
   return {
