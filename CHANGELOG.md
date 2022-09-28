@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  Bumped Adaptive Cards to [`adaptivecards@2.11.1`](https://npmjs.com/package/adaptivecards), by [@compulim](https://github.com/compulim) in PR [#4424](https://github.com/microsoft/BotFramework-WebChat/pull/4424)
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4423](https://github.com/microsoft/BotFramework-WebChat/pull/4423)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4423](https://github.com/microsoft/BotFramework-WebChat/pull/4423) and [#4435](https://github.com/microsoft/BotFramework-WebChat/pull/4435)
    -  Production dependencies
       -  [`@babel/runtime@7.19.0`](https://npmjs.com/package/@babel/runtime)
       -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
