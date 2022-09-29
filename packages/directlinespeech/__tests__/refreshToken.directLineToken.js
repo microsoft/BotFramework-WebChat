@@ -1,9 +1,5 @@
 /**
  * @jest-environment jsdom
- * @jest-environment-options { "customExportConditions": ["node"] }
- *
- * "uuid" resolved by jest-environment-jsdom use Web Crypto API.
- * However, "jsdom" does not support Web Crypto API. Thus, we need to import packages as Node.js instead.
  */
 
 import 'global-agent/bootstrap';
