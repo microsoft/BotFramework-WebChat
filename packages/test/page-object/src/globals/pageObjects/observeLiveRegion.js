@@ -22,6 +22,7 @@ export default function observeLiveRegion() {
   mutationObserver.observe(liveRegionElement, { childList: true });
 
   return {
+    disconnect: () => mutationObserver.disconnect(),
     flush: () => liveRegionInnerTexts.splice(0),
     getInnerTexts: () => Object.freeze([...liveRegionInnerTexts])
   };

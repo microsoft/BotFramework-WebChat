@@ -146,8 +146,13 @@
         // WHEN: Pressing TAB key.
         await host.sendKeys('TAB');
 
-        // THEN: It should focus on the first textbox (this is done by Adaptive Cards, they set tabindex="-1" on other buttons).
-        //       We just verify whatever behavior they have.
+        // THEN: It should focus on the "Skip" button.
+        expect(document.activeElement).toBe(document.querySelector('button[title="Skip"]'));
+
+        // WHEN: Pressing TAB key again.
+        await host.sendKeys('TAB');
+
+        // THEN: It should focus on the textbox.
         expect(document.activeElement).toBe(document.querySelector('input'));
 
         // WHEN: Pressing TAB key.

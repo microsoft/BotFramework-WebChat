@@ -29,15 +29,31 @@
 
           await pageConditions.uiConnected();
 
-          const { flush } = pageObjects.observeLiveRegion();
+          const { disconnect, flush } = pageObjects.observeLiveRegion();
 
-          const sendMessage = await directLine.emulateOutgoingActivity({ type: 'typing' });
+          try {
+            const sendMessage = await directLine.emulateOutgoingActivity({ type: 'typing' });
 
-          sendMessage.rejectPostActivity(new Error('artificial error'));
+            sendMessage.rejectPostActivity(new Error('artificial error'));
 
-          await directLine.emulateIncomingActivity('Aloha!');
+            await directLine.emulateIncomingActivity('Aloha!');
 
-          expect(flush()).toEqual(['Bot said:\nAloha!']);
+            await pageConditions.became(
+              'live region narrated bot message',
+              () => {
+                try {
+                  expect(flush()).toEqual(['Bot said:\nAloha!']);
+
+                  return true;
+                } catch {
+                  return false;
+                }
+              },
+              1000
+            );
+          } finally {
+            disconnect();
+          }
         },
         { ignoreErrors: true }
       );

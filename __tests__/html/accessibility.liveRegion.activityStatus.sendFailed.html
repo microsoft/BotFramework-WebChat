@@ -29,21 +29,45 @@
 
           await pageConditions.uiConnected();
 
-          const { flush } = pageObjects.observeLiveRegion();
+          const { disconnect, flush } = pageObjects.observeLiveRegion();
 
-          const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
+          try {
+            const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
 
-          await directLine.emulateIncomingActivity('Aloha!');
+            await directLine.emulateIncomingActivity('Aloha!');
 
-          sendMessage.rejectPostActivity(new Error('artificial error'));
+            sendMessage.rejectPostActivity(new Error('artificial error'));
 
-          await pageConditions.became(
-            'failed to send message',
-            () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
-            1000
-          );
+            await pageConditions.became(
+              'failed to send message',
+              () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
+              1000
+            );
 
-          expect(flush()).toEqual(['You said:\nHello, World!', 'Bot said:\nAloha!', 'Failed to send message.']);
+            const liveRegionText = [];
+
+            await pageConditions.became(
+              'live region narrated failed to send message',
+              () => {
+                try {
+                  liveRegionText.push(...flush());
+
+                  expect(liveRegionText).toEqual([
+                    'You said:\nHello, World!',
+                    'Bot said:\nAloha!',
+                    'Failed to send message.'
+                  ]);
+
+                  return true;
+                } catch (err) {
+                  return false;
+                }
+              },
+              1000
+            );
+          } finally {
+            disconnect();
+          }
         },
         { ignoreErrors: true }
       );
