@@ -244,7 +244,9 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
           className="webchat__suggested-actions__button"
           displayText={displayText}
           image={image}
-          imageAlt={imageAltText}
+          // Image alt text should use `imageAltText` field and fallback to `text` field.
+          // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
+          imageAlt={image && (imageAltText || text)}
           itemIndex={index}
           text={text}
           textClassName={
