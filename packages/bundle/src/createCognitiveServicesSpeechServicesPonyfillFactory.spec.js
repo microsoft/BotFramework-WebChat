@@ -14,6 +14,17 @@ let originalConsole;
 
 beforeEach(() => {
   jest.mock('web-speech-cognitive-services/lib/SpeechServices', () => jest.fn(() => ({})));
+  jest.mock('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports', () => ({
+    ...jest.requireActual('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports'),
+    PcmRecorder: class MockPcmRecorder {
+      // eslint-disable-next-line class-methods-use-this, no-empty-function
+      record() {}
+      // eslint-disable-next-line class-methods-use-this, no-empty-function
+      releaseMediaResources() {}
+      // eslint-disable-next-line class-methods-use-this, no-empty-function
+      setWorkletUrl() {}
+    }
+  }));
 
   originalConsole = console;
   consoleWarns = [];
