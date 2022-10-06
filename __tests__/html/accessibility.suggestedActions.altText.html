@@ -47,7 +47,8 @@
               }
             ]
           },
-          text: 'Hello, World!',
+          text: 'Please select one of the actions below.',
+          timestamp: 0,
           type: 'message'
         });
 
@@ -56,6 +57,8 @@
         );
 
         expect(imageAltTexts).toEqual(['red square', 'green rectangle']);
+
+        await host.snapshot();
       });
     </script>
   </body>
