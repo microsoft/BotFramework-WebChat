@@ -14,6 +14,6 @@
   "license": "MIT",
   "skipBump": {},
   "devDependencies": {
-    "lerna": "^5.5.2"
+    "lerna": "^5.5.4"
   }
 }

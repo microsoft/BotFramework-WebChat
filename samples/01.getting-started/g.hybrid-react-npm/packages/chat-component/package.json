@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "babel --out-dir lib src/**/*",
-    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix",
     "start": "npm run build -- --verbose --watch"
   },
   "license": "MIT",

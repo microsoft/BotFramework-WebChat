@@ -4,9 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "start": "node-dev --no-notify --respawn .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix",
+    "start": "node-dev --no-notify --respawn ."
   },
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
@@ -14,7 +13,7 @@
     "node-fetch": "node-fetch@3 dropped support of CommonJS"
   },
   "dependencies": {
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
     "node-fetch": "^2.6.7",

@@ -11,7 +11,7 @@
     "botframework-webchat": "^4.15.4",
     "math-random": "^2.0.1",
     "msal": "^1.4.17",
-    "office-ui-fabric-react": "^7.198.1",
+    "office-ui-fabric-react": "^7.199.3",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
@@ -21,7 +21,7 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",

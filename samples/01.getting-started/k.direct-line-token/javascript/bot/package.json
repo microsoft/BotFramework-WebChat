@@ -6,14 +6,13 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "scripts": {
-    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "start": "node-dev --no-notify --respawn .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix",
+    "start": "node-dev --no-notify --respawn ."
   },
   "skipBump": {},
   "dependencies": {
     "botbuilder": "^4.17.1",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "restify": "^8.6.1"
   },
   "devDependencies": {
