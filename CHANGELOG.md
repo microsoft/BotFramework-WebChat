@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Card action image alt text should use `imageAltText` field and fallback to `text` field, by [@compulim](https://github.com/compulim) in PR [#4333](https://github.com/microsoft/BotFramework-WebChat/pull/4333)
+
 ### Changed
 
 -  Bumped Adaptive Cards to [`adaptivecards@2.11.1`](https://npmjs.com/package/adaptivecards), by [@compulim](https://github.com/compulim) in PR [#4424](https://github.com/microsoft/BotFramework-WebChat/pull/4424)
