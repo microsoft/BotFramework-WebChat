@@ -511,14 +511,14 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
     const statusMessage = connectivityStatus?.message;
-    const isWaiting = !statusMessage || statusMessage === 'connecting' || statusMessage === 'reconnecting';
+    const ariaBusy = !statusMessage || statusMessage === 'connecting' || statusMessage === 'reconnecting';
 
     return (
       <div
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
         // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
         aria-activedescendant={android ? undefined : activeDescendantId}
-        aria-busy={isWaiting}
+        aria-busy={ariaBusy}
         aria-label={transcriptAriaLabel}
         className={classNames(
           'webchat__basic-transcript',
@@ -543,7 +543,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable
-          isWaiting={isWaiting}
+          ariaBusy={ariaBusy}
           onFocusFiller={handleFocusFiller}
           terminatorRef={terminatorRef}
         >
@@ -612,18 +612,18 @@ InternalTranscript.propTypes = {
 };
 
 type InternalTranscriptScrollableProps = {
+  ariaBusy: boolean;
   children?: ReactNode;
   onFocusFiller: () => void;
   terminatorRef: MutableRefObject<HTMLDivElement>;
-  isWaiting: boolean;
 };
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
+  ariaBusy,
   children,
   onFocusFiller,
-  terminatorRef,
-  isWaiting
+  terminatorRef
 }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
@@ -741,9 +741,10 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         <section
+          aria-busy={ariaBusy}
           aria-roledescription={transcriptRoleDescription}
           className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-          role={isWaiting ? undefined : 'feed'}
+          role={'feed'}
         >
           {children}
         </section>
@@ -754,8 +755,8 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 };
 
 InternalTranscriptScrollable.propTypes = {
+  ariaBusy: PropTypes.bool.isRequired,
   children: PropTypes.any.isRequired,
-  isWaiting: PropTypes.bool.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired
 };
