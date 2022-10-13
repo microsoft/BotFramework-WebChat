@@ -40,7 +40,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     componentWillUpdate(nextProps: HistoryProps) {
-        let scrollToBottomDetectionTolerance = 1;
+        let scrollToBottomDetectionTolerance = 3;
 
         if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
             scrollToBottomDetectionTolerance = 70; // this should be in-sync with $actionsHeight scss var
