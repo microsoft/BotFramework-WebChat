@@ -25,7 +25,8 @@ export type Theme = {
 };
 
 export type AppProps = ChatProps & {
-  theme?: Theme;
+  theme?: Theme; // option to override theme settings from remote config
+  defaultTheme?: Theme; // option to set default template when no remote config found (on default microsite for example)
   header?: { textWhenCollapsed?: string; text: string, extraHtml?: Element };
   channel?: { index?: number, id?: string };
   autoExpandTimeout?: number;
@@ -54,6 +55,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
   if (remoteConfig) {
     // TODO test IE11 https://github.com/matthew-andrews/isomorphic-fetch
     try {
+      const template = props.theme && props.theme.template && props.theme.template.type ? {type: props.theme.template.type} : null
       const response = await fetch(
         `https://${props.bot.id}.azurewebsites.net/webchat/config`,
         {
@@ -65,7 +67,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
           body: JSON.stringify({
             user: props.user,
             channel: props.channel,
-            referrer: window.location.href
+            referrer: window.location.href,
+            template
           }),
         }
       );
@@ -116,7 +119,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       const config = body.config;
       const alwaysVisible = config && config.visibility === 'always'
       const neverVisible = config && config.visibility === 'never'
-      const fullscreen = props.theme && props.theme.template && props.theme.template.type === 'full-screen'
+      const fullscreen = (props.theme && props.theme.template && props.theme.template.type === 'full-screen') || (props.defaultTheme && props.defaultTheme.template && props.defaultTheme.template.type === 'full-screen')
       if ((!config && !fullscreen) || neverVisible || (!alwaysVisible && body.testMode && window.location.hash !== "#feedbot-test-mode")) {
         document
           .getElementsByTagName("body")[0]
@@ -199,6 +202,8 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
             textWhenCollapsed: config.template.collapsedHeaderText,
           };
         }
+      } else if (props.defaultTheme) {
+        props.theme = {...props.defaultTheme, ...props.theme}            
       }
     } catch (err) {
       console.error("WebChat init error", err);
@@ -220,7 +225,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
   // FEEDYOU configurable theming
   if (props.theme || !container) {
     const theme = { mainColor: "#D83838", ...props.theme };
-    props.theme.enableScreenshotUpload = !!props.enableScreenshotUpload
+    props.theme && (props.theme.enableScreenshotUpload = !!props.enableScreenshotUpload)
     const themeStyle = document.createElement("style");
     themeStyle.type = "text/css";
     themeStyle.appendChild(
