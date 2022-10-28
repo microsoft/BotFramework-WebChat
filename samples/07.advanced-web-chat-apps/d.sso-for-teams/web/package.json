@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix || exit 0",
+    "postbump": "cat package.json | jq '. + (.dependencies = (.dependencies + ((.localPeers // []) | map({ key: ., value: \"0.0.0-0\" }) | from_entries) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "prebump": "cat package.json | jq '((.localPeers // []) | map([\"dependencies\", .])) as $localPeersPaths | delpaths($localPeersPaths)' > package-temp.json && cp package-temp.json package.json",
     "start": "node-dev --no-notify --respawn ."
   },
   "author": "Microsoft Corporation",
