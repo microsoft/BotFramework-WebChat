@@ -55,7 +55,6 @@ const {
   useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
-  useDebouncedNotifications,
   useDirection,
   useGetActivityByKey,
   useGetKeyByActivity,
@@ -509,16 +508,11 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
     );
 
-    const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
-    const statusMessage = connectivityStatus?.message;
-    const ariaBusy = !statusMessage || statusMessage === 'connecting' || statusMessage === 'reconnecting';
-
     return (
       <div
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
         // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
         aria-activedescendant={android ? undefined : activeDescendantId}
-        aria-busy={ariaBusy}
         aria-label={transcriptAriaLabel}
         className={classNames(
           'webchat__basic-transcript',
@@ -530,9 +524,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         onFocus={handleFocus}
         onKeyDown={handleTranscriptKeyDown}
         onKeyDownCapture={handleTranscriptKeyDownCapture}
+        ref={callbackRef}
         // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
         // https://www.w3.org/TR/wai-aria/#aria-activedescendant
-        ref={callbackRef}
         role="group"
         // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
         // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
@@ -542,11 +536,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
-        <InternalTranscriptScrollable
-          ariaBusy={ariaBusy}
-          onFocusFiller={handleFocusFiller}
-          terminatorRef={terminatorRef}
-        >
+        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
           {renderingElements.map(
             ({
               activity,
@@ -612,7 +602,6 @@ InternalTranscript.propTypes = {
 };
 
 type InternalTranscriptScrollableProps = {
-  ariaBusy: boolean;
   children?: ReactNode;
   onFocusFiller: () => void;
   terminatorRef: MutableRefObject<HTMLDivElement>;
@@ -620,7 +609,6 @@ type InternalTranscriptScrollableProps = {
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
-  ariaBusy,
   children,
   onFocusFiller,
   terminatorRef
@@ -734,20 +722,23 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     unread
   });
 
+  const hasAnyChild = !!React.Children.count(children);
+
   return (
     <React.Fragment>
       {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
-      {!!React.Children.count(children) && <FocusRedirector redirectRef={terminatorRef} />}
+      {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
-        <section
-          aria-busy={ariaBusy}
-          aria-roledescription={transcriptRoleDescription}
-          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-          role={'feed'}
-        >
-          {children}
-        </section>
+        {hasAnyChild && (
+          <section
+            aria-roledescription={transcriptRoleDescription}
+            className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+            role="feed"
+          >
+            {children}
+          </section>
+        )}
         <BasicTypingIndicator />
       </ReactScrollToBottomPanel>
     </React.Fragment>
@@ -755,7 +746,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
 };
 
 InternalTranscriptScrollable.propTypes = {
-  ariaBusy: PropTypes.bool.isRequired,
   children: PropTypes.any.isRequired,
   onFocusFiller: PropTypes.func.isRequired,
   terminatorRef: PropTypes.any.isRequired

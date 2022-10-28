@@ -60,4 +60,17 @@ export default function verifyDOMIntegrity() {
       throw new Error(message);
     }
   });
+
+  // Elements of `role="feed"` must have at least 1 child of <article> or `role="article"`
+  [].forEach.call(document.querySelectorAll('[role="feed"]'), element => {
+    const hasArticle = [].some.call(element.children, child => child.matches('article, [role="article"]'));
+
+    if (!hasArticle) {
+      const message = 'Elements of role="feed" must have at least 1 children of <article> or role="article".';
+
+      console.warn(message, element);
+
+      throw new Error(message);
+    }
+  });
 }
