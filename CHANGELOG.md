@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Card action image alt text should use `imageAltText` field and fallback to `text` field, by [@compulim](https://github.com/compulim) in PR [#4333](https://github.com/microsoft/BotFramework-WebChat/pull/4333)
 -  Fixes [#4476](https://github.com/microsoft/BotFramework-WebChat/issues/4476). When focus on the keyboard help screen, it should focus on the close button, by [@compulim](https://github.com/compulim) in PR [#4479](https://github.com/microsoft/BotFramework-WebChat/pull/4479)
+-  Fixes [#4442](https://github.com/microsoft/BotFramework-WebChat/issues/4442). Change the keyboard help screen string "Leave message" to "Exit message", by [@compulim](https://github.com/compulim) in PR [#4479](https://github.com/microsoft/BotFramework-WebChat/pull/4479)
 
 ### Changed
 
