@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
-import type { VFC } from 'react';
+import type { FC } from 'react';
 
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
@@ -15,7 +15,7 @@ type NotesBodyProps = {
   text: string;
 };
 
-const Notes: VFC<NotesBodyProps> = ({ header, text }) => (
+const Notes: FC<NotesBodyProps> = ({ header, text }) => (
   <section className="webchat__keyboard-help__notes">
     <h4 className="webchat__keyboard-help__notes-header">{header}</h4>
     {text.split('\n').map((line, index) => (
@@ -33,7 +33,7 @@ Notes.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-const KeyboardHelp: VFC<{}> = () => {
+const KeyboardHelp: FC<{}> = () => {
   const [{ keyboardHelp: keyboardHelpStyleSet }] = useStyleSet();
   const [shown, setShown] = useState(false);
   const focus = useFocus();
@@ -64,11 +64,19 @@ const KeyboardHelp: VFC<{}> = () => {
   );
 
   const handleCloseButtonClick = useCallback(() => focus('main'), [focus]);
+  const handleCloseButtonFocus = useCallback(() => setShown(true), [setShown]);
 
-  const handleFocusWithin = useCallback(() => setShown(true), [setShown]);
+  const handleCloseButtonKeyDown = useCallback(
+    event => {
+      const { key } = event;
 
-  const handleKeyPress = useCallback(
-    ({ key }) => (key === 'Enter' || key === 'Escape' || key === ' ') && focus('main'),
+      if (key === 'Enter' || key === 'Escape' || key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+
+        focus('main');
+      }
+    },
     [focus]
   );
 
@@ -77,13 +85,14 @@ const KeyboardHelp: VFC<{}> = () => {
       // When the dialog is not shown, "aria-hidden" helps to prevent scan mode from able to scan the content of the dialog.
       aria-hidden={!shown}
       className={classNames('webchat__keyboard-help', keyboardHelpStyleSet + '', {
+        // Instead of using "hidden" attribute, we are using CSS to hide the dialog.
+        // - When using "hidden", the close button will not be tabbable because it is pseudo removed from the DOM
+        // - When using CSS, the close button will still be tabbable
+        // We prefer CSS because the focus need to land on close button, but we don't want to move the focus using JavaScript.
         'webchat__keyboard-help--shown': shown
       })}
       onBlur={handleBlur}
-      onFocus={handleFocusWithin}
-      onKeyPress={handleKeyPress}
       role="dialog"
-      tabIndex={0}
     >
       <div className="webchat__keyboard-help__box">
         <header>
@@ -93,8 +102,8 @@ const KeyboardHelp: VFC<{}> = () => {
           aria-label={closeButtonAlt}
           className="webchat__keyboard-help__close-button"
           onClick={handleCloseButtonClick}
-          onFocus={handleFocusWithin}
-          tabIndex={-1}
+          onFocus={handleCloseButtonFocus}
+          onKeyDown={handleCloseButtonKeyDown}
           type="button"
         >
           <svg

@@ -5,6 +5,7 @@ import became from './became';
 import connectivityStatusShown from './connectivityStatusShown';
 import errorMessageLogged from './errorMessageLogged';
 import focusedActivityInView from './focusedActivityInView';
+import focusOn from './focusOn';
 import liveRegionStabilized from './liveRegionStabilized';
 import mediaBufferStabilized from './mediaBufferStabilized';
 import minNumActivitiesShown from './minNumActivitiesShown';
@@ -29,6 +30,7 @@ export {
   connectivityStatusShown,
   errorMessageLogged,
   focusedActivityInView,
+  focusOn,
   liveRegionStabilized,
   mediaBufferStabilized,
   minNumActivitiesShown,
