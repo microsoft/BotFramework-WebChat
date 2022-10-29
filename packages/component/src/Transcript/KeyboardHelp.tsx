@@ -108,6 +108,8 @@ const KeyboardHelp: FC<{}> = () => {
         >
           <svg
             className="webchat__keyboard-help__close-button_image"
+            // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+            focusable={false}
             role="presentation"
             viewBox="0 0 2048 2048"
             xmlns="http://www.w3.org/2000/svg"
@@ -123,6 +125,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--light"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
@@ -147,6 +151,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--dark"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
@@ -171,6 +177,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--high-contrast"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
@@ -206,6 +214,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--light"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
@@ -230,6 +240,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--dark"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
@@ -254,6 +266,8 @@ const KeyboardHelp: FC<{}> = () => {
             <svg
               className="webchat__keyboard-help__image webchat__keyboard-help__image--high-contrast"
               fill="none"
+              // "focusable" attribute is only available in IE11 while "tabIndex={-1}" does not work.
+              focusable={false}
               height="200"
               role="presentation"
               viewBox="0 0 121 200"
