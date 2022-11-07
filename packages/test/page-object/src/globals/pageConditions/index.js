@@ -16,6 +16,8 @@ import scrollToEndButtonHidden from './scrollToEndButtonHidden';
 import scrollToEndButtonShown from './scrollToEndButtonShown';
 import stabilized from './stabilized';
 import suggestedActionsShown from './suggestedActionsShown';
+import toasterExpandable from './toasterExpandable';
+import toasterExpanded from './toasterExpanded';
 import toastShown from './toastShown';
 import typingIndicatorHidden from './typingIndicatorHidden';
 import typingIndicatorShown from './typingIndicatorShown';
@@ -41,6 +43,8 @@ export {
   scrollToEndButtonShown,
   stabilized,
   suggestedActionsShown,
+  toasterExpandable,
+  toasterExpanded,
   toastShown,
   typingIndicatorHidden,
   typingIndicatorShown,
