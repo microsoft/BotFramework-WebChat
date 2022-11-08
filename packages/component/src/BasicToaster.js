@@ -148,13 +148,13 @@ const BasicToaster = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId} role="region">
+        <div aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId}>
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li aria-atomic={true} className="webchat__toaster__listItem" key={id} role="none">
+            <div aria-atomic={true} className="webchat__toaster__listItem" key={id}>
               {children}
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
