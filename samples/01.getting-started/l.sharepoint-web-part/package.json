@@ -13,5 +13,6 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "type": "module",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {}
 }
