@@ -11,7 +11,7 @@
     "botframework-webchat": "^4.15.4",
     "math-random": "^2.0.1",
     "msal": "^1.4.17",
-    "office-ui-fabric-react": "^7.199.4",
+    "office-ui-fabric-react": "^7.199.6",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
