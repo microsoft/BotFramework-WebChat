@@ -15,7 +15,7 @@ import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react
 
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode, VFC } from 'react';
+import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
@@ -722,19 +722,23 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     unread
   });
 
+  const hasAnyChild = !!React.Children.count(children);
+
   return (
     <React.Fragment>
       {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
-      {!!React.Children.count(children) && <FocusRedirector redirectRef={terminatorRef} />}
+      {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
-        <section
-          aria-roledescription={transcriptRoleDescription}
-          className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-          role="feed"
-        >
-          {children}
-        </section>
+        {hasAnyChild && (
+          <section
+            aria-roledescription={transcriptRoleDescription}
+            className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+            role="feed"
+          >
+            {children}
+          </section>
+        )}
         <BasicTypingIndicator />
       </ReactScrollToBottomPanel>
     </React.Fragment>
@@ -869,7 +873,7 @@ type BasicTranscriptProps = {
   className?: string;
 };
 
-const BasicTranscript: VFC<BasicTranscriptProps> = ({ className }) => {
+const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
