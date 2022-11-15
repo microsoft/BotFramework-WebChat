@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4472](https://github.com/microsoft/BotFramework-WebChat/issues/4472). Removed `role` attributes for notification bar and use `<div>` instead of `<ul>`/`<li>`, by [@compulim](https://github.com/compulim) in PR [#4475](https://github.com/microsoft/BotFramework-WebChat/pull/4475)
 -  Fixes [#4393](https://github.com/microsoft/BotFramework-WebChat/issues/4393). Renders `<section role="feed">` only if there are one or more activities contained within, by [@beyackle2](https://github.com/beyackle2) and [@compulim](https://github.com/compulim), in PR [#4420](https://github.com/microsoft/BotFramework-WebChat/pull/4420)
 -  Fixes [#4473](https://github.com/microsoft/BotFramework-WebChat/issues/4473). Bumped `strip-ansi@6.0.1` for `test-harness` as `@^7` does not support CommonJS project, by [@compulim](https://github.com/compulim) in PR [#4474](https://github.com/microsoft/BotFramework-WebChat/pull/4474)
+-  Fixes [#4476](https://github.com/microsoft/BotFramework-WebChat/issues/4476). When focus on the keyboard help screen, it should focus on the close button, by [@compulim](https://github.com/compulim) in PR [#4479](https://github.com/microsoft/BotFramework-WebChat/pull/4479)
+-  Fixes [#4442](https://github.com/microsoft/BotFramework-WebChat/issues/4442). Change the keyboard help screen string "Leave message" to "Exit message", by [@compulim](https://github.com/compulim) in PR [#4479](https://github.com/microsoft/BotFramework-WebChat/pull/4479)
 
 ### Changed
 

@@ -52,6 +52,7 @@ export default function createKeyboardHelpStyleSet({ paddingRegular, primaryFont
         borderWidth: 2,
         color: '#999',
         height: 34,
+        outline: 0,
         padding: 0,
         position: 'absolute',
         right: paddingRegular,
