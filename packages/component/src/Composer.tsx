@@ -1,6 +1,7 @@
 import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
+import classNames from 'classnames';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
@@ -26,6 +27,7 @@ import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator
 import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
+import LiveRegionTwinComposer from './providers/LiveRegionTwin/LiveRegionTwinComposer';
 import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
@@ -38,6 +40,20 @@ const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const emotionPool = {};
+
+const LIVE_REGION_TWIN_STYLE = {
+  '&.webchat__live-region': {
+    '&, & .webchat__live-region__text-element': {
+      color: 'transparent',
+      height: '1px!important',
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      whiteSpace: 'nowrap',
+      width: '1px!important'
+    }
+  }
+};
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
@@ -177,6 +193,11 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
 
+  const liveRegionTwinClassName = useMemo(
+    () => styleToEmotionObject(LIVE_REGION_TWIN_STYLE) + '',
+    [styleToEmotionObject]
+  );
+
   const context = useMemo(
     () => ({
       dictateAbortable,
@@ -227,7 +248,14 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   return (
     <SayComposer ponyfill={webSpeechPonyfill}>
       <WebChatUIContext.Provider value={context}>
-        {children}
+        <LiveRegionTwinComposer
+          className={classNames('webchat__live-region', liveRegionTwinClassName)}
+          fadeAfter={styleOptions.internalLiveRegionFadeAfter}
+          role="log"
+          textElementClassName="webchat__live-region__text-element"
+        >
+          {children}
+        </LiveRegionTwinComposer>
         <Dictation onError={dictationOnError} />
       </WebChatUIContext.Provider>
     </SayComposer>
