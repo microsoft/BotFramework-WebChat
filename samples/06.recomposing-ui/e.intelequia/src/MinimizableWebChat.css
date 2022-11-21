@@ -73,6 +73,7 @@
   height: 40px;
   background-repeat: no-repeat;
   background-position: center;
+  margin: 0px !important;
 }
 
 /* @media (min-width: 960px) and (min-height: 600px) {
@@ -101,7 +102,7 @@
   font-size: 10px;
   margin-bottom: 5px;
   margin-left: 10px;
-  position:absolute;
+  /* position:absolute; */
 }
 
 .minimizable-web-chat > .chat-box > header > button:focus:not(:active),
@@ -118,6 +119,10 @@
 }
 
 .main{
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+.webchat__send-box__main{
   border-radius: 15px;
   margin-bottom: 10px;
 }
@@ -139,6 +144,7 @@
     border-radius: 0;
     height: 40px !important;
     background-image:none !important;
+    margin: 0px !important
   }
 
   .switch{

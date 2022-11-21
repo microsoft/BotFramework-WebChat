@@ -43,6 +43,21 @@ const MinimizableWebChat = (parameters) => {
                 setLanguage(action.payload.activity.value)
             }
           }
+        } else if(action.type === 'WEB_CHAT/SEND_MESSAGE'){
+          //Message from user
+          switch(action.payload.method){
+            case 'keyboard':
+              if(options.onUserMessage){
+              options.onUserMessage(action.payload.text, options.language);
+              }
+              break;
+            case 'imBack':
+            case 'postBack':
+              if(options.onActionClick){
+              options.onActionClick(action.payload.text, options.language);
+              }
+              break;
+          }
         }
 
         return next(action);
@@ -145,12 +160,19 @@ const MinimizableWebChat = (parameters) => {
     setLoaded(true);
     setMinimized(false);
     setNewMessage(false);
-    setFirstTimeCookie()
+    setFirstTimeCookie();
+    if(options.onMaximizeMinimize){
+      options.onMaximizeMinimize(false, options.language);
+    }
+    
   }, [setMinimized, setNewMessage]);
 
   const handleMinimizeButtonClick = useCallback(() => {
     setMinimized(true);
     setNewMessage(false);
+    if(options.onMaximizeMinimize){
+      options.onMaximizeMinimize(true, options.language);
+    }
   }, [setMinimized, setNewMessage]);
 
   const handleSwitchButtonClick = useCallback(() => {

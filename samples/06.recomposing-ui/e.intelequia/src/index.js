@@ -4,6 +4,18 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// var onActionClick = function(text, language){
+//     console.log('Action clicked: ' + text);
+// }
+
+// var onUserMessage = function(text, language){
+//     console.log('User message: ' + text + ', language:' + language);
+// }
+
+// var onMaximizeMinimize = function(minimized, language){
+//     console.log('Minimized:'+ minimized);
+// }
+
 // const parameters = {
 //     style: {
 //       backgroundColor: '#FFFFFF', //window background color
@@ -36,11 +48,15 @@ import * as serviceWorker from './serviceWorker';
 //         imageUrl: ''
 //     },
 //     brandMessage: 'Powered by Hotelequia',
-//     directlineTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/generateToken/',
-//     directlineReconnectTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/reconnect/',
-//     speechTokenUrl: 'https://b4e8ce259028.ngrok.io/api/directline/speech/generatetoken', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
+//     directlineTokenUrl: 'https://acbc-2-137-120-97.eu.ngrok.io/api/directline/generateToken/',
+//     directlineReconnectTokenUrl: 'https://acbc-2-137-120-97.eu.ngrok.io/api/directline/reconnect/',
+//     // speechTokenUrl: '', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
 //     chatIconMessage: 'hola',
-//     language: 'en'
+//     language: 'en',
+//     onActionClick,
+//     onUserMessage,
+//     onMaximizeMinimize,
+//     reactivateChat: true,
 // }
 
 // ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));

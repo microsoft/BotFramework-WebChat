@@ -40,6 +40,16 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     color: ${styleOptions.suggestedActionTextColor};
     text-decoration: none;
   }
+  .ac-pushButton[aria-pressed="true"] {
+    background-color: ${styleOptions.suggestedActionBackground} !important;
+    border-color: #cccccc !important;
+    color: ${styleOptions.suggestedActionTextColor} !important;
+  }
+  .ac-pushButton[aria-pressed="true"]:hover {
+    color: ${styleOptions.suggestedActionBackground} !important;
+    background-color: ${styleOptions.suggestedActionTextColor} !important;
+    border-color: ${styleOptions.suggestedActionTextColor};
+  }
   `
     $style.innerHTML = buttonCss;
     onFetchToken();

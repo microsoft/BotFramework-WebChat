@@ -4,11 +4,11 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/e.intelequia/",
   "dependencies": {
-    "botframework-webchat": "^4.11.0",
-    "classnames": "^2.2.6",
+    "botframework-webchat": "^4.15.4",
+    "classnames": "^2.3.1",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^5.0.1",
     "rewire": "^5.0.0",
     "universal-cookie": "^4.0.4"
   },
@@ -26,5 +26,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "eslint-config-react-app": "^7.0.1"
+  }
 }
