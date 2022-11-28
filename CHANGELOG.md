@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
 -  Keyboard help now shows images correctly in Windows 11's "desert" high-contrast mode, by [@beyackle2](https://github.com/beyackle2) in PR [#4531](https://github.com/microsoft/BotFramework-WebChat/pull/4531)
 
 ## [4.15.5] - 2022-11-16
