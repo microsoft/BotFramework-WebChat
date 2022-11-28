@@ -111,6 +111,9 @@ const KeyboardHelp: FC<{}> = () => {
             // "focusable" attribute is only available in IE11 and "tabIndex={-1}" does not work.
             focusable={false}
             role="presentation"
+            style={{
+              mixBlendMode: 'difference'
+            }}
             viewBox="0 0 2048 2048"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -181,6 +184,9 @@ const KeyboardHelp: FC<{}> = () => {
               focusable={false}
               height="200"
               role="presentation"
+              style={{
+                mixBlendMode: 'difference'
+              }}
               viewBox="0 0 121 200"
               width="121"
               xmlns="http://www.w3.org/2000/svg"
@@ -270,6 +276,9 @@ const KeyboardHelp: FC<{}> = () => {
               focusable={false}
               height="200"
               role="presentation"
+              style={{
+                mixBlendMode: 'difference'
+              }}
               viewBox="0 0 121 200"
               width="121"
               xmlns="http://www.w3.org/2000/svg"
