@@ -68,41 +68,15 @@
             return next(...args);
           };
 
+        const store = testHelpers.createStore();
+
+        const directLine = testHelpers.createDirectLineEmulator(store);
+
         WebChat.renderWebChat(
           {
             activityStatusMiddleware,
-            directLine: await testHelpers.createDirectLineWithTranscript([
-              {
-                from: { role: 'bot' },
-                id: '1.0',
-                text: 'This message should have timestamp "Bot at Just now".',
-                timestamp: -30001,
-                type: 'message'
-              },
-              {
-                channelData: { state: 'sent' },
-                from: { role: 'user' },
-                id: '2.0',
-                text: 'This message should have timestamp "User at Just now".',
-                timestamp: -30001,
-                type: 'message'
-              },
-              {
-                channelData: { clientActivityID: '2.1', state: 'sending', 'webchat:sequence-id': -30000.999 },
-                from: { role: 'user' },
-                localTimestamp: -20001,
-                text: 'This message should have status "Send failed".',
-                type: 'message'
-              },
-              {
-                channelData: { clientActivityID: '2.2', state: 'sending', 'webchat:sequence-id': -30000.998 },
-                from: { role: 'user' },
-                localTimestamp: 0,
-                text: 'This message should have status "Sending...", then turn to "Send failed".',
-                type: 'message'
-              }
-            ]),
-            store: testHelpers.createStore()
+            directLine,
+            store
           },
           document.getElementById('webchat')
         );
@@ -111,9 +85,25 @@
 
         clock.tick(1000);
 
+        await directLine.emulateIncomingActivity('This message should have timestamp "Bot at Just now".');
+
+        await (
+          await directLine.emulateOutgoingActivity('This message should have timestamp "User at Just now".')
+        ).resolveAll();
+
+        clock.tick(10000);
+
+        await directLine.emulateOutgoingActivity('This message should have status "Send failed".');
+
+        clock.tick(20000);
+
+        await directLine.emulateOutgoingActivity(
+          'This message should have status "Sending...", then turn to "Send failed".'
+        );
+
         await host.snapshot();
 
-        clock.tick(19000);
+        clock.tick(20000);
 
         await host.snapshot();
       });
