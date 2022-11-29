@@ -65,9 +65,15 @@ export default function createDirectLineEmulator(store) {
         };
       } else {
         activity = updateIn(activity, ['from', 'role'], role => role || 'bot');
+        activity = updateIn(activity, ['id'], id => id || uniqueId());
         activity = updateIn(activity, ['timestamp'], timestamp =>
-          typeof timestamp === 'number' ? new Date(now + timestamp).toISOString() : timestamp
+          typeof timestamp === 'number'
+            ? new Date(now + timestamp).toISOString()
+            : typeof timestamp === 'undefined'
+            ? getTimestamp()
+            : timestamp
         );
+        activity = updateIn(activity, ['type'], type => type || 'message');
       }
 
       const { id } = activity;

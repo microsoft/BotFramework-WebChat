@@ -11,56 +11,13 @@
     <script>
       run(async function () {
         const clock = lolex.install();
-        const directLine = await testHelpers.createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '1.0',
-            text: 'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.',
-            timestamp: -300001,
-            type: 'message'
-          },
-          {
-            channelData: { state: 'sent' },
-            from: { role: 'user' },
-            id: '2.0',
-            text: 'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.',
-            timestamp: -300001,
-            type: 'message'
-          },
-          {
-            channelData: { clientActivityID: '2.1', state: 'sending', 'webchat:sequence-id': -300000.999 },
-            from: { role: 'user' },
-            localTimestamp: -300001,
-            text: 'Elit adipisicing laborum sit anim.',
-            type: 'message'
-          },
-          {
-            channelData: { clientActivityID: '2.2', state: 'sending', 'webchat:sequence-id': -300000.998 },
-            from: { role: 'user' },
-            localTimestamp: -5001,
-            text: 'Nostrud enim enim ipsum pariatur commodo.',
-            type: 'message'
-          },
-          {
-            channelData: { state: 'sent' },
-            from: { role: 'user' },
-            text: 'Culpa id proident sit officia aliquip.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            from: { role: 'bot' },
-            id: '3.0',
-            text: 'Quis sit aliquip sit velit in velit magna culpa velit qui.',
-            timestamp: 0,
-            type: 'message'
-          }
-        ]);
+        const store = testHelpers.createStore();
+        const directLine = testHelpers.createDirectLineEmulator(store);
 
         WebChat.renderWebChat(
           {
             directLine,
-            store: testHelpers.createStore(),
+            store,
             styleOptions: {
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',
@@ -86,29 +43,40 @@
 
         clock.tick(1000);
 
+        await directLine.emulateIncomingActivity(
+          'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.'
+        );
+
+        await (
+          await directLine.emulateOutgoingActivity(
+            'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.'
+          )
+        ).resolveAll();
+
+        const { resolveAll: resolveAll1 } = await directLine.emulateOutgoingActivity(
+          'Elit adipisicing laborum sit anim.'
+        );
+
+        clock.tick(295000);
+
+        const { resolveAll: resolveAll2 } = await directLine.emulateOutgoingActivity(
+          'Nostrud enim enim ipsum pariatur commodo.'
+        );
+
+        await (await directLine.emulateOutgoingActivity('Culpa id proident sit officia aliquip.')).resolveAll();
+
+        clock.tick(5000);
+
+        await directLine.emulateIncomingActivity('Quis sit aliquip sit velit in velit magna culpa velit qui.');
+
         await host.snapshot();
 
         clock.tick(29000);
 
         await host.snapshot();
 
-        directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.1', state: 'sent' },
-          from: { role: 'user' },
-          id: '2.1',
-          text: 'Elit adipisicing laborum sit anim.',
-          timestamp: -300001,
-          type: 'message'
-        });
-
-        directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.2', state: 'sent' },
-          from: { role: 'user' },
-          id: '2.2',
-          text: 'Nostrud enim enim ipsum pariatur commodo.',
-          timestamp: -5001,
-          type: 'message'
-        });
+        await resolveAll1();
+        await resolveAll2();
 
         await host.snapshot();
       });

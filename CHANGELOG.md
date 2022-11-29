@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#4501](https://github.com/microsoft/BotFramework-WebChat/issues/4501). Outgoing activities restored from chat service should be marked as sent, by [@compulim](https://github.com/compulim) in PR [#4532](https://github.com/microsoft/BotFramework-WebChat/pull/4532)
+
 ### Changed
 
 -  Fixes [#4523](https://github.com/microsoft/BotFramework-WebChat/issues/4523). Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.17.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#4533](https://github.com/microsoft/BotFramework-WebChat/pull/4533)

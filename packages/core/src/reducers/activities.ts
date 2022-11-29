@@ -190,7 +190,7 @@ export default function activities(
           payload: { activity }
         } = action;
 
-        // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` fields.
+        // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` field.
         //
         // Otherwise, it will fail following scenario:
         //
@@ -200,6 +200,14 @@ export default function activities(
         // -  EXPECT: `channelData['webchat:send-status']` should be "sending".
         // -  ACTUAL: `channelData['webchat:send-status']` is `undefined` because the activity get overwritten by the echo back activity.
         //            The echo back activity contains no `channelData['webchat:send-status']`.
+        //
+        // While we are looking out for the scenario above, we should also look at the following scenarios:
+        //
+        // 1. Service restore chat history, including activities sent from the user. These activities has the following characteristics:
+        //    - They do not have `channelData['webchat:send-status']`;
+        //    - They do not have an ongoing `postActivitySaga`;
+        //    - They should not previously appear in the chat history.
+        // 2. We need to mark these activities as "sent".
         //
         // In the future, when we revamp our object model, we could use a different signal so we don't need the code below, for example:
         //
@@ -224,6 +232,11 @@ export default function activities(
             if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
             }
+          } else {
+            // If there are no existing activity, probably this activity is restored from chat history.
+            // All outgoing activities restored from service means they arrived at the service successfully.
+            // Thus, we are marking them as "sent".
+            activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
           }
         }
 

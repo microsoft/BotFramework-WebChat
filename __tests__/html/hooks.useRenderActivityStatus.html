@@ -22,6 +22,8 @@
 
       run(
         async function () {
+          const clock = lolex.install();
+
           const ActivityStatusTest = ({ activity }) => {
             const renderActivityStatus = useRenderActivityStatus({
               activity,
@@ -36,8 +38,8 @@
 
             return (
               <React.Fragment>
-                {activities.map(activity => (
-                  <div key={activity.id}>
+                {activities.map((activity, index) => (
+                  <div key={index}>
                     <ActivityStatusTest activity={activity} />
                   </div>
                 ))}
@@ -46,43 +48,9 @@
             );
           };
 
-          const directLine = await testHelpers.createDirectLineWithTranscript([
-            {
-              // Setting sequence ID to simplify the order of these test cases.
-              channelData: { 'webchat:sequence-id': 0 },
-              from: { role: 'bot' },
-              id: '1.0',
-              text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
-              timestamp: -60001,
-              type: 'message'
-            },
-            {
-              channelData: { state: 'sending', 'webchat:sequence-id': 1 },
-              from: { role: 'user' },
-              id: '2.0',
-              localTimestamp: -60001,
-              text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
-              type: 'message'
-            },
-            {
-              channelData: { state: 'sending', 'webchat:sequence-id': 2 },
-              from: { role: 'user' },
-              id: '3.0',
-              localTimestamp: 0,
-              text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
-              type: 'message'
-            },
-            {
-              channelData: { state: 'sent', 'webchat:sequence-id': 3 },
-              from: { role: 'user' },
-              id: '4.0',
-              text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',
-              timestamp: 0,
-              type: 'message'
-            }
-          ]);
-
           const store = testHelpers.createStore();
+
+          const directLine = testHelpers.createDirectLineEmulator(store);
 
           render(
             <Composer directLine={directLine} store={store}>
@@ -91,7 +59,43 @@
             document.getElementById('webchat')
           );
 
-          await pageConditions.uiConnected();
+          await pageConditions.webChatRendered();
+
+          await directLine.emulateIncomingActivity({
+            // Setting sequence ID to simplify the order of these test cases.
+            channelData: { 'webchat:sequence-id': 0 },
+            from: { role: 'bot' },
+            text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
+            type: 'message'
+          });
+
+          await directLine.emulateOutgoingActivity({
+            channelData: { 'webchat:sequence-id': 1 },
+            from: { role: 'user' },
+            text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
+            type: 'message'
+          });
+
+          clock.tick(60000);
+
+          await directLine.emulateOutgoingActivity({
+            channelData: { 'webchat:sequence-id': 2 },
+            from: { role: 'user' },
+            localTimestamp: 0,
+            text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
+            type: 'message'
+          });
+
+          await (
+            await directLine.emulateOutgoingActivity({
+              channelData: { 'webchat:sequence-id': 3 },
+              from: { role: 'user' },
+              text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',
+              timestamp: 0,
+              type: 'message'
+            })
+          ).resolveAll();
+
           await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
 
           await host.snapshot();
