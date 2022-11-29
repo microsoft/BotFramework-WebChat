@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Fixes [#4523](https://github.com/microsoft/BotFramework-WebChat/issues/4523). Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.17.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX)
+-  Fixes [#4523](https://github.com/microsoft/BotFramework-WebChat/issues/4523). Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.17.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#4533](https://github.com/microsoft/BotFramework-WebChat/pull/4533)
    -  Also bumped [`web-speech-cognitive-services@7.1.3`](https://npmjs.com/package/web-speech-cognitive-services)
 
 ## [4.15.5] - 2022-11-16
