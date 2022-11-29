@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#4501](https://github.com/microsoft/BotFramework-WebChat/issues/4501). Outgoing activities restored from chat service should be marked as sent, by [@compulim](https://github.com/compulim) in PR [#4532](https://github.com/microsoft/BotFramework-WebChat/pull/4532)
+
 ## [4.15.5] - 2022-11-16
 
 ### Fixed
