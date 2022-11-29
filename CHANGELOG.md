@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Keyboard help now shows images correctly in Windows 11's "desert" high-contrast mode, by [@beyackle2](https://github.com/beyackle2) in PR [#4531](https://github.com/microsoft/BotFramework-WebChat/pull/4531)
 
+### Changed
+
+-  Fixes [#4523](https://github.com/microsoft/BotFramework-WebChat/issues/4523). Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.17.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#4533](https://github.com/microsoft/BotFramework-WebChat/pull/4533)
+   -  Also bumped [`web-speech-cognitive-services@7.1.3`](https://npmjs.com/package/web-speech-cognitive-services)
+
 ## [4.15.5] - 2022-11-16
 
 ### Fixed
@@ -40,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  Bumped Adaptive Cards to [`adaptivecards@2.11.1`](https://npmjs.com/package/adaptivecards), by [@compulim](https://github.com/compulim) in PR [#4424](https://github.com/microsoft/BotFramework-WebChat/pull/4424)
--  Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.23.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#4424](https://github.com/microsoft/BotFramework-WebChat/pull/4435)
+-  Bumped Microsoft Cognitive Services Speech SDK to [`microsoft-cognitiveservices-speech-sdk@1.23.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), by [@compulim](https://github.com/compulim) in PR [#4435](https://github.com/microsoft/BotFramework-WebChat/pull/4435)
    -  Also bumped [`web-speech-cognitive-services@7.1.2`](https://npmjs.com/package/web-speech-cognitive-services)
 -  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4423](https://github.com/microsoft/BotFramework-WebChat/pull/4423) and [#4435](https://github.com/microsoft/BotFramework-WebChat/pull/4435)
    -  Production dependencies
