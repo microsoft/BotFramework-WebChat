@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+
+        const directLine = testHelpers.createDirectLineEmulator(store);
+
+        // add something here to add "forced-colors" into the emulated media so we get HC assets
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // SETUP: With 2 bot messages.
+        await directLine.emulateIncomingActivity('Hello, World!');
+        await directLine.emulateIncomingActivity('Aloha!');
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: The focus should be on `document.body` initially.
+        await pageConditions.focusOn(document.body, 'document body');
+
+        // THEN: The keyboard help screeen should not be visible initially.
+        await host.snapshot();
+
+        // ---
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the close button.
+        await pageConditions.focusOn(pageElements.keyboardHelpScreenCloseButton(), 'keyboard help screen close button');
+
+        // THEN: The keyboard help screeen show be visible.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
