@@ -1,18 +1,24 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
 import useForceRender from '../hooks/internal/useForceRender';
+import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 import useStyleSet from '../hooks/useStyleSet';
 import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
+import type { FC } from 'react';
+
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
-const ConnectivityStatusConnecting = ({ reconnect }) => {
+type Props = {
+  reconnect?: boolean;
+};
+
+const ConnectivityStatusConnecting: FC<Props> = ({ reconnect }) => {
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
@@ -21,6 +27,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const [initialRenderAt] = useState(() => Date.now());
   const forceRender = useForceRender();
   const localize = useLocalizer();
+  const queueStaticElement = useQueueStaticElement();
 
   const initialConnectionText = localize('CONNECTIVITY_STATUS_ALT_CONNECTING');
   const interruptedConnectionText = localize('CONNECTIVITY_STATUS_ALT_RECONNECTING');
@@ -31,32 +38,31 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const now = Date.now();
   const slow = now >= initialRenderAt + slowConnectionAfter;
 
+  const connectingAlt = localize(
+    'CONNECTIVITY_STATUS_ALT',
+    slow ? slowConnectionText : reconnect ? interruptedConnectionText : initialConnectionText
+  );
+
+  useMemo(() => queueStaticElement(connectingAlt), [connectingAlt, queueStaticElement]);
+
   return slow ? (
-    <React.Fragment>
-      <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', slowConnectionText)} />
-      <div
-        aria-hidden={true}
-        className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
-        dir={direction}
-      >
-        <WarningNotificationIcon />
-        {slowConnectionText}
-      </div>
-    </React.Fragment>
+    <div
+      aria-hidden={true}
+      className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
+      dir={direction}
+    >
+      <WarningNotificationIcon />
+      {slowConnectionText}
+    </div>
   ) : (
-    <React.Fragment>
-      <ScreenReaderText
-        text={localize('CONNECTIVITY_STATUS_ALT', reconnect ? interruptedConnectionText : initialConnectionText)}
-      />
-      <div
-        aria-hidden={true}
-        className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
-        dir={direction}
-      >
-        <SpinnerAnimation />
-        {reconnect ? interruptedConnectionText : initialConnectionText}
-      </div>
-    </React.Fragment>
+    <div
+      aria-hidden={true}
+      className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
+      dir={direction}
+    >
+      <SpinnerAnimation />
+      {reconnect ? interruptedConnectionText : initialConnectionText}
+    </div>
   );
 };
 

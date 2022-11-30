@@ -1,47 +1,29 @@
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef } from 'react';
-import type { FC, RefObject, VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 import isPresentational from './LiveRegion/isPresentational';
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
-import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinComposer';
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useTypistNames from './useTypistNames';
 
 import type { ActivityElementMap } from './types';
+import type { FC, RefObject } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
-const { useActivities, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__live-region-transcript': {
-    '& .webchat__live-region-transcript__note, & .webchat__live-region-transcript__note, & .webchat__live-region-transcript__text-element':
-      {
-        color: 'transparent',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        top: 0,
-        whiteSpace: 'nowrap',
-        width: 1
-      }
-  }
-};
+const { useActivities, useGetKeyByActivity, useLocalizer } = hooks;
 
 type RenderingActivities = Map<string, WebChatActivity>;
 
-type LiveRegionTranscriptCoreProps = {
+type LiveRegionTranscriptProps = {
   activityElementMapRef: RefObject<ActivityElementMap>;
 };
 
-const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
+const LiveRegionTranscript: FC<LiveRegionTranscriptProps> = ({ activityElementMapRef }) => {
   // We are looking for all activities instead of just those will be rendered.
   // This is because some activities that chosen not be rendered in the chat history,
   // we might still need to be read by screen reader. Such as, suggested actions without text content.
@@ -152,30 +134,6 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
   }, [queueStaticElement, typingIndicator]);
 
   return <LiveRegionSendFailed />;
-};
-
-type LiveRegionTranscriptProps = {
-  activityElementMapRef: RefObject<ActivityElementMap>;
-};
-
-const LiveRegionTranscript: VFC<LiveRegionTranscriptProps> = ({ activityElementMapRef }) => {
-  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
-  const localize = useLocalizer();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-
-  const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
-
-  return (
-    <LiveRegionTwinComposer
-      aria-roledescription={transcriptRoleDescription}
-      className={classNames('webchat__live-region-transcript', rootClassName)}
-      fadeAfter={internalLiveRegionFadeAfter}
-      role="log"
-      textElementClassName="webchat__live-region-transcript__text-element"
-    >
-      <LiveRegionTranscriptCore activityElementMapRef={activityElementMapRef} />
-    </LiveRegionTwinComposer>
-  );
 };
 
 LiveRegionTranscript.propTypes = {
