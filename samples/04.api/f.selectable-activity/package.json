@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/",
-  "skipBump": [],
   "dependencies": {
     "botframework-webchat": "^4.15.0",
     "react": "^17.0.2",
@@ -13,11 +12,14 @@
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "auditfix": "npm audit fix || exit 0",
     "build": "react-scripts build",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix || exit 0",
     "eject": "react-scripts eject",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "start": "react-scripts start"
   },
   "browserslist": [

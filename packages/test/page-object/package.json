@@ -9,13 +9,18 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
+    "auditfix": "npm audit fix || exit 0",
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --out-dir lib/ src/",
     "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",
     "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "prestart": "npm run build",
@@ -46,5 +51,8 @@
     "@babel/preset-react": "^7.18.6",
     "concurrently": "^7.4.0",
     "esbuild": "^0.15.9"
+  },
+  "localPeerDependencies": {
+    "botframework-webchat-core": "0.0.0-0"
   }
 }
