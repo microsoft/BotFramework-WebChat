@@ -1,6 +1,7 @@
 import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
+import classNames from 'classnames';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
@@ -11,6 +12,7 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
@@ -28,6 +30,8 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
 import UITracker from './hooks/internal/UITracker';
+import useStyleSet from './hooks/useStyleSet';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
@@ -42,6 +46,10 @@ const emotionPool = {};
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
+
+// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
+const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'] as const;
+type AriaLandmarkRoles = typeof ARIA_LANDMARK_ROLES[number];
 
 type ComposerCoreProps = {
   children?: ReactNode;
@@ -253,7 +261,44 @@ ComposerCore.propTypes = {
   webSpeechPonyfillFactory: PropTypes.func
 };
 
-type ComposerProps = APIComposerProps & ComposerCoreProps;
+type ComposablesProps = React.PropsWithChildren<{
+  className?: string;
+  role?: AriaLandmarkRoles;
+}>;
+
+const Composables: FC<ComposablesProps> = ({ className, role, children }) => {
+  const [{ root: rootStyleSet }] = useStyleSet();
+
+  const styleToEmotionObject = useStyleToEmotionObject();
+  const rootClassName = styleToEmotionObject({ display: 'flex', flexDirection: 'column' }) + '';
+
+  // Fallback to "complementary" if specified is not a valid landmark role.
+  if (!ARIA_LANDMARK_ROLES.includes(role)) {
+    role = 'complementary';
+  }
+
+  return (
+    <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
+      {children}
+    </AccessKeySinkSurface>
+  );
+};
+
+Composables.defaultProps = {
+  children: undefined,
+  className: undefined,
+  role: undefined
+};
+
+Composables.propTypes = {
+  children: PropTypes.any,
+  className: PropTypes.string,
+  // Ignoring deficiencies with TypeScript/PropTypes inference.
+  // @ts-ignore
+  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES)
+};
+
+type ComposerProps = APIComposerProps & ComposerCoreProps & ComposablesProps;
 
 const Composer: FC<ComposerProps> = ({
   activityMiddleware,
@@ -263,8 +308,10 @@ const Composer: FC<ComposerProps> = ({
   avatarMiddleware,
   cardActionMiddleware,
   children,
+  className,
   extraStyleSet,
   renderMarkdown,
+  role,
   scrollToEndButtonMiddleware,
   styleSet,
   suggestedActionsAccessKey,
@@ -352,7 +399,9 @@ const Composer: FC<ComposerProps> = ({
             suggestedActionsAccessKey={suggestedActionsAccessKey}
             webSpeechPonyfillFactory={webSpeechPonyfillFactory}
           >
-            {children}
+            <Composables className={className} role={role}>
+              {children}
+            </Composables>
             {onTelemetry && <UITracker />}
           </ComposerCore>
         </ActivityTreeComposer>
