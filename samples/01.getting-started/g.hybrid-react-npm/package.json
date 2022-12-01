@@ -6,15 +6,19 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "auditfix": "npm audit fix || exit 0",
     "build": "lerna run build",
+    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install $(cat package.json | jq -r '(.devDependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install $(cat package.json | jq -r '(.dependencies | keys) - .skipBump | .[]' | awk '{print $1 \"@latest\"}')",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDepedencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDepedencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
     "postinstall": "lerna bootstrap",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDepedencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDepedencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "start": "lerna run build --scope=chat-component && lerna run start --parallel --stream"
   },
   "license": "MIT",
-  "skipBump": [],
   "devDependencies": {
     "lerna": "^4.0.0"
   }
