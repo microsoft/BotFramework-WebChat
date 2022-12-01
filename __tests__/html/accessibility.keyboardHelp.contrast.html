@@ -14,7 +14,14 @@
 
         const directLine = testHelpers.createDirectLineEmulator(store);
 
-        // add something here to add "forced-colors" into the emulated media so we get HC assets
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            {
+              name: 'forced-colors',
+              value: 'active'
+            }
+          ]
+        });
 
         WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
