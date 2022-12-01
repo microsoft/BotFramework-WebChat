@@ -31,6 +31,10 @@ const ROOT_STYLE = {
   }
 };
 
+const SEND_BOX_CSS = {
+  flexShrink: 0
+};
+
 // TODO: [P3] We should consider exposing core/src/definitions and use it instead
 function activityIsSpeakingOrQueuedToSpeak(activity: WebChatActivity) {
   return activity.type === 'message' && activity.channelData?.speak;
@@ -59,6 +63,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
   const styleToEmotionObject = useStyleToEmotionObject();
 
   const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
+  const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
 
   const supportSpeechRecognition = !!SpeechRecognition;
 
@@ -70,7 +75,13 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
 
   return (
     <div
-      className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}
+      className={classNames(
+        'webchat__send-box',
+        sendBoxStyleSet + '',
+        rootClassName,
+        sendBoxClassName,
+        (className || '') + ''
+      )}
       dir={direction}
       role="form"
     >
