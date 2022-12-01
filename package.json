@@ -18,6 +18,9 @@
   "keywords": [],
   "cldr-data-coverage": "full",
   "scripts": {
+    "audit": "npm run audit:packages && npm run audit:samples",
+    "audit:packages": "for i in `find packages -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit $i/package.json ---\u001b[0m; cd $i; npm audit --audit-level=critical; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit completed ---\u001b[0m",
+    "audit:samples": "for i in `find samples -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit $i/package.json ---\u001b[0m; cd $i; npm audit --audit-level=critical; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit completed ---\u001b[0m",
     "auditfix": "npm run auditfix:packages && npm run auditfix:samples",
     "auditfix:packages": "for i in `find packages -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit-fixing $i/package.json ---\u001b[0m; cd $i; npm run auditfix; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit-fixing $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit-fix completed ---\u001b[0m && lerna clean --yes && lerna bootstrap",
     "auditfix:samples": "for i in `find samples -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit-fixing $i/package.json ---\u001b[0m; cd $i; npm run auditfix; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit-fixing $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit-fix completed ---\u001b[0m",
