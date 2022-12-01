@@ -22,7 +22,7 @@
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:typescript && npm run build:babel",
     "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
     "build:typescript": "tsc --project src/tsconfig.json",

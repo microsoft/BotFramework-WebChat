@@ -12,7 +12,7 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",

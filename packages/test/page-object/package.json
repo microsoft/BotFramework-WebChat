@@ -9,7 +9,7 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --out-dir lib/ src/",
     "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",

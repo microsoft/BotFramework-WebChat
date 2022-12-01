@@ -10,7 +10,7 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
     "build:webpack:development": "cross-env node_env=development webpack-cli",

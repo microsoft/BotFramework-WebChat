@@ -6,7 +6,7 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix || exit 0",
     "postauditfix": "npm run postbump",
     "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",

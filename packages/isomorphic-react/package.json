@@ -5,7 +5,7 @@
   "main": "dist/react.js",
   "private": true,
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --out-dir lib --verbose",
     "build:webpack": "webpack-cli",

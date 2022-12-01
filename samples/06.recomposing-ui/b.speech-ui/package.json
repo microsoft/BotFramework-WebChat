@@ -15,7 +15,7 @@
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "auditfix": "npm audit fix || exit 0",
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "react-scripts build",
     "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix || exit 0",
     "eject": "react-scripts eject",
