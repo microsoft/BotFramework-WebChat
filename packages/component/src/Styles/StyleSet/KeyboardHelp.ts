@@ -125,7 +125,8 @@ export default function createKeyboardHelpStyleSet({ paddingRegular, primaryFont
         },
 
         '& .webchat__keyboard-help__image--high-contrast': {
-          display: 'unset'
+          display: 'unset',
+          mixBlendMode: 'difference'
         }
       },
 

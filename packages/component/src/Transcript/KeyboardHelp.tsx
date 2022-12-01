@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState, CSSProperties } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import type { FC } from 'react';
 
@@ -32,10 +32,6 @@ Notes.propTypes = {
   header: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired
 };
-
-const differenceStyle = {
-  mixBlendMode: 'difference'
-} as CSSProperties;
 
 const KeyboardHelp: FC<{}> = () => {
   const [{ keyboardHelp: keyboardHelpStyleSet }] = useStyleSet();
@@ -115,7 +111,6 @@ const KeyboardHelp: FC<{}> = () => {
             // "focusable" attribute is only available in IE11 and "tabIndex={-1}" does not work.
             focusable={false}
             role="presentation"
-            style={differenceStyle}
             viewBox="0 0 2048 2048"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -186,7 +181,6 @@ const KeyboardHelp: FC<{}> = () => {
               focusable={false}
               height="200"
               role="presentation"
-              style={differenceStyle}
               viewBox="0 0 121 200"
               width="121"
               xmlns="http://www.w3.org/2000/svg"
@@ -276,7 +270,6 @@ const KeyboardHelp: FC<{}> = () => {
               focusable={false}
               height="200"
               role="presentation"
-              style={differenceStyle}
               viewBox="0 0 121 200"
               width="121"
               xmlns="http://www.w3.org/2000/svg"
