@@ -4,10 +4,18 @@
   "description": "",
   "main": "src/proxy.js",
   "scripts": {
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "docker build -t spfx .",
+    "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '((.dependencies, .devDependencies) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}') && npm audit fix || exit 0",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "start": "docker run --rm -it -p 4321:54321 -p 35729:35729 spfx"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {}
 }
