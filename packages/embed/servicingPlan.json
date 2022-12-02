@@ -422,6 +422,7 @@
           "sha384-9o6xJEK8DboSm23+cyRi/6ROyiQFbCXgSN+GkpMXVtIC0QeYRPA9lD8MlXPikyub"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-05-09.",
       "private": true,
       "versionFamily": "4"
     },
@@ -432,6 +433,7 @@
           "sha384-lUORlicC7NzeZQx9OQ8/uCjmblHgyo9cOV4Q4UlnTct4AXwWzNiS5+4w3rCcO/h5"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-08-10.",
       "private": true,
       "versionFamily": "4"
     },
@@ -442,6 +444,7 @@
           "sha384-G/4GhuAj4f+IvvVgyTT1u6m5DjjdPI7hcrfgXmnWKC6uWtZkrI+jDkVk2MmJoclR"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-09-15.",
       "private": true,
       "versionFamily": "4"
     },
@@ -452,6 +455,7 @@
           "sha384-9pDJTvPL0wLKBbhzIDeYtyOXpMQgf3VVqPMKPWKTs+p/J8oOqOEy0piRhj9Atlzz"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-11-16.",
       "private": true,
       "versionFamily": "4"
     },
@@ -460,6 +464,17 @@
         [
           "https://cdn.botframework.com/botframework-webchat/4.15.5/webchat-es5.js",
           "sha384-t278QukjDZq/zQN4GdMwm+wPjb3glhiqydECL5o9le9PfgGwgACfwkARzlGj6GeI"
+        ]
+      ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2024-12-01.",
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.15.6": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.5/webchat-es5.js",
+          "sha384-Ik2jNknNTBCaI/NP3GRMfDCWKnApGSdYMcdA6EtEJkL1LtUZEdNdjeNkfZZk3UlS"
         ]
       ],
       "private": true,
