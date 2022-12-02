@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        WebChat: {
+          Components: { BasicToaster, BasicTranscript, BasicConnectivityStatus, BasicSendBox, Composer },
+          createDirectLine
+        }
+      } = window;
+
+      run(async function () {
+        const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        const classes = {
+          composer: "composer-class-name",
+          sendBox: "send-box-class-name",
+          transcript: "transcript-class-name",
+          customComponent: "custom-component-class-name"
+        }
+        const role = "main";
+
+        render(
+          <Composer directLine={directLine} store={store} className={classes.composer} role={role}>
+            <BasicToaster />
+            <BasicSendBox className={classes.sendBox} />
+            <BasicConnectivityStatus />
+            <div className={classes.customComponent}>This is a custom component.</div>
+            <BasicTranscript className={classes.transcript} />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const container = document.getElementById('webchat');
+        expect(container?.firstChild).not.toBeUndefined();
+        
+        const composer = container.firstChild;
+        expect(composer.className).toContain(classes.composer);
+        expect(composer.role).toEqual(role);
+
+        const components = composer.childNodes;
+        expect(components[0].className).toContain("toaster");
+        expect(components[1].className).toContain(classes.sendBox);
+        expect(components[2].textContent).toContain("Connectivity Status");
+        expect(components[3].className).toContain(classes.customComponent);
+        expect(components[4].className).toContain("keyboard-help");
+        expect(components[5].className).toContain(classes.transcript);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
