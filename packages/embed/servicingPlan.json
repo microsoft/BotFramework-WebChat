@@ -473,7 +473,7 @@
     "4.15.6": {
       "assets": [
         [
-          "https://cdn.botframework.com/botframework-webchat/4.15.5/webchat-es5.js",
+          "https://cdn.botframework.com/botframework-webchat/4.15.6/webchat-es5.js",
           "sha384-Ik2jNknNTBCaI/NP3GRMfDCWKnApGSdYMcdA6EtEJkL1LtUZEdNdjeNkfZZk3UlS"
         ]
       ],
