@@ -12,18 +12,15 @@ services:
       - webchat
       - webchat2
     environment:
-      HUB_HOST: selenium-hub
-      HUB_PORT: '4444'
-      # SE_EVENT_BUS_HOST: selenium-hub
-      # SE_EVENT_BUS_PUBLISH_PORT: '4442
-      # SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
-      # SE_OPTS: '--log-level WARNING'
-      # SE_NODE_SESSION_TIMEOUT: '300'
+      SE_EVENT_BUS_HOST: selenium-hub
+      SE_EVENT_BUS_PUBLISH_PORT: '4442'
+      SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
+      SE_OPTS: '--log-level WARNING'
+      SE_NODE_SESSION_TIMEOUT: '300'
     shm_size: '2.5gb'
 
   selenium-hub:
-    image: selenium/hub:3.141.59-zirconium
-    # image: selenium/hub:4.0.0-beta-3-20210426
+    image: selenium/hub:4.6.0
     container_name: selenium-hub
     environment:
       GRID_TIMEOUT: '300'

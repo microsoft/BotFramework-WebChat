@@ -54,6 +54,13 @@
         await pageConditions.scrollToBottomCompleted();
         await pageConditions.liveRegionStabilized();
 
+        // Chrome 107 bug:
+        // - Even though it scrolled to the bottom: clientHeight + scrollTop = scrollHeight, or 124 + 815 = 939.
+        //   It is not scrolled to the bottom.
+        //   We need to artifically set `scrollTop++` again to force it to scroll down.
+
+        pageElements.transcriptScrollable().scrollTop++;
+
         await pageObjects.verifyDOMIntegrity();
         await pageObjects.focusSendBoxTextBox();
 
