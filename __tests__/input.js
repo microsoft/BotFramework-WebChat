@@ -14,6 +14,8 @@ const styleOptions = { sendBoxTextWrap: true };
 test('textarea input scroll', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -27,6 +29,8 @@ test('textarea input scroll', async () => {
 
 test('textarea input resize after delete', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -43,6 +47,8 @@ test('textarea input resize after delete', async () => {
 test('textarea input with whitespace', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -56,6 +62,8 @@ test('textarea input with whitespace', async () => {
 
 test('textarea input shift enter', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -71,6 +79,8 @@ test('textarea input shift enter', async () => {
 test('textarea input multiple lines', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -84,6 +94,8 @@ test('textarea input multiple lines', async () => {
 
 test('textarea send on enter', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -101,6 +113,8 @@ test('textarea send on enter', async () => {
 
 test('textarea long text', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
