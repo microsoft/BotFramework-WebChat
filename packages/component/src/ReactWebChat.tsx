@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { VFC } from 'react';
 
 import BasicWebChat from './BasicWebChat';
@@ -11,15 +12,23 @@ import Composer, { ComposerProps } from './Composer';
 // - They can run hooks outside of activity/attachment middleware
 //   - They will put <Composer> as very top of their page, and allow buttons on their existing page to send message to bot
 
-type ReactWebChatProps = Omit<ComposerProps, 'children'>;
+// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
+const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
-const ReactWebChat: VFC<ReactWebChatProps> = ({ ...composerProps }) => (
+type ReactWebChatProps = Omit<ComposerProps, 'children'> & {
+  className?: string;
+  role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
+};
+
+const ReactWebChat: VFC<ReactWebChatProps> = ({ className, role, ...composerProps }) => (
   <Composer {...composerProps}>
-    <BasicWebChat />
+    <BasicWebChat className={className} role={role} />
   </Composer>
 );
 
 ReactWebChat.defaultProps = {
+  className: undefined,
+  role: undefined,
   ...Composer.defaultProps
 };
 
@@ -30,6 +39,10 @@ const {
 } = Composer.propTypes;
 
 ReactWebChat.propTypes = {
+  className: PropTypes.string,
+  // Ignoring deficiencies with TypeScript/PropTypes inference.
+  // @ts-ignore
+  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES),
   ...composerPropTypesWithoutChildren
 };
 

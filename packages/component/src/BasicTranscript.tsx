@@ -93,10 +93,6 @@ const ROOT_STYLE = {
   }
 };
 
-const TRANSCRIPT_STYLE = {
-  flex: 1
-};
-
 type RenderingElement = {
   activity: WebChatActivity;
   callbackRef: (element: HTMLElement) => void;
@@ -136,9 +132,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const getKeyByActivity = useGetKeyByActivity();
     const getKeyByActivityId = useGetKeyByActivityId();
     const localize = useLocalizer();
-    const styleToEmotionObject = useStyleToEmotionObject();
-    const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
-    const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
+    const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>();
     const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
     const terminatorRef = useRef<HTMLDivElement>();
@@ -524,7 +518,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           'webchat__basic-transcript',
           basicTranscriptStyleSet + '',
           rootClassName,
-          transcriptClassName,
           (className || '') + ''
         )}
         dir={direction}

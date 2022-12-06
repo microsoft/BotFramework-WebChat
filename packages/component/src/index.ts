@@ -4,6 +4,8 @@ import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
 import Composer, { ComposerProps } from './Composer';
 
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
+
 import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicSendBox from './BasicSendBox';
@@ -56,6 +58,7 @@ const Components = {
   Localize,
 
   // Components for restructuring BasicWebChat
+  AccessKeySinkSurface,
   BasicConnectivityStatus,
   BasicSendBox,
   BasicToaster,

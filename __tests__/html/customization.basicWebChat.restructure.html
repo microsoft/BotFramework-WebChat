@@ -15,7 +15,7 @@
       const {
         ReactDOM: { render },
         WebChat: {
-          Components: { BasicToaster, BasicTranscript, BasicConnectivityStatus, BasicSendBox, Composer },
+          Components: { AccessKeySinkSurface, BasicToaster, BasicTranscript, BasicConnectivityStatus, BasicSendBox, Composer },
           createDirectLine
         }
       } = window;
@@ -25,7 +25,7 @@
         const store = testHelpers.createStore();
 
         const classes = {
-          composer: "composer-class-name",
+          surface: "surface-class-name",
           sendBox: "send-box-class-name",
           transcript: "transcript-class-name",
           customComponent: "custom-component-class-name"
@@ -33,12 +33,14 @@
         const role = "main";
 
         render(
-          <Composer directLine={directLine} store={store} className={classes.composer} role={role}>
-            <BasicToaster />
-            <BasicSendBox className={classes.sendBox} />
-            <BasicConnectivityStatus />
-            <div className={classes.customComponent}>This is a custom component.</div>
-            <BasicTranscript className={classes.transcript} />
+          <Composer directLine={directLine} store={store}>
+            <AccessKeySinkSurface className={classes.surface} role={role}>
+              <BasicToaster />
+              <BasicSendBox className={classes.sendBox} />
+              <BasicConnectivityStatus />
+              <div className={classes.customComponent}>This is a custom component.</div>
+              <BasicTranscript className={classes.transcript} />
+            </AccessKeySinkSurface>
           </Composer>,
           document.getElementById('webchat')
         );
@@ -48,11 +50,11 @@
         const container = document.getElementById('webchat');
         expect(container?.firstChild).not.toBeUndefined();
         
-        const composer = container.firstChild;
-        expect(composer.className).toContain(classes.composer);
-        expect(composer.role).toEqual(role);
+        const surface = container.firstChild;
+        expect(surface.className).toContain(classes.surface);
+        expect(surface.role).toEqual(role);
 
-        const components = composer.childNodes;
+        const components = surface.childNodes;
         expect(components[0].className).toContain("toaster");
         expect(components[1].className).toContain(classes.sendBox);
         expect(components[2].textContent).toContain("Connectivity Status");
