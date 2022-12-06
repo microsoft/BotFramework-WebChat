@@ -39,14 +39,18 @@
     "cldr-data-downloader": "./bin/download.sh"
   },
   "scripts": {
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - (.skipBump | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "eslint": "npm run precommit",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
-  "skipBump": {},
   "dependencies": {
     "adm-zip": "^0.5.9",
     "nopt": "^6.0.0",
@@ -54,5 +58,6 @@
     "q": "^1.5.1",
     "request": "^2.88.2",
     "request-progress": "^3.0.0"
-  }
+  },
+  "devDependencies": {}
 }

@@ -98,6 +98,11 @@
         // THEN: It should scroll the second activity into view.
         await pageConditions.scrollStabilized();
         await pageConditions.focusedActivityInView();
+
+        // THEN: It should scroll activity #2 in the view and align it to the top.
+        expect(pageElements.transcriptScrollable().scrollTop).toBe(
+          pageElements.activities()[1].offsetTop - 5 // 5px is the margin
+        );
         await host.snapshot();
       });
     </script>

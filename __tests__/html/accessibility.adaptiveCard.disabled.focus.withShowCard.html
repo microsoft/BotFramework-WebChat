@@ -140,6 +140,7 @@
         await host.sendKeys('ENTER');
 
         // THEN: It should expand the card and the "Submit" button should be shown.
+        //       It should continue to focus on the "Set ZIP code" button.
         expect(document.querySelector('button[title="Submit"]')).toBeTruthy();
         await host.snapshot();
 
@@ -179,13 +180,15 @@
         // WHEN: Pressing TAB key again.
         await host.sendKeys('TAB');
 
-        // THEN: It should still focus on the "Set ZIP code" button.
+        // THEN: It should continue to focus on the "Set ZIP code" button.
         expect(document.activeElement).toBe(document.querySelector('button[title="Set ZIP code"]'));
 
         // WHEN: Pressing ENTER key while to focus is on "Set ZIP code".
         await host.sendKeys('ENTER');
 
-        // THEN: It should hide the attached panel.
+        // THEN: It should hide te attached panel.
+        //       It should continue to focus on the "Set ZIP code" button.
+        //       The "Skip" button should be disabled.
         expect(document.querySelector('button[title="Submit"]')).toBeFalsy();
         await host.snapshot();
 

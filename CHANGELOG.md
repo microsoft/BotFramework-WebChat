@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Added ability for developers to customize Web Chat by extending the default UI without having to re-implement existing components. [@dawolff-ms](https://github.com/dawolff-ms) in PR [#4539](https://github.com/microsoft/BotFramework-WebChat/pull/4539)
 
+### Changed
+
+-  Updated test harness to use [Selenium Hub 4.6.0](https://hub.docker.com/r/selenium/hub) and [Chrome 107](https://hub.docker.com/r/selenium/node-chrome), by [@compulim](https://github.com/compulim) in PR [#4540](https://github.com/microsoft/BotFramework-WebChat/pull/4540)
+
+## [4.15.6] - 2022-12-01
+
 ### Fixed
 
 -  Fixes [#4501](https://github.com/microsoft/BotFramework-WebChat/issues/4501). Outgoing activities restored from chat service should be marked as sent, by [@compulim](https://github.com/compulim) in PR [#4532](https://github.com/microsoft/BotFramework-WebChat/pull/4532)
