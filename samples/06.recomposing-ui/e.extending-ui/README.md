@@ -66,18 +66,18 @@ import { Components } from 'botframework-webchat-component';
 
 const CustomWebChat = () => {
   return (
-    <React.Fragment>
+    <Components.AccessKeySinkSurface>
       <Components.BasicToaster />
       <Components.BasicTranscript />
       <Components.BasicConnectivityStatus />
       <Components.BasicSendBox />
-    </React.Fragment>
+    </Components.AccessKeySinkSurface>
   );
 };
 ```
 <!-- prettier-ignore-end -->
 
-If you were to save, compile and run the code right now, you'll see the default Web Chat experience. This is because the `Basic*` components are the exact same components used by the `BasicWebChat` component. You can choose to modify these components however you like: remove, reorder, pass custom props, etc. In this sample, however, we're going to demonstrate adding a completely new component to the UI.
+If you were to save, compile and run the code right now, you'll see the default Web Chat experience. This is because the `Basic*` components are the exact same components used by the `BasicWebChat` component. You can choose to modify these components however you like: remove, reorder, pass custom props (such as styling), etc. In this sample, however, we're going to demonstrate adding a completely new component to the UI.
 
 ### `HelloButton.js`
 
@@ -108,13 +108,13 @@ import HelloButton from './HelloButton';
 
 const CustomWebChat = () => {
   return (
-    <React.Fragment>
+    <Components.AccessKeySinkSurface>
       <Components.BasicToaster />
       <Components.BasicTranscript />
       <Components.BasicConnectivityStatus />
       <HelloButton />
       <Components.BasicSendBox />
-    </React.Fragment>
+    </Components.AccessKeySinkSurface>
   );
 };
 ```
@@ -177,13 +177,13 @@ import HelloButton from './HelloButton';
 
 const CustomWebChat = () => {
   return (
-    <React.Fragment>
+    <Components.AccessKeySinkSurface>
       <Components.BasicToaster />
       <Components.BasicTranscript />
       <Components.BasicConnectivityStatus />
       <HelloButton />
       <Components.BasicSendBox />
-    </React.Fragment>
+    </Components.AccessKeySinkSurface>
   );
 };
 

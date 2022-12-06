@@ -4,13 +4,13 @@ import HelloButton from './HelloButton';
 
 const CustomWebChat = () => {
   return (
-    <React.Fragment>
+    <Components.AccessKeySinkSurface>
       <Components.BasicToaster />
       <Components.BasicTranscript />
       <Components.BasicConnectivityStatus />
       <HelloButton />
       <Components.BasicSendBox />
-    </React.Fragment>
+    </Components.AccessKeySinkSurface>
   );
 };
 
