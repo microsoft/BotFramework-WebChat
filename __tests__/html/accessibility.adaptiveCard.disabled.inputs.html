@@ -125,6 +125,7 @@
           await pageConditions.scrollToBottomCompleted();
 
           // THEN: The bottom part should show, because the "Show Card" button is not disabled and could be clicked.
+          //       No focus indicator should show on the "Show Card" button as it is clicked by mouse.
           await host.snapshot();
 
           // THEN: All buttons should be disabled.

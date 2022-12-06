@@ -221,6 +221,8 @@ describe('transcript', () => {
       'transcript.activityGrouping#wd=1&bi=1&bn=1&bt=1&g=status&l=0&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=1&ch=1280&cw=720'
     ));
 
+  // Test 45 is slightly (3px) shifted to the right.
+  // This is because the carousel tries to center the first image, which result in setting scrollLeft to 3.3px.
   test('with activity grouping test 45', () =>
     runHTML(
       'transcript.activityGrouping#wd=1&bi=1&bn=1&bt=1&g=status&l=carousel&rtl=0&t=markdown-message.json&ui=1&un=1&ut=1&w=0&ch=1280'
