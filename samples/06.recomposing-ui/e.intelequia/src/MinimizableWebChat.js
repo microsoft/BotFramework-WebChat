@@ -18,6 +18,9 @@ let inTimeout;
 
 const MinimizableWebChat = (parameters) => {
   const options = parameters.parameters.parameters;
+  if(options.reactivateChat && options.proactiveTimeOut == undefined){
+    options.proactiveTimeOut = 50000;
+  }
   
   const store = useMemo(
     () =>
@@ -45,13 +48,10 @@ const MinimizableWebChat = (parameters) => {
                   dispatch({
                     type: 'WEB_CHAT/SEND_EVENT',
                     payload: {
-                      name: 'inactive',
-                      value: {
-                        locale: options.language
-                      }
+                      name: 'inactive'
                     }
                   });
-                }, options.timeOut)
+                }, options.proactiveTimeOut)
                 inTimeout = true;
               }
               

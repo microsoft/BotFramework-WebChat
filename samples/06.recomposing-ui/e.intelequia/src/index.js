@@ -57,7 +57,7 @@ import * as serviceWorker from './serviceWorker';
 //     onUserMessage,
 //     onMaximizeMinimize,
 //     reactivateChat: true,
-//     timeOut: 50000
+//     proactiveTimeOut: 50000
 // }
 
 // ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));
