@@ -10,7 +10,7 @@ body:
       value: |
         > Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
 
-        Use the ['feature-request' query](https://github.com/microsoft/BotFramework-WebChat/labels/feature-request) to search for existing feature requests.
+        Use the ["feature-request" query](https://github.com/microsoft/BotFramework-WebChat/labels/feature-request) to search for existing feature requests.
 
         The [Samples tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
   - type: textarea
