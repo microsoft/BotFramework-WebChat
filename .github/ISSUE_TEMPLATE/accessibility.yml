@@ -25,7 +25,8 @@ body:
   - type: textarea
     id: impact
     attributes:
-      label: What is the impact?
+      label: What is the PWD impact?
+      description: Please describe how it impact people with disabilities.
   - type: dropdown
     id: test-environment
     attributes:
