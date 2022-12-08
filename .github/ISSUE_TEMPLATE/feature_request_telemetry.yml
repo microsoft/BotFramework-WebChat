@@ -1,0 +1,65 @@
+name: "Feature request: telemetry data points"
+description: Suggest adding data points for telemetry purpose
+labels:
+  - area-telemetry
+  - feature-request
+  - customer-reported
+  - Bot Services
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is a feature request form for suggesting new data points to be emitted by Web Chat. *Web Chat do not collect any data*. Web developer should [connect their data collector](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights) to collect data points from Web Chat.
+  - type: textarea
+    id: sample-scenarios
+    attributes:
+      label: What do you want to analyze and understand?
+      description: This will help us designing data points that fit your analytical needs.
+      value: |
+        - Outgoing message reliability
+        - How long does it take to successfully send a message in average
+    validations:
+      required: true
+  - type: textarea
+    id: data-point
+    attributes:
+      label: What new data points do you think we should add?
+      value: |
+        When a message is being sent, emit:
+        - Begin to send a message
+        - Send status changes from "sending" to "sent", with duration
+    validations:
+      required: true
+  - type: textarea
+    id: sample-telemetrics
+    attributes:
+      label: How these data points will be used in your analysis?
+      value: |
+        ### Outgoing message reliability
+
+        $$ outgoing\ message\ reliability = \frac{n_{sent}}{n_{begin}} \times 100\\% $$
+
+        ### Average time to send a message
+
+        $$ average\ time\ to\ send\ a\ message = \frac{\displaystyle\sum_{i=1}^n t_i}{n} $$
+
+        $$ t_x = time\ to\ send\ a\ message $$
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the feature request here.
+  - type: markdown
+    attributes:
+      value: |
+        ## Disclaimer
+
+        Web Chat is a client-side JavaScript library and emit telemetry data. However, *we do not collect data*. It is up to web developers to [connect their data collector to Web Chat](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights) and collect data for their own use. We do not govern and do not know how these data are being used.
+
+        Ultimately, web developers can fork and modify Web Chat source code and collect any data in their forked version, even when data points are not in the official source code.
+
+        Some systems and services at Microsoft use Web Chat. They may collect data by connecting their data collector to Web Chat, and/or collect data on service-side. You should always read Privacy Policy to understand how data are collected.
+
+        This feature request template is a best effort to make telemetry data more accessible and transparent. However, web developers may not use this template to disclose what they would collect.
