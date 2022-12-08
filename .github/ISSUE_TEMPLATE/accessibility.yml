@@ -135,7 +135,7 @@ body:
     attributes:
       label: MAS reference
       description: For internal use only. Please link to MAS documentation, if any.
-      placeholder: https://microsoft.sharepoint.com/:w:/s/accessibility/
+      placeholder: https://microsoft.sharepoint.com/:w:/r/sites/accessibility/
   - type: input
     id: wcag-reference
     attributes:
