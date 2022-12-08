@@ -21,8 +21,7 @@
               name: 'forced-colors',
               value: 'active'
             }
-          ]
-        });
+          ]});
 
           WebChat.renderWebChat(
             {
@@ -52,10 +51,11 @@
               () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
               1000
             );
-
-            await host.snapshot();
             
           } finally {
+            
+            await host.snapshot();
+
             disconnect();
           }
         },
