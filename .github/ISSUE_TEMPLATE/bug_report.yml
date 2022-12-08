@@ -13,15 +13,25 @@ body:
         > [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) to get support related to Bot Framework and Web Chat.
         >
         > Be sure to remove or obscure personally identifiable information from your code and screenshots.
-  - type: checkboxes
+  - type: dropdown
     attributes:
       label: Is it an issue related to Adaptive Cards?
       description: If yes, please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
       options:
-        - label: Yes, this is an Adaptive Card issue but it only repro on Web Chat.
-        - label: No
-      validations:
-        required: true
+        - ""
+        - Yes, this is an Adaptive Card issue, however it only repro on Web Chat.
+        - "No"
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Is this an accessibility issue?
+      description: For accessibility issue, please use [this issue template](https://github.com/microsoft/BotFramework-WebChat/issues/new?template=accessibility.yml).
+      options:
+        - ""
+        - "No"
+    validations:
+      required: true
   - type: dropdown
     id: version
     attributes:
@@ -31,7 +41,9 @@ body:
 
         `[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
 
-        If you are not using latest version of Web Chat, please upgrade to the latest version as the issue may have been resolved.
+        The latest version number of Web Chat can be found in the [Releases section](https://github.com/microsoft/BotFramework-WebChat/releases/latest).
+
+        If you are not using latest version of Web Chat, please upgrade to the latest version as the issue may had resolved.
       options:
         - Latest production
         - Development build
@@ -82,11 +94,13 @@ body:
         - "Platform: macOS"
         - "Platform: iOS/iPadOS"
         - "Platform: Android"
+        - Others or unrelated
   - type: dropdown
     id: area
     attributes:
       label: Which area does this issue affect?
       options:
+        - ""
         - "Attachment: Adaptive Card"
         - "Attachment: OAuth card"
         - "Attachment: Other rich cards"
@@ -94,21 +108,22 @@ body:
         - "Customization: Branding"
         - "Customization: Others"
         - Development experience
+        - Hooks
         - Notification
         - Protocol or service
         - Send box
         - Speech
         - Suggested action
         - Telemetry
-        - Others/unrelated
+        - Others or unrelated
     validations:
       required: true
-  - type: dropdown
+  - type: input
+    id: url
     attributes:
-      label: Is this an accessibility issue?
-      description: For accessibility issue, please use [this issue template](https://github.com/microsoft/BotFramework-WebChat/issues/new?template=accessibility.yml).
-      options:
-        - label: No, this is not an accessibility issue.
+      label: What is the public URL for the website?
+      description: If the bot is not intended for public use, please leave this blank. It will be helpful if we can test the bot to understand the issue.
+      placeholder: https://
   - type: textarea
     id: describe-the-bug
     attributes:
@@ -121,11 +136,7 @@ body:
     attributes:
       label: Do you see any errors in console log?
       description: If errors are logged to the console, please copy them here.
-  - type: textarea
-    id: url
-    attributes:
-      label: What is the public URL for the website?
-      description: If the bot is not intended for public use, please leave this blank. It will be helpful if we can test the bot to understand the issue.
+      render: js
   - type: textarea
     id: repro-steps
     attributes:
@@ -139,36 +150,38 @@ body:
   - type: textarea
     id: expected-result
     attributes:
-      label: What is the expected behavior?
+      label: What do you expect?
       description: Give a clear and concise description of what you expect to happen.
     validations:
       required: true
   - type: textarea
     id: actual-result
     attributes:
-      label: What is the actual behavior?
+      label: What actually happened?
       description: Give a clear and concise description of what actually happened.
     validations:
       required: true
   - type: textarea
     id: screenshots
     attributes:
-      label: Do you have any screenshots or recordings?
-      description: Be sure to remove or obscure personally identifiable information from your code and screenshots
+      label: Do you have any screenshots or recordings to repro the issue?
+      description: Be sure to remove or obscure personally identifiable information from your code and screenshots.
   - type: textarea
     id: adaptive-card-json
     attributes:
       label: Adaptive Card JSON
-      description: If this issue is related to Adaptive Cards, please paste the JSON of the card below.
+      description: |
+        If this issue is related to Adaptive Cards, please paste the JSON of the card below.
+
+        Please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
       placeholder: |
-        ```json
         {
           "type": "AdaptiveCard",
           "body": []
           "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
           "version": "1.5"
         }
-        ```
+      render: json
   - type: textarea
     id: additional-context
     attributes:
