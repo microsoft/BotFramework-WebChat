@@ -1,0 +1,154 @@
+name: Accessibility issue
+description: Create a report to help us improve the accessibility experience.
+labels:
+  - aria-accessibility
+  - bug
+  - customer-reported
+  - Bot Services
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > Please view our [accessibility guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACCESSIBILITY.md) before filing a new issue.
+        >
+        > Be sure to remove or obscure personally identifiable information from your code and screenshots.
+  - type: checkboxes
+    attributes:
+      label: Is it an issue related to Adaptive Cards?
+      description: If yes, please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
+      options:
+        - label: Yes, this is an Adaptive Card issue, however it only repro on Web Chat.
+        - label: No
+      validations:
+        required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: What is the impact?
+  - type: dropdown
+    id: test-environment
+    attributes:
+      label: Which browsers and screen readers do the issue happened?
+      description: Please make sure the issue continued to repro on latest version of the browser and screen reader. If you choose "Others", please provide us information in the additional context section.
+      multiple: true
+      options:
+        - "Windows: Edge with Windows Narrator"
+        - "Windows: Chrome with NVDA"
+        - "macOS: Safari with VoiceOver"
+        - "iOS/iPadOS: Safari with VoiceOver"
+        - "Android: Chrome with TalkBack"
+        - "Others"
+  - type: textarea
+    id: url
+    attributes:
+      label: What is the public URL for the website?
+      description: If the bot is not intended for public use, please leave this blank. It will be helpful if we can test the bot to understand the issue.
+  - type: dropdown
+    attributes:
+      label: Are there any code-based customization done to Web Chat?
+      description: |
+        If customization is done solely using `styleOptions`, please answer "No".
+
+        Code-based customization might affect how Web Chat works with screen readers. Please verify if this issue continue to repro without any code-based customization.
+      options:
+        - label: Yes, however, this also repro when customizations are removed.
+        - label: No, I am using Web Chat without any customizations.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: What version of Web Chat are you using?
+      description: |
+        To determine what version of Web Chat you are running, open your browser's development tools, and paste the following line of code into the console.
+
+        `[].map.call(document.head.querySelectorAll('meta[name^="botframework-"]'), function (meta) { return meta.outerHTML; }).join('\n')`
+
+        If you are not using latest version of Web Chat, please upgrade to the latest version as the issue may have been resolved.
+      options:
+        - Latest production
+        - Development build
+        - I am not using latest
+        - Unrelated
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this issue affect?
+      multiple: true
+      options:
+        - ARIA roles
+        - Keyboard focus indicator
+        - Live region
+        - Send box
+        - Suggested action
+        - Tab order
+        - Transcript navigation
+        - Other/unrelated
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: How to reproduce the issue?
+      value: |
+        1. Navigate to ...
+        2. Type "..." in the send box
+        3. Press <kbd>TAB</kbd> to ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: What is the expected behavior?
+      description: Give a clear and concise description of what you expect to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: What is the actual behavior?
+      description: Give a clear and concise description of what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Do you have any screenshots or recordings?
+      description: Be sure to remove or obscure personally identifiable information from your code and screenshots
+  - type: textarea
+    id: mas-reference
+    attributes:
+      label: MAS reference
+      description: For internal use. Please link to MAS reference if any.
+    value: https://microsoft.sharepoint.com/:w:/s/accessibility/
+  - type: textarea
+    id: wcag-reference
+    attributes:
+      label: WCAG reference
+      description: Please link to related criterion from [Understanding WCAG](https://www.w3.org/WAI/WCAG21/Understanding/).
+  - type: textarea
+    id: wai-aria-reference
+    attributes:
+      label: WAI-ARIA reference
+      description: For roles, state, and properties issues, please link to their related section from [Accessible Rich Internet Applications (WAI-ARIA)](https://www.w3.org/TR/wai-aria/).
+  - type: textarea
+    id: adaptive-card-json
+    attributes:
+      label: Adaptive Card JSON
+      description: If this issue is related to Adaptive Cards, please paste the JSON of the card below.
+      placeholder: |
+        ```json
+        {
+          "type": "AdaptiveCard",
+          "body": []
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "version": "1.5"
+        }
+        ```
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here. If you have any screenshots or recordings, please include it here.

@@ -1,5 +1,5 @@
-name: Bug Report
-description: Create a report to help us improve
+name: Bug report
+description: Create a report to help us improve our product.
 labels:
   - bug
   - customer-reported
@@ -11,17 +11,17 @@ body:
         > Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
         >
         > [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) to get support related to Bot Framework and Web Chat.
+        >
+        > Be sure to remove or obscure personally identifiable information from your code and screenshots.
   - type: checkboxes
     attributes:
       label: Is it an issue related to Adaptive Cards?
       description: If yes, please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
       options:
-        - label: Yes, this is an Adaptive Card issue but it is specific to Web Chat.
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Do you have any screenshots?
-      description: Be sure to remove or obscure personally identifiable information from your code and screenshots
+        - label: Yes, this is an Adaptive Card issue but it only repro on Web Chat.
+        - label: No
+      validations:
+        required: true
   - type: dropdown
     id: version
     attributes:
@@ -54,7 +54,7 @@ body:
     id: hosting-environment
     attributes:
       label: Which hosting environment does this issue primarily affect?
-      description: If you choose "Others", please provide us information on your hosting environment in the Additional Context section.
+      description: If you choose "Others or unrelated", please provide us information on your hosting environment in the additional context section.
       options:
         - Web apps
         - Dynamics 365 Omnichannel
@@ -93,19 +93,22 @@ body:
         - Chat history
         - "Customization: Branding"
         - "Customization: Others"
+        - Development experience
         - Notification
         - Protocol or service
         - Send box
         - Speech
         - Suggested action
+        - Telemetry
         - Others/unrelated
     validations:
       required: true
-  - type: checkboxes
+  - type: dropdown
     attributes:
       label: Is this an accessibility issue?
+      description: For accessibility issue, please use [this issue template](https://github.com/microsoft/BotFramework-WebChat/issues/new?template=accessibility.yml).
       options:
-        - label: Yes, this is an accessibility issue.
+        - label: No, this is not an accessibility issue.
   - type: textarea
     id: describe-the-bug
     attributes:
@@ -119,6 +122,11 @@ body:
       label: Do you see any errors in console log?
       description: If errors are logged to the console, please copy them here.
   - type: textarea
+    id: url
+    attributes:
+      label: What is the public URL for the website?
+      description: If the bot is not intended for public use, please leave this blank. It will be helpful if we can test the bot to understand the issue.
+  - type: textarea
     id: repro-steps
     attributes:
       label: How to reproduce the issue?
@@ -129,16 +137,24 @@ body:
     validations:
       required: true
   - type: textarea
-    id: expected-and-actual
+    id: expected-result
     attributes:
-      label: What is the expected and actual behavior?
-      description: Give a clear and concise description of what you expect to happen and what actually happened.
-      value: |
-        Expected:
-
-        Actual:
+      label: What is the expected behavior?
+      description: Give a clear and concise description of what you expect to happen.
     validations:
       required: true
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: What is the actual behavior?
+      description: Give a clear and concise description of what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Do you have any screenshots or recordings?
+      description: Be sure to remove or obscure personally identifiable information from your code and screenshots
   - type: textarea
     id: adaptive-card-json
     attributes:
