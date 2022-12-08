@@ -15,7 +15,7 @@ body:
         The [Samples tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
   - type: textarea
     attributes:
-      label: Is your feature request related to a problem? Please describe.
+      label: Is your feature request related to a problem?
       description: A clear and concise description of what the problem is.
       placeholder: I'm always frustrated when [...]
     validations:
