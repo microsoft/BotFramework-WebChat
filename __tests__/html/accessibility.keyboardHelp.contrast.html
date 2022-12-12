@@ -35,7 +35,7 @@
         // THEN: The focus should be on `document.body` initially.
         await pageConditions.focusOn(document.body, 'document body');
 
-        // THEN: The keyboard help screeen should not be visible initially.
+        // THEN: The keyboard help screen should not be visible initially.
         await host.snapshot();
 
         // ---
@@ -46,8 +46,17 @@
         // THEN: It should focus on the close button.
         await pageConditions.focusOn(pageElements.keyboardHelpScreenCloseButton(), 'keyboard help screen close button');
 
-        // THEN: The keyboard help screeen show be visible.
+        // THEN: The keyboard help screen show be visible.
         await host.snapshot();
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            {
+              name: 'forced-colors',
+              value: 'none'
+            }
+          ]
+        });
       });
     </script>
   </body>
