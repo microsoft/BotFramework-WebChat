@@ -25,6 +25,7 @@ const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop 
       allowFullScreen={true}
       aria-label={alt}
       className={youTubeContentStyleSet}
+      sandbox="allow-same-origin allow-scripts"
       src={`https://youtube.com/embed/${embedID}?${search}`}
     />
   );
