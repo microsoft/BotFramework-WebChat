@@ -43,7 +43,11 @@
             ></path>
           </svg>
           <p>
-            <a href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(props.repo)}`} target="_blank">
+            <a
+              href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(props.repo)}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               {props.owner}/<br />
               {props.repo}
             </a>
