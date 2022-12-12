@@ -68,6 +68,12 @@ const InlineMarkdown = ({ children, onReference, references }) => {
           fontFamily: 'inherit',
           fontSize: 'inherit',
           padding: 0
+        },
+        '@media screen and (forced-colors: active)': {
+          '& button[data-markdown-href]': {
+            color: 'LinkText',
+            textDecoration: 'underline'
+          }
         }
       }) + '',
     [accent, styleToClassName]
