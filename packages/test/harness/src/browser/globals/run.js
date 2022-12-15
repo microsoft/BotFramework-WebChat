@@ -17,6 +17,8 @@ export default function () {
           .sendDevToolsCommand('Emulation.setEmulatedMedia', {
             features: [{ name: 'forced-colors', value: '' }]
           })
+          // Some tests may have changed the time zone, we should unset it.
+          .then(() => host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' }))
           .then(host.ready)
           .then(fn)
           .then(() => host.done(doneOptions))
