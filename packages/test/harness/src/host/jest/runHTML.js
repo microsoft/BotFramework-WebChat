@@ -52,10 +52,6 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
-    await webDriver.sendDevToolsCommand('Emulation.setEmulatedMedia', {
-      // Setting "value" to "" (empty string) does not unset "forced-colors".
-      features: [{ name: 'forced-colors', value: 'none' }]
-    });
     await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' });
     await webDriver.get(absoluteURL);
 
