@@ -64,7 +64,6 @@ async function main() {
     process.once('SIGTERM', terminate);
 
     try {
-      await webDriver.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' });
       // eslint-disable-next-line no-magic-numbers
       await webDriver.get(process.argv[2] || 'http://localhost:5080/');
 
