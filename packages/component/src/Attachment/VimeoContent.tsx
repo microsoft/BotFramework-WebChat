@@ -27,6 +27,7 @@ const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) =
       allowFullScreen={true}
       aria-label={alt}
       className={vimeoContentStyleSet}
+      sandbox="allow-same-origin allow-scripts"
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
     />
   );
