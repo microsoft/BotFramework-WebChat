@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#4558](https://github.com/microsoft/BotFramework-WebChat/issues/4558). In high contrast mode, "Retry" link button should use link color as defined by [CSS System Colors](https://w3c.github.io/csswg-drafts/css-color/#css-system-colors), by [@beyackle2](https://github.com/beyackle2) in PR [#4537](https://github.com/microsoft/BotFramework-WebChat/pull/4537)
 -  Fixes [#4566](https://github.com/microsoft/BotFramework-WebChat/issues/4566). For YouTube and Vimeo `<iframe>`, add `sandbox="allow-same-origin allow-scripts"`, by [@compulim](https://github.com/compulim) in PR [#4567](https://github.com/microsoft/BotFramework-WebChat/pull/4567)
--  Fixes [#4561](https://github.com/microsoft/BotFramework-WebChat/issues/4561). Header title of keyboard help dialog should be the `aria-labelledby` of the dialog and close button should be the first element of the header, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixes [#4561](https://github.com/microsoft/BotFramework-WebChat/issues/4561). Header title of keyboard help dialog should be the `aria-labelledby` of the dialog and close button should be the first element of the header, by [@compulim](https://github.com/compulim) in PR [#4609](https://github.com/microsoft/BotFramework-WebChat/pull/4609)
 
 ### Changed
 
