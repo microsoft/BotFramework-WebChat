@@ -236,7 +236,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
 
   // FEEDYOU use twemoji to make emoji compatible
   const script = document.createElement("script");
-  script.src = "https://twemoji.maxcdn.com/2/twemoji.min.js?11.2";
+  script.src = "https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js";
   script.async = true;
   document.body.appendChild(script);
 
