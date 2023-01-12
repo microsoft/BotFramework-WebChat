@@ -7,6 +7,7 @@ import type { FC } from 'react';
 
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
+import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
@@ -37,6 +38,7 @@ const KeyboardHelp: FC<{}> = () => {
   const [{ keyboardHelp: keyboardHelpStyleSet }] = useStyleSet();
   const [shown, setShown] = useState(false);
   const focus = useFocus();
+  const headerLabelId = useUniqueId('webchat__keyboard-help__header');
   const localize = useLocalizer();
 
   const chatHistoryAccessItemsInMessageBody = localize('KEYBOARD_HELP_CHAT_HISTORY_ACCESS_ITEMS_IN_MESSAGE_BODY');
@@ -84,6 +86,7 @@ const KeyboardHelp: FC<{}> = () => {
     <div
       // When the dialog is not shown, "aria-hidden" helps to prevent scan mode from able to scan the content of the dialog.
       aria-hidden={!shown}
+      aria-labelledby={headerLabelId}
       className={classNames('webchat__keyboard-help', keyboardHelpStyleSet + '', {
         // Instead of using "hidden" attribute, we are using CSS to hide the dialog.
         // - When using "hidden", the close button will not be tabbable because it is pseudo removed from the DOM
@@ -96,27 +99,31 @@ const KeyboardHelp: FC<{}> = () => {
     >
       <div className="webchat__keyboard-help__box">
         <header>
-          <h2 className="webchat__keyboard-help__header">{header}</h2>
-        </header>
-        <button
-          aria-label={closeButtonAlt}
-          className="webchat__keyboard-help__close-button"
-          onClick={handleCloseButtonClick}
-          onFocus={handleCloseButtonFocus}
-          onKeyDown={handleCloseButtonKeyDown}
-          type="button"
-        >
-          <svg
-            className="webchat__keyboard-help__close-button_image"
-            // "focusable" attribute is only available in IE11 and "tabIndex={-1}" does not work.
-            focusable={false}
-            role="presentation"
-            viewBox="0 0 2048 2048"
-            xmlns="http://www.w3.org/2000/svg"
+          <button
+            aria-label={closeButtonAlt}
+            className="webchat__keyboard-help__close-button"
+            onClick={handleCloseButtonClick}
+            onFocus={handleCloseButtonFocus}
+            onKeyDown={handleCloseButtonKeyDown}
+            type="button"
           >
-            <path d="M2048 136l-888 888 888 888-136 136-888-888-888 888L0 1912l888-888L0 136 136 0l888 888L1912 0l136 136z" />
-          </svg>
-        </button>
+            <svg
+              className="webchat__keyboard-help__close-button_image"
+              // "focusable" attribute is only available in IE11 and "tabIndex={-1}" does not work.
+              focusable={false}
+              role="presentation"
+              viewBox="0 0 2048 2048"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M2048 136l-888 888 888 888-136 136-888-888-888 888L0 1912l888-888L0 136 136 0l888 888L1912 0l136 136z" />
+            </svg>
+          </button>
+          {/* "id" attribute is required when using "aria-labelledby". */}
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <h2 className="webchat__keyboard-help__header" id={headerLabelId}>
+            {header}
+          </h2>
+        </header>
         <article className="webchat__keyboard-help__section">
           <header>
             <h3 className="webchat__keyboard-help__sub-header">{chatWindowHeader}</h3>
