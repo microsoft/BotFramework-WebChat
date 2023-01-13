@@ -4,7 +4,13 @@ import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
 import Composer, { ComposerProps } from './Composer';
 
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
+
 import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
+import BasicConnectivityStatus from './BasicConnectivityStatus';
+import BasicSendBox from './BasicSendBox';
+import BasicToaster from './BasicToaster';
+import BasicTranscript from './BasicTranscript';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
@@ -50,6 +56,13 @@ const Components = {
   BasicWebChat,
   Composer,
   Localize,
+
+  // Components for restructuring BasicWebChat
+  AccessKeySinkSurface,
+  BasicConnectivityStatus,
+  BasicSendBox,
+  BasicToaster,
+  BasicTranscript,
 
   // Components for recomposing activities and attachments
   AudioContent,
