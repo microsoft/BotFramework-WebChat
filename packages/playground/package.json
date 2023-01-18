@@ -35,8 +35,8 @@
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "react-scripts build",
-    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '((.devDependencies // {}) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}'); fi",
+    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '((.dependencies // {}) | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}'); fi",
     "bump": "npm run bump:prod && npm run bump:dev",
     "eject": "react-scripts eject",
     "postauditfix": "npm run postbump",
