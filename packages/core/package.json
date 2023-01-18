@@ -43,20 +43,20 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/plugin-transform-runtime": "^7.19.1",
-    "@babel/plugin-transform-typescript": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@types/node": "^18.7.22",
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/plugin-transform-typescript": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "@types/node": "^18.11.18",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.1",
-    "concurrently": "^7.4.0",
-    "typescript": "^4.8.3"
+    "concurrently": "^7.6.0",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@babel/runtime": "7.19.0",
+    "@babel/runtime": "7.20.7",
     "jwt-decode": "3.1.2",
     "math-random": "2.0.1",
     "mime": "3.0.0",
@@ -64,7 +64,7 @@
     "p-defer-es5": "2.0.1",
     "redux": "4.2.0",
     "redux-devtools-extension": "2.13.9",
-    "redux-saga": "1.2.1",
+    "redux-saga": "1.2.2",
     "simple-update-in": "2.2.0"
   },
   "engines": {

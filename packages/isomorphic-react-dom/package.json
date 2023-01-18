@@ -27,13 +27,13 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "concurrently": "^7.4.0",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
-  }
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "concurrently": "^7.6.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {}
 }

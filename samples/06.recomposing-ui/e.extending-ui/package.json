@@ -5,13 +5,13 @@
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/e.extending-ui/",
   "skipBump": [],
   "dependencies": {
-    "botframework-webchat": "^4.15.0",
-    "botframework-webchat-component": "^4.15.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "botframework-webchat": "^4.15.6",
+    "botframework-webchat-component": "^4.15.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "bump": "npm run bump:prod && npm run bump:dev",

@@ -19,12 +19,12 @@
     "node-fetch"
   ],
   "dependencies": {
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.3",
     "http-proxy": "^1.18.1",
-    "node-fetch": "^2.6.7",
-    "restify": "^8.6.1"
+    "node-fetch": "^3.3.0",
+    "restify": "^11.0.0"
   },
   "devDependencies": {
-    "node-dev": "^7.1.0"
+    "node-dev": "^8.0.0"
   }
 }

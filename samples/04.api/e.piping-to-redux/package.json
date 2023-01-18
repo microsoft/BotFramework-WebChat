@@ -4,14 +4,14 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/",
   "dependencies": {
-    "botframework-webchat": "^4.15.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.6",
-    "redux": "^4.1.2"
+    "botframework-webchat": "^4.15.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",

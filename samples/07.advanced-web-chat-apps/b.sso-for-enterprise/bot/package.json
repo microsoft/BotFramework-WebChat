@@ -16,13 +16,13 @@
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^4.15.0",
-    "botbuilder-dialogs": "^4.15.0",
-    "dotenv": "^16.0.0",
-    "restify": "^8.6.1",
+    "botbuilder": "^4.19.0",
+    "botbuilder-dialogs": "^4.19.0",
+    "dotenv": "^16.0.3",
+    "restify": "^11.0.0",
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {
-    "node-dev": "^7.1.0"
+    "node-dev": "^8.0.0"
   }
 }

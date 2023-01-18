@@ -58,12 +58,12 @@
   },
   "dependencies": {
     "cldr-data-downloader": "0.3.5-0",
-    "glob": "^8.0.3",
-    "read-pkg": "^7.1.0",
-    "read-pkg-up": "^9.1.0"
+    "glob": "8.1.0",
+    "read-pkg": "7.1.0",
+    "read-pkg-up": "9.1.0"
   },
-  "devDependencies": {},
   "localPeerDependencies": {
     "cldr-data-downloader": "0.3.5-0"
-  }
+  },
+  "devDependencies": {}
 }

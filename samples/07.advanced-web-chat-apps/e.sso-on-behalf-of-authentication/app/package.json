@@ -8,17 +8,17 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
-    "botframework-webchat": "^4.15.0",
+    "botframework-webchat": "^4.15.6",
     "math-random": "^2.0.1",
-    "msal": "^1.4.16",
-    "office-ui-fabric-react": "^7.183.1",
+    "msal": "^1.4.17",
+    "office-ui-fabric-react": "^7.203.0",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
-    "http-proxy-middleware": "^2.0.3",
-    "react-scripts": "^5.0.0"
+    "http-proxy-middleware": "^2.0.6",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",

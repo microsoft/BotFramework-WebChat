@@ -19,15 +19,15 @@
     "node-fetch": "^3 does not support CommonJS"
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.8.0",
-    "dotenv": "^16.0.0",
+    "@azure/storage-blob": "^12.12.0",
+    "dotenv": "^16.0.3",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
     "node-fetch": "^2.6.7",
-    "restify": "^8.6.1",
-    "uuid": "^8.3.2"
+    "restify": "^11.0.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "node-dev": "^7.1.0"
+    "node-dev": "^8.0.0"
   }
 }

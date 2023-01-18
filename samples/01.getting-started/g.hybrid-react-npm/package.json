@@ -19,8 +19,8 @@
     "start": "lerna run build --scope=chat-component && lerna run start --parallel --stream"
   },
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "lerna": "^6.1.0"
-  }
+    "lerna": "^6.4.1"
+  },
+  "dependencies": {}
 }
