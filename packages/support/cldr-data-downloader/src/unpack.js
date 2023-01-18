@@ -51,6 +51,8 @@ function unpack(downloads, dest) {
   console.log('Unpacking it into `' + prettyPath(dest.path) + '`');
 
   try {
+    // This is intentional.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     mkdirSync(dest.path, { recursive: true, mode: '0755' });
   } catch (err) {
     if (err.code !== 'EEXIST') {

@@ -93,6 +93,8 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
     try {
       const filename = join(tmpdir(), basename(global.jasmine.testPath, '.js') + '.png');
 
+      // The filename is sanitized and we wrote to /tmp.
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       writeFile(filename, Buffer.from(await webDriver.takeScreenshot(), 'base64'));
 
       err.message += `\nSee screenshot for details: ${filename}\n`;
