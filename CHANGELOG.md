@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`express@4.18.2`](https://npmjs.com/package/express)
       -  [`glob@8.1.0`](https://npmjs.com/package/glob)
       -  [`http-proxy-middleware@2.0.6`](https://npmjs.com/package/http-proxy-middleware)
+      -  [`jest-environment-jsdom@29.3.1`](https://npmjs.com/package/jest-environment-jsdom)
       -  [`jest-image-snapshot@6.1.0`](https://npmjs.com/package/jest-image-snapshot)
       -  [`jest@29.3.1`](https://npmjs.com/package/jest)
       -  [`node-dev@8.0.0`](https://npmjs.com/package/node-dev)
