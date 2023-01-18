@@ -45,7 +45,7 @@ class Mod<TArgs extends unknown[]> {
 export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
   modder: (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, ...args: TArgs) => () => void,
   adaptiveCard: AdaptiveCard
-): readonly [(cardElement: HTMLElement) => void, () => void] {
+): readonly [(cardElement: HTMLElement, ...args: TArgs) => void, () => void] {
   const adaptiveCardRef = useValueRef(adaptiveCard);
   const mod = useMemo(() => new Mod<TArgs>(modder), [modder]);
   const reapplyRef = useRef<() => void>();
@@ -64,7 +64,7 @@ export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
     [observerRef]
   );
 
-  const handleApply = useCallback(
+  const handleApply = useCallback<(cardElement: HTMLElement, ...args: TArgs) => void>(
     (cardElement: HTMLElement, ...args: TArgs) => {
       if (adaptiveCardRef.current && cardElement) {
         // Apply the mod immediately, then assign the function to reapply() so we can call later when mutation happens.
@@ -79,7 +79,7 @@ export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
     [adaptiveCardRef, observerRef, mod]
   );
 
-  const handleUndo = useCallback(() => {
+  const handleUndo = useCallback<() => void>(() => {
     mod.undo();
 
     // If we have undo-ed the mod, calling reapply() through MutationObserver should be no-op.
@@ -87,7 +87,11 @@ export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
   }, [mod, reapplyRef]);
 
   return useMemo(
-    () => Object.freeze([handleApply, handleUndo]) as readonly [(cardElement: HTMLElement) => void, () => void],
+    () =>
+      Object.freeze([handleApply, handleUndo]) as readonly [
+        (cardElement: HTMLElement, ...args: TArgs) => void,
+        () => void
+      ],
     [handleApply, handleUndo]
   );
 }
