@@ -1,6 +1,6 @@
-import { build, serve } from 'esbuild';
-import { resolve } from 'path';
+import { context } from 'esbuild';
 import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 
 const resolveFromProjectRoot = resolve.bind(undefined, fileURLToPath(import.meta.url), '../../');
 
@@ -40,15 +40,11 @@ const BUILD_OPTIONS = {
 };
 
 (async function () {
+  const esbuildContext = await context(BUILD_OPTIONS);
+
   // We are both hosting the development server and writing to file output.
   // The file output is for Docker containers.
-  const [, { host, port }] = await Promise.all([
-    build({
-      ...BUILD_OPTIONS,
-      watch: true
-    }),
-    serve({}, BUILD_OPTIONS)
-  ]);
+  const [{ host, port }] = await Promise.all([esbuildContext.serve(), esbuildContext.watch()]);
 
   console.log(`[serve] listening to http://${host}:${port}/.`);
 })();
