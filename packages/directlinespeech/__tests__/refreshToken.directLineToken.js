@@ -5,6 +5,8 @@
 import 'global-agent/bootstrap';
 
 import { PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
+import fetch from 'node-fetch';
+
 import { timeouts } from './constants.json';
 import createTestHarness from './utilities/createTestHarness';
 import MockAudioContext from './utilities/MockAudioContext';
@@ -13,6 +15,9 @@ jest.setTimeout(timeouts.test);
 
 beforeEach(() => {
   global.AudioContext = MockAudioContext;
+
+  // jest-environment-jsdom@29 (or jsdom@20) does not polyfill `fetch`.
+  global.fetch = fetch;
 });
 
 const realSetTimeout = setTimeout;
