@@ -135,7 +135,7 @@ test('supplying both audioConfig and audioInputDeviceId', () => {
   ponyfillFactory({});
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"audioConfig\\" and \\"audioInputDeviceId\\" cannot be set at the same time; ignoring \\"audioInputDeviceId\\"."`
+    `"botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time; ignoring "audioInputDeviceId"."`
   );
 
   expect(createPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);

@@ -12,7 +12,7 @@ test('walk every node and add class="markdown"', () => {
   const actual = markdownIt.renderer.render(patchedTree);
 
   expect(actual).toMatchInlineSnapshot(`
-    "<p class=\\"markdown\\">Hello, <a href=\\"#world\\" class=\\"markdown\\">World</a class=\\"markdown\\">!</p class=\\"markdown\\">
+    "<p class="markdown">Hello, <a href="#world" class="markdown">World</a class="markdown">!</p class="markdown">
     "
   `);
 });
