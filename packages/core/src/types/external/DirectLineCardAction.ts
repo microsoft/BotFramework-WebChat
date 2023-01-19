@@ -1,3 +1,5 @@
+// Type definitions here are from https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#card-action.
+
 type CardActionWithImageAndTitle =
   | { image: string }
   | { title: string }
