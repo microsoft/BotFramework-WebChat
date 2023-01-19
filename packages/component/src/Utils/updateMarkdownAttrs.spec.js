@@ -14,17 +14,17 @@ test('add "rel" and "target" attributes', () => {
   const actual = updateMarkdownAttrs(token, attrs => ({ ...attrs, rel: 'noopener noreferrer', target: '_blank' }));
 
   expect(actual).toMatchInlineSnapshot(`
-    Object {
-      "attrs": Array [
-        Array [
+    {
+      "attrs": [
+        [
           "href",
           "https://example.org/",
         ],
-        Array [
+        [
           "rel",
           "noopener noreferrer",
         ],
-        Array [
+        [
           "target",
           "_blank",
         ],
@@ -34,9 +34,9 @@ test('add "rel" and "target" attributes', () => {
 
   // The token passed in should kept unchanged
   expect(token).toMatchInlineSnapshot(`
-    Object {
-      "attrs": Array [
-        Array [
+    {
+      "attrs": [
+        [
           "href",
           "https://example.org/",
         ],
@@ -53,9 +53,9 @@ test('replace "href" attribute', () => {
   const actual = updateMarkdownAttrs(token, () => ({ href: 'https://microsoft.com/' }));
 
   expect(actual).toMatchInlineSnapshot(`
-    Object {
-      "attrs": Array [
-        Array [
+    {
+      "attrs": [
+        [
           "href",
           "https://microsoft.com/",
         ],
@@ -65,9 +65,9 @@ test('replace "href" attribute', () => {
 
   // The token passed in should kept unchanged
   expect(token).toMatchInlineSnapshot(`
-    Object {
-      "attrs": Array [
-        Array [
+    {
+      "attrs": [
+        [
           "href",
           "https://example.org/",
         ],

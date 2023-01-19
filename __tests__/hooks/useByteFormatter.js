@@ -20,7 +20,7 @@ test('should return bytes for "ja-JP"', async () => {
   ]);
 
   expect(actual).toMatchInlineSnapshot(`
-    Array [
+    [
       "10 バイト",
       "1 KB",
       "1 MB",

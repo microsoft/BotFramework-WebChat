@@ -17,7 +17,7 @@ test('getter should return Adaptive Cards package set in props', async () => {
   const [adaptiveCardsPackage] = await pageObjects.runHook('useAdaptiveCardsPackage');
 
   expect(adaptiveCardsPackage).toMatchInlineSnapshot(`
-    Object {
+    {
       "__DUMMY__": 0,
     }
   `);

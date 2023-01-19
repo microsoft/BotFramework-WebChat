@@ -34,7 +34,7 @@ test('calling voiceSelector should use selectVoice from props', async () => {
       ])
     )
   ).resolves.toMatchInlineSnapshot(`
-    Object {
+    {
       "default": false,
       "lang": "zh-YUE",
       "localService": true,

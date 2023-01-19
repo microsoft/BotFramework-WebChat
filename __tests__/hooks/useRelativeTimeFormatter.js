@@ -25,7 +25,7 @@ test('should return relative time for "yue"', async () => {
   ]);
 
   expect(actual).toMatchInlineSnapshot(`
-    Array [
+    [
       "啱啱",
       "啱啱",
       "啱啱",

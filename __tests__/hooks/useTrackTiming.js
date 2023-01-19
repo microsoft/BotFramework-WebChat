@@ -44,10 +44,10 @@ describe('useTrackTiming', () => {
     ).resolves.toBe(123);
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -59,9 +59,9 @@ describe('useTrackTiming', () => {
           "name": "ping",
           "type": "timingstart",
         },
-        Object {
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -89,10 +89,10 @@ describe('useTrackTiming', () => {
     await expect(driver.executeScript(() => window.WebChatTest.result)).resolves.toBe(123);
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -104,9 +104,9 @@ describe('useTrackTiming', () => {
           "name": "ping",
           "type": "timingstart",
         },
-        Object {
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

@@ -17,7 +17,7 @@ test('getter should return Adaptive Cards host config set in props', async () =>
   const [adaptiveCardsHostConfig] = await pageObjects.runHook('useAdaptiveCardsHostConfig');
 
   expect(adaptiveCardsHostConfig).toMatchInlineSnapshot(`
-    Object {
+    {
       "supportsInteractivity": false,
     }
   `);

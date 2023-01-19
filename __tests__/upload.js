@@ -50,10 +50,10 @@ describe('upload a picture', () => {
     telemetryMeasurements[2].duration = 1000;
 
     expect(telemetryMeasurements).toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -67,9 +67,9 @@ describe('upload a picture', () => {
           "type": "event",
           "value": null,
         },
-        Object {
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -83,9 +83,9 @@ describe('upload a picture', () => {
           "type": "timingstart",
           "value": null,
         },
-        Object {
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -99,12 +99,12 @@ describe('upload a picture', () => {
           "type": "timingend",
           "value": null,
         },
-        Object {
-          "data": Object {
+        {
+          "data": {
             "numFiles": 1,
             "sumSizeInKB": 379,
           },
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

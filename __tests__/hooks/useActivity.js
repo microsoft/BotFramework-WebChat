@@ -22,9 +22,9 @@ test('should return list of activities', async () => {
     .map(({ from: { role }, speak, text, textFormat, type }) => ({ from: { role }, speak, text, textFormat, type }));
 
   expect(cleanedActivities).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "from": Object {
+    [
+      {
+        "from": {
           "role": "user",
         },
         "speak": undefined,
@@ -32,11 +32,11 @@ test('should return list of activities', async () => {
         "textFormat": "plain",
         "type": "message",
       },
-      Object {
-        "from": Object {
+      {
+        "from": {
           "role": "bot",
         },
-        "speak": "Unknown command: I don't know Hello, World!. You can say \\"help\\" to learn more.",
+        "speak": "Unknown command: I don't know Hello, World!. You can say "help" to learn more.",
         "text": "Unknown command: \`Hello, World!\`.
 
     Type \`help\` to learn more.",

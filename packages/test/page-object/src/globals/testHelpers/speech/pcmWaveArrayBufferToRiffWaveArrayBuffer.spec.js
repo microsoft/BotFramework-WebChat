@@ -17,7 +17,7 @@ test('simple', () => {
 
   // The following content is verified down to every byte. It is the content of a RIFF WAVE file.
   expect([...new Uint8Array(actual)]).toMatchInlineSnapshot(`
-    Array [
+    [
       82,
       73,
       70,
