@@ -55,7 +55,7 @@ HeroCardContent.propTypes = {
   content: PropTypes.shape({
     images: PropTypes.arrayOf(
       PropTypes.shape({
-        alt: PropTypes.string,
+        alt: PropTypes.string.isRequired,
         tap: PropTypes.any,
         url: PropTypes.string.isRequired
       })

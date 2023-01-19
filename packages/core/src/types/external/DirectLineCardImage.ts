@@ -7,7 +7,7 @@ import type { DirectLineCardAction } from './DirectLineCardAction';
  */
 type DirectLineCardImage = {
   /** The `alt` field contains equivalent content for clients that cannot process images or have not yet loaded the image. The value of the `alt` field is a string. */
-  alt?: string;
+  alt: string;
 
   /** The `tap` field contains an action to be activated if the user taps on an image or associated framing. The value of the `tap` field is of type [cardAction](./DirectLineCardAction.ts). */
   tap?: DirectLineCardAction;
