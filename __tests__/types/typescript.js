@@ -1,3 +1,5 @@
+/* globals __dirname */
+
 const { join, relative } = require('path');
 const { MessageChannel, Worker } = require('worker_threads');
 const { readdir } = require('fs').promises;
@@ -32,6 +34,9 @@ describe('compiling TypeScript files', () => {
 
     beforeEach(async () => {
       const path = join(__dirname, '__typescript__/pass/');
+
+      // False positive.
+      /* eslint-disable-next-line security/detect-non-literal-fs-filename */
       const files = await readdir(path);
 
       results = {};
@@ -58,6 +63,9 @@ describe('compiling TypeScript files', () => {
 
     beforeEach(async () => {
       const path = join(__dirname, '__typescript__/fail-once/');
+
+      // False positive.
+      /* eslint-disable-next-line security/detect-non-literal-fs-filename */
       const files = await readdir(path);
 
       results = {};
