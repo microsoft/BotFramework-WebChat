@@ -32,10 +32,10 @@ describe('telemetry', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      [
-        {
+      Array [
+        Object {
           "data": null,
-          "dimensions": {
+          "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

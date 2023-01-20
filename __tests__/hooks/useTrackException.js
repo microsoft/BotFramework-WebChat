@@ -38,10 +38,10 @@ describe('useTrackException', () => {
     await pageObjects.runHook('useTrackException', [], trackException => trackException(new Error('artificial error')));
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      [
-        {
+      Array [
+        Object {
           "data": null,
-          "dimensions": {
+          "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -64,10 +64,10 @@ describe('useTrackException', () => {
     );
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
-      [
-        {
+      Array [
+        Object {
           "data": null,
-          "dimensions": {
+          "dimensions": Object {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
