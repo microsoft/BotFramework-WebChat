@@ -1,36 +1,32 @@
 const { join, relative } = require('path');
+const { MessageChannel, Worker } = require('worker_threads');
 const { readdir } = require('fs').promises;
 
-const ts = require('typescript');
-
-function compile(...filenames) {
-  const program = ts.createProgram(filenames, {
-    allowSyntheticDefaultImports: true,
-    jsx: 'react',
-    noEmit: true,
-    skipLibCheck: true,
-    strict: true
-  });
-
-  const emitResult = program.emit();
-  const allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
-  const errors = [];
-
-  allDiagnostics.forEach(diagnostic => {
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-      const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-
-      errors.push(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
-    } else {
-      errors.push(ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
-    }
-  });
-
-  return errors;
-}
-
 describe('compiling TypeScript files', () => {
+  let worker;
+
+  // We are using Worker threads to offload the huge TypeScript package.
+  // Otherwise, TypeScript will continue to reserve ~200 MB memory until all tests completed.
+  const compile = (...filenames) => {
+    const { port1, port2 } = new MessageChannel();
+
+    return new Promise((resolve, reject) => {
+      port1.on('message', ({ error, returnValue }) => {
+        error ? reject(new Error(error)) : resolve(returnValue);
+      });
+
+      worker.postMessage({ args: filenames, port: port2 }, [port2]);
+    });
+  };
+
+  beforeAll(() => {
+    worker = new Worker(join(__dirname, './typescript.worker.js'));
+  });
+
+  afterAll(() => {
+    worker.terminate();
+  });
+
   describe('in /pass/ folder', () => {
     let results;
 
@@ -40,11 +36,13 @@ describe('compiling TypeScript files', () => {
 
       results = {};
 
-      files.forEach(file => {
-        const fullPath = join(path, file);
+      await Promise.all(
+        files.map(async file => {
+          const fullPath = join(path, file);
 
-        results[relative(path, fullPath)] = { errors: compile(fullPath) };
-      });
+          results[relative(path, fullPath)] = { errors: await compile(fullPath) };
+        })
+      );
     });
 
     test('should pass', () => {
@@ -64,11 +62,13 @@ describe('compiling TypeScript files', () => {
 
       results = {};
 
-      files.forEach(file => {
-        const fullPath = join(path, file);
+      await Promise.all(
+        files.map(async file => {
+          const fullPath = join(path, file);
 
-        results[relative(path, fullPath)] = { errors: compile(fullPath) };
-      });
+          results[relative(path, fullPath)] = { errors: await compile(fullPath) };
+        })
+      );
     });
 
     test('should fail only once', () => {

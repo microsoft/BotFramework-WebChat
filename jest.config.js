@@ -87,6 +87,7 @@ module.exports = {
     '<rootDir>/__tests__/setup/setupTimeout.js'
   ],
   testPathIgnorePatterns: [
+    '\\.worker\\.js$',
     '/lib/',
     '/node_modules/',
     '<rootDir>/__tests__/html/__dist__',
