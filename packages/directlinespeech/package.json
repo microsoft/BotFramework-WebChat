@@ -43,11 +43,11 @@
     "node-fetch": "node-fetch@3 dropped support of CommonJS"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/plugin-transform-runtime": "^7.19.6",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-env": "^7.19.1",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
     "babel-jest": "^28.1.3",
