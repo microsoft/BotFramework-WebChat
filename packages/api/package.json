@@ -63,7 +63,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "cldr-data": "36.0.0-0",
     "concurrently": "^7.6.0",
-    "core-js": "^3.27.1",
+    "core-js": "^3.25.3",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
     "node-dev": "^8.0.0",

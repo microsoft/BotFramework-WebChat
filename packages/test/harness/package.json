@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "abort-controller": "3.0.0",
-    "core-js": "3.27.1",
+    "core-js": "3.25.3",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
     "lolex": "6.0.0",

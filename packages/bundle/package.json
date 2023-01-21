@@ -60,7 +60,7 @@
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.2",
-    "core-js": "3.27.1",
+    "core-js": "3.25.3",
     "markdown-it": "13.0.1",
     "markdown-it-attrs": "4.1.6",
     "markdown-it-attrs-es5": "2.0.2",
