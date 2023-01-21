@@ -91,6 +91,8 @@
   "RECEIPT_CARD_TAX": "Tax",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "VAT",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Cannot send empty message",
+  "_SEND_BOX_IS_EMPTY_TOOLTIP_ALT.comment": "This is for screen reader on the send button. When the send text box is empty, the send button is disabled and this text on the send button explain why the button is disabled.",
   "SPEECH_INPUT_LISTENING": "Listening…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microphone off",
   "_SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT.comment": "This is for screen reader and is the label of the microphone button, when clicked, will close microphone.",
