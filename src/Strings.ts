@@ -479,6 +479,23 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: "Завантажте файл",
         uploadFile: "Завантажте файл",
         speak: "Використовуйте голос"
+    },
+    'sr-rs': {
+        title: "Chat",
+        send: "Poslati",
+        unknownFile: "[Tip podataka '%1']",
+        unknownCard: "[Nepoznata kartica '%1']",
+        receiptVat: "PDV",
+        receiptTax: "Porez na promet",
+        receiptTotal: "Ukupno",
+        messageRetry: "ponoviti",
+        messageFailed: "neuspešno slanje",
+        messageSending: "Slanje",
+        timeSent: "u %1",
+        consolePlaceholder: "Napišite novu poruku",
+        listeningIndicator: "Otpremite datoteku",
+        uploadFile: "Otpremite datoteku",
+        speak: "Govorite"
     }
 }
 
