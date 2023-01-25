@@ -6,7 +6,6 @@ import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
 import { ChatActions, ListeningState, sendMessage, sendFiles, sendScreenshot } from './Store';
-import { isSafari } from "./App"
 
 import * as html2canvas from 'html2canvas'
 

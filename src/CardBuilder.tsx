@@ -5,6 +5,7 @@ import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 import { SizeAndUnit } from 'adaptivecards/lib/utils';
 import { Tile } from './Types';
 
+
 export class AdaptiveCardBuilder {
     private container: Container;
     public card: AdaptiveCard;
