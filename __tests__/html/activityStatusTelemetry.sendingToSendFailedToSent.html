@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      async function createDirectLineForTest() {
+        const directLine = await testHelpers.createDirectLineWithTranscript([], {
+          overridePostActivity: activity => {
+            if (activity.type === 'message') {
+              setTimeout(() => {
+                directLine.activityDeferredObservable.next({
+                  ...activity,
+                  id: 'a00001',
+                  timestamp: new Date().toISOString()
+                });
+              }, 100);
+
+              return new Observable(observer => {
+                setTimeout(() => observer.next('a00001'), 800);
+              });
+            } else {
+              return workingDirectLine.postActivity(activity);
+            }
+          }
+        });
+
+        return directLine;
+      }
+
+      function activityChannelDataStateBecame(expectedState) {
+        if (typeof expectedState === 'undefined') {
+          return pageConditions.became(
+            `Activity "channelData.state" should be undefined`,
+            () => !('state' in pageObjects.getActivities()[0].channelData),
+            1000
+          );
+        }
+
+        return pageConditions.became(
+          `Activity "channelData.state" should be "${expectedState}"`,
+          () => pageObjects.getActivities()[0].channelData?.state === expectedState,
+          1000
+        );
+      }
+
+      run(async function () {
+        const telemetryEventTracking = [];
+        WebChat.renderWebChat(
+          {
+            directLine: await createDirectLineForTest(),
+            store: testHelpers.createStore(),
+            onTelemetry: (event) => {
+              telemetryEventTracking.push(event);
+            },
+            styleOptions: {
+              sendTimeout: 500
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        // SETUP: Send a message
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+        // // THEN: `channelData.state` should be "sent".
+        await activityChannelDataStateBecame('sent');
+
+        const expectedEventName = "send-status:change";
+        let lastRecord = telemetryEventTracking.pop();
+        expect(lastRecord.data).toEqual({
+          previousStatus: "send failed",
+          currentStatus: "sent",
+          clientActivityID: expect.any(String),
+          type: "message"
+        });
+
+        expect(lastRecord.name).toEqual(expectedEventName);
+        
+        lastRecord = telemetryEventTracking.pop();
+        expect(lastRecord.data).toEqual({
+          currentStatus: "send failed",
+          previousStatus: "sending",
+          clientActivityID: expect.any(String),
+          type: "message"
+        });
+        expect(lastRecord.name).toEqual(expectedEventName);
+      });
+    </script>
+  </body>
+</html>

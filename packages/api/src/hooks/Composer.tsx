@@ -36,6 +36,7 @@ import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgemen
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
+import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -611,7 +612,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <ActivitySendStatusComposer>
-        {typeof children === 'function' ? children(context) : children}
+        <ActivitySendStatusTelemetryComposer>
+          {typeof children === 'function' ? children(context) : children}
+        </ActivitySendStatusTelemetryComposer>
       </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+
+        const directLine = testHelpers.createDirectLineEmulator(store);
+
+        const telemetryEventTracking = [];
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            onTelemetry: (event) => {
+              telemetryEventTracking.push(event);
+            },
+            styleOptions: {
+              sendTimeout: 5000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('sending to sent');
+        await sendMessage1stAttempt.echoBack();
+        sendMessage1stAttempt.resolvePostActivity();
+
+        await pageConditions.became(
+          'failed to send message',
+          () => {
+            return pageElements.activityStatuses()[0]?.innerText.indexOf('Just now') !== -1
+          },
+          1000
+        );
+
+        console.log("debugging activity status: ", pageElements.activityStatuses());
+
+        const expectedEventName = "send-status:change";
+        let lastRecord = telemetryEventTracking.pop();
+        expect(lastRecord.data).toEqual({
+          currentStatus: "sent",
+          previousStatus: "sending",
+          clientActivityID: expect.any(String),
+          type: "message"
+        });
+        expect(lastRecord.name).toEqual(expectedEventName);
+      },
+      { ignoreErrors: true });
+    </script>
+  </body>
+</html>
