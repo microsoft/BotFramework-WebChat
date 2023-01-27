@@ -612,9 +612,8 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <ActivitySendStatusComposer>
-        <ActivitySendStatusTelemetryComposer>
-          {typeof children === 'function' ? children(context) : children}
-        </ActivitySendStatusTelemetryComposer>
+        {typeof children === 'function' ? children(context) : children}
+        <ActivitySendStatusTelemetryComposer />
       </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>

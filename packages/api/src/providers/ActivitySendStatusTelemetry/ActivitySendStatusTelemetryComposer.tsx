@@ -1,10 +1,8 @@
-// import React, { FC, PropsWithChildren, ReactNode } from 'react';
-
 import { useGetActivityByKey, useSendStatusByActivityKey, useTrackEvent } from '../../hooks';
 
 import usePrevious from '../../hooks/internal/usePrevious';
 
-const ActivitySendStatusTelemetryComposer: React.FC<{ children?: any }> = ({ children }) => {
+const ActivitySendStatusTelemetryComposer = () => {
   const [activityToSendStatusMap] = useSendStatusByActivityKey();
   const previousActivityToSendStatusMap = usePrevious(activityToSendStatusMap);
   const getActivityByKey = useGetActivityByKey();
@@ -23,13 +21,14 @@ const ActivitySendStatusTelemetryComposer: React.FC<{ children?: any }> = ({ chi
           currentStatus: currentStatus.toString(),
           previousStatus: previousStatus.toString(),
           clientActivityID: activity?.channelData?.clientActivityID,
-          type: activity?.type?.toString()
+          type: activity?.type?.toString(),
+          key
         };
         trackEvent && trackEvent('send-status:change', telemetryPayload);
       }
     }
   }
-  return children;
+  return null;
 };
 
 export default ActivitySendStatusTelemetryComposer;
