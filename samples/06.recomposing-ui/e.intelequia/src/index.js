@@ -48,8 +48,8 @@ import * as serviceWorker from './serviceWorker';
 //         imageUrl: ''
 //     },
 //     brandMessage: 'Powered by Hotelequia',
-//     directlineTokenUrl: 'https://acbc-2-137-120-97.eu.ngrok.io/api/directline/generateToken/',
-//     directlineReconnectTokenUrl: 'https://acbc-2-137-120-97.eu.ngrok.io/api/directline/reconnect/',
+//     directlineTokenUrl: 'https://71f0-83-59-147-188.eu.ngrok.io/api/directline/generateToken/',
+//     directlineReconnectTokenUrl: 'https://71f0-83-59-147-188.eu.ngrok.io/api/directline/reconnect/',
 //     // speechTokenUrl: '', //botframework-webchat: "authorizationToken", "region", and "subscriptionKey" are deprecated and will be removed on or after 2020-12-17. Please use "credentials" instead.
 //     chatIconMessage: 'hola',
 //     language: 'en',
@@ -57,6 +57,7 @@ import * as serviceWorker from './serviceWorker';
 //     onUserMessage,
 //     onMaximizeMinimize,
 //     reactivateChat: true,
+//     proactiveTimeOut: 50000
 // }
 
 // ReactDOM.render(<App parameters={parameters} />, document.getElementById('root'));

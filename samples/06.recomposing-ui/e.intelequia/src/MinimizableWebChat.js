@@ -13,14 +13,21 @@ function useForceUpdate() {
   const [value, setValue] = useState(0); // integer state
   return () => setValue(value => ++value); // update the state to force render
 }
+let interval;
+let inTimeout;
 
 const MinimizableWebChat = (parameters) => {
   const options = parameters.parameters.parameters;
+  if(options.reactivateChat && options.proactiveTimeOut == undefined){
+    options.proactiveTimeOut = 50000;
+  }
   
   const store = useMemo(
     () =>
       createStore({}, ({ dispatch }) => next => action => {
         if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+          inTimeout = false;
+
           dispatch({
             type: 'WEB_CHAT/SEND_EVENT',
             payload: {
@@ -33,8 +40,27 @@ const MinimizableWebChat = (parameters) => {
         } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
           if (action.payload.activity.from.role === 'bot') {
             setNewMessage(true);
-          }
+            if(options.reactivateChat){ 
+              if(inTimeout == false){
+                clearInterval(interval);
+
+                interval = setTimeout(() => {
+                  dispatch({
+                    type: 'WEB_CHAT/SEND_EVENT',
+                    payload: {
+                      name: 'inactive'
+                    }
+                  });
+                }, options.proactiveTimeOut)
+                inTimeout = true;
+              }
+              
+              
+            }
+          } 
+          
           if (action.payload.activity.type === 'event') {
+            clearInterval(interval);
             switch (action.payload.activity.name) {
               case 'Minimize':
                 setMinimized(true);
@@ -45,6 +71,8 @@ const MinimizableWebChat = (parameters) => {
           }
         } else if(action.type === 'WEB_CHAT/SEND_MESSAGE'){
           //Message from user
+          inTimeout = false;
+          clearTimeout(interval);
           switch(action.payload.method){
             case 'keyboard':
               if(options.onUserMessage){
@@ -59,6 +87,7 @@ const MinimizableWebChat = (parameters) => {
               break;
           }
         }
+        
 
         return next(action);
       }),
