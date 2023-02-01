@@ -53,9 +53,10 @@ When the following hooks are called, one or more event measurements will be emit
 
 ### Other events
 
-| Name   | Description                                |
-| ------ | ------------------------------------------ |
-| `init` | Emit when telemetry system has initialized |
+| Name                 | Description                                                                                                                                                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`               | Emit when telemetry system has initialized                                                                                                                                                                             |
+| `send-status:change` | Emit when activity status changes from `sending` to `sent`, `sending` to `send failed` and `send failed` to `sent`. Including `currentStatus`, `previousStatus`, `clientActivityID`, `key`, `hasAttachment` and `type` |
 
 ### Exceptions
 
