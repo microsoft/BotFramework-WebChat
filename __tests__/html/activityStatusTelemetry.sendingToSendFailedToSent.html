@@ -74,23 +74,27 @@
         // // THEN: `channelData.state` should be "sent".
         await activityChannelDataStateBecame('sent');
 
-        const expectedEventName = "send-status:change";
+        const expectedEventName = 'send-status:change';
         let lastRecord = telemetryEventTracking.pop();
         expect(lastRecord.data).toEqual({
-          previousStatus: "send failed",
-          currentStatus: "sent",
+          previousStatus: 'send failed',
+          currentStatus: 'sent',
           clientActivityID: expect.any(String),
-          type: "message"
+          type: 'message',
+          key: expect.any(String),
+          hasAttachment: 'false'
         });
 
         expect(lastRecord.name).toEqual(expectedEventName);
         
         lastRecord = telemetryEventTracking.pop();
         expect(lastRecord.data).toEqual({
-          currentStatus: "send failed",
-          previousStatus: "sending",
+          currentStatus: 'send failed',
+          previousStatus: 'sending',
           clientActivityID: expect.any(String),
-          type: "message"
+          type: 'message',
+          key: expect.any(String),
+          hasAttachment: 'false'
         });
         expect(lastRecord.name).toEqual(expectedEventName);
       });

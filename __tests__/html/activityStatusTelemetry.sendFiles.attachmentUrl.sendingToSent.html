@@ -10,6 +10,27 @@
     <div id="webchat"></div>
     <script>
       run(async function () {
+        const testAttachmentActivity = {
+          type: 'message',
+          id: 'CONVERSATION_ID-o|00000',
+          timestamp: '2000-01-23T12:34:56.12345Z',
+          channelId: 'directline',
+          from: {
+            id: 'webchat-mockbot',
+            name: 'webchat-mockbot'
+          },
+          conversation: {
+            id: 'CONVERSATION_ID-o'
+          },
+          locale: 'en-US',
+          attachments: [
+            {
+              contentUrl: 'https://bing.com/',
+              contentType: 'text/plain',
+              name: 'test.txt'
+            }
+          ]
+        }
         const store = testHelpers.createStore();
 
         const directLine = testHelpers.createDirectLineEmulator(store);
@@ -31,7 +52,7 @@
 
         await pageConditions.uiConnected();
 
-        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('sending to sent');
+        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity(testAttachmentActivity);
         await sendMessage1stAttempt.echoBack();
         sendMessage1stAttempt.resolvePostActivity();
 
@@ -43,7 +64,7 @@
           1000
         );
 
-        const expectedEventName = "send-status:change";
+        const expectedEventName = 'send-status:change';
         let lastRecord = telemetryEventTracking.pop();
         expect(lastRecord.data).toEqual({
           currentStatus: "sent",
@@ -51,7 +72,7 @@
           clientActivityID: expect.any(String),
           type: "message",
           key: expect.any(String),
-          hasAttachment: "false"
+          hasAttachment: "true"
         });
         expect(lastRecord.name).toEqual(expectedEventName);
       },

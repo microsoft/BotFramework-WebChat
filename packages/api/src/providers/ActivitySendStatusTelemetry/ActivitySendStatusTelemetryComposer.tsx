@@ -22,7 +22,8 @@ const ActivitySendStatusTelemetryComposer = () => {
           previousStatus: previousStatus.toString(),
           clientActivityID: activity?.channelData?.clientActivityID,
           type: activity?.type?.toString(),
-          key
+          key,
+          hasAttachment: activity.type === 'message' && activity.attachments?.length > 0 ? 'true' : 'false'
         };
         trackEvent && trackEvent('send-status:change', telemetryPayload);
       }

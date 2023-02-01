@@ -31,10 +31,10 @@
 
         await pageConditions.uiConnected();
 
-        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('Egress message 1');
+        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('Egress message 1, sending to send failed');
         sendMessage1stAttempt.rejectPostActivity(new Error('artificial error for egress message 1'));
 
-        const sendMessage2ndAttempt = await directLine.emulateOutgoingActivity('Egress message 2');
+        const sendMessage2ndAttempt = await directLine.emulateOutgoingActivity('Egress message 2,  sending to send failed');
         sendMessage2ndAttempt.rejectPostActivity(new Error('artificial error for egress message 2'));
 
         await pageConditions.became(
@@ -46,22 +46,26 @@
           1000
         );
 
-        const expectedEventName = "send-status:change";
+        const expectedEventName = 'send-status:change';
         let lastRecord = telemetryEventTracking.pop();
         expect(lastRecord.data).toEqual({
-          currentStatus: "send failed",
-          previousStatus: "sending",
+          currentStatus: 'send failed',
+          previousStatus: 'sending',
           clientActivityID: expect.any(String),
-          type: "message"
+          type: 'message',
+          key: expect.any(String),
+          hasAttachment: 'false'
         });
         expect(lastRecord.name).toEqual(expectedEventName);
         
         lastRecord = telemetryEventTracking.pop();
         expect(lastRecord.data).toEqual({
-          currentStatus: "send failed",
-          previousStatus: "sending",
+          currentStatus: 'send failed',
+          previousStatus: 'sending',
           clientActivityID: expect.any(String),
-          type: "message"
+          type: 'message',
+          key: expect.any(String),
+          hasAttachment: 'false'
         });
         expect(lastRecord.name).toEqual(expectedEventName);
       },
