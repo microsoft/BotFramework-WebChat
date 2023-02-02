@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Adó",
   "RECEIPT_CARD_TOTAL": "Összesen",
   "RECEIPT_CARD_VAT": "ÁFA",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nem lehet üres üzenetet küldeni.",
   "SPEECH_INPUT_LISTENING": "Hallgatás...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon kikapcsolva",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon bekapcsolva",

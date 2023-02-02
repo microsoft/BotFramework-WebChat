@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Vero",
   "RECEIPT_CARD_TOTAL": "Yhteensä",
   "RECEIPT_CARD_VAT": "ALV",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tyhjää viestiä ei voi lähettää.",
   "SPEECH_INPUT_LISTENING": "Kuunnellaan…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofoni pois päältä",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofoni päällä",

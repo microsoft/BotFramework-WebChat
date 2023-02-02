@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "ภาษี",
   "RECEIPT_CARD_TOTAL": "ยอดรวม",
   "RECEIPT_CARD_VAT": "ภาษีมูลค่าเพิ่ม",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "ไม่สามารถส่งข้อความที่ว่างเปล่า",
   "SPEECH_INPUT_LISTENING": "กำลังฟัง...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "ปิดไมโครโฟน",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "เปิดไมโครโฟน",

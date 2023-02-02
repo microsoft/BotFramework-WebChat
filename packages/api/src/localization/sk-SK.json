@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Daň",
   "RECEIPT_CARD_TOTAL": "Celkový počet",
   "RECEIPT_CARD_VAT": "DPH",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Prázdnu správu nemožno odoslať.",
   "SPEECH_INPUT_LISTENING": "Počúvanie...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Vypnúť mikrofón",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Zapnúť mikrofón",

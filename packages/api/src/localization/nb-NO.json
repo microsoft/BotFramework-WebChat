@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Avgift",
   "RECEIPT_CARD_TOTAL": "Totalt",
   "RECEIPT_CARD_VAT": "Merverdiavgift",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Kan ikke sende tom melding.",
   "SPEECH_INPUT_LISTENING": "Lytter ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon av",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon på",

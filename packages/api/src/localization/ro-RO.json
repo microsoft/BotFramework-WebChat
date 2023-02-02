@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Impozit",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "TVA",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nu se poate trimite un mesaj gol.",
   "SPEECH_INPUT_LISTENING": "Se ascultă…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microfon dezactivat",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Microfon activat",

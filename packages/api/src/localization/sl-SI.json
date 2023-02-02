@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Davek",
   "RECEIPT_CARD_TOTAL": "Skupaj",
   "RECEIPT_CARD_VAT": "DDV",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Praznega sporočila ni mogoče poslati.",
   "SPEECH_INPUT_LISTENING": "Poslušanje …",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon je izklopljen",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon je vklopljen",

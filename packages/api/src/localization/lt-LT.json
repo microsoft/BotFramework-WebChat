@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Mokestis",
   "RECEIPT_CARD_TOTAL": "Iš viso",
   "RECEIPT_CARD_VAT": "PVM",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Negali siųsti tuščio pranešimo.",
   "SPEECH_INPUT_LISTENING": "Klausomasi…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofonas išjungtas",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofonas įjungtas",

@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "الضريبة",
   "RECEIPT_CARD_TOTAL": "الإجمالي‬",
   "RECEIPT_CARD_VAT": "ضريبة القيمة المضافة",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "لا يمكن إرسال رسالة فارغة.",
   "SPEECH_INPUT_LISTENING": "جارٍ الاستماع…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "الميكروفون متوقف عن التشغيل",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "الميكروفون قيد التشغيل",

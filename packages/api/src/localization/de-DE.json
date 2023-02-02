@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Steuer",
   "RECEIPT_CARD_TOTAL": "Gesamt",
   "RECEIPT_CARD_VAT": "Umsatzsteuer",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Eine leere Nachricht kann nicht gesendet werden.",
   "SPEECH_INPUT_LISTENING": "Zuhören ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon aus",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon an",

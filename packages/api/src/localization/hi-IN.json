@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "कर",
   "RECEIPT_CARD_TOTAL": "योग",
   "RECEIPT_CARD_VAT": "VAT",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "रिक्त संदेश भेज नहीं सकते.",
   "SPEECH_INPUT_LISTENING": "सुन रहा है...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "माइक्रोफ़ोन बंद करें",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "माइक्रोफ़ोन चालू करें",
