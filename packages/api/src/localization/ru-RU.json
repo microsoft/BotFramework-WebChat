@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Налог",
   "RECEIPT_CARD_TOTAL": "Итого",
   "RECEIPT_CARD_VAT": "НДС",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Невозможно отправить пустое сообщение.",
   "SPEECH_INPUT_LISTENING": "Слушаю…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофон выкл.",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Микрофон вкл.",

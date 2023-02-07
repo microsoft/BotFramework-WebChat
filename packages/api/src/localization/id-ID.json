@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Pajak",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "PPN",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tidak dapat mengirim pesan kosong.",
   "SPEECH_INPUT_LISTENING": "Mendengarkan…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon tidak aktif",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon aktif",

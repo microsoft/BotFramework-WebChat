@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Nodoklis",
   "RECEIPT_CARD_TOTAL": "Kopā",
   "RECEIPT_CARD_VAT": "PVN",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nevar nosūtīt tukšu ziņojumu.",
   "SPEECH_INPUT_LISTENING": "Notiek klausīšanās…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Izslēgt mikrofonu",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Ieslēgt mikrofonu",

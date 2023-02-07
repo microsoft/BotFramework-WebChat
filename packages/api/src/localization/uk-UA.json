@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Податок",
   "RECEIPT_CARD_TOTAL": "Усього",
   "RECEIPT_CARD_VAT": "ПДВ",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Не можна надсилати пусті повідомлення.",
   "SPEECH_INPUT_LISTENING": "Слухання…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Мікрофон вимкнуто",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Мікрофон увімкнуто",

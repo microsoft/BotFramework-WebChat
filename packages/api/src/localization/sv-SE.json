@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Skatt",
   "RECEIPT_CARD_TOTAL": "Summa",
   "RECEIPT_CARD_VAT": "Moms",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Det går inte att skicka ett tomt meddelande.",
   "SPEECH_INPUT_LISTENING": "Lyssnar ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon av",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon på",

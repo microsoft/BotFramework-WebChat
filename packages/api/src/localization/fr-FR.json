@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Taxe",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "TVA",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Impossible d’envoyer un message vide.",
   "SPEECH_INPUT_LISTENING": "Écoute en cours...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microphone désactivé",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Microphone activé",

@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Данък",
   "RECEIPT_CARD_TOTAL": "Обща сума",
   "RECEIPT_CARD_VAT": "ДДС",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Не може да се изпрати празно съобщение.",
   "SPEECH_INPUT_LISTENING": "Слушане...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофонът е изключен",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Микрофонът е включен",

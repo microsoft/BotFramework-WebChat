@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Maks",
   "RECEIPT_CARD_TOTAL": "Kokku",
   "RECEIPT_CARD_VAT": "KM",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tühja sõnumit ei saa saata.",
   "SPEECH_INPUT_LISTENING": "Kuulamine…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon väljas",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon sees",

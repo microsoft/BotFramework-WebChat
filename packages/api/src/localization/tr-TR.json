@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Vergi",
   "RECEIPT_CARD_TOTAL": "Toplam",
   "RECEIPT_CARD_VAT": "KDV",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Boş ileti gönderilemez.",
   "SPEECH_INPUT_LISTENING": "Dinliyor…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon kapalı",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Mikrofon açık",

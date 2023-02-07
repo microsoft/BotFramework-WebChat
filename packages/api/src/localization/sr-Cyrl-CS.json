@@ -65,6 +65,7 @@
   "RECEIPT_CARD_TAX": "Порез",
   "RECEIPT_CARD_TOTAL": "Укупно",
   "RECEIPT_CARD_VAT": "ПДВ",
+  "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Није могуће послати празну поруку.",
   "SPEECH_INPUT_LISTENING": "Слушамо...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофон је искључен",
   "SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT": "Микрофон је укључен",
