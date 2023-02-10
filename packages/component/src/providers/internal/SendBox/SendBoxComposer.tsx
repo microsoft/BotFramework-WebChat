@@ -61,7 +61,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const submitErrorMessageId = useUniqueId('webchat__send-box__error-message-id');
   const timeoutRef = useRef<readonly [Timeout, Timeout] | undefined>(undefined);
 
-  const canSubmitSendBox = connectivityStatus === 'connected' && !!sendBoxValue;
   const errorMessageStringMap = useMemo<ErrorMessageStringMap>(
     () =>
       Object.freeze(
@@ -83,28 +82,32 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
 
   setErrorRef.current = setError;
 
-  const canSubmitSendBoxRef = useRefFrom(canSubmitSendBox);
+  const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
+    connectivityStatus !== 'connected' ? 'offline' : !sendBoxValue ? 'empty' : undefined
+  );
 
   const submit = useCallback<ContextType['submit']>(
     ({ setFocus } = {}) => {
       (setFocus === 'sendBox' || setFocus === 'sendBoxWithoutKeyboard') &&
         focusRef.current?.(setFocus === 'sendBox' ? 'sendBox' : 'sendBoxWithoutKeyboard');
 
-      if (canSubmitSendBoxRef.current) {
-        scrollToEndRef.current?.();
-        apiSubmitSendBox();
-      } else {
+      const { current: submitError } = submitErrorRef;
+
+      if (submitError) {
         timeoutRef.current && timeoutRef.current.forEach(clearTimeout);
 
         setErrorRef.current?.(false);
 
         timeoutRef.current = Object.freeze([
-          setTimeout(() => setErrorRef.current?.('empty'), TIME_TO_RESET_ERROR_MESSAGE),
+          setTimeout(() => setErrorRef.current?.(submitError), TIME_TO_RESET_ERROR_MESSAGE),
           setTimeout(() => setErrorRef.current?.(false), TIME_TO_QUEUE_ERROR_MESSAGE)
         ]) as readonly [Timeout, Timeout];
+      } else {
+        scrollToEndRef.current?.();
+        apiSubmitSendBox();
       }
     },
-    [apiSubmitSendBox, canSubmitSendBoxRef, focusRef, scrollToEndRef, setErrorRef, timeoutRef]
+    [apiSubmitSendBox, focusRef, scrollToEndRef, setErrorRef, submitErrorRef, timeoutRef]
   );
 
   useEffect(

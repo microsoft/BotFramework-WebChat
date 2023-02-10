@@ -14,7 +14,7 @@
 
         const store = testHelpers.createStore();
 
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const directLine = testHelpers.createDirectLineEmulator(store, { autoConnect: false });
 
         WebChat.renderWebChat(
           {
@@ -26,13 +26,13 @@
 
         await pageConditions.webChatRendered();
 
-        clock.tick(600);
-
-        await pageConditions.uiConnected();
+        // GIVEN: Connection is still establishing.
+        expect(pageElements.connectivityStatus().innerText).toBe('Connecting…');
 
         const [errorMessage] = document.getElementsByClassName('webchat__submit-error-message');
 
-        // GIVEN: The send box is empty.
+        // GIVEN: "Hello, World!" is in the send box.
+        await pageObjects.typeInSendBox('Hello, World!');
 
         // WHEN: Send button is clicked.
         await pageObjects.clickSendButton();
@@ -40,23 +40,9 @@
         // THEN: The alert message should be empty.
         expect(errorMessage.innerText).toBe('');
 
-        // THEN: After 50 ms, the alert message should read "Cannot send empty message."
+        // THEN: After 50 ms, the alert message should read "Unable to connect."
         clock.tick(50);
-        expect(errorMessage.innerText).toBe('Cannot send empty message.');
-
-        // THEN: After 500 ms, the alert message should be empty.
-        clock.tick(500);
-        expect(errorMessage.innerText).toBe('');
-
-        // WHEN: Send button is clicked again.
-        await pageObjects.clickSendButton();
-
-        // THEN: The alert message should be empty.
-        expect(errorMessage.innerText).toBe('');
-
-        // THEN: After 50 ms, the alert message should read "Cannot send empty message."
-        clock.tick(50);
-        expect(errorMessage.innerText).toBe('Cannot send empty message.');
+        expect(errorMessage.innerText).toBe('Unable to connect.');
 
         // THEN: After 500 ms, the alert message should be empty.
         clock.tick(500);

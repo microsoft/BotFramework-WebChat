@@ -16,6 +16,7 @@
 
         const directLine = testHelpers.createDirectLineEmulator(store);
 
+        // GIVEN: With a single line text box.
         WebChat.renderWebChat(
           {
             directLine,
@@ -32,17 +33,19 @@
 
         const [errorMessage] = document.getElementsByClassName('webchat__submit-error-message');
 
+        // GIVEN: The send box is empty.
         await host.click(pageElements.sendBoxTextBox());
         await host.sendKeys('ENTER');
 
+        // THEN: The alert message should be empty.
         expect(errorMessage.innerText).toBe('');
 
+        // THEN: After 50 ms, the alert message should read "Cannot send empty message."
         clock.tick(50);
-
         expect(errorMessage.innerText).toBe('Cannot send empty message.');
 
+        // THEN: After 500 ms, the alert message should be empty.
         clock.tick(500);
-
         expect(errorMessage.innerText).toBe('');
       });
     </script>

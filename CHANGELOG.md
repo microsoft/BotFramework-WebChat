@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4566](https://github.com/microsoft/BotFramework-WebChat/issues/4566). For YouTube and Vimeo `<iframe>`, add `sandbox="allow-same-origin allow-scripts"`, by [@compulim](https://github.com/compulim) in PR [#4567](https://github.com/microsoft/BotFramework-WebChat/pull/4567)
 -  Fixes [#4561](https://github.com/microsoft/BotFramework-WebChat/issues/4561). Header title of keyboard help dialog should be the `aria-labelledby` of the dialog and close button should be the first element of the header, by [@compulim](https://github.com/compulim) in PR [#4609](https://github.com/microsoft/BotFramework-WebChat/pull/4609)
 -  Fixes [#4559](https://github.com/microsoft/BotFramework-WebChat/issues/4559). Keyboard help screen should be scrollable and its close button should appear correctly in light-themed high contrast mode, by [@compulim](https://github.com/compulim) in PR [#4619](https://github.com/microsoft/BotFramework-WebChat/pull/4619)
+-  Fixes [#4623](https://github.com/microsoft/BotFramework-WebChat/issues/4623). Screen reader should read error when failed to send an empty message or offline, by [@compulim](https://github.com/compulim) in PR [#4637](https://github.com/microsoft/BotFramework-WebChat/pull/4637)
 
 ### Changed
 
