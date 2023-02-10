@@ -13,6 +13,7 @@ import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 import useStyleSet from '../hooks/useStyleSet';
 
 type AutoResizeTextAreaProps = {
+  'aria-errormessage'?: string;
   'aria-label'?: string;
   className?: string;
   'data-id'?: string;
@@ -35,6 +36,7 @@ type AutoResizeTextAreaProps = {
 const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaProps>(
   (
     {
+      'aria-errormessage': ariaErrorMessage,
       'aria-label': ariaLabel,
       className,
       'data-id': dataId,
@@ -66,6 +68,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
           {value}&nbsp;
         </div>
         <AccessibleTextArea
+          aria-errormessage={ariaErrorMessage}
           aria-label={ariaLabel}
           className={classNames('webchat__auto-resize-textarea__textarea', textAreaClassName)}
           data-id={dataId}
@@ -89,6 +92,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
 );
 
 AutoResizeTextArea.defaultProps = {
+  'aria-errormessage': undefined,
   'aria-label': undefined,
   'data-id': undefined,
   className: undefined,
@@ -109,6 +113,7 @@ AutoResizeTextArea.defaultProps = {
 };
 
 AutoResizeTextArea.propTypes = {
+  'aria-errormessage': PropTypes.string,
   'aria-label': PropTypes.string,
   className: PropTypes.string,
   'data-id': PropTypes.string,

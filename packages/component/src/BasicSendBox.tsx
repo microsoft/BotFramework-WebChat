@@ -3,17 +3,20 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
+import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
+import useErrorMessageId from './providers/internal/SendBox/useErrorMessageId';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -50,11 +53,12 @@ type BasicSendBoxProps = {
   className?: string;
 };
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+const BasicSendBoxCore: FC<BasicSendBoxProps> = ({ className }) => {
   const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
+  const [errorMessageId] = useErrorMessageId();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
   const styleToEmotionObject = useStyleToEmotionObject();
 
@@ -70,6 +74,8 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
 
   return (
     <div
+      aria-errormessage={errorMessageId}
+      aria-invalid={!!errorMessageId}
       className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}
       dir={direction}
       role="form"
@@ -92,13 +98,22 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
   );
 };
 
-BasicSendBox.defaultProps = {
+BasicSendBoxCore.defaultProps = {
   className: ''
 };
 
-BasicSendBox.propTypes = {
+BasicSendBoxCore.propTypes = {
   className: PropTypes.string
 };
+
+const BasicSendBox: FC<BasicSendBoxProps> = (props: BasicSendBoxProps) => (
+  <SendBoxComposer>
+    <BasicSendBoxCore {...props} />
+  </SendBoxComposer>
+);
+
+BasicSendBox.defaultProps = BasicSendBoxCore.defaultProps;
+BasicSendBox.propTypes = BasicSendBoxCore.propTypes;
 
 export default BasicSendBox;
 

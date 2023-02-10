@@ -31,6 +31,7 @@ import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 type AccessibleInputTextProps = {
+  'aria-errormessage'?: string;
   className?: string;
   disabled?: boolean;
   enterKeyHint?: string;
@@ -51,6 +52,7 @@ type AccessibleInputTextProps = {
 const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProps>(
   (
     {
+      'aria-errormessage': ariaErrorMessage,
       className,
       disabled,
       enterKeyHint,
@@ -77,6 +79,7 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
     return (
       <input
         aria-disabled={disabled || undefined}
+        aria-errormessage={ariaErrorMessage}
         className={className}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
@@ -97,6 +100,7 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
 );
 
 AccessibleInputText.defaultProps = {
+  'aria-errormessage': undefined,
   className: undefined,
   disabled: undefined,
   enterKeyHint: undefined,
@@ -116,6 +120,7 @@ AccessibleInputText.defaultProps = {
 AccessibleInputText.displayName = 'AccessibleInputText';
 
 AccessibleInputText.propTypes = {
+  'aria-errormessage': PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
   enterKeyHint: PropTypes.string,
