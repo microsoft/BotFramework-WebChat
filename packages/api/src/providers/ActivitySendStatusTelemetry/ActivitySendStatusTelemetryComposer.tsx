@@ -2,33 +2,48 @@ import { useGetActivityByKey, useSendStatusByActivityKey, useTrackEvent } from '
 
 import usePrevious from '../../hooks/internal/usePrevious';
 
+type TelemetrySendStatusChangePayload = {
+  clientActivityID?: string;
+  hasAttachment?: 'true' | 'false';
+  key: string;
+  prevStatus?: 'sending' | 'send failed' | 'sent';
+  status: 'sending' | 'send failed' | 'sent';
+  type?: string;
+};
+
 const ActivitySendStatusTelemetryComposer = () => {
   const [activityToSendStatusMap] = useSendStatusByActivityKey();
-  const previousActivityToSendStatusMap = usePrevious(activityToSendStatusMap);
+  const prevActivityToSendStatusMap = usePrevious(activityToSendStatusMap);
   const getActivityByKey = useGetActivityByKey();
   const trackEvent = useTrackEvent();
 
-  if (activityToSendStatusMap && previousActivityToSendStatusMap) {
-    const allActivityKeys = activityToSendStatusMap.keys();
+  if (prevActivityToSendStatusMap) {
+    for (const key of activityToSendStatusMap.keys()) {
+      const status = activityToSendStatusMap.get(key);
+      const prevStatus = prevActivityToSendStatusMap.get(key);
 
-    for (const key of allActivityKeys) {
-      const currentStatus = activityToSendStatusMap.get(key);
-      const previousStatus = previousActivityToSendStatusMap.get(key);
-
-      if (!!currentStatus && !!previousStatus && currentStatus !== previousStatus) {
+      // `status` is falsy if it is not an outgoing activity.
+      // `prevStatus` is undefined or a valid status, if it is undefined, it is newly added
+      // This telemetry data point only emit changes in outgoing activities.
+      if (status && status !== prevStatus) {
         const activity = getActivityByKey(key);
-        const telemetryPayload = {
-          currentStatus: currentStatus.toString(),
-          previousStatus: previousStatus.toString(),
+        const telemetryPayload: TelemetrySendStatusChangePayload = {
           clientActivityID: activity?.channelData?.clientActivityID,
-          type: activity?.type?.toString(),
+          hasAttachment: activity?.type === 'message' && activity?.attachments?.length > 0 ? 'true' : 'false',
           key,
-          hasAttachment: activity?.type === 'message' && activity?.attachments?.length > 0 ? 'true' : 'false'
+          status,
+          type: activity?.type?.toString()
         };
-        trackEvent && trackEvent('send-status:change', telemetryPayload);
+
+        //only add prevStatus if it is NOT null/undefined
+        if (prevStatus) {
+          telemetryPayload.prevStatus = prevStatus;
+        }
+        trackEvent('send-status:change', telemetryPayload);
       }
     }
   }
+
   return null;
 };
 

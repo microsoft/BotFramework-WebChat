@@ -19,10 +19,6 @@
             {
               directLine,
               store,
-              styleOptions: {
-                groupTimestamp: 60000,
-                sendTimeout: 5000
-              },
               onTelemetry: (event) => {
                 if (event?.name === 'send-status:change') {
                   telemetryEventTracking.push(event);
@@ -34,17 +30,15 @@
 
           await pageConditions.uiConnected();
 
+          //GIVEN: Simulate an ingress activity
           await directLine.emulateIncomingActivity('Aloha!');
 
-          await pageConditions.became(
-            'send message successfully',
-            () => pageElements.activityStatuses()[0]?.innerText.indexOf('Just now') !== -1,
-            1000
-          );
+          //WHEN: The activity rendered
+          await pageConditions.numActivitiesShown(1);
 
+          //THEN: No status change event should be logged
           expect(telemetryEventTracking.length).toEqual(0);
-        },
-        { ignoreErrors: true }
+        }
       );
     </script>
   </body>

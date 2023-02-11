@@ -20,10 +20,9 @@
             directLine,
             store,
             onTelemetry: (event) => {
-              telemetryEventTracking.push(event);
-            },
-            styleOptions: {
-              sendTimeout: 5000
+              if (event.name == 'send-status:change') {
+                telemetryEventTracking.push(event.data);
+              }
             }
           },
           document.getElementById('webchat')
@@ -31,12 +30,14 @@
 
         await pageConditions.uiConnected();
 
+        //GIVEN: Send out 2 outgoing messages and reject afterwards
         const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('Egress message 1, sending to send failed');
         sendMessage1stAttempt.rejectPostActivity(new Error('artificial error for egress message 1'));
 
         const sendMessage2ndAttempt = await directLine.emulateOutgoingActivity('Egress message 2,  sending to send failed');
         sendMessage2ndAttempt.rejectPostActivity(new Error('artificial error for egress message 2'));
 
+        //WHEN: The activities become 'Send failed'
         await pageConditions.became(
           'failed to send message',
           () => {
@@ -46,28 +47,39 @@
           1000
         );
 
-        const expectedEventName = 'send-status:change';
-        let lastRecord = telemetryEventTracking.pop();
-        expect(lastRecord.data).toEqual({
-          currentStatus: 'send failed',
-          previousStatus: 'sending',
-          clientActivityID: expect.any(String),
-          type: 'message',
-          key: expect.any(String),
-          hasAttachment: 'false'
-        });
-        expect(lastRecord.name).toEqual(expectedEventName);
-        
-        lastRecord = telemetryEventTracking.pop();
-        expect(lastRecord.data).toEqual({
-          currentStatus: 'send failed',
-          previousStatus: 'sending',
-          clientActivityID: expect.any(String),
-          type: 'message',
-          key: expect.any(String),
-          hasAttachment: 'false'
-        });
-        expect(lastRecord.name).toEqual(expectedEventName);
+        //THEN: 2 'undefined to sending' events and 2 'sending to send failed' events must be emitted
+        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
+        {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            status: 'sending',
+            type: 'message'
+          },
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            status: 'sending',
+            type: 'message'
+          },
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            prevStatus: 'sending',
+            status: 'send failed',
+            type: 'message'
+          },
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            prevStatus: 'sending',
+            status: 'send failed',
+            type: 'message'
+          },
+        ]));
       },
       { ignoreErrors: true });
     </script>

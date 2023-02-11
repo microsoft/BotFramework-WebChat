@@ -9,94 +9,85 @@
   <body>
     <div id="webchat"></div>
     <script>
-      async function createDirectLineForTest() {
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              setTimeout(() => {
-                directLine.activityDeferredObservable.next({
-                  ...activity,
-                  id: 'a00001',
-                  timestamp: new Date().toISOString()
-                });
-              }, 100);
+      const store = testHelpers.createStore();
+      const directLine = testHelpers.createDirectLineEmulator(store);
 
-              return new Observable(observer => {
-                setTimeout(() => observer.next('a00001'), 800);
-              });
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          }
-        });
-
-        return directLine;
-      }
-
-      function activityChannelDataStateBecame(expectedState) {
-        if (typeof expectedState === 'undefined') {
-          return pageConditions.became(
-            `Activity "channelData.state" should be undefined`,
-            () => !('state' in pageObjects.getActivities()[0].channelData),
-            1000
-          );
-        }
-
-        return pageConditions.became(
-          `Activity "channelData.state" should be "${expectedState}"`,
-          () => pageObjects.getActivities()[0].channelData?.state === expectedState,
-          1000
-        );
-      }
+      const telemetryEventTracking = [];
 
       run(async function () {
-        const telemetryEventTracking = [];
+        const clock = lolex.install();
         WebChat.renderWebChat(
           {
-            directLine: await createDirectLineForTest(),
-            store: testHelpers.createStore(),
+            directLine,
+            store,
             onTelemetry: (event) => {
-              telemetryEventTracking.push(event);
+              if (event.name == 'send-status:change') {
+                telemetryEventTracking.push(event.data);
+              }
             },
-            styleOptions: {
-              sendTimeout: 500
-            }
           },
           document.getElementById('webchat')
         );
-
         await pageConditions.webChatRendered();
 
-        // SETUP: Send a message
-        await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+        //GIVEN: User send out a message
+        const sendingUserEgressMessage = directLine.emulateOutgoingActivity({
+          channelData: { 'webchat:sequence-id': 1 },
+          from: { role: 'user' },
+          text: 'msg from user.',
+          type: 'message'
+        })
 
-        // // THEN: `channelData.state` should be "sent".
-        await activityChannelDataStateBecame('sent');
+        //WHEN: Activity displayed in sending status
+        await pageConditions.numActivitiesShown(1);
 
-        const expectedEventName = 'send-status:change';
-        let lastRecord = telemetryEventTracking.pop();
-        expect(lastRecord.data).toEqual({
-          previousStatus: 'send failed',
-          currentStatus: 'sent',
-          clientActivityID: expect.any(String),
-          type: 'message',
-          key: expect.any(String),
-          hasAttachment: 'false'
-        });
+        //THEN: The status change event emitted: undefined -> sending
+        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            status: 'sending',
+            type: 'message'
+          },
+        ]));
 
-        expect(lastRecord.name).toEqual(expectedEventName);
-        
-        lastRecord = telemetryEventTracking.pop();
-        expect(lastRecord.data).toEqual({
-          currentStatus: 'send failed',
-          previousStatus: 'sending',
-          clientActivityID: expect.any(String),
-          type: 'message',
-          key: expect.any(String),
-          hasAttachment: 'false'
-        });
-        expect(lastRecord.name).toEqual(expectedEventName);
+        //GIVEN: Wait for 20 seconds to let the activity times out
+        clock.tick(20000);
+
+        //WHEN: Sending message timeout and message status turns into 'Send failed. Retry'
+        await pageConditions.became(
+            'failed to send message',
+            () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
+            1000
+        );
+
+        //THEN: Telemetry event should be emitted: sending -> send failed
+        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            prevStatus: 'sending',
+            status: 'send failed',
+            type: 'message'
+          }
+        ]));
+
+        //GIVEN: Resolved the egressing message
+        await (await (await sendingUserEgressMessage).resolveAll());
+
+        //THEN: Telemetry event should be emitted: send failed -> sent
+        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            prevStatus: 'send failed',
+            status: 'sent',
+            type: 'message'
+          }
+        ]));
       });
     </script>
   </body>

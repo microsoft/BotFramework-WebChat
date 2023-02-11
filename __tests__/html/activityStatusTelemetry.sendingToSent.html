@@ -13,49 +13,50 @@
         const store = testHelpers.createStore();
 
         const directLine = testHelpers.createDirectLineEmulator(store);
-
         const telemetryEventTracking = [];
+
         WebChat.renderWebChat(
           {
             directLine,
-            store,
             onTelemetry: (event) => {
-              telemetryEventTracking.push(event);
+              if (event?.name === 'send-status:change') {
+                telemetryEventTracking.push(event.data);
+              }
             },
-            styleOptions: {
-              sendTimeout: 5000
-            }
+            store
           },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
 
-        const sendMessage1stAttempt = await directLine.emulateOutgoingActivity('sending to sent');
-        await sendMessage1stAttempt.echoBack();
-        sendMessage1stAttempt.resolvePostActivity();
+        //GIVEN: send an attachment outgoing activity and resolve it afterwards
+        await(
+          await directLine.emulateOutgoingActivity('sending to sent')
+        ).resolveAll();
 
-        await pageConditions.became(
-          'successfully sent message',
-          () => {
-            return pageElements.activityStatuses()[0]?.innerText.indexOf('Just now') !== -1
+        //WHEN: Activity displayed
+        await pageConditions.numActivitiesShown(1);
+
+        //THEN: The status change event emitted: 'undefined -> sending' and 'sending -> sent'
+        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            status: 'sending',
+            type: 'message'
           },
-          1000
-        );
-
-        const expectedEventName = "send-status:change";
-        let lastRecord = telemetryEventTracking.pop();
-        expect(lastRecord.data).toEqual({
-          currentStatus: "sent",
-          previousStatus: "sending",
-          clientActivityID: expect.any(String),
-          type: "message",
-          key: expect.any(String),
-          hasAttachment: "false"
-        });
-        expect(lastRecord.name).toEqual(expectedEventName);
-      },
-      { ignoreErrors: true });
+          {
+            clientActivityID: expect.any(String),
+            hasAttachment: 'false',
+            key: expect.any(String),
+            prevStatus: 'sending',
+            status: 'sent',
+            type: 'message'
+          }
+        ]));
+      });
     </script>
   </body>
 </html>
