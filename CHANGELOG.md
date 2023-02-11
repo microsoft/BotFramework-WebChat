@@ -24,9 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Added function to emit status change telemetry event for activities. PR [#4631](https://github.com/microsoft/BotFramework-WebChat/pull/4631) [@Erli-ms](https://github.com/Erli-ms)
-
-### Added
+-  Added function to emit status change telemetry event for activities, by [@Erli-ms](https://github.com/Erli-ms), in PR [#4631](https://github.com/microsoft/BotFramework-WebChat/pull/4631)
 
 -  Added ability for developers to customize Web Chat by extending the default UI without having to re-implement existing components. [@dawolff-ms](https://github.com/dawolff-ms) in PR [#4539](https://github.com/microsoft/BotFramework-WebChat/pull/4539)
 
