@@ -15,7 +15,7 @@ describe('useTrackException', () => {
           const { data, dimensions, duration, error, fatal, name, type } = event;
 
           name !== 'init' &&
-            (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+            window.WebChatTest.telemetryMeasurements.push({
               data,
               dimensions,
               duration,
@@ -25,6 +25,9 @@ describe('useTrackException', () => {
               type
             });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       }
     });
 

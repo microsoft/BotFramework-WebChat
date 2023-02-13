@@ -10,12 +10,13 @@ jest.setTimeout(20000);
 
 describe('telemetry', () => {
   test('should collect "init" event', async () => {
+
     const { driver } = await setupWebDriver({
       props: {
         onTelemetry: event => {
           const { data, dimensions, duration, error, fatal, name, type, value } = event;
 
-          (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+          window.WebChatTest.telemetryMeasurements.push({
             data,
             dimensions,
             duration,
@@ -26,6 +27,9 @@ describe('telemetry', () => {
             value
           });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       }
     });
 

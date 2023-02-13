@@ -15,7 +15,7 @@ describe('useTrackTiming', () => {
           const { data, dimensions, duration, error, name, type } = event;
 
           name !== 'init' &&
-            (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+            window.WebChatTest.telemetryMeasurements.push({
               data,
               dimensions,
               duration,
@@ -25,10 +25,13 @@ describe('useTrackTiming', () => {
             });
         }
       },
-      setup: () =>
+      setup: () => {
         window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js').then(() => {
           window.WebChatTest.clock = lolex.install();
-        })
+        });
+
+        window.WebChatTest.telemetryMeasurements = [];
+      }
     });
 
     driver = setup.driver;
@@ -43,7 +46,9 @@ describe('useTrackTiming', () => {
       pageObjects.runHook('useTrackTiming', [], trackTiming => trackTiming('ping', () => 123))
     ).resolves.toBe(123);
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -88,7 +93,9 @@ describe('useTrackTiming', () => {
 
     await expect(driver.executeScript(() => window.WebChatTest.result)).resolves.toBe(123);
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,

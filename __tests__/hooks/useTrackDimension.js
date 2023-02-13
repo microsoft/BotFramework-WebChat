@@ -15,7 +15,7 @@ describe('useTrackDimension', () => {
           const { data, dimensions, duration, error, name, type } = event;
 
           name !== 'init' &&
-            (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+            window.WebChatTest.telemetryMeasurements.push({
               data,
               dimensions,
               duration,
@@ -24,6 +24,9 @@ describe('useTrackDimension', () => {
               type
             });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       }
     });
 

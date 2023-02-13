@@ -19,7 +19,7 @@ describe('upload a picture', () => {
         onTelemetry: event => {
           const { data, dimensions, duration, error, fatal, name, type, value } = event;
 
-          (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+          window.WebChatTest.telemetryMeasurements.push({
             data,
             dimensions,
             duration,
@@ -30,6 +30,9 @@ describe('upload a picture', () => {
             value
           });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       },
       // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
