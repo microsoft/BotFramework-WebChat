@@ -15,7 +15,7 @@ describe('useTrackDimension', () => {
           const { data, dimensions, duration, error, name, type } = event;
 
           name !== 'init' &&
-            (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+            window.WebChatTest.telemetryMeasurements.push({
               data,
               dimensions,
               duration,
@@ -24,6 +24,9 @@ describe('useTrackDimension', () => {
               type
             });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       }
     });
 
@@ -37,12 +40,18 @@ describe('useTrackDimension', () => {
     await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello', 'aloha'));
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.length)).resolves.toBe(1);
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping').length)
+    ).resolves.toBe(1);
 
     await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello'));
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping2'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() =>
+        window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping' || name === 'ping2')
+      )
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -81,7 +90,9 @@ describe('useTrackDimension', () => {
     await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension(123, 'hello'));
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -105,7 +116,9 @@ describe('useTrackDimension', () => {
     await pageObjects.runHook('useTrackDimension', [], trackDimension => trackDimension('hello', 123));
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('ping'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,

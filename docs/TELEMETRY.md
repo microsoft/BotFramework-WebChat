@@ -53,9 +53,10 @@ When the following hooks are called, one or more event measurements will be emit
 
 ### Other events
 
-| Name   | Description                                |
-| ------ | ------------------------------------------ |
-| `init` | Emit when telemetry system has initialized |
+| Name                 | Description                                                                                                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`               | Emit when telemetry system has initialized                                                                                                                                                                                            |
+| `send-status:change` | Emit when activity status changes from `undefined` to `sending`, `sending` to `sent`, `sending` to `send failed` and `send failed` to `sent`. Including `status`, `prevStatus`, `clientActivityID`, `key`, `hasAttachment` and `type` |
 
 ### Exceptions
 
@@ -117,6 +118,19 @@ interface TelemetryTimingEndMeasurementEvent extends TelemetryMeasurementEvent {
    timingId: string;
    duration: number;
 }
+```
+
+To collect `send-status:change` events, the data emitted will be in the type below:
+
+```ts
+type TelemetrySendStatusChangePayload = {
+   clientActivityID?: string;
+   hasAttachment?: 'true' | 'false';
+   key: string;
+   prevStatus?: 'sending' | 'send failed' | 'sent';
+   status: 'sending' | 'send failed' | 'sent';
+   type?: string;
+};
 ```
 
 Web Chat may emit a large number of dimensions and measurements to your `onTelemetry` handler. As your telemetry service provider may limit number of dimensions and measurements for a single session or property, you are advised to pick and choose the data you needed before transmitting them to your provider.

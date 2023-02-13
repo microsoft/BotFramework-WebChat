@@ -19,7 +19,7 @@ describe('upload a picture', () => {
         onTelemetry: event => {
           const { data, dimensions, duration, error, fatal, name, type, value } = event;
 
-          (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+          window.WebChatTest.telemetryMeasurements.push({
             data,
             dimensions,
             duration,
@@ -31,6 +31,9 @@ describe('upload a picture', () => {
           });
         }
       },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
+      },
       // TODO: [P3] Offline bot did not reply with a downloadable attachment, so we need to use production bot
       useProductionBot: true
     });
@@ -41,7 +44,11 @@ describe('upload a picture', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
-    const telemetryMeasurements = await driver.executeScript(() => window.WebChatTest.telemetryMeasurements);
+    const telemetryMeasurements = await driver.executeScript(() =>
+      window.WebChatTest.telemetryMeasurements.filter(({ name }) =>
+        ['init', 'sendFiles', 'sendFiles:makeThumbnail'].includes(name)
+      )
+    );
 
     expect(telemetryMeasurements).toHaveProperty('length', 4);
     expect(telemetryMeasurements[2]).toHaveProperty('name', 'sendFiles:makeThumbnail');

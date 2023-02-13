@@ -15,16 +15,19 @@ describe('useTrackException', () => {
           const { data, dimensions, duration, error, fatal, name, type } = event;
 
           name !== 'init' &&
-            (window.WebChatTest.telemetryMeasurements || (window.WebChatTest.telemetryMeasurements = [])).push({
+            window.WebChatTest.telemetryMeasurements.push({
               data,
               dimensions,
               duration,
-              error: error.message,
+              error: error?.message,
               fatal,
               name,
               type
             });
         }
+      },
+      setup: () => {
+        window.WebChatTest.telemetryMeasurements = [];
       }
     });
 
@@ -37,7 +40,8 @@ describe('useTrackException', () => {
   test('should track exception', async () => {
     await pageObjects.runHook('useTrackException', [], trackException => trackException(new Error('artificial error')));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
+      .resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -63,7 +67,8 @@ describe('useTrackException', () => {
       trackException(new Error('non-fatal error'), false)
     );
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
+      .resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
