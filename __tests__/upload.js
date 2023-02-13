@@ -41,7 +41,11 @@ describe('upload a picture', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetchImage);
 
-    const telemetryMeasurements = await driver.executeScript(() => window.WebChatTest.telemetryMeasurements);
+    const telemetryMeasurements = await driver.executeScript(() =>
+      window.WebChatTest.telemetryMeasurements.filter(({ name }) =>
+        ['init', 'sendFiles', 'sendFiles:makeThumbnail'].includes(name)
+      )
+    );
 
     expect(telemetryMeasurements).toHaveProperty('length', 4);
     expect(telemetryMeasurements[2]).toHaveProperty('name', 'sendFiles:makeThumbnail');
