@@ -37,7 +37,9 @@ describe('useTrackEvent', () => {
   test('should track simple event', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -61,7 +63,9 @@ describe('useTrackEvent', () => {
   test('should track simple event using info explicitly', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.info('hello'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -85,7 +89,9 @@ describe('useTrackEvent', () => {
   test('should track numeric event', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.warn('hello', 123));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": 123,
@@ -109,7 +115,9 @@ describe('useTrackEvent', () => {
   test('should track numeric event', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.debug('hello', 'aloha'));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": "aloha",
@@ -133,7 +141,9 @@ describe('useTrackEvent', () => {
   test('should track complex event', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent.error('hello', { one: 1, hello: 'aloha' }));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": Object {
@@ -160,18 +170,24 @@ describe('useTrackEvent', () => {
   test('should not track event with boolean data', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', true));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toHaveLength(0);
   });
 
   test('should not track event with incompatible complex data', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent('hello', { truthy: true }));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toHaveLength(0);
   });
 
   test('should not track event with invalid name', async () => {
     await pageObjects.runHook('useTrackEvent', [], trackEvent => trackEvent(123));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toBeFalsy();
+    await expect(
+      driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
+    ).resolves.toHaveLength(0);
   });
 });

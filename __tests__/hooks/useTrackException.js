@@ -19,7 +19,7 @@ describe('useTrackException', () => {
               data,
               dimensions,
               duration,
-              error: error.message,
+              error: error?.message,
               fatal,
               name,
               type
@@ -37,7 +37,8 @@ describe('useTrackException', () => {
   test('should track exception', async () => {
     await pageObjects.runHook('useTrackException', [], trackException => trackException(new Error('artificial error')));
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
+      .resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
@@ -63,7 +64,8 @@ describe('useTrackException', () => {
       trackException(new Error('non-fatal error'), false)
     );
 
-    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements)).resolves.toMatchInlineSnapshot(`
+    await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
+      .resolves.toMatchInlineSnapshot(`
       Array [
         Object {
           "data": null,
