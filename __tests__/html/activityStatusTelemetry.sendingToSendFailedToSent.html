@@ -20,74 +20,86 @@
           {
             directLine,
             store,
-            onTelemetry: (event) => {
+            onTelemetry: event => {
               if (event.name == 'send-status:change') {
                 telemetryEventTracking.push(event.data);
               }
-            },
+            }
           },
           document.getElementById('webchat')
         );
         await pageConditions.webChatRendered();
 
-        //GIVEN: User send out a message
-        const sendingUserEgressMessage = directLine.emulateOutgoingActivity({
+        // WHEN: User send out a message
+        const sendingUserEgressMessage = await directLine.emulateOutgoingActivity({
           channelData: { 'webchat:sequence-id': 1 },
           from: { role: 'user' },
           text: 'msg from user.',
           type: 'message'
-        })
+        });
 
-        //WHEN: Activity displayed in sending status
         await pageConditions.numActivitiesShown(1);
 
-        //THEN: The status change event emitted: undefined -> sending
-        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
-          {
-            clientActivityID: expect.any(String),
-            hasAttachment: 'false',
-            key: expect.any(String),
-            status: 'sending',
-            type: 'message'
-          },
-        ]));
-
-        //GIVEN: Wait for 20 seconds to let the activity times out
-        clock.tick(20000);
-
-        //WHEN: Sending message timeout and message status turns into 'Send failed. Retry'
-        await pageConditions.became(
-            'failed to send message',
-            () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
-            1000
+        // THEN: A telemetry event should be emitted: undefined -> sending
+        expect(telemetryEventTracking).toEqual(
+          expect.arrayContaining([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              status: 'sending',
+              type: 'message'
+            }
+          ])
         );
 
-        //THEN: Telemetry event should be emitted: sending -> send failed
-        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
-          {
-            clientActivityID: expect.any(String),
-            hasAttachment: 'false',
-            key: expect.any(String),
-            prevStatus: 'sending',
-            status: 'send failed',
-            type: 'message'
-          }
-        ]));
+        // GIVEN: Wait for 20 seconds to let the activity times out.
+        clock.tick(20000);
 
-        //GIVEN: Resolved the egressing message
-        await (await (await sendingUserEgressMessage).resolveAll());
+        // THEN: The message status should turns into "Send failed. Retry."
+        await pageConditions.became(
+          'failed to send message',
+          () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
+          1000
+        );
 
-        //THEN: Telemetry event should be emitted: send failed -> sent
-        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
-          {
-            clientActivityID: expect.any(String),
-            hasAttachment: 'false',
-            key: expect.any(String),
-            prevStatus: 'send failed',
-            status: 'sent',
-            type: 'message'
-          }
-        ]));
+        // THEN: A telemetry event should be emitted: sending -> send failed
+        expect(telemetryEventTracking).toEqual(
+          expect.arrayContaining([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              prevStatus: 'sending',
+              status: 'send failed',
+              type: 'message'
+            }
+          ])
+        );
+
+        // GIVEN: The outgoing message successfully sent.
+        await sendingUserEgressMessage.resolveAll();
+
+        // THEN: The message status should turns into "Just now"
+        await pageConditions.became(
+          'message successfully sent',
+          () => pageElements.activityStatuses()[0]?.innerText.includes('Just now'),
+          1000
+        );
+
+        // THEN: A telemetry event should be emitted: send failed -> sent
+        expect(telemetryEventTracking).toEqual(
+          expect.arrayContaining([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              prevStatus: 'send failed',
+              status: 'sent',
+              type: 'message'
+            }
+          ])
+        );
       });
     </script>
   </body>

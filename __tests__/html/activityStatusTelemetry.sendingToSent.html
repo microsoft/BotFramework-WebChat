@@ -18,7 +18,7 @@
         WebChat.renderWebChat(
           {
             directLine,
-            onTelemetry: (event) => {
+            onTelemetry: event => {
               if (event?.name === 'send-status:change') {
                 telemetryEventTracking.push(event.data);
               }
@@ -30,32 +30,30 @@
 
         await pageConditions.uiConnected();
 
-        //GIVEN: send an attachment outgoing activity and resolve it afterwards
-        await(
-          await directLine.emulateOutgoingActivity('sending to sent')
-        ).resolveAll();
-
-        //WHEN: Activity displayed
+        // WHEN: A message activity "sending to sent" is sent.
+        await (await directLine.emulateOutgoingActivity('sending to sent')).resolveAll();
         await pageConditions.numActivitiesShown(1);
 
-        //THEN: The status change event emitted: 'undefined -> sending' and 'sending -> sent'
-        expect(telemetryEventTracking).toEqual(expect.arrayContaining([
-          {
-            clientActivityID: expect.any(String),
-            hasAttachment: 'false',
-            key: expect.any(String),
-            status: 'sending',
-            type: 'message'
-          },
-          {
-            clientActivityID: expect.any(String),
-            hasAttachment: 'false',
-            key: expect.any(String),
-            prevStatus: 'sending',
-            status: 'sent',
-            type: 'message'
-          }
-        ]));
+        // THEN: Two telemetry events should be emitted: "undefined -> sending" and "sending -> sent"
+        expect(telemetryEventTracking).toEqual(
+          expect.arrayContaining([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              status: 'sending',
+              type: 'message'
+            },
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              prevStatus: 'sending',
+              status: 'sent',
+              type: 'message'
+            }
+          ])
+        );
       });
     </script>
   </body>

@@ -30,13 +30,13 @@
 
           await pageConditions.uiConnected();
 
-          //GIVEN: Simulate an ingress activity
+          // GIVEN: Simulate an ingress activity of "Aloha!".
           await directLine.emulateIncomingActivity('Aloha!');
 
-          //WHEN: The activity rendered
+          // WHEN: The activity is rendered.
           await pageConditions.numActivitiesShown(1);
 
-          //THEN: No status change event should be logged
+          // THEN: No status change event should be logged for incoming activities.
           expect(telemetryEventTracking.length).toEqual(0);
         }
       );
