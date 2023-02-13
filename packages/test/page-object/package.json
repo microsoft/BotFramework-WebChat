@@ -36,7 +36,7 @@
     "base64-arraybuffer": "1.0.2",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.2",
-    "core-js": "3.27.1",
+    "core-js": "3.25.3",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
