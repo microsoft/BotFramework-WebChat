@@ -6,7 +6,6 @@ import React, { FC } from 'react';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
-import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
@@ -53,7 +52,7 @@ type BasicSendBoxProps = {
   className?: string;
 };
 
-const BasicSendBoxCore: FC<BasicSendBoxProps> = ({ className }) => {
+const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
   const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
@@ -98,22 +97,13 @@ const BasicSendBoxCore: FC<BasicSendBoxProps> = ({ className }) => {
   );
 };
 
-BasicSendBoxCore.defaultProps = {
+BasicSendBox.defaultProps = {
   className: ''
 };
 
-BasicSendBoxCore.propTypes = {
+BasicSendBox.propTypes = {
   className: PropTypes.string
 };
-
-const BasicSendBox: FC<BasicSendBoxProps> = (props: BasicSendBoxProps) => (
-  <SendBoxComposer>
-    <BasicSendBoxCore {...props} />
-  </SendBoxComposer>
-);
-
-BasicSendBox.defaultProps = BasicSendBoxCore.defaultProps;
-BasicSendBox.propTypes = BasicSendBoxCore.propTypes;
 
 export default BasicSendBox;
 

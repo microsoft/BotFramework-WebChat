@@ -1,7 +1,7 @@
 import useSendBoxContext from './private/useContext';
 
 type SubmitOptions = {
-  setFocus?: 'sendBox' | 'sendBoxWithoutKeyboard';
+  setFocus?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard';
 };
 
 /**

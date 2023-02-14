@@ -1,5 +1,5 @@
 export type ContextType = {
-  submit: (options?: { setFocus?: 'sendBox' | 'sendBoxWithoutKeyboard' }) => void;
+  submit: (options?: { setFocus?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard' }) => void;
   submitErrorMessageIdState: readonly [string];
 };
 

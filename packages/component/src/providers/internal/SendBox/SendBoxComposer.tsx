@@ -39,8 +39,13 @@ const TIME_TO_RESET_ERROR_MESSAGE = 50;
 
 // This component is marked as internal because it is not fully implemented and is not ready to be consumed publicly.
 // When it is done, it should provide and replace all the functionalities we did in Redux, including but not limited to:
-//       - Speech interims
-//       - Maintain text box value
+
+// - Speech interims
+// - Maintain text box value
+// - Multiple <SendBoxComposer> in a single Web Chat instance
+//    - Web devs should be able to put an individual send box instance into an activity
+//    - The send box instance in the activity, should be separated from the bottommost send box
+//    - The valued typed inside the activity, should be separated from the value typed into the bottommost send box
 
 // In the old days, we use Redux to keep the send box state.
 // However, when web devs put 2 send box on their page, it makes things complex because both send boxes will interact with each other.
@@ -88,8 +93,8 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
 
   const submit = useCallback<ContextType['submit']>(
     ({ setFocus } = {}) => {
-      (setFocus === 'sendBox' || setFocus === 'sendBoxWithoutKeyboard') &&
-        focusRef.current?.(setFocus === 'sendBox' ? 'sendBox' : 'sendBoxWithoutKeyboard');
+      (setFocus === 'main' || setFocus === 'sendBox' || setFocus === 'sendBoxWithoutKeyboard') &&
+        focusRef.current?.(setFocus === 'main' || setFocus === 'sendBox' ? setFocus : 'sendBoxWithoutKeyboard');
 
       const { current: submitError } = submitErrorRef;
 
