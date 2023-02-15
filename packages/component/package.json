@@ -80,7 +80,8 @@
     "react-say": "2.1.0",
     "react-scroll-to-bottom": "4.2.0",
     "redux": "4.2.0",
-    "simple-update-in": "2.2.0"
+    "simple-update-in": "2.2.0",
+    "use-ref-from": "0.0.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

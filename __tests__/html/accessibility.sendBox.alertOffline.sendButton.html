@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const clock = lolex.install();
+
+        const store = testHelpers.createStore();
+
+        const directLine = testHelpers.createDirectLineEmulator(store, { autoConnect: false });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        // GIVEN: Connection is still establishing.
+        expect(pageElements.connectivityStatus().innerText).toBe('Connecting…');
+
+        const [errorMessage] = document.getElementsByClassName('webchat__submit-error-message');
+
+        // GIVEN: "Hello, World!" is in the send box.
+        await pageObjects.typeInSendBox('Hello, World!');
+
+        // WHEN: Send button is clicked.
+        await pageObjects.clickSendButton();
+
+        // THEN: The alert message should be empty.
+        expect(errorMessage.innerText).toBe('');
+
+        // THEN: After 50 ms, the alert message should read "Unable to connect."
+        clock.tick(50);
+        expect(errorMessage.innerText).toBe('Unable to connect.');
+
+        // THEN: After 500 ms, the alert message should be empty.
+        clock.tick(500);
+        expect(errorMessage.innerText).toBe('');
+      });
+    </script>
+  </body>
+</html>

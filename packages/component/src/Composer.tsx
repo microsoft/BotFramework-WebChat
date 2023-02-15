@@ -27,6 +27,7 @@ import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
+import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
@@ -227,8 +228,11 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   return (
     <SayComposer ponyfill={webSpeechPonyfill}>
       <WebChatUIContext.Provider value={context}>
-        {children}
-        <Dictation onError={dictationOnError} />
+        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+        <SendBoxComposer>
+          {children}
+          <Dictation onError={dictationOnError} />
+        </SendBoxComposer>
       </WebChatUIContext.Provider>
     </SayComposer>
   );

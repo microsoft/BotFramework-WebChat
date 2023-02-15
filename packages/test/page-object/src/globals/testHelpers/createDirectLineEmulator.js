@@ -15,17 +15,20 @@ function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
 
-export default function createDirectLineEmulator(store) {
+export default function createDirectLineEmulator(store, { autoConnect = true } = {}) {
   if (!store) {
     throw new Error('"store" argument must be provided when calling createDirectLineEmulator().');
   }
 
   const now = Date.now();
+  const connectedDeferred = createDeferred();
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });
-  const activityDeferredObservable = createDeferredObservable(() => {
+  const activityDeferredObservable = createDeferredObservable(async () => {
     connectionStatusDeferredObservable.next(1);
+
+    await connectedDeferred.promise;
     connectionStatusDeferredObservable.next(2);
   });
 
@@ -47,6 +50,8 @@ export default function createDirectLineEmulator(store) {
     });
   };
 
+  autoConnect && connectedDeferred.resolve();
+
   return {
     activity$: shareObservable(activityDeferredObservable.observable),
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
@@ -54,6 +59,7 @@ export default function createDirectLineEmulator(store) {
       // This is a mock and will no-op on dispatch().
     },
     postActivity,
+    emulateConnected: connectedDeferred.resolve,
     emulateIncomingActivity: async activity => {
       if (typeof activity === 'string') {
         activity = {

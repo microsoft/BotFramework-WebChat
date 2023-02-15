@@ -8,18 +8,17 @@ import AccessibleInputText from '../Utils/AccessibleInputText';
 import AutoResizeTextArea from './AutoResizeTextArea';
 import connectToWebChat from '../connectToWebChat';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
-import useFocus from '../hooks/useFocus';
 import useRegisterFocusSendBox from '../hooks/internal/useRegisterFocusSendBox';
 import useReplaceEmoticon from '../hooks/internal/useReplaceEmoticon';
 import useScrollDown from '../hooks/useScrollDown';
-import useScrollToEnd from '../hooks/useScrollToEnd';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useSubmit from '../providers/internal/SendBox/useSubmit';
 
 import type { MutableRefObject, ReactEventHandler } from 'react';
 
-const { useDisabled, useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useSubmitSendBox } = hooks;
+const { useDisabled, useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -69,34 +68,29 @@ const connectSendTextBox = (...selectors) =>
     ...selectors
   );
 
-function useTextBoxSubmit(): (setFocus?: boolean | 'sendBox') => void {
-  const [sendBoxValue] = useSendBoxValue();
-  const focus = useFocus();
-  const scrollToEnd = useScrollToEnd();
-  const submitSendBox = useSubmitSendBox();
+/**
+ * Submits the text box and optionally set the focus after send.
+ */
+type SubmitTextBoxFunction = {
+  /**
+   * Submits the text box, without setting the focus after send.
+   *
+   * @deprecated Instead of passing `false`, you should leave the `setFocus` argument `undefined`.
+   */
+  (setFocus: false): void;
 
-  return useCallback(
-    setFocus => {
-      if (sendBoxValue) {
-        scrollToEnd();
-        submitSendBox();
+  /**
+   * Submits the text box and optionally set the focus after send.
+   */
+  (setFocus?: 'sendBox' | 'sendBoxWithoutKeyboard'): void;
+};
 
-        if (setFocus) {
-          if (setFocus === true) {
-            console.warn(
-              `"botframework-webchat: Passing "true" to "useTextBoxSubmit" is deprecated and will be removed on or after 2022-04-23. Please pass "sendBox" instead."`
-            );
+function useTextBoxSubmit(): SubmitTextBoxFunction {
+  const submit = useSubmit();
 
-            focus('sendBox');
-          } else {
-            focus(setFocus);
-          }
-        }
-      }
-
-      return !!sendBoxValue;
-    },
-    [focus, scrollToEnd, sendBoxValue, submitSendBox]
+  return useCallback<SubmitTextBoxFunction>(
+    (setFocus?: false | 'sendBox' | 'sendBoxWithoutKeyboard') => submit({ setFocus: setFocus || undefined }),
+    [submit]
   );
 }
 

@@ -1,15 +1,16 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
-import useFocus from '../hooks/useFocus';
-import useScrollToEnd from '../hooks/useScrollToEnd';
+import useSubmit from '../providers/internal/SendBox/useSubmit';
 
-const { useDisabled, useLocalizer, useSubmitSendBox } = hooks;
+import type { FC } from 'react';
+
+const { useDisabled, useLocalizer } = hooks;
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(
@@ -27,16 +28,10 @@ type SendButtonProps = {
 
 const SendButton: FC<SendButtonProps> = ({ className }) => {
   const [disabled] = useDisabled();
-  const focus = useFocus();
   const localize = useLocalizer();
-  const scrollToEnd = useScrollToEnd();
-  const submitSendBox = useSubmitSendBox();
+  const submit = useSubmit();
 
-  const handleClick = useCallback(() => {
-    focus('sendBoxWithoutKeyboard');
-    scrollToEnd();
-    submitSendBox();
-  }, [focus, scrollToEnd, submitSendBox]);
+  const handleClick = useCallback(() => submit({ setFocus: 'sendBoxWithoutKeyboard' }), [submit]);
 
   return (
     <IconButton
