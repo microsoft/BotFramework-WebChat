@@ -141,7 +141,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         id={submitErrorMessageId}
         role="alert"
       >
-        {(error && errorMessageStringMap.get(error)) || ''}
+        {error ? errorMessageStringMap.get(error) : ''}
       </span>
     </SendBoxContext.Provider>
   );
