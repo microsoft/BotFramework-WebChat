@@ -480,6 +480,16 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.15.7": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.7/webchat-es5.js",
+          "sha384-1T+LvOs6/1ShG/+c7tarxIR/J0dUIjrba2M9SbyOv9Ls8ElcnhLZFnLGdiVf/u4W"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
     "hosted": {
       "assets": [
         [
