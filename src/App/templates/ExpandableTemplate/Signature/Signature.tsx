@@ -32,6 +32,10 @@ export const Signature: React.StatelessComponent<Props> = ({ signature, botId })
 		customStyles={partnerLogoStyle}
 	/>
 	
+	if(mode === 'none') {
+		return null
+	}
+	
 	if (partnerLogoUrl && mode === 'both') {
 		return (
 			<SignatureTemplate>
