@@ -243,7 +243,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
                 onClick={ this.onClick }
             >
                 { wrappedChildren }
-                <div ref={ this.saveDiv } />
+                <div className={"wc-adaptive-card-content"} ref={ this.saveDiv } />
             </div>
         )
     }

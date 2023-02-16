@@ -505,6 +505,9 @@
                 min-height: initial;
             }
 
+            .wc-adaptive-card-content > div > div > .ac-textBlock:first-child {
+              margin-top: 8px;              
+            }
         }
     }
 
