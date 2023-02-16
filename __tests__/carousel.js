@@ -23,7 +23,7 @@ describe('carousel without avatar initials', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
+    const rightFlipper = await driver.findElement(By.css('button[aria-label="Next"]'));
 
     await rightFlipper.click();
     await rightFlipper.click();
@@ -46,7 +46,7 @@ describe('carousel without avatar initials', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
+    const rightFlipper = await driver.findElement(By.css('button[aria-label="Next"]'));
 
     await rightFlipper.click();
     await rightFlipper.click();
@@ -121,7 +121,7 @@ describe('carousel with avatar initials', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
+    const rightFlipper = await driver.findElement(By.css('button[aria-label="Next"]'));
 
     await rightFlipper.click();
     await rightFlipper.click();
@@ -144,7 +144,7 @@ describe('carousel with avatar initials', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
+    const rightFlipper = await driver.findElement(By.css('button[aria-label="Next"]'));
 
     await rightFlipper.click();
     await rightFlipper.click();

@@ -44,6 +44,12 @@ const CarouselLayoutCore = ({
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
+  const nextAlt = localize('CAROUSEL_FLIPPER_NEXT_ALT');
+  const previousAlt = localize('CAROUSEL_FLIPPER_PREVIOUS_ALT');
+
+  const leftFlipperAriaLabel = direction === 'rtl' ? nextAlt : previousAlt;
+  const rightFlipperAriaLabel = direction === 'rtl' ? previousAlt : nextAlt;
+
   return (
     <div
       className={classNames('webchat__carousel-layout', rootClassName, carouselFlipperStyleSet + '', filmRootClassName)}
@@ -59,10 +65,10 @@ const CarouselLayoutCore = ({
         />
         {scrollBarWidth !== '100%' && (
           <React.Fragment>
-            <Flipper aria-label={localize('CAROUSEL_FLIPPER_LEFT_ALT')} blurFocusOnClick={true} mode="left">
+            <Flipper aria-label={leftFlipperAriaLabel} blurFocusOnClick={true} mode="left">
               {leftSideFlipper}
             </Flipper>
-            <Flipper aria-label={localize('CAROUSEL_FLIPPER_RIGHT_ALT')} blurFocusOnClick={true} mode="right">
+            <Flipper aria-label={rightFlipperAriaLabel} blurFocusOnClick={true} mode="right">
               {rightSideFlipper}
             </Flipper>
           </React.Fragment>
