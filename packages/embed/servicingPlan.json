@@ -477,6 +477,7 @@
           "sha384-Ik2jNknNTBCaI/NP3GRMfDCWKnApGSdYMcdA6EtEJkL1LtUZEdNdjeNkfZZk3UlS"
         ]
       ],
+      "deprecation": "This version of Web Chat is deprecated. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2025-02-15.",
       "private": true,
       "versionFamily": "4"
     },
