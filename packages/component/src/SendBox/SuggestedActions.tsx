@@ -53,6 +53,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [nonce] = useNonce();
+  const localize = useLocalizer();
   const ref = useRef();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -70,8 +71,12 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
       suggestedActionsCarouselFlipperSize
     ]
   );
+  const nextFlipperAriaLabel = localize('SUGGESTED_ACTIONS_FLIPPER_NEXT_ALT');
+  const previousFlipperAriaLabel = localize('SUGGESTED_ACTIONS_FLIPPER_PREVIOUS_ALT');
 
   const [focusedWithin] = useFocusWithin(ref);
+  const leftFlipperAriaLabel = direction === 'rtl' ? nextFlipperAriaLabel : previousFlipperAriaLabel;
+  const rightFlipperAriaLabel = direction === 'rtl' ? previousFlipperAriaLabel : nextFlipperAriaLabel;
 
   return (
     // TODO: The content of suggested actions should be the labelled by the activity.
@@ -99,7 +104,9 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
           className="webchat__suggested-actions__carousel"
           dir={direction}
           flipperBlurFocusOnClick={true}
+          leftFlipperAriaLabel={leftFlipperAriaLabel}
           nonce={nonce}
+          rightFlipperAriaLabel={rightFlipperAriaLabel}
           showDots={false}
           showScrollBar={false}
           styleSet={filmStyleSet}

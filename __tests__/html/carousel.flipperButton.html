@@ -29,7 +29,7 @@
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
         // WHEN: Right flipper is clicked.
-        const rightFlipper = carouselLayout.querySelector('[aria-label="Right"]');
+        const rightFlipper = carouselLayout.querySelector('[aria-label="Next"]');
 
         // Improve test reliability by hover before click on flipper button.
         await host.hover(rightFlipper);
@@ -43,7 +43,7 @@
         await host.snapshot();
 
         // WHEN: Left flipper is clicked.
-        const leftFlipper = carouselLayout.querySelector('[aria-label="Left"]');
+        const leftFlipper = carouselLayout.querySelector('[aria-label="Previous"]');
 
         // Improve test reliability by hover before click on flipper button.
         await host.hover(leftFlipper);
