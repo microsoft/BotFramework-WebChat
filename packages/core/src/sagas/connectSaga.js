@@ -2,7 +2,6 @@
 
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 
-import { ConnectionStatus } from 'botframework-directlinejs';
 import decode from 'jwt-decode';
 
 import { CONNECT } from '../actions/connect';
@@ -15,7 +14,9 @@ import { DISCONNECT, DISCONNECT_PENDING, DISCONNECT_FULFILLED } from '../actions
 
 import { RECONNECT } from '../actions/reconnect';
 
-const { Connecting: CONNECTING, Online: ONLINE, Uninitialized: UNINITIALIZED } = ConnectionStatus;
+const CONNECTING = 1;
+const ONLINE = 2;
+const UNINITIALIZED = 0;
 
 function randomUserID() {
   return `r_${uniqueID().substr(0, 10)}`;

@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolved [#4643](https://github.com/microsoft/BotFramework-WebChat/issues/4643). Decoupling `botframework-directlinejs` from business logic of Web Chat for better tree-shaking, by [@compulim](https://github.com/compulim), in PR [#4645](https://github.com/microsoft/BotFramework-WebChat/pull/4645)
+
 ## [4.15.7] - 2023-02-15
 
 ### Added
