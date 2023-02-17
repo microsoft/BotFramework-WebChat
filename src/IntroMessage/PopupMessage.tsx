@@ -1,9 +1,10 @@
 import * as React from 'react'
-import cx from "classnames"
+import cx from 'classnames'
 
 import { logDismissalInDatabase, logTriggerInDatabase } from './apiCalls'
 import { popupMessageCss } from './popupMessageCss'
 import { CloseIcon } from './CloseIcon'
+import { setPopupMessageCloseTimestamp, wasPopupMessageRecentlyClosed } from './utils'
 
 export type Props = {
 	title: string,
@@ -31,6 +32,7 @@ export class PopupMessage extends React.Component<Props, State> {
 	dismiss = (event: React.MouseEvent<HTMLDivElement>) => {
 		event.stopPropagation()
 		this.hideMessage()
+		setPopupMessageCloseTimestamp()
 		logDismissalInDatabase()
 	}
 	
@@ -58,6 +60,10 @@ export class PopupMessage extends React.Component<Props, State> {
 		const { title, message } = this.props
 		const { isVisible, applyInitialFrameCss } = this.state
 		const { trigger, dismiss } = this
+		
+		if(wasPopupMessageRecentlyClosed()) {
+			return null
+		}
 		
 		if(!title && !message) {
 			return null

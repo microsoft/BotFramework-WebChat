@@ -21,10 +21,7 @@ export const renderWebchatApp = (props: AppProps, container: HTMLElement) => {
 			break
 		default:
 			ReactDOM.render(
-				<ExpandableTemplate
-					{...props}
-					enablePopupMessage={props.theme.template.type === "expandable-knob"}
-				/>,
+				<ExpandableTemplate {...props} />,
 				reactEntryPoint
 			)
 	}

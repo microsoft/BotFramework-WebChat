@@ -13,7 +13,7 @@ import {
 import { Chat } from '../../../Chat'
 import { PopupMessage } from '../../../IntroMessage/PopupMessage'
 
-export type Props = AppProps & { enablePopupMessage: boolean }
+export type Props = AppProps
 
 type State = {
 	collapsed: boolean,
@@ -69,8 +69,14 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 		setTimeout(this.expandIfUninitialized, autoExpandTimeout)
 	}
 	
+	doesTemplateSupportPopupMsg = () => {
+		const templateType = this.props.theme.template.type
+		return ["expandable-knob", "sidebar"].includes(templateType)
+		
+	}
+	
 	render() {
-		const { theme, bot, enablePopupMessage } = this.props
+		const { theme, bot } = this.props
 		const { collapsed, initialized } = this.state
 		
 		const { signature, showSignature, template = {} } = theme || {} as typeof theme
@@ -91,7 +97,7 @@ export class ExpandableTemplate extends React.Component<Props, State> {
 					<Signature signature={signature} botId={bot.id} />
 				}
 				
-				{enablePopupMessage && !initialized && popupMessage && (
+				{this.doesTemplateSupportPopupMsg() && !initialized && popupMessage && (
 					<PopupMessage
 						title={popupMessage.title}
 						message={popupMessage.description}
