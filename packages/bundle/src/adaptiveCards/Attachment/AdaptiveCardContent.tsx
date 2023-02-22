@@ -19,11 +19,17 @@ function stripSubmitAction(card) {
 
 type AdaptiveCardContentProps = {
   actionPerformedClassName?: string;
+  activityId: string;
   content: any;
   disabled?: boolean;
 };
 
-const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({
+  actionPerformedClassName,
+  activityId,
+  content,
+  disabled
+}) => {
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
   const card = useMemo(
@@ -42,6 +48,7 @@ const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClas
     !!card && (
       <AdaptiveCardRenderer
         actionPerformedClassName={actionPerformedClassName}
+        activityId={activityId}
         adaptiveCard={card}
         disabled={disabled}
       />
@@ -51,11 +58,13 @@ const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClas
 
 AdaptiveCardContent.defaultProps = {
   actionPerformedClassName: '',
+  activityId: undefined,
   disabled: undefined
 };
 
 AdaptiveCardContent.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  activityId: PropTypes.string,
   content: PropTypes.any.isRequired,
   disabled: PropTypes.bool
 };

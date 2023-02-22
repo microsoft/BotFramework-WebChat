@@ -17,12 +17,14 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
   return () =>
     next =>
     (...args) => {
-      const [{ attachment }] = args;
+      const [{ attachment, activity }] = args;
 
       return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
         <HeroCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
-        <AdaptiveCardAttachment attachment={attachment} />
+        // activity.id is used to identify the activity that contains this attachment.
+        // this is used to send the card action back to the bot with reployToId.
+        <AdaptiveCardAttachment activityId={activity.id} attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
         <AnimationCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (

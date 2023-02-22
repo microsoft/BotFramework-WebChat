@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            type: 'message',
+            id: '1',
+            channelId: 'directline',
+            from: { role: 'bot' },
+            locale: 'en-US',
+            text: 'Showing card',
+            attachmentLayout: 'carousel',
+            timestamp: '2019-08-08T16:41:12.9397263Z',
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                    "type": "AdaptiveCard",
+                    "body": [
+                        {
+                        "type": "TextBlock",
+                        "size": "Medium",
+                        "weight": "Bolder",
+                        "text": "Publish Adaptive Card Schema",
+                        "style": "heading"
+                        },
+                        {
+                        "type": "TextBlock",
+                        "text": "Do you like the new feature?",
+                        "wrap": true
+                        }
+                    ],
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "version": "1.5",
+                    "actions": [
+                        {
+                            "type": "Action.Submit",
+                            "title": "Like"
+                        }
+                    ]
+                    }
+              }
+            ]
+          }
+        ], {
+          overridePostActivity: activity => {
+            const id = '0';
+            // All activity-in-transit should not have timestamp.
+            expect(activity.replyToId).toBe("1");
+
+            directLine.activityDeferredObservable.next({ ...activity, id });
+
+            return Observable.from([id]);
+          }
+        });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.minNumActivitiesShown(1);
+
+        const calls = [];
+
+        window.open = (url, windowName, windowFeatures) => calls.push([url, windowName, windowFeatures]);
+
+        const activities = pageElements.activities();
+        const adaptiveCardActivitie = activities[activities.length - 1];
+        const adaptiveCard = adaptiveCardActivitie.querySelector('.ac-adaptiveCard');
+        const likeButton = adaptiveCard.querySelector('.ac-pushButton');
+        likeButton.click();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
