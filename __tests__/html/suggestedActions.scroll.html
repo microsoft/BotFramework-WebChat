@@ -25,10 +25,7 @@
         await pageConditions.numActivitiesShown(2);
 
         // WHEN: The right flipper button is clicked.
-        document.querySelector('[aria-label="Suggested actions"] [aria-label="right"]').click();
-
-        // TODO: This will be updated from "left/right" to "next/previous" when the carousel support customizing the aria-label. Commented out for now.
-        // document.querySelector('[aria-label="Suggested actions"] [aria-label="next"]').click();
+        document.querySelector('[aria-label="Suggested actions"] [aria-label="Next"]').click();
 
         // THEN: It should scroll to the right.
         await pageConditions.became(
@@ -38,10 +35,7 @@
         );
 
         // WHEN: The left flipper button is clicked.
-        document.querySelector('[aria-label="Suggested actions"] [aria-label="left"]').click();
-
-        // TODO: This will be updated from "left/right" to "next/previous" when the carousel support customizing the aria-label. Commented out for now.
-        // document.querySelector('[aria-label="Suggested actions"] [aria-label="previous"]').click();
+        document.querySelector('[aria-label="Suggested actions"] [aria-label="Previous"]').click();
 
         // THEN: It should scroll back to the origin.
         await pageConditions.became(
