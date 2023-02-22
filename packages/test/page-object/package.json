@@ -30,7 +30,10 @@
     "start:esbuild": "npm run build:esbuild -- --watch"
   },
   "pinDependencies": {
-    "microsoft-cognitiveservices-speech-sdk": ["1.23.0", "needs to bump manually"]
+    "microsoft-cognitiveservices-speech-sdk": [
+      "1.23.0",
+      "needs to bump manually"
+    ]
   },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",

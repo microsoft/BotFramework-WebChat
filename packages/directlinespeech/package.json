@@ -39,8 +39,14 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "pinDependencies": {
-    "microsoft-cognitiveservices-speech-sdk": ["1.17.0", "needs to bump manually"],
-    "node-fetch": ["2", "node-fetch@3 dropped support of CommonJS"]
+    "microsoft-cognitiveservices-speech-sdk": [
+      "1.17.0",
+      "needs to bump manually"
+    ],
+    "node-fetch": [
+      "2",
+      "node-fetch@3 dropped support of CommonJS"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

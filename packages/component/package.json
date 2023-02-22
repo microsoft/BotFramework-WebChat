@@ -44,7 +44,9 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "pinDependencies": {
-    "react-redux": ["7"]
+    "react-redux": [
+      "7"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

@@ -34,11 +34,26 @@
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
   "pinDependencies": {
-    "expect": ["25", "expect@26 does not support pure JavaScript environment without node:fs and other packages"],
-    "jest": ["28", "jest@29 is not supported by jest-image-snapshot@5.2.0 (latest)"],
-    "jest-environment-node": ["28", "jest@29 is not supported by jest-image-snapshot@5.2.0 (latest)"],
-    "node-fetch": ["2", "node-fetch@3 dropped support of CommonJS"],
-    "strip-ansi": ["6", "strip-ansi@7 dropped support of CommonJS"]
+    "expect": [
+      "25",
+      "expect@26 does not support pure JavaScript environment without node:fs and other packages"
+    ],
+    "jest": [
+      "28",
+      "jest@29 is not supported by jest-image-snapshot@5.2.0 (latest)"
+    ],
+    "jest-environment-node": [
+      "28",
+      "jest@29 is not supported by jest-image-snapshot@5.2.0 (latest)"
+    ],
+    "node-fetch": [
+      "2",
+      "node-fetch@3 dropped support of CommonJS"
+    ],
+    "strip-ansi": [
+      "6",
+      "strip-ansi@7 dropped support of CommonJS"
+    ]
   },
   "dependencies": {
     "abort-controller": "3.0.0",

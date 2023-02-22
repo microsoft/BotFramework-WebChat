@@ -47,9 +47,18 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "pinDependencies": {
-    "adaptivecards": ["2.11.1", "needs to bump manually"],
-    "microsoft-cognitiveservices-speech-sdk": ["1.17.0", "needs to bump manually"],
-    "uuid": ["8", "uuid@9 emit non-ES5 build because of default parameters"]
+    "adaptivecards": [
+      "2.11.1",
+      "needs to bump manually"
+    ],
+    "microsoft-cognitiveservices-speech-sdk": [
+      "1.17.0",
+      "needs to bump manually"
+    ],
+    "uuid": [
+      "8",
+      "uuid@9 emit non-ES5 build because of default parameters"
+    ]
   },
   "dependencies": {
     "@babel/runtime": "7.19.0",

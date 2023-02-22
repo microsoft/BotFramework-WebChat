@@ -37,7 +37,10 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "pinDependencies": {
-    "node-fetch": ["2", "^3 does not support CommonJS"]
+    "node-fetch": [
+      "2",
+      "^3 does not support CommonJS"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
