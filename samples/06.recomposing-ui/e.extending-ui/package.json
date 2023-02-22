@@ -13,7 +13,7 @@
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "bump": "if [ `cat package.json | jq -r '(.devDependencies, .devDependencies) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && npm audit fix || exit 0; fi",
+    "bump": "if [ `cat package.json | jq -r '(.devDependencies, .devDependencies) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && npm audit fix --legacy-peer-deps || exit 0; fi",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
