@@ -65,7 +65,8 @@
   },
   "pinDependencies": {
     "@types/react-dom": [
-      "16"
+      "16",
+      "using react@16.8.6 to make sure this is the minimum supported version"
     ],
     "babel-jest": [
       "28",
