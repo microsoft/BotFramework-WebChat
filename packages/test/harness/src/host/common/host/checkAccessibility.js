@@ -36,12 +36,6 @@ module.exports = webDriver =>
                 });
 
                 console.groupEnd();
-
-                // console.log(
-                //   `%c${failureSummary}\n${new Array(target.length).fill('%o').join('\n')}`,
-                //   'font-family: sans-serif;',
-                //   ...target.map(selector => document.querySelector(selector))
-                // );
               });
 
               console.groupEnd();
