@@ -1,6 +1,5 @@
-/* global axe */
-
 const allImagesCompleted = require('../../common/allImagesCompleted');
+const checkAccessibility = require('../../common/host/checkAccessibility');
 const takeStabilizedScreenshot = require('../../common/takeStabilizedScreenshot');
 
 // In dev mode, we output the screenshot in console instead of checking against a PNG file.
@@ -30,12 +29,5 @@ module.exports = webDriver =>
       base64
     );
 
-    // TODO: [P1] Add a new host.checkAccessibilty() command.
-    const results = await axe.run();
-
-    if (results.violations.length) {
-      console.log(results);
-
-      throw new Error('Accessibility violations found.');
-    }
+    await checkAccessibility(webDriver);
   };
