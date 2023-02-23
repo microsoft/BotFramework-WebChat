@@ -29,5 +29,5 @@ module.exports = webDriver =>
       base64
     );
 
-    await checkAccessibility(webDriver);
+    await checkAccessibility(webDriver)();
   };

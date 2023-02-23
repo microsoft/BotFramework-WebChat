@@ -15,5 +15,5 @@ module.exports = webDriver =>
       customSnapshotsDir: join(__dirname, '../../../../../../../__tests__/__image_snapshots__/html/')
     });
 
-    await checkAccessibilty(webDriver);
+    await checkAccessibilty(webDriver)();
   };
