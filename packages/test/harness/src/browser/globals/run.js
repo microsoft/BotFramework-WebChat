@@ -39,6 +39,10 @@ export default function () {
           })
           // Some tests may have changed the time zone, we should unset it.
           .then(() => host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' }))
+          .catch(error =>
+            // Chrome occasionally said timezone already set.
+            error.message?.includes('"Timezone override is already in effect"') ? undefined : Promise.reject(error)
+          )
           .then(host.ready)
           .then(fn)
           .then(() => host.done(doneOptions))
