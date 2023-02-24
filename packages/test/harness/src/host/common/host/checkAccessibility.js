@@ -2,14 +2,21 @@
 
 module.exports = webDriver =>
   async function checkAccessibility() {
-    console.log('checkAccessibility.started');
+    const errorMessage = await webDriver.executeAsyncScript(callback => {
+      const startTime = Date.now();
 
-    const errorMessage = await webDriver.executeAsyncScript(callback =>
-      axe.run().then(
-        results => {
-          const { violations } = results;
+      console.log('[TESTHARNESS] Accessibility checks started.');
 
-          if (violations?.length) {
+      axe
+        .run()
+        .then(
+          results => {
+            const { violations } = results;
+
+            if (!violations?.length) {
+              return callback();
+            }
+
             console.group('%cAccessibility violations', 'font-size: x-large;');
 
             violations.forEach(({ description, help, helpUrl, id, impact, nodes }) => {
@@ -44,14 +51,18 @@ module.exports = webDriver =>
             console.log(results);
             console.groupEnd();
 
-            return callback('Accessibility violations found');
-          }
+            callback('Accessibility violations found.');
+          },
+          error => {
+            console.log(`[TESTHARNESS] Accessibility checks failed, took ${Date.now() - startTime} ms.`, error);
 
-          callback();
-        },
-        ({ message }) => callback(message)
-      )
-    );
+            callback(error.message);
+          }
+        )
+        .finally(() => {
+          console.log(`[TESTHARNESS] Accessibility checks completed, took ${Date.now() - startTime} ms.`);
+        });
+    });
 
     if (errorMessage) {
       // TODO: Temporarily disabling error for accessibility violations by `axe-core` until we fixed all of them.
