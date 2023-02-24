@@ -563,7 +563,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           <Fragment>
             <FocusRedirector redirectRef={rootElementRef} />
             <div
-              aria-hidden={true}
               aria-labelledby={terminatorLabelId}
               className="webchat__basic-transcript__terminator"
               ref={terminatorRef}
