@@ -36,7 +36,10 @@
         ]);
         const store = testHelpers.createStore();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { subtle: '#666' } },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(3);
