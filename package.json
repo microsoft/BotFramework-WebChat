@@ -64,6 +64,34 @@
     "test": "jest --watch"
   },
   "pinDependencies": {
+    "@babel/plugin-proposal-class-properties": [
+      "7.18.6",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/plugin-proposal-object-rest-spread": [
+      "7.18.9",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/plugin-transform-runtime": [
+      "7.19.1",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-typescript": [
+      "7.18.6",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/runtime": [
+      "7.19.0",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
     "@types/react-dom": [
       "16",
       "using react@16.8.6 to make sure this is the minimum supported version"
@@ -71,6 +99,14 @@
     "babel-jest": [
       "28",
       "jest-image-snapshot@5.2.0 does not support jest@29 yet"
+    ],
+    "eslint-plugin-react": [
+      "7.31.8",
+      "TEMPORARY: many files changed"
+    ],
+    "eslint-plugin-security": [
+      "1.5.0",
+      "TEMPORARY: many files changed"
     ],
     "get-port": [
       "5",
@@ -87,6 +123,10 @@
     "node-fetch": [
       "2",
       "node-fetch@3 dropped support of CommonJS"
+    ],
+    "prettier": [
+      "2.7.1",
+      "TEMPORARY: many files changed"
     ],
     "react": [
       "16.8.6",
@@ -109,18 +149,18 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@babel/runtime": "^7.19.0",
-    "@types/react-dom": "~16.8.5",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
+    "@types/react-dom": "^16.9.18",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
     "abort-controller": "^3.0.0",
     "babel-jest": "^28.1.3",
-    "concurrently": "^7.4.0",
-    "core-js": "^3.25.3",
+    "concurrently": "^7.6.0",
+    "core-js": "^3.28.0",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "error-stack-parser": "^2.1.4",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.8",
@@ -128,27 +168,27 @@
     "eslint-plugin-security": "^1.5.0",
     "get-port": "^5.1.1",
     "global-agent": "^3.0.0",
-    "husky": "^8.0.1",
+    "husky": "^8.0.3",
     "jest": "^28.1.3",
     "jest-environment-jsdom": "^28.1.3",
-    "jest-image-snapshot": "^5.2.0",
-    "jest-junit": "^14.0.1",
+    "jest-image-snapshot": "^6.1.0",
+    "jest-junit": "^15.0.0",
     "jest-trx-results-processor": "^3.0.1",
-    "lerna": "^5.5.2",
-    "lint-staged": "^13.0.3",
+    "lerna": "^6.5.1",
+    "lint-staged": "^13.1.2",
     "lolex": "^6.0.0",
-    "node-dev": "^7.4.3",
-    "node-fetch": "^2.6.7",
+    "node-dev": "^8.0.0",
+    "node-fetch": "^2.6.9",
     "nodemon": "^2.0.20",
     "p-defer": "^4.0.0",
     "prettier": "^2.7.1",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
-    "selenium-webdriver": "^4.4.0",
-    "serve": "^14.0.1",
-    "serve-handler": "^6.1.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "selenium-webdriver": "^4.8.1",
+    "serve": "^14.2.0",
+    "serve-handler": "^6.1.5",
     "strip-ansi": "^6.0.1",
-    "typescript": "^4.8.3",
+    "typescript": "^4.9.5",
     "xmlbuilder": "^15.1.1"
   }
 }
