@@ -67,13 +67,9 @@
                         wrap: true
                       },
                       {
-                        type: 'TextBlock',
-                        text: 'Snooze for',
-                        wrap: true
-                      },
-                      {
                         type: 'Input.ChoiceSet',
                         id: 'snooze',
+                        label: 'Snooze for',
                         value: '5',
                         choices: [
                           {
@@ -115,8 +111,6 @@
           ],
           {
             overridePostActivity: activity => {
-              // console.log(activity);
-
               const id = Math.random().toString(36).substr(2, 5);
 
               directLine.activityDeferredObservable.next({
@@ -145,34 +139,42 @@
         await pageConditions.numActivitiesShown(6);
         await pageConditions.scrollToBottomCompleted();
 
-        // We need to send a message to mark all activities as read.
+        // GIVEN: Showing 6 activities and all are marked as read.
         await host.click(document.getElementsByClassName('ac-pushButton')[0]);
 
+        // WHEN: A new activity arrives.
         directLine.activityDeferredObservable.next(
           createActivity(
             'Minim voluptate officia nisi excepteur pariatur tempor duis enim aute consectetur ex ipsum id. Exercitation voluptate proident sunt ad Lorem tempor ex dolore culpa aliquip ipsum eu. Sunt nisi esse esse consequat mollit exercitation incididunt incididunt deserunt culpa incididunt consectetur in. Magna proident aliquip sunt proident in velit cillum commodo minim proident cillum officia mollit consequat.'
           )
         );
 
+        // THEN: It should show 7 activities.
         await pageConditions.numActivitiesShown(7);
 
-        // EXPECT: Transcript should continue scroll to reveal "Minim voluptate" activity.
+        // THEN: Chat history should continue scroll to reveal "Minim voluptate" activity.
         await pageConditions.scrollToBottomCompleted();
 
-        // SETUP: Transcript already reached snap point (1 activity), remember the "scrollTop", transcript should not scroll further anymore.
+        // THEN: Chat history should stop at the bottom and reached snap point (1 activity).
+        await host.snapshot();
+
+        // Transcript already reached snap point (1 activity), remember the "scrollTop", transcript should not scroll further anymore.
         const { scrollTop } = pageElements.transcriptScrollable();
 
+        // WHEN: A new activity arrives.
         directLine.activityDeferredObservable.next(
           createActivity(
             'Voluptate occaecat sunt est incididunt qui duis in adipisicing. Eu exercitation duis labore reprehenderit. Consectetur elit quis exercitation Lorem quis velit sunt. Irure anim labore officia tempor anim veniam est quis. Cillum et fugiat amet eu. Et sunt non voluptate ea irure dolore elit non ex commodo aute veniam.'
           )
         );
 
+        // THEN: It should show 8 activities.
         await pageConditions.numActivitiesShown(8);
 
-        // EXPECT: Transcript already reached snap point (1 activity), it should not scroll further below.
+        // THEN: Chat history should not scroll further because it already reached snap point on 7th activity.
         await pageConditions.scrollStabilized(scrollTop);
 
+        // THEN: It should keep the scroll position same as the previous screenshot.
         await host.snapshot();
       });
     </script>

@@ -67,13 +67,9 @@
                         wrap: true
                       },
                       {
-                        type: 'TextBlock',
-                        text: 'Snooze for',
-                        wrap: true
-                      },
-                      {
                         type: 'Input.ChoiceSet',
                         id: 'snooze',
+                        label: 'Snooze for',
                         value: '5',
                         choices: [
                           {
@@ -145,31 +141,40 @@
         await pageConditions.numActivitiesShown(6);
         await pageConditions.scrollToBottomCompleted();
 
-        // We need to send a message to mark all activities as read.
+        // GIVEN: Click on a button should mark all 6 activities as read.
         await host.click(document.getElementsByClassName('ac-pushButton')[0]);
 
+        // WHEN: A new activity arrives.
         directLine.activityDeferredObservable.next(
           createActivity(
             'Minim voluptate officia nisi excepteur pariatur tempor duis enim aute consectetur ex ipsum id. Exercitation voluptate proident sunt ad Lorem tempor ex dolore culpa aliquip ipsum eu. Sunt nisi esse esse consequat mollit exercitation incididunt incididunt deserunt culpa incididunt consectetur in. Magna proident aliquip sunt proident in velit cillum commodo minim proident cillum officia mollit consequat.'
           )
         );
 
+        // THEN: It should show 7 activities.
         await pageConditions.numActivitiesShown(7);
 
-        // EXPECT: After sending a post back activity, the bot responded "Minim voluptate" and transcript should scroll to see the whole activity.
+        // THEN: It should scroll to the bottom to see the bot response "Minim voluptate".
         await pageConditions.scrollToBottomCompleted();
 
+        // THEN: It should show the whole bot response "Minim voluptate" as it does not fully fill the page yet.
+        await host.snapshot();
+
+        // WHEN: A new message arrives.
         directLine.activityDeferredObservable.next(
           createActivity(
             'Voluptate occaecat sunt est incididunt qui duis in adipisicing. Eu exercitation duis labore reprehenderit. Consectetur elit quis exercitation Lorem quis velit sunt. Irure anim labore officia tempor anim veniam est quis. Cillum et fugiat amet eu. Et sunt non voluptate ea irure dolore elit non ex commodo aute veniam.\n\nEiusmod laboris duis do reprehenderit. In tempor aute eiusmod pariatur cupidatat commodo excepteur ipsum pariatur. Ea aliqua quis et aliqua Lorem et incididunt nisi. Nostrud aliquip adipisicing esse commodo ullamco reprehenderit tempor proident dolor exercitation consequat id. Non ut exercitation dolor cillum in est non culpa ipsum magna magna mollit et.\n\nAdipisicing elit do nulla aliquip nisi dolore ea ullamco est ullamco ad eiusmod. Velit dolore Lorem sit dolor deserunt deserunt. Nostrud dolore mollit incididunt dolor sit qui anim velit exercitation duis dolor do qui. Elit sunt eu nulla laboris dolore labore duis proident commodo. Reprehenderit eu irure do elit. Tempor ullamco excepteur ea sunt adipisicing culpa non ipsum sit.'
           )
         );
 
+        // THEN: It should show 8 activities.
         await pageConditions.numActivitiesShown(8);
 
-        // EXPECT: Pause scrolling when the "Minim voluptate" activity (index = 6) is at the top of the screen.
+        // THEN: Auto-scroll should pause when the "Minim voluptate" activity (index = 6) is at the top of the screen.
         await pageConditions.scrollStabilized(pageObjects.getActivityBoundingBoxes()[6].top);
 
+        // THEN: The "Minim voluptate" activity should stay at the top of the screen.
+        //       The 8th activity should partially on-screen as auto-scroll is paused after 1 page.
         await host.snapshot();
       });
     </script>
