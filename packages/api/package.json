@@ -86,15 +86,19 @@
   "pinDependencies": {
     "@babel/core": [
       "7.19.1",
-      "TEMPORARY 4"
+      "@babel/* is causing out-of-memory (OOM) issues"
     ],
     "@babel/preset-env": [
       "7.19.1",
-      "TEMPORARY 3"
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/* is causing out-of-memory (OOM) issues"
     ],
     "@babel/preset-typescript": [
       "7.18.6",
-      "TEMPORARY 2"
+      "@babel/* is causing out-of-memory (OOM) issues"
     ],
     "@types/react": [
       "18.0.21",
