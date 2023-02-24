@@ -100,40 +100,12 @@
       "7.18.6",
       "TEMPORARY 2"
     ],
-    "@types/node": [
-      "^18.7.23",
-      "TEMPORARY 2"
-    ],
     "@types/react": [
       "18.0.21",
       "TEMPORARY - all @types/react need to bump together"
     ],
-    "core-js": [
-      "^3.25.3",
-      "TEMPORARY 3"
-    ],
     "react-redux": [
-      "^7.2.8",
-      "TEMPORARY 5"
-    ],
-    "redux": [
-      "^4.2.0",
-      "TEMPORARY 5"
-    ],
-    "react-redux-xxx": [
       "7"
-    ],
-    "typescript": [
-      "^4.8.3",
-      "TEMPORARY 6"
-    ],
-    "node-dev": [
-      "^7.4.3",
-      "TEMPORARY 7"
-    ],
-    "concurrently": [
-      "^7.4.0",
-      "TEMPORARY 8"
     ]
   }
 }
