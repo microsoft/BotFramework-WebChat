@@ -68,25 +68,34 @@
         const PortraitAvatar = ({ fromUser }) => {
           const style = useMemo(() => ({ borderRadius: 4, width: '100%' }), []);
 
-          return <img src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'} style={style} />;
+          return (
+            <img
+              alt={fromUser ? 'User' : 'Bot'}
+              src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'}
+              style={style}
+            />
+          );
         };
 
-        const avatarMiddleware = () => next => (...args) => {
-          const [{ activity, fromUser, ...otherArgs }] = args;
-          const { id } = activity;
+        const avatarMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ activity, fromUser, ...otherArgs }] = args;
+            const { id } = activity;
 
-          if (/^(1|2)/.test(id)) {
-            return <PortraitAvatar fromUser={fromUser} />;
-          } else if (/^3/.test(id)) {
-            const renderNext = next({ activity, fromUser, ...otherArgs });
+            if (/^(1|2)/.test(id)) {
+              return <PortraitAvatar fromUser={fromUser} />;
+            } else if (/^3/.test(id)) {
+              const renderNext = next({ activity, fromUser, ...otherArgs });
 
-            return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
-          } else if (id === '4.0' || id === '5.0') {
-            return false;
-          }
+              return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
+            } else if (id === '4.0' || id === '5.0') {
+              return false;
+            }
 
-          return next(...args);
-        };
+            return next(...args);
+          };
 
         WebChat.renderWebChat(
           {
@@ -148,8 +157,7 @@
                 channelData: { state: 'sent' },
                 from: { role: 'user' },
                 id: '4.1',
-                text:
-                  'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
                 timestamp: 0,
                 type: 'message'
               },
@@ -176,8 +184,7 @@
               {
                 from: { role: 'bot' },
                 id: '5.1',
-                text:
-                  'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
                 timestamp: 0,
                 type: 'message'
               }
