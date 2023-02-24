@@ -25,15 +25,24 @@
         const PortraitAvatar = ({ fromUser }) => {
           const style = useMemo(() => ({ borderRadius: 4, width: '100%' }), []);
 
-          return <img src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'} style={style} />;
+          return (
+            <img
+              alt={fromUser ? 'User' : 'Bot'}
+              src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'}
+              style={style}
+            />
+          );
         };
 
-        const avatarMiddleware = () => next => (...args) => {
-          const [{ activity, fromUser, ...otherArgs }] = args;
-          const { id } = activity;
+        const avatarMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ activity, fromUser, ...otherArgs }] = args;
+            const { id } = activity;
 
-          return <PortraitAvatar fromUser={fromUser} />;
-        };
+            return <PortraitAvatar fromUser={fromUser} />;
+          };
 
         WebChat.renderWebChat(
           {
