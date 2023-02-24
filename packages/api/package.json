@@ -84,10 +84,6 @@
     "cldr-data": "36.0.0-0"
   },
   "pinDependencies": {
-    "@babel/cli": [
-      "^7.18.10",
-      "TEMPORARY 4"
-    ],
     "@babel/core": [
       "7.19.1",
       "TEMPORARY 4"
