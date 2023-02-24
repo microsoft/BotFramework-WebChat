@@ -46,7 +46,7 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
+    "@babel/cli": "^7.21.0",
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
@@ -61,7 +61,7 @@
     "core-js": "^3.28.0",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
-    "node-dev": "^7.4.3",
+    "node-dev": "^8.0.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
@@ -85,7 +85,7 @@
   },
   "pinDependencies": {
     "@babel/cli": [
-      "7.18.10",
+      "^7.18.10",
       "TEMPORARY 4"
     ],
     "@babel/core": [
