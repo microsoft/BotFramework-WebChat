@@ -20,7 +20,10 @@
         const renderWebChatWithHook = testHelpers.createRenderWebChatWithHook(
           {
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore()
+            store: testHelpers.createStore(),
+            styleOptions: {
+              subtle: '#666'
+            }
           },
           document.getElementById('webchat')
         );
