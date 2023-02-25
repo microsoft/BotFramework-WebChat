@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped Docker containers, by [@compulim](https://github.com/compulim), in PR [#4653](https://github.com/microsoft/BotFramework-WebChat/pull/4653)
+-  Bumped Docker containers, by [@compulim](https://github.com/compulim), in PR [#4654](https://github.com/microsoft/BotFramework-WebChat/pull/4654)
    -  [`selenium/hub:4.8.1`](https://hub.docker.com/layers/selenium/hub/4.8.1/images/sha256-c6a1763c95cd8071968f8fe47057d9712b79d1a793d57d49120df889ce6dcd9d)
    -  [`selenium/node-chrome:110.0`](https://hub.docker.com/layers/selenium/node-chrome/110.0/images/sha256-8dcf0e6b681b54436e0c1481da1fe302d7f609844f4a868b9331fa7f5eead349)
 
