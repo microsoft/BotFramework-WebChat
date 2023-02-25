@@ -92,14 +92,6 @@
       "28",
       "jest-image-snapshot@5.2.0 does not support jest@29 yet"
     ],
-    "eslint-plugin-react": [
-      "7.31.8",
-      "TEMPORARY: many files changed"
-    ],
-    "eslint-plugin-security": [
-      "1.5.0",
-      "TEMPORARY: many files changed"
-    ],
     "get-port": [
       "5",
       "get-port@6 dropped support of CommonJS"
@@ -115,10 +107,6 @@
     "node-fetch": [
       "2",
       "node-fetch@3 dropped support of CommonJS"
-    ],
-    "prettier": [
-      "2.7.1",
-      "TEMPORARY: many files changed"
     ],
     "react": [
       "16.8.6",
@@ -153,9 +141,9 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-security": "^1.5.0",
+    "eslint-plugin-security": "^1.7.1",
     "get-port": "^5.1.1",
     "global-agent": "^3.0.0",
     "husky": "^8.0.3",
@@ -171,7 +159,7 @@
     "node-fetch": "^2.6.9",
     "nodemon": "^2.0.20",
     "p-defer": "^4.0.0",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.4",
     "selenium-webdriver": "^4.8.1",
     "serve": "^14.2.0",
     "serve-handler": "^6.1.5",

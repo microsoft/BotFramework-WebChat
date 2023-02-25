@@ -58,7 +58,6 @@ rules:
     - element
   react/jsx-pascal-case: error
   react/jsx-props-no-multi-spaces: error
-  react/jsx-sort-default-props: error
   react/jsx-sort-props: error
   react/jsx-tag-spacing:
     - error
@@ -84,6 +83,7 @@ rules:
   react/prefer-read-only-props: error
   react/require-default-props: error
   react/self-closing-comp: error
+  react/sort-default-props: error
   react/sort-prop-types: error
   react/state-in-constructor: error
   react/static-property-placement:

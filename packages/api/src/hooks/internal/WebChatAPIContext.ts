@@ -45,7 +45,7 @@ type WebChatAPIContext = {
     linkOptions: { externalLinkAlt: string }
   ) => string;
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
-  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
+  selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
   sendEvent?: (name: string, value: any) => void;
   sendFiles?: (files: File[]) => void;
   sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;

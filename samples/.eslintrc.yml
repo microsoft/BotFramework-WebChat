@@ -77,7 +77,6 @@ rules:
   - element
   react/jsx-pascal-case: error
   react/jsx-props-no-multi-spaces: error
-  react/jsx-sort-default-props: error
   react/jsx-sort-props: error
   react/jsx-tag-spacing:
   - error
@@ -86,5 +85,6 @@ rules:
     beforeSelfClosing: always
     closingSlash: never
   react/jsx-wrap-multilines: error # Conflict with no-extra-parens
+  react/sort-default-props: error
   react-hooks/rules-of-hooks: error
   react-hooks/exhaustive-deps: warn
