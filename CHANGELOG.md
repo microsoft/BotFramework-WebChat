@@ -35,7 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4647](https://github.com/microsoft/BotFramework-WebChat/pull/4647)
    -  Production dependencies
       -  [`@emotion/css@11.10.6`](https://npmjs.com/package/@emotion/css)
-      -  [`compute-scroll-into-view@3.0.0`](https://npmjs.com/package/compute-scroll-into-view)
       -  [`core-js@3.28.0`](https://npmjs.com/package/core-js)
       -  [`markdown-it-attrs@4.1.6`](https://npmjs.com/package/markdown-it-attrs)
       -  [`react-redux@7.2.9`](https://npmjs.com/package/react-redux)
