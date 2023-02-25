@@ -43,8 +43,20 @@
       "7.19.1",
       "@babel/* is causing out-of-memory (OOM) issues"
     ],
+    "@babel/plugin-proposal-object-rest-spread": [
+      "7.18.9",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/plugin-transform-runtime": [
+      "7.19.1",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
     "@babel/preset-env": [
       "7.19.1",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/runtime": [
+      "7.19.0",
       "@babel/* is causing out-of-memory (OOM) issues"
     ],
     "microsoft-cognitiveservices-speech-sdk": [
@@ -57,41 +69,41 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
+    "@babel/cli": "^7.21.0",
     "@babel/core": "^7.19.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.18.9",
     "@babel/plugin-transform-runtime": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "babel-jest": "^29.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "babel-jest": "^29.4.3",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^7.4.0",
+    "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.0.2",
-    "eslint": "^8.24.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.34.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-security": "^1.5.0",
+    "eslint-plugin-security": "^1.7.1",
     "global-agent": "^3.0.0",
     "has-resolved": "^1.1.0",
-    "jest": "^29.0.3",
-    "node-fetch": "^2.6.7",
-    "prettier": "^2.7.1",
-    "serve": "^14.0.1",
+    "jest": "^29.4.3",
+    "node-fetch": "^2.6.9",
+    "prettier": "^2.8.4",
+    "serve": "^14.2.0",
     "simple-update-in": "^2.2.0",
-    "source-map-loader": "^4.0.0",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-stats-plugin": "^1.1.0"
+    "source-map-loader": "^4.0.1",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-stats-plugin": "^1.1.1"
   },
   "dependencies": {
     "@babel/runtime": "7.19.0",
     "abort-controller": "3.0.0",
     "abort-controller-es5": "2.0.1",
     "base64-arraybuffer": "1.0.2",
-    "core-js": "3.25.3",
+    "core-js": "3.28.0",
     "event-as-promise": "1.0.5",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
