@@ -182,13 +182,15 @@
     "nodemon": "^2.0.20",
     "p-defer": "^4.0.0",
     "prettier": "^2.7.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "selenium-webdriver": "^4.8.1",
     "serve": "^14.2.0",
     "serve-handler": "^6.1.5",
     "strip-ansi": "^6.0.1",
     "typescript": "^4.9.5",
     "xmlbuilder": "^15.1.1"
+  },
+  "dependencies": {
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }
