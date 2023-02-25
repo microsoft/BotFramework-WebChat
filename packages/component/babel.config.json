@@ -23,7 +23,6 @@
     }
   ],
   "plugins": [
-    "@babel/proposal-object-rest-spread",
     [
       "transform-inline-environment-variables",
       {

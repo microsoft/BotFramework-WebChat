@@ -4,7 +4,7 @@
       "plugins": ["babel-plugin-istanbul"]
     }
   },
-  "plugins": ["@babel/plugin-proposal-object-rest-spread", "@babel/plugin-transform-runtime"],
+  "plugins": ["@babel/plugin-transform-runtime"],
   "presets": [
     [
       "@babel/preset-env",

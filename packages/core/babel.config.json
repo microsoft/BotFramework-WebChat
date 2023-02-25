@@ -6,7 +6,6 @@
   },
   "plugins": [
     "@babel/plugin-transform-typescript",
-    "@babel/proposal-object-rest-spread",
     "@babel/plugin-transform-runtime",
     [
       "transform-inline-environment-variables",
