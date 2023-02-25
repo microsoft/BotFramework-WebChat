@@ -1,4 +1,4 @@
-import { compute } from 'compute-scroll-into-view';
+import computeScrollIntoView from 'compute-scroll-into-view';
 
 /**
  * Calls `targetElement.scrollIntoView({ block: 'nearest' })`.
@@ -14,7 +14,7 @@ export default function scrollIntoViewWithBlockNearest(targetElement: HTMLElemen
   }
 
   // We should only move transcript scrollable, and not other scrollable, such as document.body which is from the hosting page.
-  const [action] = compute(targetElement, { block: 'nearest' });
+  const [action] = computeScrollIntoView(targetElement, { block: 'nearest' });
 
   action.el.scrollTop = action.top;
 }
