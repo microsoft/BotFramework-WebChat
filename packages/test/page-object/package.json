@@ -39,7 +39,7 @@
     "base64-arraybuffer": "1.0.2",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.2",
-    "core-js": "3.28.0",
+    "core-js": "3.25.3",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
@@ -49,12 +49,12 @@
     "simple-update-in": "2.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.0",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
-    "concurrently": "^7.6.0",
-    "esbuild": "^0.17.10"
+    "concurrently": "^7.4.0",
+    "esbuild": "^0.15.9"
   },
   "localPeerDependencies": {
     "botframework-webchat-core": "0.0.0-0"
