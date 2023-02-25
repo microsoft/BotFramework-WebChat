@@ -30,15 +30,15 @@
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
-      "@babel/* is causing out-of-memory (OOM) issues"
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
     "@babel/core": [
       "7.19.1",
-      "@babel/* is causing out-of-memory (OOM) issues"
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
     "@babel/preset-env": [
       "7.19.1",
-      "@babel/* is causing out-of-memory (OOM) issues"
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ]
   },
   "devDependencies": {
