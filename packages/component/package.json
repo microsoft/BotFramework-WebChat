@@ -44,6 +44,10 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
     "@babel/core": [
       "7.19.1",
       "@babel/* is causing out-of-memory (OOM) issues"
@@ -77,7 +81,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
+    "@babel/cli": "^7.18.10",
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",

@@ -39,6 +39,10 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/* is causing out-of-memory (OOM) issues"
+    ],
     "@babel/core": [
       "7.19.1",
       "@babel/* is causing out-of-memory (OOM) issues"
@@ -69,7 +73,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
+    "@babel/cli": "^7.18.10",
     "@babel/core": "^7.19.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.18.9",
     "@babel/plugin-transform-runtime": "^7.19.1",
