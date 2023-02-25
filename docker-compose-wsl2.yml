@@ -20,7 +20,7 @@ services:
     shm_size: '2.5gb'
 
   selenium-hub:
-    image: selenium/hub:4.6.0
+    image: selenium/hub:4.8.1
     container_name: selenium-hub
     environment:
       GRID_TIMEOUT: '300'
