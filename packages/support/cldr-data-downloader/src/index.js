@@ -52,6 +52,8 @@ export default function (srcUrl, destPath, options, callback) {
   destPath = resolve(fileURLToPath(import.meta.url), destPath);
 
   try {
+    // This is intentional and path is passed from CLI.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     mkdirSync(destPath, { recursive: true });
   } catch (err) {
     if (err.code !== 'EEXIST') {

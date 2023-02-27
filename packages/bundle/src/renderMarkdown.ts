@@ -60,13 +60,13 @@ const internalMarkdownIt = new MarkdownIt();
 const MARKDOWN_ATTRS_LEFT_DELIMITER = '⟬';
 // Make sure the delimiter is free from any RegExp characters, such as *, ?, etc.
 // IE11 does not support "u" flag and Babel could not remove it. We intentionally omitting the "u" flag here.
-// eslint-disable-next-line security/detect-non-literal-regexp, require-unicode-regexp
+// eslint-disable-next-line require-unicode-regexp
 const MARKDOWN_ATTRS_LEFT_DELIMITER_PATTERN = new RegExp(MARKDOWN_ATTRS_LEFT_DELIMITER, 'g');
 
 const MARKDOWN_ATTRS_RIGHT_DELIMITER = '⟭';
 // Make sure the delimiter is free from any RegExp characters, such as *, ?, etc.
 // IE11 does not support "u" flag and Babel could not remove it. We intentionally omitting the "u" flag here.
-// eslint-disable-next-line security/detect-non-literal-regexp, require-unicode-regexp
+// eslint-disable-next-line require-unicode-regexp
 const MARKDOWN_ATTRS_RIGHT_DELIMITER_PATTERN = new RegExp(MARKDOWN_ATTRS_RIGHT_DELIMITER, 'g');
 
 export default function render(

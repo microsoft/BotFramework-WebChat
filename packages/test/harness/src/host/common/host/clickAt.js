@@ -8,9 +8,5 @@ module.exports = webDriver =>
       ({ x, y } = await clientOffsetToViewportOffset(webDriver, element, x, y));
     }
 
-    await webDriver
-      .actions()
-      .move({ origin: Origin.VIEWPORT, x: ~~x, y: ~~y })
-      .click()
-      .perform();
+    await webDriver.actions().move({ origin: Origin.VIEWPORT, x: ~~x, y: ~~y }).click().perform();
   };

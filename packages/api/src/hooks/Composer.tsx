@@ -205,7 +205,7 @@ type ComposerCoreProps = {
     linkOptions: { externalLinkAlt: string }
   ) => string;
   scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
-  selectVoice?: (voices: typeof window.SpeechSynthesisVoice[], activity: WebChatActivity) => void;
+  selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
