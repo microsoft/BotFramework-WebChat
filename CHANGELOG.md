@@ -30,6 +30,57 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#4557](https://github.com/microsoft/BotFramework-WebChat/issues/4557). Flipper buttons in carousels and suggested actions is now renamed to "next/previous" from "left/right", by [@compulim](https://github.com/compulim), in PR [#4646](https://github.com/microsoft/BotFramework-WebChat/pull/4646)
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4647](https://github.com/microsoft/BotFramework-WebChat/pull/4647)
+   -  Production dependencies
+      -  [`@emotion/css@11.10.6`](https://npmjs.com/package/@emotion/css)
+      -  [`core-js@3.28.0`](https://npmjs.com/package/core-js)
+      -  [`markdown-it-attrs@4.1.6`](https://npmjs.com/package/markdown-it-attrs)
+      -  [`react-redux@7.2.9`](https://npmjs.com/package/react-redux)
+      -  [`redux-saga@1.2.2`](https://npmjs.com/package/redux-saga)
+      -  [`redux@4.2.1`](https://npmjs.com/package/redux)
+      -  [`sanitize-html@2.10.0`](https://npmjs.com/package/sanitize-html)
+   -  Development dependencies
+      -  [`@types/node@18.14.1`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@18.0.28`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@5.53.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@5.53.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`adm-zip@0.5.10`](https://npmjs.com/package/adm-zip)
+      -  [`babel-jest@29.4.3`](https://npmjs.com/package/babel-jest)
+      -  [`babel-loader@9.1.2`](https://npmjs.com/package/babel-loader)
+      -  [`chalk@5.2.0`](https://npmjs.com/package/chalk)
+      -  [`concurrently@7.6.0`](https://npmjs.com/package/concurrently)
+      -  [`core-js@3.28.0`](https://npmjs.com/package/core-js)
+      -  [`dotenv@16.0.3`](https://npmjs.com/package/dotenv)
+      -  [`esbuild@0.17.10`](https://npmjs.com/package/esbuild)
+      -  [`eslint-config-prettier@8.6.0`](https://npmjs.com/package/eslint-config-prettier)
+      -  [`eslint-plugin-react@7.32.2`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint-plugin-security@1.7.1`](https://npmjs.com/package/eslint-plugin-security)
+      -  [`eslint@8.34.0`](https://npmjs.com/package/eslint)
+      -  [`express@4.18.2`](https://npmjs.com/package/express)
+      -  [`glob@8.1.0`](https://npmjs.com/package/glob)
+      -  [`http-proxy-middleware@2.0.6`](https://npmjs.com/package/http-proxy-middleware)
+      -  [`husky@8.0.3`](https://npmjs.com/package/husky)
+      -  [`jest-image-snapshot@6.1.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest-junit@15.0.0`](https://npmjs.com/package/jest-junit)
+      -  [`jest@29.4.3`](https://npmjs.com/package/jest)
+      -  [`lerna@6.5.1`](https://npmjs.com/package/lerna)
+      -  [`lint-staged@13.1.2`](https://npmjs.com/package/lint-staged)
+      -  [`node-dev@8.0.0`](https://npmjs.com/package/node-dev)
+      -  [`node-fetch@2.6.9`](https://npmjs.com/package/node-fetch)
+      -  [`nopt@7.0.0`](https://npmjs.com/package/nopt)
+      -  [`prettier@2.8.4`](https://npmjs.com/package/prettier)
+      -  [`restify@11.1.0`](https://npmjs.com/package/restify)
+      -  [`selenium-webdriver@4.8.1`](https://npmjs.com/package/selenium-webdriver)
+      -  [`serve-handler@6.1.5`](https://npmjs.com/package/serve-handler)
+      -  [`serve@14.2.0`](https://npmjs.com/package/serve)
+      -  [`source-map-loader@4.0.1`](https://npmjs.com/package/source-map-loader)
+      -  [`typescript@4.9.5`](https://npmjs.com/package/typescript)
+      -  [`webpack-cli@5.0.1`](https://npmjs.com/package/webpack-cli)
+      -  [`webpack-stats-plugin@1.1.1`](https://npmjs.com/package/webpack-stats-plugin)
+      -  [`webpack@5.75.0`](https://npmjs.com/package/webpack)
+
 ## [4.15.7] - 2023-02-15
 
 ### Added

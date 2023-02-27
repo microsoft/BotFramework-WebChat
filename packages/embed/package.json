@@ -18,9 +18,10 @@
     "build": "npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
-    "bump": "npm run bump:prod && npm run bump:dev",
-    "bump:dev": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
-    "bump:prod": "npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.dependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
+    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
+    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
+    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
     "postauditfix": "npm run postbump",
     "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
     "preauditfix": "npm run prebump",
@@ -35,31 +36,53 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "skipBump": {
-    "node-fetch": "^3 does not support CommonJS"
+  "pinDependencies": {
+    "@babel/cli": [
+      "7.17.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/core": [
+      "7.17.5",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/plugin-transform-runtime": [
+      "7.17.0",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.16.11",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/runtime": [
+      "7.17.2",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "node-fetch": [
+      "2",
+      "^3 does not support CommonJS"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.5",
-    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
-    "concurrently": "^7.0.0",
+    "concurrently": "^7.6.0",
     "html-webpack-plugin": "^5.5.0",
-    "http-proxy-middleware": "^2.0.3",
-    "jest": "^27.5.1",
-    "node-dev": "^7.1.0",
-    "node-fetch": "^2.6.7",
+    "http-proxy-middleware": "^2.0.6",
+    "jest": "^29.4.3",
+    "node-dev": "^8.0.0",
+    "node-fetch": "^2.6.9",
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
-    "restify": "^8.6.1",
-    "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-stats-plugin": "^1.0.3"
+    "restify": "^11.1.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-stats-plugin": "^1.1.1"
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "core-js": "3.21.1",
+    "core-js": "3.28.0",
     "url-search-params-polyfill": "8.1.1",
     "whatwg-fetch": "3.6.2"
   }

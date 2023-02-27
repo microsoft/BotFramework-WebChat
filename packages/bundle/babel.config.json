@@ -6,8 +6,6 @@
   },
   "ignore": ["src/index.tsx", "src/index-es5.tsx", "src/index-minimal.tsx"],
   "plugins": [
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-runtime",
     [
       "babel-plugin-transform-inline-environment-variables",
