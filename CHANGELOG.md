@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4647](https://github.com/microsoft/BotFramework-WebChat/pull/4647)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4647](https://github.com/microsoft/BotFramework-WebChat/pull/4647) and PR [#4655](https://github.com/microsoft/BotFramework-WebChat/pull/4655)
    -  Production dependencies
       -  [`@emotion/css@11.10.6`](https://npmjs.com/package/@emotion/css)
       -  [`core-js@3.28.0`](https://npmjs.com/package/core-js)
@@ -80,6 +80,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`webpack-cli@5.0.1`](https://npmjs.com/package/webpack-cli)
       -  [`webpack-stats-plugin@1.1.1`](https://npmjs.com/package/webpack-stats-plugin)
       -  [`webpack@5.75.0`](https://npmjs.com/package/webpack)
+   -  Sample dependencies
+      -  [`@azure/storage-blob@12.13.0`](https://npmjs.com/package/@azure/storage-blob)
+      -  [`@babel/cli@7.21.0`](https://npmjs.com/package/@babel/cli)
+      -  [`@babel/core@7.21.0`](https://npmjs.com/package/@babel/core)
+      -  [`@babel/preset-env@7.20.2`](https://npmjs.com/package/@babel/preset-env)
+      -  [`@babel/preset-react@7.18.6`](https://npmjs.com/package/@babel/preset-react)
+      -  [`botbuilder-dialogs@4.19.1`](https://npmjs.com/package/botbuilder-dialogs)
+      -  [`botbuilder@4.19.1`](https://npmjs.com/package/botbuilder)
+      -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
+      -  [`dotenv@16.0.3`](https://npmjs.com/package/dotenv)
+      -  [`eslint-config-standard@17.0.0`](https://npmjs.com/package/eslint-config-standard)
+      -  [`eslint-plugin-import@2.27.5`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`http-proxy-middleware@2.0.6`](https://npmjs.com/package/http-proxy-middleware)
+      -  [`node-dev@8.0.0`](https://npmjs.com/package/node-dev)
+      -  [`node-fetch@2.6.9`](https://npmjs.com/package/node-fetch)
+      -  [`nodemon@2.0.20`](https://npmjs.com/package/nodemon)
+      -  [`react-dom@18.2.0`](https://npmjs.com/package/react-dom)
+      -  [`react-redux@8.0.5`](https://npmjs.com/package/react-redux)
+      -  [`react-scripts@5.0.1`](https://npmjs.com/package/react-scripts)
+      -  [`react@18.2.0`](https://npmjs.com/package/react)
+      -  [`redux@4.2.1`](https://npmjs.com/package/redux)
+      -  [`restify@11.1.0`](https://npmjs.com/package/restify)
+      -  [`uuid@9.0.0`](https://npmjs.com/package/uuid)
 -  Bumped Docker containers, by [@compulim](https://github.com/compulim), in PR [#4654](https://github.com/microsoft/BotFramework-WebChat/pull/4654)
    -  [`selenium/hub:4.8.1`](https://hub.docker.com/layers/selenium/hub/4.8.1/images/sha256-c6a1763c95cd8071968f8fe47057d9712b79d1a793d57d49120df889ce6dcd9d)
    -  [`selenium/node-chrome:110.0`](https://hub.docker.com/layers/selenium/node-chrome/110.0/images/sha256-8dcf0e6b681b54436e0c1481da1fe302d7f609844f4a868b9331fa7f5eead349)
