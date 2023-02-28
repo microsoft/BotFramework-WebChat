@@ -4,13 +4,13 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/d.plain-ui/",
   "dependencies": {
-    "botframework-webchat": "^4.15.0",
-    "botframework-webchat-component": "^4.15.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "botframework-webchat": "^4.15.7",
+    "botframework-webchat-component": "^4.15.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
