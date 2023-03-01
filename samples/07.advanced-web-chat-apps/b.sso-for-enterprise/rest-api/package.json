@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "bump": "if [ `cat package.json | jq -r '(.devDependencies, .devDependencies) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && npm audit fix --legacy-peer-deps || exit 0; fi",
+    "bump": "if [ `cat package.json | jq -r '(.devDependencies // {} + .devDependencies // {}) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && npm audit fix --legacy-peer-deps || exit 0; fi",
     "postauditfix": "npm run postbump",
     "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
     "preauditfix": "npm run prebump",
@@ -15,16 +15,19 @@
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
   "pinDependencies": {
-    "node-fetch": ["2", "^3 does not support CommonJS"]
+    "node-fetch": [
+      "2",
+      "^3 does not support CommonJS"
+    ]
   },
   "dependencies": {
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.3",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
-    "node-fetch": "^2.6.7",
-    "restify": "^8.6.1"
+    "node-fetch": "^2.6.9",
+    "restify": "^11.1.0"
   },
   "devDependencies": {
-    "node-dev": "^7.1.0"
+    "node-dev": "^8.0.0"
   }
 }
