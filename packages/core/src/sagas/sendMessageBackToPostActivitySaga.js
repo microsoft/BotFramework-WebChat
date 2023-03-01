@@ -4,7 +4,7 @@ import { SEND_MESSAGE_BACK } from '../actions/sendMessageBack';
 import whileConnected from './effects/whileConnected';
 
 // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-back
-function* postActivityWithMessageBack({ payload: { displayText, text, value } }) {
+function* postActivityWithMessageBack({ payload: { displayText, text, value, replyToId } }) {
   yield put(
     postActivity({
       channelData: {
@@ -14,7 +14,8 @@ function* postActivityWithMessageBack({ payload: { displayText, text, value } })
       },
       text,
       type: 'message',
-      value
+      value,
+      replyToId: typeof replyToId === 'string' ? replyToId : undefined
     })
   );
 }

@@ -7,7 +7,7 @@ import { SEND_POST_BACK } from '../actions/sendPostBack';
 import whileConnected from './effects/whileConnected';
 
 // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#post-back
-function* postActivityWithPostBack({ payload: { value } }) {
+function* postActivityWithPostBack({ payload: { value, replyToId } }) {
   yield put(
     postActivity({
       channelData: {
@@ -15,7 +15,8 @@ function* postActivityWithPostBack({ payload: { value } }) {
       },
       text: typeof value === 'string' ? value : undefined,
       type: 'message',
-      value: typeof value !== 'string' ? value : undefined
+      value: typeof value !== 'string' ? value : undefined,
+      replyToId: typeof replyToId === 'string' ? replyToId : undefined
     })
   );
 }

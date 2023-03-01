@@ -6,6 +6,10 @@ type CardActionWithImageAndTitle =
       title: string;
     };
 
+type CardActionWithReplyId = {
+  replyToId?: string;
+};
+
 /**
  * A `call` action represents a telephone number that may be called.
  *
@@ -31,22 +35,24 @@ type DownloadFileCardAction = CardActionWithImageAndTitle & {
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#im-back
  */
-type IMBackCardAction = CardActionWithImageAndTitle & {
-  type: 'imBack';
-  value: string;
-};
+type IMBackCardAction = CardActionWithImageAndTitle &
+  CardActionWithReplyId & {
+    type: 'imBack';
+    value: string;
+  };
 
 /**
  * A `messageBack` action represents a text response to be sent via the chat system.
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-back
  */
-type MessageBackCardAction = CardActionWithImageAndTitle & {
-  displayText?: string;
-  text?: string;
-  type: 'messageBack';
-  value?: { [key: string]: any };
-};
+type MessageBackCardAction = CardActionWithImageAndTitle &
+  CardActionWithReplyId & {
+    displayText?: string;
+    text?: string;
+    type: 'messageBack';
+    value?: { [key: string]: any };
+  };
 
 /**
  * An `openUrl` action represents a hyperlink to be handled by the client.
@@ -83,10 +89,11 @@ type PlayVideoCardAction = CardActionWithImageAndTitle & {
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#post-back
  */
-type PostBackCardAction = CardActionWithImageAndTitle & {
-  type: 'postBack';
-  value: any; // For legacy reason, postBack support any.
-};
+type PostBackCardAction = CardActionWithImageAndTitle &
+  CardActionWithReplyId & {
+    type: 'postBack';
+    value: any; // For legacy reason, postBack support any.
+  };
 
 /**
  * A `showImage` action represents an image that may be displayed.

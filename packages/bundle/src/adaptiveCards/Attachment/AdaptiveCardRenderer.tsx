@@ -34,6 +34,7 @@ const node_env = process.env.node_env || process.env.NODE_ENV;
 type AdaptiveCardRendererProps = {
   actionPerformedClassName?: string;
   adaptiveCard: AdaptiveCard;
+  activityId?: string;
   disabled?: boolean;
   tapAction?: DirectLineCardAction;
 };
@@ -41,6 +42,7 @@ type AdaptiveCardRendererProps = {
 const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   actionPerformedClassName,
   adaptiveCard,
+  activityId,
   disabled: disabledFromProps,
   tapAction
 }) => {
@@ -139,16 +141,18 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
               image,
               title,
               type: 'imBack',
-              value: data
+              value: data,
+              replyToId: activityId
             });
           } else if (data.__isBotFrameworkCardAction) {
-            performCardAction(data.cardAction);
+            performCardAction({ ...data.cardAction, replyToId: activityId });
           } else {
             performCardAction({
               image,
               title,
               type: 'postBack',
-              value: data
+              value: data,
+              replyToId: activityId
             });
           }
         }
@@ -159,7 +163,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
         console.error(action);
       }
     },
-    [disabledRef, performCardAction, scrollToEnd]
+    [activityId, disabledRef, performCardAction, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
@@ -247,12 +251,14 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
 
 AdaptiveCardRenderer.defaultProps = {
   actionPerformedClassName: '',
+  activityId: undefined,
   disabled: undefined,
   tapAction: undefined
 };
 
 AdaptiveCardRenderer.propTypes = {
   actionPerformedClassName: PropTypes.string,
+  activityId: PropTypes.string,
   adaptiveCard: PropTypes.any.isRequired,
   disabled: PropTypes.bool,
 
