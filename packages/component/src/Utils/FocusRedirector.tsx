@@ -24,11 +24,14 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
     onFocus && onFocus();
   }, [onFocus, redirectRef]);
 
-  // For NVDA, we should set aria-hidden="true".
-  // When using NVDA in browse mode, press up/down arrow keys will focus on this redirector.
-  // This redirector is designed to capture TAB only and should not react on browse mode.
-  // However, reacting with browse mode is currently okay. Just better to leave it alone.
-  return <div aria-hidden="true" className={className} onFocus={handleFocus} tabIndex={0} />;
+  // 2023-02-23: With NVDA 2022.1 and 2022.4, when in browse mode, up/down arrow keys no longer focus.
+  //             We no longer need to set aria-hidden="true" to hide it from browse mode.
+  // 2021-09-21: For NVDA, we should set aria-hidden="true".
+  //             When using NVDA in browse mode, press up/down arrow keys will focus on this redirector.
+  //             This redirector is designed to capture TAB only and should not react on browse mode.
+  //             However, reacting with browse mode is currently okay. Just better to leave it alone.
+
+  return <div className={className} onFocus={handleFocus} tabIndex={0} />;
 };
 
 FocusRedirector.defaultProps = {
