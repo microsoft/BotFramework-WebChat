@@ -1,4 +1,5 @@
 extends:
+  - ../../.eslintrc.production.yml
   - ../../.eslintrc.react.yml
 
 # This package is expected to run inside a web browser.

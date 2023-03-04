@@ -732,6 +732,8 @@ type ComposerProps = ComposerWithStoreProps & {
   /**
    * Ponyfill to overrides specific global scope members. This prop cannot be changed after initial render.
    *
+   * This prop is designed for development use and has limited functionality when used in production environment.
+   *
    * To fake timers, `setTimeout` and related functions can be passed to overrides the original global scope members.
    */
   ponyfill?: Partial<GlobalScopePonyfill>;

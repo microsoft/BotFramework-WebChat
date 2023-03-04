@@ -1,0 +1,34 @@
+overrides:
+  - files:
+    - '__tests__/**/*.js'
+    - '*.spec.js'
+    - '*.test.js'
+
+    rules:
+      no-restricted-globals: off
+
+rules:
+  no-restricted-globals:
+    - error
+    - name: cancelAnimationFrame
+      message: Use clock functions from ponyfill
+    - name: cancelIdleCallback
+      message: Use clock functions from ponyfill
+    - name: clearImmediate
+      message: Use clock functions from ponyfill
+    - name: clearInterval
+      message: Use clock functions from ponyfill
+    - name: clearTimeout
+      message: Use clock functions from ponyfill
+    - name: Date
+      message: Use clock functions from ponyfill
+    - name: requestAnimationFrame
+      message: Use clock functions from ponyfill
+    - name: requestIdleCallback
+      message: Use clock functions from ponyfill
+    - name: setImmediate
+      message: Use clock functions from ponyfill
+    - name: setInterval
+      message: Use clock functions from ponyfill
+    - name: setTimeout
+      message: Use clock functions from ponyfill
