@@ -20,8 +20,9 @@ function concatMiddleware(...middlewares) {
   };
 }
 
-export default function createStore(initialState = {}, ...middleware) {
-  return window.WebChat.createStore(
+export function createStoreWithOptions(options = {}, initialState = {}, ...middleware) {
+  return window.WebChat.createStoreWithOptions(
+    options,
     initialState,
     concatMiddleware(store => {
       actionHistory = [];
@@ -34,6 +35,10 @@ export default function createStore(initialState = {}, ...middleware) {
       };
     }, ...middleware)
   );
+}
+
+export default function createStore(initialState = {}, ...middleware) {
+  return createStoreWithOptions({}, initialState, ...middleware);
 }
 
 function dispatch(...args) {

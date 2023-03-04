@@ -16,8 +16,10 @@ import sendTimeoutSelector from '../selectors/sendTimeout';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
+
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type {
   PostActivityAction,
@@ -38,14 +40,15 @@ function* postActivity(
   userID: string,
   username: string,
   numActivitiesPosted: number,
-  { meta: { method }, payload: { activity } }: PostActivityAction
+  { meta: { method }, payload: { activity } }: PostActivityAction,
+  ponyfill: GlobalScopePonyfill
 ) {
   const attachments = (activity.type === 'message' && activity.attachments) || [];
   const clientActivityID = uniqueID();
   const locale = yield select(languageSelector);
   const localTimeZone =
     typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const now = new Date();
+  const now = new ponyfill.Date();
 
   // Currently, we allow untyped outgoing activity as long as the chat adapter can deliver.
   // In the future, we should warn if the outgoing activity is not matching the type.
@@ -143,7 +146,7 @@ function* postActivity(
         postActivity: observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity))
       }),
       timeout: call(function* () {
-        yield call(() => sleep(sendTimeout));
+        yield call(() => sleep(sendTimeout, ponyfill));
 
         // The IMPEDED action is for backward compatibility by changing `channelData.state` to "send failed".
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
@@ -154,7 +157,7 @@ function* postActivity(
           payload: { activity: outgoingActivity }
         } as PostActivityImpededAction);
 
-        yield call(() => sleep(HARD_SEND_TIMEOUT - sendTimeout));
+        yield call(() => sleep(HARD_SEND_TIMEOUT - sendTimeout, ponyfill));
 
         throw !echoed
           ? new Error('timed out while waiting for outgoing message to echo back')
@@ -184,7 +187,7 @@ function* postActivity(
   }
 }
 
-export default function* postActivitySaga() {
+export default function* postActivitySaga(ponyfill: GlobalScopePonyfill) {
   yield whileConnected(function* postActivityWhileConnected({
     directLine,
     userID,
@@ -197,7 +200,7 @@ export default function* postActivitySaga() {
     let numActivitiesPosted = 0;
 
     yield takeEvery(POST_ACTIVITY, function* postActivityWrapper(action: PostActivityAction) {
-      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
+      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action, ponyfill);
     });
   });
 }

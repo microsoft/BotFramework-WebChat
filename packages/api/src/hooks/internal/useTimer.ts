@@ -1,6 +1,13 @@
 import { useEffect } from 'react';
 
-export default function useTimer(at, fn) {
+import usePonyfill from '../../providers/Ponyfill/usePonyfill';
+
+/**
+ * Calls a callback function at a specific time.
+ */
+export default function useTimer(at: number, fn: () => void): void {
+  const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
+
   useEffect(() => {
     if (typeof at === 'number') {
       const ms = Math.max(0, at - Date.now());
@@ -16,5 +23,5 @@ export default function useTimer(at, fn) {
 
       fn();
     }
-  }, [at, fn]);
+  }, [at, clearTimeout, Date, fn, setTimeout]);
 }

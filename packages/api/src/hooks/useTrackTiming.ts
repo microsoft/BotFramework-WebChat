@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import createCustomEvent from '../utils/createCustomEvent';
 import randomId from '../utils/randomId';
+import usePonyfill from './usePonyfill';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useTrackException from './useTrackException';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
@@ -10,6 +11,7 @@ export default function useTrackTiming<T>(): (
   name: string,
   functionOrPromise: (() => T) | Promise<T>
 ) => Promise<T | void> {
+  const [{ Date }] = usePonyfill();
   const { onTelemetry } = useWebChatAPIContext();
   const readTelemetryDimensions = useReadTelemetryDimensions();
   const trackException = useTrackException();
@@ -59,6 +61,6 @@ export default function useTrackTiming<T>(): (
           );
       }
     },
-    [onTelemetry, readTelemetryDimensions, trackException]
+    [Date, onTelemetry, readTelemetryDimensions, trackException]
   );
 }

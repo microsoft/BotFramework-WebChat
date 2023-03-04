@@ -12,7 +12,7 @@ import useUniqueId from '../../../hooks/internal/useUniqueId';
 import type { ContextType, SendError } from './private/types';
 import type { PropsWithChildren } from 'react';
 
-const { useConnectivityStatus, useLocalizer, useSendBoxValue, useSubmitSendBox } = hooks;
+const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxValue, useSubmitSendBox } = hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
   '&.webchat__submit-error-message': {
@@ -32,6 +32,8 @@ const SUBMIT_ERROR_MESSAGE_STYLE = {
   }
 };
 
+// False positive: we are using `setTimeout` as a type.
+// eslint-disable-next-line no-restricted-globals
 type Timeout = ReturnType<typeof setTimeout>;
 
 const TIME_TO_QUEUE_ERROR_MESSAGE = 500;
@@ -55,6 +57,7 @@ type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 
 // TODO: [P2] Complete this component.
 const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
   const [sendBoxValue] = useSendBoxValue();
@@ -112,7 +115,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         apiSubmitSendBox();
       }
     },
-    [apiSubmitSendBox, focusRef, scrollToEndRef, setErrorRef, submitErrorRef, timeoutRef]
+    [apiSubmitSendBox, clearTimeout, focusRef, scrollToEndRef, setErrorRef, setTimeout, submitErrorRef, timeoutRef]
   );
 
   useEffect(

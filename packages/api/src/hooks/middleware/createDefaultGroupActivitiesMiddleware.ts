@@ -1,8 +1,8 @@
 import { SENDING, SENT } from '../../types/internal/SendStatus';
 import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
+import type { GlobalScopePonyfill, WebChatActivity } from 'botframework-webchat-core';
 import type { SendStatus } from '../../types/internal/SendStatus';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   let lastBin: T[];
@@ -38,7 +38,8 @@ function sending(activity: WebChatActivity): SendStatus | undefined {
 function shouldGroupTimestamp(
   activityX: WebChatActivity,
   activityY: WebChatActivity,
-  groupTimestamp: boolean | number
+  groupTimestamp: boolean | number,
+  { Date }: GlobalScopePonyfill
 ): boolean {
   if (groupTimestamp === false) {
     // Hide timestamp for all activities.
@@ -59,11 +60,17 @@ function shouldGroupTimestamp(
   return false;
 }
 
-export default function createDefaultGroupActivityMiddleware({ groupTimestamp }): GroupActivitiesMiddleware {
+export default function createDefaultGroupActivitiesMiddleware({
+  groupTimestamp,
+  ponyfill
+}: {
+  groupTimestamp: boolean | number;
+  ponyfill: GlobalScopePonyfill;
+}): GroupActivitiesMiddleware {
   return () =>
     () =>
     ({ activities }) => ({
       sender: bin(activities, (x, y) => x.from.role === y.from.role),
-      status: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp))
+      status: bin(activities, (x, y) => shouldGroupTimestamp(x, y, groupTimestamp, ponyfill))
     });
 }

@@ -1,7 +1,13 @@
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
-import { Constants, createStore, createStoreWithDevTools, version } from 'botframework-webchat-core';
+import {
+  Constants,
+  createStore,
+  createStoreWithDevTools,
+  createStoreWithOptions,
+  version
+} from 'botframework-webchat-core';
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import ReactWebChat, {
@@ -48,6 +54,7 @@ export {
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,
+  createStoreWithOptions,
   createStyleSet,
   hooks,
   renderWebChat,
@@ -66,6 +73,7 @@ window['WebChat'] = {
   createDirectLine,
   createDirectLineAppServiceExtension,
   createStore,
+  createStoreWithOptions,
   createStyleSet,
   hooks,
   ReactWebChat,

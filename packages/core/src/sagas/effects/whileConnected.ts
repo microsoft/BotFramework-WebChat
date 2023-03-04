@@ -6,16 +6,20 @@ import { RECONNECT_PENDING, RECONNECT_FULFILLING } from '../../actions/reconnect
 
 import type { DirectLineJSBotConnection } from '../../types/external/DirectLineJSBotConnection';
 
-export default function whileConnectedEffect(
-  fn: ({
-    directLine,
-    userID,
-    username
-  }: {
-    directLine: DirectLineJSBotConnection;
-    userID: string;
-    username: string;
-  }) => void
+export default function whileConnectedEffect<P extends any[]>(
+  fn: (
+    {
+      directLine,
+      userID,
+      username
+    }: {
+      directLine: DirectLineJSBotConnection;
+      userID: string;
+      username: string;
+    },
+    ...args: P
+  ) => void,
+  ...args: P
 ) {
   return call(function* whileConnected() {
     for (;;) {
@@ -30,7 +34,7 @@ export default function whileConnectedEffect(
         payload: { directLine: DirectLineJSBotConnection };
       } = yield take([CONNECT_FULFILLING, RECONNECT_FULFILLING]);
 
-      const task = yield fork(fn, { directLine, userID, username });
+      const task = yield fork(fn, { directLine, userID, username }, ...args);
 
       // When we receive DISCONNECT_PENDING or RECONNECT_PENDING, the Direct Line connection is currently busy and should not be used.
 

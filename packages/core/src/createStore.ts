@@ -2,9 +2,16 @@ import { applyMiddleware, createStore as createReduxStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
-import reducer from './reducer';
+import createReducer from './createReducer';
+import createSagas from './createSagas';
 import sagaError from './actions/sagaError';
-import sagas from './sagas';
+
+import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+
+type CreateStoreOptions = {
+  devTools?: boolean;
+  ponyfill?: Partial<GlobalScopePonyfill>;
+};
 
 function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
   const sagaMiddleware = createSagaMiddleware({
@@ -25,24 +32,53 @@ function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
   };
 }
 
-export default function createStore(initialState?, ...middlewares): Store {
+export function withOptions(options: CreateStoreOptions, initialState?, ...middlewares): Store {
+  const ponyfillFromOptions: Partial<GlobalScopePonyfill> = options.ponyfill || {};
+
+  const ponyfill: GlobalScopePonyfill = {
+    // Using clock functions from global if not provided.
+    // eslint-disable-next-line no-restricted-globals
+    cancelAnimationFrame: ponyfillFromOptions.cancelAnimationFrame || cancelAnimationFrame,
+    // eslint-disable-next-line no-restricted-globals
+    cancelIdleCallback: ponyfillFromOptions.cancelIdleCallback || cancelIdleCallback,
+    // eslint-disable-next-line no-restricted-globals
+    clearImmediate: ponyfillFromOptions.clearImmediate || clearImmediate,
+    // eslint-disable-next-line no-restricted-globals
+    clearInterval: ponyfillFromOptions.clearInterval || clearInterval,
+    // eslint-disable-next-line no-restricted-globals
+    clearTimeout: ponyfillFromOptions.clearTimeout || clearTimeout,
+    // eslint-disable-next-line no-restricted-globals
+    Date: ponyfillFromOptions.Date || Date,
+    // eslint-disable-next-line no-restricted-globals
+    requestAnimationFrame: ponyfillFromOptions.requestAnimationFrame || requestAnimationFrame,
+    // eslint-disable-next-line no-restricted-globals
+    requestIdleCallback: ponyfillFromOptions.requestIdleCallback || requestIdleCallback,
+    // eslint-disable-next-line no-restricted-globals
+    setImmediate: ponyfillFromOptions.setImmediate || setImmediate,
+    // eslint-disable-next-line no-restricted-globals
+    setInterval: ponyfillFromOptions.setInterval || setInterval,
+    // eslint-disable-next-line no-restricted-globals
+    setTimeout: ponyfillFromOptions.setTimeout || setTimeout
+  };
+
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
-  const store = createReduxStore(reducer, initialState || {}, enhancer);
+  const store = createReduxStore(
+    createReducer(ponyfill),
+    initialState || {},
+    options.devTools ? composeWithDevTools(enhancer) : enhancer
+  );
 
-  sagaMiddleware.run(sagas);
+  sagaMiddleware.run(createSagas({ ponyfill }));
 
   return store;
 }
 
+export default function createStore(initialState?, ...middlewares): Store {
+  return withOptions({}, initialState, ...middlewares);
+}
+
 export function withDevTools(initialState?, ...middlewares): Store {
-  // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
-  const store = createReduxStore(reducer, initialState || {}, composeWithDevTools(enhancer));
-
-  sagaMiddleware.run(sagas);
-
-  return store;
+  return withOptions({ devTools: true }, initialState, ...middlewares);
 }

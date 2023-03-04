@@ -1,8 +1,11 @@
+import { hooks } from 'botframework-webchat-api';
 import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import supportPseudoClass from '../../Utils/supportPseudoClass';
 import useNonce from './useNonce';
 import useValueRef from './useValueRef';
+
+const { usePonyfill } = hooks;
 
 const INPUT_TYPES_ALLOW_LIST = [
   'date',
@@ -75,6 +78,7 @@ function useObserveFocusVisibleForLegacyBrowsers(
   targetRef: RefObject<HTMLElement>,
   onFocusVisibleRef: MutableRefObject<() => void>
 ) {
+  const [{ Date }] = usePonyfill();
   // This polyfill algorithm is adopted from https://github.com/WICG/focus-visible.
   const blurSinceRef = useRef(0);
   const hadKeyboardEventRef = useRef(true);
@@ -151,7 +155,7 @@ function useObserveFocusVisibleForLegacyBrowsers(
         setHasFocusVisible(false);
       }
     },
-    [blurSinceRef, hasFocusVisibleRef, setHasFocusVisible, targetRef]
+    [blurSinceRef, Date, hasFocusVisibleRef, setHasFocusVisible, targetRef]
   );
 
   const handleVisibilityChange = useCallback(() => {
@@ -165,7 +169,7 @@ function useObserveFocusVisibleForLegacyBrowsers(
 
       eventSubscription.resume();
     }
-  }, [blurSinceRef, eventSubscription, hadKeyboardEventRef]);
+  }, [blurSinceRef, Date, eventSubscription, hadKeyboardEventRef]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown, true);

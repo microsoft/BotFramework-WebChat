@@ -11,13 +11,22 @@ import sendTypingIndicatorSelector from '../selectors/sendTypingIndicator';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import type setSendTypingIndicator from '../actions/setSendTypingIndicator';
+
+type SetSendTypingIndicatorAction = ReturnType<typeof setSendTypingIndicator>;
+
 const SEND_INTERVAL = 3000;
 
-function takeSendTypingIndicator(value) {
-  return take(({ payload, type }) => type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value);
+function takeSendTypingIndicator(value: boolean) {
+  return take<SetSendTypingIndicatorAction>(
+    // TODO: "any" should be replaced all known types in the system.
+    ({ payload, type }: any) => type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value
+  );
 }
 
-function* sendTypingIndicatorOnSetSendBox() {
+function* sendTypingIndicatorOnSetSendBox(_, ponyfill: GlobalScopePonyfill) {
+  const { Date } = ponyfill;
   const sendTypingIndicator = yield select(sendTypingIndicatorSelector);
 
   if (!sendTypingIndicator) {
@@ -39,7 +48,7 @@ function* sendTypingIndicatorOnSetSendBox() {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 
           if (interval > 0) {
-            yield call(sleep, interval);
+            yield call(sleep, interval, ponyfill);
           }
 
           yield put(emitTypingIndicator());
@@ -57,6 +66,6 @@ function* sendTypingIndicatorOnSetSendBox() {
   }
 }
 
-export default function* sendTypingIndicatorOnSetSendBoxSaga() {
-  yield whileConnected(sendTypingIndicatorOnSetSendBox);
+export default function* sendTypingIndicatorOnSetSendBoxSaga(ponyfill: GlobalScopePonyfill) {
+  yield whileConnected(sendTypingIndicatorOnSetSendBox, ponyfill);
 }

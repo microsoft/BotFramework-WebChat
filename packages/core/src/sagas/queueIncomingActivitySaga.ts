@@ -8,6 +8,8 @@ import setSuggestedActions from '../actions/setSuggestedActions';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+
 // We will hold up the replying activity if the originating activity did not arrive, up to 5 seconds.
 const REPLY_TIMEOUT = 5000;
 
@@ -49,7 +51,7 @@ function* waitForActivityId(replyToId, initialActivities) {
   }
 }
 
-function* queueIncomingActivity({ userID }) {
+function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: GlobalScopePonyfill) {
   yield takeEveryAndSelect(
     QUEUE_INCOMING_ACTIVITY,
     activitiesSelector,
@@ -66,7 +68,7 @@ function* queueIncomingActivity({ userID }) {
         // Either the activity replied to is in the transcript or after timeout.
         const result = yield race({
           _: waitForActivityId(replyToId, initialActivities),
-          timeout: call(sleep, REPLY_TIMEOUT)
+          timeout: call(sleep, REPLY_TIMEOUT, ponyfill)
         });
 
         if ('timeout' in result) {
@@ -88,16 +90,16 @@ function* queueIncomingActivity({ userID }) {
       const lastMessageActivity = messageActivities[messageActivities.length - 1];
 
       if (activityFromBot(lastMessageActivity)) {
-        const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
+        const { suggestedActions: { actions, to } = { actions: undefined, to: undefined } } = lastMessageActivity;
 
         // If suggested actions is not destined to anyone, or is destined to the user, show it.
         // In other words, if suggested actions is destined to someone else, don't show it.
-        yield put(setSuggestedActions(to && to.length && !to.includes(userID) ? null : actions));
+        yield put(setSuggestedActions(to?.length && !to.includes(userID) ? null : actions));
       }
     }
   );
 }
 
-export default function* queueIncomingActivitySaga() {
-  yield whileConnected(queueIncomingActivity);
+export default function* queueIncomingActivitySaga(ponyfill: GlobalScopePonyfill) {
+  yield whileConnected(queueIncomingActivity, ponyfill);
 }

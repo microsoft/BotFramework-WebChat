@@ -15,9 +15,28 @@ function pad(value: number, count = 2): string {
 }
 
 // Adopted from https://stackoverflow.com/questions/17415579/how-to-iso-8601-format-a-date-with-timezone-offset-in-javascript.
+// Use typing of `Date` from globalThis.
+// eslint-disable-next-line no-restricted-globals
 export default function dateToLocaleISOString(date: Date): string {
-  if (!(date instanceof Date)) {
-    throw new Error('First argument must be a Date object');
+  const isDateLike =
+    // @ts-ignore TypeScript think this is always true.
+    date.getTimezoneOffset &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getFullYear &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getMonth &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getDate &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getHours &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getMinutes &&
+    // @ts-ignore TypeScript think this is always true.
+    date.getSeconds &&
+    date.getMilliseconds;
+
+  if (!isDateLike) {
+    throw new Error('First argument must be a Date-like object.');
   }
 
   const timezoneOffset = -date.getTimezoneOffset();

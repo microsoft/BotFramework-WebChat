@@ -5,6 +5,7 @@ import findMin from '../utils/findMin';
 import Notification from '../types/Notification';
 import useForceRender from './internal/useForceRender';
 import useNotifications from './useNotifications';
+import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 import useTimer from './internal/useTimer';
 
@@ -24,12 +25,13 @@ function getEarliestUpdateNotBefore(notificationMap: DebouncedNotifications) {
 }
 
 function useDebouncedNotifications(): [DebouncedNotifications] {
-  const now = Date.now();
-
+  const [{ Date }] = usePonyfill();
   const [{ notificationDebounceTimeout }] = useStyleOptions();
   const [notifications] = useNotifications();
   const debouncedNotificationsRef = useRef({});
   const forceRender = useForceRender();
+
+  const now = Date.now();
 
   // Delete notifications or mark them to be deleted if debouncing.
   for (const id of Object.keys(debouncedNotificationsRef.current).filter(id => !(id in notifications))) {

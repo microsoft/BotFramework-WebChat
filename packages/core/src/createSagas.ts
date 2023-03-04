@@ -23,29 +23,38 @@ import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
-export default function* sagas() {
-  // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
+import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { Saga } from 'redux-saga';
 
-  yield fork(clearSuggestedActionsOnPostActivitySaga);
-  yield fork(connectionStatusToNotificationSaga);
-  yield fork(connectionStatusUpdateSaga);
-  yield fork(connectSaga);
-  yield fork(detectSlowConnectionSaga);
-  yield fork(emitTypingIndicatorToPostActivitySaga);
-  yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
-  yield fork(observeActivitySaga);
-  yield fork(postActivitySaga);
-  yield fork(queueIncomingActivitySaga);
-  yield fork(sendEventToPostActivitySaga);
-  yield fork(sendFilesToPostActivitySaga);
-  yield fork(sendMessageBackToPostActivitySaga);
-  yield fork(sendMessageToPostActivitySaga);
-  yield fork(sendPostBackToPostActivitySaga);
-  yield fork(sendTypingIndicatorOnSetSendBoxSaga);
-  yield fork(speakActivityAndStartDictateOnIncomingActivityFromOthersSaga);
-  yield fork(startDictateOnSpeakCompleteSaga);
-  yield fork(startSpeakActivityOnPostActivitySaga);
-  yield fork(stopDictateOnCardActionSaga);
-  yield fork(stopSpeakingActivityOnInputSaga);
-  yield fork(submitSendBoxSaga);
+type CreateSagasOptions = {
+  ponyfill: GlobalScopePonyfill;
+};
+
+export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
+  return function* () {
+    // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
+
+    yield fork(clearSuggestedActionsOnPostActivitySaga);
+    yield fork(connectionStatusToNotificationSaga);
+    yield fork(connectionStatusUpdateSaga);
+    yield fork(connectSaga);
+    yield fork(detectSlowConnectionSaga, ponyfill);
+    yield fork(emitTypingIndicatorToPostActivitySaga);
+    yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
+    yield fork(observeActivitySaga);
+    yield fork(postActivitySaga, ponyfill);
+    yield fork(queueIncomingActivitySaga, ponyfill);
+    yield fork(sendEventToPostActivitySaga);
+    yield fork(sendFilesToPostActivitySaga);
+    yield fork(sendMessageBackToPostActivitySaga);
+    yield fork(sendMessageToPostActivitySaga);
+    yield fork(sendPostBackToPostActivitySaga);
+    yield fork(sendTypingIndicatorOnSetSendBoxSaga, ponyfill);
+    yield fork(speakActivityAndStartDictateOnIncomingActivityFromOthersSaga);
+    yield fork(startDictateOnSpeakCompleteSaga);
+    yield fork(startSpeakActivityOnPostActivitySaga);
+    yield fork(stopDictateOnCardActionSaga);
+    yield fork(stopSpeakingActivityOnInputSaga);
+    yield fork(submitSendBoxSaga);
+  };
 }

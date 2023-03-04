@@ -5,7 +5,7 @@ import updateIn from 'simple-update-in';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
-  createStore,
+  createStoreWithOptions,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
@@ -55,6 +55,7 @@ import normalizeLanguage from '../utils/normalizeLanguage';
 import normalizeStyleOptions from '../normalizeStyleOptions';
 import observableToPromise from './utils/observableToPromise';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
+import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
 import StyleOptions from '../StyleOptions';
@@ -63,6 +64,7 @@ import ToastMiddleware from '../types/ToastMiddleware';
 import Tracker from './internal/Tracker';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import usePonyfill from '../hooks/usePonyfill';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 
 import applyMiddleware, {
@@ -76,8 +78,13 @@ import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 
 import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import type { ContextOf } from '../types/internal/ContextOf';
-import type { DirectLineJSBotConnection, OneOrMany, WebChatActivity } from 'botframework-webchat-core';
-import type { FC, ReactNode } from 'react';
+import type {
+  DirectLineJSBotConnection,
+  OneOrMany,
+  GlobalScopePonyfill,
+  WebChatActivity
+} from 'botframework-webchat-core';
+import type { ReactNode } from 'react';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -103,7 +110,7 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-function createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged }) {
+function createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill }) {
   const runMiddleware = applyMiddleware(
     'card action',
     ...singleToArray(cardActionMiddleware),
@@ -127,7 +134,7 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch, m
                    *       This is the first place in this project to use async.
                    *       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
                    */
-                  return observableToPromise(directLine.getSessionId()).then(
+                  return observableToPromise(directLine.getSessionId(), ponyfill).then(
                     sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
                   );
                 }
@@ -143,11 +150,11 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch, m
   };
 }
 
-function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp }) {
+function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp, ponyfill }) {
   const runMiddleware = applyMiddleware(
     'group activities',
     ...singleToArray(groupActivitiesMiddleware),
-    createDefaultGroupActivitiesMiddleware({ groupTimestamp })
+    createDefaultGroupActivitiesMiddleware({ groupTimestamp, ponyfill })
   );
 
   return {
@@ -232,7 +239,7 @@ type ComposerCoreProps = {
 };
 /* eslint-enable react/require-default-props */
 
-const ComposerCore: FC<ComposerCoreProps> = ({
+const ComposerCore = ({
   activityMiddleware,
   activityRenderer,
   activityStatusMiddleware,
@@ -267,7 +274,8 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   typingIndicatorRenderer,
   userID,
   username
-}) => {
+}: ComposerCoreProps) => {
+  const [ponyfill] = usePonyfill();
   const dispatch = useDispatch();
   const telemetryDimensionsRef = useRef({});
 
@@ -310,8 +318,8 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
   const cardActionContext = useMemo(
-    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged }),
-    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged]
+    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill }),
+    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill]
   );
 
   const patchedSelectVoice = useMemo(
@@ -323,9 +331,10 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     () =>
       createGroupActivitiesContext({
         groupActivitiesMiddleware,
-        groupTimestamp: patchedStyleOptions.groupTimestamp
+        groupTimestamp: patchedStyleOptions.groupTimestamp,
+        ponyfill
       }),
-    [groupActivitiesMiddleware, patchedStyleOptions.groupTimestamp]
+    [groupActivitiesMiddleware, patchedStyleOptions.groupTimestamp, ponyfill]
   );
 
   const hoistedDispatchers = useMemo(
@@ -544,7 +553,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
    *       This context should consist of members that are not in the Redux store
    *       i.e. members that are not interested in other types of UIs
    */
-  const context = useMemo(
+  const context = useMemo<ContextOf<typeof WebChatAPIContext>>(
     () => ({
       ...cardActionContext,
       ...groupActivitiesContext,
@@ -713,13 +722,49 @@ ComposerCore.propTypes = {
   username: PropTypes.string
 };
 
-type ComposerProps = ComposerCoreProps & {
-  internalRenderErrorBox?: any;
+type ComposerWithStoreProps = ComposerCoreProps & {
   store?: any;
 };
 
+type ComposerProps = ComposerWithStoreProps & {
+  internalRenderErrorBox?: any;
+
+  /**
+   * Ponyfill to overrides specific global scope members. This prop cannot be changed after initial render.
+   *
+   * To fake timers, `setTimeout` and related functions can be passed to overrides the original global scope members.
+   */
+  ponyfill?: Partial<GlobalScopePonyfill>;
+};
+
 // We will create a Redux store if it was not passed in
-const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, store, ...props }) => {
+const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStoreProps) => {
+  const [ponyfill] = usePonyfill();
+
+  const memoizedStore = useMemo(() => store || createStoreWithOptions({ ponyfill }), [ponyfill, store]);
+
+  return (
+    <Provider context={WebChatReduxContext} store={memoizedStore}>
+      <ActivityKeyerComposer>
+        <ActivityAcknowledgementComposer>
+          <ComposerCore onTelemetry={onTelemetry} {...props} />
+        </ActivityAcknowledgementComposer>
+      </ActivityKeyerComposer>
+    </Provider>
+  );
+};
+
+ComposerWithStore.defaultProps = {
+  onTelemetry: undefined,
+  store: undefined
+};
+
+ComposerWithStore.propTypes = {
+  onTelemetry: PropTypes.func,
+  store: PropTypes.any
+};
+
+const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: ComposerProps) => {
   const [error, setError] = useState();
 
   const handleError = useCallback(
@@ -733,33 +778,29 @@ const Composer: FC<ComposerProps> = ({ internalRenderErrorBox, onTelemetry, stor
     [onTelemetry, setError]
   );
 
-  const memoizedStore = useMemo(() => store || createStore(), [store]);
-
   return error ? (
     !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
   ) : (
     <ErrorBoundary onError={handleError}>
-      <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <ActivityKeyerComposer>
-          <ActivityAcknowledgementComposer>
-            <ComposerCore onTelemetry={onTelemetry} {...props} />
-          </ActivityAcknowledgementComposer>
-        </ActivityKeyerComposer>
-      </Provider>
+      <PonyfillComposer partialPonyfill={ponyfill}>
+        <ComposerWithStore onTelemetry={onTelemetry} {...props} />
+      </PonyfillComposer>
     </ErrorBoundary>
   );
 };
 
 Composer.defaultProps = {
+  ...ComposerWithStore.defaultProps,
   internalRenderErrorBox: undefined,
   onTelemetry: undefined,
-  store: undefined
+  ponyfill: undefined
 };
 
 Composer.propTypes = {
+  ...ComposerWithStore.propTypes,
   internalRenderErrorBox: PropTypes.any,
   onTelemetry: PropTypes.func,
-  store: PropTypes.any
+  ponyfill: PropTypes.any
 };
 
 export default Composer;

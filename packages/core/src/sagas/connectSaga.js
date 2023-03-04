@@ -19,7 +19,7 @@ const ONLINE = 2;
 const UNINITIALIZED = 0;
 
 function randomUserID() {
-  return `r_${uniqueID().substr(0, 10)}`;
+  return `r_${uniqueID().substring(0, 10)}`;
 }
 
 function* observeAndPutConnectionStatusUpdate(directLine) {

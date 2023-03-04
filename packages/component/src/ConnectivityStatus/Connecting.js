@@ -10,9 +10,10 @@ import useStyleSet from '../hooks/useStyleSet';
 import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
-const { useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
 
 const ConnectivityStatusConnecting = ({ reconnect }) => {
+  const [{ Date }] = usePonyfill();
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }

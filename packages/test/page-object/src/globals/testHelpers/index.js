@@ -9,7 +9,7 @@ import createDirectLineEmulator from './createDirectLineEmulator';
 import createDirectLineWithTranscript from './createDirectLineWithTranscript';
 import createRenderWebChatWithHook from './createRenderWebChatWithHook';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
-import createStore from './createStore';
+import createStore, { createStoreWithOptions } from './createStore';
 import depthFirstWalk from './depthFirstWalk';
 import getAllTextContents from './getAllTextContents';
 import iterateAsyncIterable from './iterateAsyncIterable';
@@ -27,6 +27,7 @@ export {
   createRenderWebChatWithHook,
   createRunHookActivityMiddleware,
   createStore,
+  createStoreWithOptions,
   depthFirstWalk,
   getAllTextContents,
   iterateAsyncIterable,

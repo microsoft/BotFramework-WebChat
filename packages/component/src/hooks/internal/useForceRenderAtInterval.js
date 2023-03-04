@@ -1,14 +1,17 @@
 import { useCallback, useState } from 'react';
+import { hooks } from 'botframework-webchat-api';
 import random from 'math-random';
 
 import useTimer from './useTimer';
+
+const { usePonyfill } = hooks;
 
 // The `nextTimer` function calculates the next absolute time that the timer should be fired based on the origin (original time received), interval, and current time.
 // If the origin is t=260, and we are currently at t=1000, nextTimer must return t=60260.
 // If the origin is t=260, and we are currently at t=60260 (exact landing), we must return t=120260, not t=60260.
 // This is for fixing bug #2103: https://github.com/microsoft/BotFramework-WebChat/issues/2103.
 
-function nextTimer(origin, interval) {
+function nextTimer(origin, interval, { Date }) {
   const time = new Date(origin).getTime();
   const now = Date.now();
 
@@ -16,7 +19,8 @@ function nextTimer(origin, interval) {
 }
 
 export default function useForceRenderAtInterval(origin, interval, fn) {
-  const [timer, setTimer] = useState(nextTimer(origin, interval));
+  const [ponyfill] = usePonyfill();
+  const [timer, setTimer] = useState(nextTimer(origin, interval, ponyfill));
   const handler = useCallback(() => {
     fn && fn();
 
@@ -25,8 +29,8 @@ export default function useForceRenderAtInterval(origin, interval, fn) {
     // Sending the same value to useTimer(), it will not do another schedule because the value did not change.
     // So, we are adding a bit randomness, so useTimer() should pick up the newer scheduled time.
 
-    setTimer(nextTimer(origin, interval) + random());
-  }, [fn, origin, interval]);
+    setTimer(nextTimer(origin, interval, ponyfill) + random());
+  }, [fn, origin, interval, ponyfill]);
 
   useTimer(timer, handler);
 

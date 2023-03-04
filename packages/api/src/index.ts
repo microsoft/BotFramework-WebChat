@@ -1,3 +1,4 @@
+import { localize } from './localization/Localize';
 import * as hooks from './hooks';
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
 import AttachmentForScreenReaderMiddleware, {
@@ -10,7 +11,6 @@ import Composer, { ComposerProps } from './hooks/Composer';
 import concatMiddleware from './hooks/middleware/concatMiddleware';
 import defaultStyleOptions from './defaultStyleOptions';
 import GroupActivitiesMiddleware, { GroupActivities } from './types/GroupActivitiesMiddleware';
-import Localize, { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from './types/ScrollToEndButtonMiddleware';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
@@ -21,7 +21,7 @@ import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
 import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
 
-export { Composer, concatMiddleware, defaultStyleOptions, hooks, Localize, localize, normalizeStyleOptions };
+export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
 
 export type {
   ActivityComponentFactory,
