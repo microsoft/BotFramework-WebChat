@@ -30,7 +30,6 @@ import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
 import useLastReadActivityKey from './useLastReadActivityKey';
-import useLastTypingAt from './useLastTypingAt';
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
@@ -104,7 +103,6 @@ export {
   useLanguage,
   useLastAcknowledgedActivityKey,
   useLastReadActivityKey,
-  useLastTypingAt,
   useLocalizer,
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
