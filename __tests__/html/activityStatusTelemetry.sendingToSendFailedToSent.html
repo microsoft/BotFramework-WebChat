@@ -9,26 +9,34 @@
   <body>
     <main id="webchat"></main>
     <script>
-      const store = testHelpers.createStore();
-      const directLine = testHelpers.createDirectLineEmulator(store);
-
-      const telemetryEventTracking = [];
-
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
+
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+        const directLine = testHelpers.createDirectLineEmulator(store);
+
+        const telemetryEventTracking = [];
+
         WebChat.renderWebChat(
           {
             directLine,
-            store,
             onTelemetry: event => {
               if (event.name == 'send-status:change') {
                 telemetryEventTracking.push(event.data);
               }
-            }
+            },
+            ponyfill: clock,
+            store
           },
           document.getElementById('webchat')
         );
+
         await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
 
         // WHEN: User send out a message
         const sendingUserEgressMessage = await directLine.emulateOutgoingActivity({
