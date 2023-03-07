@@ -38,27 +38,27 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   const ponyfill: GlobalScopePonyfill = {
     // Using clock functions from global if not provided.
     // eslint-disable-next-line no-restricted-globals
-    cancelAnimationFrame: ponyfillFromOptions.cancelAnimationFrame || cancelAnimationFrame,
+    cancelAnimationFrame: ponyfillFromOptions.cancelAnimationFrame || cancelAnimationFrame.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    cancelIdleCallback: ponyfillFromOptions.cancelIdleCallback || cancelIdleCallback,
+    cancelIdleCallback: ponyfillFromOptions.cancelIdleCallback || cancelIdleCallback.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    clearImmediate: ponyfillFromOptions.clearImmediate || clearImmediate,
+    clearImmediate: ponyfillFromOptions.clearImmediate || clearImmediate.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    clearInterval: ponyfillFromOptions.clearInterval || clearInterval,
+    clearInterval: ponyfillFromOptions.clearInterval || clearInterval.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    clearTimeout: ponyfillFromOptions.clearTimeout || clearTimeout,
+    clearTimeout: ponyfillFromOptions.clearTimeout || clearTimeout.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
     Date: ponyfillFromOptions.Date || Date,
     // eslint-disable-next-line no-restricted-globals
-    requestAnimationFrame: ponyfillFromOptions.requestAnimationFrame || requestAnimationFrame,
+    requestAnimationFrame: ponyfillFromOptions.requestAnimationFrame || requestAnimationFrame.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    requestIdleCallback: ponyfillFromOptions.requestIdleCallback || requestIdleCallback,
+    requestIdleCallback: ponyfillFromOptions.requestIdleCallback || requestIdleCallback.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    setImmediate: ponyfillFromOptions.setImmediate || setImmediate,
+    setImmediate: ponyfillFromOptions.setImmediate || setImmediate.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    setInterval: ponyfillFromOptions.setInterval || setInterval,
+    setInterval: ponyfillFromOptions.setInterval || setInterval.bind(globalThis),
     // eslint-disable-next-line no-restricted-globals
-    setTimeout: ponyfillFromOptions.setTimeout || setTimeout
+    setTimeout: ponyfillFromOptions.setTimeout || setTimeout.bind(globalThis)
   };
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".

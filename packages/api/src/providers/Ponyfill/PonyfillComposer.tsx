@@ -8,10 +8,10 @@ import type { GlobalScopePonyfill } from 'botframework-webchat-core';
 import type { PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
-  partialPonyfill?: Partial<GlobalScopePonyfill>;
+  ponyfill?: Partial<GlobalScopePonyfill>;
 }>;
 
-const PonyfillComposer = ({ children, partialPonyfill }: Props) => {
+const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
   // Note: `useRef(value)` always return the initial value that was called.
   if (useRef(partialPonyfill).current !== partialPonyfill) {
     // We does not support changing ponyfill. This is because ponyfill is used to create Redux store.
@@ -25,27 +25,27 @@ const PonyfillComposer = ({ children, partialPonyfill }: Props) => {
     () => ({
       // Using clock functions from global if not provided.
       // eslint-disable-next-line no-restricted-globals
-      cancelAnimationFrame: partialPonyfill?.cancelAnimationFrame || cancelAnimationFrame,
+      cancelAnimationFrame: partialPonyfill?.cancelAnimationFrame || cancelAnimationFrame.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      cancelIdleCallback: partialPonyfill?.cancelIdleCallback || cancelIdleCallback,
+      cancelIdleCallback: partialPonyfill?.cancelIdleCallback || cancelIdleCallback.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      clearImmediate: partialPonyfill?.clearImmediate || clearImmediate,
+      clearImmediate: partialPonyfill?.clearImmediate || clearImmediate.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      clearInterval: partialPonyfill?.clearInterval || clearInterval,
+      clearInterval: partialPonyfill?.clearInterval || clearInterval.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      clearTimeout: partialPonyfill?.clearTimeout || clearTimeout,
+      clearTimeout: partialPonyfill?.clearTimeout || clearTimeout.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
       Date: partialPonyfill?.Date || Date,
       // eslint-disable-next-line no-restricted-globals
-      requestAnimationFrame: partialPonyfill?.requestAnimationFrame || requestAnimationFrame,
+      requestAnimationFrame: partialPonyfill?.requestAnimationFrame || requestAnimationFrame.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      requestIdleCallback: partialPonyfill?.requestIdleCallback || requestIdleCallback,
+      requestIdleCallback: partialPonyfill?.requestIdleCallback || requestIdleCallback.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      setImmediate: partialPonyfill?.setImmediate || setImmediate,
+      setImmediate: partialPonyfill?.setImmediate || setImmediate.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      setInterval: partialPonyfill?.setInterval || setInterval,
+      setInterval: partialPonyfill?.setInterval || setInterval.bind(globalThis),
       // eslint-disable-next-line no-restricted-globals
-      setTimeout: partialPonyfill?.setTimeout || setTimeout
+      setTimeout: partialPonyfill?.setTimeout || setTimeout.bind(globalThis)
     }),
     [partialPonyfill]
   );
@@ -61,11 +61,11 @@ const PonyfillComposer = ({ children, partialPonyfill }: Props) => {
 };
 
 PonyfillComposer.defaultProps = {
-  partialPonyfill: undefined
+  ponyfill: undefined
 };
 
 PonyfillComposer.propTypes = {
-  partialPonyfill: PropTypes.any
+  ponyfill: PropTypes.any
 };
 
 export default PonyfillComposer;

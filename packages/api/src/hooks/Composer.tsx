@@ -784,7 +784,7 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: C
     !!internalRenderErrorBox && internalRenderErrorBox({ error, type: 'uncaught exception' })
   ) : (
     <ErrorBoundary onError={handleError}>
-      <PonyfillComposer partialPonyfill={ponyfill}>
+      <PonyfillComposer ponyfill={ponyfill}>
         <ComposerWithStore onTelemetry={onTelemetry} {...props} />
       </PonyfillComposer>
     </ErrorBoundary>
