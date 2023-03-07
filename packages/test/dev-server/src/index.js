@@ -7,7 +7,7 @@ import compression from 'compression';
 import express from 'express';
 import serve from 'serve-handler';
 
-const { ESBUILD_TARGET = 'http://localhost:8000/', PORT = 5001 } = process.env;
+const { ESBUILD_TARGET = 'http://127.0.0.1:8000/', PORT = 5001 } = process.env;
 const resolveFromProjectRoot = resolve.bind(undefined, fileURLToPath(import.meta.url), '../../');
 const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../../');
 
