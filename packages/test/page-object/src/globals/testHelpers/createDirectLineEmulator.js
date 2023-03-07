@@ -36,7 +36,15 @@ export default function createDirectLineEmulator(store, { autoConnect = true } =
   const postActivity = outgoingActivity => {
     const returnPostActivityDeferred = createDeferred();
 
-    postActivityCallDeferreds.shift().resolve({ outgoingActivity, returnPostActivityDeferred });
+    const deferred = postActivityCallDeferreds.shift();
+
+    if (!deferred) {
+      throw new Error(
+        'When DirectLineEmulator is installed, you must call actPostActivity() before sending a message.'
+      );
+    }
+
+    deferred.resolve({ outgoingActivity, returnPostActivityDeferred });
 
     return new Observable(observer => {
       (async function () {
@@ -50,10 +58,44 @@ export default function createDirectLineEmulator(store, { autoConnect = true } =
     });
   };
 
+  const actPostActivity = async fn => {
+    const postActivityCallDeferred = createDeferred();
+
+    postActivityCallDeferreds.push(postActivityCallDeferred);
+
+    await fn();
+
+    const { outgoingActivity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
+    const id = uniqueId();
+
+    const echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
+
+    const echoBack = async updater => {
+      activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
+
+      await became(
+        'echo back activity appears in the store',
+        () => store.getState().activities.find(activity => activity.id === id),
+        1000
+      );
+    };
+
+    const rejectPostActivity = error => returnPostActivityDeferred.reject(error);
+    const resolvePostActivity = () => returnPostActivityDeferred.resolve(id);
+
+    const resolveAll = async updater => {
+      await echoBack(updater);
+      resolvePostActivity();
+    };
+
+    return { echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
+  };
+
   autoConnect && connectedDeferred.resolve();
 
   return {
     activity$: shareObservable(activityDeferredObservable.observable),
+    actPostActivity,
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
     end: () => {
       // This is a mock and will no-op on dispatch().
@@ -92,49 +134,13 @@ export default function createDirectLineEmulator(store, { autoConnect = true } =
         1000
       );
     },
-    emulateOutgoingActivity: async activity => {
-      if (typeof activity === 'string') {
-        activity = {
-          from: { id: 'user', role: 'user' },
-          text: activity,
-          type: 'message'
-        };
-      }
-
-      const postActivityCallDeferred = createDeferred();
-
-      postActivityCallDeferreds.push(postActivityCallDeferred);
-
-      store.dispatch({
-        meta: { method: 'code' },
-        payload: { activity },
-        type: 'DIRECT_LINE/POST_ACTIVITY'
-      });
-
-      const { outgoingActivity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
-      const id = uniqueId();
-
-      const echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
-
-      const echoBack = async updater => {
-        activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
-
-        await became(
-          'echo back activity appears in the store',
-          () => store.getState().activities.find(activity => activity.id === id),
-          1000
-        );
-      };
-
-      const rejectPostActivity = error => returnPostActivityDeferred.reject(error);
-      const resolvePostActivity = () => returnPostActivityDeferred.resolve(id);
-
-      const resolveAll = async updater => {
-        await echoBack(updater);
-        resolvePostActivity();
-      };
-
-      return { echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
-    }
+    emulateOutgoingActivity: activity =>
+      actPostActivity(() =>
+        store.dispatch({
+          meta: { method: 'code' },
+          payload: { activity },
+          type: 'DIRECT_LINE/POST_ACTIVITY'
+        })
+      )
   };
 }
