@@ -21,12 +21,13 @@
       }
 
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
         async function createWebChat() {
           let props = {
             directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore(),
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
             styleOptions: {
               sendTimeout: 5000
             }
