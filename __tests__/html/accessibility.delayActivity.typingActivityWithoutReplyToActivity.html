@@ -10,44 +10,47 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
         WebChat.renderWebChat(
           {
-            directLine: testHelpers.createDirectLineWithTranscript([
-              {
-                text: 'Hello, World!',
-                type: 'message',
-                id: 'CONVERSATION_ID-o|00000',
-                timestamp: '2000-01-23T12:34:56.12345Z',
-                channelId: 'directline',
-                from: {
-                  id: 'webchat-mockbot',
-                  name: 'webchat-mockbot'
+            directLine: testHelpers.createDirectLineWithTranscript(
+              [
+                {
+                  text: 'Hello, World!',
+                  type: 'message',
+                  id: 'CONVERSATION_ID-o|00000',
+                  timestamp: '2000-01-23T12:34:56.12345Z',
+                  channelId: 'directline',
+                  from: {
+                    id: 'webchat-mockbot',
+                    name: 'webchat-mockbot'
+                  },
+                  conversation: {
+                    id: 'CONVERSATION_ID-o'
+                  },
+                  locale: 'en-US'
                 },
-                conversation: {
-                  id: 'CONVERSATION_ID-o'
-                },
-                locale: 'en-US'
-              },
-              {
-                type: 'typing',
-                id: 'CONVERSATION_ID-o|00002',
-                timestamp: '2000-01-23T12:34:56.12345Z',
-                channelId: 'directline',
-                from: {
-                  id: 'webchat-mockbot',
-                  name: 'webchat-mockbot'
-                },
-                conversation: {
-                  id: 'CONVERSATION_ID-o'
-                },
-                locale: 'en-US',
-                replyToId: 'CONVERSATION_ID-o|00001'
-              }
-            ]),
+                {
+                  type: 'typing',
+                  id: 'CONVERSATION_ID-o|00002',
+                  timestamp: '2000-01-23T12:34:56.12345Z',
+                  channelId: 'directline',
+                  from: {
+                    id: 'webchat-mockbot',
+                    name: 'webchat-mockbot'
+                  },
+                  conversation: {
+                    id: 'CONVERSATION_ID-o'
+                  },
+                  locale: 'en-US',
+                  replyToId: 'CONVERSATION_ID-o|00001'
+                }
+              ],
+              { ponyfill: clock }
+            ),
             sendTypingIndicator: true,
-            store: testHelpers.createStore()
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );

@@ -5,7 +5,7 @@ import createDeferredObservable from '../../utils/createDeferredObservable';
 import loadTranscriptAsset from '../../utils/loadTranscriptAsset';
 import shareObservable from './shareObservable';
 
-function createUpdateRelativeTimestamp(now) {
+function createUpdateRelativeTimestamp(now, { Date }) {
   return activity => {
     if (typeof activity === 'string') {
       activity = {
@@ -34,9 +34,12 @@ function createUpdateRelativeTimestamp(now) {
   };
 }
 
-export default function createDirectLineWithTranscript(activitiesOrFilename, { overridePostActivity } = {}) {
+export default function createDirectLineWithTranscript(
+  activitiesOrFilename,
+  { overridePostActivity, ponyfill: { Date } = { Date: window.Date } } = {}
+) {
   const now = Date.now();
-  const patchActivity = createUpdateRelativeTimestamp(now);
+  const patchActivity = createUpdateRelativeTimestamp(now, { Date });
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });

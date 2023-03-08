@@ -12,8 +12,8 @@
     <script>
       run(
         async function () {
-          const clock = lolex.install();
-          const store = testHelpers.createStore();
+          const clock = lolex.createClock();
+          const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
           const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
           const hackedDirectLine = {
             ...directLine,
@@ -31,6 +31,7 @@
           window.WebChat.renderWebChat(
             {
               directLine: hackedDirectLine,
+              ponyfill: clock,
               store,
               styleOptions: { subtle: '#666' }
             },

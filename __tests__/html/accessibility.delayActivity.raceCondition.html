@@ -22,7 +22,7 @@
       // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
 
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
         const directLine = testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
@@ -44,10 +44,11 @@
               observer.next(id);
               observer.complete();
             });
-          }
+          },
+          ponyfill: clock
         });
 
-        const store = testHelpers.createStore({}, ({ dispatch }) => next => action => {
+        const store = testHelpers.createStoreDevOptions({ ponyfill: clock }, {}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
             dispatch({
               payload: {

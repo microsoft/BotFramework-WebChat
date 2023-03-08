@@ -12,7 +12,7 @@
       run(async function () {
         await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
 
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
         // Before running the test, the browser should have setup with time zone of GMT-08, at epoch time.
         // Note the getTimezoneOffset() is correctly returns positive number for a negative offset.
@@ -37,13 +37,15 @@
             directLine.activityDeferredObservable.next({ ...activity, id });
 
             return Observable.from([id]);
-          }
+          },
+          ponyfill: clock
         });
 
         WebChat.renderWebChat(
           {
             directLine,
-            store: testHelpers.createStore()
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );

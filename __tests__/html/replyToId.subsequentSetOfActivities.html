@@ -10,21 +10,27 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const clock = lolex.install();
-        const directLine = await testHelpers.createDirectLineWithTranscript([
+        const clock = lolex.createClock();
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            {
+              from: { role: 'bot' },
+              id: '1.0',
+              text: 'In irure voluptate consequat ad.',
+              timestamp: 0,
+              type: 'message'
+            }
+          ],
           {
-            from: { role: 'bot' },
-            id: '1.0',
-            text: 'In irure voluptate consequat ad.',
-            timestamp: 0,
-            type: 'message'
+            ponyfill: clock
           }
-        ]);
+        );
 
         WebChat.renderWebChat(
           {
             directLine,
-            store: testHelpers.createStore()
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );

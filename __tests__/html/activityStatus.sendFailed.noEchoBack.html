@@ -9,7 +9,7 @@
   <body>
     <main id="webchat"></main>
     <script>
-      function createDirectLineForTest() {
+      function createDirectLineForTest(ponyfill) {
         return testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             if (activity.type === 'message') {
@@ -17,7 +17,8 @@
             } else {
               return workingDirectLine.postActivity(activity);
             }
-          }
+          },
+          ponyfill
         });
       }
 
@@ -55,12 +56,13 @@
 
       run(
         async function () {
-          const clock = lolex.install();
+          const clock = lolex.createClock();
 
           WebChat.renderWebChat(
             {
-              directLine: await createDirectLineForTest(),
-              store: testHelpers.createStore(),
+              directLine: await createDirectLineForTest(clock),
+              ponyfill: clock,
+              store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },
             document.getElementById('webchat')
