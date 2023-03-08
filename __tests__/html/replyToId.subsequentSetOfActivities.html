@@ -39,6 +39,7 @@
 
         clock.tick(1000);
 
+        await pageConditions.numActivitiesShown(1);
         await host.snapshot();
 
         directLine.activityDeferredObservable.next({
