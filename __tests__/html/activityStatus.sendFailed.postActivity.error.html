@@ -10,11 +10,12 @@
     <main id="webchat"></main>
     <script>
        async function createDirectLineForTest(ponyfill) {
+        // TODO: Move to DirectLineEmulator.
         const directLine = await testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             if (activity.type === 'message') {
               return new Observable(observer => {
-                setTimeout(() => observer.error(new Error('artificial error')), 1000);
+                ponyfill.setTimeout(() => observer.error(new Error('artificial error')), 1000);
               });
             } else {
               return workingDirectLine.postActivity(activity);
