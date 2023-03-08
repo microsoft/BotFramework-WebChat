@@ -14,7 +14,7 @@
         const directLine = await testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             if (activity.type === 'message') {
-              ponyfil..setTimeout(() => {
+              ponyfill.setTimeout(() => {
                 directLine.activityDeferredObservable.next({
                   ...activity,
                   id: 'a00001',
@@ -23,7 +23,7 @@
               }, 2000);
 
               return new Observable(observer => {
-                ponyfil..setTimeout(() => observer.next('a00001'), 1000);
+                ponyfill.setTimeout(() => observer.next('a00001'), 1000);
               });
             } else {
               return workingDirectLine.postActivity(activity);
