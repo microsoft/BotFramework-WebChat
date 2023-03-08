@@ -10,16 +10,17 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
-        const store = testHelpers.createStore();
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
 
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
 
         // GIVEN: With a multiline text area.
         WebChat.renderWebChat(
           {
             directLine,
+            ponyfill: clock,
             store,
             styleOptions: {
               sendBoxTextWrap: true

@@ -4,7 +4,6 @@ extends:
 env:
   # This package is expected to run under <script>.
   browser: true
-  jest: true
 
 globals:
   global: true

@@ -7,6 +7,10 @@ import became from '../pageConditions/became';
 import createDeferredObservable from '../../utils/createDeferredObservable';
 import shareObservable from './shareObservable';
 
+function isNativeClock() {
+  return ('' + setTimeout).endsWith('() { [native code] }');
+}
+
 function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
@@ -17,6 +21,8 @@ export default function createDirectLineEmulator(
 ) {
   if (!store) {
     throw new Error('"store" argument must be provided when calling createDirectLineEmulator().');
+  } else if (!isNativeClock()) {
+    throw new Error('Fake timer is detected at global-level. You must pass it via the "ponyfill" option.');
   }
 
   const now = Date.now();

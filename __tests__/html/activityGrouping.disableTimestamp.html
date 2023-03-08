@@ -10,13 +10,14 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const clock = lolex.install();
-        const store = testHelpers.createStore();
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const clock = lolex.createClock();
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
 
         WebChat.renderWebChat(
           {
             directLine,
+            ponyfill: clock,
             store,
             styleOptions: {
               botAvatarInitials: 'Bot',

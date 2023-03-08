@@ -13,7 +13,7 @@
         const clock = lolex.createClock();
 
         const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
 
         const telemetryEventTracking = [];
 

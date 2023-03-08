@@ -12,14 +12,15 @@
       run(async function () {
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-        const clock = lolex.install();
-        const store = testHelpers.createStore();
+        const clock = lolex.createClock();
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
 
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
 
         WebChat.renderWebChat(
           {
             directLine,
+            ponyfill: clock,
             store,
             styleOptions: {
               groupTimestamp: 60000,
