@@ -14,7 +14,7 @@
 
         const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
 
-        const directLine = testHelpers.createDirectLineEmulator(storem, { ponyfill: clock });
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
 
         // GIVEN: With a single line text box.
         WebChat.renderWebChat(
