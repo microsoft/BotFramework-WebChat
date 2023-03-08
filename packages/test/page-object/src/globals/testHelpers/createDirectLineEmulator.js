@@ -7,20 +7,21 @@ import became from '../pageConditions/became';
 import createDeferredObservable from '../../utils/createDeferredObservable';
 import shareObservable from './shareObservable';
 
-function getTimestamp() {
-  return new Date().toISOString();
-}
-
 function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
 
-export default function createDirectLineEmulator(store, { autoConnect = true } = {}) {
+export default function createDirectLineEmulator(
+  store,
+  { autoConnect = true, ponyfill: { Date } = { Date: window.Date } } = {}
+) {
   if (!store) {
     throw new Error('"store" argument must be provided when calling createDirectLineEmulator().');
   }
 
   const now = Date.now();
+  const getTimestamp = () => new Date().toISOString();
+
   const connectedDeferred = createDeferred();
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
@@ -134,13 +135,22 @@ export default function createDirectLineEmulator(store, { autoConnect = true } =
         1000
       );
     },
-    emulateOutgoingActivity: activity =>
-      actPostActivity(() =>
+    emulateOutgoingActivity: activity => {
+      if (typeof activity === 'string') {
+        activity = {
+          from: { id: 'user', role: 'user' },
+          text: activity,
+          type: 'message'
+        };
+      }
+
+      return actPostActivity(() =>
         store.dispatch({
           meta: { method: 'code' },
           payload: { activity },
           type: 'DIRECT_LINE/POST_ACTIVITY'
         })
-      )
+      );
+    }
   };
 }
