@@ -9,11 +9,12 @@
   <body>
     <main id="webchat"></main>
     <script>
+      // TODO: [P2] Use DirectLineEmulator.
       async function createDirectLineForTest(ponyfill) {
         const directLine = await testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             if (activity.type === 'message') {
-              setTimeout(() => {
+              ponyfil..setTimeout(() => {
                 directLine.activityDeferredObservable.next({
                   ...activity,
                   id: 'a00001',
@@ -22,7 +23,7 @@
               }, 2000);
 
               return new Observable(observer => {
-                setTimeout(() => observer.next('a00001'), 1000);
+                ponyfil..setTimeout(() => observer.next('a00001'), 1000);
               });
             } else {
               return workingDirectLine.postActivity(activity);

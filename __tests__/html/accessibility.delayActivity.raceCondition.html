@@ -48,7 +48,7 @@
           ponyfill: clock
         });
 
-        const store = testHelpers.createStoreDevOptions({ ponyfill: clock }, {}, ({ dispatch }) => next => action => {
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock }, {}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
             dispatch({
               payload: {
