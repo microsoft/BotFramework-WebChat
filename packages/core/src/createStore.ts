@@ -9,7 +9,23 @@ import sagaError from './actions/sagaError';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 type CreateStoreOptions = {
+  /**
+   * True, to enable Redux development tools, otherwise, false.
+   *
+   * Because Web Chat use sagas for business logics, some store state are keep at JavaScript heaps.
+   * Time-travelling and saving/restoring store state are not supported.
+   */
   devTools?: boolean;
+
+  /**
+   * Ponyfill to overrides specific global scope members.
+   *
+   * This option is for development use only. Not all features in Web Chat are ponyfilled.
+   *
+   * To fake timers, `setTimeout` and related functions can be passed to overrides the original global scope members.
+   *
+   * Please see [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662) for details.
+   */
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
 
@@ -32,9 +48,15 @@ function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
   };
 }
 
+/**
+ * Creates a Redux store internally used by Web Chat.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
+ */
 export function withOptions(options: CreateStoreOptions, initialState?, ...middlewares): Store {
   const ponyfillFromOptions: Partial<GlobalScopePonyfill> = options.ponyfill || {};
 
+  // TODO: [P2] Dedupe: when we have an utility package, move this code there and mark it as internal use.
   const ponyfill: GlobalScopePonyfill = {
     // Using clock functions from global if not provided.
     // eslint-disable-next-line no-restricted-globals
@@ -75,10 +97,22 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   return store;
 }
 
+/**
+ * Creates a Redux store internally used by Web Chat.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
+ */
 export default function createStore(initialState?, ...middlewares): Store {
   return withOptions({}, initialState, ...middlewares);
 }
 
+/**
+ * Creates a Redux store internally used by Web Chat, with Redux development tools.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
+ *
+ * @deprecated Use `withOptions` instead and pass `{ devTools: true }`
+ */
 export function withDevTools(initialState?, ...middlewares): Store {
   return withOptions({ devTools: true }, initialState, ...middlewares);
 }

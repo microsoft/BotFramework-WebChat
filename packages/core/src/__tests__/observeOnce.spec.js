@@ -38,7 +38,7 @@ describe('observeOnce', () => {
     new Promise((resolve, reject) => {
       runSaga(inputOutput, function* () {
         try {
-          const [result] = yield all([observeOnce(observable), call(() => onNext('Hello, World!'))]);
+          const [result] = yield all([observeOnce(observable), call(onNext, 'Hello, World!')]);
 
           expect(observable.subscribe).toHaveBeenCalledTimes(1);
           expect(result).toBe('Hello, World!');
@@ -56,7 +56,7 @@ describe('observeOnce', () => {
       runSaga(inputOutput, function* () {
         try {
           try {
-            yield all([observeOnce(observable), call(() => onError(new Error('Hello, World!')))]);
+            yield all([observeOnce(observable), call(onError, new Error('Hello, World!'))]);
 
             reject(new Error('Should not succeed'));
           } catch (err) {
@@ -77,7 +77,7 @@ describe('observeOnce', () => {
     new Promise((resolve, reject) => {
       runSaga(inputOutput, function* () {
         try {
-          const [result] = yield all([observeOnce(observable), call(() => onComplete())]);
+          const [result] = yield all([observeOnce(observable), call(onComplete)]);
 
           expect(observable.subscribe).toHaveBeenCalledTimes(1);
           expect(result).toBeUndefined();

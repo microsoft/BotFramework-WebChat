@@ -23,7 +23,7 @@
 
       let currentLanguage;
 
-      const StoreLanguage = () => {
+      const InvokeUseLanguage = () => {
         currentLanguage = useLanguage()[0];
 
         return false;
@@ -42,7 +42,7 @@
           render(
             <Composer directLine={directLine} store={store} {...props}>
               <BasicWebChat />
-              <StoreLanguage />
+              <InvokeUseLanguage />
             </Composer>,
             document.getElementById('webchat')
           );
@@ -50,20 +50,32 @@
 
         renderWebChat();
 
+        // WHEN: "echo Hello, World!" is sent.
         await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
+
+        // THEN: The bot should reply with 2 activities.
         await pageConditions.minNumActivitiesShown(3);
 
+        // THEN: There should be 3 activities in total: 1 from user, followed by 2 from the bot.
         await host.snapshot();
 
+        // WHEN: Language is set to "zh-HK".
         renderWebChat({ locale: 'zh-HK' });
+
+        // THEN: Calling `useLanguage()` should return ['zh-HK'].
         await languageBecome('zh-HK');
 
+        // THEN: All texts should be in Chinese (Traditional).
         await host.snapshot();
 
+        // WHEN: Language is set to "yue".
         renderWebChat({ locale: 'yue' });
+
+        // THEN: Calling `useLanguage()` should return ['yue'].
         await languageBecome('yue');
 
+        // THEN: All texts should be in Chinese (Yue).
         await host.snapshot();
       });
     </script>

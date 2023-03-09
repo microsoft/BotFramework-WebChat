@@ -1,8 +1,11 @@
-import { useCallback, useState } from 'react';
 import { hooks } from 'botframework-webchat-api';
+import { useCallback, useState } from 'react';
 import random from 'math-random';
 
 import useTimer from './useTimer';
+
+import type { Dispatch, SetStateAction } from 'react';
+import type { GlobalScopePonyfill } from 'botframework-webchat-core';
 
 const { usePonyfill } = hooks;
 
@@ -11,17 +14,25 @@ const { usePonyfill } = hooks;
 // If the origin is t=260, and we are currently at t=60260 (exact landing), we must return t=120260, not t=60260.
 // This is for fixing bug #2103: https://github.com/microsoft/BotFramework-WebChat/issues/2103.
 
-function nextTimer(origin, interval, { Date }) {
+// False positive: we are using `Date` as a type.
+// eslint-disable-next-line no-restricted-globals
+function nextTimer(origin: Date | number | string, interval: number, { Date }: GlobalScopePonyfill): number {
   const time = new Date(origin).getTime();
   const now = Date.now();
 
   return time > now ? time : now + interval - ((now - time) % interval);
 }
 
-export default function useForceRenderAtInterval(origin, interval, fn) {
+export default function useForceRenderAtInterval(
+  // False positive: we are using `Date` as a type.
+  // eslint-disable-next-line no-restricted-globals
+  origin: Date | number | string,
+  interval: number,
+  fn: () => void
+): [number, Dispatch<SetStateAction<number>>] {
   const [ponyfill] = usePonyfill();
-  const [timer, setTimer] = useState(nextTimer(origin, interval, ponyfill));
-  const handler = useCallback(() => {
+  const [timer, setTimer] = useState<number>(nextTimer(origin, interval, ponyfill));
+  const handler = useCallback<() => void>(() => {
     fn && fn();
 
     // Chrome may fire the setTimeout callback 1 ms before its original schedule.

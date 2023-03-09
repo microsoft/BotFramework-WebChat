@@ -26,12 +26,10 @@
               // We should only prepend when "hideTimestamp" is not set.
               if (!args.hideTimestamp) {
                 if (args.activity.from.role === 'user') {
-                  return <span>User at {nextRender}</span>
-                  // return React.createElement('span', {}, ['User at ', nextRender]);
-                } else {
-                  return <span>Bot at {nextRender}</span>
-                  // return React.createElement('span', {}, ['Bot at ', nextRender]);
+                  return <span>User at {nextRender}</span>;
                 }
+
+                return <span>Bot at {nextRender}</span>;
               }
 
               return nextRender;

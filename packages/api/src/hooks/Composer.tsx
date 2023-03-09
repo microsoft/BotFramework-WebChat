@@ -732,9 +732,11 @@ type ComposerProps = ComposerWithStoreProps & {
   /**
    * Ponyfill to overrides specific global scope members. This prop cannot be changed after initial render.
    *
-   * This prop is designed for development use and has limited functionality when used in production environment.
+   * This option is for development use only. Not all features in Web Chat are ponyfilled.
    *
    * To fake timers, `setTimeout` and related functions can be passed to overrides the original global scope members.
+   *
+   * Please see [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662) for details.
    */
   ponyfill?: Partial<GlobalScopePonyfill>;
 };

@@ -9,8 +9,8 @@
   <body>
     <main id="webchat"></main>
     <script>
-      // TODO: [P2] Move to DirectLineEmulator.
       async function createDirectLineForTest(ponyfill) {
+        // TODO: [P2] Move to DirectLineEmulator.
         const directLine = await testHelpers.createDirectLineWithTranscript([], {
           overridePostActivity: activity => {
             if (activity.type === 'message') {

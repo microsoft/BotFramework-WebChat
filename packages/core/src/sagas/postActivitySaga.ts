@@ -146,7 +146,7 @@ function* postActivity(
         postActivity: observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity))
       }),
       timeout: call(function* () {
-        yield call(() => sleep(sendTimeout, ponyfill));
+        yield call(sleep, sendTimeout, ponyfill);
 
         // The IMPEDED action is for backward compatibility by changing `channelData.state` to "send failed".
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
@@ -157,7 +157,7 @@ function* postActivity(
           payload: { activity: outgoingActivity }
         } as PostActivityImpededAction);
 
-        yield call(() => sleep(HARD_SEND_TIMEOUT - sendTimeout, ponyfill));
+        yield call(sleep, HARD_SEND_TIMEOUT - sendTimeout, ponyfill);
 
         throw !echoed
           ? new Error('timed out while waiting for outgoing message to echo back')

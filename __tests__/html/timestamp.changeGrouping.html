@@ -27,20 +27,26 @@
 
         renderWebChat();
 
+        // WHEN: "echo Hello, World!" is sent.
         await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
+
+        // THEN: The bot should reply with 2 activities.
         await pageConditions.minNumActivitiesShown(3);
 
+        // THEN: There should be 3 activities in total: 1 from user, followed by 2 from the bot.
         await host.snapshot();
 
+        // WHEN: `styleOptions.groupTimestamp` is set to 0, which means, every activity is on its own group.
         renderWebChat({ styleOptions: { groupTimestamp: 0 } });
 
-        // After setting group timestamp to 0 second, it should show two separate timestamps.
+        // THEN: Every messages should have timestamp on its own.
         await host.snapshot();
 
+        // WHEN: `styleOptions.groupTimestamp` is set to false, which means, timestamp is disabled.
         renderWebChat({ styleOptions: { groupTimestamp: false } });
 
-        // After setting group timestamp to false, it should not show any timestamps.
+        // THEN: No messages should have timestamp on it.
         await host.snapshot();
       });
     </script>
