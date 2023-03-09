@@ -9,19 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-      function createDirectLineForTest(ponyfill) {
-        return testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              return new Observable(observer => observer.next('a00001'));
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          },
-          ponyfill
-        });
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -58,11 +45,15 @@
         async function () {
           const clock = lolex.createClock();
 
+          const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+
+          const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+
           WebChat.renderWebChat(
             {
-              directLine: await createDirectLineForTest(clock),
+              directLine,
               ponyfill: clock,
-              store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
+              store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },
             document.getElementById('webchat')
@@ -72,9 +63,15 @@
 
           clock.tick(400);
 
-          // SETUP: Send a message
+          // SETUP: Send a message and resolve the call to `postActivity()`.
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          const sendMessage = await directLine.actPostActivity(
+            () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+            { id: 'a00001' }
+          );
+
+          sendMessage.resolvePostActivity();
 
           // THEN: `channelData.state` should be "sending".
           await activityChannelDataStateBecame('sending');
