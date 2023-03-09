@@ -11,9 +11,8 @@
     <script>
       run(async function () {
         const clock = lolex.createClock();
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
 
-        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         WebChat.renderWebChat({ directLine, ponyfill: clock, store }, document.getElementById('webchat'));
 

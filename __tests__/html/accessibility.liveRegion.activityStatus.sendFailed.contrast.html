@@ -11,9 +11,7 @@
     <script>
       run(
         async function () {
-          const store = testHelpers.createStore();
-
-          const directLine = testHelpers.createDirectLineEmulator(store);
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
           await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
             features: [{ name: 'forced-colors', value: 'active' }]

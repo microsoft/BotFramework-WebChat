@@ -3,6 +3,7 @@ import Observable from 'core-js/features/observable';
 import random from 'math-random';
 import updateIn from 'simple-update-in';
 
+import { createStoreWithOptions } from './createStore';
 import became from '../pageConditions/became';
 import createDeferredObservable from '../../utils/createDeferredObservable';
 import shareObservable from './shareObservable';
@@ -15,13 +16,11 @@ function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
 
-export default function createDirectLineEmulator(
-  store,
-  { autoConnect = true, ponyfill: { Date } = { Date: window.Date } } = {}
-) {
-  if (!store) {
-    throw new Error('"store" argument must be provided when calling createDirectLineEmulator().');
-  } else if (!isNativeClock()) {
+export default function createDirectLineEmulator({ autoConnect = true, ponyfill = {} } = {}) {
+  const { Date = window.Date } = ponyfill;
+  const store = createStoreWithOptions({ ponyfill });
+
+  if (!isNativeClock()) {
     throw new Error('Fake timer is detected at global-level. You must pass it via the "ponyfill" option.');
   }
 
@@ -104,7 +103,7 @@ export default function createDirectLineEmulator(
 
   autoConnect && connectedDeferred.resolve();
 
-  return {
+  const directLine = {
     activity$: shareObservable(activityDeferredObservable.observable),
     actPostActivity,
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
@@ -165,4 +164,6 @@ export default function createDirectLineEmulator(
       );
     }
   };
+
+  return { directLine, store };
 }

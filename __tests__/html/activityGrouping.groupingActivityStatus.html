@@ -13,9 +13,8 @@
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
         const clock = lolex.createClock();
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
 
-        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         WebChat.renderWebChat(
           {

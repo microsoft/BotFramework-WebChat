@@ -12,9 +12,7 @@
       run(async function () {
         const clock = lolex.createClock();
 
-        const store = testHelpers.createStoreWithOptions();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         // WHEN: Web Chat is rendered with a non-ponyfilled Redux store.
         WebChat.renderWebChat(

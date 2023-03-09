@@ -20,7 +20,7 @@ function concatMiddleware(...middlewares) {
   };
 }
 
-export function createStoreWithOptions(options = {}, initialState = {}, ...middleware) {
+function createStoreWithOptions(options = {}, initialState = {}, ...middleware) {
   return window.WebChat.createStoreWithOptions(
     options,
     initialState,
@@ -65,4 +65,4 @@ function getState() {
   return activeStore.getState();
 }
 
-export { dispatch, getActionHistory, getState };
+export { createStoreWithOptions, dispatch, getActionHistory, getState };

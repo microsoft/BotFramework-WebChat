@@ -41,9 +41,7 @@
           );
         };
 
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
-
-        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         render(
           <Composer directLine={directLine} ponyfill={clock} store={store}>

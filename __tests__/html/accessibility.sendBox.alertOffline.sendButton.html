@@ -12,9 +12,7 @@
       run(async function () {
         const clock = lolex.createClock();
 
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
-
-        const directLine = testHelpers.createDirectLineEmulator(store, { autoConnect: false, ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ autoConnect: false, ponyfill: clock });
 
         WebChat.renderWebChat(
           {

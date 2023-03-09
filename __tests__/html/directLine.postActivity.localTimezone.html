@@ -18,9 +18,7 @@
         // Note the getTimezoneOffset() is correctly returns positive number for a negative offset.
         expect(new Date().getTimezoneOffset()).toBe(480);
 
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
-
-        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         WebChat.renderWebChat(
           {

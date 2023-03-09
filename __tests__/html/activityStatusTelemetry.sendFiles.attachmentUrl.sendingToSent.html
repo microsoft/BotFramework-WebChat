@@ -31,9 +31,7 @@
             }
           ]
         };
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
         const telemetryEventTracking = [];
 
         WebChat.renderWebChat(
