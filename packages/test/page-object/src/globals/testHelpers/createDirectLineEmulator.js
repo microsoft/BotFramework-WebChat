@@ -99,7 +99,7 @@ export default function createDirectLineEmulator(
       resolvePostActivity();
     };
 
-    return { echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
+    return { activity: outgoingActivity, echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
   };
 
   autoConnect && connectedDeferred.resolve();
