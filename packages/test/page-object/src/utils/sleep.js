@@ -1,7 +1,5 @@
 import signalToReject from './signalToReject';
 
-// TODO: Remove this when we no longer support global installed clock.
-
 // Lolex may get installed and impact the sleep.
 const globalSetTimeout = setTimeout;
 
