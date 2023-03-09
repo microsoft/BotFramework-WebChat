@@ -745,7 +745,28 @@ type ComposerProps = ComposerWithStoreProps & {
 const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStoreProps) => {
   const [ponyfill] = usePonyfill();
 
-  const memoizedStore = useMemo(() => store || createStoreWithOptions({ ponyfill }), [ponyfill, store]);
+  const memoizedStore = useMemo(() => {
+    const nextStore = store || createStoreWithOptions({ ponyfill });
+
+    const storePonyfill = store.getState().internal?.ponyfill || {};
+
+    const keys = new Set([...Object.keys(storePonyfill), ...Object.keys(ponyfill)]);
+
+    // Filter out forbidden properties.
+    keys.delete('prototype');
+
+    Object.getOwnPropertyNames(Object.prototype).forEach(key => {
+      keys.delete(key);
+    });
+
+    // We have filtered out all forbidden properties.
+    // eslint-disable-next-line security/detect-object-injection
+    if (Array.from(keys).some(key => storePonyfill[key] !== ponyfill[key])) {
+      console.warn(`botframework-webchat: Ponyfill used in store should match the ponyfill passed in props.`);
+    }
+
+    return nextStore;
+  }, [ponyfill, store]);
 
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>

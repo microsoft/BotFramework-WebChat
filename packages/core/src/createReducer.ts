@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import createActivitiesReducer from './reducers/createActivitiesReducer';
+import createInternalReducer from './reducers/createInternalReducer';
 import createNotificationsReducer from './reducers/createNotificationsReducer';
 import createTypingReducer from './reducers/createTypingReducer';
 import connectivityStatus from './reducers/connectivityStatus';
@@ -23,6 +24,7 @@ export default function createReducer(ponyfill: GlobalScopePonyfill) {
     connectivityStatus,
     dictateInterims,
     dictateState,
+    internal: createInternalReducer(ponyfill),
     language,
     notifications: createNotificationsReducer(ponyfill),
     readyState,
